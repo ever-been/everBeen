@@ -1,0 +1,252 @@
+format 59
+"shutdown" // been::src::cz::cuni::mff::been::task::jboss::shutdown
+  revision 1
+  modified_by 2 "Administrator"
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default show_stereotype_properties default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+  show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+  show_infonote default drawing_language default show_stereotype_properties default
+  
+  java_dir "cz/cuni/mff/been/task/jboss/shutdown"
+  java_package "cz.cuni.mff.been.task.jboss.shutdown"
+  classview 133762 "shutdown"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default show_stereotype_properties default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+    //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+    show_infonote default drawing_language default show_stereotype_properties default
+    class 200066 "JBossShutdown"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+<p>Stops JBoss.</p>
+
+<b>Task properties:</b><br>
+<ul>
+<li>{@value #JBOSS_DIR}: <br>
+		- path to the JBoss installation directory <br>
+		- mandatory <br>
+<li>{@value #JBOSS_JNP_PORT}: <br>
+		- port number of the JBoss' JNP service <br>
+		- if ommited, default JNP port will be used <br>
+</ul>
+
+@author Jaroslav Urban
+"
+      classrelation 257794 // <generalisation>
+	relation 257794 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 257794 // <generalisation>
+	  b parent class_ref 197250 // Job
+      end
+
+      attribute 283138 "JBOSS_DIR"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"jboss.dir\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "------------------------CONSTANTS--------------------
+ Task property name for JBoss installation directory. 
+"
+      end
+
+      attribute 283266 "JBOSS_JNP_PORT"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"jboss.jnp.port\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Port number of the JBoss' JNP service. It's not mandatory, default
+value is 1097.
+
+"
+      end
+
+      attribute 283394 "JBOSS_HOME_VARIABLE"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"JBOSS_HOME\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Name of the environment variable for JBoss' root directory 
+"
+      end
+
+      attribute 283522 "jbossDir"
+	private explicit_type "String"
+	init_value "=  null"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "-----------------------ATTRIBUTES--------------------
+ Path to directory where JBoss is installed 
+"
+      end
+
+      attribute 283650 "jnpPort"
+	private explicit_type "int"
+	init_value "=  1097"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Port number of JBoss' JNP service. 
+"
+      end
+
+      operation 637186 "JBossShutdown"
+	public explicit_return_type ""
+	nparams 0
+	nexceptions 1
+	  exception class_ref 137218 // TaskInitializationException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>JBossShutdown</code> object.
+
+@throws TaskInitializationException
+"
+      end
+
+      operation 637314 "shutdown"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "url" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 137346 // TaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Shuts down JBoss.
+
+@param url URL where JBoss is listening.
+@throws TaskException if an error occured during JBoss' shutdown.
+"
+      end
+
+      operation 637442 "run"
+	protected explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  exception class_ref 137346 // TaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment " (non-Javadoc)
+@see cz.cuni.mff.been.task.Job#run()
+"
+      end
+
+      operation 637570 "checkRequiredProperties"
+	protected explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  exception class_ref 137346 // TaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+      end
+    end
+  end
+
+  deploymentview 132866 "shutdown"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+    artifact 180226 "JBossShutdown"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Map;
+import cz.cuni.mff.been.common.ArrayUtils;
+import cz.cuni.mff.been.common.OutputReader;
+import cz.cuni.mff.been.common.OutputType;
+import cz.cuni.mff.been.task.Job;
+import cz.cuni.mff.been.task.TaskException;
+import cz.cuni.mff.been.task.TaskInitializationException;
+${definition}"
+      associated_classes
+	class_ref 200066 // JBossShutdown
+      end
+    end
+  end
+end

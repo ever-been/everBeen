@@ -1,0 +1,36 @@
+class IDPair
+!!!560642.java!!!	getAid() : AID
+                return aid;
+!!!560770.java!!!	getEid() : EID
+                return eid;
+!!!560898.java!!!	IDPair(inout aid : AID, inout eid : EID)
+	        super();
+	        this.aid = aid;
+	        this.eid = eid;
+!!!561026.java!!!	equals(inout o : Object) : boolean
+	    	
+	    	Class objectClass = o.getClass();
+			Class thisClass = getClass();
+			if (!objectClass.isInstance(this) || !thisClass.isInstance(o)) {
+				return false;
+			}
+			if (!aid.equals(((IDPair) o).aid)) {
+				return false;
+			}
+			if ((eid == null) && ((IDPair) o).eid == null) {
+				return true;
+			}
+			if ((eid == null) || ((IDPair) o).eid == null) {
+				return false;
+			}
+			return	eid.equals(((IDPair) o).eid);
+!!!561154.java!!!	hashCode() : int
+	    	
+	    	if (aid == null) {
+		    	return 0;
+			}
+			if (eid == null) { 
+				return aid.hashCode();
+			} else {
+				return eid.hashCode();
+			}

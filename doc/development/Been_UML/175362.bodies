@@ -1,0 +1,3 @@
+class HostStatus
+!!!413954.java!!!	toString() : String
+		return STRINGS[ordinal()];

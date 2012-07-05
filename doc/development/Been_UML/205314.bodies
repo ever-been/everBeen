@@ -1,0 +1,22 @@
+class UploadThread
+!!!665602.java!!!	UploadThread(inout socketChan : ServerSocketChannel, inout inputChan : ReadableByteChannel)
+		this.socketChan = socketChan;
+		this.inputChan = inputChan;
+!!!665730.java!!!	run() : void
+		try {
+			SocketChannel chan = socketChan.accept();
+			chan.configureBlocking(true);
+			ByteBuffer buf = ByteBuffer.allocate(1024);
+			while (inputChan.read(buf) != -1) {
+				buf.flip();
+				chan.write(buf);
+				buf.clear();
+			}
+			chan.close();
+			inputChan.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			storedException = e;
+		}
+!!!665858.java!!!	getStoredException() : Exception
+		return storedException;

@@ -1,0 +1,622 @@
+format 70
+"ref" // been::src::cz::cuni::mff::been::webinterface::ref
+  revision 2
+  modified_by 8 "BoRiS"
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+  show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+  show_infonote default drawing_language default show_stereotype_properties default
+  
+  java_dir "cz/cuni/mff/been/webinterface/ref"
+  java_package "cz.cuni.mff.been.webinterface.ref"
+  classview 138498 "ref"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+    //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+    show_infonote default drawing_language default show_stereotype_properties default
+    class 213250 "TaskManagerReference"
+      visibility public 
+      nactuals 2
+      actual class class_ref 215810 // RMIReference
+        rank 0 value class_ref 181762 // TaskManagerInterface
+      actual class class_ref 215810 // RMIReference
+        rank 1 explicit_value ""
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Class encapsulating reference to the Task Manager.
+
+@author David Majda
+"
+      classrelation 290434 // <realization>
+	relation 290434 -_-|>
+	  stereotype "bind"
+	  a public
+	    java "${type}"
+	    classrelation_ref 290434 // <realization>
+	  b parent class_ref 215810 // RMIReference
+      end
+
+      operation 793858 "acquire"
+	public return_type class_ref 181762 // TaskManagerInterface
+	nparams 0
+	nexceptions 1
+	  exception class_ref 129154 // ComponentInitializationException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+Acquires a reference to the Task Manager.
+
+@return newly acquired reference
+@throws ComponentInitializationException if acquiring of the reference
+                                          failed
+                                          
+@see cz.cuni.mff.been.webinterface.ref.RMIReference#acquire()
+"
+      end
+    end
+
+    class 213378 "ServiceReference"
+      visibility public 
+      nformals 2
+      formal name "T" type "" explicit_default_value ""
+        explicit_extends ""
+      formal name "T" type "" explicit_default_value ""
+        explicit_extends ""
+      nactuals 2
+      actual class class_ref 215810 // RMIReference
+        rank 0 explicit_value "T"
+      actual class class_ref 215810 // RMIReference
+        rank 1 explicit_value ""
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Class encapsulating reference to the BEEN service.
+
+@author David Majda
+"
+      classrelation 290178 // <realization>
+	relation 290178 -_-|>
+	  stereotype "bind"
+	  a public
+	    java "${type}"
+	    classrelation_ref 290178 // <realization>
+	  b parent class_ref 215810 // RMIReference
+      end
+
+      classrelation 290306 // taskManagerReference (<unidirectional association>)
+	relation 290306 --->
+	  a role_name "taskManagerReference" private
+	    comment " Reference to the Task Manager. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 290306 // taskManagerReference (<unidirectional association>)
+	  b parent class_ref 213250 // TaskManagerReference
+      end
+
+      attribute 357506 "serviceName"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Service name. 
+"
+      end
+
+      attribute 357634 "serviceInterface"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Service interface. 
+"
+      end
+
+      attribute 357762 "serviceHumanName"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Service human-readable name. 
+"
+      end
+
+      operation 793090 "getTaskManagerReference"
+	public return_type class_ref 213250 // TaskManagerReference
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return reference to the Task Manager "
+      end
+
+      operation 793218 "getServiceName"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return service name "
+      end
+
+      operation 793346 "getServiceInterface"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return service interface "
+      end
+
+      operation 793474 "getServiceHumanName"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return service human-readable name "
+      end
+
+      operation 793602 "acquire"
+	public explicit_return_type "T"
+	nparams 0
+	nexceptions 1
+	  exception class_ref 129154 // ComponentInitializationException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@SuppressWarnings(\"unchecked\") /* Needed to make the \"(T)\" typecast work. */ 
+	@Override
+"
+	
+	
+	
+	comment "
+Acquires a reference to the BEEN service.
+
+@return newly acquired reference
+@throws ComponentInitializationException if acquiring of the reference
+                                          failed
+                                          
+@see cz.cuni.mff.been.webinterface.ref.RMIReference#acquire()
+
+ Needed to make the \"(T)\" typecast work. "
+      end
+
+      operation 793730 "ServiceReference"
+	public explicit_return_type ""
+	nparams 4
+	  param inout name "taskManagerReference" type class_ref 213250 // TaskManagerReference
+	  param in name "serviceName" explicit_type "String"
+	  param in name "serviceInterface" explicit_type "String"
+	  param in name "serviceHumanName" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>ServiceReference</code> object.
+
+@param taskManagerReference reference to the Task Manager
+@param serviceName service name
+@param serviceInterface service interface
+@param serviceHumanName service human-readable name
+"
+      end
+    end
+
+    class 213762 "LoadServerReference"
+      visibility public 
+      nactuals 2
+      actual class class_ref 215810 // RMIReference
+        rank 0 value class_ref 162690 // LoadServerInterface
+      actual class class_ref 215810 // RMIReference
+        rank 1 explicit_value ""
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Class encapsulating reference to the Load Server.
+
+@author David Majda
+"
+      classrelation 289922 // <realization>
+	relation 289922 -_-|>
+	  stereotype "bind"
+	  a public
+	    java "${type}"
+	    classrelation_ref 289922 // <realization>
+	  b parent class_ref 215810 // RMIReference
+      end
+
+      classrelation 290050 // taskManagerReference (<unidirectional association>)
+	relation 290050 --->
+	  a role_name "taskManagerReference" private
+	    comment " Reference to the Task Manager. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 290050 // taskManagerReference (<unidirectional association>)
+	  b parent class_ref 213250 // TaskManagerReference
+      end
+
+      operation 792834 "acquire"
+	public return_type class_ref 162690 // LoadServerInterface
+	nparams 0
+	nexceptions 1
+	  exception class_ref 129154 // ComponentInitializationException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+Acquires a reference to the Load Server.
+
+@return newly acquired reference
+@throws ComponentInitializationException if acquiring of the reference
+         failed
+                                          
+@see cz.cuni.mff.been.webinterface.ref.RMIReference#acquire()
+"
+      end
+
+      operation 792962 "LoadServerReference"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "taskManagerReference" type class_ref 213250 // TaskManagerReference
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>LoadServerReference</code> object.
+
+@param taskManagerReference reference to the Task Manager
+"
+      end
+    end
+
+    class 215810 "RMIReference"
+      abstract visibility public 
+      nformals 2
+      formal name "T" type "" explicit_default_value ""
+        explicit_extends ""
+      formal name "T" type "" explicit_default_value ""
+        explicit_extends ""
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Abstract class encpsulating reference to the remote interface and handling
+its renewal. Is is parametrized by the type of the remote interface.
+
+Descendants are expected to implement the <code>acquire</code> method, which
+acquires the reference.
+
+@param <T> remote interface type
+
+@author David Majda
+"
+      attribute 356994 "TIMEOUT"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  1"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Time (in seconds), after which the reference is not considered valid. 
+"
+      end
+
+      attribute 357122 "MILISECONDS_IN_SECOND"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  1000"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Number of miliseconds in one second. 
+"
+      end
+
+      attribute 357250 "reference"
+	private explicit_type "T"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Reference to the encapsulated RMI interface. 
+"
+      end
+
+      attribute 357378 "acquireTime"
+	private explicit_type "long"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Time (number of milliseconds since January 1, 1970, 00:00:00 GMT) when
+current encapsulated reference was acquired.
+
+"
+      end
+
+      operation 792194 "referenceIsValid"
+	private explicit_return_type "boolean"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Checks if the encapsulated reference is valid.
+
+@return <code>true</code> if the reference is valid;
+         <code>false</code> otherwise
+"
+      end
+
+      operation 792322 "get"
+	public explicit_return_type "T"
+	nparams 0
+	nexceptions 1
+	  exception class_ref 129154 // ComponentInitializationException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns the encapsulated reference, acquiring it if needed (when calling
+the method for the first time, or after the reference expiration).
+
+@return ecapsulated reference
+@throws ComponentInitializationException if acquiring of the reference
+                                          failed
+"
+      end
+
+      operation 792450 "hasReference"
+	public explicit_return_type "boolean"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Calls the <code>get</code> method and returns <code>true</code> if it
+returns valid reference. This allows to check if we have valid encapsulated
+reference without explicitly getting it and catching
+<code>ComponentInitializationException</code>. 
+
+@return <code>true</code> if the <code>get</code> mathod returns a
+         valid encapsulated reference;
+         <code>false</code> if it does not
+"
+      end
+
+      operation 792578 "drop"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Drops the encapsulated reference.
+"
+      end
+
+      operation 792706 "acquire"
+	abstract public explicit_return_type "T"
+	nparams 0
+	nexceptions 1
+	  exception class_ref 129154 // ComponentInitializationException
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Acquires the encapsulated reference.
+
+@return newly acquired reference
+@throws ComponentInitializationException if acquiring of the reference
+                                          failed
+"
+      end
+    end
+  end
+
+  deploymentview 137858 "ref"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+    artifact 194178 "RMIReference"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.rmi.Remote;
+import java.util.Date;
+import cz.cuni.mff.been.common.ComponentInitializationException;
+${definition}"
+      associated_classes
+	class_ref 215810 // RMIReference
+      end
+    end
+
+    artifact 194306 "LoadServerReference"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.rmi.RemoteException;
+import cz.cuni.mff.been.common.ComponentInitializationException;
+import cz.cuni.mff.been.hostmanager.HostManagerInterface;
+import cz.cuni.mff.been.hostmanager.HostManagerService;
+import cz.cuni.mff.been.hostmanager.load.LoadServerInterface;
+import cz.cuni.mff.been.webinterface.Config;
+${definition}"
+      associated_classes
+	class_ref 213762 // LoadServerReference
+      end
+    end
+
+    artifact 194434 "ServiceReference"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import cz.cuni.mff.been.common.ComponentInitializationException;
+import cz.cuni.mff.been.webinterface.Config;
+${definition}"
+      associated_classes
+	class_ref 213378 // ServiceReference
+      end
+    end
+
+    artifact 194562 "TaskManagerReference"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import cz.cuni.mff.been.common.ComponentInitializationException;
+import cz.cuni.mff.been.taskmanager.TaskManagerInterface;
+import cz.cuni.mff.been.webinterface.Config;
+${definition}"
+      associated_classes
+	class_ref 213250 // TaskManagerReference
+      end
+    end
+  end
+end

@@ -1,0 +1,291 @@
+class ValueVersion
+!!!470018.java!!!	ValueVersion(inout node : Node)
+		
+		parseXMLNode(node);
+!!!470146.java!!!	ValueVersion()
+		
+		major = minor = release = 0;
+		buildIdentifier = null;
+!!!470274.java!!!	ValueVersion(inout ver : Version)
+	
+		parseString(ver.toString());
+!!!470402.java!!!	ValueVersion(in majorVer : int, in minorVer : int, in releaseNumber : int, in buildId : String)
+		
+		major = majorVer;
+		minor = minorVer;
+		release = releaseNumber;
+		buildIdentifier = buildId;
+!!!470530.java!!!	ValueVersion(in majorVer : int, in minorVer : int, in releaseNumber : int)
+
+		major = majorVer;
+		minor = minorVer;
+		release = releaseNumber;
+		buildIdentifier = "";
+!!!470658.java!!!	ValueVersion(in versionString : String)
+
+		if (versionString.equals("(unknown)")) {
+			buildIdentifier = null;
+			major = minor = release = 0;
+		} else {
+			parseString(versionString);
+		}
+!!!470786.java!!!	parseString(in versionString : String) : void
+		
+		int strPos = 0;
+		int strBeg = 0;
+		
+		major = minor = release = 0;
+		buildIdentifier = "";
+		
+		// major version
+		while ((strPos < versionString.length())
+		       && ("0123456789".indexOf(versionString.charAt(strPos)) != -1)) {
+			++strPos;
+		}
+		
+		if (strPos != 0) {
+			major = Integer.valueOf(versionString.substring(0, strPos)).intValue();
+			
+			if (strPos >= versionString.length()) {
+				return;
+			}
+		} else {
+			buildIdentifier = versionString;
+			return;
+		}
+		
+		if (versionString.charAt(strPos) == '.') {
+			strBeg = ++strPos;
+		} else {
+			buildIdentifier = versionString.substring(strPos);
+			return;
+		}
+		
+		// minor version
+		while ((strPos < versionString.length())
+		       && ("0123456789".indexOf(versionString.charAt(strPos)) != -1)) {
+			++strPos;
+		}
+
+		if (strPos > strBeg) {
+			minor = Integer.valueOf(versionString.substring(strBeg, strPos)).intValue();
+			
+			if (strPos >= versionString.length()) {
+				return;
+			}
+		} else {
+			buildIdentifier = versionString.substring(strBeg);
+			return;
+		}
+		
+		if (versionString.charAt(strPos) == '.') {
+			strBeg = ++strPos;
+		} else {
+			buildIdentifier = versionString.substring(strPos);
+			return;
+		}
+		
+		// release
+		while ((strPos < versionString.length())
+		       && ("0123456789".indexOf(versionString.charAt(strPos)) != -1)) {
+			++strPos;
+		}
+
+		if (strPos > strBeg) {
+			release = Integer.valueOf(versionString.substring(strBeg, strPos)).intValue();
+			
+			if (strPos >= versionString.length()) {
+				return;
+			}
+		} else {
+			buildIdentifier = versionString.substring(strBeg);
+			return;
+		}
+		
+		// rest of string is build id
+		buildIdentifier = versionString.substring(strPos);		
+!!!470914.java!!!	sgn(in x : int) : int
+		
+		if (x > 0) {
+			return 1;
+		} else if (x < 0) {
+			return -1;
+		} else {
+			return 0;
+		}
+!!!471042.java!!!	compareTo(inout ver : ValueVersion) : int
+
+		if (major > ver.major) {
+			return 1;
+		} else if (major < ver.major) {
+			return -1;
+		} else {
+			if (minor > ver.minor) {
+				return 2;
+			} else if (minor < ver.minor) {
+				return -2;
+			} else {
+				if (release > ver.release) {
+					return 3;
+				} else if (release < ver.release) {
+					return -3;
+				} else {
+					return 4 * sgn(buildIdentifier.compareTo(ver.buildIdentifier));
+				}
+			}
+		}
+!!!471170.java!!!	equals(inout o : Object) : boolean
+		
+		if (o instanceof ValueVersion) {
+			return equals((ValueVersion) o);
+		} else {
+			return false;
+		}
+!!!471298.java!!!	equals(inout ver : ValueVersion) : boolean
+		
+		return (major == ver.major) && (minor == ver.minor) && (release == ver.release)
+		       && (ver.buildIdentifier.equals(buildIdentifier));
+!!!471426.java!!!	hashCode() : int
+		
+		return toString().hashCode();
+!!!471554.java!!!	toStringAligned() : String
+		
+		if (buildIdentifier != null) {
+			return align(major) + "." + align(minor) + "." + align(release) + buildIdentifier;
+		} else {
+			return "(unknown)";
+		}
+!!!471682.java!!!	toString() : String
+		
+		if (buildIdentifier != null) {
+			return Integer.toString(major) + "." 
+			       + Integer.toString(minor) + "." 
+			       + Integer.toString(release)
+			       + buildIdentifier;
+		} else {
+			return "(unknown)";
+		}
+!!!471810.java!!!	greaterThan(inout o : Object) : boolean
+		
+		if (o instanceof ValueVersion) {
+			return greaterThan((ValueVersion) o);
+		} else {
+			return false;
+		}
+!!!471938.java!!!	greaterThan(inout v : ValueVersion) : boolean
+		
+		if (major > v.major) {
+			return true;
+		} else if (major == v.major) {
+			if (minor > v.minor) {
+				return true;
+			} else if (minor == v.minor) {
+				if (release > v.release) {
+					return true;
+				} else if (release == v.release) {
+					if (buildIdentifier.compareTo(v.buildIdentifier) > 0) {
+						return true;
+					}
+				}
+			}
+		}
+		
+		return false; 
+!!!472066.java!!!	lessThan(inout o : Object) : boolean
+		
+		if (o instanceof ValueVersion) {
+			return lessThan((ValueVersion) o);
+		} else {
+			return false;
+		}
+!!!472194.java!!!	lessThan(inout v : ValueVersion) : boolean
+		
+		if (major < v.major) {
+			return true;
+		} else if (major == v.major) {
+			if (minor < v.minor) {
+				return true;
+			} else if (minor == v.minor) {
+				if (release < v.release) {
+					return true;
+				} else if (release == v.release) {
+					if (buildIdentifier.compareTo(v.buildIdentifier) < 0) {
+						return true;
+					}
+				}
+			}
+		}
+		
+		return false; 
+!!!472322.java!!!	align(in val : int) : String
+		
+		String res = String.valueOf(val);
+		
+		// add 0 on the left
+		while (res.length() < NUMERIC_ALIGNMENT) {
+			res = "0" + res;
+		}
+		
+		return res;
+!!!472450.java!!!	parseXMLNode(inout node : Node) : void
+		
+		if (!node.getNodeName().equals(getXMLNodeName())) {
+			throw new InputParseException("Node does not contain version data. Node name is \""
+					+ node.getNodeName() + "\".");
+		}
+		
+		parseString(XMLHelper.getAttributeValueByName("value", node));
+!!!472578.java!!!	exportAsElement(inout document : Document) : Element
+		
+		/* Resulting node
+		 * 
+		 * <version value="<version>"/>
+		 * 
+		 * where <version> is value of this class converted to the string using toString method.
+		 */
+		
+		Element element = document.createElement(getXMLNodeName());
+		
+		element.setAttribute("value", this.toString());
+		
+		return element;
+!!!472706.java!!!	getXMLNodeName() : String
+		
+		return "version";
+!!!472834.java!!!	getBuildIdString() : String
+		return buildIdentifier;
+!!!472962.java!!!	setBuildIdString(in buildId : String) : void
+		
+		this.buildIdentifier = buildId;
+!!!473090.java!!!	getMajorVersion() : int
+		
+		return major;
+!!!473218.java!!!	setMajorVersion(in major : int) : void
+		
+		if (major < 0) {
+			throw new IllegalArgumentException("Negative version number is not allowed.");
+		}
+		
+		this.major = major;
+!!!473346.java!!!	getMinorVersion() : int
+		
+		return minor;
+!!!473474.java!!!	setMinorVersion(in minor : int) : void
+		
+		if (minor < 0) {
+			throw new IllegalArgumentException("Negative version number is not allowed.");
+		}
+		
+		this.minor = minor;
+!!!473602.java!!!	getReleaseNumber() : int
+		return release;
+!!!473730.java!!!	setReleaseNumber(in release : int) : void
+		
+		if (release < 0) {
+			throw new IllegalArgumentException("Negative version number is not allowed.");
+		}
+		
+		this.release = release;
+!!!473858.java!!!	getUnit() : String
+		
+		return null;

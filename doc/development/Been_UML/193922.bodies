@@ -1,0 +1,108 @@
+class RunImplementation
+!!!588674.java!!!	RunImplementation(inout aid : AID, inout eid : EID, inout bid : BID)
+		
+		super();
+
+		binaryEntityManager = BinaryEntityManager.getInstance();
+		BinaryEntityManager.getInstance().ensureValidBid(aid, eid, bid); 
+		
+		this.aid = aid;
+		this.eid = eid;
+		this.bid = bid;
+
+		runEntityManager = database.getRunEntityManager();
+!!!588802.java!!!	getEntity(inout id : RID) : Entity
+		return runEntityManager.getRun(aid, eid, bid, id); 
+!!!588930.java!!!	setEntityComment(inout id : RID, in comment : String) : void
+		runEntityManager.setRunComment(aid, eid, bid, id, comment);
+		
+!!!589058.java!!!	getEntities() : Entity
+		return runEntityManager.getRunsInBinary(aid, eid, bid);
+!!!589186.java!!!	getSubentityInterface(inout id : RID) : EntityInterface
+		
+		throw new UnsupportedOperationException("No runs subentity defined.");
+!!!589314.java!!!	getExportFormats() : DataFormat
+		return exporter.getRunExportFormats();
+!!!589442.java!!!	beginExport(inout ids : RID, in formatId : String, inout ip : InetAddress, in port : int) : DownloadHandle
+		return exporter.beginRunsExport(aid, eid, bid, ids, formatId, ip, port);
+!!!589570.java!!!	getImportFormats() : DataFormat
+		return importer.getRunImportFormats();
+!!!589698.java!!!	beginImport(in formatId : String, inout ip : InetAddress, in port : int) : UploadHandle
+		
+		return importer.beginRunsImport(formatId, ip, port);
+!!!589826.java!!!	deleteEntity(inout id : RID) : void
+		runEntityManager.eraseRun(aid, eid, bid, id);
+!!!589954.java!!!	graphCount(inout graphType : GraphType, inout id : RID) : int
+		if (graphType == GraphType.RESULTS) {
+			throw new UnsupportedOperationException(NO_RUN_GRAPHS);
+		} else {
+	  		return runEntityManager.getRunLoadGraphCount(aid, eid, bid, id);
+		}
+!!!590082.java!!!	getGraphInfo(inout graphType : GraphType, inout id : RID, in index : int) : GraphInfo
+		if (graphType == GraphType.RESULTS) {
+			throw new UnsupportedOperationException(NO_RUN_GRAPHS);
+		} else { 
+	  		try {
+				return runEntityManager.getRunLoadGraphInfo(aid, eid, bid, id, index);
+			} catch (IOException e) {
+				Logger.logError("I/O error reading graph info for " 
+						+ Database.getRunReferenceString(aid, eid, bid, id) + ".");
+				return null;
+			}
+		}
+
+!!!590210.java!!!	beginGraphDownload(inout graphType : GraphType, inout id : RID, inout ip : InetAddress, in port : int, in index : int) : DownloadHandle
+		if (graphType == GraphType.RESULTS) {
+			throw new UnsupportedOperationException(NO_RUN_GRAPHS);
+		}
+		
+		if (graphCount(graphType, id) == 0) {
+			throw new IllegalArgumentException("Load graph doesn't exist.");
+		}
+			
+		try {
+			runEntityManager.ensureValidRid(aid, eid, bid, id); // Do it here, because database doesn't know
+			// what run are we handling
+			return binaryEntityManager.downloadBinaryFile(aid, eid, bid, 
+					"load" + File.separator + id + File.separator 
+					+ runEntityManager.getRunLoadGraphPath(aid, eid, bid, id, index), 
+					ip.getCanonicalHostName(), port, false);
+		} catch (IOException e) {
+			Logger.logError("I/O error reading load graph for " 
+					+ Database.getRunReferenceString(aid, eid, bid, id) + ".");
+			throw new ResultsRepositoryException(e);
+		}
+
+!!!590338.java!!!	beginRawDataDownload(inout id : RID, inout ip : InetAddress, in port : int) : DownloadHandle
+		try {
+			runEntityManager.ensureValidRid(aid, eid, bid, id);
+			// FIXME: pack all table files for run for download 
+			return binaryEntityManager.downloadBinaryFile(aid, eid, bid,  
+					runEntityManager.getRunPaths(aid, eid, bid, id)[0], 
+					ip.getCanonicalHostName(), port, false);
+		} catch (IOException e) {
+			Logger.logError("I/O error reading load graph for " 
+					+ Database.getRunReferenceString(aid, eid, bid, id) + ".");
+			throw new ResultsRepositoryException(e);
+		}		
+!!!590466.java!!!	endRawDataDownload(inout handle : DownloadHandle) : void
+		database.endFileDownload(handle);
+!!!590594.java!!!	getRawDataDownloadStatus(inout handle : DownloadHandle) : DownloadStatus
+		return database.getFileDownloadStatus(handle);
+!!!590722.java!!!	getContext(inout id : RID) : String
+		return runEntityManager.getContext(aid, eid, bid, id);
+!!!590850.java!!!	getTasks(inout id : RID) : String
+		TaskListManager taskListManagerInstance = TaskListManager.getInstance();
+		
+		taskListManagerInstance.loadRunsTaskList(aid, eid, bid);
+		return taskListManagerInstance.getRunTaskList(id);
+		
+!!!590978.java!!!	getLogsForTask(inout id : RID, in taskID : String) : LogRecord
+		
+	    String contextId = runEntityManager.getContext(aid, eid, bid, id);
+	    
+	    if (!database.getLogStorage().isTaskRegistered(contextId, taskID)) {
+	    	return new LogRecord[] {};
+	    }
+	    
+	    return database.getLogStorage().getLogsForTask(contextId, taskID); 

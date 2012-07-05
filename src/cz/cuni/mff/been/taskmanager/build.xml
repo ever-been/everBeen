@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<!--
+
+  BEEN: Benchmarking Environment
+  ==============================
+
+  File author: Antonin Tomecek
+
+  GNU Lesser General Public License Version 2.1
+  - - - - - - - - - - - - - - - - - - - - - - -
+  Copyright (C) 2004-2006 Distributed Systems Research Group,
+  Faculty of Mathematics and Physics, Charles University in Prague
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License version 2.1, as published by the Free Software Foundation.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+  MA  02111-1307  USA
+
+-->
+<project name="BEEN" default="dist" basedir=".">
+	
+	<!-- ================ PROPERTIES ================ -->
+	
+	<!-- ==== Directories ==== -->
+	
+	<!-- The root directory for Task Manager -->
+	<property name="taskmanager.dir"
+		location="${data.dir}/taskmanager" />
+	
+	<!-- ==== Sources of DTD files ==== -->
+	
+	<!-- DTD of TaskDescriptor XML file -->
+	<property name="taskdescriptor.xsd.file"
+		location="${xsd.dir}/td.xsd" />
+	<!-- DTD of TaskManager's configuration XML file. -->
+	<property name="configuration.dtd.file"
+		location="${dtd.dir}/taskmanager/configuration.dtd" />
+	
+	
+	
+	<!-- taskdescriptor files for TM's debug mode -->
+	<fileset id="taskmanager.taskdescriptors" dir="${task-descriptors.dir}">
+		
+		<include name="benchmarkmanagerng.td"/>
+		<include name="resultsrepositoryng.td"/>
+		<include name="softwarerepository.td"/>
+		<include name="hostmanager.td"/>
+		<include name="clinterface.td"/>
+	</fileset>
+	
+			
+	
+	<!-- ================ TARGETS ================ -->
+	
+	<!-- Create structure of files and directories for Task Manager -->
+	<target name="dist">
+		<!-- Create directories -->
+		<mkdir dir="${taskmanager.dir}" />
+		
+		<!-- Copy XSD and DTD files -->
+		<copy file="${taskdescriptor.xsd.file}" todir="${taskmanager.dir}" />
+		<copy file="${configuration.dtd.file}" todir="${taskmanager.dir}" />
+		
+		<!-- Copy XSD files for the JAXB parser -->
+		<copy todir="${taskmanager.dir}">
+			<fileset dir="${jaxb.src.dir}">
+				<include name="td.xsd" />
+				<include name="common.xsd" />
+				<include name="strbin.xsd" />
+			</fileset>
+		</copy>
+		
+		<copy todir="${taskmanager.dir}/task-descriptors">
+			<fileset refid="taskmanager.taskdescriptors"/>
+		</copy>
+	</target>
+	
+</project>

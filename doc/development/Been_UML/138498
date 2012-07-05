@@ -1,0 +1,446 @@
+format 59
+"xampler" // been::src::cz::cuni::mff::been::task::results::xampler
+  revision 1
+  modified_by 2 "Administrator"
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default show_stereotype_properties default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+  show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+  show_infonote default drawing_language default show_stereotype_properties default
+  
+  java_dir "cz/cuni/mff/been/task/results/xampler"
+  java_package "cz.cuni.mff.been.task.results.xampler"
+  classview 135810 "xampler"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default show_stereotype_properties default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+    //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+    show_infonote default drawing_language default show_stereotype_properties default
+    class 202498 "CheckAndConvertXamplerTask"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Task to check and convert xampler results
+
+@author Jakub Lehotsky
+
+"
+      classrelation 261378 // <generalisation>
+	relation 261378 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 261378 // <generalisation>
+	  b parent class_ref 201730 // CheckAndConvertTask
+      end
+
+      class 202626 "XamplerSuite"
+	visibility private stereotype "enum"
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}${final}${abstract}enum ${name}${implements} {
+${items};
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	attribute 298242 "Concurrency_Client_Connections"
+	  public type class_ref 202626 // XamplerSuite
+	  cpp_decl ""
+	  java_decl "  ${@}${name}(\"Concurrency_Client_Connections\", new String[] { 
+				\"Value\" }),${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	attribute 298370 "Dispatch_Servant_Instances"
+	  public type class_ref 202626 // XamplerSuite
+	  cpp_decl ""
+	  java_decl "  ${@}${name}(\"Dispatch_Servant_Instances\", new String[] { 
+				\"Value\" }),${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	attribute 298498 "Dispatch_Servant_Lifecycle"
+	  public type class_ref 202626 // XamplerSuite
+	  cpp_decl ""
+	  java_decl "  ${@}${name}(\"Dispatch_Servant_Lifecycle\", new String[] { 
+				\"CreateInvoke\", \"CreateReturn\", \"CreateFinish\", \"DeleteInvoke\", 
+				\"DeleteReturn\", \"DeleteFinish\", \"Value\" }),${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	attribute 298626 "Invocation_Dynamic"
+	  public type class_ref 202626 // XamplerSuite
+	  cpp_decl ""
+	  java_decl "  ${@}${name}(\"Invocation_Dynamic\", new String[] { 
+		        \"Halfway\", \"Value\" }),${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	attribute 298754 "Invocation_Initial"
+	  public type class_ref 202626 // XamplerSuite
+	  cpp_decl ""
+	  java_decl "  ${@}${name}(\"Invocation_Initial\", new String[] { 
+	            \"RoundtripFirst\", \"RoundtripSecond\", \"RoundtripThird\", \"Value\" }),${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	attribute 298882 "Invocation_Static"
+	  public type class_ref 202626 // XamplerSuite
+	  cpp_decl ""
+	  java_decl "  ${@}${name}(\"Invocation_Static\", new String[] {
+	            \"Halfway\", \"Value\" }),${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	attribute 299010 "Ping"
+	  public type class_ref 202626 // XamplerSuite
+	  cpp_decl ""
+	  java_decl "  ${@}${name}(\"Ping\", new String[] { 
+				\"Value\" }),${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	attribute 299138 "Void"
+	  public type class_ref 202626 // XamplerSuite
+	  cpp_decl ""
+	  java_decl "  ${@}${name}(\"Void\", new String[] { 
+				\"Halfway\", \"Value\" }),${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	attribute 299266 "Marshal_Types_Array"
+	  public type class_ref 202626 // XamplerSuite
+	  cpp_decl ""
+	  java_decl "  ${@}${name}(\"Marshal_Types_Array\",	new String[] { 
+				\"Value\" }),${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	attribute 299394 "Marshal_Types_Single"
+	  public type class_ref 202626 // XamplerSuite
+	  cpp_decl ""
+	  java_decl "  ${@}${name}(\"Marshal_Types_Single\",  new String[]{ 
+				\"Value\" }),${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	attribute 299522 "Marshal_Octet_Sequence"
+	  public type class_ref 202626 // XamplerSuite
+	  cpp_decl ""
+	  java_decl "  ${@}${name}(\"Marshal_Octet_Sequence\",  new String[]{ 
+				\"Value\" }),${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	attribute 299650 "Marshal_Delayed_Sequence"
+	  public type class_ref 202626 // XamplerSuite
+	  cpp_decl ""
+	  java_decl "  ${@}${name}(\"Marshal_Delayed_Sequence\",  new String[]{ 
+				\"Value\" }),${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	attribute 299778 "Marshal_Delayed_Any"
+	  public type class_ref 202626 // XamplerSuite
+	  cpp_decl ""
+	  java_decl "  ${@}${name}(\"Marshal_Delayed_Any\",  new String[]{ 
+				\"Value\" }),${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	attribute 299906 "name"
+	  private explicit_type "String"
+	  stereotype "attribute"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	attribute 300034 "columnNames"
+	  private explicit_type "String"
+	  multiplicity "[]"
+	  stereotype "attribute"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	operation 650754 "XamplerSuite"
+	  package explicit_return_type ""
+	  nparams 2
+	    param in name "suiteName" explicit_type "String"
+	    param in name "columnNames" explicit_type "String"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1}[] ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 650882 "getName"
+	  public explicit_return_type "String"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 651010 "getColumnNames"
+	  public explicit_return_type "String"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+      end
+
+      attribute 300162 "ROLE_CLIENT"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"client\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " The only xampler role identification 
+"
+      end
+
+      attribute 300290 "RESULTS_FILENAME"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"client.out\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Xampler results filename 
+"
+      end
+
+      attribute 300418 "TASK_NAME"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"check-and-convert-xampler\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Task name 
+"
+      end
+
+      attribute 300546 "XAMPLER_SUBSUITE"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"xampler.subsuite\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Xampler subsuite - set only when suite has subsuites
+e.g. for suite Marshal_Octet_Sequence one of IN, OUT, INOUT, RETURN
+
+"
+      end
+
+      attribute 300674 "INVALID_VALUE"
+	class_attribute const_attribute private explicit_type "Object"
+	init_value "=  -1"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      operation 651138 "CheckAndConvertXamplerTask"
+	public explicit_return_type ""
+	nparams 0
+	nexceptions 1
+	  exception class_ref 137218 // TaskInitializationException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>XamplerResultsCollectionTask</code> object. It is here
+only to shut up the compiler.
+
+@throws TaskInitializationException if something fails during the task
+         creation
+"
+      end
+
+      operation 651266 "checkAndConvertOneRun"
+	public explicit_return_type "boolean"
+	nparams 7
+	  param inout name "bid" type class_ref 138754 // BID
+	  param inout name "rid" type class_ref 140290 // RID
+	  param in name "sourceName" explicit_type "String"
+	  param in name "destinatioName" explicit_type "String"
+	  param in name "resultsRole" explicit_type "String"
+	  param in name "suiteName" explicit_type "String"
+	  param in name "samples" explicit_type "long"
+	nexceptions 2
+	  explicit_exception "IOException"
+	  exception class_ref 137346 // TaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}, ${t5} ${p5}, ${t6} ${p6}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " ********* Results checking and converting functions (the core of the task) ********* 
+
+Converts ascii data format of one run into netcdf format, 
+making it ready to upload to Results Repository
+
+@param sourceName	Source filename (ASCII)
+@param destinatioName	Destination filename (NetCDF)
+@param resultsRole	The results role of the machine in benchmark 
+@param suiteName 	Identification of used suite
+@param bid		Binary Id 
+@param rid		Run Id
+@param samples 	Count of samples for each table 
+@return 	True if sucesful
+@throws IOException
+@throws TaskException 
+"
+      end
+
+      operation 651394 "getCrashList"
+	public explicit_return_type "List<String>"
+	nparams 1
+	  param in name "srcName" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+    end
+  end
+
+  deploymentview 134914 "xampler"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+    artifact 182658 "CheckAndConvertXamplerTask"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.List;
+import cz.cuni.mff.been.common.id.BID;
+import cz.cuni.mff.been.common.id.RID;
+import cz.cuni.mff.been.task.TaskException;
+import cz.cuni.mff.been.task.TaskInitializationException;
+import cz.cuni.mff.been.task.results.CheckAndConvertTask;
+${definition}"
+      associated_classes
+	class_ref 202498 // CheckAndConvertXamplerTask
+      end
+    end
+  end
+end

@@ -1,0 +1,9 @@
+class ResultsRepositoryBusyException
+!!!561922.java!!!	ResultsRepositoryBusyException()
+		super();
+!!!562050.java!!!	ResultsRepositoryBusyException(in message : String)
+		super(message);
+!!!562178.java!!!	ResultsRepositoryBusyException(inout cause : Throwable)
+		super(cause);
+!!!562306.java!!!	ResultsRepositoryBusyException(in message : String, inout cause : Throwable)
+		super(message, cause);

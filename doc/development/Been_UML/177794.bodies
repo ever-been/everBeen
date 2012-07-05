@@ -1,0 +1,34 @@
+class EventType
+!!!420610.java!!!	valueOf(in value : int) : EventType
+			
+			switch (value) {
+				case 0:
+					return MONITOR_START;
+					
+				case 1:
+					return MONITOR_STOP;
+					
+				case 2:
+					return MONITOR_START_DETAILED;
+					
+				case 3:
+					return MONITOR_STOP_DETAILED;
+					
+				case 4:
+					return MONITOR_START_UP;
+					
+				case 5:
+					return MONITOR_SHUT_DOWN;
+					
+				case 6:
+					return MONITOR_SAMPLE;
+					
+				case 7:
+					return MONITOR_HW_DESCRIPTION;
+					
+				case 8:
+					return MONITOR_UNKNOWN;
+					
+				default:
+					throw new IllegalArgumentException("Invalid enum value: " + String.valueOf(value));
+			}

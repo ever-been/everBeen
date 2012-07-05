@@ -1,0 +1,5346 @@
+format 70
+"hostruntime" // been::src::cz::cuni::mff::been::hostruntime
+  revision 5
+  modified_by 8 "BoRiS"
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+  show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+  show_infonote default drawing_language default show_stereotype_properties default
+  
+  java_dir "cz/cuni/mff/been/hostruntime"
+  java_package "cz.cuni.mff.been.hostruntime"
+  classview 129922 "hostruntime"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+    //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+    show_infonote default drawing_language default show_stereotype_properties default
+    classdiagram 132994 "HostRuntime"
+      draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+      size A4-Landscape
+    end
+
+    classdiagram 133122 "HostRuntime.Task"
+      draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+      size A0-Landscape
+    end
+
+    class 137090 "TasksPortInterface"
+      visibility public stereotype "interface"
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}interface ${name}${extends} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Interface of the Host Runtime's port provided for the tasks.
+
+@author Antonin Tomecek
+@author David Majda
+"
+      classrelation 216194 // <generalisation>
+	relation 216194 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 216194 // <generalisation>
+	  b parent class_ref 130818 // Remote
+      end
+
+      operation 490754 "getTaskDirectory"
+	public explicit_return_type "String"
+	nparams 2
+	  param in name "contextID" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns the task directory, which would specified task have, if it was run
+on this Host Runtime.
+
+@param contextID context ID
+@param taskID task ID
+@return task directory of specified task
+@throws RemoteException if something fails during the execution of
+         the remote method call
+"
+      end
+
+      operation 490882 "getWorkingDirectory"
+	public explicit_return_type "String"
+	nparams 2
+	  param in name "contextID" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns the working directory, which would specified task have, if it was
+run on this Host Runtime.
+
+@param contextID context ID
+@param taskID task ID
+@return working directory of specified task
+@throws RemoteException if something fails during the execution of
+         the remote method call
+"
+      end
+
+      operation 491010 "getTemporaryDirectory"
+	public explicit_return_type "String"
+	nparams 2
+	  param in name "contextID" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns the temporary directory, which would specified task have, if it was
+run on this Host Runtime.
+
+@param contextID context ID
+@param taskID task ID
+@return temporary directory of specified task
+@throws RemoteException if something failes during the execution of
+         the remote method call
+"
+      end
+
+      operation 491138 "getTaskProperties"
+	public explicit_return_type "Properties"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Retrieves the task properties.
+
+@return task properties
+@throws RemoteException if something fails during the execution of
+         the remote method call
+"
+      end
+
+      operation 491266 "getTaskPropertyObjects"
+	public return_type class_ref 148226 // Serializable
+	nparams 0
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}Map<String, ${type}> ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Retrieves the task properties with objects (implementing
+<code>Serializable</code>) as their values.
+
+@return task properties with objects as their values
+@throws RemoteException if something fails during the execution of
+         the remote method call
+"
+      end
+
+      operation 491394 "runTask"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "taskDescriptor" type class_ref 131074 // TaskDescriptor
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Run new task specified by its task descriptor.
+
+@param taskDescriptor task descriptor of the new task
+@throws RemoteException if something fails during the execution of
+         the remote method call.
+"
+      end
+
+      operation 491522 "runTasks"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "taskDescriptors" type class_ref 131074 // TaskDescriptor
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0}[] ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Run more new tasks specified by their task descriptors.
+
+@param taskDescriptors task descriptors of the new tasks
+@throws RemoteException if something fails during the execution of
+         the remote method call.
+"
+      end
+
+      operation 491650 "runTaskImmediately"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "taskDescriptor" type class_ref 131074 // TaskDescriptor
+	nexceptions 2
+	  explicit_exception "RemoteException"
+	  explicit_exception "IllegalStateException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Run task immediatelly.
+
+@see cz.cuni.mff.been.taskmanager.TaskManagerInterface#runTaskImmediately(TaskDescriptor)
+
+@param taskDescriptor Descriptor of the task to run.
+
+@throws RemoteException If RMI error occured.
+@throws IllegalStateException If task cannot be started immediately.
+"
+      end
+
+      operation 491778 "newContext"
+	public explicit_return_type "void"
+	nparams 4
+	  param in name "id" explicit_type "String"
+	  param in name "name" explicit_type "String"
+	  param in name "description" explicit_type "String"
+	  param inout name "data" type class_ref 148226 // Serializable
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Creates new context.
+
+@param id context ID.
+@param name context name
+@param description contaxt description
+@param data additional context data
+@throws RemoteException if something fails during the execution of
+         the remote method call.
+"
+      end
+
+      operation 491906 "endContext"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "id" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Ends active context.
+
+@param id context ID
+@throws RemoteException if something fails during the execution of
+         the remote method call.
+"
+      end
+
+      operation 492034 "registerEventListener"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "listener" type class_ref 162946 // HostRuntimeRegistrationListener
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Registers new listener of the Task Manager events.
+
+@param listener RMI reference to the listener
+@throws IllegalArgumentException if the listener was already registered
+@throws NullPointerException if the listener is <code>null</code>
+@throws RemoteException if something failed during the execution of
+         the remote method call.
+"
+      end
+
+      operation 492162 "unregisterEventListener"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "listener" type class_ref 162946 // HostRuntimeRegistrationListener
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Unregisters existing listener of the Task Manager events.
+
+@param listener RMI reference to the listener
+@throws IllegalArgumentException if the listener was not registered
+@throws NullPointerException if the listener is <code>null</code>
+@throws RemoteException if something failed during the execution of
+         the remote method call.
+"
+      end
+
+      operation 492290 "getRegisteredHostRuntimes"
+	public explicit_return_type "String"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns list of Host Runtimes registered at the Task Manager.
+
+@return list of registered Host Runtimes
+@throws RemoteException if something failed during the execution of
+         the remote method call.
+"
+      end
+
+      operation 492418 "log"
+	public explicit_return_type "void"
+	nparams 3
+	  param inout name "level" type class_ref 129666 // LogLevel
+	  param inout name "timestamp" explicit_type "Date"
+	  param in name "message" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sends a log message to the log storage.
+
+@param level log level of the message
+@param timestamp timestamp of the log event
+@param message the log message; can be multiline; cannot be null or contain
+        \"\\t\\t\\t\".
+@throws RemoteException if something fails during the execution of
+         the remote method call.
+"
+      end
+
+      operation 492546 "getLogsForTask"
+	public return_type class_ref 184194 // LogRecord
+	nparams 2
+	  param in name "context" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	nexceptions 4
+	  explicit_exception "RemoteException"
+	  exception class_ref 184322 // LogStorageException
+	  explicit_exception "IllegalArgumentException"
+	  explicit_exception "NullPointerException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Gets all log messages produced by a task.
+
+@param context task's context; cannot be <code>null</code> or an empty
+        string
+@param taskID task's ID; cannot be <code>null</code> or an empty string
+@return logs of the task
+@throws RemoteException if something failed during the execution of
+         the remote method call
+@throws LogStorageException if an error occured while retrieving the logs
+@throws IllegalArgumentException if the the context name or task's ID are
+         empty  strings or if the task wasn't run
+@throws NullPointerException if any argument is <tt>null</tt>
+"
+      end
+
+      operation 492674 "getStandardOutput"
+	public return_type class_ref 184450 // OutputHandle
+	nparams 2
+	  param in name "context" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	nexceptions 4
+	  explicit_exception "RemoteException"
+	  exception class_ref 184322 // LogStorageException
+	  explicit_exception "IllegalArgumentException"
+	  explicit_exception "NullPointerException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Creates a handle for receiving the standard output of a task. 
+
+@param context task's context; cannot be <code>null</code> or an empty
+        string
+@param taskID task's ID; cannot be <code>null</code> or an empty string
+@return handle for retrievind the standard output
+@throws RemoteException if something failed during the execution of
+         the remote method call
+@throws LogStorageException if an error occured while creating the handle
+@throws IllegalArgumentException if the the context name or task's ID are
+         empty or if the task or it's context wasn't found
+@throws NullPointerException if any argument is <tt>null</tt>
+"
+      end
+
+      operation 492802 "getErrorOutput"
+	public return_type class_ref 184450 // OutputHandle
+	nparams 2
+	  param in name "context" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	nexceptions 4
+	  explicit_exception "RemoteException"
+	  exception class_ref 184322 // LogStorageException
+	  explicit_exception "IllegalArgumentException"
+	  explicit_exception "NullPointerException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Creates a handle for receiving the error output of a task. 
+
+@param context task's context; cannot be <code>null</code> or an empty string
+@param taskID task's ID; cannot be <code>null</code> or an empty string
+@return handle for retrievind the error output
+@throws RemoteException if something failed during the execution of
+         the remote method call.
+@throws LogStorageException if an error occured while creating the handle
+@throws IllegalArgumentException if the the context name or task's ID are
+         empty or if the task or it's context wasn't found
+@throws NullPointerException if any argument is <tt>null</tt>
+"
+      end
+
+      operation 492930 "checkPointReached"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "name" explicit_type "String"
+	  param inout name "value" type class_ref 148226 // Serializable
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Signal that a task reached a checkpoint.
+ 
+@param name checkpoint name
+@param value checkpoint value
+@throws RemoteException if something fails during the execution of
+         the remote method call.
+"
+      end
+
+      operation 493058 "checkPointWait"
+	public return_type class_ref 148226 // Serializable
+	nparams 4
+	  param in name "contextID" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	  param in name "name" explicit_type "String"
+	  param in name "timeout" explicit_type "long"
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Waits until a task reaches a checkpoint of specified type and returns its
+value.
+
+@param contextID context ID; if <code>null</code> then the context of the
+        calling task will be used.
+@param taskID task ID
+@param name checkpoint name
+@param timeout number of miliseconds to wait for a checkpoint;
+        <code>0</code> means that the call will not block and returns
+        immediately
+        
+@return Value of the checkpoint or <code>null</code> if there are any
+         problems obtaining the value.
+         
+@throws RemoteException if something fails during the execution of
+         the remote method call.
+"
+      end
+
+      operation 493186 "serviceRegister"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "service" type class_ref 184578 // ServiceEntry
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Register a service at the Task Manager.
+
+@param service service descriptor
+@throws RemoteException if something fails during the execution of
+         the remote method call.
+"
+      end
+
+      operation 493314 "serviceUnregister"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "serviceTemplate" type class_ref 184578 // ServiceEntry
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Unregisters all services matching the service template form the Task Manager.
+
+@param serviceTemplate template of services to remove
+@throws RemoteException if something fails during the execution of
+         the remote method call.
+"
+      end
+
+      operation 493442 "serviceFind"
+	public explicit_return_type "Remote"
+	nparams 2
+	  param in name "serviceName" explicit_type "String"
+	  param in name "interfaceName" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns RMI reference of a service with specified service name and
+interface name.
+
+@param serviceName service name
+@param interfaceName service interface name
+@return RMI reference of a service with specified service name and
+         interface name
+@throws RemoteException if something fails during the execution of
+         the remote method call.
+"
+      end
+
+      operation 493570 "serviceFindAll"
+	public return_type class_ref 184578 // ServiceEntry
+	nparams 0
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns descriptors of all services registered at the Task Manager.
+
+@return descriptors of all services registered at the Task Manage
+@throws RemoteException if something fails during the execution of
+         the remote method call.
+"
+      end
+
+      operation 493698 "getTaskDescriptor"
+	public return_type class_ref 131074 // TaskDescriptor
+	nparams 0
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns the task descriptor.
+
+@return task descriptor.
+
+@throws RemoteException If RMI error occured.
+"
+      end
+
+      operation 493826 "getTaskById"
+	public return_type class_ref 184706 // TaskEntry
+	nparams 2
+	  param in name "taskId" explicit_type "String"
+	  param in name "contextId" explicit_type "String"
+	nexceptions 2
+	  explicit_exception "RemoteException"
+	  explicit_exception "IllegalArgumentException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+ Queries task manager for status of a task
+@param taskId		task identifier
+@param contextId		context identifier
+@return	status of given task
+@throws RemoteException	if something fails during the execution of
+         the remote method call.
+@throws IllegalArgumentException	when task does not exist in task manager
+"
+      end
+    end
+
+    class 181122 "HostRuntimeException"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Base class for all user exceptions thrown in Host Runtime package.
+
+@author Antonin Tomecek
+@author David Majda
+"
+      classrelation 212098 // <generalisation>
+	relation 212098 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 212098 // <generalisation>
+	  b parent class_ref 128130 // BeenException
+      end
+
+      operation 473986 "HostRuntimeException"
+	public explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>HostRuntimeException</code> object.
+"
+      end
+
+      operation 474114 "HostRuntimeException"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "message" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>HostRuntimeException</code> object
+with specified message.
+
+@param message exception message
+"
+      end
+
+      operation 474242 "HostRuntimeException"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "cause" explicit_type "Throwable"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>HostRuntimeException</code> object
+with specified cause.
+
+@param cause exception cause
+"
+      end
+
+      operation 474370 "HostRuntimeException"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "message" explicit_type "String"
+	  param inout name "cause" explicit_type "Throwable"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>HostRuntimeException</code> object
+with specified message and cause.
+
+@param message exception message
+@param cause exception cause
+"
+      end
+    end
+
+    class 181250 "HostRuntimeImplementation"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Implementation of Host Runtime.
+
+@author Antonin Tomecek
+@author David Majda
+"
+      classrelation 212226 // <generalisation>
+	relation 212226 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 212226 // <generalisation>
+	  b parent class_ref 130178 // UnicastRemoteObject
+      end
+
+      classrelation 212482 // <realization>
+	relation 212482 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 212482 // <realization>
+	  b parent class_ref 181378 // HostRuntimeInterface
+      end
+
+      attribute 233602 "CACHE_DIR"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"cache\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Name of the cache directory. 
+"
+      end
+
+      attribute 233730 "BOOT_PACKAGES_DIR"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"boot\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Name of the directory with boot packages. 
+"
+      end
+
+      attribute 233858 "TASKS_BASE_DIR"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"tasks\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Name of the directory that contains directories with task data. 
+"
+      end
+
+      attribute 233986 "TASK_DIR"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"task\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Name of the task directory (task's JAR is extracted there). 
+"
+      end
+
+      attribute 234114 "WORKING_DIR"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"working\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Name of the wokring directory (results of task's work are stored there,
+surviving task's death).
+
+"
+      end
+
+      attribute 234242 "TEMPORARY_DIR"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"temporary\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Name of the temporary directory (deleted after the task's death). 
+"
+      end
+
+      attribute 234370 "SERVICE_DIR"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"service\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Name of the service directory (package contents are extracted there). 
+"
+      end
+
+      attribute 234498 "NATIVE_LIB_DIR"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"native-lib\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Name of the directory with Load Monitor native libraries. 
+"
+      end
+
+      attribute 234626 "LOAD_DIR"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"load\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Name of the directory with load data. 
+"
+      end
+
+      classrelation 212610 // taskManager (<unidirectional association>)
+	relation 212610 --->
+	  a role_name "taskManager" private
+	    comment " RMI interface to the Task Manager. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 212610 // taskManager (<unidirectional association>)
+	  b parent class_ref 181762 // TaskManagerInterface
+      end
+
+      classrelation 212738 // hostRuntimesPort (<unidirectional association>)
+	relation 212738 --->
+	  a role_name "hostRuntimesPort" private
+	    comment " RMI interface to the Task Manager's port to the Host Runtime. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 212738 // hostRuntimesPort (<unidirectional association>)
+	  b parent class_ref 181506 // HostRuntimesPortInterface
+      end
+
+      classrelation 212866 // packageCacheManager (<unidirectional association>)
+	relation 212866 --->
+	  a role_name "packageCacheManager" private
+	    comment " Package cache manager. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 212866 // packageCacheManager (<unidirectional association>)
+	  b parent class_ref 181890 // PackageCacheManager
+      end
+
+      classrelation 212994 // runningTasks (<unidirectional association>)
+	relation 212994 --->
+	  stereotype "List"
+	  a role_name "runningTasks" init_value "=  Collections.synchronizedList(new ArrayList<TaskInterface>())" const_relation private
+	    comment " List of tasks running in this Host Runtime. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<${type}> ${name}${value};
+"
+	    classrelation_ref 212994 // runningTasks (<unidirectional association>)
+	  b parent class_ref 181634 // TaskInterface
+      end
+
+      attribute 234754 "closedContexts"
+	const_attribute private explicit_type "String"
+	init_value "=  Collections.synchronizedList(new LinkedList<String>())"
+	stereotype "List"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<${type}> ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " List of contexts to close. 
+"
+      end
+
+      attribute 234882 "keptClosedContextCount"
+	private explicit_type "int"
+	init_value "=  TaskManagerInterface.DEFAULT_KEPT_CLOSED_CONTEXT_COUNT"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Number of closed contexts, for which the Host Runtime should keep data on
+the disk.
+
+"
+      end
+
+      classrelation 213122 // loadMonitor (<unidirectional association>)
+	relation 213122 --->
+	  a role_name "loadMonitor" private
+	    comment " Load monitor instance. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 213122 // loadMonitor (<unidirectional association>)
+	  b parent class_ref 178818 // LoadMonitorImplementation
+      end
+
+      attribute 235010 "rootDirectory"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Root directory of this Host Runtime. 
+"
+      end
+
+      operation 475394 "getRootDirectory"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return root directory of this Host Runtime "
+      end
+
+      operation 475522 "getTaskManager"
+	public return_type class_ref 181762 // TaskManagerInterface
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return RMI interface to the Task Manager "
+      end
+
+      operation 475650 "getHostRuntimesPort"
+	public return_type class_ref 181506 // HostRuntimesPortInterface
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return RMI interface to the Task Manager's port to the Host Runtime "
+      end
+
+      operation 475778 "getPackageCacheManager"
+	public return_type class_ref 181890 // PackageCacheManager
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return package cache manager "
+      end
+
+      operation 475906 "getLoadMonitor"
+	public return_type class_ref 175746 // LoadMonitorInterface
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return Load Monitor instance "
+      end
+
+      operation 476034 "checkDirectory"
+	private explicit_return_type "void"
+	nparams 1
+	  param in name "directoryName" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 476162 "deleteContext"
+	private explicit_return_type "void"
+	nparams 1
+	  param in name "contextID" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 181122 // HostRuntimeException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 476290 "deleteOldClosedContexts"
+	private explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  exception class_ref 181122 // HostRuntimeException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 476418 "HostRuntimeImplementation"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "taskManagerHostname" explicit_type "String"
+	  param in name "rootDirectory" explicit_type "String"
+	nexceptions 3
+	  explicit_exception "IOException"
+	  exception class_ref 175234 // LoadMonitorException
+	  explicit_exception "NotBoundException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>HostRuntimeImplementation</code> object.
+
+@param taskManagerHostname host where the Task Manager is running
+@param rootDirectory root directory of this Host Runtime
+@throws RemoteException if failed to export object
+@throws IOException if the root direcotry or one of its required
+         subdirectories (<tt>cache</tt>, <tt>boot</tt> and <tt>tasks</tt>)
+         does not exist, is not a directory, or is not writable
+@throws NotBoundException if the Host Runtime can not connect to the Task
+         Manager
+@throws LoadMonitorException if the Load Monitor can not be created 
+"
+      end
+
+      operation 476546 "getBaseDirectoryForTask"
+	public explicit_return_type "String"
+	nparams 2
+	  param in name "contextID" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns directory that contains directories with task data for specified
+task (identified by the context and task ID).
+
+@param contextID context ID
+@param taskID task ID
+@return directory that contains directories with task data
+"
+      end
+
+      operation 476674 "getTaskDirectoryForTask"
+	public explicit_return_type "String"
+	nparams 2
+	  param in name "contextID" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns task directory (task's JAR is extracted there) for specified
+task (identified by the context and task ID).
+
+@param contextID context ID
+@param taskID task ID
+@return task directory (task's JAR is extracted there)
+"
+      end
+
+      operation 476802 "getWorkingDirectoryForTask"
+	public explicit_return_type "String"
+	nparams 2
+	  param in name "contextID" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns wokring directory (results of task's work are stored there,
+surviving task's death) for specified task (identified by the context and
+task ID).
+
+@param contextID context ID
+@param taskID task ID
+@return wokring directory (results of task's work are stored there,
+         surviving task's death)
+"
+      end
+
+      operation 476930 "getTemporaryDirectoryForTask"
+	public explicit_return_type "String"
+	nparams 2
+	  param in name "contextID" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns temporary directory (deleted after the task's death) for specified
+task (identified by the context and task ID).
+
+@param contextID context ID
+@param taskID task ID
+@return temporary directory (deleted after the task's death)
+"
+      end
+
+      operation 477058 "getServiceDirectoryForTask"
+	public explicit_return_type "String"
+	nparams 2
+	  param in name "contextID" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns service directory (package contents are extracted there) for
+specified task (identified by the context and task ID).
+
+@param contextID context ID
+@param taskID task ID
+@return service directory (package contents are extracted there)
+"
+      end
+
+      operation 477186 "notifyTaskFinished"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "task" type class_ref 181634 // TaskInterface
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Notifies the Host Runtime that the task has finished.
+
+@param task task that finished
+"
+      end
+
+      operation 477314 "initialize"
+	public explicit_return_type "void"
+	nparams 3
+	  param inout name "hostRuntimesPort" type class_ref 181506 // HostRuntimesPortInterface
+	  param in name "maxPackageCacheSize" explicit_type "long"
+	  param in name "keptClosedContextCount" explicit_type "int"
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostruntime.HostRuntimeInterface#initialize(cz.cuni.mff.been.taskmanager.HostRuntimesPortInterface, long, int)
+"
+      end
+
+      operation 477442 "terminate"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostruntime.HostRuntimeInterface#terminate()
+"
+      end
+
+      operation 477570 "isDetailedLoadCollision"
+	private explicit_return_type "boolean"
+	nparams 1
+	  param inout name "taskDescriptor" type class_ref 131074 // TaskDescriptor
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 477698 "createTask"
+	public return_type class_ref 181634 // TaskInterface
+	nparams 1
+	  param inout name "taskDescriptor" type class_ref 131074 // TaskDescriptor
+	nexceptions 2
+	  exception class_ref 181122 // HostRuntimeException
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostruntime.HostRuntimeInterface#createTask(cz.cuni.mff.been.taskmanager.TaskDescriptor)
+"
+      end
+
+      operation 477826 "closeContext"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "contextID" explicit_type "String"
+	nexceptions 2
+	  exception class_ref 181122 // HostRuntimeException
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostruntime.HostRuntimeInterface#closeContext(java.lang.String)
+"
+      end
+
+      operation 477954 "setMaxPackageCacheSize"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "maxPackageCacheSize" explicit_type "long"
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostruntime.HostRuntimeInterface#setMaxPackageCacheSize(long)
+"
+      end
+
+      operation 478082 "setKeptClosedContextCount"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "keptClosedContextCount" explicit_type "int"
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostruntime.HostRuntimeInterface#setKeptClosedContextCount(int)
+"
+      end
+
+      operation 478210 "getRunningTaskInterfaces"
+	public return_type class_ref 181634 // TaskInterface
+	nparams 0
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostruntime.HostRuntimeInterface#getRunningTaskInterfaces()
+"
+      end
+    end
+
+    class 181378 "HostRuntimeInterface"
+      visibility public stereotype "interface"
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}interface ${name}${extends} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+RMI interface to the Host Runtime. Used by the Task Manager.
+
+@author Antonin Tomecek
+@author David Majda 
+"
+      classrelation 212354 // <generalisation>
+	relation 212354 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 212354 // <generalisation>
+	  b parent class_ref 130818 // Remote
+      end
+
+      attribute 233474 "URL"
+	public explicit_type "String"
+	init_value "=  \"/been/hostruntime\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " RMI URL to the Host Runtime interface. 
+"
+      end
+
+      operation 474498 "initialize"
+	public explicit_return_type "void"
+	nparams 3
+	  param inout name "hostRuntimesPort" type class_ref 181506 // HostRuntimesPortInterface
+	  param in name "maxPackageCacheSize" explicit_type "long"
+	  param in name "keptClosedContextCount" explicit_type "int"
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Initializes interfaces to the Task Manager and set the option. Called by
+the Task manager every time the task is started.
+
+@param hostRuntimesPort RMI interface to the Task Manager's port to the
+        Host Runtime
+@param maxPackageCacheSize the size limit of the Host Runtime's package
+        cache
+@param keptClosedContextCount number of closed contexts, for which the
+        Host Runtime should keep data on the disk
+@throws RemoteException if something failed during the execution of
+         the remote method call
+"
+      end
+
+      operation 474626 "terminate"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Ends the Host Huntime's suffering and termintes its existence, along with
+all tasks brave enough to be alive at this time. As its last words, the
+Host Runtime will also unregister itself from the Task Manager. 
+
+@throws RemoteException if something failed during the execution of
+         the remote method call
+"
+      end
+
+      operation 474754 "createTask"
+	public return_type class_ref 181634 // TaskInterface
+	nparams 1
+	  param inout name "taskDescriptor" type class_ref 131074 // TaskDescriptor
+	nexceptions 2
+	  exception class_ref 181122 // HostRuntimeException
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Creates new task according to the specified task descriptor.
+
+@param taskDescriptor task descriptor for new task
+@return RMI interface to the created task
+@throws HostRuntimeException if creating of the internal task object fails 
+@throws RemoteException if something failed during the execution of
+         the remote method call
+@throws IllegalStateException if called before calling
+         <code>initialize</code> 
+"
+      end
+
+      operation 474882 "closeContext"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "contextID" explicit_type "String"
+	nexceptions 2
+	  exception class_ref 181122 // HostRuntimeException
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Closes a context. If the number of closed contexts is greater than the
+number of closed contexts, for which the Host Runtime should keep data on
+the disk (set by the <code>setKeptClosedContextCount</code> method), data
+of the oldest context will be deleted.
+
+@param contextID identifier of the context to close
+@throws IllegalArgumentException if no task from given context was running
+         on this Host Runtime or if any of the tasks in given context is
+         currently running
+@throws HostRuntimeException if delting of the context data fails
+@throws RemoteException if something failed during the execution of
+         the remote method call
+"
+      end
+
+      operation 475010 "setMaxPackageCacheSize"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "maxPackageCacheSize" explicit_type "long"
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the size limit of the Host Runtime's package cache. The setting will
+be applied after downloading next package to the cache.
+
+@param maxPackageCacheSize the size limit of the Host Runtime's package
+        cache
+@throws RemoteException if something failed during the execution of
+         the remote method call
+"
+      end
+
+      operation 475138 "setKeptClosedContextCount"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "keptClosedContextCount" explicit_type "int"
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the number of closed contexts, for which the Host Runtime
+should keep data on the disk. The setting will be applied after next
+context close operation.
+
+@param keptClosedContextCount number of closed contexts, for which the
+        Host Runtime should keep data on the disk
+@throws RemoteException if something failed during the execution of
+         the remote method call
+"
+      end
+
+      operation 475266 "getRunningTaskInterfaces"
+	public return_type class_ref 181634 // TaskInterface
+	nparams 0
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns RMI references to all running tasks.
+
+@return RMI references to all running tasks
+@throws RemoteException if something failed during the execution of
+         the remote method call
+"
+      end
+    end
+
+    class 181634 "TaskInterface"
+      visibility public stereotype "interface"
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}interface ${name}${extends} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Interface for representation of Task used by the Host Runtime and the Task
+Manager.
+
+@author Antonin Tomecek
+@author David Majda
+"
+      classrelation 214146 // <generalisation>
+	relation 214146 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 214146 // <generalisation>
+	  b parent class_ref 130818 // Remote
+      end
+
+      operation 482946 "getTaskID"
+	public explicit_return_type "String"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns the task identifier of the task.
+
+@return task identifier of the task
+@throws RemoteException if something failed during the execution of
+	        the remote method call
+"
+      end
+
+      operation 483074 "getContextID"
+	public explicit_return_type "String"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns the context identifier of the task.
+
+@return context identifier of the task
+@throws RemoteException if something failed during the execution of
+	        the remote method call
+"
+      end
+
+      operation 483202 "isDetailedLoad"
+	public explicit_return_type "boolean"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Determines if this task has a detailed load flag specified.
+
+@return <code>true</code> if this task has a detailed load flag specified;
+         <code>false</code> otherwise.
+@throws RemoteException if something failed during the execution of
+	        the remote method call
+"
+      end
+
+      operation 483330 "getTaskDirectory"
+	public explicit_return_type "String"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns the task directory of the task.
+
+@return task directory of the task.
+@throws RemoteException if something failed during the execution of
+	        the remote method call
+"
+      end
+
+      operation 483458 "getWorkingDirectory"
+	public explicit_return_type "String"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns the working directory of the task.
+
+@return working directory of the task.
+@throws RemoteException if something failed during the execution of
+	        the remote method call
+"
+      end
+
+      operation 483586 "getTemporaryDirectory"
+	public explicit_return_type "String"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns the temporary directory of the task.
+
+@return temporary directory of the task.
+@throws RemoteException if something failed during the execution of
+	        the remote method call
+"
+      end
+
+      operation 483714 "destroy"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 2
+	  exception class_ref 137346 // TaskException
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Destroys all data associated with this task. Can be called only on
+non-running tasks.
+
+@throws IllegalStateException if the task is running
+@throws TaskException if destroying of the task fails
+@throws RemoteException if something failed during the execution of
+	        the remote method call
+"
+      end
+
+      operation 483842 "kill"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Kills the task (destroys its process). It is not an error to kill already
+stopped task, as it is not possible to get the task state and kill it
+atomically. 
+
+@throws RemoteException if something failed during the execution of
+	        the remote method call
+"
+      end
+
+      operation 483970 "isRunning"
+	public explicit_return_type "boolean"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Tests if this task is running.
+
+@return <code>true</code> if this task is running;
+         <code>false</code> otherwise.
+@throws RemoteException if something failed during the execution of
+	        the remote method call
+"
+      end
+
+      operation 484098 "waitFor"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Waits until this task has terminated. Returns immediately if the task is
+already not running.
+
+@throws RemoteException if something failed during the execution of
+	        the remote method call
+"
+      end
+
+      operation 484226 "getExitValue"
+	public explicit_return_type "int"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns the exit value of this task. Can be called only on non-running
+tasks.
+
+@return exit value of this task
+@throws IllegalStateException if the task is running
+@throws RemoteException if something failed during the execution of
+	        the remote method call
+"
+      end
+    end
+
+    class 181890 "PackageCacheManager"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Manages the Host Runtime's package cache.
+
+The cache consists of two directories: <em>cache directory</em> and
+<em>boot packages direcotory</em>. In the constructor, the cache scans the
+boot packages direcotry and permanenetly adds found packages to the cache.
+These packages are not counted to the cache size. The cache directory stores
+packages which were once downloaded from the Software Repository and they are
+counted to the cache size.
+
+The only operation of the package cache is <code>extractPackage</code>
+method, which extracts the contents of the package with given filename to the
+specified directory (possibly downloading the package from the Software
+Repository and placing it to the cache).
+
+The class maintains invariant that size of all packages in the package cache
+direcotry is less than <code>maxCacheSize</code>. If the invariant is about
+to be broken when downloading new package form the Software Repository, it
+deletes oldest packages until there is enough space  
+
+The class is designed to be thread-safe.
+
+@author David Majda
+"
+      class 182146 "Package"
+	visibility private 
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	class 182274 "Type"
+	  visibility public stereotype "enum"
+	  cpp_decl ""
+	  java_decl "${comment}${@}${visibility}${final}${abstract}enum ${name}${implements} {
+${items};
+${members}}
+"
+	  php_decl ""
+	  python_2_2 python_decl ""
+	  idl_decl ""
+	  explicit_switch_type ""
+	  
+	  attribute 235138 "BOOT"
+	    public type class_ref 182274 // Type
+	    cpp_decl ""
+	    java_decl "  ${@}${name}${value},${comment}"
+	    php_decl ""
+	    python_decl ""
+	    idl_decl ""
+	    comment " Boot package. 
+"
+	  end
+
+	  attribute 235266 "NON_BOOT"
+	    public type class_ref 182274 // Type
+	    cpp_decl ""
+	    java_decl "  ${@}${name}${value},${comment}"
+	    php_decl ""
+	    python_decl ""
+	    idl_decl ""
+	    comment " Non-boot package. "
+	  end
+	end
+
+	attribute 235394 "filename"
+	  private explicit_type "String"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " Package file name in the cache. 
+"
+	end
+
+	attribute 235522 "size"
+	  private explicit_type "long"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " Package size in bytes. 
+"
+	end
+
+	attribute 235650 "downloadTime"
+	  private explicit_type "Date"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " Package download time. 
+"
+	end
+
+	classrelation 213250 // type (<unidirectional association>)
+	  relation 213250 --->
+	    a role_name "type" private
+	      comment "
+Package type (boot/non-boot, not the type from the package metadatata).
+
+"
+	      java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	      classrelation_ref 213250 // type (<unidirectional association>)
+	    b parent class_ref 182274 // Type
+	end
+
+	operation 478978 "getFilename"
+	  public explicit_return_type "String"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment " @return package file name in the cache "
+	end
+
+	operation 479106 "getSize"
+	  public explicit_return_type "long"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment " @return package size in bytes "
+	end
+
+	operation 479234 "getDownloadTime"
+	  public explicit_return_type "Date"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment " @return package download time "
+	end
+
+	operation 479362 "getType"
+	  public return_type class_ref 182274 // Type
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+@return Package type (boot/non-boot, not the type from the package
+         metadatata)
+"
+	end
+
+	operation 479490 "Package"
+	  public explicit_return_type ""
+	  nparams 4
+	    param in name "filename" explicit_type "String"
+	    param in name "size" explicit_type "long"
+	    param inout name "downloadTime" explicit_type "Date"
+	    param inout name "type" type class_ref 182274 // Type
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Allocates a new <code>Package</code> object.
+
+@param file name package filename in the cache
+@param size package size in bytes
+@param downloadTime package download time
+@param type package type (boot/non-boot, not the type from the package
+        metadatata)
+"
+	end
+      end
+
+      class 182402 "PackageNameQueryCallback"
+	visibility private 
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	classrelation 213378 // <realization>
+	  relation 213378 -_-|>
+	    a public
+	      java "${type}"
+	      classrelation_ref 213378 // <realization>
+	    b parent class_ref 182530 // PackageQueryCallbackInterface
+	end
+
+	classrelation 213506 // <realization>
+	  relation 213506 -_-|>
+	    a public
+	      java "${type}"
+	      classrelation_ref 213506 // <realization>
+	    b parent class_ref 148226 // Serializable
+	end
+
+	attribute 235778 "packageFilename"
+	  private explicit_type "String"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " Package file name to check. 
+"
+	end
+
+	operation 479746 "PackageNameQueryCallback"
+	  public explicit_return_type ""
+	  nparams 1
+	    param in name "packageFilename" explicit_type "String"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Allocates a new <code>PackageNameQueryCallback</code> object.
+
+@param packageName package file name to check
+"
+	end
+
+	operation 479874 "match"
+	  public explicit_return_type "boolean"
+	  nparams 1
+	    param inout name "metadata" type class_ref 142850 // PackageMetadata
+	  nexceptions 1
+	    exception class_ref 182658 // MatchException
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+@see cz.cuni.mff.been.softwarerepository.PackageQueryCallbackInterface#match(cz.cuni.mff.been.softwarerepository.PackageMetadata)
+"
+	end
+      end
+
+      attribute 235906 "PACKAGE_EXTRACTION_BUFFER_SIZE"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  4096"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Size of the buffer used when extracting the packages. 
+"
+      end
+
+      attribute 236034 "cacheDir"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Cache directory. 
+"
+      end
+
+      attribute 236162 "bootPackagesDir"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Directory with boot packages. 
+"
+      end
+
+      attribute 236290 "maxCacheSize"
+	private explicit_type "long"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Limit of the cache size. 
+"
+      end
+
+      classrelation 213634 // softwareRepository (<unidirectional association>)
+	relation 213634 --->
+	  a role_name "softwareRepository" private
+	    comment " RMI reference to the Software Repository. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 213634 // softwareRepository (<unidirectional association>)
+	  b parent class_ref 142594 // SoftwareRepositoryInterface
+      end
+
+      classrelation 213762 // packages (<unidirectional association>)
+	relation 213762 --->
+	  stereotype "List"
+	  a role_name "packages" init_value "=  new LinkedList<Package>()" private
+	    comment " List of packages in the cache. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<${type}> ${name}${value};
+"
+	    classrelation_ref 213762 // packages (<unidirectional association>)
+	  b parent class_ref 182146 // Package
+      end
+
+      operation 480002 "getCacheDir"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return cache directory "
+      end
+
+      operation 480130 "getBootPackagesDir"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return directory with boot packages "
+      end
+
+      operation 480258 "getMaxCacheSize"
+	public explicit_return_type "long"
+	nparams 0
+	
+	preserve_java_body_indent synchronized java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return limit of the cache size "
+      end
+
+      operation 480386 "setMaxCacheSize"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "sizeLimit" explicit_type "long"
+	
+	preserve_java_body_indent synchronized java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the limit of the cache size.
+
+@param sizeLimit the limit of the cache size to set
+"
+      end
+
+      operation 480514 "getSoftwareRepository"
+	public return_type class_ref 142594 // SoftwareRepositoryInterface
+	nparams 0
+	
+	preserve_java_body_indent synchronized java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return RMI reference to the Software Repository "
+      end
+
+      operation 480642 "setSoftwareRepository"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "softwareRepository" type class_ref 142594 // SoftwareRepositoryInterface
+	
+	preserve_java_body_indent synchronized java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the RMI reference to the Software Repository.
+
+@param softwareRepository the RMI reference to the Software Repository to
+        set
+"
+      end
+
+      operation 480770 "findPackage"
+	private return_type class_ref 182146 // Package
+	nparams 1
+	  param in name "packageFilename" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Finds package in the cache by its name.
+
+@param packageFilename package name  
+@return object representing found package or <code>null</code> if the
+         cache does not contain package with given name
+"
+      end
+
+      operation 480898 "findOldestNonBootPackage"
+	private return_type class_ref 182146 // Package
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Finds the oldest non-boot package in the cache.
+
+@return object representing the oldest non-boot package in the cache or
+         <code>null</code> if there are no non-boot packages in the cache
+"
+      end
+
+      operation 481026 "deletePackage"
+	private explicit_return_type "boolean"
+	nparams 1
+	  param inout name "pakkage" type class_ref 182146 // Package
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Deletes a package from the cache.
+
+@param pakkage package to delete
+@return <code>true</code> if the package was successfully deleted;
+         <code>false</code> otherwise
+"
+      end
+
+      operation 481154 "deleteOldestNonBootPackage"
+	private explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Deletes the oldest non-boot package in the cache.
+"
+      end
+
+      operation 481282 "calculateCacheSize"
+	private explicit_return_type "long"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Calculates total size of the cache.
+
+@return total size of non-boot packages in the cache in bytes
+"
+      end
+
+      operation 481410 "ensureSize"
+	private explicit_return_type "void"
+	nparams 1
+	  param in name "limit" explicit_type "long"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Makes sure that size of the cache is smaller than the limit, deleting
+old non-boot packages if necessary.
+
+@param limit size limit
+"
+      end
+
+      operation 481538 "tryDownloadPackage"
+	private return_type class_ref 182146 // Package
+	nparams 1
+	  param in name "packageFilename" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Downloads package from the Software Reposiotry and adds it to the cache.
+
+@param packageFilename file name of the package to download
+@return object representing the downloaded package, or <code>null</code>
+         if the package is not found in the Software Repository or the
+         Software Repository reference is not set
+
+@throws IOException if the download fails
+"
+      end
+
+      operation 481666 "extractZipFile"
+	private explicit_return_type "void"
+	nparams 2
+	  param in name "zipFilename" explicit_type "String"
+	  param in name "path" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Extract contents of the ZIP file to given path.
+
+@param zipFilename ZIP file to extract
+@param path path to extract the files
+@throws IOException if the extraction fails
+"
+      end
+
+      operation 481794 "extractPackage"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "packageName" explicit_type "String"
+	  param in name "path" explicit_type "String"
+	nexceptions 2
+	  explicit_exception "IOException"
+	  exception class_ref 181122 // HostRuntimeException
+	
+	preserve_java_body_indent synchronized java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Extracts the contents of the package with given name to the specified
+directory (possibly downloading the package from the Software Repository
+and placing it to the cache).
+
+Maintains invariant that size of all packages in the package cache
+direcotry is less than <code>maxCacheSize</code>. If the invariant is about
+to be broken when downloading new package form the Software Repository,
+we delete oldest packages until there is enough space.  
+
+@param packageName name of the package to extract
+@param path directory where the package will be extracted
+@throws IOException if the download or extraction fails
+@throws HostRuntimeException if the package can not be found in the
+         Software Repository or the Software Repository reference is not
+         set
+"
+      end
+
+      operation 481922 "PackageCacheManager"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "cacheDir" explicit_type "String"
+	  param in name "bootPackagesDir" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>PackageCacheManager</code> object.
+
+Note that for proper initialization the user must also set the RMI
+reference to the Software Repository (using
+<code>setSoftwareRepository</code> method) and limit of the cache size
+(using <code>setMaxCacheSize</code> method). Those two attributes are not
+set in the construcotr, because it is assumed that user (Host Runtime) does
+not know them in the time of the construction.
+
+@param cacheDir cache directory
+@param bootPackagesDir directory with boot packages
+@throws IOException if the list of boot packages can't be retrieved
+"
+      end
+    end
+
+    class 182018 "HostRuntimeRunner"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Runs the Host Runtime - parses the options, initializes the RMI registry,
+creates the implementation and binds it to the RMI URL.
+
+@author Antonin Tomecek
+@author David Majda
+"
+      operation 478338 "writeUsageAndExit"
+	class_operation private explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Writes the usage information and exits. 
+"
+      end
+
+      operation 478466 "checkParams"
+	class_operation private explicit_return_type "void"
+	nparams 1
+	  param in name "args" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0}[] ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Checks command-line parameters.
+
+@param args command-line parameters
+"
+      end
+
+      operation 478594 "initializeRMIRegistry"
+	class_operation private explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Initializes the RMI Registry.
+"
+      end
+
+      operation 478722 "main"
+	class_operation public explicit_return_type "void"
+	nparams 1
+	  param in name "args" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0}[] ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Main method, which runs the Host Runtime.
+
+@param args command-line parameters
+"
+      end
+
+      operation 478850 "HostRuntimeRunner"
+	private explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Private construcor is so no instances can be created.
+"
+      end
+    end
+
+    class 182786 "PackageConfiguration"
+      visibility package 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Stores package configuration, which is read from the \"config.xml\" file in the
+package.
+
+@author Antonin Tomecek
+@author David Majda
+"
+      attribute 236418 "javaClassPath"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " List of directories or JAR files to append to the Java's class path. 
+"
+      end
+
+      attribute 236546 "javaMainClass"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Name of the class to execute. 
+"
+      end
+
+      operation 482050 "getJavaClassPath"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns the list of directories or JAR files to append to the Java's class
+path.
+
+@return list of directories or JAR files to append to the Java's class
+         path
+"
+      end
+
+      operation 482178 "getJavaMainClass"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns the name of the class to execute.
+
+@return name of the class to execute.
+"
+      end
+
+      class 182914 "PackageConfigurationEntityResolver"
+	visibility private 
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	classrelation 213890 // <realization>
+	  relation 213890 -_-|>
+	    a public
+	      java "${type}"
+	      classrelation_ref 213890 // <realization>
+	    b parent class_ref 146178 // EntityResolver
+	end
+
+	attribute 236674 "dtdFile"
+	  private explicit_type "String"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " Package configuration DTD file location. 
+"
+	end
+
+	operation 482306 "PackageConfigurationEntityResolver"
+	  public explicit_return_type ""
+	  nparams 1
+	    param in name "dtdFile" explicit_type "String"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Allocates a new <code>PackageConfiguration</code> object.
+
+@param dtdFile package configuration DTD file location
+"
+	end
+
+	operation 482434 "resolveEntity"
+	  public explicit_return_type "InputSource"
+	  nparams 2
+	    param in name "publicId" explicit_type "String"
+	    param in name "systemId" explicit_type "String"
+	  nexceptions 2
+	    explicit_exception "SAXException"
+	    explicit_exception "IOException"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+@see org.xml.sax.EntityResolver#resolveEntity(java.lang.String, java.lang.String)
+"
+	end
+      end
+
+      operation 482562 "parseConfigFile"
+	private explicit_return_type "Document"
+	nparams 2
+	  param in name "configFile" explicit_type "String"
+	  param in name "dtdFile" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 137346 // TaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Parses the package configuration XML file and builds a DOM document.
+
+@param configFile package configuration file
+@param dtdFile package configuration DTD file
+@return document built form the parsed package configuration file
+@throws TaskException if the package configuration file parsing fails 
+"
+      end
+
+      operation 482690 "readData"
+	private explicit_return_type "void"
+	nparams 1
+	  param inout name "document" explicit_type "Document"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Reads the configuration data from DOM document of the XML configuration
+file.
+"
+      end
+
+      operation 482818 "PackageConfiguration"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "configFile" explicit_type "String"
+	  param in name "dtdFile" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 137346 // TaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>PackageConfiguration</code> object. The data in the
+object is read from specified XML file.
+
+@param configFile package configuration file
+@param dtdFile package configuration DTD file
+@throws TaskException if the package configuration file parsing fails
+ 
+"
+      end
+    end
+
+    class 183042 "TaskImplementation"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Class resving as a representiation of a task in the Host Runtime. Responsible
+for running the task and taking care of it.
+
+@author Antonin Tomecek
+@author David Majda
+"
+      classrelation 214018 // <generalisation>
+	relation 214018 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 214018 // <generalisation>
+	  b parent class_ref 130178 // UnicastRemoteObject
+      end
+
+      classrelation 214274 // <realization>
+	relation 214274 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 214274 // <realization>
+	  b parent class_ref 181634 // TaskInterface
+      end
+
+      attribute 236802 "STANDARD_OUTPUT_FILE"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"standard-output\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Name of the file with standard output of the task process. 
+"
+      end
+
+      attribute 236930 "ERROR_OUTPUT_FILE"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"error-output\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Name of the file with error output of the task process. 
+"
+      end
+
+      classrelation 214402 // taskDescriptor (<unidirectional association>)
+	relation 214402 --->
+	  a role_name "taskDescriptor" private
+	    comment " Task descriptor of this task. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 214402 // taskDescriptor (<unidirectional association>)
+	  b parent class_ref 131074 // TaskDescriptor
+      end
+
+      classrelation 214530 // packageConfiguration (<unidirectional association>)
+	relation 214530 --->
+	  a role_name "packageConfiguration" private
+	    comment " Configuration of the package with this task 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 214530 // packageConfiguration (<unidirectional association>)
+	  b parent class_ref 182786 // PackageConfiguration
+      end
+
+      classrelation 214658 // hostRuntime (<unidirectional association>)
+	relation 214658 --->
+	  a role_name "hostRuntime" private
+	    comment " Host Runtime in which this task is running. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 214658 // hostRuntime (<unidirectional association>)
+	  b parent class_ref 181250 // HostRuntimeImplementation
+      end
+
+      attribute 237058 "process"
+	private explicit_type "Process"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Process in which the task is running. 
+"
+      end
+
+      attribute 237186 "baseDirectory"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Directory which contains all the task data. 
+"
+      end
+
+      attribute 237314 "taskDirectory"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Task directory (task's JAR is extracted there). 
+"
+      end
+
+      attribute 237442 "workingDirectory"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Working directory (results of task's work are stored there, surviving
+task's death).
+
+"
+      end
+
+      attribute 237570 "temporaryDirectory"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Temporary directory (deleted after the task's death). 
+"
+      end
+
+      attribute 237698 "serviceDirectory"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Service directory (package contents are extracted there). 
+"
+      end
+
+      classrelation 214786 // processTerminationWaiter (<unidirectional association>)
+	relation 214786 --->
+	  a role_name "processTerminationWaiter" private
+	    comment " Class which waits for the termination of the task process. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 214786 // processTerminationWaiter (<unidirectional association>)
+	  b parent class_ref 151042 // Thread
+      end
+
+      class 183170 "TaskProcessExecutor"
+	visibility private 
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	classrelation 215426 // <generalisation>
+	  relation 215426 ---|>
+	    a public
+	      java "${type}"
+	      classrelation_ref 215426 // <generalisation>
+	    b parent class_ref 151042 // Thread
+	end
+
+	attribute 238594 "BUFFER_SIZE"
+	  class_attribute const_attribute private explicit_type "int"
+	  init_value "=  4096"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " Transfer buffer size. 
+"
+	end
+
+	attribute 238722 "stdoutFile"
+	  private explicit_type "String"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " File with standard output of the task process. 
+"
+	end
+
+	attribute 238850 "stderrFile"
+	  private explicit_type "String"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " File with error output of the task process. 
+"
+	end
+
+	attribute 238978 "commandAndParams"
+	  private explicit_type "String"
+	  stereotype "List"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<${type}> ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " Executed command and its parameters. 
+"
+	end
+
+	attribute 239106 "processTimedOut"
+	  private explicit_type "boolean"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment "
+Flag indicating if the task process was killed because it run longer
+than allowed timeout.
+
+"
+	end
+
+	attribute 239234 "processKilledFromOutside"
+	  private explicit_type "boolean"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment "
+Flag indicating if the process was killed by the <code>kill</code>
+method.
+
+"
+	end
+
+	operation 484610 "setProcessKilledFromOutside"
+	  public explicit_return_type "void"
+	  nparams 1
+	    param inout name "processKilledFromOutside" explicit_type "boolean"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 484738 "TaskProcessExecutor"
+	  public explicit_return_type ""
+	  nparams 3
+	    param in name "stdoutFile" explicit_type "String"
+	    param in name "stderrFile" explicit_type "String"
+	    param inout name "commandAndParams" explicit_type "List<String>"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Allocates a new <code>TaskProcessExecutor</code> object.
+
+@param stdoutFile file with standard output of the task process
+@param stderrFile file with error output of the task process
+@param commandAndParams executed command and its parameters 
+"
+	end
+
+	operation 484866 "execute"
+	  private explicit_return_type "void"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment " Executes the task. "
+	end
+
+	operation 484994 "maybeStartLoadMonitorDetailedMode"
+	  private explicit_return_type "void"
+	  nparams 1
+	    param in name "runCount" explicit_type "int"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 485122 "maybeStopLoadMonitorDetailedMode"
+	  private explicit_return_type "void"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 485250 "attachOutputProcessors"
+	  private explicit_return_type "void"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment " Attach processors to the standard and error output. "
+	end
+
+	class 183682 "TaskProcessKiller"
+	  visibility private 
+	  cpp_decl ""
+	  java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+	  php_decl ""
+	  python_2_2 python_decl ""
+	  idl_decl ""
+	  explicit_switch_type ""
+	  
+	  classrelation 215554 // <generalisation>
+	    relation 215554 ---|>
+	      a public
+		java "${type}"
+		classrelation_ref 215554 // <generalisation>
+	      b parent class_ref 151042 // Thread
+	  end
+
+	  attribute 239362 "timeout"
+	    private explicit_type "long"
+	    cpp_decl ""
+	    java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    php_decl ""
+	    python_decl ""
+	    idl_decl ""
+	    comment " Task process timeout. 
+"
+	  end
+
+	  operation 485378 "TaskProcessKiller"
+	    public explicit_return_type ""
+	    nparams 1
+	      param in name "timeout" explicit_type "long"
+	    
+	    preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	    
+	    
+	    
+	    comment "
+Allocates a new <code>TaskProcessKiller</code> object.
+
+@param timeout task process timeout
+"
+	  end
+
+	  operation 485506 "run"
+	    public explicit_return_type "void"
+	    nparams 0
+	    
+	    preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	    
+	    
+	    
+	    comment "
+@see java.lang.Thread#run()
+"
+	  end
+	end
+
+	operation 485634 "waitForProcess"
+	  private explicit_return_type "void"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment " Patiently waits until the process ends. "
+	end
+
+	operation 485762 "notifyHostRuntime"
+	  private explicit_return_type "void"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment " Notifies the Host Runtime about task's finish. "
+	end
+
+	operation 485890 "sendLogs"
+	  private explicit_return_type "void"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 486018 "sendOutput"
+	  private explicit_return_type "void"
+	  nparams 2
+	    param in name "inputFile" explicit_type "String"
+	    param inout name "outputType" type class_ref 183298 // OutputType
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 486146 "sendLogAndOutputIfNeeded"
+	  private explicit_return_type "void"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Send logs and standard and error output to the Task manager if the task
+was exclusive of context-exclusive.
+"
+	end
+
+	operation 486274 "signalCheckPoint"
+	  private explicit_return_type "void"
+	  nparams 2
+	    param in name "name" explicit_type "String"
+	    param inout name "value" type class_ref 148226 // Serializable
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 486402 "cleanDirectory"
+	  private explicit_return_type "void"
+	  nparams 1
+	    param in name "dir" explicit_type "String"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 486530 "run"
+	  public explicit_return_type "void"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+      end
+
+      classrelation 214914 // executor (<unidirectional association>)
+	relation 214914 --->
+	  a role_name "executor" private
+	    comment " Thread which executes the process. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 214914 // executor (<unidirectional association>)
+	  b parent class_ref 183170 // TaskProcessExecutor
+      end
+
+      class 183298 "OutputType"
+	visibility private stereotype "enum"
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}${final}${abstract}enum ${name}${implements} {
+${items};
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	attribute 237826 "STANDARD"
+	  public type class_ref 183298 // OutputType
+	  cpp_decl ""
+	  java_decl "  ${@}${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	attribute 237954 "ERROR"
+	  public type class_ref 183298 // OutputType
+	  cpp_decl ""
+	  java_decl "  ${@}${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+      end
+
+      attribute 238082 "measureDetailedLoad"
+	private explicit_type "boolean"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Determines whether we want to measure detailed load for this task. 
+"
+      end
+
+      class 183426 "ProcessOutputProcessor"
+	visibility private 
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	classrelation 215042 // <generalisation>
+	  relation 215042 ---|>
+	    a public
+	      java "${type}"
+	      classrelation_ref 215042 // <generalisation>
+	    b parent class_ref 151042 // Thread
+	end
+
+	attribute 238210 "BUFFER_SIZE"
+	  class_attribute const_attribute private explicit_type "int"
+	  init_value "=  4096"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " Transfer buffer size. 
+"
+	end
+
+	attribute 238338 "inputStream"
+	  private explicit_type "InputStream"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " Stream to read the logs from. 
+"
+	end
+
+	attribute 238466 "outputFile"
+	  private explicit_type "String"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " File to write the logs to. 
+"
+	end
+
+	classrelation 215170 // outputType (<unidirectional association>)
+	  relation 215170 --->
+	    a role_name "outputType" private
+	      comment " Type of the process output. 
+"
+	      java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	      classrelation_ref 215170 // outputType (<unidirectional association>)
+	    b parent class_ref 183298 // OutputType
+	end
+
+	classrelation 215298 // exclusivity (<unidirectional association>)
+	  relation 215298 --->
+	    a role_name "exclusivity" private
+	      comment " Task exclusivity. 
+"
+	      java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	      classrelation_ref 215298 // exclusivity (<unidirectional association>)
+	    b parent class_ref 183554 // TaskExclusivity
+	end
+
+	operation 484354 "ProcessOutputProcessor"
+	  public explicit_return_type ""
+	  nparams 4
+	    param inout name "inputStream" explicit_type "InputStream"
+	    param in name "outputFile" explicit_type "String"
+	    param inout name "outputType" type class_ref 183298 // OutputType
+	    param inout name "exclusivity" type class_ref 183554 // TaskExclusivity
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Allocates a new <code>ProcessOutputProcessor</code> object.
+
+@param inputStream stream to read the logs from
+@param outputFile file to write the logs to
+@param outputType type of the process output
+@param exclusivity task exclusivity
+"
+	end
+
+	operation 484482 "run"
+	  public explicit_return_type "void"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+@see java.lang.Thread#run()
+"
+	end
+      end
+
+      class 183810 "LogRecord"
+	visibility private 
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	classrelation 215682 // level (<unidirectional association>)
+	  relation 215682 --->
+	    a role_name "level" private
+	      comment " Log level of the message. 
+"
+	      java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	      classrelation_ref 215682 // level (<unidirectional association>)
+	    b parent class_ref 129666 // LogLevel
+	end
+
+	attribute 239490 "timestamp"
+	  private explicit_type "Date"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " Timestamp of the log event. 
+"
+	end
+
+	attribute 239618 "message"
+	  private explicit_type "String"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment "
+Message the log message; can be multiline; cannot be null or contain
+\"\\t\\t\\t\".
+
+"
+	end
+
+	operation 486658 "getLevel"
+	  public return_type class_ref 129666 // LogLevel
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment " @return log level of the message "
+	end
+
+	operation 486786 "getMessage"
+	  public explicit_return_type "String"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment " @return timestamp of the log event "
+	end
+
+	operation 486914 "getTimestamp"
+	  public explicit_return_type "Date"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+@return message the log message; can be multiline; cannot be null or
+contain \"\\t\\t\\t\"
+"
+	end
+
+	operation 487042 "LogRecord"
+	  public explicit_return_type ""
+	  nparams 3
+	    param inout name "level" type class_ref 129666 // LogLevel
+	    param inout name "timestamp" explicit_type "Date"
+	    param in name "message" explicit_type "String"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Allocates a new <code>LogRecord</code> object.
+
+@param level log level of the message
+@param timestamp timestamp of the log event
+@param message message the log message; can be multiline; cannot be null
+        or contain \"\\t\\t\\t\"
+"
+	end
+      end
+
+      classrelation 215810 // logs (<unidirectional association>)
+	relation 215810 --->
+	  stereotype "List"
+	  a role_name "logs" init_value "=  new LinkedList<LogRecord>()" private
+	    comment "
+Task logs buffer used to store logs of exclusive and context-exclusive
+tasks.
+
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<${type}> ${name}${value};
+"
+	    classrelation_ref 215810 // logs (<unidirectional association>)
+	  b parent class_ref 183810 // LogRecord
+      end
+
+      operation 487170 "getTaskDescriptor"
+	public return_type class_ref 131074 // TaskDescriptor
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return task descriptor of this task "
+      end
+
+      operation 487298 "getHostRuntime"
+	public return_type class_ref 181250 // HostRuntimeImplementation
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return Host Runtime in which this task is running "
+      end
+
+      operation 487426 "log"
+	package explicit_return_type "void"
+	nparams 3
+	  param inout name "level" type class_ref 129666 // LogLevel
+	  param inout name "timestamp" explicit_type "Date"
+	  param in name "message" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sends a log message to the log storage or stores it for later sending if
+the task is exclusive or context-exclusive.
+
+@param level log level of the message
+@param timestamp timestamp of the log event
+@param message the log message; can be multiline; cannot be null or contain
+        \"\\t\\t\\t\".
+@throws RemoteException if something fails during the execution of
+         the remote method call.
+"
+      end
+
+      operation 487554 "createAndBindTasksPort"
+	private explicit_return_type "void"
+	nparams 1
+	  param in name "tasksPortUrl" explicit_type "String"
+	nexceptions 2
+	  explicit_exception "RemoteException"
+	  exception class_ref 137346 // TaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Creates the task's port implementation class and binds it to the RMI URL.
+
+@param tasksPortUrl RMI URL of the task's port
+"
+      end
+
+      operation 487682 "mkdirsIfNotExists"
+	private explicit_return_type "void"
+	nparams 1
+	  param in name "dir" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Creates specified directory, if it does not already exist, including any
+necessary but nonexistent parent directories.
+
+@param dir directory to create
+@throws IOException if the directory does not exist and can not be created 
+"
+      end
+
+      operation 487810 "createTaskDirectories"
+	private explicit_return_type "void"
+	nparams 1
+	  param in name "rootDirectory" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 137346 // TaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Create all directories of the task.
+
+@param rootDirectory root directory of the task's Host Runtime
+@throws TaskException if any directory does not exist and can not be
+         created
+"
+      end
+
+      operation 487938 "extractPackage"
+	private explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  exception class_ref 137346 // TaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Extracts the task package.
+
+@throws TaskException if extraction of the package fails
+"
+      end
+
+      operation 488066 "moveAndChmodPackageFiles"
+	private explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  exception class_ref 137346 // TaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Moves files from the package to the task directory and sets up their access
+rights (needed on Linux systems).
+
+@throws TaskException if setting of the access rights fails
+"
+      end
+
+      operation 488194 "readConfiguration"
+	private explicit_return_type "void"
+	nparams 1
+	  param in name "rootDirectory" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 137346 // TaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Reads the package configuration.
+
+@param rootDirectory root directory of the task's Host Runtime
+@throws TaskException if the configuration parsing fails
+"
+      end
+
+      operation 488322 "buildCommandAndParams"
+	private explicit_return_type "List<String>"
+	nparams 1
+	  param in name "tasksPortUrl" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Builds executed command and its parameters for the <code>exec</code> call.
+
+@param tasksPortUrl RMI URL of the task's port
+@return executed command and its parameters
+"
+      end
+
+      operation 488450 "execute"
+	private explicit_return_type "void"
+	nparams 1
+	  param inout name "commandAndParams" explicit_type "List<String>"
+	nexceptions 2
+	  exception class_ref 137346 // TaskException
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Executes the task process.
+
+@param commandAndParams executed command and its parameters
+@throws TaskException if the execution fails 
+@throws RemoteException if something failed during the execution of
+         the remote method call.
+"
+      end
+
+      operation 488578 "TaskImplementation"
+	protected explicit_return_type ""
+	nparams 3
+	  param inout name "taskDescriptor" type class_ref 131074 // TaskDescriptor
+	  param inout name "hostRuntime" type class_ref 181250 // HostRuntimeImplementation
+	  param inout name "measureDetailedLoad" explicit_type "boolean"
+	nexceptions 2
+	  exception class_ref 137346 // TaskException
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>TaskImplementation</code> object and executes
+associated task.
+
+@param taskDescriptor task descriptor of this task
+@param hostRuntime Host Runtime in which this task is running
+@param measureDetailedLoad determines whether we want to measure detailed
+       load for this task.
+@throws TaskException if anything fails when creating the task
+@throws RemoteException if something failed during the execution of
+         the remote method call.
+"
+      end
+
+      operation 488706 "writeMessage"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "message" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Writes a message to the standard output.
+
+@param message message text
+"
+      end
+
+      operation 488834 "getTaskDirectory"
+	public explicit_return_type "String"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostruntime.TaskInterface#getTaskDirectory()
+"
+      end
+
+      operation 488962 "getWorkingDirectory"
+	public explicit_return_type "String"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostruntime.TaskInterface#getWorkingDirectory()
+"
+      end
+
+      operation 489090 "getTemporaryDirectory"
+	public explicit_return_type "String"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostruntime.TaskInterface#getTemporaryDirectory()
+"
+      end
+
+      operation 489218 "getTaskID"
+	public explicit_return_type "String"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostruntime.TaskInterface#getTaskID()
+"
+      end
+
+      operation 489346 "getContextID"
+	public explicit_return_type "String"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostruntime.TaskInterface#getContextID()
+"
+      end
+
+      operation 489474 "isDetailedLoad"
+	public explicit_return_type "boolean"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostruntime.TaskInterface#isDetailedLoad()
+"
+      end
+
+      operation 489602 "deleteDirectoryRecursively"
+	private explicit_return_type "void"
+	nparams 1
+	  param in name "dir" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 489730 "destroy"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 2
+	  exception class_ref 137346 // TaskException
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostruntime.TaskInterface#destroy()
+"
+      end
+
+      operation 489858 "kill"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostruntime.TaskInterface#kill()
+"
+      end
+
+      operation 489986 "isRunning"
+	public explicit_return_type "boolean"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostruntime.TaskInterface#isRunning()
+"
+      end
+
+      operation 490114 "waitFor"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostruntime.TaskInterface#waitFor()
+"
+      end
+
+      operation 490242 "getExitValue"
+	public explicit_return_type "int"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostruntime.TaskInterface#getExitValue()
+"
+      end
+    end
+
+    class 183938 "TaskLoader"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Loads a BEEN task and starts it. The task is given as a command parameter 
+and is started in a correct way depending on whether it's a Job or a Service.
+
+@author Jaroslav Urban
+"
+      classrelation 215938 // task (<unidirectional association>)
+	relation 215938 --->
+	  a role_name "task" private
+	    comment " The loaded task. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 215938 // task (<unidirectional association>)
+	  b parent class_ref 136578 // Task
+      end
+
+      operation 490370 "loadTask"
+	private explicit_return_type "void"
+	nparams 1
+	  param in name "taskClass" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Loads a task.
+@param taskClass full classname of the task.
+"
+      end
+
+      operation 490498 "runTask"
+	private explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Runs the task. It uses the correct way for a Job or a Service.
+
+"
+      end
+
+      operation 490626 "main"
+	class_operation public explicit_return_type "void"
+	nparams 1
+	  param in name "args" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0}[] ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@param args
+"
+      end
+    end
+
+    class 184066 "TasksPortImplementation"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Implementation of the Host Runtime's port RMI interface provided for the
+tasks.
+ 
+@author Antonin Tomecek
+@author David Majda
+"
+      classrelation 216066 // <generalisation>
+	relation 216066 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 216066 // <generalisation>
+	  b parent class_ref 130178 // UnicastRemoteObject
+      end
+
+      classrelation 216322 // <realization>
+	relation 216322 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 216322 // <realization>
+	  b parent class_ref 137090 // TasksPortInterface
+      end
+
+      classrelation 216450 // task (<unidirectional association>)
+	relation 216450 --->
+	  a role_name "task" private
+	    comment " Task this port is associated with.  
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 216450 // task (<unidirectional association>)
+	  b parent class_ref 183042 // TaskImplementation
+      end
+
+      classrelation 216578 // hostRuntimesPort (<unidirectional association>)
+	relation 216578 --->
+	  a role_name "hostRuntimesPort" private
+	    comment " RMI interface to the Task Manager's port to the Host Runtime. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 216578 // hostRuntimesPort (<unidirectional association>)
+	  b parent class_ref 181506 // HostRuntimesPortInterface
+      end
+
+      operation 493954 "TasksPortImplementation"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "task" type class_ref 183042 // TaskImplementation
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>TaskImplementation</code> object.
+
+@param task this port is associated with
+@throws RemoteException if something fails during the execution of
+         the remote method call
+"
+      end
+
+      operation 494082 "getTaskDirectory"
+	public explicit_return_type "String"
+	nparams 2
+	  param in name "contextID" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostruntime.TasksPortInterface#getTaskDirectory(java.lang.String, java.lang.String)
+"
+      end
+
+      operation 494210 "getWorkingDirectory"
+	public explicit_return_type "String"
+	nparams 2
+	  param in name "contextID" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostruntime.TasksPortInterface#getWorkingDirectory(java.lang.String, java.lang.String)
+"
+      end
+
+      operation 494338 "getTemporaryDirectory"
+	public explicit_return_type "String"
+	nparams 2
+	  param in name "contextID" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostruntime.TasksPortInterface#getTemporaryDirectory(java.lang.String, java.lang.String)
+"
+      end
+
+      operation 494466 "getTaskProperties"
+	public explicit_return_type "Properties"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostruntime.TasksPortInterface#getTaskProperties()
+"
+      end
+
+      operation 494594 "getTaskPropertyObjects"
+	public return_type class_ref 148226 // Serializable
+	nparams 0
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}Map<String, ${type}> ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostruntime.TasksPortInterface#getTaskPropertyObjects()
+"
+      end
+
+      operation 494722 "runTask"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "taskDescriptor" type class_ref 131074 // TaskDescriptor
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostruntime.TasksPortInterface#runTask(cz.cuni.mff.been.taskmanager.TaskDescriptor)
+"
+      end
+
+      operation 494850 "runTaskImmediately"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "taskDescriptor" type class_ref 131074 // TaskDescriptor
+	nexceptions 2
+	  explicit_exception "RemoteException"
+	  explicit_exception "IllegalStateException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostruntime.TasksPortInterface#runTaskImmediately(cz.cuni.mff.been.taskmanager.TaskDescriptor)
+"
+      end
+
+      operation 494978 "runTasks"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "taskDescriptor" type class_ref 131074 // TaskDescriptor
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0}[] ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostruntime.TasksPortInterface#runTask(cz.cuni.mff.been.taskmanager.TaskDescriptor)
+"
+      end
+
+      operation 495106 "newContext"
+	public explicit_return_type "void"
+	nparams 4
+	  param in name "id" explicit_type "String"
+	  param in name "name" explicit_type "String"
+	  param in name "description" explicit_type "String"
+	  param inout name "data" type class_ref 148226 // Serializable
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostruntime.TasksPortInterface#newContext(java.lang.String, java.lang.String, java.lang.String, java.io.Serializable)
+"
+      end
+
+      operation 495234 "endContext"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "id" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostruntime.TasksPortInterface#endContext(java.lang.String)
+"
+      end
+
+      operation 495362 "getRegisteredHostRuntimes"
+	public explicit_return_type "String"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " 
+@see cz.cuni.mff.been.hostruntime.TasksPortInterface#getRegisteredHostRuntimes()
+"
+      end
+
+      operation 495490 "registerEventListener"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "listener" type class_ref 162946 // HostRuntimeRegistrationListener
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " 
+@see cz.cuni.mff.been.hostruntime.TasksPortInterface#registerEventListener(cz.cuni.mff.been.taskmanager.HostRuntimeRegistrationListener)
+"
+      end
+
+      operation 495618 "unregisterEventListener"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "listener" type class_ref 162946 // HostRuntimeRegistrationListener
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " 
+@see cz.cuni.mff.been.hostruntime.TasksPortInterface#unregisterEventListener(cz.cuni.mff.been.taskmanager.HostRuntimeRegistrationListener)
+"
+      end
+
+      operation 495746 "log"
+	public explicit_return_type "void"
+	nparams 3
+	  param inout name "level" type class_ref 129666 // LogLevel
+	  param inout name "timestamp" explicit_type "Date"
+	  param in name "message" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostruntime.TasksPortInterface#log(cz.cuni.mff.been.logging.LogLevel, java.util.Date, java.lang.String)
+"
+      end
+
+      operation 495874 "getLogsForTask"
+	public return_type class_ref 184194 // LogRecord
+	nparams 2
+	  param in name "context" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	nexceptions 4
+	  explicit_exception "RemoteException"
+	  exception class_ref 184322 // LogStorageException
+	  explicit_exception "IllegalArgumentException"
+	  explicit_exception "NullPointerException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostruntime.TasksPortInterface#getLogsForTask(java.lang.String, java.lang.String)
+"
+      end
+
+      operation 496002 "getStandardOutput"
+	public return_type class_ref 184450 // OutputHandle
+	nparams 2
+	  param in name "context" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	nexceptions 4
+	  explicit_exception "RemoteException"
+	  exception class_ref 184322 // LogStorageException
+	  explicit_exception "IllegalArgumentException"
+	  explicit_exception "NullPointerException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostruntime.TasksPortInterface#getStandardOutput(java.lang.String, java.lang.String)
+"
+      end
+
+      operation 496130 "getErrorOutput"
+	public return_type class_ref 184450 // OutputHandle
+	nparams 2
+	  param in name "context" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	nexceptions 4
+	  explicit_exception "RemoteException"
+	  exception class_ref 184322 // LogStorageException
+	  explicit_exception "IllegalArgumentException"
+	  explicit_exception "NullPointerException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostruntime.TasksPortInterface#getErrorOutput(java.lang.String, java.lang.String)
+"
+      end
+
+      operation 496258 "checkPointReached"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "name" explicit_type "String"
+	  param inout name "value" type class_ref 148226 // Serializable
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostruntime.TasksPortInterface#checkPointReached(java.lang.String, java.io.Serializable)
+"
+      end
+
+      operation 496386 "checkPointWait"
+	public return_type class_ref 148226 // Serializable
+	nparams 4
+	  param in name "contextID" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	  param in name "name" explicit_type "String"
+	  param in name "timeout" explicit_type "long"
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostruntime.TasksPortInterface#checkPointWait(java.lang.String, java.lang.String, java.lang.String, long)
+"
+      end
+
+      operation 496514 "serviceRegister"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "service" type class_ref 184578 // ServiceEntry
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostruntime.TasksPortInterface#serviceRegister(cz.cuni.mff.been.taskmanager.ServiceEntry)
+"
+      end
+
+      operation 496642 "serviceUnregister"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "serviceTemplate" type class_ref 184578 // ServiceEntry
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostruntime.TasksPortInterface#serviceUnregister(cz.cuni.mff.been.taskmanager.ServiceEntry)
+"
+      end
+
+      operation 496770 "serviceFind"
+	public explicit_return_type "Remote"
+	nparams 2
+	  param in name "serviceName" explicit_type "String"
+	  param in name "interfaceName" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostruntime.TasksPortInterface#serviceFind(java.lang.String, java.lang.String)
+"
+      end
+
+      operation 496898 "serviceFindAll"
+	public return_type class_ref 184578 // ServiceEntry
+	nparams 0
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostruntime.TasksPortInterface#serviceFindAll()
+"
+      end
+
+      operation 497026 "getTaskDescriptor"
+	public return_type class_ref 131074 // TaskDescriptor
+	nparams 0
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostruntime.TasksPortInterface#getTaskDescriptor()
+"
+      end
+
+      operation 497154 "getTaskById"
+	public return_type class_ref 184706 // TaskEntry
+	nparams 2
+	  param in name "taskId" explicit_type "String"
+	  param in name "contextId" explicit_type "String"
+	nexceptions 2
+	  explicit_exception "RemoteException"
+	  explicit_exception "IllegalArgumentException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostruntime.TasksPortInterface#getTaskById(String, String)
+"
+      end
+    end
+
+    class 162696 "JythonTaskLoader"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "Task loader for Jython tasks.
+Runs JythonScriptTask with set script filename
+@author Jan Tattermusch"
+      classrelation 169736 // <generalisation>
+	relation 169736 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 169736 // <generalisation>
+	  b parent class_ref 183938 // TaskLoader
+      end
+
+      operation 302856 "loadTask"
+	protected explicit_return_type "void"
+	nparams 1
+	  param in name "scriptFileName" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "Loads task (instance of JythonScriptTask)"
+      end
+
+      operation 302984 "main"
+	class_operation public explicit_return_type "void"
+	nparams 1
+	  param inout name "args" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0}[] ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@param args"
+      end
+    end
+
+    class 162824 "ShellTaskLoader"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "Task loader for Shell tasks.
+Runs ShellScriptTask with set script filename
+@author Jan Tattermusch"
+      classrelation 169864 // <generalisation>
+	relation 169864 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 169864 // <generalisation>
+	  b parent class_ref 183938 // TaskLoader
+      end
+
+      operation 303112 "loadTask"
+	protected explicit_return_type "void"
+	nparams 1
+	  param in name "scriptFileName" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "Loads task (instance of ShellScriptTask)"
+      end
+
+      operation 303240 "main"
+	class_operation public explicit_return_type "void"
+	nparams 1
+	  param inout name "args" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0}[] ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@param args"
+      end
+    end
+  end
+
+  deploymentview 130690 "hostruntime"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+    artifact 163330 "HostRuntimeException"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import cz.cuni.mff.been.common.BeenException;
+${definition}"
+      associated_classes
+	class_ref 181122 // HostRuntimeException
+      end
+    end
+
+    artifact 163458 "HostRuntimeInterface"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import cz.cuni.mff.been.taskmanager.HostRuntimesPortInterface;
+import cz.cuni.mff.been.taskmanager.TaskDescriptor;
+${definition}"
+      associated_classes
+	class_ref 181378 // HostRuntimeInterface
+      end
+    end
+
+    artifact 163586 "HostRuntimeImplementation"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.UnknownHostException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import cz.cuni.mff.been.common.anttasks.AntTaskException;
+import cz.cuni.mff.been.common.anttasks.Delete;
+import cz.cuni.mff.been.hostmanager.IllegalOperationException;
+import cz.cuni.mff.been.hostmanager.ValueNotFoundException;
+import cz.cuni.mff.been.hostmanager.load.LoadMonitorException;
+import cz.cuni.mff.been.hostmanager.load.LoadMonitorImplementation;
+import cz.cuni.mff.been.hostmanager.load.LoadMonitorInterface;
+import cz.cuni.mff.been.softwarerepository.SoftwareRepositoryInterface;
+import cz.cuni.mff.been.softwarerepository.SoftwareRepositoryService;
+import cz.cuni.mff.been.task.Service;
+import cz.cuni.mff.been.task.TaskException;
+import cz.cuni.mff.been.taskmanager.HostRuntimesPortInterface;
+import cz.cuni.mff.been.taskmanager.TaskDescriptor;
+import cz.cuni.mff.been.taskmanager.TaskManagerInterface;
+${definition}"
+      associated_classes
+	class_ref 181250 // HostRuntimeImplementation
+      end
+    end
+
+    artifact 163714 "HostRuntimeRunner"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.IOException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import cz.cuni.mff.been.hostmanager.load.LoadMonitorException;
+${definition}"
+      associated_classes
+	class_ref 182018 // HostRuntimeRunner
+      end
+    end
+
+    artifact 163970 "PackageCacheManager"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import cz.cuni.mff.been.common.DownloadHandle;
+import cz.cuni.mff.been.softwarerepository.MatchException;
+import cz.cuni.mff.been.softwarerepository.PackageMetadata;
+import cz.cuni.mff.been.softwarerepository.PackageQueryCallbackInterface;
+import cz.cuni.mff.been.softwarerepository.PackageType;
+import cz.cuni.mff.been.softwarerepository.SoftwareRepositoryInterface;
+${definition}"
+      associated_classes
+	class_ref 181890 // PackageCacheManager
+      end
+    end
+
+    artifact 164098 "PackageConfiguration"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import cz.cuni.mff.been.task.TaskException;
+${definition}"
+      associated_classes
+	class_ref 182786 // PackageConfiguration
+      end
+    end
+
+    artifact 164226 "TaskInterface"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import cz.cuni.mff.been.task.TaskException;
+${definition}"
+      associated_classes
+	class_ref 181634 // TaskInterface
+      end
+    end
+
+    artifact 164354 "TaskImplementation"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import cz.cuni.mff.been.common.anttasks.AntTaskException;
+import cz.cuni.mff.been.common.anttasks.Chmod;
+import cz.cuni.mff.been.common.anttasks.Delete;
+import cz.cuni.mff.been.hostmanager.IllegalOperationException;
+import cz.cuni.mff.been.hostmanager.load.LoadMonitorException;
+import cz.cuni.mff.been.hostmanager.load.LoadMonitorInterface;
+import cz.cuni.mff.been.logging.LogLevel;
+import cz.cuni.mff.been.logging.LogStorageException;
+import cz.cuni.mff.been.task.Task;
+import cz.cuni.mff.been.task.TaskException;
+import cz.cuni.mff.been.taskmanager.CheckPoint;
+import cz.cuni.mff.been.taskmanager.TaskDescriptor;
+import cz.cuni.mff.been.taskmanager.data.TaskExclusivity;
+import cz.cuni.mff.been.taskmanager.data.TaskState;
+${definition}"
+      associated_classes
+	class_ref 183042 // TaskImplementation
+      end
+    end
+
+    artifact 164482 "TaskLoader"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import cz.cuni.mff.been.task.Job;
+import cz.cuni.mff.been.task.Service;
+import cz.cuni.mff.been.task.Task;
+import cz.cuni.mff.been.task.TaskException;
+${definition}"
+      associated_classes
+	class_ref 183938 // TaskLoader
+      end
+    end
+
+    artifact 164610 "TasksPortInterface"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.Serializable;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.util.Date;
+import java.util.Map;
+import java.util.Properties;
+import cz.cuni.mff.been.logging.LogLevel;
+import cz.cuni.mff.been.logging.LogRecord;
+import cz.cuni.mff.been.logging.LogStorageException;
+import cz.cuni.mff.been.logging.OutputHandle;
+import cz.cuni.mff.been.taskmanager.HostRuntimeRegistrationListener;
+import cz.cuni.mff.been.taskmanager.ServiceEntry;
+import cz.cuni.mff.been.taskmanager.TaskDescriptor;
+import cz.cuni.mff.been.taskmanager.data.TaskEntry;
+${definition}"
+      associated_classes
+	class_ref 137090 // TasksPortInterface
+      end
+    end
+
+    artifact 164738 "TasksPortImplementation"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.Serializable;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+import cz.cuni.mff.been.common.VariableReplacer;
+import cz.cuni.mff.been.common.VariableReplacer.ValueProvider;
+import cz.cuni.mff.been.logging.LogLevel;
+import cz.cuni.mff.been.logging.LogRecord;
+import cz.cuni.mff.been.logging.LogStorageException;
+import cz.cuni.mff.been.logging.OutputHandle;
+import cz.cuni.mff.been.taskmanager.CheckPoint;
+import cz.cuni.mff.been.taskmanager.HostRuntimeRegistrationListener;
+import cz.cuni.mff.been.taskmanager.HostRuntimesPortInterface;
+import cz.cuni.mff.been.taskmanager.ServiceEntry;
+import cz.cuni.mff.been.taskmanager.TaskDescriptor;
+import cz.cuni.mff.been.taskmanager.TaskManagerException;
+import cz.cuni.mff.been.taskmanager.TaskDescriptor.TaskPropertyObject;
+import cz.cuni.mff.been.taskmanager.data.TaskEntry;
+${definition}"
+      associated_classes
+	class_ref 184066 // TasksPortImplementation
+      end
+    end
+
+    artifact 150536 "JythonTaskLoader"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import cz.cuni.mff.been.task.JythonScriptJob;
+import cz.cuni.mff.been.task.Task;
+import cz.cuni.mff.been.task.TaskInitializationException;
+${definition}"
+      associated_classes
+	class_ref 162696 // JythonTaskLoader
+      end
+      comment " BEEN: Benchmarking Environment
+ ==============================
+
+ File author: Jan Tattermusch
+
+ GNU Lesser General Public License Version 2.1
+ ---------------------------------------------
+ Copyright (C) 2004-2006 Distributed Systems Research Group,
+ Faculty of Mathematics and Physics, Charles University in Prague
+
+ This library is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public
+ License version 2.1, as published by the Free Software Foundation.
+
+ This library is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this library; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+ MA  02111-1307  USA"
+    end
+
+    artifact 150664 "ShellTaskLoader"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import cz.cuni.mff.been.task.ShellScriptJob;
+import cz.cuni.mff.been.task.Task;
+import cz.cuni.mff.been.task.TaskInitializationException;
+${definition}"
+      associated_classes
+	class_ref 162824 // ShellTaskLoader
+      end
+      comment " BEEN: Benchmarking Environment
+ ==============================
+
+ File author: Jan Tattermusch
+
+ GNU Lesser General Public License Version 2.1
+ ---------------------------------------------
+ Copyright (C) 2004-2006 Distributed Systems Research Group,
+ Faculty of Mathematics and Physics, Charles University in Prague
+
+ This library is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public
+ License version 2.1, as published by the Free Software Foundation.
+
+ This library is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this library; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+ MA  02111-1307  USA"
+    end
+  end
+end

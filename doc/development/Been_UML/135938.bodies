@@ -1,0 +1,33 @@
+class BenchmarkPluginManager
+!!!165378.java!!!	BenchmarkPluginManager(inout manager : PluginManagerLocalInterface, inout bootProperties : ExtendedProperties, in defaultPluginsDirectory : String, in workingDirectory : String, inout restoreRootDirectory : File)
+
+		
+		super(manager, bootProperties, defaultPluginsDirectory, workingDirectory, restoreRootDirectory);
+!!!165506.java!!!	getCorePluginName() : String
+
+		
+		return CORE_PLUGIN_NAME;
+!!!165634.java!!!	getExtensionPointID() : String
+
+		
+		return EXTENSION_POINT_NAME;
+!!!165762.java!!!	getCorePluginFileName() : String
+
+		
+		return CORE_PLUGIN_FILE_NAME;
+!!!165890.java!!!	validatePlugin(inout extension : Extension) : String
+
+			// Try to load entry classes
+			final String pluginID = extension.getDeclaringPluginDescriptor().getId();
+			
+			for (String paramName : new String[]{"configurator", "generator"}) {
+				try {
+					loadClassForPlugin(pluginID, paramName);
+				} catch (ApplicationException e) {
+					getLocalManager().logDebug(e.getMessage());
+					return "Unable to create " + paramName + " for plugin";
+				}
+			}
+			
+		// plug-in OK
+		return null;

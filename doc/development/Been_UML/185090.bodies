@@ -1,0 +1,435 @@
+class FilesystemLogStorage
+!!!502786.java!!!	FilesystemLogStorage(in basedir : String)
+		this.basedir = basedir;
+		File basedirFile = new File(basedir);
+		// try to find old existing base directory
+		if (!basedirFile.isDirectory()) {	
+			// create a new base directory because older one not found
+			if (!basedirFile.mkdir()) {		
+				throw new LogStorageException("Cannot create base directory: " + basedir);
+			}
+		}
+!!!502914.java!!!	addContext(in name : String) : void
+		if (name == null) {
+			throw new NullPointerException("Context name is null");
+		}
+		if (name.equals("")) {
+			throw new IllegalArgumentException("Context name is empty");
+		}
+		
+		File contextDir = new File(basedir, name);
+		// try to find old existing context directory
+		if (!contextDir.isDirectory()) {
+			// create a new context directory because old one not found
+			if (!contextDir.mkdir()) {
+				throw new LogStorageException("Cannot create context's log directory: " 
+						+ contextDir.getAbsolutePath());
+			}
+		}
+!!!503042.java!!!	addTask(in context : String, in taskID : String) : void
+		checkTaskAndContextId(context, taskID);
+		
+		File contextDir = new File(basedir, context);
+		if (!contextDir.isDirectory()) {
+			throw new IllegalArgumentException("Context not registered: " + context);
+		}
+		
+		File taskDir = new File(contextDir, taskID);
+		// try to find old existing task directory
+		if (!taskDir.isDirectory()) {
+			// create a new task directory because old one not found
+			if (!taskDir.mkdir()) {
+				throw new LogStorageException("Cannot create task's log directory: " 
+						+ taskDir.getAbsolutePath());
+			}
+		}
+		
+		// create empty log files
+		createLogFile(taskDir, LOG_FILE);
+		createLogFile(taskDir, STDOUT_FILE);
+		createLogFile(taskDir, STDERR_FILE);
+!!!503170.java!!!	createLogFile(inout directory : File, in filename : String) : void
+		
+		File logFile = null;
+		try {
+			logFile = new File(directory, filename);
+			// try to find old existing log file
+			if (!logFile.exists()) {
+				// create a new log file because old one not found
+				if (!logFile.createNewFile()) {
+					throw new LogStorageException("Cannot create log file: "
+							+ logFile.getAbsolutePath());
+				}
+			}
+		} catch (IOException e) {
+			throw new LogStorageException("Cannot create log file: " 
+					+ logFile.getAbsolutePath(),
+					e);
+		}
+!!!503298.java!!!	getLogsForTask(in context : String, in taskID : String) : LogRecord
+		return getLogsForTask(context, taskID, ALL_MESSAGES, ALL_MESSAGES);
+!!!503426.java!!!	log(in context : String, in taskID : String, inout timestamp : Date, inout level : LogLevel, in message : String) : void
+		checkTaskAndContextId(context, taskID);
+
+		if (timestamp == null) {
+			throw new NullPointerException("Timestamp is null");
+		}
+		if (level == null) {
+			throw new NullPointerException("Log level is null");
+		}
+		if (message == null) {
+			throw new NullPointerException("Log message is null");
+		}
+
+		File contextDir = new File(basedir, context);
+		if (!contextDir.isDirectory()) {
+			throw new IllegalArgumentException("Context not registered: " + context);
+		}
+		
+		File taskDir = new File(contextDir, taskID);
+		if (!taskDir.isDirectory()) {
+			throw new IllegalArgumentException("Task not registered: " + taskID);
+		}
+		
+		File logfile = new File(taskDir, LOG_FILE);
+		try {
+			PrintWriter writer = new PrintWriter(new FileWriter(logfile, true), true);
+			
+			SimpleDateFormat format = (SimpleDateFormat) DateFormat.getDateTimeInstance();
+			format.applyPattern("dd.MM.yyyy HH:mm:ss.SSS");
+			writer.println(format.format(timestamp) 
+				+ "\t" + level + "\t" + message + "\t\t\t");
+			
+			writer.close();
+		} catch (IOException e) {
+			throw new LogStorageException("Cannot append the message to a log file: " 
+					+ e.getMessage(),
+					e);
+		}
+!!!503554.java!!!	removeContext(in name : String) : void
+		if (name == null) {
+			throw new NullPointerException("Context name is null");
+		}
+		if (name.equals("")) {
+			throw new IllegalArgumentException("Context name is empty");
+		}
+		
+		File contextDir = new File(basedir, name);
+		if (!contextDir.isDirectory()) {
+			throw new IllegalArgumentException("Context not registered: " + name);
+		}
+
+		try {
+			Delete.deleteDirectory(contextDir.getAbsolutePath());
+		} catch (AntTaskException e) {
+			throw new LogStorageException("Cannot delete the directory of the context: " 
+					+ contextDir.getAbsolutePath(),
+					e);
+		}
+!!!503682.java!!!	setTaskHostname(in context : String, in taskID : String, in hostname : String) : void
+		checkTaskAndContextId(context, taskID);
+
+		if (hostname == null) {
+			throw new NullPointerException("Hostname is null");
+		}
+		if (hostname.equals("")) {
+			throw new IllegalArgumentException("Hostname is empty");
+		}
+
+		File contextDir = new File(basedir, context);
+		if (!contextDir.isDirectory()) {
+			throw new IllegalArgumentException("Context not registered: " + context);
+		}
+		
+		File taskDir = new File(contextDir, taskID);
+		if (!taskDir.isDirectory()) {
+			throw new IllegalArgumentException("Task not registered: " + taskID);
+		}
+
+		File hostnameFile = new File(taskDir, HOSTNAME_FILE);
+		try {
+			PrintWriter writer = new PrintWriter(new FileWriter(hostnameFile), true);
+			writer.println(hostname);
+			writer.close();
+		} catch (IOException e) {
+			throw new LogStorageException("Cannot store hostname in the file: " 
+					+ hostnameFile.getAbsolutePath(),
+					e);
+		}
+!!!503810.java!!!	isContextRegistered(in name : String) : boolean
+		if (name == null) {
+			throw new NullPointerException("Context name is null");
+		}
+		if (name.equals("")) {
+			throw new IllegalArgumentException("Context name is empty");
+		}
+		
+		File contextDir = new File(basedir, name);
+		return contextDir.isDirectory();
+!!!503938.java!!!	isTaskRegistered(in context : String, in taskID : String) : boolean
+		checkTaskAndContextId(context, taskID);
+		
+		File contextDir = new File(basedir, context);
+		if (!contextDir.isDirectory()) {
+			throw new IllegalArgumentException("Context not registered: " + context);
+		}
+
+		File taskDir = new File(contextDir, taskID);
+		return taskDir.isDirectory();
+!!!504066.java!!!	addErrorOutput(in context : String, in taskID : String, in output : String) : void
+		checkTaskAndContextId(context, taskID);
+
+		if (output == null) {
+			throw new NullPointerException("Output is null");
+		}
+
+		File contextDir = new File(basedir, context);
+		if (!contextDir.isDirectory()) {
+			throw new IllegalArgumentException("Context not registered: " + context);
+		}
+		
+		File taskDir = new File(contextDir, taskID);
+		if (!taskDir.isDirectory()) {
+			throw new IllegalArgumentException("Task not registered: " + taskID);
+		}
+
+		File outputFile = new File(taskDir, STDERR_FILE);
+		try {
+			PrintWriter writer = new PrintWriter(new FileWriter(outputFile, true));
+			writer.print(output);
+			writer.close();
+		} catch (IOException e) {
+			throw new LogStorageException("Cannot store error output in the file: " 
+					+ outputFile.getAbsolutePath(),
+					e);
+		}
+!!!504194.java!!!	addStandardOutput(in context : String, in taskID : String, in output : String) : void
+		checkTaskAndContextId(context, taskID);
+		
+		if (output == null) {
+			throw new NullPointerException("Output is null");
+		}
+
+		File contextDir = new File(basedir, context);
+		if (!contextDir.isDirectory()) {
+			throw new IllegalArgumentException("Context not registered: " + context);
+		}
+		
+		File taskDir = new File(contextDir, taskID);
+		if (!taskDir.isDirectory()) {
+			throw new IllegalArgumentException("Task not registered: " + taskID);
+		}
+
+		File outputFile = new File(taskDir, STDOUT_FILE);
+		try {
+			PrintWriter writer = new PrintWriter(new FileWriter(outputFile, true));
+			writer.print(output);
+			writer.close();
+		} catch (IOException e) {
+			throw new LogStorageException("Cannot store standard output in the file: " 
+					+ outputFile.getAbsolutePath(),
+					e);
+		}
+!!!504322.java!!!	getStandardOutput(in context : String, in taskID : String) : OutputHandle
+		checkTaskAndContextId(context, taskID);
+		
+		File contextDir = new File(basedir, context);
+		if (!contextDir.isDirectory()) {
+			throw new IllegalArgumentException("Context not registered: " + context);
+		}
+		
+		File taskDir = new File(contextDir, taskID);
+		if (!taskDir.isDirectory()) {
+			throw new IllegalArgumentException("Task not registered: " + taskID);
+		}
+
+		try {
+			return new FileOutputHandle(taskDir.getAbsolutePath() + File.separator 
+					+ STDOUT_FILE);
+		} catch (Exception e) {
+			throw new LogStorageException("Cannot create the output handle: " + e.getMessage(), e);
+		}
+!!!504450.java!!!	getErrorOutput(in context : String, in taskID : String) : OutputHandle
+		checkTaskAndContextId(context, taskID);
+		
+		File contextDir = new File(basedir, context);
+		if (!contextDir.isDirectory()) {
+			throw new IllegalArgumentException("Context not registered: " + context);
+		}
+		
+		File taskDir = new File(contextDir, taskID);
+		if (!taskDir.isDirectory()) {
+			throw new IllegalArgumentException("Task not registered: " + taskID);
+		}
+
+		try {
+			return new FileOutputHandle(taskDir.getAbsolutePath() + File.separator
+					+ STDERR_FILE);
+		} catch (Exception e) {
+			throw new LogStorageException("Cannot create the output handle: " + e.getMessage(), e);
+		}
+!!!504578.java!!!	getLogCountForTask(in context : String, in taskID : String) : long
+		checkTaskAndContextId(context, taskID);
+		
+		File contextDir = new File(basedir, context);
+		if (!contextDir.isDirectory()) {
+			throw new IllegalArgumentException("Context not registered: " + context);
+		}
+		
+		File taskDir = new File(contextDir, taskID);
+		if (!taskDir.isDirectory()) {
+			throw new IllegalArgumentException("Task not registered: " + taskID);
+		}
+
+		File logfile = new File(taskDir, LOG_FILE);
+		BufferedReader reader;
+		try {
+			reader = new BufferedReader(new FileReader(logfile));
+		} catch (FileNotFoundException e) {
+			throw new LogStorageException("Log file not found: " 
+					+ logfile.getAbsolutePath(), e);
+		}
+		
+		long count = 0;
+		try {
+			String line;
+			
+			while ((line = reader.readLine()) != null) {
+				parseLogMessage(line, reader);
+				count++;
+			}
+			
+			reader.close();
+		} catch (IOException e) {
+			throw new LogStorageException("Cannot read log file: " + e.getMessage());
+		}
+
+		return count;
+!!!504706.java!!!	getLogsForTask(in context : String, in taskID : String, in first : long, in last : long) : LogRecord
+		checkTaskAndContextId(context, taskID);
+		
+		File contextDir = new File(basedir, context);
+		if (!contextDir.isDirectory()) {
+			throw new IllegalArgumentException("Context not registered: " + context);
+		}
+		
+		File taskDir = new File(contextDir, taskID);
+		if (!taskDir.isDirectory()) {
+			throw new IllegalArgumentException("Task not registered: " + taskID);
+		}
+
+		ArrayList<LogRecord> logRecords = new ArrayList<LogRecord>();
+		
+		File logfile = new File(taskDir, LOG_FILE);
+		BufferedReader reader;
+		try {
+			reader = new BufferedReader(new FileReader(logfile));
+		} catch (FileNotFoundException e) {
+			throw new LogStorageException("Log file not found: " 
+					+ logfile.getAbsolutePath(), e);
+		}
+		
+		long count = 0;
+		try {
+			String line;
+			String hostname = null;
+			
+			while ((line = reader.readLine()) != null) {
+				// some logs were produced because the log file is not empty,
+				// so try to read the host name of the task (if it wasn't already read)
+				if (hostname == null) {
+					hostname = getHostname(taskDir);
+				}
+
+				LogMessagePart logPart = parseLogMessage(line, reader);
+				
+				if (((count >= first) && (count <= last))
+						||
+						((first == ALL_MESSAGES) && (last == ALL_MESSAGES))) {
+					// inside the interval, create the log record
+					logRecords.add(createLogRecord(logPart, context, taskID, hostname));
+				}
+				
+				count++;
+			}
+			
+			reader.close();
+		} catch (IOException e) {
+			throw new LogStorageException("Cannot read log file: " + e.getMessage());
+		}
+		
+		return logRecords.toArray(new LogRecord[logRecords.size()]);
+!!!504834.java!!!	parseLogMessage(in firstLine : String, inout reader : BufferedReader) : LogMessagePart
+		String line = firstLine;
+		
+		// parse the line from the log file
+		int delimiter = line.indexOf("\t");
+		String timestamp = line.substring(0, delimiter);
+		int delimiter2 = line.indexOf("\t", delimiter + 1);
+		String logLevel = line.substring(delimiter + 1, delimiter2);
+		int endDelimiter = 0;
+		int startIndex = delimiter2 + 1;
+		String message = new String();
+
+		// parse a possibly multiline log message
+		endDelimiter = line.indexOf("\t\t\t", delimiter2 + 1);
+		while (true) {
+			if (endDelimiter == -1) {
+				message += line.substring(startIndex) + "\n";
+			} else {
+				message += line.substring(startIndex, endDelimiter);
+				break;
+			}
+			line = reader.readLine();
+			// only the first line of a multiline log  message doesn't begin
+			// at the start of the line in the log file (there's the time stamp
+			// and log level first), so for every following line set the 
+			// startIndex to 0 and search for the end delimiter from the
+			// beginning of the line.
+			startIndex = 0;
+			endDelimiter = line.indexOf("\t\t\t");
+		}
+		
+		return new LogMessagePart(timestamp, logLevel, message);
+!!!504962.java!!!	createLogRecord(inout logPart : LogMessagePart, in context : String, in taskID : String, in hostname : String) : LogRecord
+		try {
+			SimpleDateFormat format = (SimpleDateFormat) DateFormat.getDateTimeInstance();
+			format.applyPattern("dd.MM.yyyy HH:mm:ss.SSS");
+
+			return new LogRecord(context, 
+					taskID, 
+					hostname,
+					format.parse(logPart.getTimestamp()),
+					LogLevel.valueOf(logPart.getLevel()),
+					logPart.getMessage());
+		} catch (ParseException e) {
+			throw new LogStorageException("Cannot parse timestamp in the log file: " 
+					+ e.getMessage(),
+					e);
+		}
+
+!!!505090.java!!!	getHostname(inout taskDir : File) : String
+		File hostnameFile = new File(taskDir, HOSTNAME_FILE);
+		BufferedReader hostnameReader;
+		try {
+			hostnameReader = new BufferedReader(new FileReader(hostnameFile));
+			return hostnameReader.readLine();
+		} catch (FileNotFoundException e) {
+			throw new IllegalArgumentException("Hostname for the task wasn't set");
+		} catch (IOException e) {
+			throw new LogStorageException("Cannot read the hostname from the file:" 
+					+ hostnameFile.getAbsolutePath());
+		}
+!!!505218.java!!!	checkTaskAndContextId(in context : String, in taskID : String) : void
+		if (context == null) {
+			throw new NullPointerException("Context name is null");
+		}
+		if (context.equals("")) {
+			throw new IllegalArgumentException("Context name is empty");
+		}
+		if (taskID == null) {
+			throw new NullPointerException("Task ID is null");
+		}
+		if (taskID.equals("")) {
+			throw new IllegalArgumentException("Task ID is empty");
+		}

@@ -1,0 +1,20 @@
+class ArrayUtils
+!!!241922.java!!!	join(in token : String, inout objects : Object) : String
+		StringBuffer sb = new StringBuffer();
+
+		for(int x = 0; x < (objects.length - 1 ); x++) {
+			sb.append(objects[x].toString());
+			sb.append(token);
+		}
+		sb.append(objects[objects.length - 1]);
+
+		return(sb.toString());
+!!!242050.java!!!	reverse(inout b : T) : void
+		int left = 0;
+		int right = 0;
+		for (left=0, right=b.length-1; left<right; left++, right--) {
+		    // exchange the first and last
+		    T temp = b[left]; 
+		    b[left]  = b[right]; 
+		    b[right] = temp;
+		}

@@ -1,0 +1,28 @@
+class VariableReplacer
+!!!254210.java!!!	replace(in s : String, inout valueProvider : ValueProvider) : String
+		if (!s.matches(STRING_PATTERN)) {
+			throw new IllegalArgumentException("Invalid input syntax.");
+		}
+		
+		Pattern p = Pattern.compile(VAR_PATTERN);
+		Matcher m = p.matcher(s);
+		StringBuffer sb = new StringBuffer();
+		while (m.find()) {
+			String value = valueProvider.getValue(m.group(1));
+			if (value == null) {
+				throw new IllegalArgumentException("Undefined variable: " + m.group(1));
+			}
+			m.appendReplacement(sb, Matcher.quoteReplacement(value));
+		}
+		m.appendTail(sb);
+		return sb.toString();
+!!!254338.java!!!	replace(inout properties : Properties, inout valueProvider : ValueProvider) : Properties
+		Properties result = new Properties();
+		for (Enumeration e = properties.propertyNames(); e.hasMoreElements(); ) {
+			String propertyName = (String) e.nextElement();
+			result.setProperty(
+				propertyName,
+				replace(properties.getProperty(propertyName), valueProvider)
+			);
+		}
+		return result;

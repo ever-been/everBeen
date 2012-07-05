@@ -1,0 +1,70 @@
+class NetworkAdapter
+!!!373506.java!!!	NetworkAdapter(in name : String, in vendor : String, in type : String, in adapterMAC : String)
+		
+		super(HostInfoInterface.Objects.ADAPTER, null);
+
+		this.name = name;
+		this.vendor = vendor;
+		this.type = type;
+		this.macAddress = adapterMAC;
+		
+		try {
+			putProperty(Properties.NAME, new ValueString(this.name));
+			putProperty(Properties.VENDOR, new ValueString(this.vendor));
+			putProperty(Properties.TYPE, new ValueString(this.type));
+			putProperty(Properties.MAC_ADDRESS, new ValueString(this.macAddress));
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+			assert false : "Unable to add properties to NetworkAdapter.";
+		}
+!!!373634.java!!!	NetworkAdapter(inout adapterNode : Node)
+		
+		super(HostInfoInterface.Objects.ADAPTER, null);
+
+		parseXMLNode(adapterNode);
+!!!373762.java!!!	parseXMLNode(inout node : Node) : void
+
+		name = XMLHelper.getSubNodeValueByName("name", node);
+		vendor = XMLHelper.getSubNodeValueByName("vendor", node);
+		type = XMLHelper.getSubNodeValueByName("adapterType", node);
+		macAddress = XMLHelper.getSubNodeValueByName("macAddress", node);
+		
+		try {
+			putProperty(Properties.NAME, new ValueString(name));
+			putProperty(Properties.VENDOR, new ValueString(vendor));
+			putProperty(Properties.TYPE, new ValueString(type));
+			putProperty(Properties.MAC_ADDRESS, new ValueString(macAddress));
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+			assert false : "Unable to add properties to NetworkAdapter.";
+		}
+!!!373890.java!!!	getName() : String
+		
+		return name;
+!!!374018.java!!!	getVendor() : String
+		
+		return vendor;
+!!!374146.java!!!	getType() : String
+		
+		return type;
+!!!374274.java!!!	getMacAddress() : String
+		
+		return macAddress;
+!!!374402.java!!!	exportAsElement(inout document : Document) : Element
+		
+		Element networkAdapterElement = document.createElement("networkAdapter");
+		
+		networkAdapterElement.appendChild(XMLHelper.writeValueToElement(document, name, "name"));
+		networkAdapterElement.appendChild(XMLHelper.writeValueToElement(document, vendor, "vendor"));
+		networkAdapterElement.appendChild(XMLHelper.writeValueToElement(document, type, "adapterType"));
+		networkAdapterElement.appendChild(XMLHelper.writeValueToElement(document, macAddress, "macAddress"));
+		
+		return networkAdapterElement;
+!!!374530.java!!!	toString() : String
+		
+		return name;
+!!!374658.java!!!	getXMLNodeName() : String
+		
+		return "networkAdapter";

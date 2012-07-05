@@ -1,0 +1,5 @@
+class NameSimpleProperty
+!!!846210.java!!!	getValue() : Object
+ return name;
+!!!846338.java!!!	getValueClass() : Class
+ return String.class;

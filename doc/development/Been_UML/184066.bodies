@@ -1,0 +1,126 @@
+class TasksPortImplementation
+!!!493954.java!!!	TasksPortImplementation(inout task : TaskImplementation)
+		this.task = task;
+		
+		hostRuntimesPort = task.getHostRuntime().getHostRuntimesPort();
+!!!494082.java!!!	getTaskDirectory(in contextID : String, in taskID : String) : String
+		return task.getHostRuntime().getTaskDirectoryForTask(contextID, taskID);
+!!!494210.java!!!	getWorkingDirectory(in contextID : String, in taskID : String) : String
+		return task.getHostRuntime().getWorkingDirectoryForTask(contextID, taskID);
+!!!494338.java!!!	getTemporaryDirectory(in contextID : String, in taskID : String) : String
+		return task.getHostRuntime().getTemporaryDirectoryForTask(contextID, taskID);
+!!!494466.java!!!	getTaskProperties() : Properties
+		VariableReplacer.ValueProvider valueProvider = new ValueProvider() {
+			public String getValue(String variableName) {
+				String[] parts = variableName.split(":");
+				if (parts.length != 2) {
+					return null; 
+				}
+				
+				try {
+					if (parts[1].equals("taskDirectory")) {
+						return getTaskDirectory(task.getTaskDescriptor().getContextId(), parts[0]);
+					} else if (parts[1].equals("temporaryDirectory")) {
+						return getTemporaryDirectory(task.getTaskDescriptor().getContextId(), parts[0]);
+					} else if (parts[1].equals("workingDirectory")) {
+						return getWorkingDirectory(task.getTaskDescriptor().getContextId(), parts[0]);
+					} else {
+						return null;
+					}
+				} catch (RemoteException e) {
+					return null;
+				}
+			}
+		};
+				
+		return VariableReplacer.replace(
+			task.getTaskDescriptor().getTaskProperties(),
+			valueProvider
+		);
+!!!494594.java!!!	getTaskPropertyObjects() : Serializable
+		TaskPropertyObject[] propertyObjects = task.getTaskDescriptor().getTaskPropertyObjects();
+		HashMap<String, Serializable> result = new HashMap<String, Serializable>();
+		for (TaskPropertyObject propertyObject : propertyObjects) {
+			result.put(propertyObject.getKey(), propertyObject.getValue());
+		}
+		return result;
+!!!494722.java!!!	runTask(inout taskDescriptor : TaskDescriptor) : void
+		task.getHostRuntime().getTaskManager().runTask(taskDescriptor);
+!!!494850.java!!!	runTaskImmediately(inout taskDescriptor : TaskDescriptor) : void
+		task.getHostRuntime().getTaskManager().runTaskImmediately(taskDescriptor);
+!!!494978.java!!!	runTasks(inout taskDescriptor : TaskDescriptor) : void
+		task.getHostRuntime().getTaskManager().runTask(taskDescriptor);
+!!!495106.java!!!	newContext(in id : String, in name : String, in description : String, inout data : Serializable) : void
+		task.getHostRuntime().getTaskManager().newContext(id, name, description, data);
+!!!495234.java!!!	endContext(in id : String) : void
+		task.getHostRuntime().getTaskManager().closeContext(id);
+!!!495362.java!!!	getRegisteredHostRuntimes() : String
+		return task.getHostRuntime().getTaskManager().getRegisteredHostRuntimes();
+!!!495490.java!!!	registerEventListener(inout listener : HostRuntimeRegistrationListener) : void
+		task.getHostRuntime().getTaskManager().registerEventListener(listener);
+!!!495618.java!!!	unregisterEventListener(inout listener : HostRuntimeRegistrationListener) : void
+		task.getHostRuntime().getTaskManager().unregisterEventListener(listener);
+!!!495746.java!!!	log(inout level : LogLevel, inout timestamp : Date, in message : String) : void
+		task.log(level, timestamp, message);
+!!!495874.java!!!	getLogsForTask(in context : String, in taskID : String) : LogRecord
+		return task.getHostRuntime().getTaskManager().getLogsForTask(context, taskID);
+!!!496002.java!!!	getStandardOutput(in context : String, in taskID : String) : OutputHandle
+		return task.getHostRuntime().getTaskManager().getStandardOutput(context, taskID);
+!!!496130.java!!!	getErrorOutput(in context : String, in taskID : String) : OutputHandle
+		return task.getHostRuntime().getTaskManager().getErrorOutput(context, taskID);
+!!!496258.java!!!	checkPointReached(in name : String, inout value : Serializable) : void
+		CheckPoint checkPoint = new CheckPoint(
+			task.getTaskDescriptor().getTaskTid(),
+			task.getTaskDescriptor().getContextId(),
+			name,
+			value
+		);
+		checkPoint.setHostName(task.getTaskDescriptor().getHostRuntimesName()[0]);
+		hostRuntimesPort.checkPointReached(checkPoint);
+
+		task.writeMessage("Checkpoint \"" + checkPoint.getName()
+			+ "\" set to \"" + checkPoint.getValue() + "\".");
+!!!496386.java!!!	checkPointWait(in contextID : String, in taskID : String, in name : String, in timeout : long) : Serializable
+		/* If context is null, use the context of the calling task. */
+		String realContextID = contextID != null
+			? contextID
+			: task.getTaskDescriptor().getContextId();
+
+		try {
+			CheckPoint[] checkPoints = hostRuntimesPort.checkPointLook(
+					new CheckPoint(taskID, realContextID, name, null),
+					timeout
+			);
+		
+			if (checkPoints.length > 0) {
+				return checkPoints[0].getValue();
+			} else {
+				return null;
+			}
+		} catch (TaskManagerException e) {
+			return null;
+		}
+!!!496514.java!!!	serviceRegister(inout service : ServiceEntry) : void
+		hostRuntimesPort.serviceRegister(service);
+!!!496642.java!!!	serviceUnregister(inout serviceTemplate : ServiceEntry) : void
+		hostRuntimesPort.serviceUnregister(new ServiceEntry(
+			serviceTemplate.getServiceName(),
+			serviceTemplate.getInterfaceName(),
+			serviceTemplate.getRmiAddress(),
+			null, null, null)
+		);
+!!!496770.java!!!	serviceFind(in serviceName : String, in interfaceName : String) : Remote
+		return hostRuntimesPort.serviceFind(serviceName, interfaceName);
+!!!496898.java!!!	serviceFindAll() : ServiceEntry
+		return hostRuntimesPort.serviceLook(new ServiceEntry(
+			null,
+			"main",
+			null,
+			null,
+			null,
+			null
+		));
+!!!497026.java!!!	getTaskDescriptor() : TaskDescriptor
+		return task.getTaskDescriptor();
+!!!497154.java!!!	getTaskById(in taskId : String, in contextId : String) : TaskEntry
+		return task.getHostRuntime().getTaskManager().getTaskById(taskId, contextId);

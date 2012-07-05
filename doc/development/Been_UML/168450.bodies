@@ -1,0 +1,4 @@
+class ReadOnlyIterator
+!!!347266.java!!!	remove() : void
+			
+			throw new UnsupportedOperationException("remove is not supported for read-only iterators.");

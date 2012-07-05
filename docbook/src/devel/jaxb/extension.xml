@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sect1
+	xml:id="been.devel.jaxb.extension"
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>Adding an XML Schema</title>
+	
+	<para>This section lists the steps you need to take to add a new XML Schema definition to BEEN's
+	XML listings.</para>
+	
+	<orderedlist>
+	<listitem><para>Write your XSD file(s). Make sure you use the shared definitions
+	(<filename>attrtypes.xsd</filename>, <filename>common.xsd</filename>,
+	<filename>strbin.xsd</filename>) where applicable, instead of redefining similar data types.
+	Always use an XML namespace consistent with namespaces used by other BEEN schema files.
+	The <option>&lt;include&gt;</option>d ("chameleon") files are the only possible
+	exception.</para></listitem>
+	<listitem><para>Place your new files in the <package>cz.cuni.mff.been.jaxb</package> package
+	directory.</para></listitem>
+	<listitem><para>Add entries for your new files into the <classname>XSDFile</classname> enumeration.
+	File names should not contain any path information.</para></listitem>
+	<listitem><para>Add an entry for your schema into the <classname>XSD</classname> enumeration.
+	The constructor of the entry is parametrized with the namespace URI and a variadic list of all
+	files needed to instantiate the schema. It is likely that <option>&lt;include&gt;</option>d
+	files need not be mentioned, whereas <option>&lt;import&gt;</option>ed files must be on the
+	list. However, it is definitely a good idea to list all the files, no matter how your schema
+	depends on them.</para></listitem>
+	<listitem><para>Test it. Try to obtain parsers and composers from your new <classname>XSD</classname>
+	enumeration member. Errors that occur during schema and context instantiation are reported on
+	error output and also logged (when run from a <glossterm>task</glossterm>). Do not forget
+	to include the namespace in all your XML data. When you see the <emphasis>element definition
+	not found</emphasis> errors, it is probably a namespace issue.</para></listitem>
+	</orderedlist>
+</sect1>

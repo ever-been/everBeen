@@ -1,0 +1,19 @@
+class Replace
+!!!259970.java!!!	Replace()
+		// dummy ant project
+		Project antProject = new Project();
+		antProject.init();
+		setProject(antProject);
+		// dummy ant target
+		setOwningTarget(null);
+!!!260098.java!!!	replace(in sourceFile : String, in token : String, in value : String) : void
+		Replace replace = new Replace();
+		replace.setFile(new File(sourceFile));
+		replace.setToken(token);
+		replace.setValue(value);
+		try {
+			replace.execute();
+		} catch (Exception e) {
+			throw new AntTaskException("Unable to perform token substitution: "
+				+ e.getMessage());
+		}

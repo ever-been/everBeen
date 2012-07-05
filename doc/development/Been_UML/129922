@@ -1,0 +1,1318 @@
+format 59
+"scheduler" // been::src::cz::cuni::mff::been::apps::scheduler
+  revision 1
+  modified_by 2 "Administrator"
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default show_stereotype_properties default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+  show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+  show_infonote default drawing_language default show_stereotype_properties default
+  
+  java_dir "cz/cuni/mff/been/apps/scheduler"
+  java_package "cz.cuni.mff.been.apps.scheduler"
+  classview 129154 "scheduler"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default show_stereotype_properties default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+    //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+    show_infonote default drawing_language default show_stereotype_properties default
+    class 132098 "ScheduledJobListener"
+      visibility public stereotype "interface"
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}interface ${name}${extends} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+The listener interface for performing scheduled jobs
+
+@author Michal Tomcanyi
+"
+      operation 140290 "runJob"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "entry" type class_ref 132226 // SchedulerEntry
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Invoked to perform scheduled job
+"
+      end
+    end
+
+    class 132226 "SchedulerEntry"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+This class represents the attributes of an alarm.
+
+@author  Rob Whelan, Olivier Dedieu, David Sims, Simon B?cot, Jim Lerner
+@author 	Michal Tomcanyi
+"
+      classrelation 157698 // <realization>
+	relation 157698 -_-|>
+	  a public
+	    java "${type}<SchedulerEntry>"
+	    classrelation_ref 157698 // <realization>
+	  b parent class_ref 148098 // Comparable
+      end
+
+      classrelation 157826 // <realization>
+	relation 157826 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 157826 // <realization>
+	  b parent class_ref 148226 // Serializable
+      end
+
+      attribute 167682 "minutes"
+	private explicit_type "int"
+	multiplicity "[]"
+	init_value "=  {-1}"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 167810 "minMinute"
+	class_attribute private explicit_type "int"
+	init_value "=  0"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 167938 "maxMinute"
+	class_attribute private explicit_type "int"
+	init_value "=  59"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 168066 "hours"
+	private explicit_type "int"
+	multiplicity "[]"
+	init_value "=  {-1}"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 168194 "minHour"
+	class_attribute private explicit_type "int"
+	init_value "=  0"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 168322 "maxHour"
+	class_attribute private explicit_type "int"
+	init_value "=  23"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 168450 "daysOfMonth"
+	private explicit_type "int"
+	multiplicity "[]"
+	init_value "=  {-1}"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 168578 "minDayOfMonth"
+	class_attribute private explicit_type "int"
+	init_value "=  1"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 168706 "months"
+	private explicit_type "int"
+	multiplicity "[]"
+	init_value "=  {-1}"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " maxDayOfMonth varies by month
+"
+      end
+
+      attribute 168834 "minMonth"
+	class_attribute private explicit_type "int"
+	init_value "=  0"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 168962 "maxMonth"
+	class_attribute private explicit_type "int"
+	init_value "=  11"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 169090 "daysOfWeek"
+	private explicit_type "int"
+	multiplicity "[]"
+	init_value "=  {-1}"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 169218 "minDayOfWeek"
+	class_attribute private explicit_type "int"
+	init_value "=  1"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 169346 "maxDayOfWeek"
+	class_attribute private explicit_type "int"
+	init_value "=  7"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 169474 "year"
+	private explicit_type "int"
+	init_value "=  -1"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " no support for a list of years -- must be * or specified"
+      end
+
+      classrelation 157954 // data (<unidirectional association>)
+	relation 157954 --->
+	  a role_name "data" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 157954 // data (<unidirectional association>)
+	  b parent class_ref 148226 // Serializable
+      end
+
+      attribute 169602 "isRelative"
+	private explicit_type "boolean"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 169730 "isRepeating"
+	public explicit_type "boolean"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 169858 "alarmTime"
+	public explicit_type "long"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 169986 "lastUpdateTime"
+	private explicit_type "long"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 158082 // listener (<unidirectional association>)
+	relation 158082 --->
+	  a role_name "listener" private
+	    transient
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 158082 // listener (<unidirectional association>)
+	  b parent class_ref 132098 // ScheduledJobListener
+      end
+
+      operation 233858 "SchedulerEntry"
+	public explicit_return_type ""
+	nparams 3
+	  param inout name "data" type class_ref 148226 // Serializable
+	  param inout name "date" explicit_type "Date"
+	  param inout name "listener" type class_ref 132098 // ScheduledJobListener
+	nexceptions 1
+	  exception class_ref 144002 // PastDateException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Creates a new SchedulerEntry.  Fixed date format: this alarm will happen once, at
+the time stamp given.
+
+@param data user-defined data
+@param date the alarm date to be added.
+@param listener the alarm listener.
+@exception PastDateException if the alarm date is in the past
+(or less than 1 second away from the current date).
+"
+      end
+
+      operation 233986 "SchedulerEntry"
+	public explicit_return_type ""
+	nparams 4
+	  param inout name "data" type class_ref 148226 // Serializable
+	  param in name "minutesDelay" explicit_type "int"
+	  param inout name "isRepeating" explicit_type "boolean"
+	  param inout name "listener" type class_ref 132098 // ScheduledJobListener
+	nexceptions 1
+	  exception class_ref 144002 // PastDateException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Creates a new SchedulerEntry.  Delay format: this alarm will happen once or
+repeatedly, at increments of the number of minutes given.
+
+@param data user-defined data
+@param minutesDelay the alarm delay in minutes (relative to now).
+@param isRepeating <code>true</code> if the alarm must be
+reactivated, <code>false</code> otherwise.
+@param listener the alarm listener.
+@exception PastDateException if the alarm date is in the past
+(or less than 1 second closed to the current date).
+"
+      end
+
+      operation 234114 "SchedulerEntry"
+	public explicit_return_type ""
+	nparams 8
+	  param inout name "data" type class_ref 148226 // Serializable
+	  param in name "minute" explicit_type "int"
+	  param in name "hour" explicit_type "int"
+	  param in name "dayOfMonth" explicit_type "int"
+	  param in name "month" explicit_type "int"
+	  param in name "dayOfWeek" explicit_type "int"
+	  param in name "year" explicit_type "int"
+	  param inout name "listener" type class_ref 132098 // ScheduledJobListener
+	nexceptions 1
+	  exception class_ref 144002 // PastDateException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}, ${t5} ${p5}, ${t6} ${p6}, ${t7} ${p7}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+<p>Creates a new SchedulerEntry.  Basic cron format - use each field to
+restrict alarms to a specific minute, hour, etc. OR pass in -1 to allow
+all values of that field.</p>
+
+<p>Params of (30, 13, -1, -1, 2, -1, listener) schedule an alarm for
+1:30pm every Monday.</p>
+
+<p>NOTE: if both dayOfMonth and dayOfWeek are restricted, each alarm will
+be scheduled for the sooner match.</p>
+
+@param minute minute of the alarm. Allowed values 0-59.
+@param hour hour of the alarm. Allowed values 0-23.
+@param dayOfMonth day of month of the alarm (-1 if every
+day). Allowed values 1-31.
+@param month month of the alarm (-1 if every month). Allowed values
+0-11 (0 = January, 1 = February, ...). <code>java.util.Calendar</code>
+constants can be used.
+@param dayOfWeek day of week of the alarm (-1 if every day). This
+attribute is exclusive with <code>dayOfMonth</code>. Allowed values 1-7
+(1 = Sunday, 2 = Monday, ...). <code>java.util.Calendar</code> constants
+can be used.
+@param year year of the alarm. When this field is not set (i.e. -1)
+the alarm is repetitive (i.e. it is rescheduled when reached).
+@param listener the alarm listener.
+@exception PastDateException if the alarm date is in the past
+(or less than 1 second away from the current date).
+"
+      end
+
+      operation 234242 "SchedulerEntry"
+	public explicit_return_type ""
+	nparams 8
+	  param inout name "data" type class_ref 148226 // Serializable
+	  param in name "minutes" explicit_type "int"
+	  param in name "hours" explicit_type "int"
+	  param in name "daysOfMonth" explicit_type "int"
+	  param in name "months" explicit_type "int"
+	  param in name "daysOfWeek" explicit_type "int"
+	  param in name "year" explicit_type "int"
+	  param inout name "listener" type class_ref 132098 // ScheduledJobListener
+	nexceptions 1
+	  exception class_ref 144002 // PastDateException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1}[] ${p1}, ${t2}[] ${p2}, ${t3}[] ${p3}, ${t4}[] ${p4}, ${t5}[] ${p5}, ${t6} ${p6}, ${t7} ${p7}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+<p>Creates a new SchedulerEntry.  Extended cron format - supports lists
+of values for each field, or {-1} to allow all values for that field.</p>
+
+<p>Params of (30, 13, -1, -1, 2, -1, listener) schedule an alarm for
+1:30pm every Monday.</p>
+
+<p>NOTE: if both dayOfMonth and dayOfWeek are restricted, each alarm will
+be scheduled for the sooner match.</p>
+
+@param minutes valid minutes of the alarm. Allowed values
+0-59, or {-1} for all.
+@param hours valid hours of the alarm. Allowed values 0-23,
+or {-1} for all.
+@param daysOfMonth valid days of month of the alarm.  Allowed
+values 1-31, or {-1} for all.
+@param months valid months of the alarm. Allowed values
+0-11 (0 = January, 1 = February, ...), or {-1} for all.
+<code>java.util.Calendar</code> constants can be used.
+@param daysOfWeek valid days of week of the alarm. This attribute
+is exclusive with <code>dayOfMonth</code>. Allowed values 1-7
+(1 = Sunday, 2 = Monday, ...), or {-1} for all.
+<code>java.util.Calendar</code> constants can be used.
+@param year year of the alarm. When this field is not set (i.e. -1)
+the alarm is repetitive (i.e. it is rescheduled when reached).
+@param listener the alarm listener.
+@exception PastDateException if the alarm date is in the past
+(or less than 1 second away from the current date).
+"
+      end
+
+      operation 234370 "isRepeating"
+	public explicit_return_type "boolean"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return true when the entry is repeating
+"
+      end
+
+      operation 234498 "getData"
+	public return_type class_ref 148226 // Serializable
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return Data load assigned to the entry
+"
+      end
+
+      operation 234626 "checkAlarmTime"
+	package explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  exception class_ref 144002 // PastDateException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Checks that alarm is not in the past, or less than 1 second
+away.
+
+@exception PastDateException if the alarm date is in the past
+(or less than 100 milliseconds in the future).
+"
+      end
+
+      operation 234754 "startScheduledJob"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Notifies the listener.
+"
+      end
+
+      operation 234882 "updateAlarmTime"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Updates this alarm entry to the next valid alarm time, AFTER the current time.
+"
+      end
+
+      operation 235010 "getAlarmTime"
+	public explicit_return_type "long"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return	Time when next alarm takes place
+"
+      end
+
+      operation 235138 "updateAlarmTime"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "time" explicit_type "long"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Updates this alarm entry to the next valid alarm time, AFTER the <code>time</code>.
+"
+      end
+
+      operation 235266 "updateDayOfMonthAndMonth"
+	package explicit_return_type "void"
+	nparams 1
+	  param inout name "alarm" explicit_type "Calendar"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+daysInMonth can't use simple offsets like the other fields, because the
+number of days varies per month (think of an alarm that executes on every
+31st).  Instead we advance month and dayInMonth together until we're on a
+matching value pair.
+"
+      end
+
+      operation 235394 "updateDayOfWeekAndMonth"
+	package explicit_return_type "void"
+	nparams 1
+	  param inout name "alarm" explicit_type "Calendar"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 235522 "getOffsetToNext"
+	class_operation package explicit_return_type "int"
+	nparams 4
+	  param in name "current" explicit_type "int"
+	  param in name "min" explicit_type "int"
+	  param in name "max" explicit_type "int"
+	  param in name "values" explicit_type "int"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3}[] ${p3}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " ----------------------------------------------------------------------
+                      General utility methods
+ ----------------------------------------------------------------------
+
+if values = {-1}
+  offset is 1 (because next value definitely matches)
+if current < last(values)
+  offset is diff to next valid value
+if current >= last(values)
+  offset is diff to values[0], wrapping from max to min
+"
+      end
+
+      operation 235650 "getOffsetToNextOrEqual"
+	class_operation package explicit_return_type "int"
+	nparams 4
+	  param in name "current" explicit_type "int"
+	  param in name "min" explicit_type "int"
+	  param in name "max" explicit_type "int"
+	  param in name "values" explicit_type "int"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3}[] ${p3}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+if values = {-1} or current is valid
+  offset is 0.
+if current < last(values)
+  offset is diff to next valid value
+if current >= last(values)
+  offset is diff to values[0], wrapping from max to min
+"
+      end
+
+      operation 235778 "isIn"
+	class_operation package explicit_return_type "boolean"
+	nparams 2
+	  param in name "find" explicit_type "int"
+	  param in name "values" explicit_type "int"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1}[] ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+handles -1 in values as * and returns true
+otherwise returns true iff given value is in the array
+"
+      end
+
+      operation 235906 "last"
+	class_operation package explicit_return_type "int"
+	nparams 1
+	  param in name "intArray" explicit_type "int"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0}[] ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return the last int in the array
+"
+      end
+
+      operation 236034 "discardValuesOverMax"
+	class_operation package explicit_return_type "int"
+	nparams 2
+	  param in name "values" explicit_type "int"
+	  param in name "max" explicit_type "int"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${t0}[] ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Assumes input values are not null, have at least one value, and are in
+ascending order.
+@return  copy of values without any trailing values that exceed the max
+"
+      end
+
+      operation 236162 "arrToString"
+	class_operation private explicit_return_type "String"
+	nparams 1
+	  param in name "intArray" explicit_type "int"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0}[] ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 236290 "compareTo"
+	public explicit_return_type "int"
+	nparams 1
+	  param inout name "other" type class_ref 132226 // SchedulerEntry
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " ----------------------------------------------------------------------
+                      Comparable interface
+ ----------------------------------------------------------------------
+
+Compares this SchedulerEntry with the specified SchedulerEntry for order.
+One twist -- if the alarmTime matches, this alarm will STILL place
+itself before the other based on the lastUpdateTime.  If the other 
+alarm has been rung more recently, this one should get priority.
+
+@param other the SchedulerEntry with which to compare.
+@return a negative integer, zero, or a positive integer as this
+SchedulerEntry is less than, equal to, or greater than the given
+SchedulerEntry.
+@exception ClassCastException if the specified Object's type
+prevents it from being compared to this SchedulerEntry.
+"
+      end
+
+      operation 236418 "equals"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "obj" explicit_type "Object"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+Two entries are equal when they have the same schedule and carry the same data
+"
+      end
+
+      operation 236546 "toString"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+@return a string representation of this alarm.
+"
+      end
+
+      operation 236674 "main"
+	class_operation public explicit_return_type "void"
+	nparams 1
+	  param in name "args" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0}[] ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+some unit testing...
+"
+      end
+    end
+
+    class 133250 "Scheduler"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Cron-like scheduler for running regression experiments
+Listeners are started in separate threads
+
+@author Michal Tomcanyi 
+@author Branislav Repcek
+"
+      classrelation 157058 // <generalisation>
+	relation 157058 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 157058 // <generalisation>
+	  b parent class_ref 132482 // Thread
+      end
+
+      class 147842 "SchedulerQueue"
+	visibility private 
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	classrelation 157186 // list (<unidirectional association>)
+	  relation 157186 --->
+	    stereotype "LinkedList"
+	    a role_name "list" private
+	      comment "
+Container for entries
+
+"
+	      java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}< ${type} > ${name}${value};
+"
+	      classrelation_ref 157186 // list (<unidirectional association>)
+	    b parent class_ref 132226 // SchedulerEntry
+	end
+
+	operation 231554 "SchedulerQueue"
+	  public explicit_return_type ""
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Creates new SchedulerQueue instance
+"
+	end
+
+	operation 231682 "add"
+	  public explicit_return_type "void"
+	  nparams 1
+	    param inout name "entry" type class_ref 132226 // SchedulerEntry
+	  
+	  preserve_java_body_indent synchronized java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Adds the entry to correct position according to its next
+execution time. Uses binary search (O(log(n)).
+
+If more entries with the same execution time exists in the queue
+their order defined( implies from usage of binary search algorithm) 
+
+Notifies thread sleeping on the queue
+
+@param entry	entry to add
+"
+	end
+
+	operation 231810 "first"
+	  public return_type class_ref 132226 // SchedulerEntry
+	  nparams 0
+	  
+	  preserve_java_body_indent synchronized java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+@return first entry in the queue
+"
+	end
+
+	operation 231938 "removeFirst"
+	  public return_type class_ref 132226 // SchedulerEntry
+	  nparams 0
+	  
+	  preserve_java_body_indent synchronized java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Removes the first entry in the queue
+Notifies thread sleeping on the queue
+@return the removed (first) entry
+"
+	end
+
+	operation 232066 "remove"
+	  public explicit_return_type "void"
+	  nparams 1
+	    param inout name "entry" type class_ref 132226 // SchedulerEntry
+	  
+	  preserve_java_body_indent synchronized java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Removes given entry if exists.
+Notifies thread sleeping on the queue, if the first entry is removed
+"
+	end
+
+	operation 232194 "isEmpty"
+	  public explicit_return_type "boolean"
+	  nparams 0
+	  
+	  preserve_java_body_indent synchronized java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+@return true when queue is empty
+"
+	end
+
+	operation 232322 "waitOnMe"
+	  public explicit_return_type "void"
+	  nparams 0
+	  nexceptions 1
+	    explicit_exception "InterruptedException"
+	  
+	  preserve_java_body_indent synchronized java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Wait method which allows scheduler to block on the queue
+@throws InterruptedException
+"
+	end
+
+	operation 232450 "waitOnMe"
+	  public explicit_return_type "void"
+	  nparams 1
+	    param in name "time" explicit_type "long"
+	  nexceptions 1
+	    explicit_exception "InterruptedException"
+	  
+	  preserve_java_body_indent synchronized java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Wait method with time parameter
+@param time	time to sleep
+@throws InterruptedException
+"
+	end
+
+	operation 232578 "getAllEntries"
+	  public return_type class_ref 132226 // SchedulerEntry
+	  nparams 0
+	  
+	  preserve_java_body_indent synchronized java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}List<${type}> ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+@return all registered scheduler entries
+"
+	end
+      end
+
+      class 147970 "EntryThread"
+	visibility private 
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	classrelation 157314 // <generalisation>
+	  relation 157314 ---|>
+	    a public
+	      java "${type}"
+	      classrelation_ref 157314 // <generalisation>
+	    b parent class_ref 132482 // Thread
+	end
+
+	classrelation 157442 // entry (<unidirectional association>)
+	  relation 157442 --->
+	    a role_name "entry" const_relation private
+	      java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	      classrelation_ref 157442 // entry (<unidirectional association>)
+	    b parent class_ref 132226 // SchedulerEntry
+	end
+
+	operation 232706 "EntryThread"
+	  public explicit_return_type ""
+	  nparams 1
+	    param inout name "entry" type class_ref 132226 // SchedulerEntry
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 232834 "run"
+	  public explicit_return_type "void"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  java_annotation "@Override
+"
+	  
+	  
+	  
+	end
+      end
+
+      classrelation 157570 // queue (<unidirectional association>)
+	relation 157570 --->
+	  a role_name "queue" private
+	    comment "
+Schedulers queue with registered entries
+
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 157570 // queue (<unidirectional association>)
+	  b parent class_ref 147842 // SchedulerQueue
+      end
+
+      operation 232962 "Scheduler"
+	public explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Creates scheduler running as daemon thread
+"
+      end
+
+      operation 233090 "Scheduler"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "isDaemon" explicit_type "boolean"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Creates new scheduler, automatically firing its main thread
+Daemon flag should be set to <code>true</code> except for testing cases
+@param isDaemon	starts scheduler as daemon
+"
+      end
+
+      operation 233218 "addEntry"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "entry" type class_ref 132226 // SchedulerEntry
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Adds new scheduler entry
+@param entry		entry to add
+"
+      end
+
+      operation 233346 "removeEntry"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "entry" type class_ref 132226 // SchedulerEntry
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Removes entry from scheduler
+@param entry entry to remove from the schedule
+"
+      end
+
+      operation 233474 "getAllEntries"
+	public return_type class_ref 132226 // SchedulerEntry
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}List<${type}> ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return	list of scheduled entries	
+"
+      end
+
+      operation 233602 "run"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+Main thread of scheduler
+Method returns when scheduler is interrupted
+"
+      end
+
+      operation 233730 "main"
+	class_operation public explicit_return_type "void"
+	nparams 1
+	  param in name "args" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "Exception"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0}[] ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Just for testing...
+"
+      end
+    end
+
+    class 144002 "PastDateException"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 156930 // <generalisation>
+	relation 156930 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 156930 // <generalisation>
+	  b parent class_ref 128258 // Exception
+      end
+    end
+  end
+
+  deploymentview 128386 "scheduler"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+    artifact 129410 "ScheduledJobListener"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+${definition}"
+      associated_classes
+	class_ref 132098 // ScheduledJobListener
+      end
+    end
+
+    artifact 138242 "PastDateException"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+${definition}"
+      associated_classes
+	class_ref 144002 // PastDateException
+      end
+    end
+
+    artifact 138370 "Scheduler"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.util.Collections;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+${definition}"
+      associated_classes
+	class_ref 133250 // Scheduler
+      end
+    end
+
+    artifact 138498 "SchedulerEntry"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+${definition}"
+      associated_classes
+	class_ref 132226 // SchedulerEntry
+      end
+    end
+  end
+end

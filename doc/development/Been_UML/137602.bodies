@@ -1,0 +1,12 @@
+class Status
+!!!793986.java!!!	Status(in name : String)
+			this.name = name;
+!!!794114.java!!!	toString() : String
+			return name;
+!!!794242.java!!!	fromString(in s : String) : Status
+			for (Status status: values()) {
+				if (status.name.equals(s)) {
+					return status;
+				}
+			}
+			throw new IllegalArgumentException("Invalid Status \"" + s + "\".");

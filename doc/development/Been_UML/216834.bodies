@@ -1,0 +1,66 @@
+class LessOrEqualConditionTest
+!!!814722.java!!!	testLongWithUnitParse() : void
+		assertEquals(
+			new LessOrEqualCondition<LongWithUnit>("a", new LongWithUnit(42, 'k', "Hz")),
+			ParserWrapper.parseString("a <= 42kHz")
+		);
+!!!814850.java!!!	testLongWithUnitTrue1() : void
+		assertTrue(Utils.eval("longProperty <= 43", context));
+!!!814978.java!!!	testLongWithUnitTrue2() : void
+		assertTrue(Utils.eval("longProperty <= 42", context));
+!!!815106.java!!!	testLongWithUnitFalse() : void
+		assertFalse(Utils.eval("longProperty <= 41", context));
+!!!815234.java!!!	testStringParse() : void
+		assertEquals(
+			new LessOrEqualCondition<String>("a", "42"),
+			ParserWrapper.parseString("a <= \"42\"")
+		);
+!!!815362.java!!!	testStringTrue1() : void
+		assertTrue(Utils.eval("stringProperty <= \"43\"", context));
+!!!815490.java!!!	testStringTrue2() : void
+		assertTrue(Utils.eval("stringProperty <= \"42\"", context));
+!!!815618.java!!!	testStringFalse() : void
+		assertFalse(Utils.eval("stringProperty <= \"41\"", context));
+!!!815746.java!!!	testVersionParse() : void
+		assertEquals(
+			new LessOrEqualCondition<Version>("a", new Version("42")),
+			ParserWrapper.parseString("a <= 42.0")
+		);
+!!!815874.java!!!	testVersionTrue1() : void
+		assertTrue(Utils.eval("versionProperty <= 43.0", context));
+!!!816002.java!!!	testVersionTrue2() : void
+		assertTrue(Utils.eval("versionProperty <= 42.0", context));
+!!!816130.java!!!	testVersionFalse() : void
+		assertFalse(Utils.eval("versionProperty <= 41.0", context));
+!!!816258.java!!!	testDateParse() : void
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeZone(TimeZone.getTimeZone("GMT"));
+		calendar.set(2006, 4, 17, 23, 30, 42);
+		calendar.setTimeInMillis((calendar.getTimeInMillis() / 1000) * 1000);
+		assertEquals(
+			new LessOrEqualCondition<Date>("dateProperty", calendar.getTime()),
+			ParserWrapper.parseString("dateProperty <= 2006-05-17T23:30:42Z")
+		);
+!!!816386.java!!!	testDateTrue1() : void
+		assertTrue(Utils.eval("dateProperty <= 2006-05-17T23:30:43Z", context));
+!!!816514.java!!!	testDateTrue2() : void
+		assertTrue(Utils.eval("dateProperty <= 2006-05-17T23:30:42Z", context));
+!!!816642.java!!!	testDateFalse() : void
+		assertFalse(Utils.eval("dateProperty <= 2006-05-17T23:30:41Z", context));
+!!!816770.java!!!	testPackageTypeParse() : void
+		assertEquals(
+			new LessOrEqualCondition<PackageType>("a", PackageType.realValueOf("source")),
+			ParserWrapper.parseString("a <= source")
+		);
+!!!816898.java!!!	testPackageTypeFail() : void
+		try {
+			Utils.eval("packageTypeProperty <= source", context);
+			fail();
+		} catch (InvalidOperatorException e) {
+			/* Eat it. */
+		}
+!!!817026.java!!!	testToString() : void
+		assertEquals(
+			"a <= 42",
+			ParserWrapper.parseString("a <= 42").toString()
+		);

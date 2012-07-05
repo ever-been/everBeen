@@ -1,0 +1,38 @@
+class TaskPathBuilder
+!!!252418.java!!!	TaskPathBuilder(inout useWindowsSeparator : boolean)
+		separator = useWindowsSeparator ? "\\" : "/";
+!!!252546.java!!!	addWorking(in taskTID : String) : TaskPathBuilder
+		checkValidTid(taskTID);
+		path.append("${").append(taskTID).append(WORKING_DIR).append("}");
+		return this;
+!!!252674.java!!!	addTemp(in taskTID : String) : TaskPathBuilder
+		checkValidTid(taskTID);
+		path.append("${").append(taskTID).append(TEMP_DIR).append("}");
+		return this;
+!!!252802.java!!!	addTask(in taskTID : String) : TaskPathBuilder
+		checkValidTid(taskTID);
+		path.append("${").append(taskTID).append(TASK_DIR).append("}");
+		return this;
+!!!252930.java!!!	add(in element : String) : TaskPathBuilder
+		if (StringUtils.isEmpty(element)) {
+			// nothing to do
+			return this;
+		}
+		
+		addSeparator();
+		path.append(element);
+		
+		return this;
+!!!253058.java!!!	addSeparator() : TaskPathBuilder
+		path.append(separator);
+		return this;
+!!!253186.java!!!	get() : String
+		return path.toString();
+!!!253314.java!!!	clean() : String
+		String p = path.toString();
+		path.delete(0, path.length());
+		return p;
+!!!253442.java!!!	checkValidTid(in tid : String) : void
+		if (StringUtils.isEmpty(tid)) {
+			throw new IllegalArgumentException("Invalid value of TID: " + tid);
+		}

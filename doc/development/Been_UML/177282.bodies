@@ -1,0 +1,43 @@
+class EventStorageListener
+!!!403842.java!!!	EventStorageListener(inout appData : HostManagerApplicationData)
+			
+		super();
+		
+		this.logger = appData.getLogger();
+		this.appData = appData;
+!!!403970.java!!!	onAccept(inout event : LoadMonitorEvent) : void
+
+		try {
+			String eventFileName = appData.getDatabase().getLoadFilePath(event.getHostName());
+
+			LoadFileParser< LoadMonitorEvent > eventWriter = 
+				new LoadFileParser< LoadMonitorEvent >(eventFileName, true, LoadMonitorEvent.class);
+			
+			long loadFilePos = eventWriter.getPosition();
+			
+			// Write event to the load file.
+			eventWriter.append(event);
+			
+			eventWriter.close();
+			
+			String eventMapFileName = 
+				appData.getDatabase().getLoadMapFilePath(event.getHostName());
+		
+			LoadMapFile loadMapWriter = new LoadMapFile(eventMapFileName, true);
+			
+			loadMapWriter.append(new LoadMapFile.FileEntry(
+					event.getTimestamp(), 
+					loadFilePos, 
+					event.getType()));
+			
+			loadMapWriter.close();
+		} catch (HostManagerException e) {
+			logger.logError("Unable to append load data for host \""
+					+ event.getHostName() + "\".", e);
+		} catch (IOException e) {
+			logger.logError("Unable to append load data for host \""
+					+ event.getHostName() + "\".", e);
+		}
+!!!404098.java!!!	onReject(inout event : LoadMonitorEvent) : void
+		
+		// No events are rejected because we use empty filter. Nothing is needed here.

@@ -1,0 +1,41 @@
+class SofaDockRegistryService
+!!!659970.java!!!	SofaDockRegistryService()
+
+
+		super();
+!!!660098.java!!!	getName() : String
+
+		
+		return SERVICE_NAME;
+!!!660226.java!!!	start() : void
+
+		
+		logInfo("Starting Sofa Dock Registry service");
+		
+		setLogLevel(LogLevel.ALL);
+		
+		sofaRegistryPort = SofaCommon.validatePortNumberProperty(SofaCommon.PROPERTY_BEEN_SOFA_REGISTRY_PORT, 
+				SofaCommon.DEFAULT_SOFA_REGISTRY_PORT);
+		
+		logInfo("Registry port: " + sofaRegistryPort);
+		
+		logDebug("Starting RMI registry");
+		try {
+			registry = LocateRegistry.createRegistry(sofaRegistryPort);
+		} catch (RemoteException e) {
+			throw new TaskException("Unable to start RMI registry on port " + sofaRegistryPort, e);
+		}
+		logDebug("RMI registry started");
+		
+		try {
+			dockRegistry = new DeploymentDockRegistryImpl(registry, getLogger());
+		} catch (Exception e) {
+			System.out.println("EEk: " + e.getMessage());
+			throw new TaskException("Unable to start Dock Registry", e);
+		}
+		
+		logInfo("Sofa Deployment Dock Registry has been started successfully");
+		
+		checkPointReached(CHECKPOINT_REGISTRY_RUNNING, sofaRegistryPort);
+!!!660354.java!!!	stop() : void
+

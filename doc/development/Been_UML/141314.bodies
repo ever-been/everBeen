@@ -1,0 +1,16 @@
+class RegressionAnalysisEntity
+!!!183170.java!!!	RegressionAnalysisEntity(inout analysis : RegressionAnalysisMetadata)
+		super(analysis);
+		this.schedule = analysis.getSchedule();
+		this.lastRunDate = analysis.getLastRunDate();
+		this.nextRunDate = analysis.getNextRunDate();
+		this.model = analysis.getModelExperiment() != null ? 
+				new ExperimentEntity(analysis.getModelExperiment()) : null;
+!!!183298.java!!!	getSchedule() : SchedulerInfo
+		return schedule;
+!!!183426.java!!!	getLastRunDate() : long
+		return lastRunDate;
+!!!183554.java!!!	getNextRunDate() : long
+		return nextRunDate;
+!!!183682.java!!!	getModel() : ExperimentEntity
+		return model;

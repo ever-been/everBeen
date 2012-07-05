@@ -1,0 +1,8 @@
+class RScriptPackage
+!!!603138.java!!!	getName() : String
+		return name;
+!!!603266.java!!!	getDescription() : String
+		return description;
+!!!603394.java!!!	RScriptPackage(in name : String, in description : String)
+		this.name = name;
+		this.description = description;

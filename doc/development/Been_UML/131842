@@ -1,0 +1,757 @@
+format 59
+"simpletest" // been::src::cz::cuni::mff::been::apps::benchmarkmanager::plugins::simpletest
+  revision 1
+  modified_by 2 "Administrator"
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default show_stereotype_properties default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+  show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+  show_infonote default drawing_language default show_stereotype_properties default
+  
+  java_dir "cz/cuni/mff/been/apps/benchmarkmanager/plugins/simpletest"
+  java_package "cz.cuni.mff.been.apps.benchmarkmanager.plugins.simpletest"
+  classview 130818 "simpletest"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default show_stereotype_properties default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+    //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+    show_infonote default drawing_language default show_stereotype_properties default
+    class 144130 "SimpleTestConfigurator"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Configurator for a simple benchmark plugin test.
+
+@author Jaroslav Urban
+"
+      classrelation 151298 // <generalisation>
+	relation 151298 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 151298 // <generalisation>
+	  b parent class_ref 129282 // Configurator
+      end
+
+      class 144258 "ScreenID"
+	visibility private stereotype "enum"
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}${final}${abstract}enum ${name}${implements} {
+${items};
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	attribute 153218 "TEST_PROPERTIES"
+	  public type class_ref 144258 // ScreenID
+	  cpp_decl ""
+	  java_decl "  ${@}${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " Screen for setting properties of the test. 
+"
+	end
+
+	attribute 153346 "TEST_ROLE"
+	  public type class_ref 144258 // ScreenID
+	  cpp_decl ""
+	  java_decl "  ${@}${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " Screen for setting restrictions for the Test role. 
+"
+	end
+      end
+
+      attribute 153474 "lastScreen"
+	private explicit_type "int"
+	init_value "=  -1"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " 
+Last processed screen, it's used for preventing the user 
+from jumping more than 1 screen forward with the help of the 
+browser history.
+
+"
+      end
+
+      attribute 153602 "DEFAULT_WAIT_TIME"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  5"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 153730 "DEFAULT_HOST_COUNT"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  1"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 153858 "DEFAULT_RUN_COUNT"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  0"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 153986 "DEFAULT_BINARY_COUNT"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  0"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 151426 // rslTestRole (<unidirectional association>)
+	relation 151426 --->
+	  a role_name "rslTestRole" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 151426 // rslTestRole (<unidirectional association>)
+	  b parent class_ref 138242 // Condition
+      end
+
+      attribute 154114 "waitTime"
+	private explicit_type "int"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 154242 "hostCount"
+	private explicit_type "int"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 154370 "runCount"
+	private explicit_type "int"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 154498 "binaryCount"
+	private explicit_type "int"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 154626 "exclusivity"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      operation 207490 "getFirstScreen"
+	public return_type class_ref 134274 // Screen
+	nparams 0
+	nexceptions 1
+	  exception class_ref 142082 // ConfiguratorException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.apps.benchmarkmanager.plugins.Configurator#getFirstScreen()
+"
+      end
+
+      operation 207618 "getNextScreen"
+	public return_type class_ref 134274 // Screen
+	nparams 1
+	  param inout name "processedScreen" type class_ref 134274 // Screen
+	nexceptions 2
+	  exception class_ref 134530 // IllegalScreenSequenceException
+	  exception class_ref 142082 // ConfiguratorException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.apps.benchmarkmanager.plugins.Configurator#getNextScreen(cz.cuni.mff.been.benchmarkmanager.gui.Screen)
+"
+      end
+
+      operation 207746 "getDefaultRScripts"
+	public return_type class_ref 135554 // CallbackRScripts
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+      end
+
+      operation 207874 "getPreviousScreen"
+	public return_type class_ref 134274 // Screen
+	nparams 1
+	  param inout name "processedScreen" type class_ref 134274 // Screen
+	nexceptions 2
+	  exception class_ref 134530 // IllegalScreenSequenceException
+	  exception class_ref 142082 // ConfiguratorException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.apps.benchmarkmanager.plugins.Configurator#getPreviousScreen(cz.cuni.mff.been.benchmarkmanager.gui.Screen)
+"
+      end
+
+      operation 208002 "createTestPropertiesScreen"
+	private return_type class_ref 134274 // Screen
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 208130 "createRoleScreen"
+	private return_type class_ref 134274 // Screen
+	nparams 2
+	  param inout name "sid" type class_ref 144258 // ScreenID
+	  param in name "roleName" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Creates a screen for configuring a benchmarking role.
+
+@param sid ScreenID of the screen that will be created
+@param roleName name of the role
+@return screen for configuring a benchmarking role.
+"
+      end
+
+      operation 208258 "getUserInput"
+	private explicit_return_type "void"
+	nparams 1
+	  param inout name "screen" type class_ref 134274 // Screen
+	nexceptions 1
+	  exception class_ref 142082 // ConfiguratorException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Get the values enter by user in a screen.
+
+@param screen
+@throws IllegalScreenSequenceException
+"
+      end
+
+      operation 208386 "processRoleScreen"
+	private return_type class_ref 138242 // Condition
+	nparams 1
+	  param inout name "screen" type class_ref 134274 // Screen
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Gets the values entered by the user in a benchmarking role screen.
+
+@param screen
+@return RSL condition on host
+"
+      end
+
+      operation 208514 "processTestPropertiesScreen"
+	private explicit_return_type "void"
+	nparams 1
+	  param inout name "screen" type class_ref 134274 // Screen
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Gets the values entered by the user in the properties screen.
+
+@param screen
+"
+      end
+
+      operation 208642 "createExperiment"
+	private explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  exception class_ref 142082 // ConfiguratorException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the user given values in the configured experiment.
+
+"
+      end
+    end
+
+    class 144386 "SimpleTestGenerator"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Task generator for a simple benchmark plugin test.
+
+This plugin runs 4 tasks:
+
+<b>Task 1</b>: gets the value of the task property \"test.property\". The value
+is a String array with 2 elements, \"Hello\" and \"World\". It also sets a 
+checkpoint with the name \"data\" and with a String array as value, with \"BEEN\"
+and \"DSRG\" elements.
+
+<b>Task 2</b>: Starts after the first task successfully finishes. It gets the 
+value of the checkpoint \"data\", which was set by the first task. It also 
+sleeps for a the time which was set by the user in the experiment 
+configuration.
+
+<b>Task 3</b>: Starts after the second task. It sets a checkpoint with the 
+name \"go\" and with a String array as value, with \"BEEN\" and \"DSRG\" elements.
+
+<b>Task 4</b>: Starts immediately, and blocks on the \"go\" checkpoint which
+will be set by the third task.
+
+@author Jaroslav Urban
+"
+      classrelation 151554 // <generalisation>
+	relation 151554 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 151554 // <generalisation>
+	  b parent class_ref 129410 // TaskGenerator
+      end
+
+      attribute 154754 "WAIT_TIME"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"wait.time\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Benchmark property specifying the wait time of one task. 
+"
+      end
+
+      attribute 154882 "EXCLUSIVITY"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"exclusivity\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Benchmark property specifying whether exclusive tasks should be used. 
+"
+      end
+
+      attribute 155010 "TEST_ROLE"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"Test\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Name of the benchmark role where this test will run. 
+"
+      end
+
+      class 144514 "Exclusivity"
+	visibility public stereotype "enum"
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}${final}${abstract}enum ${name}${implements} {
+${items};
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	attribute 155138 "NONE"
+	  public type class_ref 144514 // Exclusivity
+	  cpp_decl ""
+	  java_decl "  ${@}${name}(\"none\"),${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " Tasks will no be exclusive. "
+	end
+
+	attribute 155266 "CONTEXT_EXCLUSIVE"
+	  public type class_ref 144514 // Exclusivity
+	  cpp_decl ""
+	  java_decl "  ${@}${name}(\"context exclusive\"),${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " Tasks will be context exclusive. "
+	end
+
+	attribute 155394 "EXCLUSIVE"
+	  public type class_ref 144514 // Exclusivity
+	  cpp_decl ""
+	  java_decl "  ${@}${name}(\"exclusive\"),${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " Tasks will be exclusive. "
+	end
+
+	attribute 155522 "name"
+	  private explicit_type "String"
+	  stereotype "attribute"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	operation 208770 "Exclusivity"
+	  private explicit_return_type ""
+	  nparams 1
+	    param in name "name" explicit_type "String"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 208898 "toString"
+	  public explicit_return_type "String"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  java_annotation "@Override
+"
+	  
+	  
+	  
+	end
+      end
+
+      classrelation 151682 // exclusivity (<unidirectional association>)
+	relation 151682 --->
+	  a role_name "exclusivity" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 151682 // exclusivity (<unidirectional association>)
+	  b parent class_ref 144514 // Exclusivity
+      end
+
+      operation 209026 "registerResults"
+	protected explicit_return_type "void"
+	nparams 1
+	  param inout name "roles" type class_ref 136706 // StandardRole
+	nexceptions 1
+	  exception class_ref 140418 // GeneratorException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0}[] ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+      end
+
+      operation 209154 "generate"
+	protected explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  exception class_ref 140418 // GeneratorException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.apps.benchmarkmanager.plugins.TaskGenerator#generate()
+"
+      end
+
+      operation 209282 "setExclusivity"
+	private explicit_return_type "void"
+	nparams 1
+	  param inout name "task" type class_ref 131074 // TaskDescriptor
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets tasks' exclusivity according to user's choice in the configurator.
+
+@param task
+"
+      end
+    end
+
+    class 144642 "SimpleTestVersionProvider"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Dummy class, so that SimpleTest gets activated by BenchmarkManager
+
+@author Michal Tomcanyi
+"
+      classrelation 151810 // <generalisation>
+	relation 151810 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 151810 // <generalisation>
+	  b parent class_ref 129538 // VersionProvider
+      end
+
+      operation 209410 "getProcessedVersions"
+	public return_type class_ref 141442 // Version
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+      end
+
+      operation 209538 "getVersions"
+	public return_type class_ref 132738 // ExperimentMetadata
+	nparams 0
+	nexceptions 1
+	  explicit_exception "Exception"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+      end
+    end
+  end
+
+  deploymentview 129154 "simpletest"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+    artifact 135042 "SimpleTestConfigurator"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.net.InetAddress;
+import cz.cuni.mff.been.apps.benchmarkmanager.ExperimentMetadata;
+import cz.cuni.mff.been.apps.gui.IllegalScreenSequenceException;
+import cz.cuni.mff.been.apps.gui.Input;
+import cz.cuni.mff.been.apps.gui.Item;
+import cz.cuni.mff.been.apps.gui.Option;
+import cz.cuni.mff.been.apps.gui.RSLInput;
+import cz.cuni.mff.been.apps.gui.Screen;
+import cz.cuni.mff.been.apps.gui.Section;
+import cz.cuni.mff.been.apps.gui.Select;
+import cz.cuni.mff.been.apps.common.Configurator;
+import cz.cuni.mff.been.apps.common.ConfiguratorException;
+import cz.cuni.mff.been.common.IntegerInputValidator;
+import cz.cuni.mff.been.common.id.SID;
+import cz.cuni.mff.been.common.rsl.Condition;
+import cz.cuni.mff.been.common.rsl.EqualsCondition;
+import cz.cuni.mff.been.common.rsl.ParseException;
+import cz.cuni.mff.been.common.rsl.ParserWrapper;
+import cz.cuni.mff.been.resultsrepository.gui.CallbackRScripts;
+${definition}"
+      associated_classes
+	class_ref 144130 // SimpleTestConfigurator
+      end
+    end
+
+    artifact 135170 "SimpleTestGenerator"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import cz.cuni.mff.been.apps.benchmarkmanager.GeneratorException;
+import cz.cuni.mff.been.apps.benchmarkmanager.StandardRole;
+import cz.cuni.mff.been.apps.common.TaskGenerator;
+import cz.cuni.mff.been.taskmanager.TaskDescriptor;
+import cz.cuni.mff.been.taskmanager.data.TaskExclusivity;
+${definition}"
+      associated_classes
+	class_ref 144386 // SimpleTestGenerator
+      end
+    end
+
+    artifact 135298 "SimpleTestVersionProvider"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import cz.cuni.mff.been.apps.benchmarkmanager.ExperimentMetadata;
+import cz.cuni.mff.been.apps.common.VersionProvider;
+import cz.cuni.mff.been.common.Version;
+${definition}"
+      associated_classes
+	class_ref 144642 // SimpleTestVersionProvider
+      end
+    end
+  end
+end

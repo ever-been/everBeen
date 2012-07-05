@@ -1,0 +1,9 @@
+class WebInterfaceException
+!!!731650.java!!!	WebInterfaceException()
+        super();
+!!!731778.java!!!	WebInterfaceException(in message : String)
+        super(message);
+!!!731906.java!!!	WebInterfaceException(inout cause : Throwable)
+        super(cause);
+!!!732034.java!!!	WebInterfaceException(in message : String, inout cause : Throwable)
+        super(message, cause);

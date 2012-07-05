@@ -1,0 +1,26 @@
+class XamplerSuite
+!!!209794.java!!!	XamplerSuite(in suiteName : String, in subSelections : String, in execArgs : String)
+			this.name = suiteName;
+			this.subselections = subSelections;
+			this.execArgs = execArgs;
+!!!209922.java!!!	getName() : String
+			return name;
+!!!210050.java!!!	hasSubMenu() : boolean
+			return subselections != null;
+!!!210178.java!!!	getSubMenu() : String
+			return subselections;
+!!!210306.java!!!	hasExecArgs() : boolean
+			return execArgs != null;
+!!!210434.java!!!	getExecArgs() : String
+			return execArgs;
+!!!210562.java!!!	getByName(in suiteName : String) : XamplerSuite
+			if (lookup.size() == 0) {
+				for (XamplerSuite suite : XamplerSuite.values()) {
+					lookup.put(suite.getName(), suite);
+				}
+			}
+			return lookup.get(suiteName);
+!!!210690.java!!!	getCommonConstants() : String
+			return commonConstants;
+!!!210818.java!!!	getDefaultValue(in name : String) : String
+			return suiteDefaults.get(name);

@@ -1,0 +1,540 @@
+format 59
+"detector" // been::src::cz::cuni::mff::been::task::detector
+  revision 1
+  modified_by 2 "Administrator"
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default show_stereotype_properties default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+  show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+  show_infonote default drawing_language default show_stereotype_properties default
+  
+  java_dir "cz/cuni/mff/been/task/detector"
+  java_package "cz.cuni.mff.been.task.detector"
+  classview 132610 "detector"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default show_stereotype_properties default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+    //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+    show_infonote default drawing_language default show_stereotype_properties default
+    class 197506 "DetectorTask"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Detector task detects hardware and software configuration of the computer on which it is run.
+Configuration is then send to the Host Manager which will store it in database (after validation
+of course).
+Detector task contains native libraries which are written specifically for each supported operating
+system (currently Windows, Linux and Solaris). If native library is not available for current
+system, only limited information will be available about the host.
+
+@author Branislav Repcek
+"
+      classrelation 254210 // <generalisation>
+	relation 254210 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 254210 // <generalisation>
+	  b parent class_ref 197250 // Job
+      end
+
+      attribute 272642 "PROPERTY_HOST_KEY"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"key\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Host key property name.
+
+"
+      end
+
+      classrelation 254338 // detector (<unidirectional association>)
+	relation 254338 --->
+	  a role_name "detector" private
+	    comment "
+Object which communicates with native libraries.
+
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 254338 // detector (<unidirectional association>)
+	  b parent class_ref 197634 // NativeDetector
+      end
+
+      operation 627586 "DetectorTask"
+	public explicit_return_type ""
+	nparams 0
+	nexceptions 1
+	  exception class_ref 137218 // TaskInitializationException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Initialize detector task.
+
+@throws TaskInitializationException If initialization failed.
+"
+      end
+
+      operation 627714 "run"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  exception class_ref 137346 // TaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.task.Job#run()
+"
+      end
+
+      operation 627842 "checkRequiredProperties"
+	protected explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  exception class_ref 137346 // TaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.task.Job#checkRequiredProperties()
+"
+      end
+    end
+
+    class 197634 "NativeDetector"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+This class acts as an adapter to the native libraries that are provided with the Detector Task.
+It will attempt to initialize correct library and query data about the host. If an error occured
+while initializing native library or if no native library has been found for current platform,
+only primitive Java implementation of the detector will be used.
+
+@author Branislav Repcek
+"
+      operation 627970 "nativeInitialize"
+	private explicit_return_type "boolean"
+	nparams 0
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}native ${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Initialize native library.
+
+@return <code>true</code> if successful, <code>false</code> otherwise.
+"
+      end
+
+      operation 628098 "nativeExecute"
+	private explicit_return_type "boolean"
+	nparams 0
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}native ${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Execute native detector which will collect all data.
+
+@return <code>true</code> if successful, <code>false</code> otherwise. It should always return 
+        <code>true</code> since native detectors are written so that in case of error they can collect data
+        not affected by given error.
+"
+      end
+
+      operation 628226 "nativeGetData"
+	private explicit_return_type "String"
+	nparams 0
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}native ${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Get data from the native detector as String.
+
+@return Detector data in string. This is XML file data converted to string.
+"
+      end
+
+      operation 628354 "nativeGetMessages"
+	private explicit_return_type "String"
+	nparams 0
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}native ${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Get messages produced by the native detector. These messages may contain info about errors in the native
+library or successful operations. 
+
+@return String containing all messages. Each message is formated on one line.
+"
+      end
+
+      operation 628482 "nativeDestroy"
+	private explicit_return_type "boolean"
+	nparams 0
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}native ${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Free data used by the native library.
+
+@return <code>true</code> if successful, <code>false</code> otherwise. 
+"
+      end
+
+      operation 628610 "nativeGetEncoding"
+	private explicit_return_type "String"
+	nparams 0
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}native ${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Get encoding used in native library.
+
+@return String with name of the encoding (eg. utf-8, windows-1252...).
+"
+      end
+
+      attribute 272770 "data"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Data collected by the native library.
+
+"
+      end
+
+      attribute 272898 "messages"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Native library message string.
+
+"
+      end
+
+      attribute 273026 "success"
+	private explicit_type "boolean"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+<code>true</code> if native library succeeded.
+
+"
+      end
+
+      attribute 273154 "usingNative"
+	private explicit_type "boolean"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Flag which specifies whether detection will be done using native libraries.
+
+"
+      end
+
+      attribute 273282 "encoding"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Character encoding used in native library.
+
+"
+      end
+
+      classrelation 254466 // task (<unidirectional association>)
+	relation 254466 --->
+	  a role_name "task" private
+	    comment "
+Task we are called from.
+
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 254466 // task (<unidirectional association>)
+	  b parent class_ref 136578 // Task
+      end
+
+      operation 628738 "NativeDetector"
+	public explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Constructor. This will attempt to load native library based on the Operating System on which it is run.
+If corresponding native library is not found or initialization fails, using_native flag will be set to
+false.
+"
+      end
+
+      operation 628866 "execute"
+	public explicit_return_type "boolean"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Do all the work - call native methods or detect everything with Java and compose resulting data.
+
+@return <code>true</code> on success, <code>false</code> otherwise.
+"
+      end
+
+      operation 628994 "getMessageString"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Get message string produced by native libraries.
+
+@return Message string generated by native library.
+"
+      end
+
+      operation 629122 "getDataString"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Get data collected.
+
+@return Get all data collected during call to execute() method.
+"
+      end
+
+      operation 629250 "getEncoding"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Get character encoding used in native library.
+ 
+@return String with encoding name.
+"
+      end
+
+      operation 629378 "makeXMLElement"
+	class_operation private explicit_return_type "String"
+	nparams 3
+	  param in name "name" explicit_type "String"
+	  param in name "value" explicit_type "String"
+	  param in name "pos" explicit_type "int"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Create string representing XML element with given name and value at the given column (columns are tabs).
+
+@param name Name of the element to create.
+@param value Value fo the element.
+@param pos Number of tabs before the opening angle bracket of the element.
+@return String representing XML element.
+"
+      end
+
+      operation 629506 "formatDate"
+	class_operation private explicit_return_type "String"
+	nparams 2
+	  param inout name "date" explicit_type "Date"
+	  param in name "format" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Format date according to given format string.
+
+@param date Date to format.
+@param format Format string.
+@return Date in requested format. 
+"
+      end
+    end
+  end
+
+  deploymentview 131714 "detector"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+    artifact 177922 "DetectorTask"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.net.InetAddress;
+import java.rmi.RemoteException;
+import cz.cuni.mff.been.hostmanager.database.DatabaseManagerInterface;
+import cz.cuni.mff.been.task.Job;
+import cz.cuni.mff.been.task.TaskException;
+import cz.cuni.mff.been.task.TaskInitializationException;
+${definition}"
+      associated_classes
+	class_ref 197506 // DetectorTask
+      end
+    end
+
+    artifact 178050 "NativeDetector"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.File;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import cz.cuni.mff.been.hostmanager.database.HostInfoInterface;
+import cz.cuni.mff.been.hostmanager.util.MiscUtils;
+import cz.cuni.mff.been.task.Task;
+${definition}"
+      associated_classes
+	class_ref 197634 // NativeDetector
+      end
+    end
+  end
+end

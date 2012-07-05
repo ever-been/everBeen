@@ -1,0 +1,30 @@
+class PackageTypeAttributeHelper
+!!!614146.java!!!	PackageTypeAttributeHelper()
+		super();
+!!!614274.java!!!	validateInXML(inout element : Element) : String
+		String value = extractTextValueFromElement(element);
+		if (value == null) {
+			return "Invalid value of element <" + element.getNodeName() + ">.";
+		}
+		
+		try {
+			PackageType.realValueOf(value);
+		} catch (IllegalArgumentException e) {
+			return "Invalid value of element <" + element.getNodeName() + ">.";
+		}
+		return null;
+!!!614402.java!!!	readValueFromElement(inout element : Element) : PackageType
+		return PackageType.realValueOf(extractTextValueFromElement(element));
+!!!614530.java!!!	writeValueToElement(inout document : Document, in tagName : String, inout value : PackageType) : Element
+		if (value != null) {
+			Element result = document.createElement(tagName);
+			result.appendChild(document.createTextNode(value.toString()));
+			return result;
+		} else {
+			return null;
+		}
+!!!614658.java!!!	getInstance() : PackageTypeAttributeHelper
+		if (instance == null) {
+			 instance = new PackageTypeAttributeHelper();
+		}
+		return instance;

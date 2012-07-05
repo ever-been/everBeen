@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sect1
+	xml:id="been.devel.cli.data"
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>Data Structures</title>
+	
+	<para>The Command Line Interface does not store any data structures. However, it reads, converts
+	and transfers most public data types used throughout the BEEN framework.</para>
+	
+	<para>Data containers used by the Task Manager, Host Manager, Software Repository, Benchmark
+	Manager and Results Repository are described in the documentation and JavaDoc for these
+	components.</para>
+	
+	<para>Many containers defined in subpackages of <package>cz.cuni.mff.been.jaxb</package> are
+	CLI specific. (Only the <classname>TaskDescriptor</classname> structure defined there has been
+	integrated in all components, replacing its predecessor.) Source files for these structures
+	are generated automatically by the JAXB binding compiler. They are used to communicate with
+	XML marshallers and unmarshallers. Data convertors from the
+	<package>cz.cuni.mff.been.clinterface.adapters</package> package transform them to representations
+	used by other BEEN components when a request is received. Response data is transcoded back
+	to the XML bound classes before marshalling. This approach makes CLI compatible with old BEEN
+	code. It brings the possibility to provide advanced XML interfaces to XML-agnostic
+	components. For details about the JAXB integration, see
+	<xref linkend="been.devel.jaxb"/>.</para>
+	
+	<para>CLI uses standard containers from the Collections framework as internal data structures.
+	No sophisticated data definitions are needed there.</para>	
+</sect1>

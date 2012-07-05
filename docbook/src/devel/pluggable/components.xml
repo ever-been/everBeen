@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sect1
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>Pluggable Module Framework Subcomponents</title>
+	
+	<para>
+	Pluggable module framework consists of two parts:
+	<itemizedlist>
+			<listitem><para><glossterm>Pluggable Module Manager</glossterm> (i.e. <glossterm>pluggable module</glossterm> management logic itself)</para></listitem>
+			<listitem><para>Supplied <glossterm  baseform="pluggable module">pluggable modules</glossterm> (<glossterm baseform="pluggable module">pluggable modules</glossterm> included in BEEN distribution)</para></listitem>
+	</itemizedlist>
+	</para>
+	
+	<para>
+	<glossterm>Pluggable Module Manager</glossterm> is an agent that allows tasks to request load of a <glossterm>pluggable 
+	module</glossterm>, It takes care of <glossterm>pluggable module</glossterm> dependencies, all the class-loading business, <glossterm>pluggable module</glossterm>'s main class
+	instantiation. <glossterm>Pluggable module</glossterm> also remembers which pluggable modules have been loaded 
+	so far and stores their list in <glossterm>pluggable module registry</glossterm>.
+	</para>
+	
+	<para>
+	Supplied pluggable modules is just a bunch of modules that come along with BEEN distribution.
+	After BEEN is built, they are stored in software repository (just as other BEEN packages) 
+	and wait there until being loaded by <glossterm>Pluggable Module Manager</glossterm>.
+	<glossterm  baseform="pluggable module">Pluggable modules</glossterm> supplied along with BEEN are used by several BEEN tasks and they deliver
+	code that can probably be reused in new BEEN tasks created.
+	Supplied <glossterm  baseform="pluggable module">pluggable modules</glossterm> should also serve as an example, how BEEN <glossterm  baseform="pluggable module">pluggable modules</glossterm> can
+	look like and what responsibilities they can have.
+	BEEN comes with these pluggable modules (apart from generator/evaluator pluggable
+	modules that are part of <glossterm>Benchmark Manager</glossterm>). Detailed documentation of these <glossterm  baseform="pluggable module">pluggable 
+	modules</glossterm> can be found in their JavaDocs.:
+	<variablelist>
+		<varlistentry>
+			<term>Derby pluggable module</term>
+			<listitem><para>makes Derby DB much more convenient to use inside BEEN</para></listitem>
+		</varlistentry>
+			
+		<varlistentry>
+		<term>Derby client pluggable module</term>
+			<listitem><para>easy access to network-enabled derby instance</para></listitem>
+		</varlistentry>	
+		
+			
+		<varlistentry>
+			<term>Hibernate pluggable module</term>
+			<listitem><para>makes Hibernate framework easily usable in BEEN enviroment</para></listitem>
+		</varlistentry>	
+		
+			
+		<varlistentry>
+			<term>File Agent pluggable module</term>
+			<listitem><para>convenience pluggable module that makes file uploading to RR easy</para></listitem>
+		</varlistentry>
+			
+		<varlistentry>
+			<term>R Scripting pluggable module</term>
+			<listitem><para>easy R scripting (very useful in evaluation tasks)</para></listitem>
+		</varlistentry>
+
+		<varlistentry>
+			<term>CSV Files pluggable module</term>
+			<listitem><para>conversion of data between Result Repository and CSV representation scripting (very useful in evaluation tasks)</para></listitem>
+		</varlistentry>
+			
+		<varlistentry>
+			<term>Dummy pluggable module</term>			
+			<listitem><para>just an example how the simplest pluggable module looks like</para></listitem>
+		</varlistentry>
+	</variablelist>
+	</para>
+	
+	<sect2 xml:id="been.devel.pluggable.components.internals">
+		<title>Pluggable Module Manager Internals</title>
+		
+		<para>
+		Here you can find some details on how <glossterm>Pluggable Module Manager</glossterm> works internally.
+		It is recommended to read this section once you get notice class-loading or
+		<glossterm>pluggable module</glossterm> dependency issues you don't understand. This section can help you
+		understanding what's happening inside of <glossterm>Pluggable Module Manager</glossterm>.
+		</para>
+		
+		<para>
+		<glossterm>Pluggable Module Manager</glossterm> has three main responsibilities: Keeping track of already
+		loaded <glossterm>pluggable modules</glossterm>, loading classes contained in <glossterm>pluggable modules</glossterm> and 
+		solving dependency constraints defined by <glossterm>pluggable modules</glossterm>. In next sections
+		we will take a look at all of these responsibilities in more detail.
+		</para>
+		
+		<sect3>
+		<title>Pluggable Module Registry</title>
+		<para>
+		<glossterm>Pluggable Module Registry</glossterm> is a data structure that stores instances 
+		of all created pluggable modules and allows <glossterm>Pluggable Module Manager</glossterm> 
+		to access them by 2-tuple <code>(name, version)</code>. Currently pluggable module 
+		registry can be accessed only by <glossterm>Pluggable Module Manager</glossterm>. To find out
+		whether some module is loaded use manager's <methodname>isPluggableModuleLoaded</methodname> method.
+		</para>
+		</sect3>
+		
+		
+		<sect3>
+		<title>How Pluggable Module Manager Loads Classes</title>
+		<para>
+		<glossterm>Pluggable Module Manager</glossterm> has it's own class loader that is derived from <classname>URLClassLoader</classname>.
+		This class loader sees all classes from JVM's system classloader and can load 
+		new classes from JARs contained in <glossterm>pluggable module</glossterm> packages. 
+		</para>
+		<para>Important thing to notice is that classes loaded by manager's class loader
+		are not visible to classes loaded by system class loader. This is caused by how
+		Java class loader mechanisms work. For this reason, all <glossterm>pluggable modules</glossterm>' classes
+		are divided into interface part and implementation part. Interface part is what's
+		visible to BEEN task that is using given pluggable module. Implementation part 
+		are classes that are used only internally by pluggable module. 
+		</para>
+		<para>
+		The latter implies that in order to use <glossterm>pluggable module</glossterm> in a <glossterm>task</glossterm>, you always 
+		have to link <glossterm>pluggable module</glossterm>'s interface classes to the <glossterm>task</glossterm>'s main JAR. This 
+		will be described in detail in <xref linkend="been.devel.pluggable.extension"/>.  
+		Please note that this behavior is
+		not flaw of <glossterm>Pluggable Module Manager</glossterm>, but a consequence of how Java class loading 
+		works (most of dynamic module loading frameworks work in the same way). Please also
+		note that <glossterm>Pluggable Module Manager</glossterm> uses only single class loader, so all classes 
+		loaded by a <glossterm>pluggable module</glossterm> will be visible to all the other <glossterm>pluggable modules</glossterm>. 
+		</para>
+		</sect3>
+		
+		<sect3>
+		<title>Dependency Solving</title>
+		<para>
+		<glossterm>Pluggable Module Manager</glossterm> implements a simple algorithm to solve dependencies of 
+		<glossterm>pluggable modules</glossterm>. Whenever <glossterm>task</glossterm> requests to load a <glossterm>pluggable module</glossterm> that has 
+		unsatisfied dependency (prerequisite module is not loaded yet), <glossterm>Pluggable Module 
+		Manager</glossterm> tries to load it first. If prerequisite module fails to load, dependent 
+		module fails to load too. <glossterm>Pluggable Module Manager</glossterm> can detect circular dependencies.
+		If circular dependency is detected, module fails to load and an exception is thrown.
+		</para>  
+		</sect3>
+		
+		<sect3>
+		<title>Pluggable Module Unloading</title>
+		<para>
+		As every task is run by <glossterm>Host Runtime</glossterm> in a separate JVM, there is no 
+		need for <glossterm>pluggable module</glossterm> unloading, since all the loaded classes will be unloaded
+		anyway when task (i.e. its JVM) finishes. There's also no need to assume that 
+		<glossterm>pluggable modules</glossterm> would be so large so that it would be needed to unload them already while
+		a task is running.
+		</para>  
+		</sect3>
+		
+	</sect2>
+	
+	<!--<sect2>
+		<title>Data handling</title>
+		<itemizedlist>
+			<listitem><para>What kind of data do we work with?</para></listitem>
+			<listitem><para>What technlogies do we use?</para></listitem>
+			<listitem><para>Are we efficient? What algorithms are we proud of?</para></listitem>
+		</itemizedlist>
+	</sect2>-->
+	
+	<!--<sect2>
+		<title>Input handling</title>
+		<para>Do we use any filters, adapters, facades, decorators?</para>
+	</sect2>-->
+	
+	<!--<sect2>
+		<title>External resources summary</title>
+		<para>A list of libraries we use and what we need them for.</para>
+	</sect2>-->
+	
+	<!--<sect2>
+		<title>Request life cycle</title>
+		<para>
+		What we do to handle a request, step by step, and what parts are involved.
+		RMI interfaces provide a good information on request types. There's no need to describe
+		getters or metadata manipulation modules.
+		</para>
+	</sect2>-->
+</sect1>

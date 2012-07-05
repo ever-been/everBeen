@@ -1,0 +1,8 @@
+class MonitorThread
+!!!433026.java!!!	run() : void
+
+			LoadSample sample = monitor.getSample();
+			
+			LoadMonitorEvent event = new LoadMonitorEvent(sample, hostName);
+			
+			processEvent(event);

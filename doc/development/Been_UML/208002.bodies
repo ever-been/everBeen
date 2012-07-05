@@ -1,0 +1,597 @@
+class DataStructures
+!!!712706.java!!!	DataStructures()
+		this.tasks = new LinkedList<TaskNode>();
+		this.contexts = new LinkedList<ContextNode>();
+		this.hostRuntimes = new LinkedList<HostRuntimeNode>();
+		this.checkPoints = new LinkedList<CheckPointNode>();
+!!!712834.java!!!	addTaskNode(inout taskNode : TaskNode) : void
+		/* Add taskNode to list. */
+		this.tasks.add(taskNode);
+		
+		/* Add taskNode to context. */
+		ContextNode context = taskNode.getContext();
+		context.addTask(taskNode);
+		
+		/* Add taskNode to hostRuntime (if not null). */
+		HostRuntimeNode hostRuntime = taskNode.getHostRuntime();
+		if (hostRuntime != null) {
+			hostRuntime.addTask(taskNode);
+		}
+!!!712962.java!!!	addContextNode(inout contextNode : ContextNode) : void
+		/* Add contextNode to list. */
+		this.contexts.add(contextNode);
+!!!713090.java!!!	addHostRuntimeNode(inout hostRuntimeNode : HostRuntimeNode) : void
+		/* Add hostRuntimeNode to list. */
+		this.hostRuntimes.add(hostRuntimeNode);
+!!!713218.java!!!	addCheckPointNode(inout checkPointNode : CheckPointNode) : void
+		/* Add checkPointNode to list. */
+		this.checkPoints.add(checkPointNode);
+		
+		/* Add checkPointNode to task. */
+		TaskNode task = checkPointNode.getTask();
+		task.addCheckPoint(checkPointNode);
+		
+		/* Add checkPointNode to context. */
+		ContextNode context = checkPointNode.getContext();
+		context.addCheckPoint(checkPointNode);
+		
+		/* Add checkPointNode to hostRuntime. */
+		HostRuntimeNode hostRuntime = checkPointNode.getHostRuntime();
+		if (hostRuntime != null) {
+			hostRuntime.addCheckPoint(checkPointNode);
+		}
+!!!713346.java!!!	removeTaskNode(inout taskNode : TaskNode) : void
+		/* Remove taskNode from context. */
+		ContextNode context = taskNode.getContext();
+		context.removeTask(taskNode);
+		
+		/* Remove taskNode from hostRuntime. */
+		HostRuntimeNode hostRuntime = taskNode.getHostRuntime();
+		if (hostRuntime != null) {
+			hostRuntime.removeTask(taskNode);
+		}
+		
+		/* Remove all checkPointNode(s) associated with taskNode. */
+		while (!taskNode.getCheckPoints().isEmpty()) {
+			this.removeCheckPointNode(taskNode.getCheckPoints().getLast());
+		}
+		
+		/* Remove taskNode from list. */
+		boolean removed = this.tasks.remove(taskNode);
+		if (!removed) {
+			throw new DataRuntimeException("TaskNode required to be removed not found in list of TaskNode elements");
+		}
+!!!713474.java!!!	removeContextNode(inout contextNode : ContextNode) : void
+		/* Remove contextNode from list. */
+		boolean removed = this.contexts.remove(contextNode);
+		if (!removed) {
+			throw new DataRuntimeException("ContextNode required to be removed not found in list of ContextNode elements");
+		}
+!!!713602.java!!!	removeHostRuntimeNode(inout hostRuntimeNode : HostRuntimeNode) : void
+		/* Remove hostRuntimeNode from list. */
+		boolean removed = this.hostRuntimes.remove(hostRuntimeNode);
+		if (!removed) {
+			throw new DataRuntimeException("HostRuntimeNode required to be removed not found in list of HostRuntimeNode elements");
+		}
+!!!713730.java!!!	removeCheckPointNode(inout checkPointNode : CheckPointNode) : void
+		/* Remove checkPointNode from task. */
+		TaskNode task = checkPointNode.getTask();
+		task.removeCheckPoint(checkPointNode);
+		
+		/* Remove checkPointNode from context. */
+		ContextNode context = checkPointNode.getContext();
+		context.removeCheckPoint(checkPointNode);
+		
+		/* Remove checkPointNode from hostRuntime. */
+		HostRuntimeNode hostRuntime = checkPointNode.getHostRuntime();
+		
+		// XXX: ugly hack UH001: added if to see if the hostRuntime is null
+		if (hostRuntime == null) {
+			System.out.println("UH001: HostRuntime node reference is null!");
+			return;
+		}
+		
+		hostRuntime.removeCheckPoint(checkPointNode);
+		
+		/* Remove checkPointNode from list. */
+		boolean removed = this.checkPoints.remove(checkPointNode);
+		if (!removed) {
+			throw new DataRuntimeException("CheckPointNode required to be removed not found in list of CheckPointNode elements");
+		}
+!!!713858.java!!!	findTask(in taskId : String, in contextId : String) : TaskNode
+		TaskNode task = null;
+		
+		Iterator<TaskNode> taskIterator = this.tasks.iterator();
+		while (taskIterator.hasNext()) {
+			TaskNode comparedTask = taskIterator.next();
+			TaskEntry comparedEntry = comparedTask.getTaskEntry();
+			if (comparedEntry.getTaskId().equals(taskId)
+					&& comparedEntry.getContextId().equals(contextId)) {
+				task = comparedTask;
+				break;
+			}
+		}
+		
+		return task;
+!!!713986.java!!!	findContext(in contextId : String) : ContextNode
+		ContextNode context = null;
+		
+		Iterator<ContextNode> contextIterator = this.contexts.iterator();
+		while (contextIterator.hasNext()) {
+			ContextNode comparedContext = contextIterator.next();
+			if (comparedContext.getContextEntry().getContextId()
+					.equals(contextId)) {
+				context = comparedContext;
+				break;
+			}
+		}
+		
+		return context;
+!!!714114.java!!!	findHostRuntime(in hostName : String) : HostRuntimeNode
+		HostRuntimeNode hostRuntime = null;
+		
+		Iterator<HostRuntimeNode> hostRuntimeIterator
+				= this.hostRuntimes.iterator();
+		while (hostRuntimeIterator.hasNext()) {
+			HostRuntimeNode comparedHostRuntime = hostRuntimeIterator.next();
+			if (comparedHostRuntime.getHostRuntimeEntry().getHostName()
+					.equals(hostName)) {
+				hostRuntime = comparedHostRuntime;
+				break;
+			}
+		}
+		
+		return hostRuntime;
+!!!714242.java!!!	findCheckPoints(in type : String, in taskId : String, in contextId : String, inout magicObject : Serializable) : CheckPointNode
+		LinkedList<CheckPointNode> foundCheckPoints
+			= new LinkedList<CheckPointNode>();
+		
+		Iterator<CheckPointNode> checkPointInterator;
+		
+		if (contextId != null) {
+			/* Find context. */
+			ContextNode context = this.findContext(contextId);
+			if (context == null) {
+				/* Nothing found. */
+				return new CheckPointNode[0];
+			} else {
+				/* Search checkPoints only in this context. */
+				checkPointInterator = context.getCheckPoints().iterator();
+			}
+		} else {
+			/* Search checkPoints in all contexts. */
+			checkPointInterator = this.checkPoints.iterator();
+		}
+		
+		/* Search checkPoints in one or all contexts. */
+		while (checkPointInterator.hasNext()) {
+			CheckPointNode comparedCheckPointNode = checkPointInterator.next();
+			CheckPointEntry comparedCheckPointEntry
+				= comparedCheckPointNode.getCheckPointEntry();
+			
+			/* Compare taskId. */
+			if (comparedCheckPointEntry.getTaskId().equals(taskId)) {
+				String comparedType = comparedCheckPointEntry.getName();
+				Serializable comparedMagicObject
+					= comparedCheckPointEntry.getMagicObject();
+				
+				/* Compare type. */
+				if ((type == null)
+						|| ((comparedType != null)
+								&& (comparedType.equals(type)))) {
+					/* Compare magicOgject. */
+					if ((magicObject == null)
+							|| ((comparedMagicObject != null)
+									&& (comparedMagicObject
+											.equals(magicObject)))) {
+						/* Add to list of found checkPoints. */
+						foundCheckPoints.add(comparedCheckPointNode);
+					}
+				}
+			}
+		}
+		
+		return foundCheckPoints.toArray(new CheckPointNode[foundCheckPoints.size()]);
+!!!714370.java!!!	getTasks(in taskId : String, in contextId : String, in hostName : String) : TaskEntry
+		/* Prepare Iterator for (subset of) tasks. */
+		Iterator<TaskNode> taskIterator = null;
+		if (contextId != null) {
+			/* Search only in one context. */
+			ContextNode contextNode = this.findContext(contextId);
+			if (contextNode == null) {
+				return new TaskEntry[0];
+			}
+			taskIterator = contextNode.getTasks().iterator();
+		} else if (hostName != null) {
+			/* Search only in one hostRuntime. */
+			HostRuntimeNode hostRuntimeNode = this.findHostRuntime(hostName);
+			if (hostRuntimeNode == null) {
+				return new TaskEntry[0];
+			}
+			taskIterator = hostRuntimeNode.getTasks().iterator();
+		} else {
+			taskIterator = this.tasks.iterator();
+		}
+		
+		/* List of matching entries. */
+		LinkedList<TaskEntry> foundTaskEntries = new LinkedList<TaskEntry>();
+		
+		/* Find required entries. */
+		while (taskIterator.hasNext()) {
+			TaskNode taskNode = taskIterator.next();
+			TaskEntry taskEntry = taskNode.getTaskEntry();
+			/* Compare taskId. */
+			if ((taskId != null)
+					&& (!taskEntry.getTaskId().equals(taskId))) {
+				continue;
+			}
+			/* Compare contextId. */
+			if ((contextId != null)
+					&& (!taskEntry.getContextId().equals(contextId))) {
+				continue;
+			}
+			/* Compare hostName. */
+			if ((hostName != null)
+					&& ((taskEntry.getHostName() == null)
+					|| (!taskEntry.getHostName().equals(hostName)))) {
+				continue;
+			}
+			
+			/* Add taskEntry to result. */
+			foundTaskEntries.add(taskEntry);
+		}
+		
+		return foundTaskEntries.toArray(
+				new TaskEntry[foundTaskEntries.size()]);
+!!!714498.java!!!	getTask(in taskId : String, in contextId : String) : TaskEntry
+		TaskNode task = this.findTask(taskId, contextId);
+		
+		return ((task == null) ? null : task.getTaskEntry());
+!!!714626.java!!!	getTaskData(in taskId : String, in contextId : String) : TaskData
+		TaskNode task = this.findTask(taskId, contextId);
+		
+		return ((task == null) ? null : task.getTaskData());
+!!!714754.java!!!	getContexts(in contextId : String) : ContextEntry
+		ContextEntry[] contextEntries;
+		
+		if (contextId == null) {
+			/* Return all Contexts. */
+			contextEntries = new ContextEntry[this.contexts.size()];
+			for (int i = 0; i < this.contexts.size(); i++) {
+				contextEntries[i] = this.contexts.get(i).getContextEntry();
+			}
+		} else {
+			/* Return only one Context. */
+			ContextNode contextNode = this.findContext(contextId);
+			if (contextNode == null) {
+				contextEntries = new ContextEntry[0];
+			} else {
+				ContextEntry contextEntry = contextNode.getContextEntry();
+				contextEntries = new ContextEntry[1];
+				contextEntries[0] = contextEntry;
+			}
+		}
+		return contextEntries;
+!!!714882.java!!!	getContext(in contextId : String) : ContextEntry
+		ContextNode context = this.findContext(contextId);
+		
+		return ((context == null) ? null : context.getContextEntry());
+!!!715010.java!!!	getHostRuntimes(in hostName : String) : HostRuntimeEntry
+		HostRuntimeEntry[] hostRuntimeEntries;
+		
+		if (hostName == null) {
+			/* Return all HostRuntimes. */
+			hostRuntimeEntries = new HostRuntimeEntry[this.hostRuntimes.size()];
+			for (int i = 0; i < this.hostRuntimes.size(); i++) {
+				hostRuntimeEntries[i]
+					= this.hostRuntimes.get(i).getHostRuntimeEntry();
+			}
+		} else {
+			/* Return only one HostRuntime. */
+			HostRuntimeNode hostRuntimeNode = this.findHostRuntime(hostName);
+			if (hostRuntimeNode == null) {
+				hostRuntimeEntries = new HostRuntimeEntry[0];
+			} else {
+				HostRuntimeEntry hostRuntimeEntry
+					= hostRuntimeNode.getHostRuntimeEntry();
+				hostRuntimeEntries = new HostRuntimeEntry[1];
+				hostRuntimeEntries[0] = hostRuntimeEntry;
+			}
+		}
+		return hostRuntimeEntries;
+!!!715138.java!!!	getHostRuntime(in hostName : String) : HostRuntimeEntry
+		HostRuntimeNode hostRuntime = this.findHostRuntime(hostName);
+		
+		return ((hostRuntime == null) ? null : hostRuntime.getHostRuntimeEntry());
+!!!715266.java!!!	getCheckPoints(in name : String, in taskId : String, in contextId : String, inout magicObject : Serializable) : CheckPointEntry
+		CheckPointNode[] checkPoints
+			= this.findCheckPoints(name, taskId, contextId, magicObject);
+		
+		/* Prepare array of entries... */
+		CheckPointEntry[] checkPointEntries
+			= new CheckPointEntry[checkPoints.length];
+		for (int i = 0; i < checkPoints.length; i++) {
+			checkPointEntries[i] = checkPoints[i].getCheckPointEntry();
+		}
+		
+		return checkPointEntries;
+!!!715394.java!!!	linkTaskWithHostRuntime(inout taskEntry : TaskEntry, inout hostRuntimeEntry : HostRuntimeEntry) : void
+		String taskId = taskEntry.getTaskId();
+		String contextId = taskEntry.getContextId();
+		String hostName = hostRuntimeEntry.getHostName();
+		
+		/* Find taskNode. */
+		TaskNode task = this.findTask(taskId, contextId);
+		if (task == null) {
+			throw new IllegalArgumentException("Trying to link non-existing task "
+					+ "(taskId \"" + taskId + "\", contextId \"" + contextId
+					+ "\") with hostRuntime (hostName \""
+					+ hostName + "\")");
+		}
+		/* Check if it is not linked with any hostRuntime yet. */
+		HostRuntimeNode currentHostRuntime = task.getHostRuntime();
+		if (currentHostRuntime != null) {
+			throw new IllegalArgumentException("Trying to link task (taskId\""
+					+ taskId + "\", contextId \"" + contextId
+					+ "\") with hostRuntime (hostName \"" + hostName + "\")."
+					+ "This task is already linked with some hostRuntime (hostName "
+					+ "\"" + currentHostRuntime.getHostRuntimeEntry().getHostName() + "\")");
+		}
+		
+		/* Find hostRuntime. */
+		HostRuntimeNode hostRuntime = this.findHostRuntime(hostName);
+		if (hostRuntime == null) {
+			throw new IllegalArgumentException("Trying to link task (taskId \""
+					+ taskId + "\", contextId \"" + contextId
+					+ "\") with non-existing hostRuntime (hostName \"" + hostName + "\")");
+//			addHostRuntime(hostRuntimeEntry);
+//			hostRuntime = this.findHostRuntime(hostName);
+		}
+		
+		/* Set hostName variable in TaskEntry. */
+		task.getTaskEntry().setHostName(hostName);
+		
+		/* Add taskNode to hostRuntime. */
+		hostRuntime.addTask(task);
+		/* Link hostRuntimeNode to taskNode. */
+		task.setHostRuntime(hostRuntime);
+!!!715522.java!!!	unlinkTaskWithHostRuntime(inout taskEntry : TaskEntry) : void
+		String taskId = taskEntry.getTaskId();
+		String contextId = taskEntry.getContextId();
+		
+		/* Find taskNode. */
+		TaskNode task = this.findTask(taskId, contextId);
+		if (task == null) {
+			throw new IllegalArgumentException("Trying to unlink non-existing task "
+					+ "(taskId \"" + taskId + "\", contextId \"" + contextId + "\") with hostRuntime");
+		}
+		/* Check if it is linked with some hostRuntime. */
+		HostRuntimeNode currentHostRuntime = task.getHostRuntime();
+		if (currentHostRuntime == null) {
+			return;  // no work needed to be done
+		}
+		
+		/* Unset hostName variable in TaskEntry. */
+		task.getTaskEntry().setHostName(null);
+		
+		/* Remove taskNode to hostRuntime. */
+		currentHostRuntime.removeTask(task);
+		/* Unlink hostRuntimeNode from taskNode. */
+		task.setHostRuntime(null);
+!!!715650.java!!!	addTask(inout taskEntry : TaskEntry, inout taskData : TaskData) : void
+		String taskId = taskEntry.getTaskId();
+		String contextId = taskEntry.getContextId();
+//		String hostName = taskEntry.getHostName();
+		
+		/* Find context. */
+		ContextNode context = this.findContext(contextId);
+		if (context == null) {
+			throw new IllegalArgumentException("Trying to add task \""
+					+ taskEntry.getTaskId() + "\" to non-existing context \""
+					+ taskEntry.getContextId() + "\"");
+		}
+		
+//		/* Find hostRuntime. */
+//		HostRuntimeNode hostRuntime = null;
+//		if (hostName != null) {
+//			hostRuntime = this.findHostRuntime(hostName);
+//			if (hostRuntime == null) {
+//				throw new IllegalArgumentException("Trying to add task \""
+//						+ taskEntry.getTaskId() + "\" to non-existing "
+//						+ "hostRuntime " + taskEntry.getHostName() + "\"");
+//			}
+//		}
+		
+		/* Find task (if already exists). */
+		TaskNode foundTask = this.findTask(taskId, contextId);
+		if (foundTask != null) {
+			throw new IllegalArgumentException("Trying to add already added task \"" 
+					+ taskId + "\" to context \"" + contextId + "\"");
+		}
+		
+		/* Add new task. */
+		TaskNode task = new TaskNode(taskEntry, context);
+		task.setTaskData(taskData);
+		this.addTaskNode(task);
+!!!715778.java!!!	addContext(inout contextEntry : ContextEntry) : void
+		String contextId = contextEntry.getContextId();
+		
+		/* Find context (if already exists). */
+		ContextNode foundContext = this.findContext(contextId);
+		if (foundContext != null) {
+			throw new IllegalArgumentException("Trying to add already existing context \"" + contextId + "\"");
+		}
+		
+		/* Add new context. */
+		ContextNode context = new ContextNode(contextEntry);
+		this.addContextNode(context);
+!!!715906.java!!!	addHostRuntime(inout hostRuntimeEntry : HostRuntimeEntry) : void
+		String hostName = hostRuntimeEntry.getHostName();
+		
+		/* Find hostRuntime (if already exists). */
+		HostRuntimeNode foundHostRuntime = this.findHostRuntime(hostName);
+		if (foundHostRuntime != null) {
+			throw new IllegalArgumentException("Trying to add already added host runtime \"" + hostName + "\"");
+		}
+		
+		/* Add new hostRuntime. */
+		HostRuntimeNode hostRuntime = new HostRuntimeNode(hostRuntimeEntry);
+		this.addHostRuntimeNode(hostRuntime);
+!!!716034.java!!!	addCheckPoint(inout checkPointEntry : CheckPointEntry) : void
+		String name = checkPointEntry.getName();
+		String taskId = checkPointEntry.getTaskId();
+		String contextId = checkPointEntry.getContextId();
+		String hostName = checkPointEntry.getHostName();
+		
+		/* Find task. */
+		TaskNode task = this.findTask(taskId, contextId);
+		if (task == null) {
+			throw new IllegalArgumentException("Trying to add checkPoint (\""
+					+ name + "\") to non-existing task \"" + taskId + "\" in context \"" 
+					+ contextId + "\" on host \"" + hostName + "\"");
+		}
+		
+		/* Find context. */
+		ContextNode context = this.findContext(contextId);
+		if (context == null) {
+			throw new IllegalArgumentException("Trying to add checkPoint (\""
+					+ name + "\") to task \"" + taskId 
+					+ "\" in non-existing context \"" + contextId
+					+ "\" on host \"" + hostName + "\"");
+		}
+		
+		/* Find hostRuntime. */
+		HostRuntimeNode hostRuntime = this.findHostRuntime(hostName);
+//		if (hostRuntime == null) {
+//			throw new IllegalArgumentException("Trying to add checkPoint (\""
+//					+ name + "\") to task \"" + taskId + "\" in context \""
+//					+ context + "\" on non-existing host \"" + hostName + "\"");
+//		}
+		
+		/* Add new checkPoint. */
+		CheckPointNode checkPoint
+			= new CheckPointNode(checkPointEntry, task, context, hostRuntime);
+		this.addCheckPointNode(checkPoint);
+!!!716162.java!!!	removeTask(inout taskEntry : TaskEntry) : void
+		String taskId = taskEntry.getTaskId();
+		String contextId = taskEntry.getContextId();
+		
+		/* Find task (if exists). */
+		TaskNode task = this.findTask(taskId, contextId);
+		if (task == null) {
+			throw new IllegalArgumentException("Trying to remove non-existing task "
+					+ "(taskId \"" + taskId + "\", contextId \"" + contextId + "\")");
+		}
+		
+		/* Remove task. */
+		this.removeTaskNode(task);
+!!!716290.java!!!	removeContext(inout contextEntry : ContextEntry) : void
+		String contextId = contextEntry.getContextId();
+		
+		/* Find context (if exists). */
+		ContextNode context = this.findContext(contextId);
+		if (context == null) {
+			throw new IllegalArgumentException("Trying to remove non-existing context "
+					+ "(contextId \"" + contextId + "\")");
+		}
+		
+		/* Check if context is empty. */
+		if (!context.isEmpty()) {
+			throw new IllegalArgumentException("Trying to remove non-empty context "
+					+ "(contextId \"" + contextId + "\")");
+		}
+		
+		/* Remove context from list. */
+		this.removeContextNode(context);
+!!!716418.java!!!	removeHostRuntime(inout hostRuntimeEntry : HostRuntimeEntry) : void
+		String hostName = hostRuntimeEntry.getHostName();
+		
+		/* Find hostRuntime (if exists). */
+		HostRuntimeNode hostRuntime = this.findHostRuntime(hostName);
+		if (hostRuntime == null) {
+			throw new IllegalArgumentException("Trying to remove non-existing hostRuntime "
+					+ "(hostName \"" + hostName	+ "\")");
+		}
+		
+		/* Check if hostRuntime is empty. */
+		if (!hostRuntime.isEmpty()) {
+			throw new IllegalArgumentException("Trying to remove non-empty hostRuntime "
+					+ "(hostName \"" + hostName + "\")");
+		}
+		
+		/* Remove hostRuntime from list. */
+		this.removeHostRuntimeNode(hostRuntime);
+!!!716546.java!!!	removeCheckPoint(inout checkPointEntry : CheckPointEntry) : void
+		String type = checkPointEntry.getName();
+		String taskId = checkPointEntry.getTaskId();
+		String contextId = checkPointEntry.getContextId();
+		String hostName = checkPointEntry.getHostName();
+		Serializable magicObject = checkPointEntry.getMagicObject();
+		
+		/* Find checkPoint (if exists). */
+		CheckPointNode[] checkPoints = this.findCheckPoints(type, taskId, contextId, magicObject);
+		
+		if (checkPoints.length == 0) {
+			throw new IllegalArgumentException("Trying to remove non-existing checkPoint"
+					+ " (type \"" + type + "\", taskId " + "\"" + taskId 
+					+ "\", contextId \"" + contextId + "\", " + "hostName \"" + hostName + "\")");
+		}
+		
+		/* Remove checkPoints. */
+		for (CheckPointNode checkPointNode : checkPoints) {
+			this.removeCheckPointNode(checkPointNode);
+		}
+!!!716674.java!!!	removeContextByForce(inout contextEntry : ContextEntry) : void
+		String contextId = contextEntry.getContextId();
+		
+		/* Find context (if exists). */
+		ContextNode context = this.findContext(contextId);
+		if (context == null) {
+			throw new IllegalArgumentException("Trying to remove non-existing context "
+					+ "(contextId \"" + contextId + "\")");
+		}
+		
+		/* Check if context is empty. */
+		if (!context.isEmpty()) {
+			/* Empty out context (remove all its tasks). */
+			LinkedList<TaskNode> tasks = context.getTasks();
+			while (!tasks.isEmpty()) {
+				TaskNode task = tasks.getFirst();
+				this.removeTaskNode(task);
+			}
+//			Iterator<TaskNode> tasksIterator = tasks.iterator();
+//			while (tasksIterator.hasNext()) {
+//				TaskNode task = tasksIterator.next();
+//				this.removeTaskNode(task);
+//			}
+		}
+		
+		/* Remove context from list. */
+		this.removeContextNode(context);
+!!!716802.java!!!	removeHostRuntimeByForce(inout hostRuntimeEntry : HostRuntimeEntry) : void
+		String hostName = hostRuntimeEntry.getHostName();
+		
+		/* Find hostRuntime (if exists). */
+		HostRuntimeNode hostRuntime = this.findHostRuntime(hostName);
+		if (hostRuntime == null) {
+			throw new IllegalArgumentException("Trying to remove non-existing hostRuntime "
+					+ "(hostName \"" + hostName + "\")");
+		}
+		
+		/* Check if hostRuntime is empty. */
+		if (!hostRuntime.isEmpty()) {
+			/* Empty out hostRuntime (remove all its tasks). */
+			LinkedList<TaskNode> tasks = hostRuntime.getTasks();
+			while (!tasks.isEmpty()) {
+				TaskNode task = tasks.getFirst();
+				this.removeTaskNode(task);
+			}
+//			Iterator<TaskNode> tasksIterator = tasks.iterator();
+//			while (tasksIterator.hasNext()) {
+//				TaskNode task = tasksIterator.next();
+//				this.removeTaskNode(task);
+//			}
+		}
+		
+		/* Remove hostRuntime from list. */
+		this.removeHostRuntimeNode(hostRuntime);

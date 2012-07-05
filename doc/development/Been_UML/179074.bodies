@@ -1,0 +1,95 @@
+class LoadMonitorNative
+!!!433666.java!!!	LoadMonitorNative(in libraryPath : String)
+		// Which OS are we running on?
+		String sysname = System.getProperty("os.name").toLowerCase();
+		
+		// Find out where we are running.
+		logInfo("Library path: " + libraryPath);
+
+		try {
+			// now we try to load native libraries
+			
+			if (sysname.indexOf("windows") != -1) {
+				// we are running on Windows.
+				logInfo("Attempting to load Windows Load Monitor library.");
+				
+				System.load(libraryPath + "LoadMonitor.wnm");
+				
+				logInfo("Link successful.");
+				usingNative = true;
+			} else if (sysname.indexOf("linux") != -1) {
+				// we are running on Linux.
+				logInfo("Attempting to load Linux Load Monitor library.");
+				
+				System.load(libraryPath + "LoadMonitor.lnm");
+				
+				logInfo("Link successful.");
+				usingNative = true;
+			} else if (sysname.indexOf("solaris") != -1) {
+				// we are running on Solaris.
+				logInfo("Attempting to load Solaris Load Monitor library.");
+				
+				System.load(libraryPath	+ "LoadMonitor.snm");
+				
+				logInfo("Link successful.");
+				usingNative = true;
+			} else {
+				// We are running on OS which does not have native detector library.
+				usingNative = false;
+			}
+		} catch (Exception e) {
+			usingNative = false;
+			logError("Unable to load Load Monitor library. Reason: " + e.getMessage());
+		} catch (Error e) {
+			usingNative = false;
+			logError("Unable to load Load Monitor library. Message: " + e.getMessage());
+		}
+!!!433794.java!!!	initialize() : boolean
+		
+		if (usingNative) {
+			logInfo("Initializing Load Monitor library.");
+			if (!nativeInitialize()) {
+				logError("Initialization failed.");
+				return false;
+			}
+		}
+		
+		return true;
+!!!433922.java!!!	terminate() : boolean
+		
+		if (usingNative) {
+			logInfo("Terminating Load Monitor library.");
+			if (!nativeTerminate()) {
+				logError("Termination failed.");
+				return false;
+			}
+		}
+		
+		return true;
+!!!434050.java!!!	getSample() : LoadSample
+		
+		if (usingNative) {
+			return nativeGetSample();
+		} else {
+			return new LoadSample();
+		}
+!!!434178.java!!!	getHardwareDescription() : HardwareDescription
+		
+		if (usingNative) {
+			return nativeGetHardwareDescription();
+		} else {
+			return new HardwareDescription();
+		}
+!!!434306.java!!!	usingNative() : boolean
+		
+		return usingNative;
+!!!434434.java!!!	logInfo(in s : String) : void
+		
+		if ("true".equals(System.getenv("BEEN_HOSTRUNTIME_DEBUG"))) {
+			System.out.println(TimeUtils.nowFormated() + " INFO " + s);
+		}
+!!!434562.java!!!	logError(in s : String) : void
+
+		if ("true".equals(System.getenv("BEEN_HOSTRUNTIME_DEBUG"))) {
+			System.err.println(TimeUtils.nowFormated() + " ERROR " + s);
+		}

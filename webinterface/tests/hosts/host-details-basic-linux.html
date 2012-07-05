@@ -1,0 +1,695 @@
+<!--
+
+  BEEN: Benchmarking Environment
+  ==============================
+   
+  File author: David Majda
+
+  GNU Lesser General Public License Version 2.1
+  ---------------------------------------------
+  Copyright (C) 2004-2006 Distributed Systems Research Group,
+  Faculty of Mathematics and Physics, Charles University in Prague
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License version 2.1, as published by the Free Software Foundation.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+  MA  02111-1307  USA
+
+-->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>host-details-windows</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">host-details-windows</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>/been/hosts/host-details/?hostname=00.agamemnon.minimal.tv</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTitle</td>
+	<td>exact:BEEN: Host details: 00.agamemnon.minimal.tv</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>//h1</td>
+	<td>exact:Host details: 00.agamemnon.minimal.tv</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[2]/div/div[1]/table.0.0</td>
+	<td>exact:Hostname:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[2]/div/div[1]/table.0.1</td>
+	<td>00.agamemnon.minimal.tv</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[2]/div/div[1]/table.1.0</td>
+	<td>exact:Detector:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[2]/div/div[1]/table.1.1</td>
+	<td>hwdet3_linux</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[2]/div/div[1]/table.2.0</td>
+	<td>Last checked:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[2]/div/div[1]/table.2.1</td>
+	<td>2006/08/23 18:35.29</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Operating System</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[@id="operating-system-sheet"]/table.0.0</td>
+	<td>exact:Name:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[@id="operating-system-sheet"]/table.0.1</td>
+	<td>Fedora Core release 5 (Bordeaux)</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[@id="operating-system-sheet"]/table.1.0</td>
+	<td>exact:Vendor:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[@id="operating-system-sheet"]/table.1.1</td>
+	<td>Red Hat Inc.</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[@id="operating-system-sheet"]/table.2.0</td>
+	<td>exact:Architecture:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[@id="operating-system-sheet"]/table.2.1</td>
+	<td>x86_64</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[@id="operating-system-sheet"]/table.3.0</td>
+	<td>exact:Distribution name:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[@id="operating-system-sheet"]/table.3.1</td>
+	<td>Fedora Core</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[@id="operating-system-sheet"]/table.4.0</td>
+	<td>exact:Distribution version:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[@id="operating-system-sheet"]/table.4.1</td>
+	<td>5</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[@id="operating-system-sheet"]/table.5.0</td>
+	<td>Kernel version:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[@id="operating-system-sheet"]/table.5.1</td>
+	<td>2.6.15</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[@id="operating-system-sheet"]/table.6.0</td>
+	<td>OS release:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[@id="operating-system-sheet"]/table.6.1</td>
+	<td>2.6.15-1.2054_FC5</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[@id="operating-system-sheet"]/table.7.0</td>
+	<td>OS version:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[@id="operating-system-sheet"]/table.7.1</td>
+	<td>#1 SMP Tue Mar 14 15:48:20 EST 2006</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Java</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[3]/table.0.0</td>
+	<td>exact:Vendor:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[3]/table.0.1</td>
+	<td>Sun Microsystems Inc.</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[3]/table.1.0</td>
+	<td>exact:Version:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[3]/table.1.1</td>
+	<td>1.5.0_05</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[3]/table.2.0</td>
+	<td>Specification version:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[3]/table.2.1</td>
+	<td>1.5</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[3]/table.3.0</td>
+	<td>Runtime name:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[3]/table.3.1</td>
+	<td>Java(TM) 2 Runtime Environment, Standard Edition</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[3]/table.4.0</td>
+	<td>Runtime version:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[3]/table.4.1</td>
+	<td>1.5.0_05-b05</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[3]/table.5.0</td>
+	<td>Virtual machine vendor:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[3]/table.5.1</td>
+	<td>Sun Microsystems Inc.</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[3]/table.6.0</td>
+	<td>Virtual machine version:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[3]/table.6.1</td>
+	<td>1.5.0_05-b05</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Processors</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//td/table.0.0</td>
+	<td>Model</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//td/table.0.1</td>
+	<td>Vendor</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//td/table.0.2</td>
+	<td>Speed</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//td/table.0.3</td>
+	<td>Cache size</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//td/table.1.0</td>
+	<td>AMD Athlon(tm) 64 Processor 3000+</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//td/table.1.1</td>
+	<td>AMD</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//td/table.1.2</td>
+	<td>1,800 MHz</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//td/table.1.3</td>
+	<td>512 kB</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Memory</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[5]/table.0.0</td>
+	<td>Physical size:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[5]/table.0.1</td>
+	<td>1 GB</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[5]/table.1.0</td>
+	<td>Virtual memory size:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[5]/table.1.1</td>
+	<td>32 TB</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[5]/table.2.0</td>
+	<td>Swap space:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[5]/table.2.1</td>
+	<td>1 GB</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[5]/table.3.0</td>
+	<td>Paging files size:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[5]/table.3.1</td>
+	<td>0 B</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Disk drives</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[6]/table.0.0</td>
+	<td>Drive 1</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[6]/table.1.0</td>
+	<td>Model name:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[6]/table.1.1</td>
+	<td>(unknown)</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[6]/table.2.0</td>
+	<td>Device name:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[6]/table.2.1</td>
+	<td>/dev/sda</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[6]/table.3.0</td>
+	<td>Media type:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[6]/table.3.1</td>
+	<td>HDD</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[6]/table.4.0</td>
+	<td>exact:Size:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[6]/table.4.1</td>
+	<td>281 GB</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[6]/table.5.0</td>
+	<td>exact:Partitions:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//tr[6]/td/table.0.0</td>
+	<td>Name</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//tr[6]/td/table.0.1</td>
+	<td>Device name</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//tr[6]/td/table.0.2</td>
+	<td>Filesystem</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//tr[6]/td/table.0.3</td>
+	<td>Size</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//tr[6]/td/table.0.4</td>
+	<td>Free space</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//tr[6]/td/table.1.0</td>
+	<td>/boot</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//tr[6]/td/table.1.1</td>
+	<td>/dev/sda1</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//tr[6]/td/table.1.2</td>
+	<td>ext3</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//tr[6]/td/table.1.3</td>
+	<td>101.9 MB</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//tr[6]/td/table.1.4</td>
+	<td>84.2 MB</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//tr[6]/td/table.2.0</td>
+	<td>(unknown)</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//tr[6]/td/table.2.1</td>
+	<td>/dev/sda2</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//tr[6]/td/table.2.2</td>
+	<td>Linux Swap</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//tr[6]/td/table.2.3</td>
+	<td>1 GB</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//tr[6]/td/table.2.4</td>
+	<td>0 B</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//tr[6]/td/table.3.0</td>
+	<td>/</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//tr[6]/td/table.3.1</td>
+	<td>/dev/sda3</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//tr[6]/td/table.3.2</td>
+	<td>ext3</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//tr[6]/td/table.3.3</td>
+	<td>280.8 GB</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//tr[6]/td/table.3.4</td>
+	<td>180 GB</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[6]/table.6.0</td>
+	<td>Drive 2</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[6]/table.7.0</td>
+	<td>Model name:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[6]/table.7.1</td>
+	<td>HL-DT-ST DVDRAM GSA-4163B</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[6]/table.8.0</td>
+	<td>Device name:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[6]/table.8.1</td>
+	<td>/dev/hdc</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[6]/table.9.0</td>
+	<td>Media type:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[6]/table.9.1</td>
+	<td>CD-ROM</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[6]/table.10.0</td>
+	<td>exact:Size:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[6]/table.10.1</td>
+	<td>0 B</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[6]/table.11.0</td>
+	<td>exact:Partitions:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[6]/table.11.1</td>
+	<td>No partition data available.</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[6]/table.13.0</td>
+	<td>BEEN disk drive</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[6]/table.14.0</td>
+	<td>BEEN home directory:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[6]/table.14.1</td>
+	<td>/home/usr2568/workspace/BEEN</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[6]/table.15.0</td>
+	<td>exact:Size:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[6]/table.15.1</td>
+	<td>280.8 GB</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[6]/table.16.0</td>
+	<td>Free space:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[6]/table.16.1</td>
+	<td>180 GB</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Network adapters</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[7]/table/tbody/tr/td/table.0.0</td>
+	<td>Name</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[7]/table/tbody/tr/td/table.0.1</td>
+	<td>Vendor</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[7]/table/tbody/tr/td/table.0.2</td>
+	<td>Type</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[7]/table/tbody/tr/td/table.0.3</td>
+	<td>MAC address</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[7]/table/tbody/tr/td/table.1.0</td>
+	<td>eth0</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[7]/table/tbody/tr/td/table.1.1</td>
+	<td>(unknown)</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[7]/table/tbody/tr/td/table.1.2</td>
+	<td>Ethernet</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[7]/table/tbody/tr/td/table.1.3</td>
+	<td>exact:00:0C:29:A6:80:57</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[7]/table/tbody/tr/td/table.2.0</td>
+	<td>lo</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[7]/table/tbody/tr/td/table.2.1</td>
+	<td>(unknown)</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[7]/table/tbody/tr/td/table.2.2</td>
+	<td>Local Loopback</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[7]/table/tbody/tr/td/table.2.3</td>
+	<td>(unknown)</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Applications</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[8]/table[1]/tbody/tr/td/table.0.0</td>
+	<td>Name</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[8]/table[1]/tbody/tr/td/table.0.1</td>
+	<td>Vendor</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[8]/table[1]/tbody/tr/td/table.0.2</td>
+	<td>Version</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[8]/table[1]/tbody/tr/td/table.1.0</td>
+	<td>termcap</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[8]/table[1]/tbody/tr/td/table.1.1</td>
+	<td>Red Hat, Inc.</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[8]/table[1]/tbody/tr/td/table.1.2</td>
+	<td>5.4</td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>No software aliases found.</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=User-defined properties</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Tasks</td>
+	<td></td>
+</tr>
+</tbody></table>
+</body>
+</html>

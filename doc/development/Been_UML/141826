@@ -1,0 +1,541 @@
+format 59
+"hosts" // been::src::cz::cuni::mff::been::webinterface::hosts
+  revision 1
+  modified_by 2 "Administrator"
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default show_stereotype_properties default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+  show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+  show_infonote default drawing_language default show_stereotype_properties default
+  
+  java_dir "cz/cuni/mff/been/webinterface/hosts"
+  java_package "cz.cuni.mff.been.webinterface.hosts"
+  classview 138370 "hosts"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default show_stereotype_properties default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+    //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+    show_infonote default drawing_language default show_stereotype_properties default
+    class 212738 "UserPropertiesHandler"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Processes user property settings in the host details form.
+
+1. Ensures all parameters were sent in the HTTP request (<code>ensure</code>
+   method).
+2. Checks all parametsrs' values (<code>check</code> method).
+3. Creates <code>ValueCommonInterface</code> instances from the parameters sent
+   in the HTTP request, which will be supplied to the Host Manager
+   (<code>getValue</code>) method.
+   
+For each type of property value, there exists an subclass of
+<code>ValueHandler</code> class. This subclass processes parameters for items
+of its type - the <code>UserPropertiesHandler</code> delegates its work using
+a Class->ValueHandler hashmap.  
+  
+@author David Majda
+"
+      class 212866 "ValueHandler"
+	abstract visibility private 
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	operation 762242 "ensure"
+	  abstract public explicit_return_type "void"
+	  nparams 1
+	    param in name "name" explicit_type "String"
+	  nexceptions 2
+	    exception class_ref 210050 // MissingParamException
+	    exception class_ref 208770 // InvalidParamValueException
+	  
+	  java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Checks if required parameters were sent and they have valid values. If
+the parameters are OK, the method doesn't do anything, otherwise it
+throws <code>MissingParamException</code> or
+<code>InvalidParamValueException</code> respectively.
+ 
+@param name processed user property name
+@throws MissingParamException if some required parameter is missing
+@throws InvalidParamValueException if required parameter contains
+         invalid value
+"
+	end
+
+	operation 762370 "check"
+	  abstract public explicit_return_type "void"
+	  nparams 1
+	    param in name "name" explicit_type "String"
+	  
+	  java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Checks if required parameters have valid values and writes error message
+if some parameters do not.
+
+This method is used when validating free-text fields (e.g. when user
+should enter only integer value) and in similar situations.  
+
+@param name processed user property name
+"
+	end
+
+	operation 762498 "getValue"
+	  abstract public return_type class_ref 165890 // ValueCommonInterface
+	  nparams 1
+	    param inout name "property" type class_ref 166018 // NameValuePair
+	  
+	  java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Creates the <code>ValueCommonInterface</code> instance from the
+parameters sent in the HTTP request.
+
+@param property processed user property
+"
+	end
+      end
+
+      classrelation 279938 // params (<unidirectional association>)
+	relation 279938 --->
+	  a role_name "params" init_value "=  Params.getInstance()" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 279938 // params (<unidirectional association>)
+	  b parent class_ref 210562 // Params
+      end
+
+      attribute 351234 "request"
+	private explicit_type "HttpServletRequest"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 351362 "prefix"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 280066 // valueHandlers (<unidirectional association>)
+	relation 280066 --->
+	  stereotype "Map"
+	  a role_name "valueHandlers" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<Class, ${type}> ${name}${value};
+"
+	    classrelation_ref 280066 // valueHandlers (<unidirectional association>)
+	  b parent class_ref 212866 // ValueHandler
+      end
+
+      attribute 351490 "editing"
+	private explicit_type "boolean"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 280194 // valueBooleanHandler (<unidirectional association>)
+	relation 280194 --->
+	  a role_name "valueBooleanHandler" init_value "=  new ValueHandler() {
+		@Override
+		public void ensure(String name) throws MissingParamException, InvalidParamValueException {
+			String paramName = prefix + \"-\" + name;
+			params.ensureExists(paramName);
+			params.ensureCondition(paramName, params.isBoolean(paramName));
+		}
+
+		@Override
+		public void check(String name) {
+			/* We don't need to do anything here. */
+		}
+
+		@Override
+		public ValueCommonInterface getValue(NameValuePair property) {
+			String paramName = prefix + \"-\" + property.getName();
+			return new ValueBoolean(request.getParameter(paramName).equals(\"true\"));
+		}
+	}" const_relation private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 280194 // valueBooleanHandler (<unidirectional association>)
+	  b parent class_ref 212866 // ValueHandler
+      end
+
+      classrelation 280322 // valueIntegerHandler (<unidirectional association>)
+	relation 280322 --->
+	  a role_name "valueIntegerHandler" init_value "=  new ValueHandler() {
+		@Override
+		public void ensure(String name) throws MissingParamException, InvalidParamValueException {
+			String paramName = prefix + \"-\" + name;
+			params.ensureExists(paramName);
+		}
+
+		@Override
+		public void check(String name) {
+			String paramName = prefix + \"-\" + name;
+			params.checkCondition(params.isInteger(paramName),
+				editing
+					? \"Property \\\"\" + name + \"\\\" must be an integer.\"
+					: \"Property must be an integer.\");
+		}
+
+		@Override
+		public ValueCommonInterface getValue(NameValuePair property) {
+			String paramName = prefix + \"-\" + property.getName();
+			return new ValueInteger(Integer.valueOf(request.getParameter(paramName)));
+		}
+	}" const_relation private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 280322 // valueIntegerHandler (<unidirectional association>)
+	  b parent class_ref 212866 // ValueHandler
+      end
+
+      classrelation 280450 // valueDoubleHandler (<unidirectional association>)
+	relation 280450 --->
+	  a role_name "valueDoubleHandler" init_value "=  new ValueHandler() {
+		@Override
+		public void ensure(String name) throws MissingParamException, InvalidParamValueException {
+			String paramName = prefix + \"-\" + name;
+			params.ensureExists(paramName);
+		}
+
+		@Override
+		public void check(String name) {
+			String paramName = prefix + \"-\" + name;
+			params.checkCondition(params.isDouble(paramName),
+				\"Property \\\"\" + name + \"\\\" must be an double.\");
+		}
+
+		@Override
+		public ValueCommonInterface getValue(NameValuePair property) {
+			String paramName = prefix + \"-\" + property.getName();
+			return new ValueDouble(Double.valueOf(request.getParameter(paramName)));
+		}
+	}" const_relation private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 280450 // valueDoubleHandler (<unidirectional association>)
+	  b parent class_ref 212866 // ValueHandler
+      end
+
+      classrelation 280578 // valueStringHandler (<unidirectional association>)
+	relation 280578 --->
+	  a role_name "valueStringHandler" init_value "=  new ValueHandler() {
+		@Override
+		public void ensure(String name) throws MissingParamException, InvalidParamValueException {
+			String paramName = prefix + \"-\" + name;
+			params.ensureExists(paramName);
+		}
+
+		@Override
+		public void check(String name) {
+			/* We don't need to do anything here. */
+		}
+
+		@Override
+		public ValueCommonInterface getValue(NameValuePair property) {
+			String paramName = prefix + \"-\" + property.getName();
+			return new ValueString(request.getParameter(paramName));
+		}
+	}" const_relation private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 280578 // valueStringHandler (<unidirectional association>)
+	  b parent class_ref 212866 // ValueHandler
+      end
+
+      classrelation 280706 // valueRegexpHandler (<unidirectional association>)
+	relation 280706 --->
+	  a role_name "valueRegexpHandler" init_value "=  new ValueHandler() {
+		@Override
+		public void ensure(String name) throws MissingParamException, InvalidParamValueException {
+			String paramName = prefix + \"-\" + name;
+			params.ensureExists(paramName);
+		}
+
+		@Override
+		public void check(String name) {
+			String paramName = prefix + \"-\" + name;
+			params.checkCondition(params.isRegexp(paramName), 				
+				editing 
+					? \"Property \\\"\" + name + \"\\\" must be an regular expression.\"
+					: \"Property must be an regular expression.\");
+		}
+
+		@Override
+		public ValueCommonInterface getValue(NameValuePair property) {
+			String paramName = prefix + \"-\" + property.getName();
+			return new ValueRegexp(request.getParameter(paramName));
+		}
+	}" const_relation private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 280706 // valueRegexpHandler (<unidirectional association>)
+	  b parent class_ref 212866 // ValueHandler
+      end
+
+      classrelation 280834 // valueVersionHandler (<unidirectional association>)
+	relation 280834 --->
+	  a role_name "valueVersionHandler" init_value "=  new ValueHandler() {
+		@Override
+		public void ensure(String name) throws MissingParamException, InvalidParamValueException {
+			String paramName = prefix + \"-\" + name;
+			params.ensureExists(paramName);
+		}
+
+		@Override
+		public void check(String name) {
+			/* We don't need to do anything here. */
+		}
+
+		@Override
+		public ValueCommonInterface getValue(NameValuePair property) {
+			String paramName = prefix + \"-\" + property.getName();
+			return new ValueVersion(request.getParameter(paramName));
+		}
+	}" const_relation private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 280834 // valueVersionHandler (<unidirectional association>)
+	  b parent class_ref 212866 // ValueHandler
+      end
+
+      classrelation 280962 // valueListHandler (<unidirectional association>)
+	relation 280962 --->
+	  a role_name "valueListHandler" init_value "=  new ValueHandler() {
+		@Override
+		public void ensure(String name) throws MissingParamException, InvalidParamValueException {
+			/* We don't need to do anything here. */
+		}
+
+		@Override
+		public void check(String name) {
+			/* We don't need to do anything here. */
+		}
+
+		@Override
+		public ValueCommonInterface getValue(NameValuePair property) {
+			return property.getValue(); // We return old value.
+		}
+	}" const_relation private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 280962 // valueListHandler (<unidirectional association>)
+	  b parent class_ref 212866 // ValueHandler
+      end
+
+      classrelation 281090 // valueRangeHandler (<unidirectional association>)
+	relation 281090 --->
+	  a role_name "valueRangeHandler" init_value "=  new ValueHandler() {
+		@Override
+		public void ensure(String name) throws MissingParamException, InvalidParamValueException {
+			/* We don't need to do anything here. */
+		}
+
+		@Override
+		public void check(String name) {
+			/* We don't need to do anything here. */
+		}
+
+		@Override
+		public ValueCommonInterface getValue(NameValuePair property) {
+			return property.getValue(); // We return old value.
+		}
+	}" const_relation private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 281090 // valueRangeHandler (<unidirectional association>)
+	  b parent class_ref 212866 // ValueHandler
+      end
+
+      operation 762626 "UserPropertiesHandler"
+	public explicit_return_type ""
+	nparams 3
+	  param inout name "aRequest" explicit_type "HttpServletRequest"
+	  param in name "prefix" explicit_type "String"
+	  param inout name "editing" explicit_type "boolean"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>UserPropertiesHandler</code> object.
+
+@param aRequest HTTP request in which the parameters will be processed
+@param prefix prefix of HTTP request parameters
+@param editing flag indicating if we are adding or editing the properties
+"
+      end
+
+      operation 762754 "ensure"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "properties" type class_ref 166018 // NameValuePair
+	nexceptions 2
+	  exception class_ref 210050 // MissingParamException
+	  exception class_ref 208770 // InvalidParamValueException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0}[] ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Checks if required parameters were sent for all items and they have valid
+values. If the parameters are OK, the method doesn't do anything, otherwise
+it throws <code>MissingParamException</code> or
+<code>InvalidParamValueException</code> respectively.
+ 
+@param properties current user properties of the host
+@throws MissingParamException if some required parameter is missing
+@throws InvalidParamValueException if required parameter contains invalid
+         value
+"
+      end
+
+      operation 762882 "check"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "properties" type class_ref 166018 // NameValuePair
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0}[] ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Checks if required parameters for all items have valid values and writes
+error message if some parameters do not.
+
+@param properties current user properties of the host
+"
+      end
+
+      operation 763010 "getValues"
+	public return_type class_ref 166018 // NameValuePair
+	nparams 1
+	  param inout name "properties" type class_ref 166018 // NameValuePair
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${t0}[] ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Updates all items' values according to the parameters sent in the HTTP
+request.
+
+@param properties current user properties of the host
+"
+      end
+    end
+  end
+
+  deploymentview 137474 "hosts"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+    artifact 192386 "UserPropertiesHandler"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import cz.cuni.mff.been.hostmanager.database.NameValuePair;
+import cz.cuni.mff.been.hostmanager.value.ValueBoolean;
+import cz.cuni.mff.been.hostmanager.value.ValueCommonInterface;
+import cz.cuni.mff.been.hostmanager.value.ValueDouble;
+import cz.cuni.mff.been.hostmanager.value.ValueInteger;
+import cz.cuni.mff.been.hostmanager.value.ValueList;
+import cz.cuni.mff.been.hostmanager.value.ValueRange;
+import cz.cuni.mff.been.hostmanager.value.ValueRegexp;
+import cz.cuni.mff.been.hostmanager.value.ValueString;
+import cz.cuni.mff.been.hostmanager.value.ValueVersion;
+import cz.cuni.mff.been.webinterface.InvalidParamValueException;
+import cz.cuni.mff.been.webinterface.MissingParamException;
+import cz.cuni.mff.been.webinterface.Params;
+${definition}"
+      associated_classes
+	class_ref 212738 // UserPropertiesHandler
+      end
+    end
+  end
+end

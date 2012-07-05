@@ -1,0 +1,14 @@
+class AttributeHelper
+!!!606594.java!!!	extractTextValueFromElement(inout element : Element) : String
+		NodeList children = element.getChildNodes();
+		if (children.getLength() == 0) {
+			return "";   
+		}
+		if (children.getLength() > 1) {
+			return null;   
+		}
+		Node textContent = children.item(0);
+		if (textContent.getNodeType() != Element.TEXT_NODE) {
+			return null;   
+		}
+		return textContent.getNodeValue();

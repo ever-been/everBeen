@@ -1,0 +1,11 @@
+class TestingContainerProperty
+!!!846082.java!!!	TestingContainerProperty(in name : String, in age : long)
+			this.name = name;
+			this.age = age;
+!!!846722.java!!!	hasProperty(in propertyName : String) : boolean
+			return propertyName.equals("name") || propertyName.equals("age");
+!!!846850.java!!!	getProperty(in propertyName : String) : Property
+			if (propertyName.equals("name")) { return new NameSimpleProperty(); }
+			if (propertyName.equals("age"))  { return new AgeSimpleProperty();  }
+			assert false: "Trying to retrieve non-existant property.";
+			return null;

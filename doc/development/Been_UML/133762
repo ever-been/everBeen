@@ -1,0 +1,1146 @@
+format 70
+"util" // been::src::cz::cuni::mff::been::hostmanager::util
+  revision 3
+  modified_by 8 "BoRiS"
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+  show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+  show_infonote default drawing_language default show_stereotype_properties default
+  
+  java_dir "cz/cuni/mff/been/hostmanager/util"
+  java_package "cz.cuni.mff.been.hostmanager.util"
+  classview 132098 "util"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+    //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+    show_infonote default drawing_language default show_stereotype_properties default
+    class 179458 "MiscUtils"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Various useful function used in Host Manager. 
+
+@author Branislav Repcek
+"
+      attribute 229762 "DEFAULT_DATE_FORMAT"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"yyyy/MM/dd HH:mm:ss.SSS\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Default format for date formatting.
+
+ @see #formatDate(Date)
+
+"
+      end
+
+      operation 443778 "concatenatePath"
+	class_operation public explicit_return_type "String"
+	nparams 2
+	  param in name "path1" explicit_type "String"
+	  param in name "path2" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Concatenate two paths. It will correctly concatenate paths with or without separators.
+
+@param path1 Start of the path sting.
+@param path2 End of the path string.
+
+@return Concatenation of two path strings (path1 + path2) in correct form.
+"
+      end
+
+      operation 443906 "extractFileName"
+	class_operation public explicit_return_type "String"
+	nparams 1
+	  param in name "fullPath" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Extract name of the file from the full path.
+
+@param fullPath String with full path.
+
+@return Last element of the full path.
+"
+      end
+
+      operation 444034 "formatDate"
+	class_operation public explicit_return_type "String"
+	nparams 2
+	  param inout name "date" explicit_type "Date"
+	  param in name "formatStr" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Format date with given format.
+
+@param date Date to format.
+@param formatStr Format string. Same rules as for java.text.SimpleDateFormat apply here.
+
+@return String representation of given date. If requested format is invalid, resulting string
+        will be constructed by hand (it will be the same as string obtained with 
+        <code>yyyy/MM/dd HH:mm.ss</code> format string).
+"
+      end
+
+      operation 444162 "formatDate"
+	class_operation public explicit_return_type "String"
+	nparams 1
+	  param inout name "date" explicit_type "Date"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Format date using default format.
+
+@param date Date to format.
+
+@return String with formatted date.
+"
+      end
+
+      operation 444290 "openFileForWritingWithEncoding"
+	class_operation public explicit_return_type "BufferedWriter"
+	nparams 2
+	  param in name "fileName" explicit_type "String"
+	  param in name "encoding" explicit_type "String"
+	nexceptions 2
+	  explicit_exception "FileNotFoundException"
+	  explicit_exception "UnsupportedEncodingException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Open specified file with specified encoding for writing.
+
+@param fileName Name of the file to open.
+@param encoding Encoding of the resulting file.
+
+@return Writer which will write to the file using specified encoding.  
+
+@throws FileNotFoundException If file cannot be created (name is a directory, insufficient permissions...)
+
+@throws UnsupportedEncodingException If the encoding is not supported.
+"
+      end
+
+      operation 444418 "openFileForReadingWithEncoding"
+	class_operation public explicit_return_type "BufferedReader"
+	nparams 2
+	  param in name "fileName" explicit_type "String"
+	  param in name "encoding" explicit_type "String"
+	nexceptions 2
+	  explicit_exception "UnsupportedEncodingException"
+	  explicit_exception "FileNotFoundException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Open specified file with specified encoding for reading.
+
+@param fileName Name of the file to open.
+@param encoding Encoding of the file.
+
+@return Reader which will read specified file using specified encoding.
+
+@throws UnsupportedEncodingException If the encoding is not supported.
+
+@throws FileNotFoundException File was not found or it is a directory.
+"
+      end
+
+      operation 444546 "verifyParameterIsNotNull"
+	class_operation public explicit_return_type "void"
+	nparams 2
+	  param inout name "x" explicit_type "Object"
+	  param in name "paramName" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 161922 // InvalidArgumentException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Verify that given object is not <code>null</code>.
+
+@param x Object to test.
+@param paramName Name of the parameter which will appear in the exception in case it is <code>null</code>.
+
+@throws InvalidArgumentException If parameter is <code>null</code>.
+"
+      end
+
+      operation 444674 "verifyStringParameterNotEmpty"
+	class_operation public explicit_return_type "void"
+	nparams 2
+	  param in name "s" explicit_type "String"
+	  param in name "paramName" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 161922 // InvalidArgumentException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Test if string is not empty.
+
+@param s String to test. Note that parameter cannot be <code>null</code>.
+@param paramName Name of the parameter that will appear in exception.
+
+@throws InvalidArgumentException If given string is empty.
+"
+      end
+
+      operation 444802 "verifyStringParameterBoth"
+	class_operation public explicit_return_type "void"
+	nparams 2
+	  param in name "s" explicit_type "String"
+	  param in name "paramName" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 161922 // InvalidArgumentException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Verify that given string is not empty and it is not <code>null</code>.
+   
+@param s String to test.
+@param paramName Name of the parameter that will appear in the exception,
+
+@throws InvalidArgumentException If string is empty or if it is <code>null</code>.
+"
+      end
+
+      operation 444930 "verifyIntParameterGEZero"
+	class_operation public explicit_return_type "void"
+	nparams 2
+	  param in name "value" explicit_type "long"
+	  param in name "name" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 161922 // InvalidArgumentException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Verify that given parameter is greater that or equal to zero (=non-negative).
+
+@param value Value to test.
+@param name Name of the parameter.
+
+@throws InvalidArgumentException If parameter value is negative.
+"
+      end
+
+      operation 445058 "verifyIntParameterGZero"
+	class_operation public explicit_return_type "void"
+	nparams 2
+	  param in name "value" explicit_type "long"
+	  param in name "name" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 161922 // InvalidArgumentException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Verify that given parameter has positive value.
+
+@param value Value to test.
+@param name Name of parameter that will appear in exception.
+
+@throws InvalidArgumentException If given value is zero or negative.
+"
+      end
+
+      operation 445186 "getCanonicalHostName"
+	class_operation public explicit_return_type "String"
+	nparams 1
+	  param in name "hostName" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "UnknownHostException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Get canonical name of the host. Names returned by this methods are used in the database.
+
+@param hostName Name of the host to resolve.
+
+@return Canonical name of the host if available.
+
+@throws UnknownHostException If host was not found on the network.
+"
+      end
+
+      operation 445314 "getCanonicalLocalhostName"
+	class_operation public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Get canonical name of the localhost.
+
+@return Canonical name of the localhost.
+"
+      end
+
+      operation 445442 "removeFile"
+	class_operation public explicit_return_type "boolean"
+	nparams 1
+	  param in name "fileName" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "SecurityException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Remove file.
+
+@param fileName Name of the file to remove.
+
+@return <tt>true</tt> if file or directory has been successfully removed, <tt>false</tt>
+        otherwise.
+
+@throws SecurityException
+"
+      end
+
+      operation 445570 "MiscUtils"
+	private explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Does nothing.
+"
+      end
+    end
+
+    class 179586 "TimeUtils"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+This class provides helper methods to convert between various representations of time. It provides
+methods to convert between Unix time/Windows time stamp and Java Date class.<br>
+Windows time measures time in 100 ns intervals since start of the Windows epoch (1. 1. 1601 0:00).
+Unix time is measured in seconds since the start of the Unix epoch (1. 1. 1970 0:00). Java measures 
+time in milliseconds since the Unix epoch. From that it is clear, that Windows time is the most 
+precise one and that's why it is used internally by Load Monitors and Load Server.<br>
+<br>
+Note that when converting from Windows time to Unix or Java time, precision is lost. Same goes for
+converting from Java time to Unix time.
+
+@author Branislav Repcek
+"
+      attribute 229890 "timeZone"
+	class_attribute private explicit_type "TimeZone"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Current time zone.
+
+"
+      end
+
+      attribute 230018 "DATE_FORMAT"
+	class_attribute const_attribute private explicit_type "SimpleDateFormat"
+	init_value "=  new SimpleDateFormat(\"yyyy/MM/dd HH:mm:ss.SSS\")"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Date formatter for output messages.
+
+"
+      end
+
+      extra_member 128386 "initialization"
+	
+	cpp "" ""
+	java "  static {
+		GregorianCalendar calendar = new GregorianCalendar();
+		timeZone = calendar.getTimeZone();
+	}"
+	php ""
+	python ""
+	idl ""
+      end
+
+      attribute 230146 "SECONDS_BETWEEN_EPOCHS"
+	class_attribute const_attribute private explicit_type "long"
+	init_value "=  11644473600L"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Total number of seconds between starts of Unix and Windows epochs. Windows epoch starts 
+at 1. 1. 1601 0:00, Unix epoch starts at 1. 1. 1970 0:00. 
+So the total number of seconds can be calculated like this:
+  
+There's 369 years between epochs (1970 - 1601 = 369). 89 of those years are leap years.
+So there's 89 * 366 + 280 * 365 = 134774 days between epochs. Since each day has 
+24 * 60 * 60 = 86400 seconds, there are 86400 * 134774 = 11644473600.
+
+"
+      end
+
+      attribute 230274 "SECONDS_TO_100NS"
+	class_attribute const_attribute private explicit_type "long"
+	init_value "=  10000000"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Total number of 100 ns intervals in one second (10^7).
+
+"
+      end
+
+      attribute 230402 "MILLISECONDS_BETWEEN_EPOCHS"
+	class_attribute const_attribute private explicit_type "long"
+	init_value "=  SECONDS_BETWEEN_EPOCHS * 1000"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Total number of milliseconds between Windows and Unix epochs.
+
+"
+      end
+
+      attribute 230530 "MILLISECONDS_TO_100NS"
+	class_attribute const_attribute private explicit_type "long"
+	init_value "=  10000"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Total number of 100 ns intervals in one millisecond.
+
+"
+      end
+
+      operation 445698 "convertUnixTimeToWindowsTime"
+	class_operation public explicit_return_type "long"
+	nparams 1
+	  param in name "unixTime" explicit_type "long"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Convert Unix time to the Windows time stamp.
+ 
+@param unixTime Number of seconds since start of the Unix epoch (1. 1. 1970 0:00).
+
+@return Number of 100 ns intervals since start of the Windows epoch (1. 1. 1601 0:00).
+"
+      end
+
+      operation 445826 "convertWindowsTimeToUnixTime"
+	class_operation public explicit_return_type "long"
+	nparams 1
+	  param in name "winTime" explicit_type "long"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Convert Windows time to the Unix time stamp.
+
+@param winTime Number of 100 ns intervals since start of the Windows epoch (1. 1. 1601 0:00).
+
+@return Number of seconds since start of the Unix epoch (1. 1. 1970 0:00).
+"
+      end
+
+      operation 445954 "convertUnixTimeToJavaDate"
+	class_operation public explicit_return_type "Date"
+	nparams 1
+	  param in name "time" explicit_type "long"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Convert Unix time to the Java Date.
+
+@param time Number of seconds since start of the Unix epoch (1. 1. 1970 0:00).
+
+@return Date and time corresponding to the given Unix time.
+"
+      end
+
+      operation 446082 "convertJavaDateToUnixTime"
+	class_operation public explicit_return_type "long"
+	nparams 1
+	  param inout name "time" explicit_type "Date"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Convert date and time to the Unix time stamp.
+
+@param time Date and time to convert.
+
+@return Number of seconds since start of the Unix epoch (1. 1. 1970 0:00).
+"
+      end
+
+      operation 446210 "convertJavaDateToWindowsTime"
+	class_operation public explicit_return_type "long"
+	nparams 1
+	  param inout name "time" explicit_type "Date"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Convert date and time to the Windows time stamp.
+
+@param time Date and time to convert.
+
+@return Number of 100 ns intervals since start of the Windows epoch (1. 1. 1601 0:00).
+"
+      end
+
+      operation 446338 "convertWindowsTimeToJavaDate"
+	class_operation public explicit_return_type "Date"
+	nparams 1
+	  param in name "time" explicit_type "long"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Convert Windows time stamp to the date and time.
+
+@param time Number of 100 ns intervals since start of the Windows epoch (1. 1. 1601 0:00).
+
+@return Date and time corresponding to the given time stamp.
+"
+      end
+
+      operation 446466 "nowFormated"
+	class_operation public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Get formatted string with current date and time.
+
+@return String with current date and time.
+"
+      end
+
+      operation 446594 "now"
+	class_operation public explicit_return_type "long"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Return timestamp corresponding to current date and time.
+
+@return Timestamp corresponding to current date and time.
+"
+      end
+
+      operation 446722 "TimeUtils"
+	private explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Does nothing.
+"
+      end
+    end
+
+    class 179714 "XMLHelper"
+      abstract visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Class with static methods to simplify work with XML files (using DOM model).
+
+@author Branislav Repcek
+
+"
+      operation 446850 "createDocument"
+	class_operation public explicit_return_type "Document"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "ParserConfigurationException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Create new XML document.
+
+@return Instance of the Document interface.
+
+@throws ParserConfigurationException If parser configuration error occurred.
+"
+      end
+
+      operation 446978 "saveDocument"
+	class_operation public explicit_return_type "void"
+	nparams 4
+	  param inout name "doc" explicit_type "Document"
+	  param in name "fileName" explicit_type "String"
+	  param inout name "indent" explicit_type "boolean"
+	  param in name "encoding" explicit_type "String"
+	nexceptions 2
+	  explicit_exception "TransformerConfigurationException"
+	  explicit_exception "TransformerException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Save DOM document tree into a file.
+
+@param doc Document tree to save.
+@param fileName Name of the output file.
+@param indent If <code>true</code> nodes in output file will be indented for easier reading.
+@param encoding Name of the encoding of the output file. If <code>null</code> default encoding
+       is used.
+       
+@throws TransformerConfigurationException If there was an error when creating document Transformer.
+@throws TransformerException If there was an error writing output file.
+"
+      end
+
+      operation 447106 "saveDocument"
+	class_operation public explicit_return_type "void"
+	nparams 2
+	  param inout name "doc" explicit_type "Document"
+	  param in name "fileName" explicit_type "String"
+	nexceptions 2
+	  explicit_exception "TransformerConfigurationException"
+	  explicit_exception "TransformerException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Save DOM document tree into a file with UTF-16 encoding.
+
+@param doc Document to save.
+@param fileName Name of the output file.
+
+@throws TransformerConfigurationException If there was an error when creating document Transformer.
+@throws TransformerException If there was an error writing output file.
+"
+      end
+
+      operation 447234 "saveXMLSerializable"
+	class_operation public explicit_return_type "void"
+	nparams 4
+	  param inout name "data" type class_ref 165122 // XMLSerializableInterface
+	  param in name "fileName" explicit_type "String"
+	  param inout name "indent" explicit_type "boolean"
+	  param in name "encoding" explicit_type "String"
+	nexceptions 3
+	  explicit_exception "ParserConfigurationException"
+	  explicit_exception "TransformerConfigurationException"
+	  explicit_exception "TransformerException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Save object which implements XMLSerializableInterface to the XML file. Root node of the file will
+be node created by the given object.
+
+@param data Object to save.
+@param fileName Name of output file.
+@param indent If <code>true</code> nodes in output file will be indented for easier reading.
+@param encoding Name of the encoding of the output file. If <code>null</code> default encoding
+       is used.
+       
+@throws ParserConfigurationException If there was an error creating DocumentBuilder.
+@throws TransformerConfigurationException If there was an error when creating document Transformer.
+@throws TransformerException If there was an error writing output file.
+"
+      end
+
+      operation 447362 "getChildNodesByName"
+	class_operation public explicit_return_type "ArrayList< Node >"
+	nparams 2
+	  param in name "name" explicit_type "String"
+	  param inout name "node" explicit_type "Node"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Get list of child nodes with given name.
+
+@param name Name of nodes to retrieve.
+@param node Parent node.
+
+@return <code>ArrayList</code> containing nodes with given name.
+"
+      end
+
+      operation 447490 "getNodeValue"
+	class_operation public explicit_return_type "String"
+	nparams 1
+	  param inout name "node" explicit_type "Node"
+	nexceptions 1
+	  exception class_ref 164226 // InputParseException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Get value of given node. For element nodes get value of first child node (it assumes no comments in file).
+
+@param node Node to get value from.
+@return String containing value of node.
+
+@throws InputParseException when unsupported node is passed as parameter.
+"
+      end
+
+      operation 447618 "getSubNodeByName"
+	class_operation public explicit_return_type "Node"
+	nparams 2
+	  param in name "name" explicit_type "String"
+	  param inout name "node" explicit_type "Node"
+	nexceptions 1
+	  exception class_ref 164226 // InputParseException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Get first sub-node with given name.
+
+@param name Name of node to retrieve.
+@param node Parent node.
+@return Requested node.
+
+@throws InputParseException if node with given name is not sub-node of <code>node</code>.
+"
+      end
+
+      operation 447746 "getSubNodeByName"
+	class_operation public explicit_return_type "Node"
+	nparams 2
+	  param in name "name" explicit_type "String"
+	  param inout name "doc" explicit_type "Document"
+	nexceptions 1
+	  exception class_ref 164226 // InputParseException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Get first sub-node of document with given name.
+
+@param name Name of sub-node to retrieve.
+@param doc Document from which to retrieve node.
+@return Requested sub-node or <code>null</code> if node has not been found.
+
+@throws InputParseException if node with given name is not sub-node of document.
+"
+      end
+
+      operation 447874 "getSubNodeValueByName"
+	class_operation public explicit_return_type "String"
+	nparams 2
+	  param in name "name" explicit_type "String"
+	  param inout name "node" explicit_type "Node"
+	nexceptions 1
+	  exception class_ref 164226 // InputParseException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Get value of first sub-node with given name.
+
+@param name Name of sub-node.
+@param node Parent node.
+@return Value of sub-node.
+
+@throws InputParseException if sub-node with given name hasn't been found or is of unsupported type.
+"
+      end
+
+      operation 448002 "hasSubNode"
+	class_operation public explicit_return_type "boolean"
+	nparams 2
+	  param in name "name" explicit_type "String"
+	  param inout name "node" explicit_type "Node"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Test if node has sub-node with specified name.
+
+@param name Name of sub-node to look for.
+@param node Node in which we are searching.
+
+@return <code>true</code> if given node has specified sub-node as a direct sub-node, 
+        <code>false</code> otherwise.
+"
+      end
+
+      operation 448130 "getAttributeValueByName"
+	class_operation public explicit_return_type "String"
+	nparams 2
+	  param in name "attrName" explicit_type "String"
+	  param inout name "node" explicit_type "Node"
+	nexceptions 1
+	  exception class_ref 164226 // InputParseException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Get value of attribute with specified name from given node.
+ 
+@param attrName Name of the attribute. 
+@param node Node containing the attribute. 
+@return Value of the attribute as String.
+
+@throws InputParseException If attribute with given name was not found.
+"
+      end
+
+      operation 448258 "hasAttribute"
+	class_operation public explicit_return_type "boolean"
+	nparams 2
+	  param in name "attributeName" explicit_type "String"
+	  param inout name "node" explicit_type "Node"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Test if given node contains attribute with specified name.
+
+@param attributeName Name of the attribute to look for.
+@param node Node in which attribute is to be looked for.'
+ 
+@return <code>true</code> if node contains given attribute, <code>false</code> if attribute 
+        with given name has not been found.
+"
+      end
+
+      operation 448386 "xMLize"
+	class_operation public explicit_return_type "String"
+	nparams 1
+	  param in name "s" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Escape special characters in string so it can be written directly to XML file. It will substitute
+'<', '>', '&', ''', '\"' with their escape sequences.
+
+@param s original string.
+@return string with XML special characters escaped.
+"
+      end
+
+      operation 448514 "writeValueToElement"
+	class_operation public explicit_return_type "Element"
+	nparams 3
+	  param inout name "doc" explicit_type "Document"
+	  param inout name "value" explicit_type "T"
+	  param in name "name" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Create Element node containing specified value.
+
+@param <T> Type of value to put to the Element.
+@param doc Document which will contain Element node.
+@param value Value to write to the node.
+@param name Name of the Element node.
+
+@return Element node with specified name containing given value.
+"
+      end
+
+      operation 448642 "XMLHelper"
+	private explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Does nothing.
+"
+      end
+    end
+  end
+
+  deploymentview 130434 "util"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+    artifact 161538 "MiscUtils"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+${definition}"
+      associated_classes
+	class_ref 179458 // MiscUtils
+      end
+    end
+
+    artifact 161666 "TimeUtils"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+${definition}"
+      associated_classes
+	class_ref 179586 // TimeUtils
+      end
+    end
+
+    artifact 161794 "XMLHelper"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+${definition}"
+      associated_classes
+	class_ref 179714 // XMLHelper
+      end
+    end
+  end
+end

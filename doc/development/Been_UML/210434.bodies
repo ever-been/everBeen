@@ -1,0 +1,65 @@
+class Module
+!!!763138.java!!!	getId() : String
+		return id;
+!!!763266.java!!!	getName() : String
+		return name;
+!!!763394.java!!!	getDefaultAction() : String
+		return defaultAction;
+!!!763522.java!!!	getMenu() : MenuItem
+		return menu;
+!!!763650.java!!!	actionToMethod(in action : String) : String
+		String result = "";
+		boolean makeNextUpperCase = false;
+		for (int i = 0; i < action.length(); i++) {
+			char ch = action.charAt(i);
+			if (ch == '-') {
+				makeNextUpperCase = true;
+			} else {
+				if (makeNextUpperCase) {
+					result += Character.toUpperCase(ch);
+					makeNextUpperCase = false;
+				} else {
+					result += ch;
+				}
+			}
+		}
+		return result;
+!!!763778.java!!!	getMethodForAction(in action : String) : Method
+		Class[] params = { HttpServletRequest.class, HttpServletResponse.class };
+		String methodName = actionToMethod(action);
+		Method result;
+		try {
+			result = getClass().getMethod(methodName, params);
+		} catch (NoSuchMethodException e) {
+			/* Little hack: Some methods would have same names as Java reserved
+			 * words, so they have an underscore appended. Before we give up, try to
+			 * find a method with underscore at the end.
+			 */
+			result = getClass().getMethod(methodName + "_", params);
+		}
+		return result;
+!!!763906.java!!!	invokeMethodForAction(inout request : HttpServletRequest, inout response : HttpServletResponse, in action : String) : void
+		Object[] params = { request, response };
+		Method method;
+		
+		/* Find method for given action. */
+		try {
+			method = getMethodForAction(action);
+		} catch (SecurityException e) {
+			response.sendError(HttpServletResponse.SC_NOT_FOUND,
+					"Invalid URL: Method for action \"" + action + "\" can't be accessed.");
+			return;
+		} catch (NoSuchMethodException e) {
+			response.sendError(HttpServletResponse.SC_NOT_FOUND,
+					"Invalid URL: Method for action \"" + action + "\" not found.");
+			return;
+		}
+		
+		/* Invoke the method. */
+		try {
+			method.invoke(this, params);
+		} catch (IllegalAccessException e) {
+			throw new ServletException("Method invocation failed.", e);
+		} catch (IllegalArgumentException e) {
+			throw new ServletException("Method invocation failed.", e);
+		} 

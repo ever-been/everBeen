@@ -1,0 +1,10 @@
+class HostManagerEventListener
+!!!286082.java!!!	HostManagerEventListener()
+		
+		remove = false;
+!!!286338.java!!!	removeMe() : void
+		
+		remove = true;
+!!!286466.java!!!	remove() : boolean
+		
+		return remove;

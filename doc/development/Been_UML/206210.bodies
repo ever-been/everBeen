@@ -1,0 +1,12 @@
+class TaskPropertyObject
+!!!675074.java!!!	TaskPropertyObject(in key : String, inout value : Serializable)
+			this.setKey(key);
+			this.setValue(value);
+!!!675202.java!!!	setKey(in key : String) : void
+			this.key = key;
+!!!675330.java!!!	setValue(inout value : Serializable) : void
+			this.value = value;
+!!!675458.java!!!	getKey() : String
+			return this.key;
+!!!675586.java!!!	getValue() : Serializable
+			return this.value;

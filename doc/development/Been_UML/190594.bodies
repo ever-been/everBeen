@@ -1,0 +1,220 @@
+class ExportBEEN
+!!!537858.java!!!	setDatabase(inout aDatabase : Database) : void
+		database = aDatabase;
+!!!537986.java!!!	deleteIfExists(in filename : String) : void
+		File file = new File(filename);
+		
+		if (file.exists()) {
+			file.delete();
+		}
+!!!538114.java!!!	beginAnalysesExport(inout aids : AID, inout ip : InetAddress, in port : int) : DownloadHandle
+
+		for (int i = 0; i < aids.length; i++) {
+			database.getAnalysisEntityManager().ensureValidAid(aids[i]);
+		}
+		
+		String tempDir = database.getTempDirectory();
+		
+		
+		deleteIfExists(tempDir + File.separator + TEMPORARY_ZIP_FILENAME);		
+		deleteIfExists(tempDir + File.separator + EXPORT_METADATA_FILENAME);
+		
+		File tempZip = new File(tempDir + File.separator + TEMPORARY_ZIP_FILENAME);
+				
+		try {
+			FileOutputStream f = new FileOutputStream(tempZip);
+			ZipOutputStream zos = new ZipOutputStream(f);
+			BufferedOutputStream out =
+			   new BufferedOutputStream(zos);
+			for (int i = 0; i < aids.length; i++) {
+				Zipper.zipDirectoryRecursively(zos, out, 
+						new File(database.getDirectoryInDatabase(aids[i])), aids[i].toString());				
+			}
+			
+			Metadata metaFile = new Metadata();
+			metaFile.addItem("objects", "analyses");
+			metaFile.addItem("count", new Integer(aids.length).toString());
+			metaFile.store(tempDir + File.separator + EXPORT_METADATA_FILENAME);
+			Zipper.zipFile(zos, out, new File(tempDir 
+					+ File.separator + EXPORT_METADATA_FILENAME), "");
+			
+			out.close();
+			  
+		} catch (IOException e) {
+			Logger.logError("I/O error exporting analyses.");
+			e.printStackTrace();
+			return null;
+		}
+		
+		try {
+			return (database.downloadFile(
+					tempZip.getAbsolutePath(), ip.getCanonicalHostName(), port, false));
+		} catch (IOException e) {
+			Logger.logError("I/O error exporting analyses.");
+			e.printStackTrace();
+			return null;
+		}	
+!!!538242.java!!!	beginExperimentsExport(inout aid : AID, inout eids : EID, inout ip : InetAddress, in port : int) : DownloadHandle
+
+		for (int i = 0; i < eids.length; i++) {
+			database.getExperimentEntityManager().ensureValidEid(aid, eids[i]);			
+		}
+		
+		String tempDir = database.getTempDirectory();
+		
+		File tempZip = new File(tempDir + File.separator + TEMPORARY_ZIP_FILENAME);		
+		if (tempZip.exists()) {
+			tempZip.delete();
+		}
+		
+		try {
+			FileOutputStream f = new FileOutputStream(tempZip);
+			ZipOutputStream zos = new ZipOutputStream(f);
+			BufferedOutputStream out =
+			   new BufferedOutputStream(zos);			
+			for (int i = 0; i < eids.length; i++) {				
+				Zipper.zipDirectoryRecursively(zos, out, 
+						new File(database.getDirectoryInDatabase(aid, eids[i])), eids[i].toString());				
+			}
+			
+			Metadata metaFile = new Metadata();
+			metaFile.addItem("objects", "experiments");
+			metaFile.addItem("count", new Integer(eids.length).toString());
+			metaFile.store(tempDir + File.separator + EXPORT_METADATA_FILENAME);
+			Zipper.zipFile(zos, out, new File(tempDir 
+					+ File.separator + EXPORT_METADATA_FILENAME), "");
+			/*Zipper.zipFile(zos, out, new File(database.getFileInDatabase(aid, 
+					"analsysis-export.meta")),	"");*/
+			
+			out.close();
+			  
+		} catch (IOException e) {
+			Logger.logError("I/O error exporting experiments.");
+			e.printStackTrace();
+			return null;
+		}
+		
+		try {
+			return (database.downloadFile(
+					tempZip.getAbsolutePath(), ip.getCanonicalHostName(), port, false));
+		} catch (IOException e) {
+			Logger.logError("I/O error exporting analyses.");
+			e.printStackTrace();
+			return null;
+		}
+!!!538370.java!!!	beginBinariesExport(inout aid : AID, inout eid : EID, inout bids : BID, inout ip : InetAddress, in port : int) : DownloadHandle
+
+		for (int i = 0; i < bids.length; i++) {
+			database.getBinaryEntityManager().ensureValidBid(aid, eid, bids[i]);			
+		}
+		
+		String tempDir = database.getTempDirectory();
+		
+		File tempZip = new File(tempDir + File.separator + TEMPORARY_ZIP_FILENAME);		
+		if (tempZip.exists()) {
+			tempZip.delete();
+		}
+		
+		try {
+			FileOutputStream f = new FileOutputStream(tempZip);
+			ZipOutputStream zos = new ZipOutputStream(f);
+			BufferedOutputStream out =
+			   new BufferedOutputStream(zos);
+			
+			for (int i = 0; i < bids.length; i++) {
+				Zipper.zipDirectoryRecursively(zos, out, 
+						new File(database.getDirectoryInDatabase(aid, eid, bids[i])), 
+								bids[i].toString());				
+			}
+			
+			Metadata metaFile = new Metadata();
+			metaFile.addItem("objects", "binaries");
+			metaFile.addItem("count", new Integer(bids.length).toString());
+			metaFile.store(tempDir + File.separator + EXPORT_METADATA_FILENAME);
+			Zipper.zipFile(zos, out, new File(tempDir 
+					+ File.separator + EXPORT_METADATA_FILENAME), "");
+			/*Zipper.zipFile(zos, out, new File(database.getFileInDatabase(aid,
+					"analysis-Database.ANALYSIS_METADATA_FILENAME)), "");			
+			Zipper.zipFile(zos, out, new File(database.getFileInDatabase(aid, eid, 
+					Database.EXPERIMENT_METADATA_FILENAME)), "");*/
+			
+			out.close();
+			  
+		} catch (IOException e) {
+			
+			Logger.logError("I/O error exporting binaries.");
+			e.printStackTrace();
+			return null;
+		}
+		
+		try {
+			return (database.downloadFile(
+					tempZip.getAbsolutePath(), ip.getCanonicalHostName(), port, false));
+		} catch (IOException e) {
+			
+			Logger.logError("I/O error exporting binaries.");
+			e.printStackTrace();
+			return null;
+		}		
+!!!538498.java!!!	beginRunsExport(inout aid : AID, inout eid : EID, inout bid : BID, inout runIndexes : RID, inout ip : InetAddress, in port : int) : DownloadHandle
+
+		for (int i = 0; i < runIndexes.length; i++) {
+			database.getRunEntityManager().ensureValidRid(aid, eid, bid, runIndexes[i]);
+		}
+		
+		String tempDir = database.getTempDirectory();
+		
+		File tempZip = new File(tempDir + File.separator + TEMPORARY_ZIP_FILENAME);		
+		if (tempZip.exists()) {
+			tempZip.delete();
+		}
+		
+		try {
+			FileOutputStream f = new FileOutputStream(tempZip);
+			ZipOutputStream zos = new ZipOutputStream(f);
+			BufferedOutputStream out =
+			   new BufferedOutputStream(zos);
+			
+			for (int i = 0; i < runIndexes.length; i++) {
+			    String[] runPaths = database.getRunEntityManager().getRunPaths(aid, eid, bid, runIndexes[i]);
+			    for (String runPath : runPaths) {
+				File file = new File(database.getFileInDatabase(aid, eid, bid, runPath));
+				Zipper.zipFile(zos, out, file, "");
+			    }
+					
+			    File file = new File(database.getFileInDatabase(aid, eid, bid, runIndexes[i] + ".meta"));
+			    if (file.exists()) {
+				Zipper.zipFile(zos, out, file, "");
+			    }
+			}
+			
+			Metadata metaFile = new Metadata();
+			metaFile.addItem("objects", "runs");
+			metaFile.addItem("count", new Integer(runIndexes.length).toString());
+			metaFile.store(tempDir + File.separator + EXPORT_METADATA_FILENAME);
+			Zipper.zipFile(zos, out, 
+					new File(tempDir + File.separator + EXPORT_METADATA_FILENAME), "");
+			/*Zipper.zipFile(zos, out, new File(database.getFileInDatabase(aid, 
+					Database.ANALYSIS_METADATA_FILENAME)), "");			
+			Zipper.zipFile(zos, out, new File(database.getFileInDatabase(aid, eid,
+					Database.EXPERIMENT_METADATA_FILENAME)), "");
+			Zipper.zipFile(zos, out, new File(database.getFileInDatabase(aid, eid, bid, 					 
+					Database.BINARY_METADATA_FILENAME)), "");*/
+			
+			out.close();
+			  
+		} catch (IOException e) {
+			
+			Logger.logError("I/O error exporting runs.");
+			e.printStackTrace();
+			return null;
+		}
+		
+		try {
+			return (database.downloadFile(
+					tempZip.getAbsolutePath(), ip.getCanonicalHostName(), port, false));
+		} catch (IOException e) {
+			Logger.logError("I/O error exporting runs.");
+			e.printStackTrace();
+			return null;
+		}

@@ -1,0 +1,39 @@
+class DateAttributeHelper
+!!!608386.java!!!	DateAttributeHelper()
+		super();
+!!!608514.java!!!	validateInXML(inout element : Element) : String
+		String value = extractTextValueFromElement(element);
+		if (value == null) {
+			return "Invalid value of element <" + element.getNodeName() + ">.";
+		}
+		
+		try {
+	    SimpleDateFormat format = new SimpleDateFormat(PATTERN_RFC1123, Locale.US);
+			format.parse(extractTextValueFromElement(element));
+		} catch (ParseException e) {
+			return "Invalid value of element <" + element.getNodeName() + ">.";
+		}
+		return null;
+!!!608642.java!!!	readValueFromElement(inout element : Element) : Date
+		try {
+	    SimpleDateFormat format = new SimpleDateFormat(PATTERN_RFC1123, Locale.US);
+			return format.parse(extractTextValueFromElement(element));
+		} catch (ParseException e) {
+			assert false: "Date should be checked in this moment, parsing can't fail.";
+			return null;
+		}
+!!!608770.java!!!	writeValueToElement(inout document : Document, in tagName : String, inout value : Date) : Element
+    SimpleDateFormat formatter = new SimpleDateFormat(PATTERN_RFC1123, Locale.US);
+    formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
+    if (value != null) {
+			Element result = document.createElement(tagName);
+			result.appendChild(document.createTextNode(formatter.format(value)));
+			return result;
+		} else {
+			return null;
+		}
+!!!608898.java!!!	getInstance() : DateAttributeHelper
+		if (instance == null) {
+			 instance = new DateAttributeHelper();
+		}
+		return instance;

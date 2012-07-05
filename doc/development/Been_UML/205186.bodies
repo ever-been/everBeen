@@ -1,0 +1,276 @@
+class LocalUpload
+!!!664706.java!!!	LocalUpload()
+		super();
+!!!664834.java!!!	init() : void
+		/*
+		 * get the path to the packaged directory
+		 */
+		packageDirectory = getTaskProperty(DIRECTORY);
+		logInfo("Packaged directory: " + packageDirectory);
+
+		// test the packaged directory
+		File origDir = new File(packageDirectory);
+		if (!origDir.exists()) {
+			throw new TaskException("Directory not found " + packageDirectory);
+		}
+		if (!origDir.isDirectory()) {
+			throw new TaskException("Not a directory: " + packageDirectory);
+		}
+
+		/*
+		 * get the path to the metadata.xml file
+		 */
+		metadataPath = getTaskProperty(METADATA_FILE);
+		logInfo("Metadata file: " + metadataPath);
+
+		// test the metadata file
+		File metaFile = new File(metadataPath);
+		if (!metaFile.exists()) {
+			throw new TaskException(metadataPath + "does not exist");
+		}
+		if (!metaFile.isFile()) {
+			throw new TaskException("Not a file: " + metadataPath);
+		}
+
+		
+		/*
+		 * find out whether the config.xml file should be packaged
+		 */
+		String useCfg = null;
+		if ((useCfg = getTaskProperty(USE_CONFIG)) != null) {
+			if (useCfg.equals("yes")) {
+				useConfig = true;
+				logInfo("Will package a config.xml file");
+			} else {
+				logInfo("Will not package a config.xml file");
+			}
+		}
+		
+		/*
+		 * get the path to the config.xml file
+		 */
+		if (useConfig) {
+			// config.xml must be packaged, get the path to it
+			
+			configPath = getTaskProperty(CONFIG_FILE);
+			if (configPath == null) {
+				throw new TaskException(CONFIG_FILE + "property not set");
+			}
+			logInfo("Config file: " + configPath);
+
+			// test the config file
+			File config = new File(configPath);
+			if (!config.exists()) {
+				throw new TaskException(configPath + " does not exist");
+			}
+			if (!config.isFile()) {
+				throw new TaskException("Not a file: " + configPath);
+			}
+			if (!config.canRead()) {
+				throw new TaskException("Cannot read: " + configPath);
+			}
+
+		}
+!!!664962.java!!!	run() : void
+		init();
+		logInfo("Creating package");
+		String packagePath = createPackage();
+		logInfo("Package succesfully created");
+		logInfo("Uploading package");
+		uploadPackage(packagePath);
+		logInfo("Package succesfully uploaded");
+		checkPointReached("finish", null);
+!!!665090.java!!!	createPackage() : String
+		String fs = File.separator;
+		
+		// create a directory with the package's contents
+		String pkgDirPath = getTempDirectory() + fs + PKG_DIR;
+		File pkgDir = new File(pkgDirPath);
+		if (!pkgDir.mkdir()) {
+			throw new TaskException("Cannot create temporary package directory: " + pkgDirPath);
+		}
+		
+		// must create "files" subdirectroy because packages have their files
+		// in a "files" subdirectory
+		String pkgFilesDirPath = pkgDirPath + fs + "files";
+		File pkgFilesDir = new File(pkgFilesDirPath);
+		if (!pkgFilesDir.mkdir()) {
+			throw new TaskException("Cannot create package files subdirectory: " + pkgFilesDirPath);
+		}
+
+
+		/*
+		 * Copy the directory which we want to package to a temporary directory
+		 * that contains the package content's
+		 */
+		try {
+
+			Copy.directoryCopy(packageDirectory, pkgFilesDirPath);
+		} catch (AntTaskException e) {
+			throw new TaskException("Cannot copy directory " + packageDirectory + " to directory "
+					+ pkgFilesDirPath, e);
+		}
+
+
+		/*
+		 * copy package metadata
+		 */ 
+
+		try {
+			Copy.copy(metadataPath, pkgDirPath + File.separator + "metadata.xml");
+		} catch (AntTaskException e) {
+			throw new TaskException("Cannot copy file " + metadataPath + " to directory "
+					+ pkgDirPath, e);
+		}
+		
+		/*
+		 * copy config.xml
+		 */
+		if (useConfig) {
+			try {
+				Copy.copy(configPath, pkgDirPath + File.separator + "config.xml");
+			} catch (AntTaskException e) {
+				throw new TaskException("Cannot copy file " + configPath + " to directory "
+						+ pkgDirPath, e);
+			}
+		}
+		/*
+		 * create the package
+		 */
+		String packagePath = getTempDirectory() + fs + PKG_FILE;
+		try {
+			Zip.zipDirectory(pkgDirPath, packagePath);
+		} catch (AntTaskException e) {
+			throw new TaskException("Cannot zip directory " + pkgDirPath, e);
+		}
+		
+		return packagePath;
+!!!665218.java!!!	uploadPackage(in path : String) : void
+		swRepo = null;
+		try {
+			//swRepo = (SoftwareRepositoryInterface)Naming.lookup(getTasksPort().getLookupService().lookup(BeenRMIService.SOFTWARE_REPOSITORY));
+			//swRepoURL= "rmi://localhost:1099" + SoftwareRepositoryInterface.URL;
+			swRepo = (SoftwareRepositoryInterface) getTasksPort().serviceFind(SoftwareRepositoryService.SERVICE_NAME,  Service.RMI_MAIN_IFACE);
+		} catch (Exception e) {
+			throw new TaskException("Cannot lookup Software Repository", e);
+		}
+		
+		// setup socket
+		ServerSocketChannel serverSocketChan = null;
+		ServerSocket serverSocket = null;
+		try {
+			serverSocketChan = ServerSocketChannel.open();
+			serverSocket = serverSocketChan.socket();
+			serverSocket.bind(null);
+		} catch (IOException e) {
+			throw new TaskException("Cannot open socket", e);
+		}
+		
+		// setup input file
+		File inputFile = new File(path);
+		FileChannel fileChannel = null;
+		try {
+			 fileChannel = new FileInputStream(inputFile).getChannel();
+		} catch (FileNotFoundException e) {
+			throw new TaskException("File not found: " + PKG_FILE, e);
+		}
+		
+		UploadThread uploadThread = new UploadThread(serverSocketChan, fileChannel);
+		uploadThread.start();
+		// give the upload thread some time to initialize
+		try {
+			Thread.sleep(UPLOAD_THREAD_INIT_TIME);
+		} catch (InterruptedException e) {
+			// nothing bad happened
+			Thread.currentThread().interrupt();
+		}
+		
+		/*
+		 * start the upload
+		 */
+		
+		try {
+			UploadHandle handle = swRepo.beginPackageUpload(InetAddress.getLocalHost(), serverSocket.getLocalPort());
+			
+			UploadStatus status = UploadStatus.ERROR;
+			while (true) {
+				status = swRepo.getPackageUploadStatus(handle);
+				if ((status == UploadStatus.INITIALIZING) || (status == UploadStatus.UPLOADING)) {
+					// still uploading
+					try {
+						Thread.sleep(UPLOAD_WAIT_TIME);
+					} catch (InterruptedException e) {
+						// nothing bad happened
+						Thread.currentThread().interrupt();
+					}
+				} else {
+					// upload finished
+					break;
+				}
+			}
+			
+			if (status == UploadStatus.REJECTED) {
+				// package was rejected by the Software Repository
+				if (uploadThread.isAlive()) {
+					uploadThread.interrupt();
+				}
+				endUpload(handle, serverSocketChan);
+				throw new TaskException("Package was rejected by the Software Repository");
+			}
+			
+			if (status == UploadStatus.ERROR) {
+				// error occured in the Software Repository
+				if (uploadThread.isAlive()) {
+					uploadThread.interrupt();
+				}
+				endUpload(handle, serverSocketChan);
+				throw new TaskException("Error occured in the Software Repository");
+			}
+
+			if (status == UploadStatus.ACCEPTED) {
+				// package was succesfuly uploaded to the Software Repository
+				if (uploadThread.isAlive()) {
+					for (int i = 0; i < UPLOAD_THREAD_FINISH_TIME / 1000; i++) {
+						boolean threadFinished = false;
+						if (uploadThread.isAlive()) {
+							try {
+								Thread.sleep(1000);
+							} catch (InterruptedException e) {
+								// nothing bad happened
+								Thread.currentThread().interrupt();
+							}
+						} else {
+							uploadThread.interrupt();
+							threadFinished = true;
+							break;
+						}
+						
+						if (!threadFinished) {
+							logWarning("Upload thread not finished");
+						}
+					}
+				}
+				
+				endUpload(handle, serverSocketChan);
+			}
+		} catch (java.net.UnknownHostException e) {
+			throw new TaskException("IP adress of this host not found: ", e);
+		} catch (RemoteException e) {
+			throw new TaskException("Cannot connect to the Software Repository: ", e);
+		}
+!!!665346.java!!!	endUpload(inout handle : UploadHandle, inout serverSocketChan : ServerSocketChannel) : void
+		try {
+			swRepo.endPackageUpload(handle);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+			logError("The Software Repository cannot end the package upload");
+		}
+		swRepo = null;
+		try {
+			serverSocketChan.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			logError("Cannot close socket");
+		}
+!!!665474.java!!!	checkRequiredProperties() : void
+		checkRequiredProperties(new String[]{DIRECTORY, METADATA_FILE});

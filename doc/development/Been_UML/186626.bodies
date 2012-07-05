@@ -1,0 +1,324 @@
+class GraphManager
+!!!541314.java!!!	getInstance() : GraphManager
+		if (gMInstance == null) {
+			gMInstance = new GraphManager();
+		}
+		return gMInstance;
+!!!541442.java!!!	initialize(inout database : Database) : void
+		GraphManager.database = database;
+!!!541570.java!!!	loadAnalysisGraphTable(inout graphType : GraphType, inout aid : AID) : void
+		
+		/* Test, if we haven't validity map in the memory */
+		// note: uncomment this to allow caching, 
+		// This caching must be very well synchronized with deleting and R recounting !!!
+		// If not possible will be removed
+		/*if ((analTableAID != null) && (analType != null) &&
+		 *  (aid.equals(analTableAID)) && (graphType.equals(analType)))
+			return;*/
+		
+		/* Load it */
+		try {
+			analGraphTable = new NumberedTable(database.getFileInDatabase(aid, 
+					((graphType == GraphType.RESULTS) 
+					? RESULTS_GRAPH_TABLE 
+					: LOAD_GRAPH_TABLE)));
+		} catch (IOException e) {
+			e.printStackTrace();
+			Logger.logError(NumberedTable.IO_ERROR_LIST_READING_MESSAGE 
+					+ Database.getAnalysisReferenceString(aid));
+			
+			analGraphTable = new NumberedTable();
+			analTableAID = new AID(-1);
+			return;
+		}
+		
+		/* Remember actual graph table position, we are working with */
+		analTableAID = aid;
+		analType = graphType;
+	
+!!!541698.java!!!	validAnalysisGraph(inout graphType : GraphType, inout aid : AID, in index : int) : boolean
+		
+		String line;
+		loadAnalysisGraphTable(graphType, aid);
+		line = analGraphTable.getItemByKey(index);
+		if ((line == null) || (line.compareTo("") == 0)) {
+				return false;
+		}
+		
+		return true;
+!!!541826.java!!!	getAnalysisGraphCount(inout graphType : GraphType, inout aid : AID) : int
+		
+		loadAnalysisGraphTable(graphType, aid);
+		//Logger.logDebug("Analysis graph count = " + analGraphTable.getItemCount());
+		return analGraphTable.getItemCount();
+!!!541954.java!!!	getAnalysisGraphInfo(inout graphType : GraphType, inout aid : AID, in index : int) : GraphInfo
+		
+		String[] lineTokens;
+		String line;
+		loadAnalysisGraphTable(graphType, aid);
+		
+		line = analGraphTable.getItemByKey(index);
+		if (line == null) {
+			throw new IllegalArgumentException("Invalid graph index " 
+					+ Database.getAnalysisReferenceString(aid) + ", graph no." + index + ".");
+		}
+		lineTokens = line.split(ASCII_TAB);
+		
+		if (lineTokens.length != 4) {
+			Logger.logError("Line in graph table corrupted! "
+					+ Database.getAnalysisReferenceString(aid) + ", graph. no " + index + ".");
+			throw new IOException("Invalid analysis graphs, file format, " 
+					+ Database.getAnalysisReferenceString(aid));			
+		}
+
+		try {
+			return new GraphInfo(Integer.valueOf(lineTokens[1]), Integer.valueOf(lineTokens[2]), 
+					lineTokens[0]);
+		} catch (NumberFormatException e) {
+			throw new IOException("Invalid analysis graphs, file format, " 
+					+ Database.getAnalysisReferenceString(aid) + ".");
+		}
+		
+!!!542082.java!!!	getAnalysisGraphPath(inout graphType : GraphType, inout aid : AID, in index : int) : String
+		
+		String[] lineTokens;
+		String line;
+		
+		Logger.logDebug("getAnalysisGraphPath called");
+		
+		loadAnalysisGraphTable(graphType, aid);
+		
+		line = analGraphTable.getItemByKey(index);
+		if (line == null) {
+			throw new IllegalArgumentException("Invalid graph index " 
+					+ Database.getAnalysisReferenceString(aid) + ", graph no." + index + ".");
+		}
+		lineTokens = line.split(ASCII_TAB);
+				
+		if (lineTokens.length != 4) {
+			Logger.logError("Line in graph table corrupted! "
+					+ Database.getAnalysisReferenceString(aid) + ", graph. no " + index + ".");
+			throw new IOException("Invalid analysis graphs, file format, " 
+					+ Database.getAnalysisReferenceString(aid) + ".");
+		}
+		
+
+		//Logger.logDebug("Graph filename for analysis is: " + lineTokens[3]);
+		
+		return lineTokens[3];
+!!!542210.java!!!	loadExperimentGraphTable(inout graphType : GraphType, inout aid : AID, inout eid : EID) : void
+		
+		/* Test, if we haven't validity map in the memory */
+		// note: uncomment to allow caching
+		// This caching must be very well synchronized!!!
+		// This caching must be very well synchronized with deleting and R recounting !!!
+		// If not possible will be removed		
+		/*if ((expTableAID != null) && (expTableEID != null) && (expType != null) &&
+		 * (aid.equals(expTableAID)) && (eid.equals(expTableEID)) && (graphType.equals(expType)))
+			return;*/
+		
+		/* Load it */
+		try {
+			expGraphTable = new NumberedTable(database.getFileInDatabase(aid, eid,
+					((graphType == GraphType.RESULTS) 
+					? RESULTS_GRAPH_TABLE 
+					: LOAD_GRAPH_TABLE)));
+		} catch (IOException e) {
+			e.printStackTrace();
+			Logger.logError(NumberedTable.IO_ERROR_LIST_READING_MESSAGE 
+					+ Database.getAnalysisReferenceString(aid));
+			
+			expGraphTable = new NumberedTable();
+			expTableAID = new AID(-1);
+			expTableEID = new EID(-1);
+			return;
+		}
+		
+		/* Remember actual graph table position, we are working with */
+		expTableAID = aid;
+		expTableEID = eid;
+		expType = graphType;
+	
+!!!542338.java!!!	validExperimentGraph(inout graphType : GraphType, inout aid : AID, inout eid : EID, in index : int) : boolean
+
+		String line;
+		loadExperimentGraphTable(graphType, aid, eid);
+		line = expGraphTable.getItemByKey(index);
+		if ((line == null) || (line.compareTo("") == 0)) {
+			return false;
+		}
+	
+		return true;
+!!!542466.java!!!	getExperimentGraphCount(inout graphType : GraphType, inout aid : AID, inout eid : EID) : int
+		
+		loadExperimentGraphTable(graphType, aid, eid);
+		return expGraphTable.getItemCount();
+!!!542594.java!!!	getExperimentGraphInfo(inout graphType : GraphType, inout aid : AID, inout eid : EID, in index : int) : GraphInfo
+		
+		String[] lineTokens;
+		String line;
+		loadExperimentGraphTable(graphType, aid, eid);
+		
+		line = expGraphTable.getItemByKey(index); // ???
+		if (line == null) {
+			throw new IllegalArgumentException("Invalid graph index " 
+					+ Database.getExperimentReferenceString(aid, eid) + ", graph no." 
+					+ index + ".");
+		}
+		lineTokens = line.split(ASCII_TAB);
+		
+		if (lineTokens.length != 4) {
+			Logger.logError("Line in graph table corrupted! "
+					+ Database.getExperimentReferenceString(aid, eid) + ", graph. no " 
+					+ index + ".");
+			throw new IOException("Invalid experiment graphs file format, " 
+					+ Database.getExperimentReferenceString(aid, eid) 
+					+ ".");			
+		}
+
+		try {
+			return new GraphInfo(Integer.valueOf(lineTokens[1]), Integer.valueOf(lineTokens[2]), 
+					lineTokens[0]);			
+		} catch (NumberFormatException e) {
+			throw new IOException("Invalid experiment graphs, file format, " 
+					+ Database.getExperimentReferenceString(aid, eid) + ".");
+		}
+!!!542722.java!!!	getExperimentGraphPath(inout graphType : GraphType, inout aid : AID, inout eid : EID, in index : int) : String
+		
+		String[] lineTokens;
+		String line;
+		loadExperimentGraphTable(graphType, aid, eid);
+		
+		line = expGraphTable.getItemByKey(index);
+		if (line == null) {
+			throw new IllegalArgumentException("Invalid graph index " 
+					+ Database.getExperimentReferenceString(aid, eid) + ", graph no." + index + ".");
+		}
+		lineTokens = line.split(ASCII_TAB);
+		
+		if (lineTokens.length != 4) {
+			Logger.logError("Line in graph table corrupted! "
+					+ Database.getExperimentReferenceString(aid, eid) + ", graph. no " + index + ".");
+			throw new IOException("Invalid experiment graphs file format, " 
+					+ Database.getExperimentReferenceString(aid, eid) + ".");			
+		}
+		
+		return lineTokens[3];		
+!!!542850.java!!!	loadRunLoadGraphTable(inout aid : AID, inout eid : EID, inout bid : BID, inout rid : RID) : void
+		
+		/* Test, if we haven't validity map in the memory */
+		// note: uncommend this to allow caching 
+		// This caching must be very well synchronized with deleting and R recounting !!!
+		// If not possible will be removed
+		/*if ((analTableAID != null) && (analTableEID != null) && (analTableBID != null)
+		 * && (aid == analTableAID) && (eid == analTableEID) && (aid == analTableBID) 
+		 * &&  (rid == analTableRID) && (graphType == analType))
+			return;*/
+		
+		/* Load it */
+		try {
+			String runLoadGraphPath = 
+				RunValidityMapsManager.getInstance().getRunLoadGraphsPath(aid, eid, bid, rid) 
+					+ File.separator + LOAD_GRAPH_TABLE;
+			Logger.logDebug("Loading load graph table from : " + runLoadGraphPath);
+			
+			if (runLoadGraphPath == null) { 
+				runGraphTable = null;
+			} else {
+				runGraphTable = new NumberedTable(runLoadGraphPath);
+			}
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+			Logger.logError(NumberedTable.IO_ERROR_LIST_READING_MESSAGE 
+					+ Database.getAnalysisReferenceString(aid));
+			
+			runGraphTable = new NumberedTable();
+			runTableAID = new AID(-1);
+			runTableEID = new EID(-1);
+			runTableBID = new BID(-1);
+			runTableRID = new RID(-1);
+		}
+				
+		runTableAID = aid;
+		runTableEID = eid;
+		runTableBID = bid;
+		runTableRID = rid;
+		runType = GraphType.LOAD; // not quite clean code
+!!!542978.java!!!	validRunLoadGraph(inout aid : AID, inout eid : EID, inout bid : BID, inout rid : RID, in index : int) : boolean
+
+		String line;
+		loadRunLoadGraphTable(aid, eid, bid, rid);
+		
+		if (runGraphTable == null) { 
+			return false;
+		}
+		
+		line = runGraphTable.getItemByKey(index);
+		if ((line == null) || (line.compareTo("") == 0)) {
+			return false;
+		}
+	
+		return true;
+!!!543106.java!!!	getRunLoadGraphCount(inout aid : AID, inout eid : EID, inout bid : BID, inout rid : RID) : int
+		
+		loadRunLoadGraphTable(aid, eid, bid, rid);
+		
+		if (runGraphTable == null) {
+			return 0;
+		}
+		
+		return runGraphTable.getItemCount();
+!!!543234.java!!!	getRunLoadGraphInfo(inout aid : AID, inout eid : EID, inout bid : BID, inout rid : RID, in index : int) : GraphInfo
+		
+		String[] lineTokens;
+		String line;
+		loadRunLoadGraphTable(aid, eid, bid, rid);
+		
+		if (runGraphTable == null) { 
+			throw new IllegalArgumentException("Load graph #" + index + " doesn't exist for " 
+					+ Database.getRunReferenceString(aid, eid, bid, rid) + ".");
+		}
+		
+		line = runGraphTable.getItemByKey(index);
+		if (line == null) {
+			throw new IllegalArgumentException("Invalid graph index " 
+					+ Database.getRunReferenceString(aid, eid, bid, rid) + ", graph no." + index + ".");
+		}
+		lineTokens = line.split(ASCII_TAB);
+		
+		if (lineTokens.length != 4) {
+			Logger.logError("Line in graph table corrupted! "
+					+ Database.getRunReferenceString(aid, eid, bid, rid) + ", graph. no " + index + ".");
+			throw new IOException("Invalid runs load graph file format, " 
+					+ Database.getRunReferenceString(aid, eid, bid, rid) + ".");
+		}
+		
+		try {
+			return new GraphInfo(Integer.valueOf(lineTokens[1]), Integer.valueOf(lineTokens[2]), 
+					lineTokens[0]);
+		} catch (NumberFormatException e) {
+			throw new IOException("Invalid load runs graphs, file format, " 
+					+ Database.getRunReferenceString(aid, eid, bid, rid));
+		}
+!!!543362.java!!!	getRunLoadGraphPath(inout aid : AID, inout eid : EID, inout bid : BID, inout rid : RID, in index : int) : String
+		
+		String[] lineTokens;
+		String line;
+		loadRunLoadGraphTable(aid, eid, bid, rid);
+		
+		line = runGraphTable.getItemByKey(index);
+		if (line == null) {
+			throw new IllegalArgumentException("Invalid graph index " 
+					+ Database.getRunReferenceString(aid, eid, bid, rid) + ", graph no." + index + ".");
+		}
+		lineTokens = line.split(ASCII_TAB);
+		
+		if (lineTokens.length != 4) {
+			Logger.logError("Line in graph table corrupted! "
+					+ Database.getRunReferenceString(aid, eid, bid, rid) + ", graph. no " + index + ".");
+			throw new IOException("Invalid run graphs file format, " 
+					+ Database.getRunReferenceString(aid, eid, bid, rid));			
+		}
+		
+		return lineTokens[3];

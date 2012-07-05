@@ -1,0 +1,163 @@
+class SimpleTestConfigurator
+!!!207490.java!!!	getFirstScreen() : Screen
+		return createRoleScreen(ScreenID.TEST_ROLE, 
+				SimpleTestGenerator.TEST_ROLE);
+!!!207618.java!!!	getNextScreen(inout processedScreen : Screen) : Screen
+		// get the values entered by user in the previous screen
+		getUserInput(processedScreen);
+		// get the Screen ID of the previous screen
+		int id = ((Long) processedScreen.getSid().value()).intValue();
+		
+		// check if user didn't go forward more than 1 screen
+		if (!(id <= lastScreen)) {
+			throw new IllegalScreenSequenceException(
+					"You jumped more than 1 screen forward");
+		}
+		ScreenID screenID = ScreenID.values()[id];
+		
+		// determine which screen is next
+		switch(screenID) {
+			case TEST_ROLE :
+				return createTestPropertiesScreen();
+			case TEST_PROPERTIES :
+				createExperiment();
+				return null;
+			default :
+				throw new ConfiguratorException("Illegal screen: " + processedScreen.getSid());
+		}
+!!!207746.java!!!	getDefaultRScripts() : CallbackRScripts
+		if (isRegression()) {
+			return new CallbackRScripts("","","","","");
+		} else {
+			return new CallbackRScripts("","","","","");
+		}
+!!!207874.java!!!	getPreviousScreen(inout processedScreen : Screen) : Screen
+		int id = ((Long) processedScreen.getSid().value()).intValue();
+		ScreenID screenID = ScreenID.values()[id];
+		
+		switch(screenID) {
+			case TEST_ROLE :
+				return null;
+			case TEST_PROPERTIES :
+				return createRoleScreen(ScreenID.TEST_ROLE, 
+						SimpleTestGenerator.TEST_ROLE);
+			default :
+				throw new ConfiguratorException("Illegal screen: " + processedScreen.getSid());
+		}
+!!!208002.java!!!	createTestPropertiesScreen() : Screen
+		lastScreen = ScreenID.TEST_PROPERTIES.ordinal();
+		
+		IntegerInputValidator intValidator = new IntegerInputValidator();
+		
+		Input waitTimeInput = new Input("Wait time",
+				String.valueOf(DEFAULT_WAIT_TIME),
+				Input.Size.SMALL,
+				intValidator);
+
+		Input hostCountInput = new Input("Host count",
+				String.valueOf(DEFAULT_HOST_COUNT),
+				Input.Size.SMALL,
+				intValidator);
+
+		Option[] exclusivityOptions = new Option[] {
+				new Option(SimpleTestGenerator.Exclusivity.NONE.toString(),
+						SimpleTestGenerator.Exclusivity.NONE.toString()),
+				new Option(SimpleTestGenerator.Exclusivity.CONTEXT_EXCLUSIVE.toString(),
+						SimpleTestGenerator.Exclusivity.CONTEXT_EXCLUSIVE.toString()),
+				new Option(SimpleTestGenerator.Exclusivity.EXCLUSIVE.toString(),
+						SimpleTestGenerator.Exclusivity.EXCLUSIVE.toString())
+			};
+		Select exclusivitySelect = new Select("Exclusivity", 
+				exclusivityOptions, 0);
+
+		Input binaryCountInput = new Input("Binaries",
+				String.valueOf(DEFAULT_BINARY_COUNT),
+				Input.Size.SMALL,
+				intValidator);
+
+		Input runCountInput = new Input("Runs",
+				String.valueOf(DEFAULT_RUN_COUNT),
+				Input.Size.SMALL,
+				intValidator);
+
+		Section section = new Section(
+				new Item[] {
+						waitTimeInput, 
+						hostCountInput, 
+						exclusivitySelect,
+						binaryCountInput,
+						runCountInput},
+				"Test properties",
+				"Configure parameters of this test");
+
+		return new Screen(new SID(ScreenID.TEST_PROPERTIES.ordinal()), 
+				new Section[] {section});
+!!!208130.java!!!	createRoleScreen(inout sid : ScreenID, in roleName : String) : Screen
+		lastScreen = sid.ordinal();
+		
+		Condition condition = null;
+		try {
+			condition = new EqualsCondition<String>("name", InetAddress.getLocalHost().getCanonicalHostName());
+		} catch (Exception e) {
+			condition = new EqualsCondition<String>("name", "some.cool.host.com");
+		}
+		
+		RSLInput rsl = new RSLInput("Host restrictions", condition.toString());
+
+		Section section = new Section(new Item[] {rsl}, 
+				roleName + " role", 
+				null);
+		return new Screen(new SID(sid.ordinal()), new Section[] {section});
+!!!208258.java!!!	getUserInput(inout screen : Screen) : void
+		int id = ((Long) screen.getSid().value()).intValue();
+		ScreenID screenID = ScreenID.values()[id];
+		switch (screenID) {
+			case TEST_PROPERTIES :
+				processTestPropertiesScreen(screen);
+				break;
+			case TEST_ROLE :
+				rslTestRole = processRoleScreen(screen);
+				break;
+			default :
+				throw new ConfiguratorException("Illegal screen: " + screen.getSid());
+		}
+!!!208386.java!!!	processRoleScreen(inout screen : Screen) : Condition
+		Section[] sections = screen.getSections();
+		RSLInput rsl = (RSLInput) sections[0].getItems()[0];
+		try {
+			return ParserWrapper.parseString(rsl.getValue());
+		} catch (ParseException e) {
+			// we never get exception here, because RSLInput is validating
+			assert false: "RSL from RSLInput is invalid";
+			return null;
+		}
+!!!208514.java!!!	processTestPropertiesScreen(inout screen : Screen) : void
+		Section section = screen.getSections()[0];
+		Input input = (Input) section.getItems()[0];
+		waitTime = Integer.valueOf(input.getValue());
+		input = (Input) section.getItems()[1];
+		hostCount = Integer.valueOf(input.getValue());
+		Select exclusivitySelect = (Select) section.getItems()[2];
+		exclusivity = exclusivitySelect.getSelectedId();
+		input = (Input) section.getItems()[3];
+		binaryCount = Integer.valueOf(input.getValue());
+		input = (Input) section.getItems()[4];
+		runCount = Integer.valueOf(input.getValue());
+!!!208642.java!!!	createExperiment() : void
+		ExperimentMetadata experiment = getBenchmarkExperiment();
+		experiment.setBinaryCount(binaryCount);
+		experiment.setRunCount(runCount);
+		
+		// set host name properties
+		experiment.addBenchmarkingRole(SimpleTestGenerator.TEST_ROLE, 
+				rslTestRole, hostCount);
+
+		// properties
+		experiment.setProperty(SimpleTestGenerator.WAIT_TIME, 
+				String.valueOf(waitTime));
+		experiment.setProperty(SimpleTestGenerator.EXCLUSIVITY, 
+				exclusivity);
+
+		System.out.println("Wait time: " + waitTime);
+		System.out.println("Test role: " + rslTestRole);
+		System.out.println("Exclusivity: " + exclusivity);

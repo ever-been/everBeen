@@ -1,0 +1,96 @@
+class MySQLRun
+!!!643458.java!!!	MySQLRun()
+		super();
+!!!643586.java!!!	run() : void
+		mysqlRoot = getTaskProperty(MYSQL_ROOT);
+		logInfo("MySQL installation root directory: " + mysqlRoot);
+		
+		String maxConnections = null;
+		if ((maxConnections = getTaskProperty(CONNECTIONS_MAX)) != null) {
+			logInfo("Maximum number of connections: " + maxConnections);
+		}
+
+		
+		// run the MySQL server
+		Process mysqlProcess = null;
+		String fSep = File.separator;
+		
+		ArrayList<String> cmd = new ArrayList<String>();
+		cmd.add(mysqlRoot + fSep + "bin" + fSep + "mysqld");
+		cmd.add("--basedir=" + mysqlRoot);
+
+		if (maxConnections != null) {
+			cmd.add("--set-variable=max_connections=" + maxConnections);
+		}
+		String[] cmdArray = (String[]) cmd.toArray(new String[cmd.size()]);
+
+		logDebug("Executing : " + ArrayUtils.join(" ", cmdArray));
+		
+		try {
+			logInfo("Starting MySQL");
+			mysqlProcess = Runtime.getRuntime().exec(cmdArray, null, new File(mysqlRoot));
+			mysqlProcess.getOutputStream().close();
+			
+			/* Read in the output from the subprocess */
+			OutputReader stdoutReader = 
+				new OutputReader(mysqlProcess.getInputStream(), OutputType.STDOUT);
+			OutputReader stderrReader = 
+				new OutputReader(mysqlProcess.getErrorStream(), OutputType.STDERR);
+			stdoutReader.start();
+			stderrReader.start();
+			
+			// run a check for a successful MySQL start
+			
+			boolean started = false;
+			try {
+				
+				for (int i = 0; i < MYSQL_STARTUP_CHECK_COUNT; i++) {
+					try {
+						// wait a bit, give some time to mysql to start
+						Thread.sleep(MYSQL_STARTUP_CHECK_TIME);
+					} catch (InterruptedException e) {
+						// nothing bad happened
+						Thread.currentThread().interrupt();
+					}
+					
+					// check successful start
+					
+					logInfo("Checking if MySQL started succesfully");
+					String[] checkCmdArray = { mysqlRoot + fSep + "bin" + fSep + "mysqladmin" ,
+					"ping"};
+					logDebug("Executing : " + checkCmdArray[0] + " " + checkCmdArray[1]);
+					Process checkProcess = Runtime.getRuntime().exec(checkCmdArray, null, new File(mysqlRoot));
+
+					/* Read in the output from the subprocess */
+					OutputReader stdoutReader2 = 
+						new OutputReader(checkProcess.getInputStream(), OutputType.STDOUT);
+					OutputReader stderrReader2 = 
+						new OutputReader(checkProcess.getErrorStream(), OutputType.STDERR);
+					stdoutReader2.start();
+					stderrReader2.start();
+					
+					if (checkProcess.waitFor() == 0) {
+						started = true;
+						break;
+					}
+
+				}
+				
+			} catch (Exception e) {
+				throw new TaskException("Cannot run MySQL startup test", e);
+			}
+			
+			if (!started) {
+				throw new TaskException("MySQL not started");
+			}
+			
+			logInfo("MySQL started");
+			checkPointReached(CHECKPOINT_RUNNING, null);
+			// wait until MySQL finishes
+			mysqlProcess.waitFor();
+			logInfo("MySQL finished");
+		} catch (Exception e) {
+			throw new TaskException("Cannot run MySQL", e);
+		}
+!!!643714.java!!!	checkRequiredProperties() : void
+		checkRequiredProperty(MYSQL_ROOT);

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<chapter
+	xml:id="been.devel.tasktree"
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>Task Tree</title>
+	
+	<para>The Task Tree is an extension to the Task Manager. It stores information on
+	<glossterm baseform="task">tasks</glossterm> in a tree data structure. Unlike
+	<glossterm baseform="context">contexts</glossterm>, namespaces that cannot be nested, the
+	Task Tree can have as many levels as needed. It makes listing of tasks easier for the user
+	and provides an important feature &#8212; the mechanism of
+	<glossterm baseform="task tree flag">flags</glossterm> assigned to tasks on the leaf level that are
+	automatically inherited by the parent nodes using aggregate functions called
+	<glossterm baseform="inheritance rule">inheritance rules</glossterm>. The status of individual
+	tasks (completion, errors, warnings) propagates up the task tree and the user gets a simple
+	overview of what is happening on the leaf level of a subtree without the need to browse
+	through it.<footnote><para>The mechanism of Task Tree flags
+	is not used by the Task Manager yet. The Task Tree can be used for task listing, which has
+	been integrated into both the Web Interface and the Command Line Interface. Although Task Tree
+	flags are fully implemented and ready for use, there is a lot of refactoring work that would
+	have to be done in the Task Manager to make it report task status correctly, properly clean
+	up entries for discarded tasks and perform all the necessary <quote>housekeeping</quote>. Due
+	to the limited time and human resources and considering the poor quality of the Task Manager
+	component, the WillBeen team decided to avoid working on big goals beyond the scope of the
+	project assignment. Adjustments to the Task Manager were limited to fixing of showstopper bugs
+	(the malfunctioning host selection algorithm, for example) and adding features that were
+	vital for testing (host load limitation). The WillBeen team suggests that the Task Manager
+	task status reporting be implemented by the next team to work on this project as soon as the
+	Task Manager is rewritten or (at least) refactored thoroughly. With a reasonable code layout,
+	it is just a matter of <emphasis role="strong">one</emphasis> method call per task status
+	change.</para></footnote></para>
+	
+	<para>The User Documentation (<xref linkend="been.user.execution.tasks.tree"/>) describes
+	the new subcomponent from the users' perspective. This chapter focuses on internals and
+	implementation of the tree.</para>
+	
+	<xi:include href="purpose.xml"/>
+	<xi:include href="data.xml"/>
+	<xi:include href="api.xml"/>
+	<xi:include href="extension.xml"/>
+</chapter>

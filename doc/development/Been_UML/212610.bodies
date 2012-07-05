@@ -1,0 +1,26 @@
+class EventManager
+!!!761730.java!!!	getInstance() : EventManager
+		if (instance == null) {
+			instance = new EventManager();
+		}
+		return instance;
+!!!761858.java!!!	registerEventListener(inout listener : EventListener) : void
+		if (listener == null) {
+			throw new NullPointerException("Listener can not be null.");
+		}
+		if (listeners.contains(listener)) {
+			throw new IllegalArgumentException("Listener is already registered.");
+		}
+		listeners.add(listener);
+!!!761986.java!!!	unregisterEventListener(inout listener : EventListener) : void
+		if (listener == null) {
+			throw new NullPointerException("Listener can not be null.");
+		}
+		if (!listeners.contains(listener)) {
+			throw new IllegalArgumentException("Listener is not registered.");
+		}
+		listeners.remove(listener);
+!!!762114.java!!!	sendEvent(inout event : Event) : void
+		for (EventListener listener: listeners) {
+			listener.receiveEvent(event);
+		}

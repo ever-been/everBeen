@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sect1
+	xml:id="been.devel.cli.purpose"
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>Purpose of the Command Line Interface</title>
+	
+	<sect2>
+		<title>What CLI Can Do</title>
+		<para>The CLI can control all the functions of the BEEN framework. It is meant to be a
+		shell-friendly alternative to the Web Interface. In fact, CLI is not just an
+		<emphasis>alternative</emphasis> (meaning that it can do everything the Web UI can). It
+		also has some extra features the Web UI does not provide. These include complex dataset
+		queries with filtering conditions, full support for viewing and editing the Host
+		Manager's data trees and structured (plain text or XML) input/output easy to use in a
+		shell. CLI depends neither on GUI, nor on the Tomcat servlet container.</para>
+		<para>The Command Line Interface is just a control <emphasis>interface</emphasis>, as the name
+		suggests. It does not participate in the process of task execution or benchmarking. It only
+		provides a common facade to a number of public interfaces implemented by the BEEN framework.
+		(This means that the CLI code should be kept as small as possible. It should not extend
+		BEEN's functionality in any way. When features are missing or bad interfaces need to be
+		redesigned, the BEEN components in question should be changed rather than trying to
+		implement facades, adapters or decorators on the CLI layer.) The only purpose of CLI is to
+		parse the command line, instruct some other components to process the request and send back
+		a response.</para>
+	</sect2>
+	
+	<sect2>
+		<title>Basic Facts</title>
+		
+		<para>This is a brief summary of basic facts about CLI. Most of them will be explained
+		in the following sections.</para>
+		
+		<itemizedlist>
+			<listitem><para>It is a <glossterm>core service</glossterm> of the BEEN
+			framework.</para></listitem>
+			<listitem><para>It has a client/server architecture. The client is a
+			POSIX-compliant native binary coded in C.</para></listitem>
+			<listitem><para>The server side (the BEEN <glossterm>service</glossterm>) is coded in
+			pure Java.</para></listitem>
+			<listitem><para>Running CLI is optional. It does not take part in the benchmarking
+			process directly.</para></listitem>
+			<listitem><para>It is designed for concurrent access. Multiple instances of the
+			command line client can run at a time.</para></listitem>
+			<listitem><para>A simple protocol over TCP is used for data transfers between the native
+			client and the BEEN service.</para></listitem>
+			<listitem><para>The server side uses RMI to call standard public interfaces of other BEEN
+			components.</para></listitem>
+		</itemizedlist>
+	</sect2>
+	
+	<sect2>
+		<title>Framework Integration</title>
+		
+		<para>As a BEEN <glossterm>core service</glossterm>, the CLI can be started the same way
+		as any other task. It has a <glossterm>task descriptor</glossterm> and runs on one of the
+		<glossterm baseform="Host Runtime">Host Runtimes</glossterm> that take part in the BEEN
+		framework. It can be started from the Services tab of the Web Interface or from the
+		Task Manager's command line. Only one instance can run at a time.</para>
+		
+		<para>The CLI uses virtually all the public interfaces provided by the BEEN framework.</para>
+		
+		<itemizedlist>
+			<listitem><para>Task Manager's interfaces are used to manage tasks. It is also the key
+			component needed to obtain references to all the other components.</para></listitem>
+			<listitem><para>The Host Manager and its subcomponent, the Load Server, are used to
+			obtain hardware configuration and load statistics for computers used by the
+			framework.</para></listitem>
+			<listitem><para>The Software Repository is called when package management requests are
+			issued. The <package>rmiio</package> library is used for asynchronous file transfers.
+			</para></listitem>
+			<listitem><para>The Benchmark Manager is contacted when
+			<glossterm baseform="analysis">analyses</glossterm> are manipulated or
+			<glossterm>generator</glossterm> and <glossterm>evaluator</glossterm> modules need to
+			be listed.</para></listitem>
+			<listitem><para>The Results Repository can be asked for operations on
+			<glossterm baseform="dataset">datasets</glossterm>,
+			<glossterm baseform="trigger">triggers</glossterm> and files it stores. Again, the
+			<package>rmiio</package> library is used for asynchronous file transfers.</para></listitem>
+		</itemizedlist>
+	</sect2>
+</sect1>

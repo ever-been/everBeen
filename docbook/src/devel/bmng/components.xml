@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sect1
+	xml:id="been.devel.bmng.components"
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>Subcomponents of Benchmark Manager</title>
+
+	<sect2>
+		<title>Subcomponent Overview</title>
+
+		<sect3>
+			<title><classname>AnalysesTracker</classname></title>
+
+			<para>
+			This subcomponent is used only for tracking progress of <glossterm>analyses</glossterm>. Each time an analysis is launched, the tracker stores name of the <glossterm>context</glossterm> and <glossterm>generator</glossterm> ID, and remembers that the analysis is currently generating in that context. When an generator ends, the state of the context is marked as running until <glossterm>context-monitor</glossterm> reports that the context is empty.
+			</para>
+
+			<para>
+			There may be multiple contexts registered for each analysis. Analysis state is then equal to the state of the least progressed context. In another words: if there is at least one generating context, the whole analysis is considered to be generating, otherwise it can be either running in at least one context or it can be idle.
+			</para>
+
+			<para>
+			Note that this tracker is not persisted so the information stored in there will not survive Benchmark Manager restart. This behaviour was chosen for two reasons: It is not wanted to keep the analysis status when the Benchmark Manager doesn't run for a while. It might be necessary to clear the analysis state information and this is an easy way to implement this feature.
+			</para>
+
+			<para>
+			Analysis state is cached in the <classname>Analysis</classname> object. It is determined by the <classname>AnalysesTracker</classname> every time the analysis object leaves the Benchmark Manager.
+			</para>
+		</sect3>
+
+		<sect3>
+			<title><classname>Scheduler</classname></title>
+
+			<para>
+			A simple timer started with the Benchmark Manager. It's sole purpose is to periodically check the list of analyses and instruct the Benchmark Manager to run the ones that should be scheduled. Analysis should be scheduled when it is supposed to be planned periodically and the period time has already passed since the last time generator reported success.
+			</para>
+
+			<para>
+			Every minute the scheduler tries to run all analyses that should be scheduled but it doesn't force the analysis run. That means the Benchmark Manager will not run the analysis when it is either generating or running. In case the analysis doesn't start, the scheduler tries to run it again next time. There will never be many analyses so this is not an effectivity issue.
+			</para>
+		</sect3>
+
+		<sect3>
+			<title>Generator Pluggable Modules</title>
+
+			<para>
+			This component is not a subcomponent of the Benchmark Manager in the classical sense because it needs to be a proprietary package specific for each user. However it needs to be mentioned here because it is the core of any analysis.
+			</para>
+
+			<para>
+			Analysis is planed by the Benchmark Manager which has no idea about the <glossterm>tasks</glossterm> that do the measurements. Generator is there to fill in this knowledge gap. It has to know how the specific benchmark is performed. In basic form it means that it has to know the exact task sequence which will perform the measurement, these tasks are referred to as generated tasks.
+			</para>
+
+			<para>
+			The generated tasks should not (and can not) worry about creating <glossterm baseform="dataset">datasets</glossterm>. They should only send the results to the <glossterm>Results Repository</glossterm>. Because of this generator also needs to know the structure of the datasets and needs to be able to create them. If generator didn't create the datasets before the first run, at least a part of the generated tasks would fail on saving the data. Special case is when the tasks don't save anything to the Results Repository.
+			</para>
+
+			<para>
+			Generator may need some configuration to know what tasks to create and what parameters and datasets they need. Creating configuration in the <glossterm>Command Line Interface</glossterm> is straightforward (<xref linkend="been.user.cli.reference.benchmarks"/>) because the configuration can be created from nothing and sent to the CLI. Web interface is a bit more tricky because it needs to know what fields are expected in the configuration to offer the input fields. The generator pluggable module <glossterm>package</glossterm> contains file <filename>module-config.xml</filename> which contains configuration description. See simpletest generator package for example description.
+			</para>
+		</sect3>
+
+		<sect3>
+			<title>Evaluator Pluggable Modules</title>
+
+			<para>
+			As in the previous case, this is not a real subcomponent because it needs to be a proprietary package. Evaluators are not as much tied to measurements as generators. They are tied to the measured data, more specifically the dataset structure and the format of the data itself.
+			</para>
+
+			<para>
+			Evaluator pluggable module accesses only the Results Repository. It should know at least part of the dataset where measurements are stored. Its main purpose is to create a trigger on that dataset. The <glossterm>evaluator task</glossterm> associated with that trigger might produce some data which need to be stored back to the Results Repository. In that case, the Evaluator pluggable module is responsible for creating a dataset for the data. Another common scenario is that the triggered task generates output directly to document root of some web server and doesn't need to store data back to the Repository.
+			</para>
+
+			<para>
+			Evaluator configuration is the same as in generator pluggable modules.
+			</para>
+
+			<para>
+			it is possible to attach multiple evaluators to an analysis. It is possible to change, add, or remove evaluators from existing analysis. It is even possible to chain-link evaluators to produce more complex outputs.
+			</para>
+
+			<note>
+			Note the difference between evaluator pluggable module and evaluator task, the common name might be confusing.
+			</note>
+		</sect3>
+
+		<sect3>
+			<title>Planner</title>
+
+			<para>
+			This component has been included in commons part of the Benchmark Manager in hope it can be reused. This component is used in xampler generator pluggable module to plan more actions in a single generator run.
+			</para>
+
+			<sect4>
+			<title>Download - Build - Run Workflow Planner</title>
+			<para>
+			The planner included in BEEN distribution is of type Download-Build-Run (see DBRPlanner interface). This means it is suited 
+			to create execution plans for most of cases in which you are 
+			benchmarking software whose benchmarking lifecycle conforms to
+			downloading its sources from an external source, building a binary from sources and running 
+			the resulting binary (to get some measurements).
+			</para>
+			 
+			 <para>
+			 Download - Build - Run planner algorithm accepts data about
+			 sofware versions downloaded, versions available in an external source,
+			 list of already build binaries and list of already performed runs.
+			 Planner support these features:
+			 <itemizedlist>
+			 <listitem><para>Prioritize downloading of new versions if available</para></listitem>
+			 <listitem><para>Balance planning of runs and builds to preserve given build/run ratio.</para></listitem>
+			 <listitem><para>Run binaries having fewer runs first.</para></listitem>
+			 <listitem><para>Build sources having fewer builds first.</para></listitem>
+			 <listitem><para>Represent resulting execution plan as abstract objects.</para></listitem>
+			 </itemizedlist>     
+				</para>
+				
+			<para>
+			Please see Download-Build-Run planner for more details.  
+			</para>
+			</sect4>
+		</sect3>
+
+		<sect3>
+			<title>Generator-runner Task</title>
+
+			<para>
+			The <glossterm>generator-runner</glossterm> task is a wrapper around a generator pluggable module. The Benchmark Manager runs an instance of this task for every generator run. Creating a separate task instead of just a thread helps handling unexpected generator failures, long generator runs, load balancing between machines and some other issues. Each <glossterm>generator-runner</glossterm> is executed in separate context for easy recognition of generator run and tasks associated with it.
+			</para>
+
+			<para>
+			It takes <classname>Analysis</classname> as a parameter so it can run the generator pluggable module. The pluggable module returns list of tasks to plan. <glossterm>generator-runner</glossterm> sends this list to the Task Manager. A few problems may (and sometimes will) occur in this main work of the generator task. Pluggable module may not load (user deleted it or SW repository is unavailable). Pluggable module crashes and takes the task with it (happens a lot for new modules). The generated tasks are flawed or remote call to the Task Manager simply fails. Most of the time the problems happen as a result of a bug in the pluggable module.
+			</para>
+		</sect3>
+
+		<sect3>
+			<title>Context-monitor Task</title>
+
+			<para>
+			Even before loading the generator pluggable module the <glossterm>generator-runner</glossterm> starts the <glossterm>context-monitor</glossterm>. This action is performed first to ensure the monitor runs even when the generator pluggable module crashes. The <glossterm>context-monitor</glossterm> is not started by the Benchmark Manager service but by the <glossterm>generator-runner</glossterm> to prevent detection of an empty context before the generator-runner is even planned.
+			</para>
+
+			<para>
+			The context-monitor task has currently 
+			single job: inform the Benchmark Manager that there will be no 
+			more work in the current context. The Analyses Tracker then marks 
+			the context as finished.
+			</para>
+			
+			<sect4>
+			<title>How the Context Monitor Works</title>
+			<para>
+			Currently, context monitor tries to detect finished or 
+			"blocked" context. Finished context is a context 
+			consisting only from finished or aborted tasks. 
+			"Blocked" context can vaguely described as one that only
+			contains tasks that are not running and will never change 
+			their state (unless new tasks are added to the context,
+			which is what Benchmark Manager never does for analysis runs).
+			By definition of context monitor, a "blocked" context is one 
+			that only contains inactive tasks. Inactive task 
+			is either:
+			</para>
+			<itemizedlist>
+			<listitem><para>is in state FINISHED or ABORTED</para></listitem>
+			<listitem><para>is in state SUBMITTED and is transitively dependent on one of the finished or aborted tasks in an unsatisfiable way (e.g. waiting for success of task that has already failed).</para></listitem>
+			</itemizedlist> 
+			<para>
+			Once context monitor detects finished context, it notifies Benchmark Manager (to allow new analysis run)
+			and closes the context. Once it detects only "blocked" context,
+			it notifies Benchmark Manager only. This is because "blocked" context
+			is a context that was subject to some error in analysis run and
+			user might want to check what went wrong. If context manager would
+		    close the context, this context might get deleted by Task Manager.
+			</para>
+			</sect4>
+
+		</sect3>
+	</sect2>
+
+	<sect2>
+		<title>Data Handling</title>
+
+
+		<para>
+		Only <classname>AnalysesTracker</classname> uses data that are not visible outside of the subcomponent. The data are intended to link context, its state and corresponding analysis. Information about a context state is kept only for contexts where a generator was started and that have not yet been marked as finished (either by the context-monitor task or by user).
+		</para>
+
+		<para>
+		All the data shared between subcomponents are also visible through external interfaces. This data are described in detail in the next chapter. The BMmodule interfaces provide list of <classname>TaskDescriptor</classname> that are usually not necessary for other purposes. These task descriptors are only passed along to the Task Manager.
+		</para>
+
+		<para>
+		External data handling and data persistence is described in the next chapter (<xref linkend="been.devel.bmng.data"/>).
+		</para>
+	</sect2>
+
+	<sect2>
+		<title>Input Handling</title>
+
+		<para>
+		Most of the input given to the Benchmark Manager is passed through to its subcomponents. Input handling itself in all Benchmark Manager components and subcomponents is as simple as it can be. The only conversions are made by functions which take string analysis name as their parameter. In that case the Analysis object is loaded from persistent storage.
+		</para>
+
+	</sect2>
+
+	<sect2>
+		<title>Technologies:</title>
+
+		<para>
+		The Benchmark Manager currently uses it is own Derby database with Hibernate to store the persisted data (analysis meta data). See the annotations in class <classname>Analysis</classname> and it is members for details on how they are stored.
+		</para>
+
+		<para>
+		For reading and parsing XML files (configuration descriptions) there is a parser based on JAXB technology.
+		</para>
+	</sect2>
+
+	<sect2>
+		<title>External Resources Summary</title>
+		<itemizedlist>
+			<listitem>
+				<para>
+				Hibernate &amp; persistence
+				</para>
+
+				<para>
+				Hibernate is used for persisting analysis meta data. Hibernate pluggable module is used in <classname>BenchmarkManagerImplementation</classname>. Database data are stored in the service working directory.
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+				JAXB
+				</para>
+
+				<para>
+				The JAXB parser from package <package>cz.cuni.mff.been.jaxb</package> is used for parsing the BMmodule configuration description.
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+				Pluggable modules
+				</para>
+
+				<para>
+				Pluggable module manager is used to load all pluggable modules. Derby and Hibernate pluggable modules are loaded at service startup. Generator and evaluator pluggable modules are loaded on demand.
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+				Software Repository
+				</para>
+
+				<para>
+				<glossterm>Software Repository</glossterm> is not used directly for loading any packages. Only to return the list of available evaluator and  generator pluggable modules, one has to query the Software Repository because the Pluggable Module Manager doesn't offer this service.
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+				Results Repository
+				</para>
+
+				<para>
+				The Benchmark Manager service uses the Results Repository only when deleting an analysis. Generator pluggable modules create (and delete) datasets. Evaluator pluggable modules may create additional datasets and will create triggers most of the time. Evaluators do not delete datasets when removed from analysis.
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+				Task Manager &amp; tasks
+				</para>
+
+				<para>
+				The Benchmark Manager service starts the <glossterm>generator-runner</glossterm> task. The <glossterm>generator-runner</glossterm> starts <glossterm>context-monitor</glossterm> task and then the task sequence given by a generator pluggable module.
+				</para>
+			</listitem>
+		</itemizedlist>
+	</sect2>
+
+	<sect2>
+		<title>Request Life Cycle</title>
+
+		<para>
+		Most of the requests are simple tasks that only call one or 2 components in a simple and intuitive way. Please refer to JavaDoc or the code for explanation of those simple requests. More complex workflow overview is sketched in this chapter.
+		</para>
+
+		<sect3>
+			<title>Benchmark Manager Service Startup</title>
+
+			<para>
+			The constructor takes <classname>PluggableModuleManager</classname> as parameter. In our unit tests we can provide a mock object to simplify the testing. This manager is used whenever loading a pluggable module.
+			</para>
+
+			<itemizedlist>
+				<listitem>
+					<para>
+					As a first thing, the JAXB parser is created. Any problems are logged very extensively because the parser code is generated and discovering bugs therefore needs extensive logging.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+					Derby database is initialized. Derby pluggable module is loaded and the database engine is started. When debug mode is on (<package>cz.cuni.mff.been.common.Debug</package>) then the database is started as network accessible on port <constant>DERBY_DEBUG_NETWORK_PORT</constant>. This access is used only for debugging so we can see the actual content of the database. All BEEN services use Benchmark Manager to access it. The Benchmark Manager Hibernate engine connects from localhost so it has no problem with this restriction.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+					Hibernate is initialized by loading the pluggable module. Then a list of persisted classes is created and Derby database connection found. New Hibernate session factory is created with these parameters.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+					Analyses tracker and scheduler are created last. Scheduler is started right away.
+					</para>
+				</listitem>
+			</itemizedlist>
+		</sect3>
+
+		<sect3>
+			<title>Create Analysis</title>
+
+			<itemizedlist>
+				<listitem>
+					<para>
+					Analysis is validated. It has to contain all the mandatory fields and all the BMmodules have to have valid configuration with them.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+					Then the analysis is passed to Hibernate and saved. Hibernate detects duplicate names and throws exception in that case (the analysis name is annotated as unique). This is where validity checks are complete.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+					Analysis generator is instructed to create its datasets in the results repository.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+					All the evaluators are instructed to <quote>attach</quote> themselves to the analysis. That means they should create the datasets and triggers that perform the computing.
+					</para>
+				</listitem>
+			</itemizedlist>
+		</sect3>
+
+		<sect3>
+			<title>Analysis Update</title>
+
+			<para>
+			Analysis is recognized by the unique id field that is immutable outside the <package>cz.cuni.mff.been.benchmarkamanagerng</package> package. So one can change only analysis that has been loaded from the Benchmark Manager.
+			</para>
+
+			<itemizedlist>
+				<listitem>
+					<para>
+					The old version of changed analysis is loaded from the database. If the changed analysis is not found then an exception is thrown.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+					The old and new versions are compared for illegal changes (generator, name).
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+					Then all the deleted or changed (i.e. changed configuration) evaluators are instructed to detach from the analysis. They should keep their datasets and remove only triggers in this action.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+					All the added or changed evaluators are instructed to attach themselves to the analysis.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+					As the last thing we copy the automatic content (runs, last time) and save the new analysis to database. The primary key ID ensures we overwrite the old analysis.
+					</para>
+				</listitem>
+			</itemizedlist>
+		</sect3>
+
+		<sect3>
+			<title>Run Analysis</title>
+
+			<para>
+			This method takes a <classname>boolean</classname> as a second parameter. When set to <constant>false</constant>, the analysis won't be started if it is already running. It won't be started in any case if it is generating because generating process never should take long and we want to ensure only one generator runs at the same time.
+			</para>
+
+			<itemizedlist>
+				<listitem>
+					<para>
+					Analysis is loaded from the database and <classname>AnalysesTracker</classname> is queried for its state. If the analysis is not able to run then we throw <exceptionname>AnalysisException</exceptionname>.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+					The Task Manager is found and new unique context name is created. The name contains the analysis name, number of runs and number of failures of this run.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+					The new <glossterm>generator-runner</glossterm> is planned in the new context and the analysis is marked as generating.
+					</para>
+				</listitem>
+			</itemizedlist>
+
+			<para>
+			The context-monitor closes all contexts that were finished successfully and leaves open all that failed for some reason. Generator reports success and increases run count when it succeeds. We want to be able to run the generator again when it failed so we save the time and run number once generator finishes. If it succeeds then the scheduler starts new run according to the period set in the analysis. If the generator fails then the scheduler starts new retry immediately.
+			</para>
+		</sect3>
+
+		<sect3>
+			<title>Get Configuration Description</title>
+
+			<itemizedlist>
+				<listitem>
+					<para>
+					The requested pluggable module is loaded.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+					The Benchmark Manager service reads the configuration file from the pluggable module directory and parses it using JAXB parser. We have too many things that can go wrong here so there is a lot of exception handling in this function. All the exceptions are propagated as <classname>BenchmarkManagerException</classname>.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+					The parsed representation of the <filename>module-config.xml</filename> file is returned.
+					</para>
+				</listitem>
+			</itemizedlist>
+		</sect3>
+	</sect2>
+</sect1>

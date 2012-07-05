@@ -1,0 +1,17 @@
+class Foo
+!!!634370.java!!!	bar() : void
+			// default debug level for ConsoleLogger is INFO, so the logDebug
+			// message will not print because it has lower debug level than INFO
+			logger.logDebug("Foo debug message");
+			logger.logInfo("Foo info message");
+			logger.logFatal("Foo fatal message");
+			
+			// we set the logger's debug level higher, and now even the logInfo log message
+			// will not print
+			logger.setLevel(LogLevel.ERROR);
+			logger.logInfo("Foo info message");
+			
+			// obtain the reference to the task which is using this class and 
+			// use it's logging facilities
+			Task myTask = Task.getTaskHandle();
+			myTask.logInfo("Class Foo is logging through it's task");

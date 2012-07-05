@@ -1,0 +1,12 @@
+name	Experiment 0001
+comment	<experiment comment>	
+created on	15-February-2004 17:21 pm	
+plugin id	Plugin-3194872956230426
+plugin name	Random plugin
+expected binaries	3
+binaries	0
+expected runs per binary	3
+samples per run count	200
+complete	false
+valid	true
+context name	system

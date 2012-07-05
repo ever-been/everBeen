@@ -1,0 +1,26 @@
+class PendingHostInfo
+!!!299650.java!!!	PendingHostInfo(in hostName : String, in hostKey : String, inout newDate : Date, inout newRefresh : boolean, inout newHandle : OperationHandle)
+			
+			date = newDate;
+			refresh = newRefresh;
+			handle = newHandle;
+			this.hostKey = hostKey;
+			this.hostName = hostName;
+!!!299778.java!!!	getDate() : Date
+			return date;
+!!!299906.java!!!	setDate(inout date : Date) : void
+			this.date = date;
+!!!300034.java!!!	getHandle() : OperationHandle
+			return handle;
+!!!300162.java!!!	setHandle(inout handle : OperationHandle) : void
+			this.handle = handle;
+!!!300290.java!!!	isRefresh() : boolean
+			return refresh;
+!!!300418.java!!!	setRefresh(inout refresh : boolean) : void
+			this.refresh = refresh;
+!!!300546.java!!!	getHostsKey() : String
+			
+			return hostKey;
+!!!300674.java!!!	getHostName() : String
+			
+			return hostName;

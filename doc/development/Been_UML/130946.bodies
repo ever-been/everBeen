@@ -1,0 +1,9 @@
+class BenchmarkManagerException
+!!!157314.java!!!	BenchmarkManagerException()
+		super();
+!!!157442.java!!!	BenchmarkManagerException(in message : String)
+		super(message);
+!!!157570.java!!!	BenchmarkManagerException(inout cause : Throwable)
+		super(cause);
+!!!157698.java!!!	BenchmarkManagerException(in message : String, inout cause : Throwable)
+		super(message, cause);

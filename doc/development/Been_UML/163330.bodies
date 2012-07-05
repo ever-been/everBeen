@@ -1,0 +1,11 @@
+class Option
+!!!304258.java!!!	Option(in name : String, in defaultValue : long)
+			
+			this.name = name;
+			this.defaultValue = defaultValue;
+!!!304386.java!!!	getName() : String
+			
+			return name;
+!!!304514.java!!!	getDefaultValue() : long
+			
+			return defaultValue;

@@ -1,0 +1,118 @@
+class RSLPackageQueryCallbackTest
+!!!867842.java!!!	setUp() : void
+		if ((beenHome = System.getenv("BEEN_HOME")) == null) {
+			throw new Exception("BEEN_HOME environment variable not defined.");
+		}
+
+		softwareRepository = Utils.setUpRepository(beenHome);
+		
+		Utils.uploadPackage(softwareRepository,
+			"metadata-source-all-optional-elements.bpk", beenHome);
+		Utils.uploadPackage(softwareRepository,
+			"metadata-binary-all-optional-elements.bpk", beenHome);
+		Utils.uploadPackage(softwareRepository,
+			"metadata-task-all-optional-elements.bpk", beenHome);
+		Utils.uploadPackage(softwareRepository,
+			"metadata-data-all-optional-elements.bpk", beenHome);
+!!!867970.java!!!	doMatchTest(inout matches : HashMap<String, Integer>) : void
+		for (String query: matches.keySet()) {
+			PackageMetadata[] metadata = softwareRepository.queryPackages(
+				new RSLPackageQueryCallback(query)
+			);
+			assertTrue("Metadata length should be " + matches.get(query)
+				+ ", but it is " + metadata.length + ".",
+				matches.get(query).equals(metadata.length));
+		}
+!!!868098.java!!!	testName() : void
+		matches = new HashMap<String, Integer>();
+		matches.put("name == \"metadata-source-all-optional-elements\"", 1);
+		matches.put("name != \"metadata-source-all-optional-elements\"", 3);
+		matches.put("name < \"metadata-source-all-optional-elements\"", 2);
+		matches.put("name <= \"metadata-source-all-optional-elements\"", 3);
+		matches.put("name > \"metadata-source-all-optional-elements\"", 1);
+		matches.put("name >= \"metadata-source-all-optional-elements\"", 2);
+		doMatchTest(matches);
+!!!868226.java!!!	testVersion() : void
+		matches = new HashMap<String, Integer>();
+		matches.put("version == 42.0", 4);
+		matches.put("version != 42.0", 0);
+		matches.put("version < 42.0", 0);
+		matches.put("version <= 42.0", 4);
+		matches.put("version > 42.0", 0);
+		matches.put("version >= 42.0", 4);
+		doMatchTest(matches);
+!!!868354.java!!!	testHardwarePlatforms() : void
+		matches = new HashMap<String, Integer>();
+		matches.put("hardwarePlatforms contains \"hardwarePlatform1\"", 4);
+		matches.put("hardwarePlatforms contains \"invalidHardwarePlatform\"", 0);
+		doMatchTest(matches);
+!!!868482.java!!!	testSoftwarePlatforms() : void
+		matches = new HashMap<String, Integer>();
+		matches.put("softwarePlatforms contains \"softwarePlatform1\"", 4);
+		matches.put("softwarePlatforms contains \"invalidSoftwarePlatform\"", 0);
+		doMatchTest(matches);
+!!!868610.java!!!	testType() : void
+		matches = new HashMap<String, Integer>();
+		matches.put("type == source", 1);
+		matches.put("type != source", 3);
+		matches.put("type == binary", 1);
+		matches.put("type != binary", 3);
+		matches.put("type == task", 1);
+		matches.put("type != task", 3);
+		matches.put("type == data", 1);
+		matches.put("type != data", 3);
+		doMatchTest(matches);
+!!!868738.java!!!	testHumanName() : void
+		matches = new HashMap<String, Integer>();
+		matches.put("humanName == \"humanNameValue\"", 4);
+		matches.put("humanName != \"humanNameValue\"", 0);
+		matches.put("humanName < \"humanNameValue\"", 0);
+		matches.put("humanName <= \"humanNameValue\"", 4);
+		matches.put("humanName > \"humanNameValue\"", 0);
+		matches.put("humanName >= \"humanNameValue\"", 4);
+		doMatchTest(matches);
+!!!868866.java!!!	testDownloadURL() : void
+		matches = new HashMap<String, Integer>();
+		matches.put("downloadURL == \"downloadURLValue\"", 4);
+		matches.put("downloadURL != \"downloadURLValue\"", 0);
+		matches.put("downloadURL < \"downloadURLValue\"", 0);
+		matches.put("downloadURL <= \"downloadURLValue\"", 4);
+		matches.put("downloadURL > \"downloadURLValue\"", 0);
+		matches.put("downloadURL >= \"downloadURLValue\"", 4);
+		doMatchTest(matches);
+!!!868994.java!!!	testDownloadDate() : void
+		matches = new HashMap<String, Integer>();
+		matches.put("downloadDate == 2004-11-23T20:38:00Z", 4);
+		matches.put("downloadDate != 2004-11-23T20:38:00Z", 0);
+		matches.put("downloadDate < 2004-11-23T20:38:00Z", 0);
+		matches.put("downloadDate <= 2004-11-23T20:38:00Z", 4);
+		matches.put("downloadDate > 2004-11-23T20:38:00Z", 0);
+		matches.put("downloadDate >= 2004-11-23T20:38:00Z", 4);
+		doMatchTest(matches);
+!!!869122.java!!!	testSourcePackageFilename() : void
+		matches = new HashMap<String, Integer>();
+		matches.put("sourcePackageFilename == \"sourcePackageFilenameValue\"", 2);
+		matches.put("sourcePackageFilename != \"sourcePackageFilenameValue\"", 2);
+		matches.put("sourcePackageFilename < \"sourcePackageFilenameValue\"", 0);
+		matches.put("sourcePackageFilename <= \"sourcePackageFilenameValue\"", 2);
+		matches.put("sourcePackageFilename > \"sourcePackageFilenameValue\"", 0);
+		matches.put("sourcePackageFilename >= \"sourcePackageFilenameValue\"", 2);
+		doMatchTest(matches);
+!!!869250.java!!!	testBinaryIdentifier() : void
+		matches = new HashMap<String, Integer>();
+		matches.put("binaryIdentifier == \"binaryIdentifierValue\"", 1);
+		matches.put("binaryIdentifier != \"binaryIdentifierValue\"", 3);
+		matches.put("binaryIdentifier < \"binaryIdentifierValue\"", 0);
+		matches.put("binaryIdentifier <= \"binaryIdentifierValue\"", 1);
+		matches.put("binaryIdentifier > \"binaryIdentifierValue\"", 0);
+		matches.put("binaryIdentifier >= \"binaryIdentifierValue\"", 1);
+		doMatchTest(matches);
+!!!869378.java!!!	testBuildConfiguration() : void
+		matches = new HashMap<String, Integer>();
+		matches.put("buildConfiguration == \"buildConfigurationValue\"", 1);
+		matches.put("buildConfiguration != \"buildConfigurationValue\"", 3);
+		matches.put("buildConfiguration < \"buildConfigurationValue\"", 0);
+		matches.put("buildConfiguration <= \"buildConfigurationValue\"", 1);
+		matches.put("buildConfiguration > \"buildConfigurationValue\"", 0);
+		matches.put("buildConfiguration >= \"buildConfigurationValue\"", 1);
+		doMatchTest(matches);

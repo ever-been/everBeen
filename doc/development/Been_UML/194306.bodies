@@ -1,0 +1,103 @@
+class Zipper
+!!!598018.java!!!	Zipper()
+		
+!!!598146.java!!!	putDirectoryZipEntry(inout zos : ZipOutputStream, in dirName : String) : void
+		
+		ZipEntry entry = new ZipEntry(dirName + File.separator);
+		entry.setMethod(ZipEntry.STORED);
+		entry.setSize(0);
+		entry.setCompressedSize(0);
+		entry.setCrc(0);
+		zos.putNextEntry(entry);
+		zos.closeEntry();		
+!!!598274.java!!!	zipFile(inout zipOutputStream : ZipOutputStream, inout bufOutputStream : BufferedOutputStream, inout fileToZip : File, in relativePath : String) : boolean
+ 
+	    		 
+	    if (fileToZip.isFile()) {	           	 
+	    	BufferedInputStream in =
+	    		new BufferedInputStream(new FileInputStream(fileToZip));
+	          	  	           	  
+	    	zipOutputStream.putNextEntry(new ZipEntry(
+	    			((relativePath.length() == 0) ? "" : (relativePath + File.separator)) 
+	    			+ fileToZip.getName()));
+	    	byte[] buffer = new byte[4096];
+	    	int bytesRead;
+	    	while ((bytesRead = (in.read(buffer))) != -1) {
+	    		bufOutputStream.write(buffer, 0, bytesRead);
+	    	}
+	    	in.close();
+	    	bufOutputStream.flush(); // important!!! must do this before we make new ZipEntry
+	    }	            
+	    return true;
+!!!598402.java!!!	zipDirectoryRecursively(inout zipOutputStream : ZipOutputStream, inout bufOutputStream : BufferedOutputStream, inout fileToZip : File, in relativePath : String) : boolean
+ 
+	    
+		if (fileToZip.isDirectory()) {
+	    	if (relativePath.compareTo("") != 0) {
+	    		putDirectoryZipEntry(zipOutputStream, relativePath);	
+	    	}
+	        String[] children = fileToZip.list();
+	        for (int i = 0; i < children.length; i++) {
+	        	File dirItem = new File(fileToZip.getAbsolutePath() + File.separator + children[i]); 
+	        	if (dirItem.isDirectory()) {
+	        		zipDirectoryRecursively(zipOutputStream, bufOutputStream, 
+	        				dirItem, ((relativePath.length() == 0) ? ""  
+	        						: (relativePath + File.separator))
+	        						+ dirItem.getName());
+	        			
+	            } else if (dirItem.isFile()) {
+	            	BufferedInputStream in =
+	        			new BufferedInputStream(new FileInputStream(dirItem));
+	            	  
+	        		zipOutputStream.putNextEntry(new ZipEntry(
+	        				((relativePath.length() == 0) ? "" : (relativePath + File.separator))
+	        				+ dirItem.getName()));
+	        		byte[] buffer = new byte[4096];
+	        		int bytesRead;
+	        		while ((bytesRead = (in.read(buffer))) != -1) {
+	        			bufOutputStream.write(buffer, 0, bytesRead);
+	        		}
+	        		in.close();
+	        		bufOutputStream.flush(); // important!!! must do this before we make new ZipEntry
+	            }	            
+	        }
+	    }	    
+	    return true;
+!!!598530.java!!!	copyInputStream(inout in : InputStream, inout out : OutputStream) : void
+		byte[] buffer = new byte[1024];
+		int len;
+
+		while ((len = in.read(buffer)) >= 0) {
+			out.write(buffer, 0, len);
+		}
+
+		in.close();
+		out.close();
+!!!598658.java!!!	unzipFile(in inputFile : String, in outputDirectory : String) : void
+		 
+	     Enumeration entries;
+	     ZipFile zipFile;	     
+	     
+	     zipFile = new ZipFile(inputFile);
+			
+		entries = zipFile.entries();
+			
+		while (entries.hasMoreElements()) {
+				
+			ZipEntry entry = (ZipEntry) entries.nextElement();
+			
+			if (entry.isDirectory()) {
+				/* Assume directories are stored parents first then children - 
+				 * we're unpacking non-directories packages anyway */
+			//System.err.println("Extracting directory: " + entry.getName());
+				(new File(entry.getName())).mkdir();
+					continue;
+			}
+			
+			//System.err.println("Extracting file: " + entry.getName());
+				copyInputStream(zipFile.getInputStream(entry),
+					new BufferedOutputStream(new FileOutputStream(outputDirectory 
+						+ File.separator + entry.getName())));
+			}
+
+			zipFile.close();

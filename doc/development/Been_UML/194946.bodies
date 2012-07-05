@@ -1,0 +1,354 @@
+class TestUpload
+!!!605442.java!!!	getResultsRepositoryIface(in iface : String) : Remote
+		// try to obtain reference ASAP and do nothing if we fail to get it
+		Remote resultsRepository = null;
+		try {
+			resultsRepository = Naming.lookup(iface);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		} catch (NotBoundException e) {
+			e.printStackTrace();
+		}
+	
+		return resultsRepository;
+!!!605570.java!!!	run() : void
+		System.out.println("Getting results repository RMI reference ... ");
+		rrInstance = 
+			(ResultsRepositoryInterface) getResultsRepositoryIface("been/resultsrepository/main");
+		rrGUIInstance = 
+			(cz.cuni.mff.been.resultsrepository.gui.ResultsRepositoryInterface) 
+				getResultsRepositoryIface("been/resultsrepository/gui");
+		
+		try {
+			srvSocket = new ServerSocket(0);
+		} catch (IOException e1) {		
+			e1.printStackTrace();
+		}
+		
+		try {
+
+			try {
+				rrGUIInstance.getAnalysisInterface().deleteEntity(new AID(DEFAULT_AID));
+			} catch (IllegalArgumentException e) {
+				System.err.println("Couldn't erase analysis");
+			}
+			
+			AnalysisMetadata analysisMetadata = new AnalysisMetadata(new AID(DEFAULT_AID));
+			analysisMetadata.setName("Analysis " + DEFAULT_AID);
+			analysisMetadata.setDescription("Description of analysis " + DEFAULT_AID);
+			rrInstance.addAnalysis(new AnalysisEntity(analysisMetadata));
+			
+			ExperimentMetadata experimentMetadata = new ExperimentMetadata(new AID(DEFAULT_AID), new EID(DEFAULT_EID),
+					"Experiment " + DEFAULT_EID, "Description of exp. "  + DEFAULT_EID, new PEID("<Plugin name>"),
+					"<Plugin name>");
+			experimentMetadata.setBinaryCount(1);
+			experimentMetadata.setRunCount(3);
+			experimentMetadata.setSamplesCount(50000);
+
+			experimentMetadata.getTaskSequence().openBinary(new BID(DEFAULT_BID));
+			experimentMetadata.getTaskSequence().closeBinary();
+
+			rrInstance.addExperiment(new ExperimentEntity(experimentMetadata));
+			rrInstance.addBinary(new BinaryEntity(experimentMetadata, new BID(DEFAULT_BID)));
+			
+			analysisId = new AID(DEFAULT_AID);
+			experimentId = new EID(DEFAULT_EID);
+
+			rrInstance.setExperimentCallbackRScripts(analysisId, experimentId, 
+					new CallbackRScripts("", 
+						"xampler.generateRunsStatistics()\nxampler.generateBinaryStatistics()\nxampler.registerInvalidateScripts()\n", 
+						"xampler.generateExperimentStatistics()\nxampler.generateExperimentGraph()\n", 
+						"", ""));
+			
+			try {
+				runResultsCollect();
+			} catch (TaskException e) {			
+				e.printStackTrace();
+			}
+			
+			
+		} catch (ResultsRepositoryException e) {
+			e.printStackTrace();
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+!!!605698.java!!!	uploadBinaryFile(inout aid : AID, inout eid : EID, inout bid : BID, inout rid : RID, inout validRun : boolean, in sourceName : String) : void
+	
+		byte[] buffer = new byte[1024];
+	
+		System.err.println("Calling results repository to upload : " + aid + " " + " " + eid +
+				" " + bid + " " + rid);
+	  	UploadHandle upHandle = rrInstance.uploadRunResults(
+	  			aid, eid, bid, rid, "client",
+	  			 InetAddress.getLocalHost().getCanonicalHostName(), 
+	  					srvSocket.getLocalPort(), validRun, false, 0, 1);
+	  	//System.err.println("connecting \""+sourceName+"\" ...");
+	  	Socket clientSocket = srvSocket.accept();		  	
+	  		
+	  	try {
+			OutputStream outputStream = clientSocket.getOutputStream();
+			InputStream inputStream = new FileInputStream(sourceName);
+			try {
+				int bytesRead;
+				while ((bytesRead = inputStream.read(buffer)) != -1) {
+					outputStream.write(buffer, 0, bytesRead);
+				}
+			} finally {
+				inputStream.close();
+			}
+		} finally {
+			clientSocket.close();
+		}
+		
+	  	//System.err.println("send data finished, waiting for Results Repository to acknowlege... ");
+		/*String chkPntValue;
+		do {
+			chkPntValue = (String) Task.getTaskHandle().getTasksPort().checkPointWait("system", 
+				"resultsrepository-tid", "upload-finish-" + upHandle.hashCode(), 36000000);
+			System.err.println("Value of checkpoint scanned = " + chkPntValue);
+		} while ((chkPntValue == null) || (!chkPntValue.equals("1")));*/
+		System.err.println("Gonna sleep...");
+		while ((rrInstance.getFileUploadStatus(upHandle) == UploadStatus.UPLOADING)) {			
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		System.err.println("Woken up...");
+			
+        if (rrInstance.getFileUploadStatus(upHandle) 
+        		== UploadStatus.UPLOADING) {
+        	System.err.println("Error in synchronization of upload with Results Repository - state still uploading");
+        	
+        }
+        //System.err.println("Results Repository acknowledged successfully uploaded.");
+	  	
+		switch (rrInstance.getFileUploadStatus(upHandle)) {
+			case ACCEPTED:
+				System.err.println("uploaded: " + sourceName);
+				rrInstance.endRunUpload(aid, eid, bid, rid, 
+						InetAddress.getLocalHost().getCanonicalHostName(), upHandle);
+				break;
+			case ERROR:
+				System.err.println("error uploading " + sourceName);
+				rrInstance.endRunUpload(aid, eid, bid, rid, 
+						InetAddress.getLocalHost().getCanonicalHostName(), upHandle);
+				break;
+			default:
+				System.err.println("error synchronizing upload of " + sourceName);
+				rrInstance.endRunUpload(aid, eid, bid, rid, 
+						InetAddress.getLocalHost().getCanonicalHostName(), upHandle);
+				break;
+		}
+!!!605826.java!!!	convertOneRunTable(in srcName : String, in dstName : String, in suiteName : String, in columnNames : String) : void
+		int columnCount = columnNames.length;
+		String debugMessage;
+		debugMessage = "Converting ";
+		for (int i = 0; i < columnNames.length; i++) {
+			debugMessage += columnNames[i] + "   ";
+		}
+		System.err.println(debugMessage);
+		int[][] value = new int[20][columnCount];
+		int[] origin = new int[2];
+		int counter;
+		File file = new File(srcName);
+		String line;
+		String[] lineTokens;
+		
+		System.err.println("Column count for converting run is " + columnCount);
+			
+		/*BufferedReader inputReader = new BufferedReader(new FileReader(file));
+		NetcdfFileWriteable ncfile = NetcdfFileWriteable.createNew(dstName, false);*/
+		BufferedReader inputReader = new BufferedReader(new FileReader(file));
+		NetcdfFileWriteable ncfile = new NetcdfFileWriteable();
+		
+		if (file.exists()) {
+			try {								
+				ncfile.setName(dstName);
+								
+				Dimension columnDim = ncfile.addDimension("columns", columnCount);
+				Dimension measurementDim = ncfile.addDimension("measurements", -1);
+				
+				Dimension[] dim2 = new Dimension[2];
+				
+				dim2[0] = measurementDim;
+				dim2[1] = columnDim;
+							
+				/*ncfile.addVariable("values", DataType.Int, Arrays.asList(dim2));*/
+				ncfile.addVariable("values", int.class, dim2);
+				ncfile.addVariableAttribute("values", "long_name", "Table of measured values");
+				
+				ncfile.create();				
+				
+				origin[0] = 0; counter = 0;			
+				while ((line = inputReader.readLine()) != null) {
+										
+					lineTokens = line.split("\t");
+					
+					for (int i = 0; i < columnCount; i++) {
+						try {
+							value[(counter++) % 20][i] = Integer.valueOf(lineTokens[i]);
+							//System.err.println("stored value " + Integer.valueOf(lineTokens[i]) + "into array");
+						} catch (NumberFormatException e) {
+							value[counter % 20][i] = new Integer(0);
+							System.err.println("invalid number format - column " + i + "sample" + counter);
+							
+						}
+					}
+					
+					if ((counter % 20) == 0) {
+						ArrayInt valueA = new ArrayInt.D2(20, columnDim.getLength());
+						Index ima = valueA.getIndex();
+						for (int i = 0; i < 20; i++) {
+							for (int j = 0; j < columnCount; j++) {
+								valueA.setInt(ima.set(i, j), value[i][j]);
+							}
+						}
+						
+//						try {
+							ncfile.write("values", origin, valueA);
+						/*} catch (InvalidRangeException e) {
+							System.err.println("Invlaid ");
+						}*/
+						origin[0] += 20;
+						
+					}
+				}
+								
+				/*if ((counter % 20) > 0) {
+				    long[][] value2 = new long[counter % 20][columnCount];
+				    for (int i = 0; i < counter % 20; i++)				    	
+				    	value2[i] = value[i];
+					ArrayInt valueA = new ArrayInt.D2(20, columnDim.getLength());
+					Index ima = valueA.getIndex();
+					for (int i = 0; i < 20; i++) {
+						for (int j=0; j < columnCount; j++)
+							valueA.setLong(ima.set(i,j), value[i][j]);
+					}
+
+					ncfile.write("values", origin, valueA);
+					ncfile.write("values", origin, ArrayAbstract.factory(value2));
+				}*/
+				
+			} catch (IOException e) {
+				e.printStackTrace();
+				System.err.println("io error converting " + srcName);				
+			} finally {
+				ncfile.close();
+				inputReader.close();
+			}
+		}			
+!!!605954.java!!!	runResultsCollect() : void
+		tempDir = TEMP_DIR;
+		srcDirectories = XAMPLER_EXAMPLES;
+		
+		/* We suppose all methods addAnalysis, addExperiment, and addBinary has been called. 
+		 * Otherwise, attempt to upload results will result in an "analysis/experiment/binary 
+		 * doesn't exist" error */
+								
+		BufferedReader inputReader;
+		
+		/* Now, we should read the table of runs to collect - this one is passed
+		 * as a property in String for now, todo is tracked in RunResultsPosition.java */
+		
+		/* Create list of paths to working directories of all results converting tasks */
+		inputReader = new BufferedReader(new StringReader(srcDirectories));
+		
+		ArrayList<String>resultsTable = new ArrayList<String>();
+		String[] lineTokens;
+		String line;
+		
+		try {
+		
+			while ((line = inputReader.readLine()) != null) {								
+				lineTokens = line.split("\t");			
+					if (lineTokens.length == 1) {						 
+						String temp = new String(lineTokens[0]);
+								
+						resultsTable.add(temp); 
+					} else {
+						throw new TaskException("Invalid task arguments (results directory table)");
+					}										
+			}
+			inputReader.close();
+		} catch (IOException e) {
+			throw new TaskException("Cannot read results...", e);
+		}		
+
+		Iterator it = resultsTable.iterator();
+		
+		
+		try {
+			/* For each task, which was converting */
+			while (it.hasNext()) {
+			
+				BID bid;
+				RID rid;
+				String currentRun = (String) it.next();
+				/* Read tables with all metdata about data to upload */ 
+				BufferedReader tablesReader = new BufferedReader(new FileReader(
+						currentRun + File.separator + "tables.meta"));
+				
+				
+				while ((line = tablesReader.readLine()) != null) {
+					System.err.println("Read line from tables.meta:" + line);
+					lineTokens = line.split("\t");
+					if (lineTokens.length == 4) {
+
+						BufferedReader metaReader = new BufferedReader(new FileReader(
+								currentRun + File.separator + lineTokens[2] + ".meta"));
+						String suiteTitle = (line = metaReader.readLine()); 
+						
+						ArrayList<String> columnNames = new ArrayList<String>();						
+						
+						while ((line = metaReader.readLine()) != null) {
+							if (line.compareTo("") != 0 && line.compareTo("\n") != 0) {
+								columnNames.add(line);
+							}
+						}
+
+						metaReader.close();
+						
+						bid = new BID(Integer.valueOf(lineTokens[1]));
+						rid = new RID(Integer.valueOf(lineTokens[2]));
+						
+						System.err.println("Uploading run " + analysisId + " " + experimentId + " " + bid + " " + rid);
+						
+						if (lineTokens[3].compareTo("0") == 0) {							
+							uploadBinaryFile(analysisId, experimentId,
+									bid, rid, false,
+									currentRun + File.separator + lineTokens[2]);
+																		
+						} else {
+							
+							convertOneRunTable(currentRun + File.separator 
+									+ lineTokens[2], tempDir + File.separator + lineTokens[2], 
+									suiteTitle, columnNames.toArray(new String[] { null }));
+							uploadBinaryFile(analysisId, experimentId,
+									bid, rid, true,
+									tempDir + File.separator + lineTokens[2]);
+						}
+					} else {
+						throw new TaskException("Invalid 'tables.meta' file generated from checking tasks");
+					}
+					
+				}
+				tablesReader.close();
+				
+			}
+		} catch (IOException e) {
+			throw new TaskException("I/O error during results upload", e);
+		}  catch (ResultsRepositoryBusyException e) {
+			throw new TaskException("Results Repository overloaded (too many network connections)", e);
+		}
+		
+		System.err.println("results and logs uploaded");
+!!!606082.java!!!	main(in argv : String) : void
+	
+		TestUpload instance = new TestUpload();
+		instance.run();
+	

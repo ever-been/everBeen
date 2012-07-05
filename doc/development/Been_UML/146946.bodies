@@ -1,0 +1,44 @@
+class MultiSelect
+!!!222210.java!!!	getOptions() : Option
+		return options;
+!!!222338.java!!!	getSelectedIndexes() : int
+		return selectedIndexes;
+!!!222466.java!!!	verifySelectedIndexes(inout opts : Option, in selected : int) : void
+		for (int i = 0; i < selected.length; i++) {
+			if (selected[i] < 0 || opts.length <= selected[i]) {
+				throw new IllegalArgumentException(
+					"Invalid selectedIndexes[" + i + "] (" + selected[i] + ")."
+				);
+			}
+		}
+!!!222594.java!!!	setSelectedIndexes(in selectedIndexes : int) : void
+		verifySelectedIndexes(options, selectedIndexes);
+		this.selectedIndexes = selectedIndexes;
+!!!222722.java!!!	getSelectedIds() : String
+		String[] result = new String[selectedIndexes.length];
+		for (int i : selectedIndexes) {
+			result[i] = options[selectedIndexes[i]].getId();
+		}
+		return result;
+!!!222850.java!!!	setSelectedIds(in selectedIds : String) : void
+		int[] newSelectedIndexes = new int[selectedIds.length];
+		for (int i = 0; i < selectedIds.length; i++) {
+			for (int j = 0; j < options.length; i++) {
+				if (options[j].getId().equals(selectedIds[i])) {
+					newSelectedIndexes[i] = j;
+					break;
+				}
+			}
+			assert selectedIds[i] != null
+				: "Invalid selectedIds[" + i + "] (\"" + selectedIds[i] + "\").";
+		}
+!!!222978.java!!!	MultiSelect(in label : String, inout options : Option, in selectedIndexes : int)
+		super(label);
+
+		verifySelectedIndexes(options, selectedIndexes);
+		
+		this.options = options;
+		this.selectedIndexes = selectedIndexes;
+!!!223106.java!!!	toString() : String
+		return "MultiSelect(name=" + getLabel() + ", options="
+			+ Arrays.toString(options) + ")";

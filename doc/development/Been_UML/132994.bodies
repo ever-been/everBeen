@@ -1,0 +1,223 @@
+class BenchmarkManager
+!!!152578.java!!!	getInstance() : BenchmarkManager
+		if (instance == null) {
+			// create shared BM instance
+			instance = new BenchmarkManager();
+		}
+
+		return instance;
+		
+!!!152706.java!!!	BenchmarkManager()
+		super();
+		this.task = Task.getTaskHandle();
+		
+		try {
+			/*
+			 * Read configuration file
+			 */
+			configure();
+			
+			/*
+			 * Create directory from which benchmark manager can be restored 
+			 */
+			File restoreRootDir = new File(task.getWorkingDirectory(),"restore");
+			if (!restoreRootDir.exists() && !restoreRootDir.mkdirs()) {
+				throw new ComponentInitializationException("Unable to create 'restore' directory: " + restoreRootDir.getPath());
+			}
+			
+			/*
+			 * Initialise subcomponents
+			 */
+			this.idManager = PersistentIDManager.createInstance(restoreRootDir);
+			// initialise plugin loader either according to config or to the current directory
+			final String defaultPluginsDirectory = task.getTaskDirectory() + File.separator + "plugins";
+			final String jpfWorkingDirectory = task.getWorkingDirectory();
+			//this.pluginManager = JPFPluginManager.createInstance(this, bootProperties, defaultPluginsDirectory, jpfWorkingDirectory, restoreRootDir);
+			this.pluginManager = new BenchmarkPluginManager(this, bootProperties, defaultPluginsDirectory, jpfWorkingDirectory, restoreRootDir);
+			this.analysisManager = AnalysisManager.createInstance(this,restoreRootDir);
+			this.configManager = new PluginConfiguratorManager(this);
+		} catch (FileNotFoundException e) {
+			throw new ComponentInitializationException(e);
+		} catch (IOException e) {
+		  throw new ComponentInitializationException(e);
+		} catch (ClassNotFoundException e) {
+			throw new ComponentInitializationException(e);
+		}
+!!!152834.java!!!	configure() : void
+		final String taskDir = task.getTaskDirectory();
+		
+		File bootFile = new File(taskDir, "boot.properties"); 
+		if (!bootFile.exists()) {
+			throw new FileNotFoundException("boot.properties file missing in package!");
+		}
+
+		// create extended properties as in JPF's Boot.java
+		bootProperties = new ExtendedProperties(System.getProperties());
+		final FileInputStream stream = new FileInputStream(bootFile);
+		bootProperties.load(stream);
+		stream.close();
+		
+		// set log4j configuration property in system properties (as in Boot.java)
+		if (System.getProperty(LOG4J_CONFIG_KEY) == null) {
+			// not set, must use our log4j configuration
+			File log4jconfig = new File(taskDir, "log4j.properties");
+			System.setProperty(LOG4J_CONFIG_KEY, log4jconfig.toURI().toURL().toExternalForm());
+		}
+		
+		// set log level as specified in properties or use INFO by default
+		final String logLevelName = bootProperties.getProperty(LOG_LEVEL_KEY, "INFO");
+		Level log4jLevel = Level.toLevel(logLevelName.trim());
+		task.setLogLevel(LogLevel.getInstance(log4jLevel));
+!!!152962.java!!!	getPluginsIntegrityReport() : PluginsIntegrityReport
+		return pluginManager.getIntegrityReport();
+!!!153090.java!!!	getAvailablePlugins() : BeenPluginDescriptor
+		return pluginManager.getAvailablePlugins();
+!!!153218.java!!!	beginTaskGeneration(inout brid : BRID) : TaskDescriptor
+		TaskDescriptor[] result = startGenerator(brid);
+		BeenUtils.sortTasks(result);
+		return result;
+!!!153346.java!!!	createAnalysis(in name : String, in description : String, inout isRegression : boolean) : AnalysisEntity
+		return analysisManager.createAnalysis(name, description, isRegression);
+!!!153474.java!!!	getAnalysis(inout analysis : AID) : AnalysisMetadata
+		return analysisManager.getAnalysis(analysis);
+!!!153602.java!!!	getBenchmarkRoles(inout brid : BRID) : Role
+		StandardRole[] allRoles = expandRoles(brid);
+		List<Role>  benchRoles = new LinkedList<Role>();
+		for (StandardRole role : allRoles) {
+			if (role.isBenchmarking()) {
+				benchRoles.add(new Role(role,new String[0]));
+			}
+		}
+		
+		return benchRoles.toArray(new Role[benchRoles.size()]);
+!!!153730.java!!!	setBenchmarkRoles(inout session : BRID, inout roles : Role) : void
+		ExperimentMetadata experiment = configManager.getConfigurator(session).getBenchmarkExperiment();
+		experiment.setUserHosts(roles);
+!!!153858.java!!!	getConfiguredExperiment(inout brid : BRID) : ExperimentEntity
+		ExperimentMetadata experiment = null;
+		experiment = configManager.getConfigurator(brid).getBenchmarkExperiment();
+		return new ExperimentEntity(experiment);
+!!!153986.java!!!	getAnalysisCallbackRScripts(inout brid : BRID) : CallbackRScripts
+		return configManager.getConfigurator(brid).getDefaultRScripts();
+!!!154114.java!!!	startExperiment(inout session : BRID, inout schedule : SchedulerInfo, inout scripts : CallbackRScripts) : void
+		
+		
+		ExperimentMetadata experiment = configManager.getConfigurator(session).getBenchmarkExperiment();
+		if (experiment == null) {
+			throw new BenchmarkManagerException("Experiment does not exist for session " + session);
+		}
+
+		// saves callback scripts to experiment metadata
+		experiment.setScripts(scripts);
+		
+		// scheduling model experiment for regression analysis
+		if (schedule != null) {
+			analysisManager.registerModelExperiment(experiment,schedule);
+		} else {
+			analysisManager.addExperiment(experiment);
+			analysisManager.reportResultsMetadata(experiment);
+			analysisManager.dispatchExperiment(experiment);
+		}
+		
+		// configurator may be removed, because experiment was successfully started
+		configManager.removeConfigurator(session);
+!!!154242.java!!!	runExperiment(inout experiment : ExperimentMetadata) : void
+		try {
+			TaskDescriptor[] tasks = experiment.getAllTasks();
+			TasksPortInterface tasksPort = task.getTasksPort();
+			tasksPort.newContext(experiment.getContextID(), 
+					experiment.getName(), 
+					experiment.getDescription(), 
+					new OID[] { experiment.getAnalysis(), experiment.getID() });
+			tasksPort.runTasks(tasks);
+			tasksPort.endContext(experiment.getContextID());
+		} catch (RemoteException e) {
+			throw new BenchmarkManagerException("TaskManager not available", e);
+		}
+!!!154370.java!!!	getFirstConfiguratorScreen(inout session : BRID, inout analysisID : AID, in experimentName : String, in experimentDescription : String, inout pluginID : PEID) : Screen
+		boolean isRegression = analysisManager.getAnalysis(analysisID).isRegression();
+		ExperimentMetadata experiment = 
+			analysisManager.createExperiment(analysisID, experimentName, experimentDescription, pluginID);
+		return configManager.getFirstScreen(session, experiment, isRegression);
+!!!154498.java!!!	getNextConfiguratorScreen(inout session : BRID, inout currentScreen : Screen) : Screen
+		Screen result = configManager.getNextScreen(session, currentScreen);
+		return result;
+!!!154626.java!!!	getPreviousConfiguratorScreen(inout session : BRID, inout currentScreen : Screen) : Screen
+		return configManager.getPreviousScreen(session, currentScreen);
+!!!154754.java!!!	getAnalysisInterface() : AnalysisEntityInterface
+		return AnalysisAdapter.getInstance(analysisManager);
+!!!154882.java!!!	beginPluginUpload(inout ip : InetAddress, in port : int) : UploadHandle
+		UploadHandle handle = UploadHandle.createUploadHandle();
+		PluginUploadThread uploader = new PluginUploadThread(handle,ip,port);
+		uploaders.put(handle,uploader);
+		uploader.start();
+		return handle;
+!!!155010.java!!!	deletePlugin(in name : String) : boolean
+		// TODO Auto-generated method stub
+		return false;
+!!!155138.java!!!	endPluginUpload(inout handle : UploadHandle) : void
+		uploaders.remove(handle);
+!!!155266.java!!!	getPluginUploadStatus(inout handle : UploadHandle) : UploadStatus
+		return getUploader(handle).getStatus();
+!!!155394.java!!!	getRejectedPluginUploadErrorMessages(inout handle : UploadHandle) : String
+		return getUploader(handle).getErrorMesssages();
+!!!155522.java!!!	getIDManager() : IDManagerInterface
+		return this.idManager;
+!!!155650.java!!!	getPluginLoader() : BenchmarkPluginManager
+		
+		return pluginManager;
+!!!155778.java!!!	lookup(in serviceName : String) : Remote
+		Remote result;
+		try {
+			result = task.getTasksPort().serviceFind(serviceName,"main");
+			if (result == null) {
+				logError("Requested service '" + serviceName + "' is not available");
+				throw new BenchmarkManagerException("Service '" + serviceName + "' is not available");
+			}
+			return result;
+		} catch (RemoteException e) {
+			logError("Service lookup failed as RMI error occured: " + e.getMessage());
+			throw new BenchmarkManagerException("Service lookup failed as RMI error occured",e);
+		}
+!!!155906.java!!!	getTaskStatus(in taskId : String, in contextId : String) : TaskState
+		try {
+			return task.getTasksPort().getTaskById(taskId,contextId).getState();
+		} catch (RemoteException e) {
+			throw new BenchmarkManagerException("Can't query task status",e);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
+!!!156034.java!!!	logDebug(in errorMessage : String) : void
+		task.logDebug(errorMessage);
+!!!156162.java!!!	logError(in errorMessage : String) : void
+		task.logError(errorMessage);
+!!!156290.java!!!	logFatal(in errorMessage : String) : void
+		task.logFatal(errorMessage);
+!!!156418.java!!!	logInfo(in infoMessage : String) : void
+		task.logInfo(infoMessage);
+!!!156546.java!!!	logTrace(in infoMessage : String) : void
+		task.logTrace(infoMessage);
+!!!156674.java!!!	logWarning(in warningMessage : String) : void
+		task.logWarning(warningMessage);
+!!!156802.java!!!	getLogLevel() : LogLevel
+		return task.getLogLevel();
+!!!156930.java!!!	startGenerator(inout brid : BRID) : TaskDescriptor
+		ExperimentMetadata experiment = 
+			configManager.getConfigurator(brid).getBenchmarkExperiment();
+		
+		analysisManager.startGenerator(experiment);
+		return experiment.getAllTasks();
+!!!157058.java!!!	expandRoles(inout sessionID : BRID) : StandardRole
+		ExperimentMetadata exp = configManager.getConfigurator(sessionID).getBenchmarkExperiment();
+		HostManagerInterface hm = (HostManagerInterface) lookup(HostManagerService.SERVICE_NAME);
+		for (StandardRole role : exp.getRoles()) {
+			role.expand(hm);
+		}
+		
+		return exp.getRoles();
+!!!157186.java!!!	getUploader(inout handle : UploadHandle) : PluginUploadThread
+		PluginUploadThread uploader = uploaders.get(handle);
+		if (uploader == null) {
+			throw new IllegalArgumentException("Uploader does not exist");
+		}
+		return uploader;

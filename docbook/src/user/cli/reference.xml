@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sect1
+	xml:id="been.user.cli.reference"
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>Command Line Reference</title>
+	
+	<para>This section provides a reference manual for the Command Line Interface. Modules and
+	actions are listed in tables of the following structure:</para>
+	
+	<table xml:id="been.user.cli.reference.table" tocentry="1" frame="none">
+		<title>Layout of the Reference Manual</title>
+	
+		<tgroup cols="3" align="left" colsep="0" rowsep="0">
+			<colspec colnum="1" colname="action" colwidth="3*"/>
+			<colspec colnum="2" colname="option" colwidth="3*"/>
+			<colspec colnum="3" colname="desc" colwidth="9*"/>
+			
+			<tbody valign="top">
+				<row>
+					<entry morerows="5"><command>action</command></entry>
+					<entry namest="option" nameend="desc">Action Details</entry>
+				</row>
+				<row>
+					<entry><emphasis role="strong"><option>STDIN</option></emphasis></entry>
+					<entry>Expected format of the standard input. Standard input is mandatory,
+					unless footnotes say otherwise.</entry>
+				</row>
+				<row>
+					<entry><emphasis role="strong"><option>parameter</option></emphasis></entry>
+					<entry>Details about the parameter. Parameters are optional, unless
+					footnotes say otherwise.</entry>
+				</row>
+				<row>
+					<entry><option>flag</option></entry>
+					<entry>Details about the flag. All flags are optional.</entry>
+				</row>
+				<row>
+					<entry><emphasis role="strong"><option>STDOUT</option></emphasis></entry>
+					<entry>Output line synopsis or XML format definition.</entry>
+				</row>
+				<row>
+					<entry><emphasis role="strong"><option>STDERR</option></emphasis></entry>
+					<entry>Output synopsis. Listed only when the error output is used for a purpose
+					other than error reporting.</entry>
+				</row>
+			</tbody>
+		</tgroup>
+	</table>
+	
+	<para>The reference manual for each module is followed by a subsection with lots of command
+	line examples and comments. BEEN gurus can skip these subsections, since the reference manual
+	is all they need. Users unfamiliar with XML Schema will find a couple of informal, yet fairly
+	complete examples of XML input and output data used by some
+	<glossterm baseform="action">actions</glossterm>.</para>
+	
+	<xi:include href="reference/dummy.xml"/>
+	<xi:include href="reference/meta.xml"/>
+	<xi:include href="reference/csvcs.xml"/>
+	<xi:include href="reference/pkg.xml"/>
+	<xi:include href="reference/hosts.xml"/>
+	<xi:include href="reference/tasks.xml"/>
+	<xi:include href="reference/benchmarks.xml"/>
+	<xi:include href="reference/results.xml"/>
+</sect1>

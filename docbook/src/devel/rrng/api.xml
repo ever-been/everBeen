@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sect1
+	xml:id="been.devel.rrng.api"
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>API Documentation</title>
+	
+	<para><glossterm>Results Repository</glossterm> has two RMI interfaces through which it can be accessed. 
+	<classname>RRManagerInterface</classname> is there to manage <glossterm>datasets</glossterm> and <glossterm>triggers</glossterm>. 
+	On the other hand <classname>RRDataInterface</classname> allows components that just 
+	need to access <glossterm>Results Repository</glossterm>'s data to use simpler interface.
+	Note that <glossterm>Results Repository Service</glossterm> object you receive from
+	<glossterm>Task Manager</glossterm> when doing service lookup implements both of these
+	interfaces. It's just up to the user which interface will the 
+	reference be cast to.    
+	</para>
+	
+	<sect2>
+		<title>RR Data Interface</title>
+		<para>
+		As said before, Results Repository Data Interface exposes 
+		methods for manipulating data in <glossterm>RR</glossterm>. Covered activities 
+		are: storing records to datasets and retrieving them back,
+		Uploading and downloading files to/from <glossterm>File Store</glossterm>,
+		storing and loading records to/from a <glossterm>dataset</glossterm> using RR transaction API.
+		</para>
+		
+		<para>
+		Here is how <code>RRDataInterface</code> is defined:
+		</para>
+<programlisting language="java"><![CDATA[public interface RRDataInterface extends Remote {
+    long saveData(String analysisName,
+            String datasetName,
+            DataHandleTuple data)
+            throws RemoteException,
+            ResultsRepositoryException;
+
+    List<DataHandleTuple> loadData(
+            String analysisName,
+            String datasetName,
+            Condition condition, Long fromSerial,
+            Long toSerial)
+            throws RemoteException,
+            ResultsRepositoryException;
+
+    FileStoreClient getFileStoreClient()
+            throws RemoteException;
+
+    RRTransaction getTransaction(
+            String analysisName,
+            String datasetName)
+            throws RemoteException,
+            ResultsRepositoryException;
+}]]></programlisting>
+
+	<table xml:id="been.devel.rrng.api.rrdatainterface" tocentry="1" frame="none">
+		<title>Methods of <classname>RRDataInterface</classname></title>
+
+		<tgroup cols="3" align="left" colsep="0" rowsep="0">
+			<colspec colnum="1" colname="method" colwidth="6*"/>
+			<colspec colnum="2" colname="param" colwidth="4*"/>
+			<colspec colnum="3" colname="desc" colwidth="7*"/>
+			
+			<tbody valign="top">
+			
+				<!-- saveData -->
+				<row>
+					<entry morerows="3">
+						<command>saveData</command>
+					</entry>
+					<entry namest="param" nameend="desc">
+						Saves a new record to given <glossterm>dataset</glossterm>. Returns 
+						<glossterm>serial number</glossterm> assigned to the row.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>analysisName</option></emphasis>
+					</entry>
+					<entry>
+						Name of analysis to which <glossterm>dataset</glossterm> belongs.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>datasetName</option></emphasis>
+					</entry>
+					<entry>
+						Name of <glossterm>dataset</glossterm>.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>data</option></emphasis>
+					</entry>
+					<entry>
+						The actual data to insert.
+					</entry>
+				</row>
+				
+				<!-- loadData -->
+				<row>
+					<entry morerows="5">
+						<command>loadData</command>
+					</entry>
+					<entry namest="param" nameend="desc">
+						Retrieve records satisfying given 
+						criteria from a dataset. Return list
+						of these records.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>analysisName</option></emphasis>
+					</entry>
+					<entry>
+						Name of analysis to which <glossterm>dataset</glossterm> belongs.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>datasetName</option></emphasis>
+					</entry>
+					<entry>
+						Name of <glossterm>dataset</glossterm>.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>condition</option></emphasis>
+					</entry>
+					<entry>
+						Search criteria to apply.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>fromSerial</option></emphasis>
+					</entry>
+					<entry>
+						Lower bound constraint on record <glossterm>serial number</glossterm> or <code>null</code> if none.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>toSerial</option></emphasis>
+					</entry>
+					<entry>
+						Upper bound constraint on record <glossterm>serial number</glossterm> or <code>null</code> if none.
+					</entry>
+				</row>
+				
+				<!-- getFileStoreClient -->
+				<row>
+					<entry>
+						<command>getFileStoreClient</command>
+					</entry>
+					<entry namest="param" nameend="desc">
+						Returns instance of <glossterm>File Store</glossterm> client object.
+						This object can be used to upload local files 
+						to <glossterm>File Store</glossterm> or download files from <glossterm>File Store</glossterm>
+						to the local storage.
+					</entry>
+				</row>
+				
+				<!-- getTransaction -->
+				<row>
+					<entry morerows="2">
+						<command>getTransaction</command>
+					</entry>
+					<entry namest="param" nameend="desc">
+						Opens new transaction on given dataset and returns transaction
+						client object to control it.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>analysisName</option></emphasis>
+					</entry>
+					<entry>
+						Name of analysis to which <glossterm>dataset</glossterm> belongs.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>datasetName</option></emphasis>
+					</entry>
+					<entry>
+						Name of <glossterm>dataset</glossterm>.
+					</entry>
+				</row>
+				
+			</tbody>
+		</tgroup>
+	</table>
+
+	<sect3>
+	<title>File Store API</title>
+	<para>
+	File store API can be used after retrieving file store client object
+	from <classname>RRDataInterface</classname>. In short, file store API just allows 
+	you to upload and download files to/from <glossterm>File Store</glossterm> with ease.
+	For more details, see package <package>cz.cuni.mff.been.resultsrepositoryng.filestore</package>
+	JavaDocs. 
+	</para>
+	</sect3>
+	
+	<sect3>
+	<title>Transaction API</title>
+	<para>
+	Transaction API can be used after retrieving transaction 
+	object for RR data interface. Transaction API is very simple and
+	selfexplaining, so see package <package>cz.cuni.mff.been.resultsrepositoryng.transaction</package>
+	JavaDocs.
+	</para>
+	</sect3>
+
+
+	</sect2>
+	
+	<sect2>
+		<title>RR Manager Interface</title>
+		<para>
+		Results Repository Manager Interface exposes functionality 
+		not directly connected to storing and loading data. Through 
+		manger interface you can:
+		<itemizedlist>
+		 <listitem><para>create, list or delete datasets</para></listitem>
+		  <listitem><para>create, list or delete triggers on existing datasets</para></listitem>
+		  <listitem><para>notify results repository that data have been processed by a triggered task</para></listitem>		  
+		</itemizedlist>
+		</para>
+		
+		<table xml:id="been.devel.rrng.api.rrmanagerinterface" tocentry="1" frame="none">
+		<title>Methods of <classname>RRManagerInterface</classname></title>
+
+		<tgroup cols="2" align="left" colsep="0" rowsep="0">
+			<colspec colnum="1" colname="method" colwidth="6*"/>
+			<colspec colnum="2" colname="desc" colwidth="11*"/>
+			
+			<tbody valign="top">
+			
+				<row>
+					<entry>
+						<command>createDataset</command>
+					</entry>
+					<entry>
+						Creates a new dataset based on <glossterm>dataset descriptor</glossterm>. 
+					</entry>
+				</row>
+				
+				<row>
+					<entry>
+						<command>deleteDataset</command>
+					</entry>
+					<entry>
+						Deletes <glossterm>dataset</glossterm> identified by analysis and dataset name. 
+					</entry>
+				</row>
+				
+				<row>
+					<entry>
+						<command>getDatasets</command>
+					</entry>
+					<entry>
+						Returns list of <glossterm>datasets</glossterm> associated with given analysis. 
+					</entry>
+				</row>
+				
+				<row>
+					<entry>
+						<command>getAnalyses</command>
+					</entry>
+					<entry>
+						Returns list of analyses that have existing <glossterm>dataset</glossterm> in RR. 
+					</entry>
+				</row>
+				
+				<row>
+					<entry>
+						<command>getDatasetDescriptor</command>
+					</entry>
+					<entry>
+						Returns <glossterm>dataset descriptor</glossterm> (i.e. dataset schema definition) 
+						for a given <glossterm>dataset</glossterm>. 
+					</entry>
+				</row>
+				
+				<row>
+					<entry>
+						<command>createTrigger</command>
+					</entry>
+					<entry>
+						Creates a new <glossterm>trigger</glossterm> on given dataset. 
+					</entry>
+				</row>
+				
+				<row>
+					<entry>
+						<command>deleteTriggers</command>
+					</entry>
+					<entry>
+						Deletes all <glossterm>triggers</glossterm> associated with 
+						given <glossterm>analysis</glossterm>, <glossterm>dataset</glossterm> or <glossterm>evaluator</glossterm>. 
+					</entry>
+				</row>
+				
+				<row>
+					<entry>
+						<command>deleteTrigger</command>
+					</entry>
+					<entry>
+						Deletes a <glossterm>trigger</glossterm> identfied by its UUID. 
+					</entry>
+				</row>
+				
+				<row>
+					<entry>
+						<command>getTriggers</command>
+					</entry>
+					<entry>
+						Returns all <glossterm>triggers</glossterm> associated with 
+						given <glossterm>analysis</glossterm>, <glossterm>dataset</glossterm> or <glossterm>evaluator</glossterm>. 
+					</entry>
+				</row>
+				
+				<row>
+					<entry>
+						<command>getTrigger</command>
+					</entry>
+					<entry>
+						Gets descriptor of <glossterm>trigger</glossterm> identified by its UUID. 
+					</entry>
+				</row>
+				
+				<row>
+					<entry>
+						<command>notifyDataProcessed</command>
+					</entry>
+					<entry>
+						Tells RR that task triggered by a given trigger finished 
+						successfully and processed all data from dataset
+						until given record serial number. 
+						Once a trigger is fired by RR, it is disabled (will not be
+						fired again) until this method is called.
+					</entry>
+				</row>
+				
+			</tbody>
+		</tgroup>
+	</table>
+		
+		<para>
+		For more details on RR Manager Interface methods, see
+		RRManagerInterface's JavaDocs.
+		</para>
+	</sect2>
+	
+	<!--  <sect2>
+		<title>Important notes</title>
+		<itemizedlist>
+			<listitem><para>Special conventions.</para></listitem>
+			<listitem><para>Contracts not obvious from JavaDoc.</para></listitem>
+			<listitem><para>Performance tips and recommendations.</para></listitem>
+			<listitem><para>Slow Path / Fast Path scenarios.</para></listitem>
+		</itemizedlist>
+	</sect2> -->
+</sect1>

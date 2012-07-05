@@ -1,0 +1,29 @@
+class ScannerExtended
+!!!247170.java!!!	ScannerExtended(inout sc : java.util.Scanner)
+		this.sc = sc; 
+!!!247298.java!!!	hasNextQuotedString() : boolean
+		return sc.hasNext("\\\".*"); 
+!!!247426.java!!!	nextQuotedString() : String
+		if (!sc.hasNext()) {
+			throw new java.util.NoSuchElementException();
+		}
+		if (!hasNextQuotedString()) {
+			throw new java.util.InputMismatchException();
+		}
+		// This is necessary because findInLine would skip over other tokens.
+		String s = sc.findInLine("\\\".*?\\\"");
+		if (s == null) {
+			throw new java.util.InputMismatchException();
+		}
+		
+		return s.substring(1, s.length() - 1); 
+!!!247554.java!!!	hasNext() : boolean
+		return hasNextQuotedString() || sc.hasNext();
+!!!247682.java!!!	next() : String
+		if (hasNextQuotedString()) {
+			return nextQuotedString();
+		} else if (sc.hasNext()) {
+			return sc.next();
+		} else {
+			throw new NoSuchElementException();
+		}

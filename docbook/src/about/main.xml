@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<book
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../docbook-5.0/xsd/docbook.xsd "
+>
+	<title>BEEN</title>
+	<subtitle>About the Project</subtitle>
+	
+	<info>
+		<authorgroup>
+			<author>
+				<personname>
+					<firstname>Andrej</firstname>
+					<surname>Podzimek</surname>
+				</personname>
+			</author>
+			<author>
+				<personname>
+					<firstname>Jan</firstname>
+					<surname>Tattermusch</surname>
+				</personname>
+			</author>
+			<author>
+				<personname>
+					<firstname>Jiří</firstname>
+					<surname>Täuber</surname>
+				</personname>
+			</author>
+		</authorgroup>
+	</info>
+	
+	<xi:include href="output/main.xml"/>
+	<xi:include href="history/main.xml"/>
+	<xi:include href="../formal/glossary.xml"/>
+	
+	<bibliography>
+		<biblioentry xml:id="BUD0">
+			<title>BEEN User Documentation</title>
+			<authorgroup>
+				<author>
+					<personname>
+						<firstname>Jakub</firstname>
+						<surname>Lehotský</surname>
+					</personname>
+				</author>
+				<author>
+					<personname>
+						<firstname>David</firstname>
+						<surname>Majda</surname>
+					</personname>
+				</author>
+				<author>
+					<personname>
+						<firstname>Branislav</firstname>
+						<surname>Repček</surname>
+					</personname>
+				</author>
+				<author>
+					<personname>
+						<firstname>Michal</firstname>
+						<surname>Tomčányi</surname>
+					</personname>
+				</author>
+				<author>
+					<personname>
+						<firstname>Antonín</firstname>
+						<surname>Tomeček</surname>
+					</personname>
+				</author>
+				<author>
+					<personname>
+						<firstname>Jaroslav</firstname>
+						<surname>Urban</surname>
+					</personname>
+				</author>
+			</authorgroup>
+			<biblioid class="uri">http://aiya.ms.mff.cuni.cz/been/documentation/user-documentation.pdf</biblioid>
+		</biblioentry>
+	</bibliography>
+</book>

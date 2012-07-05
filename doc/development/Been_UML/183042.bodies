@@ -1,0 +1,200 @@
+class TaskImplementation
+!!!487170.java!!!	getTaskDescriptor() : TaskDescriptor
+		return taskDescriptor;
+!!!487298.java!!!	getHostRuntime() : HostRuntimeImplementation
+		return hostRuntime;
+!!!487426.java!!!	log(inout level : LogLevel, inout timestamp : Date, in message : String) : void
+		if (taskDescriptor.getTaskExclusive() == TaskExclusivity.NON_EXCLUSIVE) {
+			hostRuntime.getHostRuntimesPort().log(
+				taskDescriptor.getContextId(),
+				taskDescriptor.getTaskTid(),
+				level,
+				timestamp,
+				message
+			);
+		} else {
+			logs.add(new LogRecord(level, timestamp, message));
+		}
+!!!487554.java!!!	createAndBindTasksPort(in tasksPortUrl : String) : void
+		TasksPortImplementation tasksPort = new TasksPortImplementation(this);
+		try {
+			Naming.rebind(tasksPortUrl, tasksPort);
+		} catch (MalformedURLException e) {
+			throw new TaskException(e);
+		}
+!!!487682.java!!!	mkdirsIfNotExists(in dir : String) : void
+		File f = new File(dir);
+		if (!f.exists()) {
+			if (!f.mkdirs()) {
+				throw new IOException("Can not create directory \"" + dir + "\".");
+			}
+		}
+!!!487810.java!!!	createTaskDirectories(in rootDirectory : String) : void
+		String contextID = taskDescriptor.getContextId();
+		String taskID = taskDescriptor.getTaskTid();
+
+		baseDirectory = hostRuntime.getBaseDirectoryForTask(contextID, taskID);
+		taskDirectory = hostRuntime.getTaskDirectoryForTask(contextID, taskID);
+		workingDirectory = hostRuntime.getWorkingDirectoryForTask(contextID, taskID);
+		temporaryDirectory = hostRuntime.getTemporaryDirectoryForTask(contextID, taskID);
+		serviceDirectory = hostRuntime.getServiceDirectoryForTask(contextID, taskID);
+		
+		try {
+			mkdirsIfNotExists(baseDirectory);
+			mkdirsIfNotExists(taskDirectory);
+			mkdirsIfNotExists(workingDirectory);
+			mkdirsIfNotExists(temporaryDirectory);
+			mkdirsIfNotExists(serviceDirectory);
+		} catch (IOException e) {
+			throw new TaskException(e);
+		}
+!!!487938.java!!!	extractPackage() : void
+		try {
+			hostRuntime.getPackageCacheManager().extractPackage(
+				taskDescriptor.getPackageName(),
+				serviceDirectory
+			);
+		} catch (HostRuntimeException e) {
+			throw new TaskException(e);
+		} catch (IOException e) {
+			throw new TaskException(e);
+		}
+!!!488066.java!!!	moveAndChmodPackageFiles() : void
+		File[] files = new File(serviceDirectory + File.separator +  "files").listFiles();
+		for (File f: files) {
+			f.renameTo(new File(taskDirectory + File.separator + f.getName()));
+		}
+
+		try {
+			Chmod.recursiveDirectoryChmod(taskDirectory, "u+rwx");
+		} catch (AntTaskException e) {
+			throw new TaskException(e);
+		}
+!!!488194.java!!!	readConfiguration(in rootDirectory : String) : void
+		packageConfiguration = new PackageConfiguration(
+			serviceDirectory + File.separator + "config.xml",
+			rootDirectory + File.separator + "package-configuration.dtd"
+		);
+!!!488322.java!!!	buildCommandAndParams(in tasksPortUrl : String) : List<String>
+		List<String> result = new LinkedList<String>();
+		
+		/* "java" command. */
+		result.add("java");
+		
+		/* Java options. */
+		String[] javaOptions = taskDescriptor.getJavaOptions();
+		for (String javaOption: javaOptions) {
+			result.add(javaOption);
+		}
+		
+		/* Directories. */
+		result.add("-Dhostruntime.directory.task=" + taskDirectory);
+		result.add("-Dhostruntime.directory.working=" + workingDirectory);
+		result.add("-Dhostruntime.directory.temporary=" + temporaryDirectory);
+		
+		/* Task's port URL */
+		result.add("-Dhostruntime.tasksport.uri=" + tasksPortUrl);
+		
+		/* Java' class path. */
+		result.add("-cp");
+		result.add(
+			System.getProperty("java.class.path")
+			+ File.pathSeparatorChar + taskDirectory
+			+ File.pathSeparatorChar + packageConfiguration.getJavaClassPath()
+		);
+		
+		/* TaskLoader class. */
+		result.add(TaskLoader.class.getName());
+		/* Task to run. */
+		result.add(packageConfiguration.getJavaMainClass());
+		
+		/* Command-line parameters for the task. */
+		for (String argument: taskDescriptor.getTaskArguments()) {
+			result.add(argument);
+		}
+		
+		return result;
+!!!488450.java!!!	execute(inout commandAndParams : List<String>) : void
+				
+		executor = new TaskProcessExecutor(
+			baseDirectory + File.separator + STANDARD_OUTPUT_FILE,
+			baseDirectory + File.separator + ERROR_OUTPUT_FILE,
+			commandAndParams
+		);
+		executor.start();
+!!!488578.java!!!	TaskImplementation(inout taskDescriptor : TaskDescriptor, inout hostRuntime : HostRuntimeImplementation, inout measureDetailedLoad : boolean)
+		this.taskDescriptor = taskDescriptor;
+		this.hostRuntime = hostRuntime;
+		this.measureDetailedLoad = measureDetailedLoad;
+		
+		String tasksPortUrl = "rmi://localhost/been/hostruntime/tasksport/"
+			+ taskDescriptor.getTaskTid();
+		String rootDirectory = hostRuntime.getRootDirectory();
+
+		createTaskDirectories(rootDirectory);
+		extractPackage();
+		moveAndChmodPackageFiles();
+		readConfiguration(rootDirectory);
+		
+		/* Note: We need to bind before we execute, to avoid race condition
+		 * (executed task can try to communicate with not-yet-bound task's port).
+		 */
+		createAndBindTasksPort(tasksPortUrl);
+		execute(buildCommandAndParams(tasksPortUrl));
+!!!488706.java!!!	writeMessage(in message : String) : void
+		System.out.println("[" + taskDescriptor.getContextId() + ":"
+			+ taskDescriptor.getTaskTid() + "] " + message);
+!!!488834.java!!!	getTaskDirectory() : String
+		return taskDirectory;
+!!!488962.java!!!	getWorkingDirectory() : String
+		return workingDirectory;
+!!!489090.java!!!	getTemporaryDirectory() : String
+		return temporaryDirectory;
+!!!489218.java!!!	getTaskID() : String
+		return taskDescriptor.getTaskTid();
+!!!489346.java!!!	getContextID() : String
+		return taskDescriptor.getContextId();
+!!!489474.java!!!	isDetailedLoad() : boolean
+		return measureDetailedLoad;
+!!!489602.java!!!	deleteDirectoryRecursively(in dir : String) : void
+		File dirFile = new File(dir);
+		for (File file: dirFile.listFiles()) {
+			if (file.isDirectory()) {
+				deleteDirectoryRecursively(file.getPath());
+			} else {
+				if (!file.delete()) {
+					throw new IOException("Can not delete file \"" + file.getPath()
+						+ "\".");
+				}
+			}
+		}
+		if (!dirFile.delete()) {
+			throw new IOException("Can not delete directory \"" + dirFile.getPath()
+				+ "\".");
+		}
+!!!489730.java!!!	destroy() : void
+		if (isRunning()) {
+			throw new IllegalStateException("You must call this method only on non-running tasks.");
+		}
+		try {
+			deleteDirectoryRecursively(baseDirectory);
+		} catch (IOException e) {
+			throw new TaskException("Error destroing task: " + e.getMessage(), e);
+		}
+!!!489858.java!!!	kill() : void
+		executor.setProcessKilledFromOutside(true);
+		process.destroy();
+		writeMessage("Task killed from outside.");
+!!!489986.java!!!	isRunning() : boolean
+		return processTerminationWaiter.isAlive();
+!!!490114.java!!!	waitFor() : void
+		try {
+			process.waitFor();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+!!!490242.java!!!	getExitValue() : int
+		if (isRunning()) {
+			throw new IllegalStateException("You must call this method only on non-running tasks.");
+		}
+		return process.exitValue();

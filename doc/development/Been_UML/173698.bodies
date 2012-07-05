@@ -1,0 +1,17 @@
+class HostFilter
+!!!391938.java!!!	HostFilter(in minSize : long)
+
+		this.minSize = minSize;
+!!!392066.java!!!	match(inout hi : HostInfoInterface) : boolean
+
+		long totalSize = 0;
+
+		// Scan all drives
+		for (int i = 0; i < hi.getDriveCount(); ++i) {
+
+			DiskDrive drive = hi.getDiskDrive(i);
+
+			totalSize += drive.getSize();
+		}
+
+		return (totalSize >= minSize);

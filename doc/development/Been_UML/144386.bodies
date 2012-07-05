@@ -1,0 +1,101 @@
+class SimpleTestGenerator
+!!!209026.java!!!	registerResults(inout roles : StandardRole) : void
+		// no results will be uploaded by this generator
+!!!209154.java!!!	generate() : void
+		setActiveRole(TEST_ROLE);
+		
+		if (getExperiment().getProperty(EXCLUSIVITY).
+				equals(Exclusivity.NONE.toString())) {
+			exclusivity = Exclusivity.NONE;
+		}
+		if (getExperiment().getProperty(EXCLUSIVITY).
+				equals(Exclusivity.CONTEXT_EXCLUSIVE.toString())) {
+			exclusivity = Exclusivity.CONTEXT_EXCLUSIVE;
+		}
+		if (getExperiment().getProperty(EXCLUSIVITY).
+				equals(Exclusivity.EXCLUSIVE.toString())) {
+			exclusivity = Exclusivity.EXCLUSIVE;
+		}
+		
+		for (int i = 0; i < getExperiment().getRole(TEST_ROLE).getCount(); i++) {
+			TaskDescriptor task1 = createTaskDescriptor("testworker", i);
+			task1.addTaskProperties("do.property.value", "true");
+			task1.addTaskProperties("property.name", "test.property");
+			task1.addTaskPropertyObject("test.property", new String[] {"Hello", "World"});
+			task1.addTaskProperties("do.checkpoint.set", "true");
+			task1.addTaskProperties("checkpoint.name", "data");
+			//setExclusivity(task1);
+			addTask(task1);
+
+			TaskDescriptor taskSleeper = createTaskDescriptor("testworker", i);
+			taskSleeper.addTaskProperties("do.wait", "true");
+			taskSleeper.addTaskProperties("wait.time", getExperiment().getProperty(WAIT_TIME));
+			taskSleeper.addTaskProperties("do.checkpoint.value", "true");
+			taskSleeper.addTaskProperties("checkpoint.name", "data");
+			taskSleeper.addTaskProperties("checkpoint.task", task1.getTaskTid());
+			taskSleeper.addDependencyCheckPoint(
+					success(task1.getTaskTid()));
+			setExclusivity(taskSleeper);
+			addTask(taskSleeper);
+
+			TaskDescriptor task3 = createTaskDescriptor("testworker", i);
+			task3.addTaskProperties("do.checkpoint.set", "true");
+			task3.addTaskProperties("checkpoint.name", "go");
+			task3.addDependencyCheckPoint(
+					success(taskSleeper.getTaskTid()));
+			//setExclusivity(task3);
+			addTask(task3);
+
+			TaskDescriptor taskWaiter = createTaskDescriptor("testworker", i);
+			taskWaiter.addTaskProperties("do.checkpoint.block", "true");
+			taskWaiter.addTaskProperties("checkpoint.name", "go");
+			taskWaiter.addTaskProperties("checkpoint.task", task3.getTaskTid());
+			//setExclusivity(taskWaiter);
+			addTask(taskWaiter);
+			
+			TaskDescriptor previousbinary = null;
+			for (int j = 0; j < getExperiment().getBinaryCount(); j++) {
+				createNewBinary();
+				TaskDescriptor taskForBinary = createTaskDescriptor("testworker", i);
+				taskForBinary.addTaskProperties("do.wait", "true");
+				taskForBinary.addTaskProperties("wait.time", 
+						getExperiment().getProperty(WAIT_TIME));
+				if (j == 0) {
+					taskForBinary.addDependencyCheckPoint(
+							success(taskWaiter.getTaskTid()));
+				} else {
+					taskForBinary.addDependencyCheckPoint(
+							success(previousbinary.getTaskTid()));
+				}
+				addTask(taskForBinary);
+				previousbinary = taskForBinary; // must do this when run count is 0
+
+				TaskDescriptor previousRun = null;
+				for (int k = 0; k < getExperiment().getRunCount(); k++) {
+					createNewRun();
+					TaskDescriptor taskForRun = createTaskDescriptor("testworker", i);
+					taskForRun.addTaskProperties("do.wait", "true");
+					taskForRun.addTaskProperties("wait.time", 
+							getExperiment().getProperty(WAIT_TIME));
+					if (k == 0) {
+						taskForRun.addDependencyCheckPoint(
+								success(taskForBinary.getTaskTid()));
+					} else {
+						taskForRun.addDependencyCheckPoint(
+								finish(previousRun.getTaskTid()));
+					}
+					setExclusivity(taskForRun);
+					addTask(taskForRun);
+					previousRun = taskForRun;
+					closeRun();
+				}
+				previousbinary = previousRun;
+				closeBinary();
+			}
+		}
+!!!209282.java!!!	setExclusivity(inout task : TaskDescriptor) : void
+		if (exclusivity == Exclusivity.CONTEXT_EXCLUSIVE) {
+			task.setTaskExclusive(TaskExclusivity.CONTEXT_EXCLUSIVE);
+		} else if (exclusivity == Exclusivity.EXCLUSIVE) {
+			task.setTaskExclusive(TaskExclusivity.EXCLUSIVE);
+		} 

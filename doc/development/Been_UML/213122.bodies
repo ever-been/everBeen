@@ -1,0 +1,9 @@
+class MenuItem
+!!!775682.java!!!	MenuItem(in id : String, in name : String)
+		super();
+		this.id = id;
+		this.name = name;
+!!!775810.java!!!	getId() : String
+		return id;
+!!!775938.java!!!	getName() : String
+		return name;

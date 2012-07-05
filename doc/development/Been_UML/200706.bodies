@@ -1,0 +1,21 @@
+class JythonScript
+!!!639234.java!!!	JythonScript()
+		super();
+!!!639362.java!!!	checkRequiredProperties() : void
+            
+            
+!!!639490.java!!!	run() : void
+                String scriptFilename;
+                
+                scriptFilename = this.getTaskProperty(SCRIPT_FILENAME, DEFAULT_SCRIPT_FILENAME );
+		logInfo("Executing Jython script \"" + scriptFilename +"\".");
+                
+                PythonInterpreter interpreter = new PythonInterpreter();
+                
+                /* create python task context */
+                PythonTaskContext ctx = new PythonTaskContext(this);
+                
+                interpreter.set(PYTHON_TASK_CONTEXT_NAME, ctx );
+                interpreter.execfile(scriptFilename);    
+                
+		

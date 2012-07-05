@@ -1,0 +1,22 @@
+class NativeCVSDownload
+!!!632066.java!!!	NativeCVSDownload()
+		super();
+!!!632194.java!!!	download() : void
+		Cvs.checkout(getTaskProperty(CVS_REPOSITORY),
+				getTaskProperty(CVS_PASSWORD),
+				null,
+				getTaskProperty(CVS_MODULE),
+				getTaskProperty(CVS_REVISION),
+				getTaskProperty(CVS_DATE),
+				getWorkingDirectory());
+!!!632322.java!!!	run() : void
+		
+		try {
+			download();
+		} catch (AntTaskException e) {
+			e.printStackTrace();
+			logFatal("Checkout command aborted: " + e.getMessage());
+			throw new TaskException("Checkout command aborted",e);
+		}
+!!!632450.java!!!	checkRequiredProperties() : void
+		checkRequiredProperties(new String[]{CVS_MODULE,CVS_REPOSITORY});

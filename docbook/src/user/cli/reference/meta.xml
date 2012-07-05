@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sect2
+	xml:id="been.user.cli.reference.meta"
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>Meta Module</title>
+	<subtitle>Command Line Interface Internals</subtitle>
+	
+	<para>The Meta Module sets runtime parameters of the Command Line Interface and retrieves
+	statistics and metadata.</para>
+
+	<para>Module identifier: <command>meta</command></para>
+	
+	<table xml:id="been.user.cli.reference.meta.table" tocentry="1" frame="none">
+		<title>Actions of the MetaModule</title>
+
+		<tgroup cols="3" align="left" colsep="0" rowsep="0">
+			<colspec colnum="1" colname="action" colwidth="3*"/>
+			<colspec colnum="2" colname="option" colwidth="3*"/>
+			<colspec colnum="3" colname="desc" colwidth="9*"/>
+			
+			<tbody valign="top">
+			
+				<!-- counter -->
+				<row>
+					<entry morerows="1">
+						<command>counter</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Outputs the connections counter.
+					</entry>
+				</row>
+				<row>
+					<entry><emphasis role="strong"><option>STDOUT</option></emphasis></entry>
+					<entry>
+						<code>[counter]</code>
+					</entry>
+				</row>
+				
+				<!-- flush -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="2">
+						<command>flush</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Flushes a pool of service module instances.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>pool</option></emphasis><footnote
+							xml:id="been.user.cli.reference.meta.allpool">
+							<para>Either the <option>pool</option> parameter must be present, or
+							the <option>all</option> flag must be set.</para>
+						</footnote>
+					</entry>
+					<entry>
+						Name of the module instance pool to flush (identical to module name).
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<option>all</option><footnoteref
+						linkend="been.user.cli.reference.meta.allpool"/>
+					</entry>
+					<entry>
+						Flush all module instance pools.
+					</entry>
+				</row>
+				
+				<!-- output -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="3">
+						<command>output</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Switches between standard and verbose error output.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<option>normal</option><footnote
+							xml:id="been.user.cli.reference.meta.normaldebug">
+							<para><option>normal</option> and <option>debug</option> flags are
+							mutually exclusive. When none of them is present,
+							<option>normal</option> will be assumed.</para>
+						</footnote>
+					</entry>
+					<entry>
+						Switch to standard output (exception messages only).
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<option>debug</option><footnoteref
+						linkend="been.user.cli.reference.meta.normaldebug"/>
+					</entry>
+					<entry>
+						Switch to verbose debugging output (exception messages and backtraces).
+					</entry>
+				</row>
+				<row>
+					<entry><emphasis role="strong"><option>STDOUT</option></emphasis></entry>
+					<entry>
+						<code>[confirmation]</code>
+					</entry>
+				</row>
+				
+				<row><entry namest="action" nameend="desc"/></row>
+			</tbody>
+		</tgroup>
+	</table>
+
+	<xi:include href="../examples/meta.xml"/>
+</sect2>

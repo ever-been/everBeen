@@ -1,0 +1,42 @@
+class WatchDog
+!!!301442.java!!!	run() : void
+			
+			long currentDateTime = new Date().getTime();
+			
+			synchronized (hostsPending) {
+				// check every item in list of pending hosts
+				for (Iterator< Map.Entry< String, PendingHostInfo > > it = 
+						hostsPending.entrySet().iterator();
+				     it.hasNext(); ) {
+					
+					Map.Entry< String, PendingHostInfo > currentEntry = it.next();
+					
+					long hostsDateTime = currentEntry.getValue().getDate().getTime();
+					
+					// test if host is too old
+					if (currentDateTime - hostsDateTime > hostDetectionTimeout) {
+						String hostName = currentEntry.getValue().getHostName();
+						
+						task.logError("No data received for host \"" + hostName + "\" (timed out).");
+	
+						// add status message
+						String message = "No data received for host (timed out).";
+						
+						operationCache.put(currentEntry.getValue().getHandle(), 
+								buildFailedStatus(message, hostName));
+						
+						HostManagerEvent.EventType et = HostManagerEvent.EventType.HOST_REFRESH;
+						
+						if (!currentEntry.getValue().isRefresh()) {
+							et = HostManagerEvent.EventType.HOST_ADD;
+						}
+						
+						postEvent(new HostManagerEvent(et,
+						                               HostManagerEvent.Status.FAILED,
+						                               hostName,
+						                               message));
+						
+						it.remove();
+					}
+				}
+			}

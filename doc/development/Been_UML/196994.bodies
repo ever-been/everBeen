@@ -1,0 +1,44 @@
+class StringAttributeHelper
+!!!623874.java!!!	StringAttributeHelper()
+		super();
+!!!624002.java!!!	validateInXML(inout element : Element) : String
+		/* OK, I admit this is just an ugly hack. If we seem to test the package name,
+		 * we match it against the constraining regular expression, otherwise
+		 * we consider the element allways valid (if extractTextValueFromElement
+		 * doesn't return null).
+		 * 
+		 * Clean solution would require defining a new metadata attribute type
+		 * for package name (new class instead of String) with its helper
+		 * (inherited from AttributeHelper), but that would add too much trouble 
+		 * in other parts of the application.
+		 * 
+		 * I couldn't express enough how I hate the String class being final,
+		 * because it it wasn't, the clean solution would be as easy as subclassing it.     
+		 */
+		String value = extractTextValueFromElement(element);
+		if (value != null) {
+			if (element.getNodeName().equals("name")) {
+				return value.matches("^[a-z0-9]+(-[a-z0-9]+)*$")
+					? null	
+					: "Invalid value of element <" + element.getNodeName() + ">.";
+			} else {
+				return null;
+			}
+		} else {
+			return "Invalid value of element <" + element.getNodeName() + ">.";
+		}
+!!!624130.java!!!	readValueFromElement(inout element : Element) : String
+		return extractTextValueFromElement(element);
+!!!624258.java!!!	writeValueToElement(inout document : Document, in tagName : String, in value : String) : Element
+		if (value != null) {
+			Element result = document.createElement(tagName);
+			result.appendChild(document.createTextNode(value));
+			return result;
+		} else {
+			return null;
+		}
+!!!624386.java!!!	getInstance() : StringAttributeHelper
+		if (instance == null) {
+			 instance = new StringAttributeHelper();
+		}
+		return instance;

@@ -1,0 +1,9 @@
+class ConfiguratorException
+!!!218498.java!!!	ConfiguratorException()
+		super();
+!!!218626.java!!!	ConfiguratorException(in message : String)
+		super(message);
+!!!218754.java!!!	ConfiguratorException(inout cause : Throwable)
+		super(cause);
+!!!218882.java!!!	ConfiguratorException(in message : String, inout cause : Throwable)
+		super(message, cause);

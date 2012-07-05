@@ -1,0 +1,32 @@
+class FileOutputHandle
+!!!501762.java!!!	FileOutputHandle(in file : String)
+			super();
+
+			this.file = file;
+			reader = new BufferedReader(new FileReader(file));
+!!!501890.java!!!	getNextLines(in count : int) : String
+			String output = null;
+			for (int i = 0; i < count; i++) {
+				String newline = reader.readLine();
+				if (newline != null) {
+					if (output == null) {
+						output = new String();
+					}
+					output += newline;
+					output += "\n";
+				} else {
+					break;
+				}
+			}
+			return output;
+!!!502018.java!!!	skipLines(in count : long) : void
+			for (int i = 0; i < count; i++) {
+				reader.readLine();
+			}
+!!!502146.java!!!	getLineCount() : long
+			long count = 0; 
+			BufferedReader r = new BufferedReader(new FileReader(file));
+			while (r.readLine() != null) {
+				count++;
+			}
+			return count;

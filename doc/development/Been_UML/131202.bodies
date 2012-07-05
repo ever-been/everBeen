@@ -1,0 +1,11 @@
+class AnalysisEntity
+!!!139778.java!!!	AnalysisEntity(inout analysis : AnalysisMetadata)
+		super(analysis.getID(),analysis.getName(),analysis.getDescription(),null);
+		this.status = analysis.getStatus();
+		this.isRegression = analysis.isRegression();
+!!!139906.java!!!	getPlugin() : String
+		throw new UnsupportedOperationException("Plugin is not available on analysis level");
+!!!140034.java!!!	isRegression() : boolean
+		return isRegression;
+!!!140162.java!!!	getStatus() : EntityStatus
+		return status;

@@ -1,0 +1,20 @@
+class LogLevels
+!!!301570.java!!!	fromTaskLogLevel(inout level : LogLevel) : LogLevels
+			
+			if (level == cz.cuni.mff.been.logging.LogLevel.INFO) {
+				return INFO;
+			} else if (level == cz.cuni.mff.been.logging.LogLevel.WARN) {
+				return WARNING;
+			} else if (level == cz.cuni.mff.been.logging.LogLevel.DEBUG) {
+				return DEBUG;
+			} else if (level == cz.cuni.mff.been.logging.LogLevel.ERROR) {
+				return ERROR;
+			} else if (level == cz.cuni.mff.been.logging.LogLevel.FATAL) {
+				return FATAL;
+			} else if (level == cz.cuni.mff.been.logging.LogLevel.TRACE) {
+				return TRACE;
+			} else if (level == cz.cuni.mff.been.logging.LogLevel.ALL) {
+				return ALL;
+			} else {
+				return INFO;
+			}

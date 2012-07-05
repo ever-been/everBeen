@@ -1,0 +1,151 @@
+<!--
+
+  BEEN: Benchmarking Environment
+  ==============================
+
+  File author: Antonin Tomecek
+
+  GNU Lesser General Public License Version 2.1
+  - - - - - - - - - - - - - - - - - - - - - - -
+  Copyright (C) 2004-2006 Distributed Systems Research Group,
+  Faculty of Mathematics and Physics, Charles University in Prague
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License version 2.1, as published by the Free Software Foundation.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+  MA  02111-1307  USA
+
+-->
+
+<!-- ELEMENT taskDescriptor : description of task -->
+<!ELEMENT taskDescriptor (arguments?, java?, taskProperties?,
+	package, hostRuntimes, dependencies?, failurePolicy?, loadMonitoring)>
+<!-- ATTLIST taskDescriptor :
+	taskId ... ID of task
+	contextId ... ID of context
+	name ... human readable name of task
+	description ... human readable description of task
+	exclusive ... determines if this task can share HostRuntime with other
+		tasks, or only with tasks from the same context, or with no tasks.
+-->
+<!ATTLIST taskDescriptor
+	taskId CDATA #REQUIRED
+	contextId CDATA #REQUIRED
+	treeAddress CDATA #REQUIRED
+	name CDATA #IMPLIED
+	description CDATA #IMPLIED
+	exclusive (non-exclusive|context-exclusive|exclusive) "non-exclusive"
+>
+
+<!-- ELEMENT arguments : corresponds to arguments attribute of task tag - has
+	no attributes -->
+<!ELEMENT arguments (argument+)>
+
+<!-- ELEMENT argument : represents a single command-line argument of task (will
+	by used in the same order as they are specified) - can contain a space
+	characters -->
+<!ELEMENT argument (#PCDATA)>
+
+<!-- ELEMENT java : setting of JVM for running task -->
+<!ELEMENT java (javaOptions?)>
+<!-- ATTLIST java :
+	options ... command-line options for JVM (others than -D)
+-->
+<!ATTLIST java
+	options CDATA #IMPLIED
+>
+
+<!-- ELEMENT javaOptions : command-line options for java program -->
+<!ELEMENT javaOptions (javaOption+)>
+
+<!-- ELEMENT javaOption : represents one command-line option for java
+	program -->
+<!ELEMENT javaOption (#PCDATA)>
+
+<!-- ELEMENT taskProperties : list of properties for task -->
+<!ELEMENT taskProperties (taskProperty+)>
+
+<!-- ELEMENT taskProperty : one task property -->
+<!ELEMENT taskProperty EMPTY>
+<!-- ATTLIST taskProperty :
+	key ... name of task property
+	value ... value of task property
+-->
+<!ATTLIST taskProperty
+	key CDATA #REQUIRED
+	value CDATA #REQUIRED
+>
+
+<!-- ELEMENT package : description of package to use -->
+<!ELEMENT package (name|rsl|(name, rsl))>
+
+<!-- ELEMENT hostRuntimes : informations about posible (and equivalent) Host
+	Runtimes where this task should run -->
+<!ELEMENT hostRuntimes
+	(name+|rsl|(name+, rsl))>
+<!-- ATTLIST hostRuntimes :
+	asTask ... ID of task determining hostRuntime
+-->
+<!ATTLIST hostRuntimes
+	asTask CDATA #IMPLIED
+>
+
+<!-- ELEMENT name : used in "package" and "hostRuntimes" elements for
+	specification based on Name -->
+<!ELEMENT name (#PCDATA)>
+
+<!-- ELEMENT rsl : used in "package" and "hostRuntimes" elements for
+	specification based on RSL -->
+<!ELEMENT rsl (#PCDATA)>
+
+<!-- ELEMENT dependencies : description of the dependencies for starting or
+	stoping of this task - has no attributes -->
+<!ELEMENT dependencies (dependencyCheckPoint*)>
+
+<!-- ELEMENT dependencyCheckPoint : description of one dependency based on
+	check point reached in other task -->
+<!ELEMENT dependencyCheckPoint EMPTY>
+<!-- ATTLIST dependencyCheckPoint :
+	tid ... ID of prerequisitie task
+	type ... type of reached check point in prerequisite task
+	value ... value of reached check point in prerequisite task
+-->
+<!ATTLIST dependencyCheckPoint
+	tid CDATA #REQUIRED
+	type CDATA #REQUIRED
+	value CDATA #REQUIRED
+>
+
+<!-- ELEMENT failurePolicy : description of behavior when failure occurred -->
+<!ELEMENT failurePolicy EMPTY>
+<!-- ATTLIST failurePolicy :
+	restartMax ... how many restarts for this task are allowed
+	timeoutRun ... how long (in milliseconds) this task can run (from started to
+		finished state) - zero if not restricted
+-->
+<!ATTLIST failurePolicy
+	restartMax CDATA #REQUIRED
+	timeoutRun CDATA #REQUIRED
+>
+
+<!-- ELEMENT loadMonitoring : settings of load monitoring -->
+<!ELEMENT loadMonitoring EMPTY>
+<!-- ATTLIST loadMonitoring :
+	detailedLoad ... flag indicating if the task want to enable detailed load
+		monitoring
+	detailedLoadInterval ... how often do detailed load monitoring (in
+		milliseconds)
+-->
+<!ATTLIST loadMonitoring
+	detailedLoad (no|yes) "no"
+	detailedLoadInterval CDATA #IMPLIED
+>

@@ -1,0 +1,252 @@
+class RScriptsRunner
+!!!583810.java!!!	getInstance() : RScriptsRunner
+		if (rsRInstance == null) {
+			rsRInstance = new RScriptsRunner();
+		}
+		return rsRInstance;
+!!!583938.java!!!	initialize() : void
+		eventQueue = new LinkedList<RREvent>();
+!!!584066.java!!!	setRunBackroundThread(inout runBackground : boolean) : void
+	    this.runBackground = runBackground;
+!!!584194.java!!!	getRunBackroundThread() : boolean
+	    return runBackground;
+!!!584322.java!!!	startBackgroundThread() : boolean
+	    if (runBackground) {
+	    	return false; // background thread already running
+	    }
+	    scriptsSemaphore = new Semaphore(0, true);
+	    RBackgroundThread rBackgroundThread = new RBackgroundThread();
+	    setRunBackroundThread(true);	    
+	    rBackgroundThread.start();	
+	    
+	    return true;
+!!!584450.java!!!	stopBackgroundThread() : void
+	    if (!runBackground) {
+	    	Logger.logWarning("Tried to stop R background thread but thread not running.");
+	    }
+	  
+	    Logger.logDebug("Background thread == null : " + (rBackgroundThread == null));
+	    
+	    setRunBackroundThread(false);	    
+!!!584578.java!!!	enqueueScriptExecution(inout aid : AID, inout eid : EID, in functionToRun : String) : void
+		synchronized (eventQueue) {
+			eventQueue.add(new RREvent(aid, eid, null, null, true, functionToRun, null, null));
+		}
+		Logger.logTrace("Calling semaphore release.");		
+		scriptsSemaphore.release();
+!!!584706.java!!!	enqueueScriptExecution(inout aid : AID, inout eid : EID, inout bid : BID, in functionToRun : String) : void
+		synchronized (eventQueue) {
+			eventQueue.add(new RREvent(aid, eid, bid, null, true, functionToRun, null, null));
+		}
+		Logger.logTrace("Calling semaphore release.");		
+		scriptsSemaphore.release();
+!!!584834.java!!!	enqueueScriptExecution(inout aid : AID, inout eid : EID, inout bid : BID, inout rid : RID, in functionToRun : String) : void
+		synchronized (eventQueue) {
+	    	eventQueue.add(new RREvent(aid, eid, bid, rid, true, functionToRun, null, null));
+		}
+		Logger.logTrace("Calling semaphore release.");		
+		scriptsSemaphore.release();	
+!!!584962.java!!!	enqueueCallbackExecution(inout aid : AID, inout eid : EID, inout bid : BID, inout rid : RID, inout callback : FileUploadCallbackInterface, inout callbackData : Object) : void
+		synchronized (eventQueue) {
+	    	eventQueue.add(new RREvent(aid, eid, bid, rid, false, null, callback, callbackData));
+		}
+		Logger.logTrace("Calling semaphore release.");		
+		scriptsSemaphore.release();	
+!!!585090.java!!!	getNextEventFromQueue() : RREvent
+		synchronized (eventQueue) {			
+			actualEvent = eventQueue.poll();			
+			return actualEvent;
+		}
+!!!585218.java!!!	clearActualEventRecord() : void
+		synchronized (eventQueue) {
+			actualEvent = null;
+		}
+!!!585346.java!!!	getEventCount() : int
+		synchronized (eventQueue) {
+			return eventQueue.size();
+		}
+!!!585474.java!!!	testRunInQueue(inout aid : AID, inout eid : EID, inout bid : BID, inout rid : RID, inout rrEvent : RREvent) : boolean
+		
+		boolean result = true;
+		
+		/* Test for script execution events */
+		if (rrEvent.getIsScript()) {
+			
+			if (rrEvent.getRid() == null && rrEvent.getBid() == null 
+					&& rrEvent.getEid() != null && rrEvent.getEid().equals(eid)
+					&& rrEvent.getAid() != null && rrEvent.getAid().equals(aid)) {
+				
+				/* There is script registered for containing experiment */
+				result = false;
+			}
+			
+			if (rrEvent.getRid() == null 
+					&& rrEvent.getBid() != null && rrEvent.getBid().equals(bid)
+					&& rrEvent.getEid() != null && rrEvent.getEid().equals(eid)
+					&& rrEvent.getAid() != null && rrEvent.getAid().equals(aid)) {
+				
+				/* There is script registered for containing binary */
+				result = false;
+				
+			}
+			
+			if (rrEvent.getRid() != null && rrEvent.getRid().equals(rid)
+					&& rrEvent.getBid() != null && rrEvent.getBid().equals(bid)
+					&& rrEvent.getEid() != null && rrEvent.getEid().equals(eid)
+					&& rrEvent.getAid() != null && rrEvent.getAid().equals(aid)) {
+				
+				/* There is script registered for a given run */
+				result = false;
+				
+			}	
+			
+		} else {
+			
+			/* Test for callback execution events */
+			if (aid.equals(rrEvent.getAid()) ||
+					eid.equals(rrEvent.getEid()) ||
+					bid.equals(rrEvent.getBid()) ||
+					rid.equals(rrEvent.getRid())) {
+				
+				/* There is callback registered for a given run */
+				result = false;
+			}
+		}
+		
+		return result;
+!!!585602.java!!!	isDeleteRunAllowed(inout aid : AID, inout eid : EID, inout bid : BID, inout rid : RID) : boolean
+		synchronized (eventQueue) {
+			
+			boolean result = true;
+			
+			/* Test each event in the current queue */
+			for (RREvent rrEvent : eventQueue) {
+				result = result && testRunInQueue(aid, eid, bid, rid, rrEvent);
+			}
+			
+			if (actualEvent != null) {
+				result = result && testRunInQueue(aid, eid, bid, rid, actualEvent);
+			}
+			
+			return result;
+		}
+!!!585730.java!!!	testBinaryInQueue(inout aid : AID, inout eid : EID, inout bid : BID, inout rrEvent : RREvent) : boolean
+		
+		boolean result = true;
+		
+		/* Test for script execution events */
+		if (rrEvent.getIsScript()) {
+			
+			if (rrEvent.getRid() == null && rrEvent.getBid() == null 
+					&& rrEvent.getEid() != null && rrEvent.getEid().equals(eid)
+					&& rrEvent.getAid() != null && rrEvent.getAid().equals(aid)) {
+				
+				/* There is script registered for containing experiment */
+				result = false;
+			}
+			
+			if (rrEvent.getBid() != null && rrEvent.getBid().equals(bid)
+					&& rrEvent.getEid() != null && rrEvent.getEid().equals(eid)
+					&& rrEvent.getAid() != null && rrEvent.getAid().equals(aid)) {
+				
+				/* There is script registered for a given binary or child run*/
+				result = false;
+			}
+			
+		} else {
+			
+			/* Test for callback execution events */
+			if (aid.equals(rrEvent.getAid()) ||
+					eid.equals(rrEvent.getEid()) ||
+					bid.equals(rrEvent.getBid())) {
+				
+				/* There is callback registered for any run from this binary */
+				result = false;
+			}
+		}
+		
+		return result;
+!!!585858.java!!!	isDeleteBinaryAllowed(inout aid : AID, inout eid : EID, inout bid : BID) : boolean
+		synchronized (eventQueue) {
+			
+			boolean result = true;
+						
+			/* Test each event in the current queue */
+			for (RREvent rrEvent : eventQueue) {
+				result = result && testBinaryInQueue(aid, eid, bid, rrEvent);				
+			}
+			
+			if (actualEvent != null) {
+				result = result && testBinaryInQueue(aid, eid, bid, actualEvent);
+			}
+			
+			return result;
+		}
+!!!585986.java!!!	testExperimentInQueue(inout aid : AID, inout eid : EID, inout rrEvent : RREvent) : boolean
+		
+		boolean result = true;
+		
+		/* Test for script execution events */
+		if (rrEvent.getIsScript()) {
+			
+			if (rrEvent.getEid() != null && rrEvent.getEid().equals(eid)
+					&& rrEvent.getAid() != null && rrEvent.getAid().equals(aid)) {
+				
+				/* There is script registered for a given experiemnt, 
+				 * child binary or child run*/
+				result = false;
+			}
+			
+		} else {
+			
+			/* Test for callback execution events */
+			if (aid.equals(rrEvent.getAid()) ||
+					eid.equals(rrEvent.getEid()))  {
+				
+				/* There is callback registered for any run from this experiment */
+				result = false;
+			}
+		}
+		
+		return result;
+!!!586114.java!!!	isDeleteExperimentAllowed(inout aid : AID, inout eid : EID) : boolean
+		synchronized (eventQueue) {
+			
+			boolean result = true;
+			
+			/* Test each event in the current queue */
+			for (RREvent rrEvent : eventQueue) {
+				result = result && testExperimentInQueue(aid, eid, rrEvent);
+			}
+			
+			if (actualEvent != null)
+				result = result && testExperimentInQueue(aid, eid, actualEvent);
+			
+			return result;
+		}
+!!!586242.java!!!	testAnalysisInQueue(inout aid : AID, inout rrEvent : RREvent) : boolean
+	
+		if (rrEvent.getAid() != null && rrEvent.getAid().equals(aid)) {
+			
+			/* There is a script or callback registered for entity 
+			 * in a given analysis */
+			return false;
+		} else {
+			return true;
+		}
+!!!586370.java!!!	isDeleteAnalysisAllowed(inout aid : AID) : boolean
+		synchronized (eventQueue) {
+			
+			boolean result = true;
+			
+			/* Test each event in the current queue */
+			for (RREvent rrEvent : eventQueue) {
+				result = result && testAnalysisInQueue(aid, rrEvent);												
+			}
+			
+			if (actualEvent != null) {
+				result = result && testAnalysisInQueue(aid, actualEvent);
+			}
+			
+			return result;
+		}

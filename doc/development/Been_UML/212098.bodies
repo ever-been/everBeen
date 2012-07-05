@@ -1,0 +1,29 @@
+class ScreenHandler
+!!!761090.java!!!	ScreenHandler(inout aRequest : HttpServletRequest)
+		this.request = aRequest;
+		
+		itemHandlers = new HashMap<Class, ItemHandler>();
+		itemHandlers.put(StaticText.class, staticTextHandler); 		
+		itemHandlers.put(Input.class, inputHandler);
+		itemHandlers.put(RSLInput.class, rslInputHandler);
+		itemHandlers.put(Select.class, selectHandler);
+		itemHandlers.put(MultiSelect.class, mulitSelectHandler);
+		itemHandlers.put(RadiosWithSections.class, radiosWithSectionsHandler);
+!!!761218.java!!!	ensure(inout screen : Screen) : void
+		for (Section section: screen.getSections()) {
+			for (Item item: section.getItems()) {
+				itemHandlers.get(item.getClass()).ensure(item);
+			}
+		}
+!!!761346.java!!!	check(inout screen : Screen) : void
+		for (Section section: screen.getSections()) {
+			for (Item item: section.getItems()) {
+				itemHandlers.get(item.getClass()).check(item);
+			}
+		}
+!!!761474.java!!!	updateItems(inout screen : Screen) : void
+		for (Section section: screen.getSections()) {
+			for (Item item: section.getItems()) {
+				itemHandlers.get(item.getClass()).updateItem(item);
+			}
+		}

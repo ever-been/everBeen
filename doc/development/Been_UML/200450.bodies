@@ -1,0 +1,151 @@
+class JonasRun
+!!!638466.java!!!	JonasRun()
+		super();
+!!!638594.java!!!	run() : void
+		jonasDir = getTaskProperty(JONAS_DIR);
+		logInfo("Jonas directory: " + jonasDir);
+		
+		tomcatDir = getTaskProperty(TOMCAT_DIR);
+		logInfo("Tomcat directory: " + tomcatDir);
+
+		/*
+		 * Run Jonas
+		 */
+
+		String fSep = File.separator;
+		Process jonasProcess = null;
+		String[] cmdArray = null;
+		if (isRunningInLinux()) {
+			String[] cmd = {jonasDir + fSep + "bin" + fSep + "unix" + fSep + "jonas",
+					"start",
+					"-fg",
+					"-Dcatalina.home=" + tomcatDir
+			};
+			cmdArray = cmd;
+		}
+
+		if (isRunningInWindows()) {
+			String[] cmd = {"cmd",
+					"/C",
+					"call",
+					jonasDir + fSep + "bin" + fSep + "nt" + fSep + "jonas.bat",
+					"start",
+					"-fg",
+					"-Dcatalina.home=" + tomcatDir
+			};
+			cmdArray = cmd;
+		}
+		
+		try {
+			logInfo("Starting Jonas");
+			logDebug("Executing: " + ArrayUtils.join(" ", cmdArray));
+
+			ProcessBuilder builder = new ProcessBuilder(cmdArray);
+			Map<String, String> env = builder.environment();
+			if (env.containsKey(JONAS_HOME_VARIABLE)) {
+				logDebug("Environment variable " + JONAS_HOME_VARIABLE + " was set." +
+				" It's removed from the new process.");
+				env.remove(JONAS_HOME_VARIABLE);
+			}
+			if (env.containsKey(CATALINA_HOME_VARIABLE)) {
+				logDebug("Environment variable " + CATALINA_HOME_VARIABLE + " was set." +
+				" It's removed from the new process.");
+				env.remove(CATALINA_HOME_VARIABLE);
+			}
+			builder.directory(new File(jonasDir));
+			jonasProcess = builder.start();
+			jonasProcess.getOutputStream().close();
+
+			/* Read in the output from the subprocess */
+			OutputReader stdoutReader = 
+				new OutputReader(jonasProcess.getInputStream(), OutputType.STDOUT);
+			OutputReader stderrReader = 
+				new OutputReader(jonasProcess.getErrorStream(), OutputType.STDERR);
+			stdoutReader.start();
+			stderrReader.start();
+
+		} catch (Exception e) {
+			throw new TaskException("Cannot run Jonas", e);
+		}
+		
+		/*
+		 * Periodically check if Jonas has started
+		 */ 
+
+		// process of the jonas admin tool
+		Process adminProcess = null;
+		String[] adminCmdArray = null;
+		if (isRunningInLinux()) {
+			String[] cmd = {jonasDir + fSep + "bin" + fSep + "unix" + fSep + "jonas",
+					"admin",
+					"-l",
+			};
+			adminCmdArray = cmd;
+		}
+
+		if (isRunningInWindows()) {
+			String[] cmd = {"cmd",
+					"/C",
+					"call",
+					jonasDir + fSep + "bin" + fSep + "nt" + fSep + "jonas.bat",
+					"admin",
+					"-l",
+			};
+			adminCmdArray = cmd;
+		}
+
+		boolean jonasStarted = false;
+		// keep checking if Jonas started for 5 minutes
+		for (int i = 0; i < 15; i++) {
+			logInfo("Checking if Jonas has started");
+			logDebug("Executing: " + ArrayUtils.join(" ", adminCmdArray));
+			// launch the Jonas admin tool a ask it to list deployed beans,
+			// it will write an error message if Jonas didn't start yet
+			try {
+				adminProcess = Runtime.getRuntime().exec(adminCmdArray, 
+						null, 
+						new File(jonasDir));
+				adminProcess.getOutputStream().close();
+			} catch (Exception e) {
+				throw new TaskException("Cannot run Jonas startup check", e);
+			}
+			
+			try {
+				/* Read in the output from the subprocess */
+				BufferedReader reader = new BufferedReader(new InputStreamReader(adminProcess.getInputStream()));
+				String line = reader.readLine();
+				if (line != null) {
+					StringBuffer output = new StringBuffer(line);
+					if (!output.equals("JOnAS server jonas unreachable")) {
+						jonasStarted = true;
+						break;
+					}
+				}
+			} catch (IOException e) {
+				throw new TaskException("Cannot read output from jonas admin tool", e);
+			}
+
+			// wait 20 seconds
+			try {
+				Thread.sleep(20000);
+			} catch (InterruptedException e) {
+				// nothing evil happened
+				Thread.currentThread().interrupt();
+			}
+		}
+		
+		if (jonasStarted) {
+			logInfo("Jonas started");
+			checkPointReached(CHECKPOINT_RUNNING, null);
+		} else {
+			throw new TaskException("Jonas not started");
+		}
+		
+		try {
+			// wait untill Jonas finishes
+			jonasProcess.waitFor();
+		} catch (InterruptedException e) {
+			throw new TaskException("Wait for Jonas' finish interrupted", e);
+		}
+!!!638722.java!!!	checkRequiredProperties() : void
+		checkRequiredProperties(new String[]{JONAS_DIR,TOMCAT_DIR});

@@ -1,0 +1,16 @@
+class ElementAttributeHelper
+!!!609026.java!!!	ElementAttributeHelper()
+		super();
+!!!609154.java!!!	validateInXML(inout element : Element) : String
+		return extractTextValueFromElement(element) == null
+			? "Invalid value of element <" + element.getNodeName() + ">."
+			: null;
+!!!609282.java!!!	readValueFromElement(inout element : Element) : Element
+		return element;
+!!!609410.java!!!	writeValueToElement(inout document : Document, in tagName : String, inout value : Element) : Element
+		return value;
+!!!609538.java!!!	getInstance() : ElementAttributeHelper
+		if (instance == null) {
+			 instance = new ElementAttributeHelper();
+		}
+		return instance;

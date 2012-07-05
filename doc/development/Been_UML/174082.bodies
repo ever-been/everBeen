@@ -1,0 +1,107 @@
+class History
+!!!392706.java!!!	main(in args : String) : void
+	
+		String managerURL = MANAGER_URL_DEFAULT;
+		
+		/* set path to the manager from the commandline.
+		 */
+		if (args.length > 0) {
+			managerURL = args[0];
+		}
+		
+		/* Connect to the Host Manager
+		 */
+		HostManagerInterface manager = null;
+		
+		try {
+			manager = (HostManagerInterface) Naming.lookup("rmi://" + managerURL + HostManagerInterface.URL);
+		} catch (Exception e) {
+			System.err.println("Error connecting to the Host Manager.");
+			System.err.println("Error message: " + e.getMessage());
+			return;
+		}
+	
+		String []hosts = manager.getHostNames();
+		
+		if (hosts.length == 0) {
+			System.out.println("No hosts in database.");
+			return;
+		}
+		
+		System.out.println(makeTable2("Host Name", "History Entries", 60));
+		for (String current: hosts) {
+			try {
+				System.out.println(makeTable2(current, 
+				                              String.valueOf(manager.getHostHistoryDates(current).length), 
+				                              60));
+			} catch (Exception e) {
+				System.err.println("Unable to query history for host.");
+				System.err.println("Error message: " + e.getMessage());
+			}
+		}
+		
+		// we will work with the history entries of the first host
+		String currentHost = hosts[0];
+		
+		System.out.println();
+		System.out.println("Entries for host: " + currentHost);
+		
+		SimpleDateFormat format = new SimpleDateFormat(HostManagerInterface.DEFAULT_DATE_TIME_FORMAT);
+		
+		Date []dates = null;
+		
+		try {
+			dates = manager.getHostHistoryDates(currentHost);
+		} catch (Exception e) {
+			System.err.println("Unable to query history dates.");
+			System.err.println("Error message: " + e.getMessage());
+			return;
+		}
+		
+		// write out dates of all entries for our host
+		for (Date current: dates) {
+			System.out.println(format.format(current));
+		}
+		
+		// remove oldest entry
+		Date oldest = dates[dates.length - 1];
+		System.out.println("Removing last entry: " + format.format(oldest));
+		
+		try {
+			manager.removeHostHistoryEntry(currentHost, oldest);
+		} catch (Exception e) {
+			System.err.println("Unable to remove history entry.");
+			System.err.println("Error message: " + e.getMessage());
+		}
+
+		System.out.println();
+		System.out.println("Entries for host after removal.");
+		System.out.println();
+		
+		// write dates of entries again, so we can see that the entry has been successfully removed
+		Date []datesAfterRemoval = null;
+		
+		try {
+			datesAfterRemoval = manager.getHostHistoryDates(currentHost);
+		} catch (Exception e) {
+			System.err.println("Unable to query history dates 2.");
+			System.err.println("Error message: " + e.getMessage());
+			return;
+		}
+		
+		for (Date current: datesAfterRemoval) {
+			System.out.println(format.format(current));
+		}
+!!!392834.java!!!	fillStr(in s : String, in reps : int) : String
+		
+		String res = new String();
+		
+		for (int i = 0; i < reps; ++i) {
+			
+			res += s;
+		}
+		
+		return res;
+!!!392962.java!!!	makeTable2(in col1 : String, in col2 : String, in c1width : int) : String
+		
+		return col1 + fillStr(" ", c1width - col1.length()) + col2;

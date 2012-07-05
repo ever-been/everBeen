@@ -1,0 +1,135 @@
+class SoftwareAliases
+!!!394498.java!!!	main(in args : String) : void
+
+		String managerURL = MANAGER_URL_DEFAULT;
+		
+		/* set path to the manager from the commandline.
+		 */
+		if (args.length > 0) {
+			managerURL = args[0];
+		}
+		
+		/* Connect to the Host Manager
+		 */
+		HostManagerInterface manager = null;
+		
+		try {
+			manager = (HostManagerInterface) Naming.lookup("rmi://" + managerURL + INTERFACE_URL);
+		} catch (Exception e) {
+			System.err.println("Unable to connect to the Host Manager.");
+			System.err.println("Error message: " + e.getMessage());
+			return;
+		}
+		
+		// we need some data
+		if (manager.getHostCount() == 0) {
+			System.out.println("Host database is empty. Please add some hosts to the database.");
+			return;
+		}
+		
+		// request data about first host in database
+		HostInfoInterface host = null;
+		
+		try {
+			host = manager.getHostInfo(manager.getHostNames()[0]);
+		} catch (Exception e) {
+			System.err.println("Error querying host data for host " + manager.getHostNames()[0]);
+			System.err.println("Error message: " + e.getMessage());
+			return;
+		}
+		
+		System.out.println("Host name: " + host.getHostName());
+		System.out.println("Number of alias definitions: " + manager.getAliasDefinitionCount());		
+		System.out.println("Number of aliases on host: " + host.getSoftwareAliasCount());
+		System.out.println();
+		
+		// output table with all aliases
+		System.out.println(makeTable2("** Alias name **", "** Application match **", 30));
+		System.out.println(fillStr("-", 80));
+		
+		for (int i = 0; i < host.getSoftwareAliasCount(); ++i) {
+			SoftwareAlias current = host.getSoftwareAlias(i);
+			
+			System.out.println(makeTable2(current.getAliasName(), current.getProductName(), 30));
+			System.out.println(makeTable2("", current.getProductVendor(), 30));
+			System.out.println(makeTable2("", current.getProductVersion(), 30));
+		}
+
+		// now add new alias definition
+		// we will create alias that will match anything from Sun (so we will get at leas one 
+		// hit on Java for every computer)
+		SoftwareAliasDefinition sun = new SoftwareAliasDefinition(
+				"Sun product", // name of the alias
+				"${name}",     // name of application that will be displayed
+				"Made by sun (${vendor}", // this will be displayed as a vendor's name
+				"${version}",  // version
+				null,          // operating system restriction - null means we don't care about OS
+				new ObjectRestriction("", "vendor", new ValueRegexp(".*Sun Microsystems.*")));
+				               // app restriction - match any app that contains Sun Microsystems
+				               // in its vendor name
+		
+		System.out.println("\n\nAdding new definition...");
+		// now add definition
+		try {
+			manager.addAliasDefinition(sun);
+		} catch (Exception e) {
+			System.err.println("Error adding new definition.");
+			System.err.println("Error message: " + e.getMessage());
+			return;
+		}
+		
+		System.out.println("Rebuilding database...");
+		long start = System.currentTimeMillis(); // we will measure how long it takes
+		
+		// and rebuild database, you have to call this every time you modify definition list
+		// it is not called automatically because it may take a while to finish
+		try {
+			manager.rebuildAliasTableForAllHosts();
+		} catch (Exception e) {
+			System.err.println("Error rebuilding database.");
+			System.err.println("Error message: " + e.getMessage());
+			return;
+		}
+		
+		long end = System.currentTimeMillis();
+		System.out.println("Database update took " + (end - start) + " ms");
+		System.out.println("\n");
+		
+		// request new data for our host
+		HostInfoInterface host2 = null;
+		
+		try {
+			host2 = manager.getHostInfo(host.getHostName());
+		} catch (Exception e) {
+			System.err.println("Unable to get data for host " + host.getHostName());
+			System.err.println("Error message: " + e.getMessage());
+			return;
+		}
+			
+		// output aliases after modifications
+		System.out.println("Number of alias definitions: " + manager.getAliasDefinitionCount());
+		System.out.println("Number of aliases after modifications: " + host2.getSoftwareAliasCount());
+		System.out.println();
+		System.out.println(makeTable2("** Alias name **", "** Application match **", 30));
+		System.out.println(fillStr("-", 80));
+		
+		for (int i = 0; i < host2.getSoftwareAliasCount(); ++i) {
+			SoftwareAlias current = host2.getSoftwareAlias(i);
+			
+			System.out.println(makeTable2(current.getAliasName(), current.getProductName(), 30));
+			System.out.println(makeTable2("", current.getProductVendor(), 30));
+			System.out.println(makeTable2("", current.getProductVersion(), 30));
+		}
+!!!394626.java!!!	fillStr(in s : String, in reps : int) : String
+		
+		String res = new String();
+		
+		for (int i = 0; i < reps; ++i) {
+			
+			res += s;
+		}
+		
+		return res;
+!!!394754.java!!!	makeTable2(in col1 : String, in col2 : String, in c1width : int) : String
+		
+		return col1 + fillStr(" ", c1width - col1.length()) + col2;

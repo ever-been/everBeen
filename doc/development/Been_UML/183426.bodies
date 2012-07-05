@@ -1,0 +1,65 @@
+class ProcessOutputProcessor
+!!!484354.java!!!	ProcessOutputProcessor(inout inputStream : InputStream, in outputFile : String, inout outputType : OutputType, inout exclusivity : TaskExclusivity)
+			this.inputStream = inputStream;
+			this.outputFile = outputFile;
+			this.outputType = outputType;
+			this.exclusivity = exclusivity;
+!!!484482.java!!!	run() : void
+			FileOutputStream outputStream = null;
+			
+			try {
+				/* We don't use buffering in the output file beacause we want the file
+				 * to be in sync with the process output. 
+				 */
+				outputStream = new FileOutputStream(outputFile);
+			} catch (FileNotFoundException e) {
+				System.err.println(e.getMessage());
+				return;
+			}
+			
+			try {
+				try {
+					byte[] buffer = new byte[BUFFER_SIZE];
+					int bytesRead;
+					while ((bytesRead = inputStream.read(buffer)) != -1) {
+						/* Write output to the file. */
+						outputStream.write(buffer, 0, bytesRead);
+						
+						/* Send output to the Host Runtime, if the task is not exclusive nor
+						 * context-exclusive.
+						 */
+						if (exclusivity == TaskExclusivity.NON_EXCLUSIVE) {
+							try {
+								switch (outputType) {
+									case STANDARD:
+										hostRuntime.getHostRuntimesPort().addStandardOutput(
+												taskDescriptor.getContextId(), 
+												taskDescriptor.getTaskTid(),
+												new String(buffer, 0, bytesRead)
+										);
+										break;
+									case ERROR:
+										hostRuntime.getHostRuntimesPort().addErrorOutput(
+												taskDescriptor.getContextId(), 
+												taskDescriptor.getTaskTid(),
+												new String(buffer, 0, bytesRead)
+										);
+									default:
+										break;
+								} 
+							} catch (LogStorageException e) {
+								System.err.println("Log storage error: " + e.getMessage());
+								return;
+							}
+						}
+					}
+				} finally {
+					inputStream.close();
+					outputStream.close();
+				}
+			} catch (RemoteException e) {
+				System.err.println("Error executing remote call from the task to the "
+						+ "Task Manager.");
+			} catch (IOException e) {
+				System.err.println("Error sending task output: " + e.getMessage());
+			}

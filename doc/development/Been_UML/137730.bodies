@@ -1,0 +1,32 @@
+class ServiceControlImplementation
+!!!161794.java!!!	ServiceControlImplementation()
+			// empty, constructor had to be created because extending the UnicastRemoteObject
+!!!161922.java!!!	getStatus() : Status
+			return status;
+!!!162050.java!!!	stopService() : void
+			synchronized (lock) {
+				if (status != Status.RUNNING) {
+					throw new InvalidServiceStateException("Cannot stop now, service status is: " + status);
+				}
+				logInfo("Service is stopping");
+				checkPointReached(STATUS_CHECKPOINT, STATUS_STOPPING);
+				status = Status.STOPPING;
+				try {
+					stop();
+				} catch (TaskException e) {
+					logFatal("Cannot stop service: " + e.getMessage());
+					stateChangeError(e);
+					throw e;
+				}
+				try {
+					unbindInterfaces();
+				} catch (Exception e) {
+					throw bindError(e);
+				}
+				logInfo("Service is stopped");
+				exitSuccessDelayed();
+			}
+!!!162178.java!!!	ping() : void
+			// do nothing, this method is used to test if a remote reference
+			// is valid
+			return;

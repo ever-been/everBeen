@@ -1,0 +1,37 @@
+class ConfiguratorThread
+!!!181634.java!!!	ConfiguratorThread(inout queue : WorkQueue, inout results : BlockingResultMap, in counter : int)
+			super("ConfiguratorThread-" + counter);
+			this.queue = queue;
+			this.results = results;
+			setDaemon(true);
+			start();
+!!!181762.java!!!	run() : void
+			while (true) {
+				ConfiguratorWork work = queue.getWork();
+				Configurator configurator = work.configurator;
+				// return when interrupted
+				if (isInterrupted()) {
+					return;
+				}
+				try {
+					switch(work.type) {
+						case FIRST:
+								work.setNewScreen(configurator.getFirstScreen());
+								break;
+						case NEXT:
+								work.setNewScreen(configurator.getNextScreen(work.processedScreen));
+								break;
+						case PREVIOUS:
+								work.setNewScreen(configurator.getPreviousScreen(work.processedScreen));
+								break;
+					}
+				} catch (Exception e) {
+					// need to check all errors in configurator, otherwise they are not displayed in gui
+					// and it skips to review screen instead as null is returned 
+					work.setException(new ConfiguratorException(e));
+					bm.logError("Error occured in configurator: " + e.getMessage());
+					e.printStackTrace();
+				} finally {
+					results.setResult(work);
+				}
+			}			

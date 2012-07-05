@@ -1,0 +1,15 @@
+class TaskUtils
+!!!751106.java!!!	getCheckPointsForTasks(inout taskManager : TaskManagerInterface, inout tasks : TaskEntry) : TaskEntry
+ 
+		Map<TaskEntry, CheckPoint[]> result = new HashMap<TaskEntry, CheckPoint[]>();
+		for (TaskEntry task: tasks) {
+			try {
+				result.put(task, taskManager.checkPointLook(
+						new CheckPoint(task.getTaskId(), task.getContextId(), null, null),
+						0
+				));
+			} catch (TaskManagerException e) {
+				result.put(task, new CheckPoint[0]);
+			}
+		}
+		return result;

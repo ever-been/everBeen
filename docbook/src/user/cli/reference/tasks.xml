@@ -1,0 +1,646 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sect2
+	xml:id="been.user.cli.reference.tasks"
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>Tasks Module</title>
+	<subtitle>Detailed Control over Tasks</subtitle>
+	
+	<para>The Tasks Module controls the <glossterm>Task Manager</glossterm>. It can be used to manage (start, stop and list)
+	<glossterm baseform="task">tasks</glossterm>, the basic building blocks of the BEEN Framework.</para>
+
+	<para>Module identifier: <command>tasks</command></para>
+	
+	<table xml:id="been.user.cli.reference.tasks.table" tocentry="1" frame="none">
+		<title>Actions of the Tasks Module</title>
+
+		<tgroup cols="3" align="left" colsep="0" rowsep="0">
+			<colspec colnum="1" colname="action" colwidth="3*"/>
+			<colspec colnum="2" colname="option" colwidth="3*"/>
+			<colspec colnum="3" colname="desc" colwidth="9*"/>
+			
+			<tbody valign="top">
+			
+				<!-- context-list -->
+				<row>
+					<entry morerows="5">
+						<command>context-list</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						List either <glossterm baseform="context">contexts</glossterm> or
+						<glossterm baseform="task">tasks</glossterm> in a context.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>id</option></emphasis><footnote>
+						<para>When specified, tasks within the context will be listed.
+						Otherwise a list of contexts will be sent back.</para>
+						</footnote>
+					</entry>
+					<entry>
+						Identifier of a context.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>pattern</option></emphasis><footnote>
+						<para>Expressions recognized by
+						<classname>java.util.regex.Pattern</classname> are accepted.
+						When unspecified, no filtering will take place.</para></footnote><footnote>
+						<para>When <option>id</option> is specified, filtering will apply
+						to task identifiers in the context. Otherwise context identifiers will be
+						filtered.</para></footnote>
+					</entry>
+					<entry>
+						A regular expression to filter task or context identifiers. 
+					</entry>
+				</row>
+				<row>
+					<entry><option>desc</option><footnote><para>If <option>id</option> is specified,
+						then <option>desc</option> applies to tasks, else <option>desc</option>
+						applies to contexts.</para></footnote>
+					</entry>
+					<entry>
+						Output task or context description strings.
+					</entry>
+				</row>
+				<row>
+					<entry><emphasis role="strong"><option>STDOUT</option></emphasis><footnote>
+						<para>This output is generated when <option>id</option> is
+						<emphasis>not</emphasis> specified and applies to contexts.</para>
+						</footnote>
+					</entry>
+					<entry>
+						<code>[name] [id] [time] [description]</code><footnote
+						xml:id="been.user.cli.reference.tasks.desc">
+						<para>The description is only shown when the <option>desc</option> flag
+						is present.</para></footnote>
+					</entry>
+				</row>
+				<row>
+					<entry><emphasis role="strong"><option>STDOUT</option></emphasis><footnote>
+						<para>This output is generated when <option>id</option> is specified
+						and applies to tasks within a context.</para></footnote>
+					</entry>
+					<entry>
+						<code>[name] [id] [state] [host]
+						[flag]</code><footnote xml:id="been.user.cli.reference.tasks.jobserv">
+							<para><constant>JOB</constant> or <constant>SERVICE</constant>,
+							depending on the type of task.</para></footnote><code>
+						[path] [ctx_id] [package] [exclusivity]
+						[submitted]</code><footnote
+							xml:id="been.user.cli.reference.tasks.timestamp">
+							<para>This is a timestamp.</para>
+							</footnote><code>
+						[scheduled]</code><footnoteref
+							linkend="been.user.cli.reference.tasks.timestamp"/><code>
+						[started]</code><footnoteref
+							linkend="been.user.cli.reference.tasks.timestamp"/><code>
+						[finished]</code><footnoteref
+							linkend="been.user.cli.reference.tasks.timestamp"/><code>
+						[description]</code><footnoteref
+							linkend="been.user.cli.reference.tasks.desc"/>
+					</entry>
+				</row>
+				
+				<!-- context-new -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="3">
+						<command>context-new</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Creates a new <glossterm>context</glossterm> in the
+						<glossterm>Task Manager</glossterm>.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>name</option></emphasis><footnote
+							xml:id="been.user.cli.reference.tasks.mandatory">
+							<para>This parameter is mandatory.</para>
+						</footnote>
+					</entry>
+					<entry>
+						Name of the new context.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>id</option></emphasis>
+					</entry>
+					<entry>
+						Identifier of the new context. When unspecified, defaults to context name.
+					</entry>
+				</row>
+				<row>
+					<entry><emphasis role="strong"><option>desc</option></emphasis></entry>
+					<entry>
+						A human-readable description of the new context.
+					</entry>
+				</row>
+				
+				<!-- context-delete -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="1">
+						<command>context-delete</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Deletes a <glossterm>context</glossterm> from the
+						<glossterm>Task Manager</glossterm>. Tasks in the context must be either
+						aborted or finished.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>id</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.tasks.mandatory"/>
+					</entry>
+					<entry>
+						Identifier of the context to delete.
+					</entry>
+				</row>
+				
+				<!-- tree-list -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="4">
+						<command>tree-list</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Outputs a text representation of the <glossterm>Task Tree</glossterm>.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>path</option></emphasis>
+					</entry>
+					<entry>
+						Path to the tree <glossterm>item</glossterm> (<glossterm>node</glossterm> or
+						<glossterm>leaf</glossterm>) to list. When unspecified, the root path (an
+						empty string) will be assumed.
+					</entry>
+				</row>
+				<row>
+					<entry><option>recursive</option></entry>
+					<entry>
+						Output the subtree specified by <option>path</option> recursively.
+					</entry>
+				</row>
+				<row>
+					<entry><option>flags</option></entry>
+					<entry>
+						Output Task Tree <glossterm baseform="task tree flag">flags</glossterm>.
+					</entry>
+				</row>
+				<row>
+					<entry><emphasis role="strong"><option>STDOUT</option></emphasis></entry>
+					<entry>
+						<code>[type]</code><footnote><para><constant>N</constant> for
+							<glossterm>node</glossterm> (listing item), <constant>L</constant> for
+							<glossterm>leaf</glossterm> (task item).</para></footnote><code>
+						[depth]</code><footnote><para>Represented by the number of tab
+							(<constant>\t</constant>) characters.</para></footnote><code>
+						[path]</code><footnote><para>Onlythe last path segment is
+							shown.</para></footnote><code>
+						[id]</code><footnote xml:id="been.user.cli.reference.tasks.leaf">
+							<para>Only shown for <glossterm baseform="leaf">leaves</glossterm>
+							(task items).</para></footnote><code>
+						[state]</code><footnoteref
+							linkend="been.user.cli.reference.tasks.leaf"/><code>
+						[host]</code><footnoteref
+							linkend="been.user.cli.reference.tasks.leaf"/><code>
+						[[flag]=[ordinal]-[message],...]</code><footnote>
+							<para>The list of <glossterm baseform="flag">flags</glossterm> and their
+							values is only shown when <option>flags</option> is
+							present.</para></footnote>
+					</entry>
+				</row>
+				
+				<!-- info -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="5">
+						<command>info</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Displays detailed information about a <glossterm>task</glossterm>.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>path</option></emphasis><footnote
+						xml:id="been.user.cli.reference.tasks.pathidctx">
+							<para>Either <option>path</option> or (<option>context</option>,
+							<option>id</option>) must be specified.</para>
+						</footnote>
+					</entry>
+					<entry>
+						Location of the task in the <glossterm>Task Tree</glossterm>.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>id</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.tasks.pathidctx"/>
+					</entry>
+					<entry>
+						Identifier of the task.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>context</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.tasks.pathidctx"/>
+					</entry>
+					<entry>
+						Identifier of a context, the scope of <option>id</option>.
+					</entry>
+				</row>
+				<row>
+					<entry><option>desc</option></entry>
+					<entry>
+						Output the human readable description.
+					</entry>
+				</row>
+				<row>
+					<entry><emphasis role="strong"><option>STDOUT</option></emphasis></entry>
+					<entry>
+						<code>[name] [id] [state] [host]
+						[flag]</code><footnoteref linkend="been.user.cli.reference.tasks.jobserv"/><code>
+						[path] [ctx_id] [package] [exclusivity]
+						[submitted]</code><footnoteref
+							linkend="been.user.cli.reference.tasks.timestamp"/><code>
+						[scheduled]</code><footnoteref
+							linkend="been.user.cli.reference.tasks.timestamp"/><code>
+						[started]</code><footnoteref
+							linkend="been.user.cli.reference.tasks.timestamp"/><code>
+						[finished]</code><footnoteref
+							linkend="been.user.cli.reference.tasks.timestamp"/><code>
+						[description]</code><footnoteref
+							linkend="been.user.cli.reference.tasks.desc"/>
+					</entry>
+				</row>
+				
+				<!-- logs -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="7">
+						<command>logs</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Retrieves log messages produced by a <glossterm>task</glossterm>.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>path</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.tasks.pathidctx"/>
+					</entry>
+					<entry>
+						Location of the task in the <glossterm>Task Tree</glossterm>.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>id</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.tasks.pathidctx"/>
+					</entry>
+					<entry>
+						Identifier of the task.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>context</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.tasks.pathidctx"/>
+					</entry>
+					<entry>
+						Identifier of a context, the scope of <option>id</option>.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>from</option></emphasis><footnote
+						xml:id="been.user.cli.reference.tasks.lbound">
+						<para>When unspecified, there will be no lower bound.</para></footnote>
+					</entry>
+					<entry>
+						Number of the first line to output.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>to</option></emphasis><footnote
+						xml:id="been.user.cli.reference.tasks.ubound">
+						<para>When unspecified, there will be no upper bound.</para></footnote>
+					</entry>
+					<entry>
+						Number of the last line to output.
+					</entry>
+				</row>
+				<row>
+					<entry><option>numbers</option></entry>
+					<entry>
+						Output line numbers.
+					</entry>
+				</row>
+				<row>
+					<entry><emphasis role="strong"><option>STDOUT</option></emphasis></entry>
+					<entry>
+						<code>[number]</code><footnote xml:id="been.user.cli.reference.tasks.number">
+							<para>This field only appears when the <option>numbers</option> flag
+							is present.</para>
+						</footnote><code> [timestamp] [host] [context] [task] [level] [message]</code>
+					</entry>
+				</row>
+				
+				<!-- stdout -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="7">
+						<command>stdout</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Retrieves the standard output produced by a <glossterm>task</glossterm>.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>path</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.tasks.pathidctx"/>
+					</entry>
+					<entry>
+						Location of the task in the <glossterm>Task Tree</glossterm>.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>id</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.tasks.pathidctx"/>
+					</entry>
+					<entry>
+						Identifier of the task.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>context</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.tasks.pathidctx"/>
+					</entry>
+					<entry>
+						Identifier of a context, the scope of <option>id</option>.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>from</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.tasks.lbound"/>
+					</entry>
+					<entry>
+						Number of the first line to output.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>to</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.tasks.ubound"/>
+					</entry>
+					<entry>
+						Number of the last line to output.
+					</entry>
+				</row>
+				<row>
+					<entry><option>numbers</option></entry>
+					<entry>
+						Output line numbers.
+					</entry>
+				</row>
+				<row>
+					<entry><emphasis role="strong"><option>STDOUT</option></emphasis></entry>
+					<entry>
+						<code>[number]</code><footnoteref
+						linkend="been.user.cli.reference.tasks.number"/><code> [line]</code>
+					</entry>
+				</row>
+				
+				<!-- stderr -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="7">
+						<command>stderr</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Retrieves the error output produced by a <glossterm>task</glossterm>.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>path</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.tasks.pathidctx"/>
+					</entry>
+					<entry>
+						Location of the task in the <glossterm>Task Tree</glossterm>.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>id</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.tasks.pathidctx"/>
+					</entry>
+					<entry>
+						Identifier of the task.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>context</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.tasks.pathidctx"/>
+					</entry>
+					<entry>
+						Identifier of a context, the scope of <option>id</option>.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>from</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.tasks.lbound"/>
+					</entry>
+					<entry>
+						Number of the first line to output.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>to</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.tasks.ubound"/>
+					</entry>
+					<entry>
+						Number of the last line to output.
+					</entry>
+				</row>
+				<row>
+					<entry><option>numbers</option></entry>
+					<entry>
+						Output line numbers.
+					</entry>
+				</row>
+				<row>
+					<entry><emphasis role="strong"><option>STDOUT</option></emphasis></entry>
+					<entry>
+						<code>[number]</code><footnoteref
+						linkend="been.user.cli.reference.tasks.number"/><code> [line]</code>
+					</entry>
+				</row>
+				
+				<!-- run -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="1">
+						<command>run</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Creates and runs a <glossterm>task</glossterm> based on a
+						<glossterm>task descriptor</glossterm>.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>STDIN</option></emphasis>
+					</entry>
+					<entry>
+						<code>"http://been.mff.cuni.cz/taskmanager/td":taskDescriptor</code>
+					</entry>
+				</row>
+
+				<!-- dump -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="5">
+						<command>run</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Dumps a <glossterm>task descriptor</glossterm> as XML.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>path</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.tasks.pathidctx"/>
+					</entry>
+					<entry>
+						Location of the task in the <glossterm>Task Tree</glossterm>.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>id</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.tasks.pathidctx"/>
+					</entry>
+					<entry>
+						Identifier of the task.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>context</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.tasks.pathidctx"/>
+					</entry>
+					<entry>
+						Identifier of a context, the scope of <option>id</option>.
+					</entry>
+				</row>
+				<row>
+					<entry><option>resolved</option></entry>
+					<entry>
+						The output will reflect <glossterm>Task Manager</glossterm>'s
+						preprocessing of the <glossterm>task descriptor</glossterm>.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>STDOUT</option></emphasis>
+					</entry>
+					<entry>
+						<code>"http://been.mff.cuni.cz/taskmanager/td":taskDescriptor</code>
+					</entry>
+				</row>
+				
+				<!-- kill -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="5">
+						<command>kill</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Kills a <glossterm>task</glossterm>, all tasks in a <glossterm>context</glossterm>
+						or all tasks in a subtree of the <glossterm>Task Tree</glossterm>.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>path</option></emphasis><footnote
+						xml:id="been.user.cli.reference.tasks.pathidctx2">
+						<para>To kill a single task, specify either a <option>path</option> to a
+						tree <glossterm>leaf</glossterm> or (<option>context</option>, <option>id</option>).
+						To kill a subtree or a context, specify either a <option>path</option> to a
+						tree <glossterm>node</glossterm> or a <option>context</option>.</para>
+						</footnote>
+					</entry>
+					<entry>
+						Location of the task in the <glossterm>Task Tree</glossterm>.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>id</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.tasks.pathidctx2"/>
+					</entry>
+					<entry>
+						Identifier of the task.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>context</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.tasks.pathidctx2"/>
+					</entry>
+					<entry>
+						Identifier of a context, the scope of <option>id</option>.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<option>recursive</option><footnote><para>This flag must be
+						present when <option>path</option> points at a tree <glossterm>node</glossterm>
+						or <option>context</option> is specified without
+						<option>id</option>.</para></footnote>
+					</entry>
+					<entry>
+						Kill a subtree or a context recursively.
+					</entry>
+				</row>
+				<row>
+					<entry><option>delete</option></entry>
+					<entry>
+						When present, killed contexts will be deleted from the
+						<glossterm>Task Manager</glossterm> and
+						killed tasks will be deleted from the <glossterm>Task Tree</glossterm>.
+					</entry>
+				</row>
+				
+				<row><entry namest="action" nameend="desc"/></row>
+			</tbody>
+		</tgroup>
+	</table>
+
+	<xi:include href="../examples/tasks.xml"/>
+</sect2>

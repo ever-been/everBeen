@@ -1,0 +1,7 @@
+class XamplerVersionProvider
+!!!216962.java!!!	handleTimestamp(in timestamp : long) : ExperimentMetadata
+		ExperimentMetadata newExp = duplicateModel();
+		newExp.setName("omniORB" + "-" + DATE_FORMATTER.format(new Date(timestamp)));
+		newExp.setProperty("cvs.date",String.valueOf(timestamp));
+		newExp.setProperty("software.version", String.valueOf(timestamp));
+		return newExp;

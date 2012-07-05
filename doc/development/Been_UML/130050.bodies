@@ -1,0 +1,43 @@
+class AnalysisAdapter
+!!!137730.java!!!	AnalysisAdapter(inout manager : AnalysisManager)
+		super();
+		this.manager = manager;
+!!!137858.java!!!	getInstance(inout manager : AnalysisManager) : AnalysisEntityInterface
+		if (analysisAdapter == null) {
+			analysisAdapter = new AnalysisAdapter(manager);
+		}
+
+		return analysisAdapter;
+!!!137986.java!!!	getEntity(inout id : AID) : AnalysisEntity
+		return EntityFactory.createEntity(findAnalysis(id));
+!!!138114.java!!!	getEntities() : AnalysisEntity
+		AnalysisMetadata[] values = manager.listAnalyses();
+		AnalysisEntity[] entities = new AnalysisEntity[values.length];
+		int i=0;
+		for (AnalysisMetadata analysis : values) {
+			entities[i++] = EntityFactory.createEntity(analysis);
+		}
+		return entities;
+!!!138242.java!!!	getSubentityInterface(inout id : AID) : ExperimentEntityInterface
+		return new ExperimentAdapter(findAnalysis(id));
+!!!138370.java!!!	deleteEntity(inout id : AID) : void
+		manager.deleteAnalysis(id);
+!!!138498.java!!!	getAllTasks(inout id : AID) : TaskDescriptor
+		ExperimentEntityInterface expInterface = getSubentityInterface(id);
+		ArrayList<TaskDescriptor> result = new ArrayList<TaskDescriptor>();
+		for (ExperimentEntity entity : expInterface.getEntities()) {
+			result.addAll(Arrays.asList(expInterface.getAllTasks(entity.getId())));
+		}
+		
+		return (TaskDescriptor[]) result.toArray(new TaskDescriptor[result.size()]);
+!!!138626.java!!!	getTasks(inout id : AID) : TaskDescriptor
+		return getAllTasks(id);
+!!!138754.java!!!	reschedule(inout analysis : AID, inout newSchedule : SchedulerInfo) : void
+		manager.reschedule(analysis, newSchedule);
+!!!138882.java!!!	findAnalysis(inout id : AID) : AnalysisMetadata
+		AnalysisMetadata analysis = manager.getAnalysis(id);
+		if (analysis == null) {
+			throw new IllegalArgumentException("Analysis with given ID(" + id + "does not exist");
+		}
+		
+		return analysis;

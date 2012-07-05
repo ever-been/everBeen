@@ -1,0 +1,78 @@
+class LogTester
+!!!663170.java!!!	LogTester()
+		super();
+!!!663298.java!!!	run() : void
+		int messageCount = Integer.valueOf(getTaskProperty(MESSAGE_COUNT));
+		logInfo("Number of messages that will be logged: " + messageCount);
+		int delay = Integer.valueOf(getTaskProperty(MESSAGE_DELAY));
+		logInfo("Delay between logged messages, in milliseconds: " + delay);
+		
+		String action = getTaskProperty(ACTION);
+		if (action.equals(ACTION_LOG)) {
+			logInfo("Action: log");
+			for (int i = 0; i < messageCount; i++) {
+				sendLogMessage(i);
+				try {
+					Thread.sleep(delay);
+				} catch (InterruptedException e) {
+					// nothing bad happened
+				}
+			}
+		} else if (action.equals(ACTION_OUTPUT)) {
+			logInfo("Action: output");
+			String emptyProbabilityProperty = getTaskProperty(EMPTY_LINE_PROBABILITY);
+			if (emptyProbabilityProperty != null) {
+				emptyProbability = Double.valueOf(emptyProbabilityProperty);
+			}
+			
+			for (int i = 0; i < messageCount; i++) {
+				String line = null;
+				if (RAND.nextDouble() < emptyProbability) {
+					line = "";
+				} else {
+					line = "Line " + i;
+				}
+				if (RAND.nextBoolean()) {
+					System.out.println(line);
+				} else {
+					System.err.println(line);		
+				}
+
+				try {
+					Thread.sleep(delay);
+				} catch (InterruptedException e) {
+					// nothing bad happened
+					Thread.currentThread().interrupt();
+				}
+			}
+		}
+!!!663426.java!!!	sendLogMessage(in messageIndex : int) : void
+		int severity = RAND.nextInt(6);
+		String message  = "Generated log message #" + messageIndex; 
+		while (RAND.nextBoolean()) {
+			message += "\nadditional line: blah blah blah blah blah blah blah blah";
+		}
+		if (severity == 0) {
+			logTrace(message);
+		}
+		if (severity == 1) {
+			logDebug(message);
+		}
+		if (severity == 2) {
+			logInfo(message);
+		}
+		if (severity == 3) {
+			logWarning(message);
+		}
+		if (severity == 4) {
+			logError(message);
+		}
+		if (severity == 5) {
+			logFatal(message);
+		}
+!!!663554.java!!!	checkRequiredProperties() : void
+		checkRequiredProperties(new String[]{
+				MESSAGE_COUNT,
+				MESSAGE_DELAY,
+				ACTION
+		});

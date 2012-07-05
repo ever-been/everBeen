@@ -1,0 +1,8 @@
+class StaticText
+!!!231170.java!!!	getText() : String
+		return text;	
+!!!231298.java!!!	StaticText(in label : String, in text : String)
+		super(label);
+		this.text = text;
+!!!231426.java!!!	toString() : String
+		return text;

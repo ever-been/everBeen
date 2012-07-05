@@ -1,0 +1,24 @@
+class EventDispatcher
+!!!401026.java!!!	EventDispatcher(inout queue : EventQueue)
+		
+!!!401154.java!!!	EventDispatcher(inout queue : EventQueue, inout loadServer : LoadServerInterface)
+		
+		thread = new EventProcessorThread(queue, loadServer);
+		thread.start();
+!!!401282.java!!!	kill() : void
+
+		if (thread != null) {
+			thread.interrupt();
+		}
+!!!401410.java!!!	stop() : void
+		
+		if (thread != null) {
+			thread.stopMe();
+		}
+!!!401538.java!!!	isRunning() : boolean
+		
+		if (thread != null) {
+			return thread.isAlive();
+		} else {
+			return false;
+		}

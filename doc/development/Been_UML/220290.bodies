@@ -1,0 +1,102 @@
+class Util
+!!!863106.java!!!	alignLeft(inout x : T, in w : int) : String
+		
+		StringBuilder builder = new StringBuilder(String.valueOf(x));
+		
+		while (builder.length() < w) {
+			builder.append(" ");
+		}
+		
+		return builder.toString();
+!!!863234.java!!!	alignRight(inout x : T, in w : int) : String
+
+		StringBuilder builder = new StringBuilder();
+		String s = String.valueOf(x);
+		
+		while (builder.length() < w - s.length()) {
+			builder.append(" ");
+		}
+		
+		return builder.append(s).toString();
+!!!863362.java!!!	alignCenter(inout x : T, in w : int) : String
+
+		StringBuilder builder = new StringBuilder();
+		String s = String.valueOf(x);
+		
+		while (builder.length() < (w - s.length()) / 2) {
+			builder.append(" ");
+		}
+		
+		builder.append(s);
+		
+		while (builder.length() < w) {
+			builder.append(" ");
+		}
+		
+		return builder.toString();
+!!!863490.java!!!	fill(in w : int) : String
+		
+		return fill(w, " ");
+!!!863618.java!!!	fill(in w : int, in s : String) : String
+		
+		StringBuilder builder = new StringBuilder();
+
+		for (int i = 0; i < w; ++i) {
+			builder.append(s);
+		}
+		
+		return builder.toString();
+!!!863746.java!!!	join(in arr : short, in sep : String, in cw : int) : String
+		
+		if (arr == null) {
+			return "(null)";
+		}
+		
+		StringBuilder builder = new StringBuilder();
+		
+		for (int i = 0; i < arr.length - 1; ++i) {
+			builder.append(alignRight(arr[i], cw));
+			builder.append(sep);
+		}
+		
+		if (arr.length > 0) {
+			builder.append(alignRight(arr[arr.length - 1], cw));
+		}
+		
+		return builder.toString();
+!!!863874.java!!!	join(in arr : int, in sep : String, in cw : int) : String
+		
+		if (arr == null) {
+			return "(null)";
+		}
+		
+		StringBuilder builder = new StringBuilder();
+		
+		for (int i = 0; i < arr.length - 1; ++i) {
+			builder.append(alignRight(arr[i], cw));
+			builder.append(sep);
+		}
+		
+		if (arr.length > 0) {
+			builder.append(alignRight(arr[arr.length - 1], cw));
+		}
+		
+		return builder.toString();
+!!!864002.java!!!	join(in arr : long, in sep : String, in cw : int) : String
+		
+		if (arr == null) {
+			return "(null)";
+		}
+		
+		StringBuilder builder = new StringBuilder();
+		
+		for (int i = 0; i < arr.length - 1; ++i) {
+			builder.append(alignRight(arr[i], cw));
+			builder.append(sep);
+		}
+		
+		if (arr.length > 0) {
+			builder.append(alignRight(arr[arr.length - 1], cw));
+		}
+		
+		return builder.toString();

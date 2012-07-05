@@ -1,0 +1,38 @@
+class HostManagerApplicationData
+!!!283778.java!!!	HostManagerApplicationData(in workingDirectory : String, inout logger : HostManagerLogger, inout configuration : HostManagerOptionsInterface, inout database : HostDatabaseEngine)
+		
+		this.workingDirectory = workingDirectory;
+		this.logger = logger;
+		this.configuration = configuration;
+		this.database = database;
+		this.idManager = IDManager.getInstance();
+!!!283906.java!!!	getConfiguration() : HostManagerOptionsInterface
+		
+		return configuration;
+!!!284034.java!!!	getLogger() : HostManagerLogger
+		
+		return logger;
+!!!284162.java!!!	getWorkingDirectory() : String
+		
+		return workingDirectory;
+!!!284290.java!!!	getDatabase() : HostDatabaseEngine
+		
+		return database;
+!!!284418.java!!!	getIDManager() : IDManagerInterface
+		
+		return idManager;
+!!!284546.java!!!	getNextID(inout clazz : Class< T >) : T
+		
+		return idManager.getNext(clazz);
+!!!284674.java!!!	getHMI() : HostManagerImplementation
+		
+		return hmi;
+!!!284802.java!!!	setHMI(inout hmi : HostManagerImplementation) : void
+		
+		this.hmi = hmi;
+!!!284930.java!!!	getLSI() : LoadServerImplementation
+		
+		return lsi;
+!!!285058.java!!!	setLSI(inout lsi : LoadServerImplementation) : void
+		
+		this.lsi = lsi;

@@ -1,0 +1,149 @@
+class LocalDownload
+!!!630786.java!!!	LocalDownload()
+		super();
+!!!630914.java!!!	setup() : void
+		swRepo = (SoftwareRepositoryInterface) getTasksPort().serviceFind(
+				"softwarerepository", "main");
+		if (swRepo == null) {
+			throw new TaskInitializationException("Software repository not available");
+		}
+		
+		Condition rslQuery = (Condition) getTaskPropertyObject(RSL_PROPERTY);
+		logInfo("RSL query for the downloaded package: " + rslQuery);
+		
+		RSLPackageQueryCallback rslQueryIface = new RSLPackageQueryCallback(rslQuery);
+		PackageMetadata[] pkgMeta = null;
+		pkgMeta = swRepo.queryPackages(rslQueryIface);
+
+		// no match - nothing to do
+		if (pkgMeta.length == 0) {
+			throw new MatchException("No matching package found for given criteria");
+		}
+
+		outputFileName = pkgMeta[0].getFilename();
+
+		// setup socket
+		serverSocketChan = ServerSocketChannel.open();
+		ServerSocket serverSocket = serverSocketChan.socket();
+		serverSocket.bind(null);
+
+		outputFile = new File(getTempDirectory(), outputFileName);
+		fileChannel = new FileOutputStream(outputFile).getChannel();
+		downloadThread = new DownloadThread(serverSocketChan, fileChannel);
+!!!631042.java!!!	download() : void
+		// start download thread and give it time to initialise
+		downloadThread.start();
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// ignore
+		}
+
+		logInfo("Beginning package download");
+		logDebug("Downloading file: " + outputFileName);
+
+		// inform repository to start downloading
+		DownloadHandle downHandle = swRepo.beginPackageDownload(outputFileName,
+				InetAddress.getLocalHost(), serverSocketChan.socket()
+						.getLocalPort());
+
+		// monitor status
+		DownloadStatus status = DownloadStatus.ERROR;
+		while (true) {
+			status = swRepo.getPackageDownloadStatus(downHandle);
+			if (status == DownloadStatus.DOWNLOADING
+					|| status == DownloadStatus.INITIALIZING) {
+				// still working
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e) {
+					// nothing bad happened
+					Thread.currentThread().interrupt();
+				}
+			} else {
+				// finished
+				break;
+			}
+		}
+
+		// evaluate final download status
+		if (status == DownloadStatus.ERROR) {
+			// finished with error - kill downloader, delete file
+			if (downloadThread.isAlive()) {
+				downloadThread.interrupt();
+			}
+			fileChannel.close();
+			new File(outputFileName).delete();
+			throw new TaskException("Package download failed");
+		} else {
+			// repository reported finished work - check local downloading
+			// thread
+			if (downloadThread.isAlive()) {
+				int i = 0;
+				for (i = 0; i < 10; i++) {
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// nothing bad happened
+						Thread.currentThread().interrupt();
+					}
+					if (!downloadThread.isAlive()) {
+						fileChannel.close();
+						break;
+					}
+				}
+				if (i >= 10) {
+					// download thread is out of time
+					downloadThread.interrupt();
+					fileChannel.close();
+					new File(outputFileName).delete();
+					throw new TaskException(
+							"Package download failed (but SoftwareRepository reports OK!)");
+				}
+			}
+		}
+
+		if (downloadThread.getStoredException() != null) {
+			throw new TaskException("Download failed", downloadThread
+					.getStoredException());
+		}
+		downloadThread = null;
+		logInfo("Download finished");
+!!!631170.java!!!	finishDownload() : void
+		swRepo = null;
+		try {
+			if (serverSocketChan != null) {
+				serverSocketChan.close();
+			}
+			serverSocketChan = null;
+		} catch (IOException e) {
+			logWarning("Socket could not be closed");
+		}
+!!!631298.java!!!	unpack() : void
+		String archiveName = outputFile.getAbsolutePath();
+		logDebug("Unpacking archive: " + archiveName);
+
+		Unzip.unzip(archiveName, getTempDirectory());
+
+		String sourceDir = getTempDirectory() + File.separatorChar + "files";
+		Move.filesetMove(sourceDir, "**", getWorkingDirectory());
+		
+		Chmod.recursiveDirectoryChmod(getWorkingDirectory(), "u+rwx");
+!!!631426.java!!!	finish() : void
+		getTasksPort().checkPointReached("finish", "1");
+		logInfo("Finished sucesfully");
+!!!631682.java!!!	run() : void
+		try {
+			if (getTaskPropertyObject(RSL_PROPERTY) == null) {
+				throw new TaskException(RSL_PROPERTY + " task property not set");
+			}
+			
+			setup();
+			download();
+			unpack();
+			finish();
+		} catch (Exception e) {
+			throw new TaskException("Download failed", e);
+		} finally {
+			finishDownload();
+		}

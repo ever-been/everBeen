@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<!--
+
+  BEEN: Benchmarking Environment
+  ==============================
+
+  File author: Branislav Repcek
+
+  GNU Lesser General Public License Version 2.1
+  - - - - - - - - - - - - - - - - - - - - - - -
+  Copyright (C) 2004-2006 Distributed Systems Research Group,
+  Faculty of Mathematics and Physics, Charles University in Prague
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License version 2.1, as published by the Free Software Foundation.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+  MA  02111-1307  USA
+
+-->
+<project name="Load Monitor" default="build" basedir=".">
+
+	<!-- Directory to which documentation will be written. -->
+	<property name="doxygen.dir" location="../../doc/load-monitor"/>
+	
+	<!-- Set win.build property if we are building on Windows. -->
+	<condition property="win.build">
+		<and>
+			<os family="windows"/>
+		</and>
+	</condition>
+	
+	<!-- Set linux-build property if we are building on Linux/Unix. -->
+	<condition property="linux.build">
+		<and>
+			<os family="unix"/>
+		</and>
+	</condition>
+	
+	<!-- Test if Windows library is up to date. -->
+	<target name="-win-up-to-date">
+		<uptodate property="dont.build.win" targetfile="bin/LoadMonitor.wnm">
+			<srcfiles dir="windows">
+				<include name="**/*.cpp"/>
+				<include name="**/*.h"/>
+			</srcfiles>
+			<srcfiles dir="common">
+				<include name="**/*.cpp"/>
+				<include name="**/*.h"/>
+			</srcfiles>
+			<srcfiles dir=".">
+				<include name="**/*.sln"/>
+				<include name="**/*.vcproj"/>
+				<include name="**/build_win.bat"/>
+			</srcfiles>
+		</uptodate>
+	</target>
+
+	<!-- Test if Linux library is up to date. -->
+	<target name="-linux-up-to-date">
+		<uptodate property="dont.build.linux" targetfile="bin/LoadMonitor.lnm">
+			<srcfiles dir="linux">
+				<include name="**/*.cpp"/>
+				<include name="**/*.h"/>
+			</srcfiles>
+			<srcfiles dir="common">
+				<include name="**/*.cpp"/>
+				<include name="**/*.h"/>
+			</srcfiles>
+			<srcfiles dir=".">
+				<include name="**/Makefile"/>
+			</srcfiles>
+		</uptodate>
+	</target>
+	
+	<!-- Remove old object files from the obj directory. Do not call this target directly! -->
+	<target name="-delete-old">
+		<delete quiet="true">
+			<fileset dir="obj" includes="**/*"/>
+		</delete>
+	</target>
+	
+	<!-- Build library on Windows using Visual Studio. Do not call this target directly! -->
+	<target name="-build-win" depends="-win-up-to-date,-delete-old" if="win.build" unless="dont.build.win">
+		<mkdir dir="obj"/>
+		<exec executable="cmd" failonerror="true">
+			<arg line="/c build_win.bat"/>
+		</exec>
+	</target>
+	
+	<!-- Build library on Linux using make and gcc. Do not call this target directly! -->
+	<target name="-build-linux" depends="-linux-up-to-date,-delete-old" if="linux.build" unless="dont.build.linux">
+		<mkdir dir="obj"/>
+		<exec executable="make" failonerror="true"/>
+	</target>
+	
+	<!-- Default target. Build library for the current OS. -->
+	<target name="build" depends="-build-win,-build-linux">
+		<delete dir="obj"/>
+	</target>
+	
+	<!-- Delete all compiled files from out and bin directories. -->
+	<target name="clean">
+		<delete quiet="true" dir="obj"/>
+		<delete quiet="true">
+			<fileset dir="bin" includes="**/LoadMonitor.*"/>
+		</delete>
+	</target>
+	
+	<!-- Generate doxygen documentation for each Load Monitor library. -->
+	<target name="docs">
+		<mkdir dir="${doxygen.dir}"/>
+		<echo>Generating documentation for Linux Load Monitor library.</echo>
+		<exec executable="doxygen" failonerror="true">
+			<arg line="doc-linux.cfg"/>
+		</exec>
+		<echo>Generating documentation for Windows Load Monitor library.</echo>
+		<exec executable="doxygen" failonerror="true">
+			<arg line="doc-windows.cfg"/>
+		</exec>
+		<!-- <echo>Generating documentation for Solaris Load Monitor library.</echo>
+		<exec executable="doxygen" failonerror="true">
+			<arg line="doc-solaris.cfg"/>
+		</exec> -->
+		<copy file="index.html" todir="${doxygen.dir}" overwrite="true"/>
+	</target>
+</project>

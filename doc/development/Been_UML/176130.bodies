@@ -1,0 +1,399 @@
+class LoadSample
+!!!434690.java!!!	LoadSample()
+
+		this.timeStamp = TimeUtils.convertJavaDateToWindowsTime(new Date());
+!!!434818.java!!!	getDiskReadBytesPerSecond() : long
+		
+		if (diskReadBytes == null) {
+			return null;
+		} else {
+			return diskReadBytes.clone();
+		}
+!!!434946.java!!!	getDiskWriteBytesPerSecond() : long
+		
+		if (diskWriteBytes == null) {
+			return null;
+		} else {
+			return diskWriteBytes.clone();
+		}
+!!!435074.java!!!	getDriveCount() : int
+		
+		if (diskWriteBytes == null) {
+			return 0;
+		} else {
+			return diskWriteBytes.length;
+		}
+!!!435202.java!!!	getMemoryFree() : long
+		
+		return memoryFree;
+!!!435330.java!!!	getNetworkBytesReceivedPerSecond() : int
+		
+		if (networkBytesReceived == null) {
+			return null;
+		} else {
+			return networkBytesReceived.clone();
+		}
+!!!435458.java!!!	getNetworkBytesSentPerSecond() : int
+		
+		if (networkBytesSent == null) {
+			return null;
+		} else {
+			return networkBytesSent.clone();
+		}
+!!!435586.java!!!	getNetworkInterfaceCount() : int
+	
+		if ((networkBytesReceived == null) || (networkBytesSent == null)) {
+			return 0;
+		} else {
+			return networkBytesReceived.length;
+		}
+!!!435714.java!!!	getProcessCount() : int
+		
+		return processCount;
+!!!435842.java!!!	getProcessorCount() : int
+		
+		if (processorUsage == null) {
+			return 0;
+		} else {
+			return processorUsage.length;
+		}
+!!!435970.java!!!	getProcessQueueLength() : int
+		
+		return processQueueLength;
+!!!436098.java!!!	getProcessorUsage() : short
+		
+		if (processorUsage == null) {
+			return null;
+		} else {
+			return processorUsage.clone();
+		}
+!!!436226.java!!!	getTimeStamp() : long
+		
+		return timeStamp;
+!!!436354.java!!!	getTSC() : long
+		
+		return tsc;
+!!!436482.java!!!	load(inout buffer : ByteBuffer) : ByteBuffer
+
+		/*
+		 * For details about data storage see comments in save method below.
+		 */
+		
+		try {
+			timeStamp = buffer.getLong();
+			tsc = buffer.getLong();
+			
+			int processorCount = buffer.getShort();
+			if (processorCount < 0) {
+				throw new InputParseException("Invalid number of processors: " + processorCount);
+			}
+			if (processorCount > 0) {
+				processorUsage = new short[processorCount];
+			}
+	
+			int driveCount = buffer.getShort();
+			if (driveCount < 0) {
+				throw new InputParseException("Invalid number of disk drives: " + driveCount);
+			}
+			if (driveCount > 0) {
+				diskReadBytes = new long[driveCount];
+				diskWriteBytes = new long[driveCount];
+			}
+			
+			int networkCount = buffer.getShort();
+			if (networkCount < 0) {
+				throw new InputParseException("Invalid number of network adapters: " + networkCount);
+			}
+			if (networkCount > 0) {
+				networkBytesReceived = new int[networkCount];
+				networkBytesSent = new int[networkCount];
+			}
+	
+			memoryFree = buffer.getLong();
+	
+			if (memoryFree < 0) {
+				throw new InputParseException("Invalid free memory size: " + memoryFree);
+			}
+	
+			processCount = buffer.getInt();
+			
+			if (processCount < 0) {
+				throw new InputParseException("Invalid process count: " + processCount);
+			}
+			
+			processQueueLength = buffer.getInt();
+			if (processQueueLength < 0) {
+				throw new InputParseException("Invalid process queue length: " + processQueueLength);
+			}
+			
+			// read cpu usage for each cpu
+			for (int i = 0; i < processorCount; ++i) {
+				processorUsage[i] = buffer.getShort();
+				
+				if ((processorUsage[i] < 0) || (processorUsage[i] > 100)) {
+					throw new InputParseException("Invalid CPU usage for processor " + i + ": " 
+							+ processorUsage[i]);
+				}
+			}
+			
+			// read drive read bytes for each drive
+			for (int i = 0; i < driveCount; ++i) {
+				diskReadBytes[i] = buffer.getLong();
+	
+				if (diskReadBytes[i] < 0) {
+					throw new InputParseException("Invalid read speed for drive " + i + ": " 
+							+ diskReadBytes[i]); 
+				}
+			}
+			
+			// read drive write speed for each drive
+			for (int i = 0; i < driveCount; ++i) {
+				diskWriteBytes[i] = buffer.getLong();
+	
+				if (diskWriteBytes[i] < 0) {
+					throw new InputParseException("Invalid write speed for drive " + i + ": " 
+							+ diskReadBytes[i]); 
+				}
+			}
+			
+			// read speed at which bytes are received through each network adapter
+			for (int i = 0; i < networkCount; ++i) {
+				networkBytesReceived[i] = buffer.getInt();
+				
+				if (networkBytesReceived[i] < 0) {
+					throw new InputParseException("Invalid read speed for network adapter " + i 
+							+ ": " + networkBytesReceived[i]);
+				}
+			}
+			
+			// read speed at which bytes are sent through each network adapter
+			for (int i = 0; i < networkCount; ++i) {
+				networkBytesSent[i] = buffer.getInt();
+				
+				if (networkBytesSent[i] < 0) {
+					throw new InputParseException("Invalid read speed for network adapter " + i 
+							+ ": " + networkBytesReceived[i]);
+				}
+			}
+		} catch (BufferUnderflowException e) {
+			throw new InputParseException("Error reading sample data.", e);
+		}
+		
+		return buffer;
+!!!436610.java!!!	save(inout buffer : ByteBuffer) : ByteBuffer
+
+		/*
+		 * Sample data are stored in this way:
+		 * 
+		 *     Offset(B)     Type    Description
+		 *        0          long    Time stamp.
+		 *        8          long    Time stamp counter of the CPU.
+		 *       16          short   Number of processors: P.
+		 *       18          short   Number of disk drives: D.
+		 *       20          short   Number of network adapters/interfaces: N.
+		 *       22          long    Free physical memory in bytes.
+		 *       30          int     Number of processes running on the system.
+		 *       34          int     Process queue length.
+		 *       38          short[] Usage of each processor in percent, length of the array is P.
+		 *     38+2*P        long[]  Number of bytes read per second for each drive. 
+		 *                           Length of the array is D.
+		 *   38+2*P+8*D      long[]  Number of bytes written per second for each drive. 
+		 *                           Array length is D.
+		 *  38+2*P+16*D      int[]   Number of bytes received per second for each network interface.
+		 *                           Array length is N.
+		 * 38+2*P+16*D+4*N   int[]   Number of bytes sent per second for each network interface.
+		 *                           Array length is N.
+		 * 
+		 * Total size of the sample is therefore: 38+2*P+16*D+8*N bytes. For typical system with
+		 * one processor, one drive and two network interfaces (Ethernet and loopback) it is 72 B.
+		 * Minimum size of the sample is 38 bytes (that is, no processor, drive or network interfaces
+		 * were detected).
+		 */
+		
+		if (buffer.isReadOnly()) {
+			throw new OutputWriteException("Output buffer is read-only.");
+		}
+
+		try {
+			// write time stamp and TSC values
+			buffer.putLong(timeStamp);
+			buffer.putLong(tsc);
+			
+			// write number of cpus, drives and adapters
+			buffer.putShort((short) getProcessorCount());
+			buffer.putShort((short) getDriveCount());
+			buffer.putShort((short) getNetworkInterfaceCount());
+	
+			buffer.putLong(memoryFree);
+			buffer.putInt(getProcessCount());
+			buffer.putInt(getProcessQueueLength());
+	
+			// write CPU usage data
+			for (int i = 0; i < getProcessorCount(); ++i) {
+				buffer.putShort(processorUsage[i]);
+			}
+			
+			// write disk read speed
+			for (int i = 0; i < getDriveCount(); ++i) {
+				buffer.putLong(diskReadBytes[i]);
+			}
+			
+			// write disk write speed
+			for (int i = 0; i < getDriveCount(); ++i) {
+				buffer.putLong(diskWriteBytes[i]);
+			}
+			
+			// write network receiving speed
+			for (int i = 0; i < getNetworkInterfaceCount(); ++i) {
+				buffer.putInt(networkBytesReceived[i]);
+			}
+			
+			// write network sending speed
+			for (int i = 0; i < getNetworkInterfaceCount(); ++i) {
+				buffer.putInt(networkBytesSent[i]);
+			}
+
+		} catch (BufferOverflowException e) {
+			throw new OutputWriteException("Unable to write sample data.", e);
+		}
+		
+		return buffer;
+!!!436738.java!!!	getDataSize() : int
+		
+		return REQUIRED_DATA_SIZE
+		       + 2 * getProcessorCount()
+		       + 16 * getDriveCount()
+		       + 8 * getNetworkInterfaceCount();
+!!!436866.java!!!	setDiskReadAndWriteBytes(in diskReadBytes : long, in diskWriteBytes : long) : void
+
+		MiscUtils.verifyParameterIsNotNull(diskReadBytes, "diskReadBytes");
+		MiscUtils.verifyParameterIsNotNull(diskWriteBytes, "diskWriteBytes");
+		
+		if (diskReadBytes.length != diskWriteBytes.length) {
+			throw new InvalidArgumentException("Length of diskReadBytes and diskWriteBytes has to be same.");
+		}
+
+		this.diskReadBytes = new long[diskReadBytes.length];
+		this.diskWriteBytes = new long[diskWriteBytes.length];
+
+		for (int i = 0; i < diskReadBytes.length; ++i) {
+			if (diskReadBytes[i] < 0) {
+				throw new InvalidArgumentException("Negative read speed for drive " + i);
+			}
+			
+			if (diskWriteBytes[i] < 0) {
+				throw new InvalidArgumentException("Negative write speed for drive " + i);
+			}
+			
+			this.diskReadBytes[i] = diskReadBytes[i];
+			this.diskWriteBytes[i] = diskWriteBytes[i];
+		}		
+!!!436994.java!!!	setMemoryFree(in memoryFree : long) : void
+		
+		MiscUtils.verifyIntParameterGEZero(memoryFree, "memoryFree");
+		
+		this.memoryFree = memoryFree;
+!!!437122.java!!!	setNetworkReadWriteSpeed(in networkBytesReceived : int, in networkBytesSent : int) : void
+		
+		MiscUtils.verifyParameterIsNotNull(networkBytesReceived, "networkBytesReceived");
+		MiscUtils.verifyParameterIsNotNull(networkBytesSent, "networkBytesSent");
+		
+		if (networkBytesReceived.length != networkBytesSent.length) {
+			throw new InvalidArgumentException("Length of networkBytesReceived and networkBytesSent "
+					+ "has to be the same.");
+		}
+		
+		this.networkBytesReceived = new int[networkBytesReceived.length];
+		this.networkBytesSent = new int[networkBytesReceived.length];
+		
+		for (int i = 0; i < networkBytesReceived.length; ++i) {
+			if (networkBytesReceived[i] < 0) {
+				throw new InvalidArgumentException("Read speed for interface " + i + " is negative.");
+			}
+			
+			if (networkBytesSent[i] < 0) {
+				throw new InvalidArgumentException("Write speed for interface " + i + " is negative.");
+			}
+			
+			this.networkBytesReceived[i] = networkBytesReceived[i];
+			this.networkBytesSent[i] = networkBytesSent[i];
+		}
+!!!437250.java!!!	setProcessCount(in processCount : int) : void
+
+		MiscUtils.verifyIntParameterGEZero(processCount, "processCount");
+		
+		this.processCount = processCount;
+!!!437378.java!!!	setProcessorUsage(in processorUsage : short) : void
+		
+		MiscUtils.verifyParameterIsNotNull(processorUsage, "processorUsage");
+		
+		this.processorUsage = new short[processorUsage.length];
+		
+		for (int i = 0; i < processorUsage.length; ++i) {
+			if ((processorUsage[i] < 0) || (processorUsage[i] > 100)) {
+				throw new InvalidArgumentException("Invalid CPU usage value for processor " + i);
+			}
+			
+			this.processorUsage[i] = processorUsage[i];
+		}
+!!!437506.java!!!	setProcessQueueLength(in processQueueLength : int) : void
+		
+		MiscUtils.verifyIntParameterGEZero(processQueueLength, "processQueueLength");
+		
+		this.processQueueLength = processQueueLength;
+!!!437634.java!!!	setTimeStamp(in timeStamp : long) : void
+		
+		this.timeStamp = timeStamp;
+!!!437762.java!!!	setTSC(in tsc : long) : void
+		
+		this.tsc = tsc;
+!!!437890.java!!!	equals(inout o : Object) : boolean
+		
+		if (o instanceof LoadSample) {
+			return equals((LoadSample) o);
+		} else {
+			return false;
+		}
+!!!438018.java!!!	equals(inout sample : LoadSample) : boolean
+		
+		if (sample == this) {
+			return true;
+		}
+		
+		if (sample == null) {
+			return false;
+		}
+		
+		if (sample.getDataSize() != getDataSize()) {
+			return false;
+		}
+		
+		if ((sample.getTimeStamp() != getTimeStamp())
+			|| (sample.getTSC() != getTSC())
+			|| (sample.getMemoryFree() != getMemoryFree())
+			|| (sample.getProcessCount() != getProcessCount())
+			|| (sample.getProcessQueueLength() != getProcessQueueLength())) {
+			
+			return false;
+		}
+		
+		return Arrays.equals(processorUsage, sample.processorUsage)
+		       && Arrays.equals(diskReadBytes, sample.diskReadBytes)
+		       && Arrays.equals(diskWriteBytes, sample.diskWriteBytes)
+		       && Arrays.equals(networkBytesReceived, sample.networkBytesReceived)
+		       && Arrays.equals(networkBytesSent, sample.networkBytesSent);
+!!!438146.java!!!	hashCode() : int
+		
+		return 2 * (int) timeStamp
+		       + 3 * (int) tsc
+		       + 5 * (int) memoryFree
+		       + 7 * processCount
+		       + 11 * processQueueLength
+		       + 13 * Arrays.hashCode(processorUsage)
+		       + 17 * Arrays.hashCode(diskReadBytes)
+		       + 19 * Arrays.hashCode(diskWriteBytes)
+		       + 23 * Arrays.hashCode(networkBytesReceived)
+		       + 29 * Arrays.hashCode(networkBytesSent);
+!!!438274.java!!!	getChunkID() : byte
+		
+		return FILE_NODE_ID;

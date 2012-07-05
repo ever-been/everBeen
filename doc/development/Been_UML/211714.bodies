@@ -1,0 +1,44 @@
+class Binary
+!!!756354.java!!!	getId() : BID
+		return entity.getId();
+!!!756482.java!!!	getName() : String
+		return entity.getName();
+!!!756610.java!!!	getStatus() : EntityStatus
+		return entity.getStatus();
+!!!756738.java!!!	aggregatedTaskCount() : int
+		int result = tasks.length;
+		for (Run run: runs) {
+			result += run.taskCount();
+		}
+		return result;
+!!!756866.java!!!	aggregatedFinishedTaskCount() : int
+		int result = 0;
+		for (TaskEntry task: tasks) {
+			if (task.getState().equals(TaskState.FINISHED)) {
+				result++;
+			}
+		}
+		for (Run run: runs) {
+			result += run.finishedTaskCount();
+		}
+		return result;
+!!!756994.java!!!	runCount() : int
+		return runs.length;
+!!!757122.java!!!	getRuns() : Run
+		return runs;
+!!!757250.java!!!	getTasks() : TaskEntry
+		return tasks;
+!!!757378.java!!!	getAggregatedTasks() : TaskEntry
+		List<TaskEntry> result = new LinkedList<TaskEntry>();
+		result.addAll(Arrays.asList(tasks));
+		for (Run run: runs) {
+			result.addAll(Arrays.asList(run.getTasks()));
+		}
+		return result.toArray(new TaskEntry[result.size()]);
+!!!757506.java!!!	getCheckpoints() : TaskEntry
+		return checkpoints;
+!!!757634.java!!!	Binary(inout entity : BinaryEntity, inout runs : Run, inout tasks : TaskEntry, inout checkpoints : Map<TaskEntry, CheckPoint[]>)
+		this.entity = entity;
+		this.runs = runs;
+		this.tasks = tasks;
+		this.checkpoints = checkpoints;

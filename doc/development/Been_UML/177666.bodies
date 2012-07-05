@@ -1,0 +1,54 @@
+class ValueStatistics
+!!!442626.java!!!	ValueStatistics(in name : String, inout limitMin : Long, inout limitMax : Long)
+		
+		this.name = name;
+		min = Long.MAX_VALUE;
+		max = Long.MIN_VALUE;
+		this.limitMax = limitMax;
+		this.limitMin = limitMin;
+!!!442754.java!!!	addSamplePoint(in value : long) : void
+		
+		if (value < min) {
+			min = value;
+		}
+
+		if (value > max) {
+			max = value;
+		}
+
+		++count;
+		sum += value;
+		average = (float) sum / (float) count;
+!!!442882.java!!!	getAverage() : float
+		
+		if (count == 0) {
+			return 0;
+		} else {
+			return average;
+		}
+!!!443010.java!!!	getCount() : long
+
+		return count;
+!!!443138.java!!!	getMax() : long
+		
+		if (count == 0) {
+			return 0;
+		} else {
+			return max;
+		}
+!!!443266.java!!!	getMin() : long
+		
+		if (count == 0) {
+			return 0;
+		} else {
+			return min;
+		}
+!!!443394.java!!!	getName() : String
+		
+		return name;
+!!!443522.java!!!	getLimitMax() : Long
+		
+		return limitMax;
+!!!443650.java!!!	getLimitMin() : Long
+		
+		return limitMin;

@@ -1,0 +1,25 @@
+class PluginEntityResolver
+!!!219010.java!!!	PluginEntityResolver(in baseURI : String)
+		this.baseURI = baseURI;
+!!!219138.java!!!	resolveEntity(in publicId : String, in systemId : String) : InputSource
+		try {
+			// we obtain systemIDs in format baseURI/relativeSystemId
+			
+//			System.err.println("Resolver: " + systemId);
+			InputSource resolved = null;
+			if (systemId.endsWith(PLUGIN_DTD)) {
+				resolved = new InputSource(new File(baseURI, PLUGIN_DTD).toURI().toURL().openStream());
+			} else 
+			if (systemId.endsWith(SYMBOLIC_NAMES_DTD)) {
+				resolved = new InputSource(new File(baseURI, SYMBOLIC_NAMES_DTD).toURI().toURL().openStream());
+			} else { 
+				throw new SAXException("Unable to resolve: " + systemId);
+			}
+			resolved.setSystemId(baseURI);
+			return resolved;
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;

@@ -1,0 +1,4887 @@
+format 70
+"common" // been::src::cz::cuni::mff::been::common
+  revision 2
+  modified_by 8 "BoRiS"
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+  show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+  show_infonote default drawing_language default show_stereotype_properties default
+  
+  java_dir "cz/cuni/mff/been/common"
+  java_package "cz.cuni.mff.been.common"
+  classview 128130 "common"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+    //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+    show_infonote default drawing_language default show_stereotype_properties default
+    class 128130 "BeenException"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+This class is a base class for all user exceptions thrown in the whole BEEN project.
+
+@author David Majda
+"
+      classrelation 128002 // <generalisation>
+	relation 128002 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 128002 // <generalisation>
+	  b parent class_ref 128258 // Exception
+      end
+
+      operation 128002 "BeenException"
+	public explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>BeenException</code> object.
+"
+      end
+
+      operation 128130 "BeenException"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "message" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>BeenException</code> object
+with specified message.
+
+@param message exception message
+"
+      end
+
+      operation 128258 "BeenException"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "cause" explicit_type "Throwable"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>BeenException</code> object
+with specified cause.
+
+@param cause exception cause
+"
+      end
+
+      operation 128386 "BeenException"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "message" explicit_type "String"
+	  param inout name "cause" explicit_type "Throwable"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>BeenException</code> object
+with specified message and cause.
+
+@param message exception message
+@param cause exception cause
+"
+      end
+    end
+
+    class 129154 "ComponentInitializationException"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Exception indicating that component initialization was not successfull.
+ 
+@author Michal Tomcanyi
+@author David Majda
+"
+      classrelation 160002 // <generalisation>
+	relation 160002 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 160002 // <generalisation>
+	  b parent class_ref 128130 // BeenException
+      end
+
+      operation 242818 "ComponentInitializationException"
+	public explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>ComponentInitializationException</code> object.
+"
+      end
+
+      operation 242946 "ComponentInitializationException"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "message" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>ComponentInitializationException</code> object
+with specified message.
+
+@param message exception message
+"
+      end
+
+      operation 243074 "ComponentInitializationException"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "cause" explicit_type "Throwable"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>ComponentInitializationException</code> object
+with specified cause.
+
+@param cause exception cause
+"
+      end
+
+      operation 243202 "ComponentInitializationException"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "message" explicit_type "String"
+	  param inout name "cause" explicit_type "Throwable"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>ComponentInitializationException</code> object
+with specified message and cause.
+
+@param message exception message
+@param cause exception cause
+"
+      end
+    end
+
+    class 133122 "WorkQueue"
+      visibility public 
+      nformals 2
+      formal name "T" type "" explicit_default_value ""
+        explicit_extends ""
+      formal name "T" type "" explicit_default_value ""
+        explicit_extends ""
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 177026 "queue"
+	const_attribute private explicit_type "T"
+	init_value "=  new LinkedList<T>()"
+	stereotype "LinkedList"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<${type}> ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      operation 256002 "getWork"
+	public explicit_return_type "T"
+	nparams 0
+	
+	preserve_java_body_indent synchronized java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 256130 "addWork"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "work" explicit_type "T"
+	
+	preserve_java_body_indent synchronized java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+    end
+
+    class 133890 "IdentifiableList"
+      visibility public 
+      nformals 2
+      formal name "T" type "" explicit_default_value ""
+        explicit_extends ""
+      formal name "T" type "" explicit_default_value ""
+        explicit_extends ""
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Class represents a list storing objects that carry unique IDs. Provides some utility methods for searching by IDs.
+
+@author Michal Tomcanyi
+"
+      classrelation 160386 // <realization>
+	relation 160386 -_-|>
+	  a public
+	    java "${type}< Identifiable< T > >"
+	    classrelation_ref 160386 // <realization>
+	  b parent class_ref 150274 // LinkedList
+      end
+
+      operation 244226 "findByID"
+	public return_type class_ref 133762 // Identifiable
+	nparams 1
+	  param inout name "id" explicit_type "T"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}< T > ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Searches for an object stored in the list carrying specific ID.
+If objects in the list do not have unique IDs, then the first object
+carrying the ID is returned.
+
+@param id	to search for
+@return	object carrying provided ID or <code>null</code> when no matches
+"
+      end
+
+      operation 244354 "getIDs"
+	public explicit_return_type "List< T >"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return (Multi)set of IDs available in the list 
+"
+      end
+    end
+
+    class 134658 "UploadHandle"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+General upload handle. It is used to uniquely identify the upload operation.
+
+@author David Majda
+"
+      classrelation 162178 // <realization>
+	relation 162178 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 162178 // <realization>
+	  b parent class_ref 148226 // Serializable
+      end
+
+      attribute 175234 "nextValue"
+	class_attribute private explicit_type "int"
+	init_value "=  0"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Next handle value. 
+"
+      end
+
+      attribute 175362 "value"
+	private explicit_type "int"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Handle value. 
+"
+      end
+
+      operation 253570 "createUploadHandle"
+	class_operation public return_type class_ref 134658 // UploadHandle
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Factory method for creating new <code>UploadHandle</code>s.
+
+@return new <code>UploadHandle</code> instance with unique value
+"
+      end
+
+      operation 253698 "UploadHandle"
+	private explicit_return_type ""
+	nparams 1
+	  param in name "value" explicit_type "int"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>UploadHandle</code> object.
+
+@param value handle value
+"
+      end
+
+      operation 253826 "equals"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "o" explicit_type "Object"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " 
+Compares this handle to the specified object. The result is <code>true</code>
+if and only if the argument is not <code>null</code> and is a <code>UploadHandle</code>
+object that represents the same handle as this object.
+
+This method must be overriden because we send handles via RMI back and forth
+and they must be considered equal even when they are physically different
+objects. (By default, only the physically same objects are considered equal.)      
+      
+@throws ClassCastException if the argument is not a <code>UploadHandle</code>.
+
+@see java.lang.Object#equals(java.lang.Object)
+"
+      end
+
+      operation 253954 "hashCode"
+	public explicit_return_type "int"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns the object hashcode.
+ 
+This method must be overriden because we send handles via RMI back and forth
+and they must have the same hashcode even when they are physically different
+objects. (By default, hashcodes are the same only for the physically same objects.)      
+
+@see java.lang.Object#hashCode()
+"
+      end
+    end
+
+    class 134786 "UploadStatus"
+      visibility public stereotype "enum"
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}enum ${name}${implements} {
+${items};
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Package upload status enumeration.
+
+@author David Majda
+"
+      attribute 175490 "INITIALIZING"
+	public type class_ref 134786 // UploadStatus
+	cpp_decl ""
+	java_decl "  ${@}${name}${value},${comment}"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Package upload is initializing. 
+"
+      end
+
+      attribute 175618 "UPLOADING"
+	public type class_ref 134786 // UploadStatus
+	cpp_decl ""
+	java_decl "  ${@}${name}${value},${comment}"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Package is uploading. 
+"
+      end
+
+      attribute 175746 "ACCEPTED"
+	public type class_ref 134786 // UploadStatus
+	cpp_decl ""
+	java_decl "  ${@}${name}${value},${comment}"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Upload has finished successfully and package was accepted. 
+"
+      end
+
+      attribute 175874 "REJECTED"
+	public type class_ref 134786 // UploadStatus
+	cpp_decl ""
+	java_decl "  ${@}${name}${value},${comment}"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Upload has finished successfully and package was rejected. 
+"
+      end
+
+      attribute 176002 "ERROR"
+	public type class_ref 134786 // UploadStatus
+	cpp_decl ""
+	java_decl "  ${@}${name}${value},${comment}"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Upload has finished with error. "
+      end
+    end
+
+    class 136322 "UploadThread"
+      abstract visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+General uploading thread able to copy file over network via TCP sockets.
+Thread creates temporary file and allows descendants to process the temporary file.
+
+@author Michal Tomcanyi
+@author David Majda
+
+"
+      classrelation 133122 // <generalisation>
+	relation 133122 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 133122 // <generalisation>
+	  b parent class_ref 132482 // Thread
+      end
+
+      attribute 132098 "MAX_CREATE_TEMP_FILE_TRY_COUNT"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  1024"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+How many times we should try to create a temp file. See
+<code>createTempFile</code> method for explanation, why we need this
+constant.
+
+"
+      end
+
+      attribute 132226 "UPLOAD_BUFFER_SIZE"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  4096"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Size of buffer used when uploading packages from clients. 
+"
+      end
+
+      classrelation 133250 // handle (<unidirectional association>)
+	relation 133250 --->
+	  a role_name "handle" private
+	    comment " Upload handle. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 133250 // handle (<unidirectional association>)
+	  b parent class_ref 134658 // UploadHandle
+      end
+
+      attribute 132354 "ip"
+	private explicit_type "InetAddress"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " IP address of host to download the package from. 
+"
+      end
+
+      attribute 132482 "port"
+	private explicit_type "int"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Port to download the package from. 
+"
+      end
+
+      classrelation 133378 // status (<unidirectional association>)
+	relation 133378 --->
+	  a role_name "status" protected
+	    comment " Status of uploader 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 133378 // status (<unidirectional association>)
+	  b parent class_ref 134786 // UploadStatus
+      end
+
+      attribute 132610 "tempFile"
+	private explicit_type "File"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Temporary file where transferred contents are saved 
+"
+      end
+
+      attribute 132738 "errorMessages"
+	protected explicit_type "String"
+	init_value "=  new LinkedList<String>()"
+	stereotype "LinkedList"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<${type}> ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Error messages 
+"
+      end
+
+      operation 149506 "getHandle"
+	public return_type class_ref 134658 // UploadHandle
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return returns the handle "
+      end
+
+      operation 149634 "getIp"
+	public explicit_return_type "InetAddress"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return returns the IP addresss "
+      end
+
+      operation 149762 "getPort"
+	public explicit_return_type "int"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return returns the port "
+      end
+
+      operation 149890 "getErrorMesssages"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return error messages possibly created during upload/file handling
+
+@see #addErrorMessage(String)
+@see #uploadFailed()
+"
+      end
+
+      operation 150018 "UploadThread"
+	public explicit_return_type ""
+	nparams 3
+	  param inout name "handle" type class_ref 134658 // UploadHandle
+	  param inout name "ip" explicit_type "InetAddress"
+	  param in name "port" explicit_type "int"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>PackageUploadThread</code> object with specified
+parameters.
+
+@param handle upload handle
+@param ip IP address of host to download the package from
+@param port port to download the package from
+"
+      end
+
+      operation 150146 "setStatus"
+	protected explicit_return_type "void"
+	nparams 1
+	  param inout name "status" type class_ref 134786 // UploadStatus
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the upload status to given value.
+
+@param status upload status
+"
+      end
+
+      operation 150274 "addErrorMessage"
+	protected explicit_return_type "void"
+	nparams 1
+	  param in name "error" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Adds new error message to the list of error messages
+@param error	error message
+@see #errorMessages
+"
+      end
+
+      operation 150402 "getStatus"
+	public return_type class_ref 134786 // UploadStatus
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return status of the uploader
+"
+      end
+
+      operation 150530 "getTemporaryFile"
+	protected explicit_return_type "File"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return file with uploaded data "
+      end
+
+      operation 150658 "getPrefix"
+	protected explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return prefix of created data file, descendants may override
+		   'upload' by default
+
+@see File#createTempFile(java.lang.String, java.lang.String, java.io.File)
+"
+      end
+
+      operation 150786 "getSuffix"
+	protected explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return suffix of created data file, descendants may override
+			\".tmp\" by default
+@see File#createTempFile(java.lang.String, java.lang.String, java.io.File)
+"
+      end
+
+      operation 150914 "getTempDirectory"
+	protected explicit_return_type "File"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return temporary directory where to create data file, descendants may override
+			<code>null</code> by default which means system-dependent temporary directory
+			will be used
+@see File#createTempFile(java.lang.String, java.lang.String, java.io.File)
+"
+      end
+
+      operation 151042 "uploadPackage"
+	private explicit_return_type "void"
+	nparams 1
+	  param inout name "file" explicit_type "File"
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Uploads the package from the uploader to the specified file.
+
+@param file file to download
+@throws IOException if some I/O error occurs
+"
+      end
+
+      operation 151170 "deleteFileIfExists"
+	private explicit_return_type "void"
+	nparams 1
+	  param inout name "file" explicit_type "File"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Deletes specified file if it exists.
+
+@param file file to delete
+"
+      end
+
+      operation 151298 "createTempFile"
+	private explicit_return_type "File"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Creates teporary file in the <code>tmpDir</code> directory.
+
+@return the temporary file
+
+@throws IOException if the temporary file can not be created
+"
+      end
+
+      operation 151426 "processFile"
+	abstract protected explicit_return_type "void"
+	nparams 0
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Called after successfull completition of file transfer, so that descendant can
+process the file. 
+<p>
+<b>WARNING:</b> Note that file denoted by {@link #getTemporaryFile()} method will
+be deleted after this method is finished, so descendants should copy/move the file
+to a different location
+</p>
+
+@see #getTemporaryFile()
+"
+      end
+
+      operation 151554 "uploadFailed"
+	abstract protected explicit_return_type "void"
+	nparams 0
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Called when an error occurs during file upload so that descandat can handle the error
+Status of the uploader will be set to {@link UploadStatus#ERROR} and {@link #errorMessages}
+will contain error message that caused the failure.
+
+Temporary file with data may exist but its content is undefined.
+
+@see #getStatus()
+@see #errorMessages
+"
+      end
+
+      operation 151682 "run"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Connects to given host and port, downloads the package file form there,
+validates its contents and adds the package into the Software Repository.
+
+@see java.lang.Runnable#run()
+"
+      end
+    end
+
+    class 140034 "Pair"
+      visibility public 
+      nformals 4
+      formal name "T1" type "" explicit_default_value ""
+        explicit_extends ""
+      formal name "T2" type "" explicit_default_value ""
+        explicit_extends ""
+      formal name "T1" type "" explicit_default_value ""
+        explicit_extends ""
+      formal name "T2" type "" explicit_default_value ""
+        explicit_extends ""
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Class which enables you to pair two objects inside one.
+
+@param <T1> Type of the first element of the pair.
+@param <T2> Type of the second element of the pair.
+
+@author Branislav Repcek
+"
+      classrelation 161282 // <realization>
+	relation 161282 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 161282 // <realization>
+	  b parent class_ref 148226 // Serializable
+      end
+
+      attribute 173058 "first"
+	private explicit_type "T1"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+First element of the pair.
+
+"
+      end
+
+      attribute 173186 "second"
+	private explicit_type "T2"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Second element of the pair.
+
+"
+      end
+
+      operation 245762 "Pair"
+	public explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Create empty pair. Elements will be set to null.
+"
+      end
+
+      operation 245890 "Pair"
+	public explicit_return_type ""
+	nparams 2
+	  param inout name "newFirst" explicit_type "T1"
+	  param inout name "newSecond" explicit_type "T2"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Create new instance of pair.
+
+@param newFirst Value of the first element.
+@param newSecond Value of the second element.
+"
+      end
+
+      operation 246018 "getFirst"
+	public explicit_return_type "T1"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Get value of the first element.
+
+@return Value of the first element.
+"
+      end
+
+      operation 246146 "getSecond"
+	public explicit_return_type "T2"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Get value of the second element.
+
+@return Value of the second element of the pair. 
+"
+      end
+
+      operation 246274 "toString"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+Convert value to the string. Resulting string will have this format:<br>
+<code>[first, second]</code><br>
+where <code>first</code> (<code>second</code>) are values of the first (second) elements of the pair.
+"
+      end
+
+      operation 246402 "hashCode"
+	public explicit_return_type "int"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+Calculate hash code of the object. Hash is calculated from the string representation of the pair. 
+"
+      end
+
+      operation 246530 "equals"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "o" explicit_type "Object"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@SuppressWarnings(\"unchecked\")
+	@Override
+"
+	
+	
+	
+	comment "
+Test for equality. Two pair object are equal only if both elements of both objects are equal.
+"
+      end
+
+      operation 246658 "equals"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "o" type class_ref 140034 // Pair
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0}< T1, T2 > ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Test for equality. Two pair object are equal only if both elements of both objects are equal.
+
+@param o Other object to test.
+ 
+@return <code>true</code> if both Pairs have same values, <code>false</code> otherwise. 
+"
+      end
+
+      operation 246786 "setFirst"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "first" explicit_type "T1"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Set value of the first element in the pair.
+
+@param first New value of the first element in the pair.
+"
+      end
+
+      operation 246914 "setSecond"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "second" explicit_type "T2"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Set value of the second element in the pair.
+
+@param second New value of the second element in the pair.
+"
+      end
+    end
+
+    class 141442 "Version"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      java_annotation "@SuppressWarnings(\"unchecked\")
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Class representing a version of something. It allows parsing the version
+from string, intelligent manipulation with versions (especially comparing)
+and writing them out as strings.
+
+Internally, versions are stored as array of strings representing
+version parts (e.g. \"5.1\" is stored as array containing elements \"5\"
+and \"1\").  
+
+@author David Majda
+"
+      classrelation 162306 // <realization>
+	relation 162306 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 162306 // <realization>
+	  b parent class_ref 153090 // Cloneable
+      end
+
+      classrelation 162434 // <realization>
+	relation 162434 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 162434 // <realization>
+	  b parent class_ref 148098 // Comparable
+      end
+
+      classrelation 162562 // <realization>
+	relation 162562 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 162562 // <realization>
+	  b parent class_ref 148226 // Serializable
+      end
+
+      attribute 176514 "PART_SEPARATOR"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \".\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Separator of the version parts.
+
+"
+      end
+
+      attribute 176642 "PART_SEPARATOR_REGEX"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"\\\\.\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Separator of the version parts, written as a regular expression.
+
+"
+      end
+
+      attribute 176770 "ZERO_PART"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"0\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+String used in comparisons in case of missing version part in one of
+compared versions.
+
+"
+      end
+
+      attribute 176898 "parts"
+	private explicit_type "String"
+	multiplicity "[]"
+	init_value "=  {}"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Version parts.
+
+"
+      end
+
+      operation 254594 "Version"
+	public explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>Version</code> object, without any version
+represented. Shoulnd't be used. 
+"
+      end
+
+      operation 254722 "Version"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "s" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>Version</code> object, representing a version
+given in the <code>s</code> parameter.
+ 
+@param s version to represent 
+"
+      end
+
+      operation 254850 "partCount"
+	public explicit_return_type "int"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return part count "
+      end
+
+      operation 254978 "getPart"
+	public explicit_return_type "String"
+	nparams 1
+	  param in name "index" explicit_type "int"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@param index part index
+@return index-th part
+"
+      end
+
+      operation 255106 "compareTo"
+	public explicit_return_type "int"
+	nparams 1
+	  param inout name "o" explicit_type "Object"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Compares this Version to another Object. If the Object is a Version,
+this function behaves like <code>compareTo(Version)</code>. Otherwise,
+it throws a <code>ClassCastException</code> (as <code>Versions</code>
+are comparable only to other <code>Versions</code>).
+      
+@param o the <code>Object</code> to be compared.
+@return the value <code>0</code> if the argument is a version equal
+         to this version; a value less than <code>0</code>
+         if the argument is a version greater than this version;
+         and a value greater than <code>0</code> if the argument 
+         is a version less than this version.
+@throws ClassCastException if the argument is not a <code>Version</code>.
+
+@see java.lang.Comparable#compareTo(java.lang.Object)
+"
+      end
+
+      operation 255234 "compareTo"
+	public explicit_return_type "int"
+	nparams 1
+	  param inout name "anotherVersion" type class_ref 141442 // Version
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Compares two versions. Comparison algorithm is this:
+<ol>
+  <li>If number of parts in one of the compared versions is smaller than
+      in the other version, add necessary number of parts containing
+      string \"0\" to the end of one version, so the number of parts
+      in both versions is equal.</li>
+  <li>Compare version parts form the left as strings. If they aren't equal,
+      return the string comparison return value, otherwise continue with
+      the next part.</li>
+  <li>If all parts are equal, return <code>0</code>.</li> 
+</ol>      
+      
+@param anotherVersion the <code>Version</code> to be compared.
+@return the value <code>0</code> if the argument is a version equal
+         to this version; a value less than <code>0</code>
+         if the argument is a version greater than this version;
+         and a value greater than <code>0</code> if the argument 
+         is a version less than this version.
+"
+      end
+
+      operation 255362 "equals"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "o" explicit_type "Object"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment " 
+Compares this version to the specified object. The result is <code>true</code>
+if and only if the argument is not <code>null</code> and is a <code>Version</code>
+object that represents the same version as this object.
+
+@throws ClassCastException if the argument is not a <code>Version</code>.
+
+@see java.lang.Object#equals(java.lang.Object)
+"
+      end
+
+      operation 255490 "hashCode"
+	public explicit_return_type "int"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+Returns a hash code value for this object. Because comparing version
+is a bit tricky (versions like \"1.5\", \"1.5.0\" and \"1.5.0.0\" are all
+equal), we use following algorithm to compute a hash code:
+<ol>
+  <li>Strip all parts with value <code>ZERO_PART</code> (\"0\") from the end
+      of the version.
+  <li>Set the initial hash code to <code>0</code> and iterate remaining
+      parts of the version. In each step, xor current hash code with the
+      hash code of current part.</li>
+  <li>Return final hash code.</li> 
+</ol>
+      
+Hash code computed by this algorithm maintains the general contract
+for the <code>hashCode</code> method, which states that equal objects
+must have equal hash codes.
+
+@return a hash code value for this object
+
+@see java.lang.Object#hashCode()
+"
+      end
+
+      operation 255618 "valueOf"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "s" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Parses the version from a string.
+ 
+@param s string to parse the version from
+"
+      end
+
+      operation 255746 "toString"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment " 
+@return string representation of the version
+@see java.lang.Object#toString()
+"
+      end
+
+      operation 255874 "getPartOrZero"
+	private explicit_return_type "String"
+	nparams 1
+	  param in name "index" explicit_type "int"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns version part with specified index. If the index is too large, returns
+string \"0\". This behaviour is useful for comparing versions.
+
+@param index part index
+@return version part with specified index or string \"0\" if the index is
+         too large
+"
+      end
+    end
+
+    class 143234 "TaskPathBuilder"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Utility class for constructing task paths
+@author Michal Tomcanyi
+"
+      attribute 174594 "WORKING_DIR"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \":workingDirectory\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 174722 "TEMP_DIR"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \":temporaryDirectory\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 174850 "TASK_DIR"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \":taskDirectory\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 174978 "separator"
+	const_attribute private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " separator to use when constructing path
+"
+      end
+
+      attribute 175106 "path"
+	const_attribute private explicit_type "StringBuilder"
+	init_value "=  new StringBuilder()"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " constructed path
+"
+      end
+
+      operation 252418 "TaskPathBuilder"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "useWindowsSeparator" explicit_type "boolean"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Creates new TaskBuilderObject
+@param useWindowsSeparator	if <code>true</code>, windows double 
+								backslash '\\\\'	will be set as separator.
+								Otherwise UNIX '/' will be used as separator 
+"
+      end
+
+      operation 252546 "addWorking"
+	public return_type class_ref 143234 // TaskPathBuilder
+	nparams 1
+	  param in name "taskTID" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Appends working directory of given task to constructed path
+@param taskTID	TID of task which working directory should be used
+@return <code>this</code> instance of TaskPathBuilder
+@throws IllegalArgumentException when <code>taskTID</code> is null or empty
+"
+      end
+
+      operation 252674 "addTemp"
+	public return_type class_ref 143234 // TaskPathBuilder
+	nparams 1
+	  param in name "taskTID" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Appends temporary directory of given task to constructed path
+@param taskTID	TID of task which temporary directory should be used
+@return <code>this</code> instance of TaskPathBuilder
+@throws IllegalArgumentException when <code>taskTID</code> is null or empty
+"
+      end
+
+      operation 252802 "addTask"
+	public return_type class_ref 143234 // TaskPathBuilder
+	nparams 1
+	  param in name "taskTID" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Appends task directory of given task to constructed path
+@param taskTID	TID of task which task directory should be used
+@return <code>this</code> instance of TaskPathBuilder
+@throws IllegalArgumentException when <code>taskTID</code> is null or empty
+"
+      end
+
+      operation 252930 "add"
+	public return_type class_ref 143234 // TaskPathBuilder
+	nparams 1
+	  param in name "element" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Adds any string as path element. The element is prepended with proper
+separator before appended to constructed path.
+When element is null or an empty string the path is unmodified
+
+@param element	Path element to append 
+@return <code>this</code> instance of TaskPathBuilder
+"
+      end
+
+      operation 253058 "addSeparator"
+	public return_type class_ref 143234 // TaskPathBuilder
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Appends separator only to the constructed path
+@return <code>this</code> instance of TaskPathBuilder
+"
+      end
+
+      operation 253186 "get"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return Constructed path
+"
+      end
+
+      operation 253314 "clean"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Cleans the constructed path. (Set to an empty string)
+
+@return The constructed path before cleaning.
+"
+      end
+
+      operation 253442 "checkValidTid"
+	private explicit_return_type "void"
+	nparams 1
+	  param in name "tid" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+    end
+
+    class 149250 "ArrayUtils"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Provides some miscelaneous utility methods for arrays.
+
+@author Jaroslav Urban
+"
+      operation 241922 "join"
+	class_operation public explicit_return_type "String"
+	nparams 2
+	  param in name "token" explicit_type "String"
+	  param inout name "objects" explicit_type "Object"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1}[] ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Creates assembles String representations of members of an array into
+one big String, separated by a token.
+@param token
+@param objects
+@return one big string containing String representations of the members
+of the array separated by the token.
+"
+      end
+
+      operation 242050 "reverse"
+	class_operation public explicit_return_type "void"
+	nparams 1
+	  param inout name "b" explicit_type "T"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}<T> ${type} ${name}${(}${t0}[] ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Reverts order of arrays elements
+@param <T>
+@param b
+"
+      end
+    end
+
+    class 149378 "BeenUtils"
+      visibility public 
+      cpp_decl ""
+      final java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      operation 242178 "BeenUtils"
+	private explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      classrelation 159746 // TID_COMPARATOR (<unidirectional association>)
+	relation 159746 --->
+	  stereotype "Comparator"
+	  a role_name "TID_COMPARATOR" init_value "=  new TidComparator()" class_relation const_relation public
+	    comment "
+Comparator for TaskDescriptors according to TIDs
+
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<${type}> ${name}${value};
+"
+	    classrelation_ref 159746 // TID_COMPARATOR (<unidirectional association>)
+	  b parent class_ref 131074 // TaskDescriptor
+      end
+
+      class 149506 "TidComparator"
+	visibility private 
+	cpp_decl ""
+	final java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	classrelation 159874 // <realization>
+	  relation 159874 -_-|>
+	    a public
+	      java "${type}<TaskDescriptor>"
+	      classrelation_ref 159874 // <realization>
+	    b parent class_ref 149634 // Comparator
+	end
+
+	operation 242306 "compare"
+	  public explicit_return_type "int"
+	  nparams 2
+	    param inout name "o1" type class_ref 131074 // TaskDescriptor
+	    param inout name "o2" type class_ref 131074 // TaskDescriptor
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+      end
+
+      operation 242434 "sortTasks"
+	class_operation public return_type class_ref 131074 // TaskDescriptor
+	nparams 1
+	  param inout name "tasksToSort" type class_ref 131074 // TaskDescriptor
+	
+	preserve_java_body_indent final java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${t0}[] ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sorts tasks by TIDs
+@param tasksToSort	tasks to sort
+@return taskToSort sorted by TIDs
+"
+      end
+
+      operation 242562 "extractTaskIDs"
+	class_operation public explicit_return_type "String"
+	nparams 1
+	  param inout name "descriptors" type class_ref 131074 // TaskDescriptor
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${t0}[] ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Extract task identifiers from task descriptors
+@param descriptors	descriptors to extract from
+@return	list of extracted task identifiers
+"
+      end
+
+      operation 242690 "findRootDir"
+	class_operation public explicit_return_type "File"
+	nparams 2
+	  param in name "rootDir" explicit_type "String"
+	  param in name "nameToSearch" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 137346 // TaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Searches for directory containing specified \"nameToSearch\" file or directory
+by BFS algorithm 
+
+@param rootDir directory where to begin search
+@param nameToSearch directory/file name which 'root' should contain
+@return root or null when no-match
+"
+      end
+    end
+
+    class 149762 "DownloadHandle"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+General download handle. It is used to uniquely identify the download operation.
+
+@author David Majda
+"
+      classrelation 160130 // <realization>
+	relation 160130 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 160130 // <realization>
+	  b parent class_ref 148226 // Serializable
+      end
+
+      attribute 171394 "nextValue"
+	class_attribute private explicit_type "int"
+	init_value "=  0"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Next handle value. 
+"
+      end
+
+      attribute 171522 "value"
+	private explicit_type "int"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Handle value. 
+"
+      end
+
+      operation 243330 "createDownloadHandle"
+	class_operation public return_type class_ref 149762 // DownloadHandle
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Factory method for creating new <code>DownloadHandle</code>s.
+
+@return new <code>DownloadHandle</code> instance with unique value
+"
+      end
+
+      operation 243458 "DownloadHandle"
+	private explicit_return_type ""
+	nparams 1
+	  param in name "value" explicit_type "int"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>DownloadHandle</code> object.
+
+@param value handle value
+"
+      end
+
+      operation 243586 "equals"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "o" explicit_type "Object"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " 
+Compares this handle to the specified object. The result is <code>true</code>
+if and only if the argument is not <code>null</code> and is a <code>DownloadHandle</code>
+object that represents the same handle as this object.
+
+This method must be overriden because we send handles via RMI back and forth
+and they must be considered equal even when they are physically different
+objects. (By default, only the physically same objects are considered equal.)      
+
+@throws ClassCastException if the argument is not a <code>DownloadHandle</code>.
+
+@see java.lang.Object#equals(java.lang.Object)
+"
+      end
+
+      operation 243714 "hashCode"
+	public explicit_return_type "int"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns the object hashcode.
+ 
+This method must be overriden because we send handles via RMI back and forth
+and they must have the same hashcode even when they are physically different
+objects. (By default, hashcodes are the same only for the physically same objects.)      
+
+@see java.lang.Object#hashCode()
+"
+      end
+    end
+
+    class 149890 "DownloadStatus"
+      visibility public stereotype "enum"
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}enum ${name}${implements} {
+${items};
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Package download status enumeration.
+
+@author David Majda
+"
+      attribute 171650 "INITIALIZING"
+	public type class_ref 149890 // DownloadStatus
+	cpp_decl ""
+	java_decl "  ${@}${name}${value},${comment}"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Package download is initializing. 
+"
+      end
+
+      attribute 171778 "DOWNLOADING"
+	public type class_ref 149890 // DownloadStatus
+	cpp_decl ""
+	java_decl "  ${@}${name}${value},${comment}"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Package is downloading. 
+"
+      end
+
+      attribute 171906 "SUCCEEDED"
+	public type class_ref 149890 // DownloadStatus
+	cpp_decl ""
+	java_decl "  ${@}${name}${value},${comment}"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Download has finished successfully. 
+"
+      end
+
+      attribute 172034 "ERROR"
+	public type class_ref 149890 // DownloadStatus
+	cpp_decl ""
+	java_decl "  ${@}${name}${value},${comment}"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Download has finished with error. "
+      end
+    end
+
+    class 150018 "GreedyURLClassLoader"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+The greedy classloader (contradictory from other classloaders) loads classes 
+from specified URLs at first, and only if unsuccessful delegates the request to
+parent classloader
+@author mtomcanyi
+
+"
+      classrelation 160258 // <generalisation>
+	relation 160258 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 160258 // <generalisation>
+	  b parent class_ref 150146 // URLClassLoader
+      end
+
+      operation 243842 "GreedyURLClassLoader"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "urls" explicit_type "URL"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0}[] ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Creates class loader loading only from given list of URLs
+@param urls - list of URLs to load classes from
+@see URLClassLoader#URLClassLoader(java.net.URL[])
+"
+      end
+
+      operation 243970 "GreedyURLClassLoader"
+	public explicit_return_type ""
+	nparams 2
+	  param inout name "urls" explicit_type "URL"
+	  param inout name "parentClassLoader" explicit_type "ClassLoader"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0}[] ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Creates class loader loading from given list of URLs. If unsuccessful, delegates
+the request to <code>parentClassLoader</code>
+@param urls - list of urls to load classes from
+@param parentClassLoader - class loader to which request are delegated
+@see URLClassLoader#URLClassLoader(java.net.URL[], java.lang.ClassLoader)
+"
+      end
+
+      operation 244098 "loadClass"
+	public explicit_return_type "Class< ? >"
+	nparams 1
+	  param in name "name" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "ClassNotFoundException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+    end
+
+    class 150402 "IntegerInputValidator"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      operation 244482 "validate"
+	public explicit_return_type "String"
+	nparams 1
+	  param in name "value" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+      end
+    end
+
+    class 150530 "IntegerIntervalInputValidator"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Input validator. The value must be an integer in a set interval.
+
+@author Jaroslav Urban
+"
+      classrelation 160642 // <generalisation>
+	relation 160642 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 160642 // <generalisation>
+	  b parent class_ref 150402 // IntegerInputValidator
+      end
+
+      attribute 172162 "min"
+	private explicit_type "int"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Minimum allowed value. 
+"
+      end
+
+      attribute 172290 "max"
+	private explicit_type "int"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Maximum allowed value. 
+"
+      end
+
+      operation 244610 "IntegerIntervalInputValidator"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "min" explicit_type "int"
+	  param in name "max" explicit_type "int"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>IntegerIntervalInputValidator</code> object.
+
+@param min
+@param max
+"
+      end
+
+      operation 244738 "validate"
+	public explicit_return_type "String"
+	nparams 1
+	  param in name "value" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+    end
+
+    class 150658 "ListProperties"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Prints all system properties
+
+@author Jaroslav Urban
+"
+      operation 244866 "main"
+	class_operation public explicit_return_type "void"
+	nparams 1
+	  param in name "args" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0}[] ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+    end
+
+    class 150786 "NotEmptyInputValidator"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 160898 // <realization>
+	relation 160898 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 160898 // <realization>
+	  b parent class_ref 148226 // Serializable
+      end
+
+      operation 244994 "validate"
+	public explicit_return_type "String"
+	nparams 1
+	  param in name "value" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+    end
+
+    class 150914 "OutputReader"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Thread that reads from an InputStream and prints it on the standard output stream
+or the standard error stream. It chooses where to print it according to the given type
+of the Input Stream
+
+@author Jaroslav Urban
+"
+      classrelation 161026 // <generalisation>
+	relation 161026 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 161026 // <generalisation>
+	  b parent class_ref 151042 // Thread
+      end
+
+      attribute 172418 "inputStream"
+	private explicit_type "InputStream"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " The input stream for reading 
+"
+      end
+
+      attribute 172546 "outputStream"
+	private explicit_type "OutputStream"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " The output stream for writing 
+"
+      end
+
+      attribute 172674 "BUFFER_SIZE"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  1024"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Buffer size *
+"
+      end
+
+      classrelation 161154 // inputType (<unidirectional association>)
+	relation 161154 --->
+	  a role_name "inputType" private
+	    comment " Type of the InputStrem (stdout or stderr), you can use OutputType class for giving
+the type
+
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 161154 // inputType (<unidirectional association>)
+	  b parent class_ref 151170 // OutputType
+      end
+
+      operation 245122 "OutputReader"
+	public explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 245250 "OutputReader"
+	public explicit_return_type ""
+	nparams 2
+	  param inout name "is" explicit_type "java.io.InputStream"
+	  param inout name "type" type class_ref 151170 // OutputType
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+
+@param is InputStream that should be read
+@param type type of the InputStream (stdout or stderr), you can use OutputType 
+class for setting the type
+"
+      end
+
+      operation 245378 "setInputStream"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "is" explicit_type "InputStream"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 245506 "setOutputStream"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "os" explicit_type "OutputStream"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 245634 "run"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+    end
+
+    class 151170 "OutputType"
+      visibility public stereotype "enum"
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}enum ${name}${implements} {
+${items};
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Type of the output from the forked process, used with OutputReader
+
+@author Jaroslav Urban
+"
+      attribute 172802 "STDOUT"
+	public type class_ref 151170 // OutputType
+	cpp_decl ""
+	java_decl "  ${@}${name}${value},${comment}"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Standard output 
+"
+      end
+
+      attribute 172930 "STDERR"
+	public type class_ref 151170 // OutputType
+	cpp_decl ""
+	java_decl "  ${@}${name}${value},${comment}"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Standard error ouput "
+      end
+    end
+
+    class 151298 "RegexSubstitute"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Performs regular expression substitution in a file.
+
+@author Jaroslav Urban
+"
+      operation 247042 "substitute"
+	class_operation public explicit_return_type "void"
+	nparams 3
+	  param in name "path" explicit_type "String"
+	  param in name "regex" explicit_type "String"
+	  param in name "substitution" explicit_type "String"
+	nexceptions 2
+	  explicit_exception "IOException"
+	  explicit_exception "PatternSyntaxException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Substitutes every match of a regular expression in a file with a 
+substitution string.
+
+@param path path to the file.
+@param regex regular expression.
+@param substitution substitution of the matched strings.
+@throws IOException if an IO error occured during the editing of the file.
+@throws PatternSyntaxException if a syntax error was found in the regular 
+expression. 
+"
+      end
+    end
+
+    class 151426 "ScannerExtended"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Extension routines for java.util.Scanner, 
+to support scanning of quoted strings.
+"
+      attribute 173314 "sc"
+	private explicit_type "java.util.Scanner"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      operation 247170 "ScannerExtended"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "sc" explicit_type "java.util.Scanner"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>ScannerExtended</code> object.
+
+@param sc scanner that should be extended
+"
+      end
+
+      operation 247298 "hasNextQuotedString"
+	private explicit_return_type "boolean"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns true if the next token is the beginning of a quoted string value.
+
+@return true if the next token is the beginning of a quoted string value.
+"
+      end
+
+      operation 247426 "nextQuotedString"
+	private explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Scans a quoted string value from the scanner input.
+
+@returns quoted string value
+"
+      end
+
+      operation 247554 "hasNext"
+	public explicit_return_type "boolean"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns true if this scanner has another token in its input. 
+This method may block while waiting for input to scan. 
+The scanner does not advance past any input.
+
+@return true if another token is in the input.
+"
+      end
+
+      operation 247682 "next"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Finds and returns the next complete token from this scanner. 
+A complete token is preceded and followed by input that matches the 
+delimiter pattern. This method may block while waiting for input to scan, 
+even if a previous invocation of hasNext returned <code>true</code>.
+ 
+@return next token
+"
+      end
+    end
+
+    class 151554 "StringTokenizer"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Parse string and split it into tokens. Token delimiters are characters specified during creation
+time. This is class is optimized for \"create once, use many times\" scenario. This is different
+from the StringTokenizer provided in java.util package, since that one has to be created for every
+string again.
+
+@author Branislav Repcek
+"
+      attribute 173442 "delimiters"
+	private explicit_type "char"
+	multiplicity "[]"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Array of delimiter characters. Sorted in ascending order.
+
+"
+      end
+
+      attribute 173570 "min"
+	private explicit_type "char"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Minimum value of the delimiter character.
+
+"
+      end
+
+      attribute 173698 "max"
+	private explicit_type "char"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Maximum value of the delimiter character.
+
+"
+      end
+
+      class 151682 "Token"
+	abstract visibility public 
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	attribute 173826 "position"
+	  private explicit_type "int"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment "
+Position of the token in the input.
+
+"
+	end
+
+	operation 247810 "Token"
+	  public explicit_return_type ""
+	  nparams 1
+	    param in name "position" explicit_type "int"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Create new token.
+
+@param position Position of the token in the input.
+"
+	end
+
+	operation 247938 "isDelimiter"
+	  abstract public explicit_return_type "boolean"
+	  nparams 0
+	  
+	  java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Test if given token is delimiter token.
+
+@return <code>true</code> if token is delimiter character, <code>false</code> otherwise.
+"
+	end
+
+	operation 248066 "getPosition"
+	  public explicit_return_type "int"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+@return Position of the token in the input.
+"
+	end
+      end
+
+      class 151810 "DelimiterToken"
+	visibility public 
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	classrelation 161410 // <generalisation>
+	  relation 161410 ---|>
+	    a public
+	      java "${type}"
+	      classrelation_ref 161410 // <generalisation>
+	    b parent class_ref 151682 // Token
+	end
+
+	attribute 173954 "ch"
+	  private explicit_type "char"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment "
+Delimiter character.
+
+"
+	end
+
+	operation 248194 "DelimiterToken"
+	  public explicit_return_type ""
+	  nparams 2
+	    param in name "ch" explicit_type "char"
+	    param in name "position" explicit_type "int"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Create new delimiter token.
+
+@param ch Delimiter character.
+@param position Position of the token in the input.
+"
+	end
+
+	operation 248322 "isDelimiter"
+	  public explicit_return_type "boolean"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  java_annotation "@Override
+"
+	  
+	  
+	  
+	  comment "
+@see cz.cuni.mff.been.common.StringTokenizer.Token#isDelimiter()
+"
+	end
+
+	operation 248450 "delimiterChar"
+	  public explicit_return_type "char"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Get delimiter character.
+
+@return Delimiter character.
+"
+	end
+
+	operation 248578 "toString"
+	  public explicit_return_type "String"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  java_annotation "@Override
+"
+	  
+	  
+	  
+	  comment "
+@see java.lang.Object#toString()
+"
+	end
+      end
+
+      class 151938 "StringToken"
+	visibility public 
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	classrelation 161538 // <generalisation>
+	  relation 161538 ---|>
+	    a public
+	      java "${type}"
+	      classrelation_ref 161538 // <generalisation>
+	    b parent class_ref 151682 // Token
+	end
+
+	attribute 174082 "s"
+	  private explicit_type "String"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment "
+Value of the token.
+
+"
+	end
+
+	operation 248706 "StringToken"
+	  public explicit_return_type ""
+	  nparams 2
+	    param in name "s" explicit_type "String"
+	    param in name "position" explicit_type "int"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Create new token.
+
+@param s String which will be stored in the token.
+@param position Position of the token in the input.
+"
+	end
+
+	operation 248834 "isDelimiter"
+	  public explicit_return_type "boolean"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  java_annotation "@Override
+"
+	  
+	  
+	  
+	  comment "
+@see cz.cuni.mff.been.common.StringTokenizer.Token#isDelimiter()
+"
+	end
+
+	operation 248962 "getString"
+	  public explicit_return_type "String"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+@return Value of this token.
+"
+	end
+
+	operation 249090 "toString"
+	  public explicit_return_type "String"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  java_annotation "@Override
+"
+	  
+	  
+	  
+	  comment "
+@see java.lang.Object#toString()
+"
+	end
+      end
+
+      operation 249218 "StringTokenizer"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "delimiters" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "IllegalArgumentException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Create new tokenizer with given delimiters.
+
+@param delimiters String containing delimiters this tokenizer will use.
+
+@throws IllegalArgumentException if input string with delimiters is empty or <code>null</code>.
+"
+      end
+
+      operation 249346 "getDelimiters"
+	public explicit_return_type "char"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return Array of delimiter characters.
+"
+      end
+
+      operation 249474 "tokenize"
+	public return_type class_ref 151682 // Token
+	nparams 1
+	  param in name "input" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}List< ${type} > ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Parse string and split it into tokens. Note that delimiter characters are also considered as
+tokens and therefore are also in the resulting list.
+
+@param input String to parse.
+
+@return List containing all tokens from the string.
+"
+      end
+
+      operation 249602 "tokenize"
+	public return_type class_ref 151682 // Token
+	nparams 2
+	  param in name "input" explicit_type "String"
+	  param inout name "includeDelimiters" explicit_type "boolean"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}List< ${type} > ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Parse given string and split it into tokens separated with delimiter characters.
+
+@param input Input string.
+@param includeDelimiters If set to <code>true</code> output will include tokens with 
+       delimiter characters. If set to <code>false</code> only non-delimiter tokens will be
+       included in the output.
+       
+@return List of tokens from the string.
+"
+      end
+    end
+
+    class 152066 "StringUtils"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      operation 249730 "isEmpty"
+	class_operation public explicit_return_type "boolean"
+	nparams 1
+	  param in name "s" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 249858 "isTrimedEmpty"
+	class_operation public explicit_return_type "boolean"
+	nparams 1
+	  param in name "s" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 249986 "toString"
+	class_operation public explicit_return_type "String"
+	nparams 1
+	  param inout name "value" explicit_type "Object"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@param value
+"
+      end
+
+      operation 250114 "toNullString"
+	class_operation public explicit_return_type "String"
+	nparams 1
+	  param inout name "value" explicit_type "Object"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@param value
+"
+      end
+
+      operation 250242 "toNotNullString"
+	class_operation public explicit_return_type "String"
+	nparams 1
+	  param inout name "value" explicit_type "Object"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@param value
+"
+      end
+
+      operation 250370 "streamToString"
+	class_operation public explicit_return_type "String"
+	nparams 1
+	  param inout name "is" explicit_type "InputStream"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Fills String object with contents retrieved from input stream
+@param is	InputStream with result contents
+@return string filled in by contents of <code>is</code>
+"
+      end
+
+      operation 250498 "stripPathSeparator"
+	class_operation public explicit_return_type "String"
+	nparams 1
+	  param in name "path" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Method strips leading path separator from the input <code>path</code>.
+If no leading separator is found the string is kept intact.
+Method does ignores current platform, removes \"\\\\\" as well as \"/\" separators.
+@param path - Input path string to strip
+@return 
+		stripped path	if leading separator is found
+		original path	if path is empty/null or separator is not found		
+"
+      end
+
+      operation 250626 "firstCharToUpper"
+	class_operation public explicit_return_type "String"
+	nparams 1
+	  param in name "s" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Converts first character of string to uppercase, the rest is left unchanged.
+If string is empty, it is unchanged.
+@param s	String to modify
+@return Converted string
+"
+      end
+
+      operation 250754 "split"
+	class_operation public explicit_return_type "String"
+	nparams 2
+	  param in name "s" explicit_type "String"
+	  param in name "regex" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+String.split works in a bit uncomfortable way - when called on empty or
+string, it returns an array with one element (empty string). 
+
+This method returns empty array if <code>isEmpty(s)</code> is <code>true</code>.
+
+@param s splitted string
+@param regex the delimiting regular expression
+@return the array of strings computed by splitting this string around
+         matches of the given regular expression
+@throws java.util.regex.PatternSyntaxException if the regular expression's
+         syntax is invalid
+@throws NullPointerException <code>regex</code> is null
+@see #isEmpty(String)
+"
+      end
+
+      operation 250882 "quote"
+	class_operation public explicit_return_type "String"
+	nparams 1
+	  param in name "stringToQuote" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@param stringToQuote string to quote
+@return \"quoted\" string
+"
+      end
+    end
+
+    class 152194 "SubstituteVariableValues"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+This class can be used to parse strings which contain declarations of variables. Declarations are
+substituted with values of the variables.
+<p>
+For example, string <tt>value is: ${value} units</tt> if value of <tt>value</tt> variable is 100
+will be transformed into <tt>value is: 100 units</tt>.
+</p>
+
+@author Branislav Repcek
+"
+      class 152322 "VariableValueProviderInterface"
+	visibility public stereotype "interface"
+	nformals 1
+	formal name "T" type "" explicit_default_value ""
+	  explicit_extends ""
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}interface ${name}${extends} {
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	operation 251010 "getValue"
+	  public explicit_return_type "T"
+	  nparams 1
+	    param in name "variableName" explicit_type "String"
+	  
+	  java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Get value of the variable with given name.
+
+@param variableName Name of the variable.
+
+@return Value of the variable. This cannot be <code>null</code> since that is used to
+        indicate undefined variable.
+"
+	end
+      end
+
+      class 152450 "VariableNameSyntaxCheckerInterface"
+	visibility public stereotype "interface"
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}interface ${name}${extends} {
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	operation 251138 "checkName"
+	  public explicit_return_type "boolean"
+	  nparams 1
+	    param in name "name" explicit_type "String"
+	  
+	  java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Check syntax of the variable name.
+
+@param name Name of the variable to check.
+
+@return <code>true</code> is variable name is syntactically correct, <code>false</code>
+        otherwise.
+"
+	end
+      end
+
+      attribute 174210 "DEFAULT_VARIABLE_SYNTAX_REGEXP"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"([\\\\p{Alnum}_-]+)+(\\\\.?[\\\\p{Alnum}_-]+)*\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Regular expression used in default syntax checker.
+
+"
+      end
+
+      classrelation 161666 // tokenizer (<unidirectional association>)
+	relation 161666 --->
+	  a role_name "tokenizer" private
+	    comment "
+Tokenizer which is used to split string into tokens.
+
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 161666 // tokenizer (<unidirectional association>)
+	  b parent class_ref 151554 // StringTokenizer
+      end
+
+      classrelation 161794 // syntaxChecker (<unidirectional association>)
+	relation 161794 --->
+	  a role_name "syntaxChecker" private
+	    comment "
+Syntax checker for variable names.
+
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 161794 // syntaxChecker (<unidirectional association>)
+	  b parent class_ref 152450 // VariableNameSyntaxCheckerInterface
+      end
+
+      operation 251266 "SubstituteVariableValues"
+	public explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Create variable substition class with default syntax checker. Default syntax cehcker uses
+following regular expression to check variable names:<br>
+<br>
+<tt>([\\p{Alnum}_-]+)+(\\.?[\\p{Alnum}_-]+)*</tt><br>
+<br>
+This expression is designed to work with variable names similar to those from Ant.
+<p>That is, variable name is enclosed in ${ and }. Variable name can contain lower- and upper-case
+letters, numbers, dots, dashes and underscore characters. Names are case-sensitive. Dot character
+cannot appear at the beginning or at the end of the variable name and there cannot be two
+dots next to each other.</p>
+<p>If you want to use $, { or } outside of the variable declaration, you have to use escape
+sequences: \\$, \\{, \\}. To write \\ use \\\\ escape sequence. Note that you have to escape each
+character, so for example \\${ results in an error (correct form is \\$\\{).
+</p>
+"
+      end
+
+      operation 251394 "SubstituteVariableValues"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "variableSyntaxRegexp" explicit_type "String"
+	nexceptions 2
+	  explicit_exception "PatternSyntaxException"
+	  explicit_exception "IllegalArgumentException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Create variable substitution class which will use your own regular expression to check
+syntax of the variable names.
+ 
+@param variableSyntaxRegexp String containing regular expression that will be used to check
+       syntax of the names of the variables. Regular expressions use same syntax as is used
+       in <tt>java.util.regex.Pattern</tt> class. 
+
+@throws PatternSyntaxException If given regular expression has invalid syntax.
+@throws IllegalArgumentException If string with regular expression is empty or <tt>null</tt>.
+"
+      end
+
+      operation 251522 "SubstituteVariableValues"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "syntaxChecker" type class_ref 152450 // VariableNameSyntaxCheckerInterface
+	nexceptions 1
+	  explicit_exception "IllegalArgumentException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Create variable substition class with custom variable name syntax checker.
+
+@param syntaxChecker Syntax checker which will be used to validate names of the variables.
+
+@throws IllegalArgumentException If given syntax checker is null.
+"
+      end
+
+      operation 251650 "parseString"
+	public explicit_return_type "String"
+	nparams 2
+	  param in name "input" explicit_type "String"
+	  param inout name "valueProvider" type class_ref 152322 // VariableValueProviderInterface
+	nexceptions 1
+	  explicit_exception "IllegalArgumentException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}< T > ${type} ${name}${(}${t0} ${p0}, ${t1}< T > ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Parse string and substitute all variables with their values.
+
+@param <T> Type of values (can be Object if multiple types are required). 
+
+@param input Input string.
+@param valueProvider Data provider which stores values of variables.
+
+@return String with variables substituted with their values.
+
+@throws IllegalArgumentException If string is invalid.
+"
+      end
+
+      operation 251778 "parseString"
+	public explicit_return_type "String"
+	nparams 2
+	  param in name "input" explicit_type "String"
+	  param inout name "values" explicit_type "Map< String, T >"
+	nexceptions 1
+	  explicit_exception "IllegalArgumentException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}< T > ${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Parse string and substitute all variables with their values.
+
+@param <T> Type of values.
+
+@param input Input string.
+@param values Map which contains names and values of variables that are used in the input string.
+
+@return String with variables substituted with their values.
+
+@throws IllegalArgumentException If input string is invalid.
+"
+      end
+
+      class 152578 "MapVariableValueProvider"
+	visibility private 
+	nformals 1
+	formal name "T" type "" explicit_default_value ""
+	  explicit_extends ""
+	nactuals 1
+	actual class class_ref 152322 // VariableValueProviderInterface
+	  rank 0 explicit_value "T"
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	classrelation 161922 // <realization>
+	  relation 161922 -_-|>
+	    stereotype "bind"
+	    a public
+	      java "${type}"
+	      classrelation_ref 161922 // <realization>
+	    b parent class_ref 152322 // VariableValueProviderInterface
+	end
+
+	attribute 174338 "values"
+	  private explicit_type " String, T "
+	  stereotype "Map"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<${type}> ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment "
+Names and values of variables.
+
+"
+	end
+
+	operation 251906 "MapVariableValueProvider"
+	  public explicit_return_type ""
+	  nparams 1
+	    param inout name "values" explicit_type "Map< String, T >"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Create new data provider.
+
+@param values Map which contains names and values of variables.
+"
+	end
+
+	operation 252034 "getValue"
+	  public explicit_return_type "T"
+	  nparams 1
+	    param in name "variableName" explicit_type "String"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+@see almostdefault.VariableParser.VariableValueProviderInterface#getValue(java.lang.String)
+"
+	end
+      end
+
+      class 152706 "RegexpVariableNameSyntaxChecker"
+	visibility private 
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	classrelation 162050 // <realization>
+	  relation 162050 -_-|>
+	    a public
+	      java "${type}"
+	      classrelation_ref 162050 // <realization>
+	    b parent class_ref 152450 // VariableNameSyntaxCheckerInterface
+	end
+
+	attribute 174466 "pattern"
+	  private explicit_type "Pattern"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment "
+Regexp used to check variable names.
+
+"
+	end
+
+	operation 252162 "RegexpVariableNameSyntaxChecker"
+	  public explicit_return_type ""
+	  nparams 1
+	    param in name "regexp" explicit_type "String"
+	  nexceptions 1
+	    explicit_exception "PatternSyntaxException"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Create syntax checker from given regular expression.
+
+@param regexp Regular exprssion that will be used to check variable names.
+ 
+@throws PatternSyntaxException If given regexp is invalid.
+"
+	end
+
+	operation 252290 "checkName"
+	  public explicit_return_type "boolean"
+	  nparams 1
+	    param in name "name" explicit_type "String"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+@see almostdefault.VariableParser.VariableNameSyntaxCheckerInterface#checkName(java.lang.String)
+"
+	end
+      end
+    end
+
+    class 152834 "VariableReplacer"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Utility class for replacing variables with their values in strings. Variables
+are written in format ${<em>variableName</em>}, where <em>variableName</em>
+can contain letters, digits, \"-\", \"_\", \".\" and \":\".
+
+Values of the variables are provided by implementation of the
+<code>ValueProvider</code> interface, which is supplied by the caller of
+class methods.
+
+@author David Majda
+"
+      attribute 176130 "VAR_PATTERN"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"\\\\$\\\\{([a-zA-Z0-9\\\\-_.][a-zA-Z0-9\\\\-_.:]*)\\\\}\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 176258 "NONVAR_PATTERN"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"([^$\\\\\\\\]|\\\\\\\\\\\\\\\\|\\\\\\\\\\\\$)*\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 176386 "STRING_PATTERN"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"(\" + NONVAR_PATTERN + \")?(\" + VAR_PATTERN + NONVAR_PATTERN + \")*\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      class 152962 "ValueProvider"
+	visibility public stereotype "interface"
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}interface ${name}${extends} {
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	operation 254082 "getValue"
+	  public explicit_return_type "String"
+	  nparams 1
+	    param in name "variableName" explicit_type "String"
+	  
+	  java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Returns value of given variable.
+
+@param variableName name of the variable
+@return value of the given variable or <code>null</code> if the variable
+         does not exist
+"
+	end
+      end
+
+      operation 254210 "replace"
+	class_operation public explicit_return_type "String"
+	nparams 2
+	  param in name "s" explicit_type "String"
+	  param inout name "valueProvider" type class_ref 152962 // ValueProvider
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Replaces variables in string.
+
+@param s string to replace variables in
+@param valueProvider provider of the variable values
+@return string with replaced variables
+
+@throws IllegalArgumentException if the string syntax is invalid or any
+         vaiable is not defined
+"
+      end
+
+      operation 254338 "replace"
+	class_operation public explicit_return_type "Properties"
+	nparams 2
+	  param inout name "properties" explicit_type "Properties"
+	  param inout name "valueProvider" type class_ref 152962 // ValueProvider
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Replaces variables in properties and returns new <code>Properties</code>
+object with all variables in properties replaced. Assumes all property
+values are <code>String</code>s.
+
+@param properties properties to replace variables in
+@param valueProvider provider of the variable values
+@return new <code>Properties</code> object with replaced variables
+
+@throws IllegalArgumentException if the string syntax is invalid or any
+         vaiable is not defined
+@throws ClassCastException if any property value is not <code>String</code>
+"
+      end
+
+      operation 254466 "VariableReplacer"
+	private explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Private construcor is so no instances can be created.
+"
+      end
+    end
+
+    class 133768 "RMISafeException"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "This class is a base class for all exceptions thrown in Been that need to be
+safe for RMI transport over the RMI interface.
+It never contains any other exceptions so it won't cause ErrorUnmarshallingException
+when thrown across RMI. However it does contain cause's stack trace which will be
+written in any {@code printStackTrace()} as if the cause was present.
+
+@author Jiri Tauber"
+      classrelation 131720 // <generalisation>
+	relation 131720 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 131720 // <generalisation>
+	  b parent class_ref 128130 // BeenException
+      end
+
+      attribute 130184 "serialVersionUID"
+	class_attribute const_attribute private explicit_type "long"
+	init_value " -7653594848609300588L"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 130312 "originalClass"
+	private explicit_type "String"
+	init_value " null"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      operation 156552 "RMISafeException"
+	public explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 156680 "RMISafeException"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "message" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "@param message"
+      end
+
+      operation 156808 "RMISafeException"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "cause" explicit_type "Throwable"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "@param cause"
+      end
+
+      operation 156936 "RMISafeException"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "message" explicit_type "String"
+	  param inout name "cause" explicit_type "Throwable"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "@param message
+@param cause"
+      end
+
+      operation 157064 "RMISafeException"
+	public explicit_return_type ""
+	nparams 2
+	  param inout name "cause" explicit_type "Throwable"
+	  param in name "originalClass" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "@param cause
+@param originalClass"
+      end
+
+      operation 157192 "RMISafeException"
+	public explicit_return_type ""
+	nparams 3
+	  param in name "message" explicit_type "String"
+	  param inout name "cause" explicit_type "Throwable"
+	  param in name "originalClass" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "@param message
+@param cause
+@param originalClass"
+      end
+
+      operation 157320 "toString"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+      end
+
+      operation 157448 "saveConvertedCause"
+	private explicit_return_type "void"
+	nparams 1
+	  param inout name "cause" explicit_type "Throwable"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "@param cause"
+      end
+    end
+
+    class 141960 "Message"
+      visibility public stereotype "interface"
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}interface ${name}${extends} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "This identifies objects that carry a message. (Some enum types, for example.)
+
+@author Andrej Podzimek"
+      operation 257672 "getMessage"
+	public explicit_return_type "String"
+	nparams 0
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "Message getter.
+
+@return The message associated with this instance."
+      end
+
+      operation 257800 "ordinal"
+	public explicit_return_type "int"
+	nparams 0
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "Ordinal value gettern. It mostly returns the ordinal value of the underlying enum member.
+
+@return Ordinal value of this message."
+      end
+    end
+
+    class 157320 "Debug"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "Utility methods regarding debugging. 
+"
+      attribute 196616 "ENV_BEEN_DEBUG"
+	class_attribute const_attribute private explicit_type "String"
+	init_value " \"BEEN_DEBUG\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " name of environment variable indicating 
+that debugging mode is on
+"
+      end
+
+      operation 277256 "isDebugModeOn"
+	class_operation public explicit_return_type "boolean"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return true if BEEN runs in debugging mode"
+      end
+    end
+
+    class 157448 "IterableWrapper"
+      visibility public 
+      nformals 1
+      formal name "T" type "" explicit_default_value ""
+        explicit_extends ""
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "A decorator that can be used as (somewhat inefficient) eye-candy for descending iterators
+and other special things of that kind.
+
+@author Andrej Podzimek"
+      classrelation 162952 // <realization>
+	relation 162952 -_-|>
+	  a public
+	    java "${type}< T >"
+	    classrelation_ref 162952 // <realization>
+	  b parent class_ref 168834 // Iterable
+      end
+
+      attribute 196744 "iterator"
+	const_attribute private explicit_type " T "
+	stereotype "Iterator"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<${type}> ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " The inner iterator to read from. "
+      end
+
+      operation 277384 "IterableWrapper"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "iterable" explicit_type "Iterable< T >"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "Initializes the Iterator Wrapper using an Iterator.
+
+@param iterable The Iterable to get the Iterator from."
+      end
+
+      operation 277512 "IterableWrapper"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "iterator" explicit_type "Iterator< T >"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "Initializes the Iterator Wrappe using an Iterator.
+
+@param iterator The Iterator to use."
+      end
+
+      operation 277640 "iterator"
+	public explicit_return_type "Iterator< T >"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+      end
+    end
+
+    class 157576 "RMI"
+      visibility public stereotype "enum"
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}enum ${name}${implements} {
+${items};
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "This enum lists some important constants related to RMI. There are global static constants and
+service-specific constants defined inside enum members.
+
+@author Andrej Podzimek"
+      attribute 196872 "REGISTRY_PORT"
+	class_attribute const_attribute public explicit_type "int"
+	stereotype "attribute"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " The port RMI registry should use. "
+      end
+
+      attribute 197000 "URL_PREFIX"
+	class_attribute const_attribute public explicit_type "String"
+	stereotype "attribute"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " The RMI URL prefix used by services; "
+      end
+
+      extra_member 129928 "initialization"
+	
+	cpp "" ""
+	java "  static {
+		int registryPort;
+		
+		registryPort = Registry.REGISTRY_PORT;
+		try {
+			String registryPortString;
+			
+			registryPortString = System.getenv( \"BEEN_REGISTRY_PORT\" );
+			if ( null != registryPortString ) {
+				registryPort = Integer.parseInt( registryPortString );
+			}
+		} catch ( NumberFormatException exception ) {
+			System.err.println( \"Malformed BEEN_REGISTRY_PORT variable. Using default value.\" );
+		} catch ( SecurityException exception ) {
+			System.err.println( \"Cannot read BEEN_REGISTRY_PORT variable. Using default value.\" );
+		}
+		REGISTRY_PORT = registryPort;
+		URL_PREFIX = \"rmi://localhost:\" + REGISTRY_PORT;
+		System.out.println( \"Using RMI registry port \" + REGISTRY_PORT + \".\" );
+	}"
+	php ""
+	python ""
+	idl ""
+      end
+    end
+  end
+
+  deploymentview 128002 "common"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+    artifact 128002 "BeenException"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+${definition}"
+      associated_classes
+	class_ref 128130 // BeenException
+      end
+    end
+
+    artifact 130306 "UploadThread"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.util.LinkedList;
+${definition}"
+      associated_classes
+	class_ref 136322 // UploadThread
+      end
+    end
+
+    artifact 139394 "ArrayUtils"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+${definition}"
+      associated_classes
+	class_ref 149250 // ArrayUtils
+      end
+    end
+
+    artifact 139522 "BeenUtils"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.File;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.LinkedList;
+import cz.cuni.mff.been.task.TaskException;
+import cz.cuni.mff.been.taskmanager.TaskDescriptor;
+${definition}"
+      associated_classes
+	class_ref 149378 // BeenUtils
+      end
+    end
+
+    artifact 139650 "ComponentInitializationException"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+${definition}"
+      associated_classes
+	class_ref 129154 // ComponentInitializationException
+      end
+    end
+
+    artifact 139778 "DownloadHandle"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.Serializable;
+${definition}"
+      associated_classes
+	class_ref 149762 // DownloadHandle
+      end
+    end
+
+    artifact 139906 "DownloadStatus"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+${definition}"
+      associated_classes
+	class_ref 149890 // DownloadStatus
+      end
+    end
+
+    artifact 140034 "GreedyURLClassLoader"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.net.URL;
+import java.net.URLClassLoader;
+${definition}"
+      associated_classes
+	class_ref 150018 // GreedyURLClassLoader
+      end
+    end
+
+    artifact 140162 "IdentifiableList"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.util.LinkedList;
+import java.util.List;
+import cz.cuni.mff.been.common.id.ID;
+import cz.cuni.mff.been.common.id.Identifiable;
+${definition}"
+      associated_classes
+	class_ref 133890 // IdentifiableList
+      end
+    end
+
+    artifact 140290 "IntegerInputValidator"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import cz.cuni.mff.been.apps.gui.InputValidator;
+${definition}"
+      associated_classes
+	class_ref 150402 // IntegerInputValidator
+      end
+    end
+
+    artifact 140418 "IntegerIntervalInputValidator"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+${definition}"
+      associated_classes
+	class_ref 150530 // IntegerIntervalInputValidator
+      end
+    end
+
+    artifact 140546 "ListProperties"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.util.Enumeration;
+import java.util.Properties;
+${definition}"
+      associated_classes
+	class_ref 150658 // ListProperties
+      end
+    end
+
+    artifact 140674 "NotEmptyInputValidator"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.Serializable;
+import cz.cuni.mff.been.apps.gui.InputValidator;
+${definition}"
+      associated_classes
+	class_ref 150786 // NotEmptyInputValidator
+      end
+    end
+
+    artifact 140802 "OutputReader"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+${definition}"
+      associated_classes
+	class_ref 150914 // OutputReader
+      end
+    end
+
+    artifact 140930 "OutputType"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+${definition}"
+      associated_classes
+	class_ref 151170 // OutputType
+      end
+    end
+
+    artifact 141058 "Pair"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.Serializable;
+${definition}"
+      associated_classes
+	class_ref 140034 // Pair
+      end
+    end
+
+    artifact 141186 "RegexSubstitute"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.regex.PatternSyntaxException;
+${definition}"
+      associated_classes
+	class_ref 151298 // RegexSubstitute
+      end
+    end
+
+    artifact 141314 "ScannerExtended"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.util.NoSuchElementException;
+${definition}"
+      associated_classes
+	class_ref 151426 // ScannerExtended
+      end
+    end
+
+    artifact 141442 "StringTokenizer"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+${definition}"
+      associated_classes
+	class_ref 151554 // StringTokenizer
+      end
+    end
+
+    artifact 141570 "StringUtils"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+${definition}"
+      associated_classes
+	class_ref 152066 // StringUtils
+      end
+    end
+
+    artifact 141698 "SubstituteVariableValues"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+${definition}"
+      associated_classes
+	class_ref 152194 // SubstituteVariableValues
+      end
+    end
+
+    artifact 141826 "TaskPathBuilder"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+${definition}"
+      associated_classes
+	class_ref 143234 // TaskPathBuilder
+      end
+    end
+
+    artifact 141954 "UploadHandle"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.Serializable;
+${definition}"
+      associated_classes
+	class_ref 134658 // UploadHandle
+      end
+    end
+
+    artifact 142082 "UploadStatus"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+${definition}"
+      associated_classes
+	class_ref 134786 // UploadStatus
+      end
+    end
+
+    artifact 142210 "VariableReplacer"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.util.Enumeration;
+import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+${definition}"
+      associated_classes
+	class_ref 152834 // VariableReplacer
+      end
+    end
+
+    artifact 142338 "Version"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.Serializable;
+${definition}"
+      associated_classes
+	class_ref 141442 // Version
+      end
+    end
+
+    artifact 142466 "WorkQueue"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.util.LinkedList;
+${definition}"
+      associated_classes
+	class_ref 133122 // WorkQueue
+      end
+    end
+
+    artifact 130824 "RMISafeException"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+${definition}"
+      associated_classes
+	class_ref 133768 // RMISafeException
+      end
+    end
+
+    artifact 141832 "Message"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+${definition}"
+      associated_classes
+	class_ref 141960 // Message
+      end
+    end
+
+    artifact 145800 "Debug"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+${definition}"
+      associated_classes
+	class_ref 157320 // Debug
+      end
+      comment " BEEN: Benchmarking Environment
+ ==============================
+
+ File author: Jan Tattermusch
+
+ GNU Lesser General Public License Version 2.1
+ ---------------------------------------------
+ Copyright (C) 2004-2006 Distributed Systems Research Group,
+ Faculty of Mathematics and Physics, Charles University in Prague
+
+ This library is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public
+ License version 2.1, as published by the Free Software Foundation.
+
+ This library is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this library; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+ MA  02111-1307  USA"
+    end
+
+    artifact 145928 "IterableWrapper"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.util.Iterator;
+${definition}"
+      associated_classes
+	class_ref 157448 // IterableWrapper
+      end
+    end
+
+    artifact 146056 "RMI"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.rmi.registry.Registry;
+${definition}"
+      associated_classes
+	class_ref 157576 // RMI
+      end
+    end
+  end
+
+  package_ref 129154 // id
+
+  package_ref 130050 // anttasks
+
+  package_ref 131202 // rsl
+
+  package_ref 133256 // inputvalidator
+
+  package_ref 133384 // scripting
+
+  package_ref 133512 // serialize
+
+  package_ref 133640 // ustream
+end

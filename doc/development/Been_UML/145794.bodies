@@ -1,0 +1,37 @@
+class ConfigParserAdapter
+!!!217090.java!!!	ConfigParserAdapter(in baseURI : String)
+		super();
+		this.resolver = new PluginEntityResolver(baseURI);
+!!!217218.java!!!	startElement(in uri : String, in localName : String, in qName : String, inout atts : Attributes) : void
+		if (qName.equals(ELEMENT_BENCHMARK)) {
+			benchmarkName.append(atts.getValue(BENCHMARK_NAME));
+			benchmarkVersion.append(atts.getValue(BENCHMARK_VERSION));
+		} else if (qName.equals(ELEMENT_DESCRIPTION)) {
+			descActive = true;
+		}
+!!!217346.java!!!	characters(in ch : char, in start : int, in length : int) : void
+		if (descActive) {
+			benchmarkDescription.append(ch, start, length);
+		}
+!!!217474.java!!!	reset() : void
+		this.benchmarkName.delete(0, benchmarkName.length());
+		this.benchmarkVersion.delete(0, benchmarkName.length());
+		this.benchmarkDescription.delete(0, benchmarkName.length());
+!!!217602.java!!!	endElement(in uri : String, in localName : String, in qName : String) : void
+		if (qName.equals(ELEMENT_DESCRIPTION)) {
+			descActive = false;
+		}
+!!!217730.java!!!	resolveEntity(in publicId : String, in systemId : String) : InputSource
+		return resolver.resolveEntity(publicId, systemId);
+!!!217858.java!!!	getBenchmarkName() : String
+		return (this.benchmarkName.toString());
+!!!217986.java!!!	getBenchmarkVersion() : String
+		// version is an attribute - trim possible spaces
+		return (this.benchmarkVersion.toString().trim());
+!!!218114.java!!!	getBenchmarkDescription() : String
+		// description is a text-node - trim possible spaces
+		return (this.benchmarkDescription.toString().trim());
+!!!218242.java!!!	unparsedEntityDecl(in name : String, in publicId : String, in systemId : String, in notationName : String) : void
+		System.out.println("Entity: " + name);
+!!!218370.java!!!	skippedEntity(in name : String) : void
+		System.out.println("Skipped Entity: " + name);

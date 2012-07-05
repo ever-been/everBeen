@@ -1,0 +1,309 @@
+format 59
+"logtester" // been::src::cz::cuni::mff::been::task::test::logtester
+  revision 1
+  modified_by 2 "Administrator"
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default show_stereotype_properties default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+  show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+  show_infonote default drawing_language default show_stereotype_properties default
+  
+  java_dir "cz/cuni/mff/been/task/test/logtester"
+  java_package "cz.cuni.mff.been.task.test.logtester"
+  classview 137218 "logtester"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default show_stereotype_properties default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+    //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+    show_infonote default drawing_language default show_stereotype_properties default
+    class 204930 "LogTester"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+<p>Tests the log storage by generating log messages or standard and 
+error output.</p>
+
+<b>Task properties:</b><br>
+<ul>
+<li>{@value #MESSAGE_COUNT}: <br>
+		- how many messages will be generated <br>
+		- mandatory <br>
+<li>{@value #MESSAGE_DELAY}: <br>
+		- time delay between messages, in milliseconds <br>
+		- mandatory <br>
+<li>{@value #ACTION}: <br>
+		- if value is {@value #ACTION_LOG}, then log messages will be 
+		generated. If the value is {@value #ACTION_OUTPUT}, then standard 
+		and error output will be generated. <br>
+		- mandatory <br>
+</ul>
+
+@author Jaroslav Urban
+"
+      classrelation 263426 // <generalisation>
+	relation 263426 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 263426 // <generalisation>
+	  b parent class_ref 197250 // Job
+      end
+
+      attribute 320514 "MESSAGE_DELAY"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"message.delay\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " 
+Task property name for the delay between sending messages, the 
+delay is in milliseconds.
+
+"
+      end
+
+      attribute 320642 "MESSAGE_COUNT"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"message.count\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Task property name for the number of messages that will be sent.
+
+"
+      end
+
+      attribute 320770 "ACTION"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"action\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Task property name for the action which will be executed by the task.
+
+"
+      end
+
+      attribute 320898 "ACTION_LOG"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"log\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Valid value of the {@value #ACTION} task property for generating
+log messages.
+
+"
+      end
+
+      attribute 321026 "ACTION_OUTPUT"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"output\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Valid value of the {@value #ACTION} task property for generating
+standard and error output.
+
+"
+      end
+
+      attribute 321154 "EMPTY_LINE_PROBABILITY"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"empty-line.probability\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Task property name for the probability of an empty line in an output 
+message sent to the task manager.
+
+"
+      end
+
+      attribute 321282 "RAND"
+	class_attribute const_attribute private explicit_type "Random"
+	init_value "=  new Random(System.currentTimeMillis())"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 321410 "DEFAULT_EMPTY_PROBABILITY"
+	class_attribute const_attribute private explicit_type "double"
+	init_value "=  0.2"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Default probability of an empty line in the output 
+"
+      end
+
+      attribute 321538 "emptyProbability"
+	private explicit_type "double"
+	init_value "=  DEFAULT_EMPTY_PROBABILITY"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Probability of an empty line in the output 
+"
+      end
+
+      operation 663170 "LogTester"
+	public explicit_return_type ""
+	nparams 0
+	nexceptions 1
+	  exception class_ref 137218 // TaskInitializationException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+
+Allocates a new <code>LogTester</code> object.
+
+@throws TaskInitializationException
+"
+      end
+
+      operation 663298 "run"
+	protected explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  exception class_ref 137346 // TaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+      end
+
+      operation 663426 "sendLogMessage"
+	private explicit_return_type "void"
+	nparams 1
+	  param in name "messageIndex" explicit_type "int"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sends a log message with a random severity.
+
+@param messageIndex number of the message.
+"
+      end
+
+      operation 663554 "checkRequiredProperties"
+	protected explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  exception class_ref 137346 // TaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+      end
+    end
+  end
+
+  deploymentview 136322 "logtester"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+    artifact 184706 "LogTester"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.util.Random;
+import cz.cuni.mff.been.task.Job;
+import cz.cuni.mff.been.task.TaskException;
+import cz.cuni.mff.been.task.TaskInitializationException;
+${definition}"
+      associated_classes
+	class_ref 204930 // LogTester
+      end
+    end
+  end
+end

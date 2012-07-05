@@ -1,0 +1,6555 @@
+format 70
+"webinterface" // been::src::cz::cuni::mff::been::webinterface
+  revision 5
+  modified_by 8 "BoRiS"
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+  show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+  show_infonote default drawing_language default show_stereotype_properties default
+  
+  java_dir "cz/cuni/mff/been/webinterface"
+  java_package "cz.cuni.mff.been.webinterface"
+  package_ref 131074 // services
+
+  classview 137858 "webinterface"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+    //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+    show_infonote default drawing_language default show_stereotype_properties default
+    classdiagram 131458 "WebInterface"
+      draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+      size A4-Landscape
+    end
+
+    class 208514 "Config"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Class used to configuration settings management. The configuration is built
+around Java's <code>Preferences></code> class. 
+
+@author David Majda
+"
+      attribute 343298 "TASK_MANAGER_HOSTNAME_KEY"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"taskManagerHostname\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 343426 "TASK_MANAGER_HOSTNAME_DEFAULT"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"localhost\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 343554 "SHOW_DEBUG_OPTIONS_KEY"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"showDebugOptions\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 343682 "SHOW_DEBUG_OPTIONS_DEFAULT"
+	class_attribute const_attribute private explicit_type "boolean"
+	init_value "=  false"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 273026 // instance (<unidirectional association>)
+	relation 273026 --->
+	  a role_name "instance" class_relation private
+	    comment " Class instance (singleton pattern). 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 273026 // instance (<unidirectional association>)
+	  b parent class_ref 208514 // Config
+      end
+
+      attribute 343810 "preferences"
+	private explicit_type "Preferences"
+	init_value "=  Preferences.userNodeForPackage(getClass())"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Internal preferences object. 
+"
+      end
+
+      operation 730370 "getTaskManagerHostname"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return returns the Task Manager hostname "
+      end
+
+      operation 730498 "setTaskManagerHostname"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "value" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "BackingStoreException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the Task Manager hostname.
+
+@param value new value of the Task Manager hostname
+@throws BackingStoreException if this operation cannot be completed due to
+         a failure in the preferences backing store, or inability to
+         communicate with it.
+"
+      end
+
+      operation 730626 "getShowDebugOptions"
+	public explicit_return_type "boolean"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return returns the flag whether to show debug options "
+      end
+
+      operation 730754 "setShowDebugOptions"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "value" explicit_type "boolean"
+	nexceptions 1
+	  explicit_exception "BackingStoreException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the flag whether to show debug options.
+
+@param value new value of the flag whether to show debug options
+@throws BackingStoreException if this operation cannot be completed due to
+         a failure in the preferences backing store, or inability to
+         communicate with it.
+"
+      end
+
+      operation 730882 "getInstance"
+	class_operation public return_type class_ref 208514 // Config
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns the only class instance (singleton pattern).
+
+@return class instance
+"
+      end
+
+      operation 731010 "Config"
+	private explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>Config</code> object. Constructor is private so only
+instance in <code>instance</code> field can be constructed (singleton
+pattern).
+"
+      end
+    end
+
+    class 208642 "IllegalWizardScreenSequenceException"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Exception used to notify that user jumped too much forward in the benchmark
+run wizard.   
+
+@author David Majda
+"
+      operation 731138 "IllegalWizardScreenSequenceException"
+	public explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>IllegalWizardScreenSequenceException</code> object.
+"
+      end
+
+      operation 731266 "IllegalWizardScreenSequenceException"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "message" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>IllegalWizardScreenSequenceException</code> object
+with specified message.
+
+@param message exception message
+"
+      end
+
+      operation 731394 "IllegalWizardScreenSequenceException"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "cause" explicit_type "Throwable"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>IllegalWizardScreenSequenceException</code> object
+with specified cause.
+
+@param cause exception cause
+"
+      end
+
+      operation 731522 "IllegalWizardScreenSequenceException"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "message" explicit_type "String"
+	  param inout name "cause" explicit_type "Throwable"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>IllegalWizardScreenSequenceException</code> object
+with specified message and cause.
+
+@param message exception message
+@param cause exception cause
+"
+      end
+    end
+
+    class 208770 "InvalidParamValueException"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+This exception is thrown when some required parameter of the JSP script
+contains invalid value.
+
+@author David Majda
+"
+      classrelation 273410 // <generalisation>
+	relation 273410 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 273410 // <generalisation>
+	  b parent class_ref 208898 // WebInterfaceException
+      end
+
+      operation 732162 "InvalidParamValueException"
+	public explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>InvalidParamValueException</code> object.
+"
+      end
+
+      operation 732290 "InvalidParamValueException"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "message" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>InvalidParamValueException</code> object
+with specified message.
+
+@param message exception message
+"
+      end
+
+      operation 732418 "InvalidParamValueException"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "cause" explicit_type "Throwable"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>InvalidParamValueException</code> object
+with specified cause.
+
+@param cause exception cause
+"
+      end
+
+      operation 732546 "InvalidParamValueException"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "message" explicit_type "String"
+	  param inout name "cause" explicit_type "Throwable"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>InvalidParamValueException</code> object
+with specified message and cause.
+
+@param message exception message
+@param cause exception cause
+"
+      end
+    end
+
+    class 208898 "WebInterfaceException"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+This class is a base class for all user exceptions thrown in web interface package.
+
+@author David Majda
+"
+      classrelation 273282 // <generalisation>
+	relation 273282 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 273282 // <generalisation>
+	  b parent class_ref 128130 // BeenException
+      end
+
+      operation 731650 "WebInterfaceException"
+	public explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>WebInterfaceException</code> object.
+"
+      end
+
+      operation 731778 "WebInterfaceException"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "message" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>WebInterfaceException</code> object
+with specified message.
+
+@param message exception message
+"
+      end
+
+      operation 731906 "WebInterfaceException"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "cause" explicit_type "Throwable"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>WebInterfaceException</code> object
+with specified cause.
+
+@param cause exception cause
+"
+      end
+
+      operation 732034 "WebInterfaceException"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "message" explicit_type "String"
+	  param inout name "cause" explicit_type "Throwable"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>WebInterfaceException</code> object
+with specified message and cause.
+
+@param message exception message
+@param cause exception cause
+"
+      end
+    end
+
+    class 209026 "InvalidRequestMethodException"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+This exception is thrown when the JSP script is called via invalid request method.
+
+@author David Majda
+"
+      classrelation 273538 // <generalisation>
+	relation 273538 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 273538 // <generalisation>
+	  b parent class_ref 208898 // WebInterfaceException
+      end
+
+      operation 732674 "InvalidRequestMethodException"
+	public explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>InvalidRequestMethodException</code> object.
+"
+      end
+
+      operation 732802 "InvalidRequestMethodException"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "message" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>InvalidRequestMethodException</code> object
+with specified message.
+
+@param message exception message
+"
+      end
+
+      operation 732930 "InvalidRequestMethodException"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "cause" explicit_type "Throwable"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>InvalidRequestMethodException</code> object
+with specified cause.
+
+@param cause exception cause
+"
+      end
+
+      operation 733058 "InvalidRequestMethodException"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "message" explicit_type "String"
+	  param inout name "cause" explicit_type "Throwable"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>InvalidRequestMethodException</code> object
+with specified message and cause.
+
+@param message exception message
+@param cause exception cause
+"
+      end
+    end
+
+    class 209154 "LogEntityColumn"
+      visibility public 
+      nformals 2
+      formal name "T" type "" explicit_default_value ""
+        explicit_extends ""
+      formal name "ID" type "" explicit_default_value ""
+        explicit_extends ""
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Class representing a column in log view with links to the entities. Class
+contains column name, template for URLs, which the cells link to, and a map,
+which associates pairs (context, task) with entities. Cell content is
+generated from this map when writing the log in the web interface.
+
+The information about associated entity is not stored directly in the
+<code>LogRecord</code> class, because types of the associated entities vary.
+Also, it would be ugly (Log Service should not know anything about entities).
+
+Other possible approach - converting every <code>LogRecord</code> to internal
+web interface class - was not chosen again because types of the associated
+entities vary and it probably would be a performance-sensitive approach.  
+
+@author David Majda
+
+@param <ID> identifier of entity in the column
+"
+      class 209282 "Value"
+	visibility public 
+	nformals 1
+	formal name "ID" type "" explicit_default_value ""
+	  explicit_extends ""
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	attribute 343938 "id"
+	  private explicit_type "ID"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " Entity identifier. 
+"
+	end
+
+	attribute 344066 "name"
+	  private explicit_type "String"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " Entity name. 
+"
+	end
+
+	operation 733186 "getId"
+	  public explicit_return_type "ID"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment " @return entity identifier "
+	end
+
+	operation 733314 "getName"
+	  public explicit_return_type "String"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment " @return entity name "
+	end
+
+	operation 733442 "Value"
+	  public explicit_return_type ""
+	  nparams 2
+	    param inout name "id" explicit_type "ID"
+	    param in name "name" explicit_type "String"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Allocates a new <code>LogEntityColumn.Value</code> object.
+
+@param id entity identifier
+@param name entity name
+"
+	end
+      end
+
+      attribute 344194 "title"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Column title. 
+"
+      end
+
+      attribute 344322 "urlTemplate"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Column URL template. It must contain exactly one <code>\"%s\"</code>
+formatting sequence, which will be replaced by the ID of the entity linked
+from specific cell. 
+
+"
+      end
+
+      attribute 344450 "values"
+	private explicit_type "String, Map<String, Value<ID>>"
+	init_value "=  new HashMap<String, Map<String, Value<ID>>>()"
+	stereotype "Map"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<${type}> ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Nicely templated map of maps :-) Outer map maps context ID to another map,
+which maps the task ID (from previously mapped context) to entity the task
+belongs to. 
+
+"
+      end
+
+      operation 733570 "getTitle"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return column title "
+      end
+
+      operation 733698 "getUrlTemplate"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return column URL template "
+      end
+
+      operation 733826 "LogEntityColumn"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "title" explicit_type "String"
+	  param in name "urlTemplate" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>LogEntityColumn</code> object.
+
+@param title column title
+@param urlTemplate Column URL template. It must contain exactly one
+        <code>\"%s\"</code> formatting sequence, which will be replaced by
+        the ID of the entity linked from specific cell
+"
+      end
+
+      operation 733954 "getValue"
+	public return_type class_ref 209282 // Value
+	nparams 2
+	  param in name "contextID" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Gets a value representing entity associated with given tasks and context or
+<code>null</code> if there is no such entity. 
+
+@param contextID context identifier
+@param taskID task identifier
+@return value representing entity associated with given task and context
+"
+      end
+
+      operation 734082 "addValue"
+	public explicit_return_type "void"
+	nparams 3
+	  param in name "contextID" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	  param inout name "value" type class_ref 209282 // Value
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2}<ID> ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Associates an entity with given context and task. 
+
+@param contextID context identifier
+@param taskID task identifier
+@param value value representing associated entity
+"
+      end
+    end
+
+    class 209410 "LogUtils"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Class containing utility functions for working with logs. These functions are
+used in several modules of the web interface.
+
+@author David Majda
+"
+      operation 734210 "aggregateLogs"
+	class_operation public return_type class_ref 184194 // LogRecord
+	nparams 1
+	  param inout name "logRecordsList" explicit_type "List<LogRecord[]>"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Takes a list of <code>LogRecord</code> arrays and aggregates them into one
+<code>LogRecord</code> array, sorted by timestamp.
+
+@param logRecordsList list of <code>LogRecord</code> arrays to aggregate
+@return aggregated logs
+"
+      end
+
+      operation 734338 "getLogRecordsForTasks"
+	class_operation public return_type class_ref 184194 // LogRecord
+	nparams 2
+	  param inout name "taskManager" type class_ref 181762 // TaskManagerInterface
+	  param inout name "tasks" type class_ref 184706 // TaskEntry
+	nexceptions 2
+	  explicit_exception "RemoteException"
+	  exception class_ref 184322 // LogStorageException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${t0} ${p0}, ${t1}[] ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Retrieves logs for given tasks from the Task Manager and aggregates them
+into one <code>LogRecord</code> array, sorted by timestamp.  
+
+@param tasks tasks whose logs will be retrieved 
+@return aggregated logs
+@throws RemoteException when something in RMI goes bad
+@throws LogStorageException if an error occurred while retrieving the logs
+"
+      end
+
+      operation 734466 "LogUtils"
+	private explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Private constructor so than no instances can be created.
+"
+      end
+    end
+
+    class 209538 "Message"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Class representing a message which will be displayed to the user on the web
+page. Each message has a text and a format, which can be plain text or
+HTML.
+
+Class is immutable - message text and format can't be changed after
+creating the instance.
+
+@author David Majda
+"
+      class 209666 "Format"
+	visibility public stereotype "enum"
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}${final}${abstract}enum ${name}${implements} {
+${items};
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	attribute 344578 "TEXT"
+	  public type class_ref 209666 // Format
+	  cpp_decl ""
+	  java_decl "  ${@}${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " Plain text format. 
+"
+	end
+
+	attribute 344706 "HTML"
+	  public type class_ref 209666 // Format
+	  cpp_decl ""
+	  java_decl "  ${@}${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " HTML format. "
+	end
+      end
+
+      attribute 344834 "text"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Message text. 
+"
+      end
+
+      classrelation 273666 // format (<unidirectional association>)
+	relation 273666 --->
+	  a role_name "format" private
+	    comment " Message format. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 273666 // format (<unidirectional association>)
+	  b parent class_ref 209666 // Format
+      end
+
+      operation 734594 "getText"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return message text "
+      end
+
+      operation 734722 "getFormat"
+	public return_type class_ref 209666 // Format
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return message format "
+      end
+
+      operation 734850 "Message"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "text" explicit_type "String"
+	  param inout name "format" type class_ref 209666 // Format
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>Message</code> object. 
+
+@param text message text
+@param format message format
+"
+      end
+    end
+
+    class 209794 "Messages"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Class encapsulating a list of messages, which can be added and iterated
+over.
+
+@author David Majda
+"
+      classrelation 273794 // <realization>
+	relation 273794 -_-|>
+	  a public
+	    java "${type}<Message>"
+	    classrelation_ref 273794 // <realization>
+	  b parent class_ref 168834 // Iterable
+      end
+
+      classrelation 273922 // messages (<unidirectional association>)
+	relation 273922 --->
+	  stereotype "List"
+	  a role_name "messages" init_value "=  new LinkedList<Message>()" private
+	    comment " List of messages. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<${type}> ${name}${value};
+"
+	    classrelation_ref 273922 // messages (<unidirectional association>)
+	  b parent class_ref 209538 // Message
+      end
+
+      class 209922 "MessagesIterator"
+	visibility public 
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	classrelation 274050 // <realization>
+	  relation 274050 -_-|>
+	    a public
+	      java "${type}<Message>"
+	      classrelation_ref 274050 // <realization>
+	    b parent class_ref 166402 // Iterator
+	end
+
+	classrelation 274178 // listIterator (<unidirectional association>)
+	  relation 274178 --->
+	    stereotype "Iterator"
+	    a role_name "listIterator" private
+	      comment " Message list iterator. 
+"
+	      java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<${type}> ${name}${value};
+"
+	      classrelation_ref 274178 // listIterator (<unidirectional association>)
+	    b parent class_ref 209538 // Message
+	end
+
+	operation 734978 "hasNext"
+	  public explicit_return_type "boolean"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Returns <code>true</code> if the iteration has more elements. (In other
+words, returns <code>true</code> if <code>next</code> would return an
+element rather than throwing an exception.)
+
+@return <code>true</code> if the iterator has more elements
+
+@see java.util.Iterator#hasNext()
+"
+	end
+
+	operation 735106 "next"
+	  public return_type class_ref 209538 // Message
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Returns the next element in the iteration. Calling this method
+repeatedly until the {@link #hasNext()} method returns false will return
+each element in the underlying collection exactly once.
+
+@return the next element in the iteration
+@exception NoSuchElementException if iteration has no more elements
+
+@see java.util.Iterator#next()
+"
+	end
+
+	operation 735234 "remove"
+	  public explicit_return_type "void"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Throws <code>UnsupportedOperationException</code>, because list of
+messages can't be modified.
+
+@throws UnsupportedOperationException thrown always, list of
+                                       messages can't be modified
+                                       
+@see java.util.Iterator#remove()
+"
+	end
+
+	operation 735362 "MessagesIterator"
+	  public explicit_return_type ""
+	  nparams 1
+	    param inout name "listIterator" explicit_type "Iterator<Message>"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+      end
+
+      operation 735490 "addTextMessage"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "text" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Adds new message in plain text format.
+
+@param text message text
+"
+      end
+
+      operation 735618 "addHTMLMessage"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "text" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Adds new message in HTML format.
+
+@param text message text
+"
+      end
+
+      operation 735746 "size"
+	public explicit_return_type "int"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns the number of messages in the list.
+
+@return number of messages in the list
+"
+      end
+
+      operation 735874 "isEmpty"
+	public explicit_return_type "boolean"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Determines whether the list of messages is empty.
+
+@return <code>true</code> if there are no messages in the list;
+         <code>false</code> otherwise
+"
+      end
+
+      operation 736002 "iterator"
+	public return_type class_ref 209538 // Message
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}Iterator<${type}> ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns an iterator over a list of messages.
+
+@return an iterator
+
+@see java.lang.Iterable#iterator()
+"
+      end
+
+      operation 736130 "clear"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Removes all messages from the list.
+"
+      end
+    end
+
+    class 210050 "MissingParamException"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+This exception is thrown when some required parameter of the JSP script
+is missing.
+
+@author David Majda
+"
+      classrelation 274306 // <generalisation>
+	relation 274306 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 274306 // <generalisation>
+	  b parent class_ref 208898 // WebInterfaceException
+      end
+
+      operation 736258 "MissingParamException"
+	public explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>MissingParamException</code> object.
+"
+      end
+
+      operation 736386 "MissingParamException"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "message" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>MissingParamException</code> object
+with specified message.
+
+@param message exception message
+"
+      end
+
+      operation 736514 "MissingParamException"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "cause" explicit_type "Throwable"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>MissingParamException</code> object
+with specified cause.
+
+@param cause exception cause
+"
+      end
+
+      operation 736642 "MissingParamException"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "message" explicit_type "String"
+	  param inout name "cause" explicit_type "Throwable"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>MissingParamException</code> object
+with specified message and cause.
+
+@param message exception message
+@param cause exception cause
+"
+      end
+    end
+
+    class 210178 "Page"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Class responsible for managing of several things when generating the page.
+
+@author David Majda
+"
+      class 210306 "LayoutType"
+	visibility public stereotype "enum"
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}${final}${abstract}enum ${name}${implements} {
+${items};
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	attribute 344962 "NORMAL"
+	  public type class_ref 210306 // LayoutType
+	  cpp_decl ""
+	  java_decl "  ${@}${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " Normal layout type, used on most pages. 
+"
+	end
+
+	attribute 345090 "SIMPLE"
+	  public type class_ref 210306 // LayoutType
+	  cpp_decl ""
+	  java_decl "  ${@}${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " Simple layout type, used in popups such as R functions help. "
+	end
+      end
+
+      attribute 345218 "TEMPLATE_DIR"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"/templates/\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " 
+Directory with templates (relative to the application's root directory, including leading
+and trailing slash).
+
+"
+      end
+
+      attribute 345346 "TEMPLATE_EXT"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \".jsp\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Template extension, including leading dot. 
+"
+      end
+
+      classrelation 274434 // instance (<unidirectional association>)
+	relation 274434 --->
+	  a role_name "instance" class_relation private
+	    comment " Class instance (singleton pattern). 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 274434 // instance (<unidirectional association>)
+	  b parent class_ref 210178 // Page
+      end
+
+      attribute 345474 "request"
+	private explicit_type "HttpServletRequest"
+	init_value "=  null"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " 
+HTTP request. Needs to be set by the servlet every time when the request
+is processed.
+
+"
+      end
+
+      attribute 345602 "response"
+	private explicit_type "HttpServletResponse"
+	init_value "=  null"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " 
+HTTP response. Needs to be set by the servlet every time when the request
+is processed.
+
+"
+      end
+
+      attribute 345730 "context"
+	private explicit_type "ServletContext"
+	init_value "=  null"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " 
+Servlet context. Needs to be set by the servlet every time when the request
+is processed.
+
+"
+      end
+
+      attribute 345858 "rootPath"
+	private explicit_type "String"
+	init_value "=  \"\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Relative path from current dir to the root dir; includes trailing
+slash.
+
+"
+      end
+
+      attribute 345986 "title"
+	private explicit_type "String"
+	init_value "=  \"\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Page title. 
+"
+      end
+
+      attribute 346114 "showTitle"
+	private explicit_type "boolean"
+	init_value "=  true"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Flag if show page title at the top of the page. 
+"
+      end
+
+      classrelation 274562 // layoutType (<unidirectional association>)
+	relation 274562 --->
+	  a role_name "layoutType" init_value "=  LayoutType.NORMAL" private
+	    comment " Layout type. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 274562 // layoutType (<unidirectional association>)
+	  b parent class_ref 210306 // LayoutType
+      end
+
+      attribute 346242 "focusedElementId"
+	private explicit_type "String"
+	init_value "=  null"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Focused element ID. See comment at the <code>setFocusedElement</code>
+method.
+
+"
+      end
+
+      attribute 346370 "focusedElementForm"
+	private explicit_type "String"
+	init_value "=  null"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Focused element form. See comment at the <code>setFocusedElement</code>
+method.
+
+"
+      end
+
+      attribute 346498 "focusedElementElement"
+	private explicit_type "String"
+	init_value "=  null"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Focused element name. See comment at the <code>setFocusedElement</code>
+method.
+
+"
+      end
+
+      classrelation 274690 // modules (<unidirectional association>)
+	relation 274690 --->
+	  stereotype "ArrayList"
+	  a role_name "modules" init_value "=  new ArrayList<Module>()" private
+	    comment " Web interface modules. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<${type}> ${name}${value};
+"
+	    classrelation_ref 274690 // modules (<unidirectional association>)
+	  b parent class_ref 210434 // Module
+      end
+
+      attribute 346626 "activeModule"
+	private explicit_type "String"
+	init_value "=  \"\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Active module ID. Needs to be set by the servlet every time when the request
+is processed.
+
+"
+      end
+
+      attribute 346754 "activeAction"
+	private explicit_type "String"
+	init_value "=  \"\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Active module ID. Needs to be set by the servlet every time when the request
+is processed.
+
+"
+      end
+
+      classrelation 274818 // infoMessages (<unidirectional association>)
+	relation 274818 --->
+	  a role_name "infoMessages" init_value "=  new Messages()" private
+	    comment "
+Information messages for the user.
+
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 274818 // infoMessages (<unidirectional association>)
+	  b parent class_ref 209794 // Messages
+      end
+
+      classrelation 274946 // warningMessages (<unidirectional association>)
+	relation 274946 --->
+	  a role_name "warningMessages" init_value "=  new Messages()" private
+	    comment "
+Warning messages for the user.
+
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 274946 // warningMessages (<unidirectional association>)
+	  b parent class_ref 209794 // Messages
+      end
+
+      classrelation 275074 // errorMessages (<unidirectional association>)
+	relation 275074 --->
+	  a role_name "errorMessages" init_value "=  new Messages()" private
+	    comment "
+Error messages for the user.
+
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 275074 // errorMessages (<unidirectional association>)
+	  b parent class_ref 209794 // Messages
+      end
+
+      operation 736770 "Page"
+	private explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>Page</code> object. Constructor is private so only
+instance in <code>instance</code> field can be constructed (singleton
+pattern).
+"
+      end
+
+      operation 736898 "getInstance"
+	class_operation public return_type class_ref 210178 // Page
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns the only class instance (singleton pattern).
+
+@return class instance
+"
+      end
+
+      operation 737026 "getRequest"
+	public explicit_return_type "HttpServletRequest"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return HTTP request "
+      end
+
+      operation 737154 "setRequest"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "request" explicit_type "HttpServletRequest"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the HTTP request.
+
+@param request the HTTP request to set
+"
+      end
+
+      operation 737282 "getResponse"
+	public explicit_return_type "HttpServletResponse"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return HTTP response "
+      end
+
+      operation 737410 "setResponse"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "response" explicit_type "HttpServletResponse"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the HTTP response.
+
+@param response the HTTP response to set
+"
+      end
+
+      operation 737538 "getContext"
+	public explicit_return_type "ServletContext"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return servlet context "
+      end
+
+      operation 737666 "setContext"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "context" explicit_type "ServletContext"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the servlet context.
+
+@param context the servlet context to set
+"
+      end
+
+      operation 737794 "getRootPath"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return relative path from current dir to the root dir "
+      end
+
+      operation 737922 "setRootPath"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "rootPath" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the relative path from current dir to the root dir.
+
+@param rootPath Relative path from current dir to the root dir to set
+"
+      end
+
+      operation 738050 "getTitle"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return page title "
+      end
+
+      operation 738178 "setTitle"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "title" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the page title.
+
+@param title page title to set
+"
+      end
+
+      operation 738306 "getShowTitle"
+	public explicit_return_type "boolean"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return flag if show page title at the top of the page "
+      end
+
+      operation 738434 "setShowTitle"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "showTitle" explicit_type "boolean"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the flag if show page title at the top of the page.
+
+@param showTitle flag to set
+"
+      end
+
+      operation 738562 "getLayoutType"
+	public return_type class_ref 210306 // LayoutType
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return layout type "
+      end
+
+      operation 738690 "setLayoutType"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "layoutType" type class_ref 210306 // LayoutType
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the layout type.
+
+@param layoutType layout type to set
+"
+      end
+
+      operation 738818 "getFocusedElementId"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return the focusedElementId "
+      end
+
+      operation 738946 "getFocusedElementForm"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return the focusedElementForm "
+      end
+
+      operation 739074 "getFocusedElementElement"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return the focusedElementName "
+      end
+
+      operation 739202 "setFocusedElement"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "id" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the focused element ID.
+
+Focused elements can be set by their ID or by the form and element name,
+hence more overloads of method <code>setFocusedElement</code>.
+
+@param id focused element ID to set
+"
+      end
+
+      operation 739330 "setFocusedElement"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "form" explicit_type "int"
+	  param in name "element" explicit_type "int"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the focused element form and name.
+
+Focused elements can be set by their ID or by the form and element name,
+hence more overloads of method <code>setFocusedElement</code>.
+
+@param form focused element form to set
+@param element focused element name to set
+"
+      end
+
+      operation 739458 "setFocusedElement"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "form" explicit_type "int"
+	  param in name "element" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the focused element form and name.
+
+Focused elements can be set by their ID or by the form and element name,
+hence more overloads of method <code>setFocusedElement</code>.
+
+@param form focused element form to set
+@param element focused element name to set
+"
+      end
+
+      operation 739586 "setFocusedElement"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "form" explicit_type "String"
+	  param in name "element" explicit_type "int"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the focused element form and name.
+
+Focused elements can be set by their ID or by the form and element name,
+hence more overloads of method <code>setFocusedElement</code>.
+
+@param form focused element form to set
+@param element focused element name to set
+"
+      end
+
+      operation 739714 "setFocusedElement"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "form" explicit_type "String"
+	  param in name "element" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the focused element form and name.
+
+Focused elements can be set by their ID or by the form and element name,
+hence more overloads of method <code>setFocusedElement</code>.
+
+@param form focused element form to set
+@param element focused element name to set
+"
+      end
+
+      operation 739842 "getModuleCount"
+	public explicit_return_type "int"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return web interface module count "
+      end
+
+      operation 739970 "getModule"
+	public return_type class_ref 210434 // Module
+	nparams 1
+	  param in name "index" explicit_type "int"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns specified web interface module.
+
+@param index web interface module index
+@return web interface module with specified index
+"
+      end
+
+      operation 740098 "getModuleById"
+	public return_type class_ref 210434 // Module
+	nparams 1
+	  param in name "id" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns web interface module with specified ID.
+
+@param id web interface module ID
+@return web interface module with specified ID
+"
+      end
+
+      operation 740226 "addModule"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "module" type class_ref 210434 // Module
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Adds new web interface module.
+
+@param module web interface module to add
+"
+      end
+
+      operation 740354 "clearModules"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Deletes all web interface modules. 
+"
+      end
+
+      operation 740482 "getActiveModule"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return active module ID "
+      end
+
+      operation 740610 "setActiveModule"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "activeModule" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the active module ID.
+
+@param activeModule active module ID to set
+"
+      end
+
+      operation 740738 "getActiveAction"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return active action "
+      end
+
+      operation 740866 "setActiveAction"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "activeAction" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the active action.
+
+@param activeAction active action to set
+"
+      end
+
+      operation 740994 "getInfoMessages"
+	public return_type class_ref 209794 // Messages
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return information messages for the user "
+      end
+
+      operation 741122 "setInfoMessages"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "infoMessages" type class_ref 209794 // Messages
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the information messages for the user.
+
+@param infoMessages information messages for the user to set
+"
+      end
+
+      operation 741250 "getWarningMessages"
+	public return_type class_ref 209794 // Messages
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return warning messages for the user "
+      end
+
+      operation 741378 "setWarningMessages"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "warningMessges" type class_ref 209794 // Messages
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the warning messages for the user.
+
+@param warningMessges warning messages for the user to set
+"
+      end
+
+      operation 741506 "getErrorMessages"
+	public return_type class_ref 209794 // Messages
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return error messages for the user "
+      end
+
+      operation 741634 "setErrorMessages"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "errorMessges" type class_ref 209794 // Messages
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the error messages for the user.
+
+@param errorMessges error messages for the user to set
+"
+      end
+
+      operation 741762 "writeTemplate"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "template" explicit_type "String"
+	  param inout name "data" explicit_type "Map<String, Object>"
+	nexceptions 2
+	  explicit_exception "ServletException"
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Writes a template filled with specified data.
+
+@param template name of the template
+@param data <code>Map&lt;String, Object&gt;</code> with data, keys must be
+        <code>String</code>s; can be <code>null</code>
+@throws IOException if some I/O error occurs
+@throws ServletException if including the template file fails
+"
+      end
+
+      operation 741890 "writeTemplate"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "template" explicit_type "String"
+	nexceptions 2
+	  explicit_exception "ServletException"
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Writes a template without any data.
+
+@param template name of the template
+@throws IOException if some I/O error occurs
+@throws ServletException if including the template file fails
+"
+      end
+
+      operation 742018 "writeHeader"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 2
+	  explicit_exception "ServletException"
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Writes page header.
+
+@throws IOException if some I/O error occurs
+@throws ServletException if including the template file fails
+"
+      end
+
+      operation 742146 "writeFooter"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 2
+	  explicit_exception "ServletException"
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Writes page footer.
+
+@throws IOException if some I/O error occurs
+@throws ServletException if including the template file fails
+"
+      end
+
+      operation 742274 "writeInfoMessages"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 2
+	  explicit_exception "ServletException"
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Writes info messages obtained from the <code>Errors</code> class.
+
+@throws IOException if some I/O error occurs
+@throws ServletException if including the template file fails
+"
+      end
+
+      operation 742402 "writeWarningMessages"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 2
+	  explicit_exception "ServletException"
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Writes warning messages obtained from the <code>Errors</code> class.
+
+@throws IOException if some I/O error occurs
+@throws ServletException if including the template file fails
+"
+      end
+
+      operation 742530 "writeErrorMessages"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 2
+	  explicit_exception "ServletException"
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Writes error messages obtained from the <code>Errors</code> class.
+
+@throws IOException if some I/O error occurs
+@throws ServletException if including the template file fails
+"
+      end
+
+      operation 742658 "redirectToAction"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "action" explicit_type "String"
+	  param inout name "params" explicit_type "Map<String, String>"
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Redirect to specified action and supplies this action with parameters.
+
+@param action action to redirect
+@param params action parameters
+@throws IOException if some I/O error occurs
+"
+      end
+
+      operation 742786 "redirectToAction"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "action" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Redirect to specified action with no parameters.
+
+@param action action to redirect
+@throws IOException if some I/O error occurs
+"
+      end
+
+      operation 742914 "currentActionURL"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns relative URL of the current action (\"./\").
+
+@return relative URL of the current action (\"./\")
+"
+      end
+
+      operation 743042 "moduleActionURL"
+	public explicit_return_type "String"
+	nparams 2
+	  param in name "module" explicit_type "String"
+	  param in name "action" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns relative URL for specified module and action. Returned URL
+includes trailing slash.
+
+@param module module
+@param action action
+@return relative URL for specified module and action
+"
+      end
+
+      operation 743170 "actionURL"
+	public explicit_return_type "String"
+	nparams 1
+	  param in name "action" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns relative URL for action in current module. Returned URL includes
+trailing slash.
+
+@param action action
+@return relative URL for specified action in current module
+"
+      end
+    end
+
+    class 210562 "Params"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Class for manipulation and checking of the query parameters.
+
+@author David Majda
+
+"
+      attribute 346882 "DAY_MIN"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  1"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 347010 "DAY_MAX"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  31"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 347138 "MONTH_MIN"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  1"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 347266 "MONTH_MAX"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  12"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 347394 "HOUR_MIN"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  0"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 347522 "HOUR_MAX"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  23"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 347650 "MINUTE_MIN"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  0"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 347778 "MINUTE_MAX"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  59"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 347906 "SECOND_MIN"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  0"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 348034 "SECOND_MAX"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  59"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 275202 // instance (<unidirectional association>)
+	relation 275202 --->
+	  a role_name "instance" class_relation private
+	    comment " Class instance (singleton pattern). 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 275202 // instance (<unidirectional association>)
+	  b parent class_ref 210562 // Params
+      end
+
+      classrelation 275330 // page (<unidirectional association>)
+	relation 275330 --->
+	  a role_name "page" init_value "=  Page.getInstance()" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 275330 // page (<unidirectional association>)
+	  b parent class_ref 210178 // Page
+      end
+
+      operation 743298 "Params"
+	private explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>Params</code> object. Constructor is private so only
+instance in <code>instance</code> field can be constructed (singleton
+pattern).
+"
+      end
+
+      operation 743426 "getInstance"
+	class_operation public return_type class_ref 210562 // Params
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns the only class instance (singleton pattern).
+
+@return class instance
+"
+      end
+
+      operation 743554 "requestMethodIsGet"
+	public explicit_return_type "boolean"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Checks if the request method is \"GET\".
+
+@return <code>true</code> if the request method is \"GET\";
+         <code>false</code> otherwise
+"
+      end
+
+      operation 743682 "requestMethodIsPost"
+	public explicit_return_type "boolean"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Checks if the request method is \"POST\".
+
+@return <code>true</code> if the request method is \"POST\";
+         <code>false</code> otherwise
+"
+      end
+
+      operation 743810 "exists"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param in name "param" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Checks if the query parameter exists.
+
+@param param parameter name
+@return <code>true</code> if the query parameter exists;
+         <code>false</code> otherwise
+"
+      end
+
+      operation 743938 "existsIndexed"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param in name "param" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Checks if indexed query parameter exists.
+
+@param param parameter name
+@return <code>true</code> if indexed query parameter exists;
+         <code>false</code> otherwise
+"
+      end
+
+      operation 744066 "makeIndexed"
+	public explicit_return_type "String"
+	nparams 2
+	  param in name "param" explicit_type "String"
+	  param inout name "index" explicit_type "T"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}<T> ${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns name of the indexed parameter, given the parameter name and
+index. For generality, method is templated by the type of index.
+
+@param <T> index type
+@param param parameter name
+@param index parameter index
+@return name of the indexed parameter
+"
+      end
+
+      operation 744194 "existsOneOf"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "" explicit_type "String...params"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Checks if at least one of the query parameters exists.
+
+@param params parameter names
+@return <code>true</code> if at least one of the query parameters exists;
+         <code>false</code> otherwise
+"
+      end
+
+      operation 744322 "isEmpty"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param in name "param" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Checks if the query parameter is empty.
+
+@param param parameter name
+@return <code>true</code> if the query parameter is empty;
+         <code>false</code> otherwise
+"
+      end
+
+      operation 744450 "notEmpty"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param in name "param" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Checks if the query parameter is not empty.
+
+@param param parameter name
+@return <code>true</code> if the query parameter is not empty;
+         <code>false</code> otherwise
+"
+      end
+
+      operation 744578 "isBetween"
+	public explicit_return_type "boolean"
+	nparams 3
+	  param in name "param" explicit_type "String"
+	  param in name "min" explicit_type "int"
+	  param in name "max" explicit_type "int"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Checks if the query parameter is integer in the specified interval.
+
+@param param parameter name
+@param min minimum parameter value
+@param max maximum parameter value
+@return <code>true</code> if the query parameter is integer in the interval
+         &lt;<code>min</code>, <code>max</code>&gt;;
+         <code>false</code> otherwise
+"
+      end
+
+      operation 744706 "isInSet"
+	public explicit_return_type "boolean"
+	nparams 2
+	  param in name "param" explicit_type "String"
+	  param inout name "set" explicit_type "Set"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Checks if the query parameter in contained in the specified set. The
+containment is checked using <code>Set.contains</code> method.
+
+@param param parameter name
+@param set set to check
+@return <code>true</code> if the query parameter is contained in the
+         specified set;
+         <code>false</code> otherwise
+"
+      end
+
+      operation 744834 "notInSet"
+	public explicit_return_type "boolean"
+	nparams 2
+	  param in name "param" explicit_type "String"
+	  param inout name "set" explicit_type "Set"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Checks if the query parameter in not contained in the specified set. The
+containment is checked using <code>Set.contains</code> method.
+
+@param param parameter name
+@param set set to check
+@return <code>true</code> if the query parameter is not contained in the
+         specified set;
+         <code>false</code> otherwise
+"
+      end
+
+      operation 744962 "isInteger"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param in name "param" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Checks if the query parameter is integer.
+
+@param param parameter name
+@return <code>true</code> if the query parameter is integer;
+         <code>false</code> otherwise
+"
+      end
+
+      operation 745090 "isLong"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param in name "param" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Checks if the query parameter is long integer.
+
+@param param parameter name
+@return <code>true</code> if the query parameter is long integer;
+         <code>false</code> otherwise
+"
+      end
+
+      operation 745218 "isFloat"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param in name "param" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Checks if the query parameter is float. The check is performed using
+<code>Float.parseFloat</code> method.
+
+@param param parameter name
+@return <code>true</code> if the query parameter is float;
+         <code>false</code> otherwise
+"
+      end
+
+      operation 745346 "isDouble"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param in name "param" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Checks if the query parameter is double. The check is performed using
+<code>Double.parseDouble</code> method.
+
+@param param parameter name
+@return <code>true</code> if the query parameter is double;
+         <code>false</code> otherwise
+"
+      end
+
+      operation 745474 "isRegexp"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param in name "param" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Checks if the query parameter is regular expression. The check is performed
+using <code>Pattern.compile</code> method.
+
+@param param parameter name
+@return <code>true</code> if the query parameter is double;
+         <code>false</code> otherwise
+"
+      end
+
+      operation 745602 "isDay"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param in name "param" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Checks if the query parameter is day, e.g. integer in
+the interval <1, 31>.
+
+@param param parameter name
+@return <code>true</code> if the query parameter is day;
+         <code>false</code> otherwise
+"
+      end
+
+      operation 745730 "isMonth"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param in name "param" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Checks if the query parameter is month, e.g. integer in
+the interval <1, 12>.
+
+@param param parameter name
+@return <code>true</code> if the query parameter is month;
+         <code>false</code> otherwise
+"
+      end
+
+      operation 745858 "isYear"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param in name "param" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Checks if the query parameter is year, e.g. just integer.
+
+@param param parameter name
+@return <code>true</code> if the query parameter is year;
+         <code>false</code> otherwise
+"
+      end
+
+      operation 745986 "isHour"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param in name "param" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Checks if the query parameter is hour, e.g. integer in
+the interval <0, 23>.
+
+@param param parameter name
+@return <code>true</code> if the query parameter is hour;
+         <code>false</code> otherwise
+"
+      end
+
+      operation 746114 "isMinute"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param in name "param" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Checks if the query parameter is minute, e.g. integer in
+the interval <0, 59>.
+
+@param param parameter name
+@return <code>true</code> if the query parameter is minute;
+         <code>false</code> otherwise
+"
+      end
+
+      operation 746242 "isSecond"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param in name "param" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Checks if the query parameter is second, e.g. integer in
+the interval <0, 59>.
+
+@param param parameter name
+@return <code>true</code> if the query parameter is second;
+         <code>false</code> otherwise
+"
+      end
+
+      operation 746370 "isBoolean"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param in name "param" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Checks if the query parameter is boolean - i.e. string <code>\"true\"</code> 
+or <code>\"false\"</code>. 
+
+@param param parameter name
+@return <code>true</code> if the query parameter is boolean;
+         <code>false</code> otherwise
+"
+      end
+
+      operation 746498 "isCheckboxBool"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param in name "param" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Checks if the query parameter is boolean sent from &lt;input type=\"checkbox\"&gt;.
+It can have only one value - \"on\" - meaning <code>true</code>. Value
+for <code>false</code> is never sent, parameter is simply omitted. 
+
+@param param parameter name
+@return <code>true</code> if the query parameter is checkbox boolean;
+         <code>false</code> otherwise
+"
+      end
+
+      operation 746626 "ensureExists"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "param" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 210050 // MissingParamException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Throws a <code>MissingParamException</code> if the query parameter
+doesn't exist.
+
+@param param parameter name
+@throws MissingParamException if the query parameter doesn't exist
+"
+      end
+
+      operation 746754 "ensureExist"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "" explicit_type "String...params"
+	nexceptions 1
+	  exception class_ref 210050 // MissingParamException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Throws a <code>MissingParamException</code> if any query parameter
+doesn't exist.
+
+@param params parameter names
+@throws MissingParamException if any query parameter doesn't exist
+"
+      end
+
+      operation 746882 "ensureExistsOneOf"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "" explicit_type "String...params"
+	nexceptions 1
+	  exception class_ref 210050 // MissingParamException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Throws a <code>MissingParamException</code> if all query parameters
+don't exist.
+
+@param params parameter names
+@throws MissingParamException if all query parameters don't exist
+"
+      end
+
+      operation 747010 "checkCondition"
+	public explicit_return_type "void"
+	nparams 2
+	  param inout name "condition" explicit_type "boolean"
+	  param in name "message" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+If given condition is <code>false</code>, add specified error message to the
+list of error messages.
+
+@param condition tested condition
+@param message error message text
+"
+      end
+
+      operation 747138 "ensureCondition"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "param" explicit_type "String"
+	  param inout name "condition" explicit_type "boolean"
+	nexceptions 1
+	  exception class_ref 208770 // InvalidParamValueException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Throws a <code>InvalidParamValueException</code> if given condition
+for some query parameter is <code>false</code>. 
+
+@param param parameter name
+@param condition tested condition 
+@throws InvalidParamValueException if given condition if <code>false</code>
+"
+      end
+
+      operation 747266 "ensureRequestMethodIsGet"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  exception class_ref 209026 // InvalidRequestMethodException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Throws a <code>InvalidRequestMethodException</code> if the request method
+is not \"GET\".
+
+@throws InvalidRequestMethodException if the request method is not \"GET\"
+"
+      end
+
+      operation 747394 "ensureRequestMethodIsPost"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  exception class_ref 209026 // InvalidRequestMethodException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Throws a <code>InvalidRequestMethodException</code> if the request method
+is not \"POST\".
+
+@throws InvalidRequestMethodException if the request method is not \"POST\"
+"
+      end
+
+      operation 747522 "getIndex"
+	public explicit_return_type "String"
+	nparams 1
+	  param in name "param" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns index of indexed query parameter.
+
+@param param parameter name
+@return index of the indexed query parameter
+
+@throws IllegalArgumentException if specified parameter doesn't exist or
+         it isn't indexed
+"
+      end
+    end
+
+    class 210690 "Routines"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+This class brings pieces of PHP's usefulness into Java :-)
+It also contains some other useful functions, which do not originate
+form PHP.
+
+@author David Majda
+"
+      attribute 348162 "SMALLEST_TWO_CIPHER_NUMBER"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  10"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 348290 "DEC_BASE"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  10"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 348418 "HEX_BASE"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  16"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 348546 "UNIT_PREFIX_CHARS"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"kMGTP\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 348674 "MILISECONDS_IN_SECOND"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  1000"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 348802 "MINUTES_IN_HOUR"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  60"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 348930 "SECONDS_IN_MINUTE"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  60"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      operation 747650 "htmlspecialchars"
+	class_operation public explicit_return_type "String"
+	nparams 1
+	  param in name "s" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Does the same thing as PHP's <code>htmlspecialchars</code> function with
+<code>ENT_QUOTES</code> set, i.e. escapes string for output in HTML.
+
+@param s string to escape 
+@return escaped string
+
+@see <a href=\"http://www.php.net/htmlspecialchars\">htmlspecialchars</a> 
+"
+      end
+
+      operation 747778 "ucfirst"
+	class_operation public explicit_return_type "String"
+	nparams 1
+	  param in name "s" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Does the same thing as PHP's <code>ucfirst</code> function, i.e. makes
+first character of the string uppercase.
+
+@param s string to modify 
+@return string with uppercased first letter
+
+@see <a href=\"http://www.php.net/ucfirst\">ucfirst</a> 
+"
+      end
+
+      operation 747906 "join"
+	class_operation public explicit_return_type "String"
+	nparams 2
+	  param in name "glue" explicit_type "String"
+	  param inout name "pieces" explicit_type "T"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}<T> ${type} ${name}${(}${t0} ${p0}, ${t1}[] ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns a string containing string representations of all the array
+elements separated with <code>glue</code>. Method <code>toString</code> is
+used to get the string representation of the array elements.
+
+@param <T> type of the array elements
+ 
+@param glue string inserted between elements 
+@param pieces elements to concatenate
+@return glued array elements
+"
+      end
+
+      operation 748034 "join"
+	class_operation public explicit_return_type "String"
+	nparams 2
+	  param in name "glue" explicit_type "String"
+	  param in name "pieces" explicit_type "int"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1}[] ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns a string containing string representations of all the array
+elements separated with <code>glue</code>.
+
+This function is needed because int <code>int[]</code> can't be autoboxed
+into <code>Integer[]</code> and thus the generic version of this function
+can't be used.  
+
+@param glue string inserted between elements 
+@param pieces elements to concatenate
+@return glued array elements
+"
+      end
+
+      operation 748162 "addLeadingZero"
+	class_operation public explicit_return_type "String"
+	nparams 1
+	  param in name "n" explicit_type "int"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns string representation of given number and ensures that numbers
+&lt; 10 will be prefixed by leading zero.
+
+@param n number
+@return string representation of the number with possible \"0\" prefix
+"
+      end
+
+      operation 748290 "addLeadingZero"
+	class_operation public explicit_return_type "String"
+	nparams 1
+	  param in name "n" explicit_type "long"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns string representation of given number and ensures that numbers
+&lt; 10 will be prefixed by leading zero.
+
+@param n number
+@return string representation of the number with possible \"0\" prefix
+"
+      end
+
+      operation 748418 "addLeadingZeroes"
+	class_operation public explicit_return_type "String"
+	nparams 2
+	  param in name "n" explicit_type "int"
+	  param in name "length" explicit_type "int"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns string representation of given number and ensures that it
+will be prefixed by leading zeroes so its length will be at least
+<code>length</code> characters.
+
+@param n number
+@param length minimal length
+@return string representation of the number with possible prefix
+         of leading zeroes
+"
+      end
+
+      operation 748546 "browserIsMSIE"
+	class_operation public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "request" explicit_type "HttpServletRequest"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Checks if the browser which initiated given request is Microsoft Internet Explorer. 
+
+@param request checked request
+@return <code>true</code> if the initiating browser is Microsoft Internet Explorer;
+         <code>false</code> otherwise
+"
+      end
+
+      operation 748674 "javaScriptEscape"
+	class_operation public explicit_return_type "String"
+	nparams 1
+	  param in name "s" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Escapes string so it can be used inside JavaScript string.
+
+More specifically, it prefixes characters 0x0..0x1F, backslash (\"\\\"),
+apostrophe (\"'\") and quote (\"\"\") with one backslash. All other characters
+aren't touched.
+
+@param s string to escape
+@return escaped string
+"
+      end
+
+      operation 748802 "isInteger"
+	class_operation public explicit_return_type "boolean"
+	nparams 1
+	  param in name "s" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Checks if the string is integer. The check is performed using
+<code>Integer.parseInt</code> method.
+
+@param s string to check
+@return <code>true</code> if the string is integer;
+         <code>false</code> otherwise
+"
+      end
+
+      operation 748930 "isLong"
+	class_operation public explicit_return_type "boolean"
+	nparams 1
+	  param in name "s" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Checks if the string is long integer. The check is performed using
+<code>Long.parseLong</code> method.
+
+@param s string to check
+@return <code>true</code> if the string is long integer;
+         <code>false</code> otherwise
+"
+      end
+
+      operation 749058 "split2"
+	class_operation public explicit_return_type "String"
+	nparams 2
+	  param in name "regex" explicit_type "String"
+	  param in name "s" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+String.split works in a bit uncomfortable way - when called on empty
+string, it returns an array with one element (empty string). We want it to
+return empty array in this case.
+
+@param regex the delimiting regular expression
+@param s split string
+@return the array of strings computed by splitting this string around
+         matches of the given regular expression
+@throws java.util.regex.PatternSyntaxException if the regular expression's
+         syntax is invalid
+@throws NullPointerException if <code>s</code> or <code>regex</code>
+         is null
+"
+      end
+
+      operation 749186 "formatNumberWithPrefixedUnit"
+	class_operation public explicit_return_type "String"
+	nparams 3
+	  param in name "number" explicit_type "long"
+	  param in name "unit" explicit_type "String"
+	  param inout name "locale" explicit_type "Locale"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Converts a number with unit to suitable <em>prefixed unit</em> and returns it
+formatted according to a specified locale.
+
+Conversion to prefixed unit means that the function prepends one of the
+prefixes to given unit and divides the number by matching value. Supported
+prefixes are <code>'k'</code>, <code>'M'</code>, <code>'G'</code>,
+<code>'T'</code> and <code>'P'</code>, which mean \"divide by 1024\", \"divide
+by 1024<sup>2</sup>\" etc. Function uses the largest prefix, which doesn't
+make the number smaller than <code>1</code> after the division.
+
+@param number number to convert and format
+@param unit unit appended to the number
+@param locale locale to format the number with
+@return converted and formatted number
+"
+      end
+
+      operation 749314 "formatNumberWithPrefixedUnit"
+	class_operation public explicit_return_type "String"
+	nparams 2
+	  param in name "number" explicit_type "long"
+	  param in name "unit" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Does the same as <code>formatNumberWithPrefixedUnit</code> method, but
+supplies <code>Locale.ENGLISH</code> as its <code>locale</code> parameter.
+
+@param number number to convert and format
+@param unit unit appended to the number
+@return converted and formatted number
+"
+      end
+
+      operation 749442 "formatMillisAsHMS"
+	class_operation public explicit_return_type "String"
+	nparams 1
+	  param in name "millis" explicit_type "long"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Takes a number of milliseconds representing time and formats it as
+a human-readable time (in format [hh:]mm:ss). Seconds are always
+zero-padded, minutes are zero-padded if time is big enough to output the
+\"hh\" field.
+
+@param millis number of milliseconds representing time
+@return time in human readable format 
+"
+      end
+
+      operation 749570 "nl2br"
+	class_operation public explicit_return_type "String"
+	nparams 1
+	  param in name "s" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Does the same thing as PHP's <code>nl2br</code> function, i.e. prepends
+each <code>\"\\n\"</code>, <code>\"\\r\"</code> or <code>\"\\r\\n\"</code> with
+<code>&lt;br /&gt;</code>. In other words, it escapes newlines so they are
+correctly displayed in HTML.
+
+@param s string to escape 
+@return escaped string
+"
+      end
+
+      operation 749698 "trim"
+	class_operation public explicit_return_type "String"
+	nparams 1
+	  param in name "s" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Does the same thing as PHP's <code>trim</code> function, i.e. strips
+whitespace from the beginning and end of a string. \"whitespace\" is defined
+by the <code>Char.isWhitespace</code> method.
+
+@param s string to trim 
+@return trimmed string
+
+@see <a href=\"http://www.php.net/trim\">trim</a> 
+"
+      end
+
+      operation 749826 "bounded"
+	class_operation public explicit_return_type "T"
+	nparams 3
+	  param inout name "value" explicit_type "T"
+	  param inout name "min" explicit_type "T"
+	  param inout name "max" explicit_type "T"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}<T extends Comparable<T>> ${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns a value bounded by the minimum and maximum (i.e. if the value is
+smaller than the minimum, returns the minimum, otherwise returns the value;
+analogically with the maximum).  
+
+@param <T> value type
+@param value value to bound
+@param min minimum bound
+@param max maximum bound
+@return value bounded by the minimum and maximum
+@throws NullPointerException if any argument is null
+"
+      end
+
+      operation 749954 "stringOrNone"
+	class_operation public explicit_return_type "String"
+	nparams 1
+	  param in name "s" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns given string, or string \"(none)\" if the given string was empty.
+
+@param s string to process
+@return given string, or string \"(none)\" if the given string was empty
+@throws NullPointerException if given string is <code>null</code>
+"
+      end
+
+      operation 750082 "getCookieByName"
+	class_operation public explicit_return_type "String"
+	nparams 2
+	  param inout name "request" explicit_type "HttpServletRequest"
+	  param in name "name" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns the value of a cookie identified by its name. 
+
+@param request HTTP request
+@param name cookie name
+@return cookie value or <code>null</code> if the cookie is not found
+"
+      end
+
+      operation 750210 "Routines"
+	private explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Private constructor to prevent instantiation.
+"
+      end
+    end
+
+    class 210818 "RSLValidator"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Simple class for syntactic checking of the RSL queries in the web interface.
+It has only one public method, <code>validate</code>, which checks the RSL
+query string and returns possible error messages in HTML format suitable for
+output in the web interface. 
+
+@author David Majda
+"
+      attribute 349058 "TOKEN_KIND_EOF"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  0"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      operation 750338 "formatCode"
+	class_operation private explicit_return_type "String"
+	nparams 3
+	  param in name "rsl" explicit_type "String"
+	  param inout name "errorToken" explicit_type "Token"
+	  param in name "maxExpectedTokenCount" explicit_type "int"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 750466 "formatEncounteredTokens"
+	class_operation private explicit_return_type "String"
+	nparams 3
+	  param inout name "e" explicit_type "cz.cuni.mff.been.common.rsl.ParseException"
+	  param inout name "errorToken" explicit_type "Token"
+	  param in name "maxExpectedTokenCount" explicit_type "int"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " For some reason, Tomcat reports \"Unresolved compilation problems\" when
+PackageException is used in unqualified form (without the package name).
+"
+      end
+
+      operation 750594 "formatExpectedTokens"
+	class_operation private explicit_return_type "String"
+	nparams 1
+	  param inout name "e" explicit_type "cz.cuni.mff.been.common.rsl.ParseException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " For some reason, Tomcat reports \"Unresolved compilation problems\" when
+PackageException is used in unqualified form (without the package name).
+"
+      end
+
+      operation 750722 "formatParseExceptionMessage"
+	class_operation private explicit_return_type "String"
+	nparams 2
+	  param in name "rsl" explicit_type "String"
+	  param inout name "e" explicit_type "cz.cuni.mff.been.common.rsl.ParseException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " For some reason, Tomcat reports \"Unresolved compilation problems\" when
+PackageException is used in unqualified form (without the package name).
+"
+      end
+
+      operation 750850 "validate"
+	class_operation public explicit_return_type "String"
+	nparams 1
+	  param in name "rsl" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Syntactically checks the RSL query string and returns possible error
+messages in HTML format suitable for output in the web interface. 
+
+@param rsl RSL string to check
+@return error messages in HTML format or <code>null</code> if the RSL
+         query string is syntactically correct
+"
+      end
+
+      operation 750978 "RSLValidator"
+	private explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Private constructor to prevent instantiation.
+"
+      end
+    end
+
+    class 210946 "TaskUtils"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Class containing utility functions for working with tasks. These functions
+are used in several modules of the web interface.
+
+@author David Majda
+"
+      operation 751106 "getCheckPointsForTasks"
+	class_operation public return_type class_ref 184706 // TaskEntry
+	nparams 2
+	  param inout name "taskManager" type class_ref 181762 // TaskManagerInterface
+	  param inout name "tasks" type class_ref 184706 // TaskEntry
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}Map<${type}, CheckPoint[]> ${name}${(}${t0} ${p0}, ${t1}[] ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Get checkpoints for a list of tasks.
+
+@param taskManager Task Manager interface RMI reference
+@param tasks list of tasks for which to get the checkpoints
+@return map, mapping <code>TaskEntry</code> objects representing the tasks
+         to the arrays of <code>CheckPoint</code> objects representing
+         checkpoints the task reached
+@throws RemoteException if the RMI call to the Task Manager fails
+"
+      end
+
+      operation 751234 "TaskUtils"
+	private explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Private constructor so that no instances can be created.
+"
+      end
+    end
+
+    class 211074 "UploadResult"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 275458 // status (<unidirectional association>)
+	relation 275458 --->
+	  a role_name "status" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 275458 // status (<unidirectional association>)
+	  b parent class_ref 134786 // UploadStatus
+      end
+
+      attribute 349186 "errorMessages"
+	private explicit_type "String"
+	multiplicity "[]"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      operation 751362 "getStatus"
+	public return_type class_ref 134786 // UploadStatus
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 751490 "getErrorMessages"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 751618 "UploadResult"
+	public explicit_return_type ""
+	nparams 2
+	  param inout name "status" type class_ref 134786 // UploadStatus
+	  param in name "errorMessages" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1}[] ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+    end
+
+    class 211202 "WebInterfaceServlet"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Web interface servlet. It is responsible for managing web interface modules
+and redirecting requests to them. Redirection is based on the URL.
+
+@author David Majda
+"
+      classrelation 275586 // <generalisation>
+	relation 275586 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 275586 // <generalisation>
+	  b parent class_ref 211330 // HttpServlet
+      end
+
+      classrelation 275714 // page (<unidirectional association>)
+	relation 275714 --->
+	  a role_name "page" init_value "=  Page.getInstance()" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 275714 // page (<unidirectional association>)
+	  b parent class_ref 210178 // Page
+      end
+
+      operation 751746 "init"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "ServletException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Called by the servlet container to indicate to a servlet that the servlet
+is being placed into service. Initialises modules.
+
+@see javax.servlet.GenericServlet#init()
+"
+      end
+
+      operation 751874 "destroy"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Called by the servlet container to indicate to a servlet that the servlet
+is being taken out of service.
+
+@see javax.servlet.Servlet#destroy()
+"
+      end
+
+      operation 752002 "disableCaching"
+	private explicit_return_type "void"
+	nparams 1
+	  param inout name "response" explicit_type "HttpServletResponse"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Disables caching for the response. Code is borrowed from the PHP manual
+and adapted for Java.
+
+@param response an <code>HttpServletResponse</code> object that contains
+        the response the servlet sends to the client
+"
+      end
+
+      operation 752130 "writeWelcomePage"
+	private explicit_return_type "void"
+	nparams 2
+	  param inout name "request" explicit_type "HttpServletRequest"
+	  param inout name "response" explicit_type "HttpServletResponse"
+	nexceptions 2
+	  explicit_exception "ServletException"
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 752258 "writeRedirectToAction"
+	private explicit_return_type "void"
+	nparams 5
+	  param inout name "request" explicit_type "HttpServletRequest"
+	  param inout name "response" explicit_type "HttpServletResponse"
+	  param in name "moduleID" explicit_type "String"
+	  param in name "action" explicit_type "String"
+	  param in name "rootPath" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 752386 "writeUserFriendlyExceptionMessage"
+	private explicit_return_type "void"
+	nparams 1
+	  param inout name "cause" explicit_type "Throwable"
+	nexceptions 2
+	  explicit_exception "ServletException"
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 752514 "writeModuleActionPage"
+	private explicit_return_type "void"
+	nparams 4
+	  param inout name "request" explicit_type "HttpServletRequest"
+	  param inout name "response" explicit_type "HttpServletResponse"
+	  param inout name "module" type class_ref 210434 // Module
+	  param in name "action" explicit_type "String"
+	nexceptions 2
+	  explicit_exception "ServletException"
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 752642 "processRequest"
+	private explicit_return_type "void"
+	nparams 2
+	  param inout name "request" explicit_type "HttpServletRequest"
+	  param inout name "response" explicit_type "HttpServletResponse"
+	nexceptions 2
+	  explicit_exception "ServletException"
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent synchronized java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Processes the GET or POST requests and redirects them to web interface
+modules according to the URL. Method is synchronised, because multiple
+threads can call the servlet simultaneously.
+
+URL of the request should be in following format (excluding possible
+parameters and anchor identifier for clarity):
+  
+  1. http://&lt;host&gt;/been/
+  2. http://&lt;host&gt;/been/&lt;module&gt;/
+  3. http://&lt;host&gt;/been/&lt;module&gt;/&lt;action&gt;/
+
+In case 1, we show a special welcome page.
+
+In case 2 we extract the &lt;module&gt;, find the module object according
+to given &lt;module&gt; and and redirect to default action of that module.
+
+In case 3 we extract the &lt;module&gt; and &lt;action&gt;, find the
+module object according to given &lt;module&gt; and call a method of
+module, which typically delegates control to a method corresponding to
+given &lt;action&gt; via reflection.
+
+We don't call methods via reflection directly, because we want to give
+the module a chance to catch exceptions coming from methods (mostly
+coming from failures in the RMI calls) in one place.
+
+If the URL is not in specified format, or specified module or action is
+not found, we write an error page.  
+
+@param request an <code>HttpServletRequest</code> object that contains the
+        request the client has made of the servlet
+@param response an <code>HttpServletResponse</code> object that contains
+        the response the servlet sends to the client
+        
+@throws ServletException if the request could not be handled
+@throws IOException if an input or output error is detected when the
+         servlet handles the request
+"
+      end
+
+      operation 752770 "doGet"
+	protected explicit_return_type "void"
+	nparams 2
+	  param inout name "request" explicit_type "HttpServletRequest"
+	  param inout name "response" explicit_type "HttpServletResponse"
+	nexceptions 2
+	  explicit_exception "ServletException"
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Called by the server (via the <code>service</code> method) to allow a
+servlet to handle a GET request.
+
+@see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+"
+      end
+
+      operation 752898 "doPost"
+	protected explicit_return_type "void"
+	nparams 2
+	  param inout name "request" explicit_type "HttpServletRequest"
+	  param inout name "response" explicit_type "HttpServletResponse"
+	nexceptions 2
+	  explicit_exception "ServletException"
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Called by the server (via the <code>service</code> method) to allow
+a servlet to handle a POST request.
+
+@see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+"
+      end
+    end
+
+    class 221058 "RoutinesTest"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      operation 877570 "assertArraysEqual"
+	private explicit_return_type "void"
+	nparams 2
+	  param inout name "expected" explicit_type "T"
+	  param inout name "actual" explicit_type "T"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}<T> ${type} ${name}${(}${t0}[] ${p0}, ${t1}[] ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      class 221186 "TestRequest"
+	visibility public 
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	classrelation 301186 // <realization>
+	  relation 301186 -_-|>
+	    a public
+	      java "${type}"
+	      classrelation_ref 301186 // <realization>
+	    b parent class_ref 221314 // HttpServletRequest
+	end
+
+	attribute 365826 "userAgent"
+	  private explicit_type "String"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	operation 877698 "TestRequest"
+	  public explicit_return_type ""
+	  nparams 1
+	    param in name "userAgent" explicit_type "String"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 877826 "getAuthType"
+	  public explicit_return_type "String"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 877954 "getContextPath"
+	  public explicit_return_type "String"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 878082 "getCookies"
+	  public explicit_return_type "Cookie"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 878210 "getDateHeader"
+	  public explicit_return_type "long"
+	  nparams 1
+	    param in name "arg0" explicit_type "String"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 878338 "getHeader"
+	  public explicit_return_type "String"
+	  nparams 1
+	    param in name "arg0" explicit_type "String"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 878466 "getHeaderNames"
+	  public explicit_return_type "Enumeration"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 878594 "getHeaders"
+	  public explicit_return_type "Enumeration"
+	  nparams 1
+	    param in name "arg0" explicit_type "String"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 878722 "getIntHeader"
+	  public explicit_return_type "int"
+	  nparams 1
+	    param in name "arg0" explicit_type "String"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 878850 "getMethod"
+	  public explicit_return_type "String"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 878978 "getPathInfo"
+	  public explicit_return_type "String"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 879106 "getPathTranslated"
+	  public explicit_return_type "String"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 879234 "getQueryString"
+	  public explicit_return_type "String"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 879362 "getRemoteUser"
+	  public explicit_return_type "String"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 879490 "getRequestURI"
+	  public explicit_return_type "String"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 879618 "getRequestURL"
+	  public explicit_return_type "StringBuffer"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 879746 "getRequestedSessionId"
+	  public explicit_return_type "String"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 879874 "getServletPath"
+	  public explicit_return_type "String"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 880002 "getSession"
+	  public explicit_return_type "HttpSession"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 880130 "getSession"
+	  public explicit_return_type "HttpSession"
+	  nparams 1
+	    param inout name "arg0" explicit_type "boolean"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 880258 "getUserPrincipal"
+	  public explicit_return_type "Principal"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 880386 "isRequestedSessionIdFromCookie"
+	  public explicit_return_type "boolean"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 880514 "isRequestedSessionIdFromURL"
+	  public explicit_return_type "boolean"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 880642 "isRequestedSessionIdFromUrl"
+	  public explicit_return_type "boolean"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 880770 "isRequestedSessionIdValid"
+	  public explicit_return_type "boolean"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 880898 "isUserInRole"
+	  public explicit_return_type "boolean"
+	  nparams 1
+	    param in name "arg0" explicit_type "String"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 881026 "getAttribute"
+	  public explicit_return_type "Object"
+	  nparams 1
+	    param in name "arg0" explicit_type "String"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 881154 "getAttributeNames"
+	  public explicit_return_type "Enumeration"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 881282 "getCharacterEncoding"
+	  public explicit_return_type "String"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 881410 "getContentLength"
+	  public explicit_return_type "int"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 881538 "getContentType"
+	  public explicit_return_type "String"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 881666 "getInputStream"
+	  public explicit_return_type "ServletInputStream"
+	  nparams 0
+	  nexceptions 1
+	    explicit_exception "IOException"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 881794 "getLocalAddr"
+	  public explicit_return_type "String"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 881922 "getLocalName"
+	  public explicit_return_type "String"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 882050 "getLocalPort"
+	  public explicit_return_type "int"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 882178 "getLocale"
+	  public explicit_return_type "Locale"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 882306 "getLocales"
+	  public explicit_return_type "Enumeration"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 882434 "getParameter"
+	  public explicit_return_type "String"
+	  nparams 1
+	    param in name "arg0" explicit_type "String"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 882562 "getParameterMap"
+	  public explicit_return_type "Map"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 882690 "getParameterNames"
+	  public explicit_return_type "Enumeration"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 882818 "getParameterValues"
+	  public explicit_return_type "String"
+	  nparams 1
+	    param in name "arg0" explicit_type "String"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 882946 "getProtocol"
+	  public explicit_return_type "String"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 883074 "getReader"
+	  public explicit_return_type "BufferedReader"
+	  nparams 0
+	  nexceptions 1
+	    explicit_exception "IOException"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 883202 "getRealPath"
+	  public explicit_return_type "String"
+	  nparams 1
+	    param in name "arg0" explicit_type "String"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 883330 "getRemoteAddr"
+	  public explicit_return_type "String"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 883458 "getRemoteHost"
+	  public explicit_return_type "String"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 883586 "getRemotePort"
+	  public explicit_return_type "int"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 883714 "getRequestDispatcher"
+	  public explicit_return_type "RequestDispatcher"
+	  nparams 1
+	    param in name "arg0" explicit_type "String"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 883842 "getScheme"
+	  public explicit_return_type "String"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 883970 "getServerName"
+	  public explicit_return_type "String"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 884098 "getServerPort"
+	  public explicit_return_type "int"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 884226 "isSecure"
+	  public explicit_return_type "boolean"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 884354 "removeAttribute"
+	  public explicit_return_type "void"
+	  nparams 1
+	    param in name "arg0" explicit_type "String"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 884482 "setAttribute"
+	  public explicit_return_type "void"
+	  nparams 2
+	    param in name "arg0" explicit_type "String"
+	    param inout name "arg1" explicit_type "Object"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 884610 "setCharacterEncoding"
+	  public explicit_return_type "void"
+	  nparams 1
+	    param in name "arg0" explicit_type "String"
+	  nexceptions 1
+	    explicit_exception "UnsupportedEncodingException"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+      end
+
+      operation 884738 "testHtmlspecialcharsNull"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+	comment " htmlspecialchars tests "
+      end
+
+      operation 884866 "testHtmlspecialCharsNormalText"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 884994 "testHtmlspecialcharsSpecialCharacters"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 885122 "testUcfirstNull"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+	comment " ucfirst tests "
+      end
+
+      operation 885250 "testUcfirstEmptyString"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 885378 "testUcfirstSmall"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 885506 "testUcfirstBig"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 885634 "testUcfirstNonAlpha"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 885762 "testJoinTStringEmpty"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+	comment " join tests "
+      end
+
+      operation 885890 "testJoinTStringOne"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 886018 "testJoinTStringThree"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 886146 "testJoinTDateThree"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 886274 "testJoinIntEmpty"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 886402 "testJoinIntOne"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 886530 "testJoinIntThree"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 886658 "testAddLeadingZeroIntOneCipher"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+	comment " addLeadingZero tests "
+      end
+
+      operation 886786 "testAddLeadingZeroIntTwoCiphers"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 886914 "testAddLeadingZeroIntManyCiphers"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 887042 "testAddLeadingZeroLongOneCipher"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 887170 "testAddLeadingZeroLongTwoCiphers"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 887298 "testAddLeadingZeroLongManyCiphers"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 887426 "testAddLeadingZeroInt0"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+	comment " addLeadingZeroes tests "
+      end
+
+      operation 887554 "testAddLeadingZeroInt1"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 887682 "testAddLeadingZeroInt2"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 887810 "testAddLeadingZeroInt3"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 887938 "testAddLeadingZeroInt4"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 888066 "testBrowserIsMSIEMozilla"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+	comment " browserIsMSIE tests "
+      end
+
+      operation 888194 "testBrowserIsMSIEOpera"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 888322 "testBrowserIsMSIEInternetExplorer"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 888450 "testJavaScriptEscapeNull"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+	comment " javaScriptEscape tests "
+      end
+
+      operation 888578 "testJavaScriptEscapeNormalText"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 888706 "testJavaScriptEscapeSpecialCharacters"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 888834 "testIsIntegerTrue"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+	comment " isInteger tests "
+      end
+
+      operation 888962 "testIsIntegerFalse"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 889090 "testIsIntegerBigNumber"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 889218 "testIsLongTrue"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+	comment " isLong tests "
+      end
+
+      operation 889346 "testIsLongFalse"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 889474 "testIsLongBigNumber"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 889602 "testsSplit2EmptyString"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+	comment " split2 tests "
+      end
+
+      operation 889730 "testsSplit2One"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 889858 "testsSplit2Three"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 889986 "testsSplit2ThreeNontrivialRegexp"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 890114 "testFormatNumberWithPrefixedUnitNullUnit"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+	comment " formatNumberWithPrefixedUnit tests "
+      end
+
+      operation 890242 "testFormatNumberWithPrefixedUnitNullLocale"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 890370 "testFormatNumberWithPrefixedUnitZero"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 890498 "testFormatNumberWithPrefixedUnitSmall"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 890626 "testFormatNumberWithPrefixedUnitSmallNoUnit"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 890754 "testFormatNumberWithPrefixedUnitkHz"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 890882 "testFormatNumberWithPrefixedUnitMHz"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 891010 "testFormatNumberWithPrefixedUnitGHz"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 891138 "testFormatNumberWithPrefixedUnitTHz"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 891266 "testFormatNumberWithPrefixedUnitPHz"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 891394 "testFormatNumberWithPrefixedUnitBig"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 891522 "testFormatNumberWithPrefixedUnitBigNoUnit"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 891650 "testFormatMillisAsHMSMillis"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+	comment " formatMillisAsHMS tests "
+      end
+
+      operation 891778 "testFormatMillisAsHMSSeconds"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 891906 "testFormatMillisAsHMSMinutes"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 892034 "testFormatMillisAsHMSHours"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 892162 "testNl2br"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+	comment " nl2br tests "
+      end
+
+      operation 892290 "testTrim"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+	comment " trim tests "
+      end
+
+      operation 892418 "testBounded"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+	comment " bounded tests "
+      end
+
+      operation 892546 "testStringOrNone"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+	comment " stringOrNone tests "
+      end
+    end
+  end
+
+  deploymentview 137090 "webinterface"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+    artifact 189186 "Config"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
+${definition}"
+      associated_classes
+	class_ref 208514 // Config
+      end
+    end
+
+    artifact 189314 "IllegalWizardScreenSequenceException"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import cz.cuni.mff.been.apps.benchmarkmanager.BenchmarkManagerException;
+${definition}"
+      associated_classes
+	class_ref 208642 // IllegalWizardScreenSequenceException
+      end
+    end
+
+    artifact 189442 "WebInterfaceException"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import cz.cuni.mff.been.common.BeenException;
+${definition}"
+      associated_classes
+	class_ref 208898 // WebInterfaceException
+      end
+    end
+
+    artifact 189570 "InvalidParamValueException"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+${definition}"
+      associated_classes
+	class_ref 208770 // InvalidParamValueException
+      end
+    end
+
+    artifact 189698 "InvalidRequestMethodException"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+${definition}"
+      associated_classes
+	class_ref 209026 // InvalidRequestMethodException
+      end
+    end
+
+    artifact 189826 "LogEntityColumn"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.util.HashMap;
+import java.util.Map;
+${definition}"
+      associated_classes
+	class_ref 209154 // LogEntityColumn
+      end
+    end
+
+    artifact 189954 "LogUtils"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.rmi.RemoteException;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
+import cz.cuni.mff.been.logging.LogRecord;
+import cz.cuni.mff.been.logging.LogStorageException;
+import cz.cuni.mff.been.taskmanager.TaskManagerInterface;
+import cz.cuni.mff.been.taskmanager.data.TaskEntry;
+${definition}"
+      associated_classes
+	class_ref 209410 // LogUtils
+      end
+    end
+
+    artifact 190082 "Message"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+${definition}"
+      associated_classes
+	class_ref 209538 // Message
+      end
+    end
+
+    artifact 190210 "Messages"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+${definition}"
+      associated_classes
+	class_ref 209794 // Messages
+      end
+    end
+
+    artifact 190338 "MissingParamException"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+${definition}"
+      associated_classes
+	class_ref 210050 // MissingParamException
+      end
+    end
+
+    artifact 190466 "Page"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import cz.cuni.mff.been.webinterface.modules.Module;
+${definition}"
+      associated_classes
+	class_ref 210178 // Page
+      end
+    end
+
+    artifact 190594 "Params"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.util.Enumeration;
+import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+${definition}"
+      associated_classes
+	class_ref 210562 // Params
+      end
+    end
+
+    artifact 190722 "Routines"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.text.NumberFormat;
+import java.util.Locale;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+${definition}"
+      associated_classes
+	class_ref 210690 // Routines
+      end
+    end
+
+    artifact 190850 "RSLValidator"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import cz.cuni.mff.been.common.rsl.ParserWrapper;
+import cz.cuni.mff.been.common.rsl.Token;
+${definition}"
+      associated_classes
+	class_ref 210818 // RSLValidator
+      end
+    end
+
+    artifact 190978 "TaskUtils"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.rmi.RemoteException;
+import java.util.HashMap;
+import java.util.Map;
+import cz.cuni.mff.been.taskmanager.CheckPoint;
+import cz.cuni.mff.been.taskmanager.TaskManagerException;
+import cz.cuni.mff.been.taskmanager.TaskManagerInterface;
+import cz.cuni.mff.been.taskmanager.data.TaskEntry;
+${definition}"
+      associated_classes
+	class_ref 210946 // TaskUtils
+      end
+    end
+
+    artifact 191106 "UploadResult"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import cz.cuni.mff.been.common.UploadStatus;
+${definition}"
+      associated_classes
+	class_ref 211074 // UploadResult
+      end
+    end
+
+    artifact 191234 "WebInterfaceServlet"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.rmi.ConnectException;
+import java.rmi.RemoteException;
+import java.util.Date;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import cz.cuni.mff.been.common.ComponentInitializationException;
+import cz.cuni.mff.been.webinterface.Page.LayoutType;
+import cz.cuni.mff.been.webinterface.modules.BenchmarksModule;
+import cz.cuni.mff.been.webinterface.modules.ConfigurationModule;
+import cz.cuni.mff.been.webinterface.modules.HostsModule;
+import cz.cuni.mff.been.webinterface.modules.Module;
+import cz.cuni.mff.been.webinterface.modules.PackagesModule;
+import cz.cuni.mff.been.webinterface.modules.ResultsModule;
+import cz.cuni.mff.been.webinterface.modules.ServicesModule;
+import cz.cuni.mff.been.webinterface.modules.TasksModule;
+${definition}"
+      associated_classes
+	class_ref 211202 // WebInterfaceServlet
+      end
+    end
+
+    artifact 199170 "RoutinesTest"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.Principal;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.Locale;
+import java.util.Map;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletInputStream;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+${definition}"
+      associated_classes
+	class_ref 221058 // RoutinesTest
+      end
+    end
+  end
+
+  package_ref 141442 // modules
+
+  package_ref 141570 // benchmarks
+
+  package_ref 141698 // event
+
+  package_ref 141826 // hosts
+
+  package_ref 141954 // ref
+
+  package_ref 142082 // packages
+
+  package_ref 142210 // tasks
+
+  package_ref 139784 // config
+
+  package_ref 139912 // screen
+end

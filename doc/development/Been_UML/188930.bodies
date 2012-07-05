@@ -1,0 +1,599 @@
+class ExperimentEntityManager
+!!!531842.java!!!	ExperimentEntityManager()
+		database = Database.getInstance();
+!!!531970.java!!!	getInstance() : ExperimentEntityManager
+		if (experimentEntityManager == null) {
+			return new ExperimentEntityManager();
+		} else {
+			return experimentEntityManager;
+		}
+!!!532098.java!!!	initialize(inout database : Database, inout metaManager : MetadataManager, inout statisticsManager : StatisticsManager, inout graphManager : GraphManager, inout logCollector : LogCollector, inout taskListManager : TaskListManager, inout rolesManager : RolesManager, inout scriptsRunner : RScriptsRunner, inout analysisEntityManager : AnalysisEntityManager) : void
+		
+		this.database = database;
+		ExperimentEntityManager.metaManager = metaManager;
+		this.statisticsManager = statisticsManager;
+		this.graphManager = graphManager;
+		this.logCollector = logCollector;
+		this.taskListManager = taskListManager;
+		this.rolesManager = rolesManager;
+		this.rScriptsRunner = scriptsRunner;
+		
+		this.analysisEntityManager = analysisEntityManager;		
+!!!532226.java!!!	addExperiment(inout description : ExperimentEntity) : void
+
+		AID analysisId = description.getAnalysis();
+		analysisEntityManager.ensureValidAid(analysisId);
+		createExperiment(analysisId, description.getId());
+
+		MetadataRef analysisMetadata = new MetadataRef(new Metadata());
+		MetadataRef experimentMetadata = new MetadataRef(new Metadata());
+		String metaItem;
+		Integer completeExperiments;
+		Integer validExperiments;
+
+		experimentMetadata.metadata.addItem("name", description.getName());
+		experimentMetadata.metadata.addItem("comment", description
+				.getDescription());
+		experimentMetadata.metadata
+				.addItem("created on", new Date().toString());
+		experimentMetadata.metadata.addItem("plugin id", description
+				.getPluginID().toString());
+		experimentMetadata.metadata.addItem("plugin name", description
+				.getPlugin());
+		experimentMetadata.metadata.addItem("binaries", "0");
+		experimentMetadata.metadata.addItem("complete binaries", "0");
+		experimentMetadata.metadata.addItem("expected binaries", String
+				.valueOf(description.getBinaryCount()));
+		experimentMetadata.metadata.addItem("valid binaries", "0");
+		experimentMetadata.metadata.addItem("expected runs per binary", String
+				.valueOf(description.getRunCount()));
+		experimentMetadata.metadata.addItem("samples per run count", String
+				.valueOf(description.getSampleCount()));
+		experimentMetadata.metadata.addItem("complete", "false");
+		experimentMetadata.metadata.addItem("valid", "true");
+		
+		String contextName = "system";
+		try {
+		    BenchmarkManagerGUIInterface bmInstance = database.getBenchmarkManagerInstance();
+		    if (bmInstance != null) {
+		    	contextName = bmInstance.getAnalysisInterface()
+		    		.getSubentityInterface(analysisId).getContext(description.getId());
+		    } else {
+		    	Logger.logError("Error connecting to Benchmark Manager!");
+		    }
+		} catch (RemoteException e) {
+		    throw new ResultsRepositoryException(
+			    "Remote exception when contacting Benchmark Manager.", e); 
+		}
+		
+		experimentMetadata.metadata.addItem("context name", contextName);
+		
+		/*
+		 * Store 1:1 role-host mapping information for experiment
+		 */
+		List<Pair<String,String>> mapping = description.getResultsMapping();
+		RoleItem[] roleItems = new RoleItem[mapping.size()];
+		for (int i = 0; i < roleItems.length; i++) {
+			roleItems[i] = new RoleItem(i, 
+					mapping.get(i).getFirst(), 
+					mapping.get(i).getSecond());
+		}
+		rolesManager.makeExperimentTable(analysisId, description.getId(), roleItems);
+		
+		ensureSuccessStoreExperimentMetadata(experimentMetadata.metadata,
+				analysisId, description.getId());
+		
+		/* Now update experiments count in analysis metadata */
+		AnalysisEntityManager.ensureSuccessLoadAnalysisMetadata(analysisMetadata, analysisId);
+		
+		if (Database.ensureMetadataNotNull(metaItem = analysisMetadata.metadata
+				.getItemByKey("experiments"), "experiments",
+				Database.getAnalysisReferenceString(analysisId))) {
+			completeExperiments = new Integer(metaItem);
+		} else {
+			completeExperiments = new Integer(0);
+		}
+		
+		if (Database.ensureMetadataNotNull(metaItem = analysisMetadata.metadata
+				.getItemByKey("valid experiments"), "valid experiments",
+				Database.getAnalysisReferenceString(analysisId))) {
+			validExperiments = new Integer(metaItem);
+		} else {
+			validExperiments = new Integer(0);
+		}
+		
+		completeExperiments++;
+		analysisMetadata.metadata.setItemByKey("experiments",
+				completeExperiments.toString());
+		
+		validExperiments++;
+		analysisMetadata.metadata.setItemByKey("valid experiments",
+				completeExperiments.toString());
+		
+		if (!AnalysisEntityManager.ensureSuccessStoreAnalysisMetadata(analysisMetadata.metadata,
+				analysisId)) {
+			return;
+		}
+			
+		logCollector.registerContextForLogging(contextName);
+		
+		String[] taskNames = null; 
+		
+		try {
+		    BenchmarkManagerGUIInterface bmInstance = database.getBenchmarkManagerInstance();
+
+		    if (bmInstance == null) {
+		    	Logger.logError("Error contacting Benchmark Manager.");
+		    } else {
+		    	taskNames = BeenUtils.extractTaskIDs(database.getBenchmarkManagerInstance().getAnalysisInterface()
+		    		.getSubentityInterface(analysisId).getAllTasks(description.getId()));
+		    
+		    	if (taskNames == null) {
+		    		Logger.logError("Task names list of experiment is null.");
+		    		return;
+		    	}
+			        
+		    	synchronized (LockManager.taskListLock) {
+		    		
+		    		taskListManager.loadExperimentTaskList(analysisId, description.getId());
+		    		taskListManager.addNewExperimentTasks(taskNames);
+		    		taskListManager.storeExperimentTaskList(analysisId, description.getId());
+		    		
+		    	}
+		    }
+
+		} catch (RemoteException e) {
+			Logger.logError("Error contacting Benchmark Manager.");
+		    e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			Logger.logError("Entities integrity error while creating experiment.");
+			e.printStackTrace();
+		}
+		        
+	
+!!!532354.java!!!	addExperimentMetadata(inout analysisId : AID, inout experimentId : EID, in key : String, in value : String) : void
+	
+		ensureValidEid(analysisId, experimentId);
+		MetadataRef experimentMetadata = new MetadataRef(new Metadata());
+		ensureSuccessLoadExperimentMetadata(experimentMetadata, analysisId,
+			experimentId);
+	
+		if (experimentMetadata.metadata.getItemByKey(key) != null) {
+			throw new ResultsRepositoryException(
+				"Trying to overwrite analysis metadata - "
+						+ Database.getExperimentReferenceString(analysisId,
+								experimentId) + ".");
+		}
+	
+		experimentMetadata.metadata.addItem(key, value);
+	
+		ensureSuccessStoreExperimentMetadata(experimentMetadata.metadata,
+				analysisId, experimentId);	
+!!!532482.java!!!	createExperiment(inout aid : AID, inout eid : EID) : void
+
+		if (isValidEid(aid, eid)) {
+			throw new ResultsRepositoryException(new IllegalArgumentException(
+					Database.getExperimentReferenceString(aid, eid) + " already exists."));
+		}
+
+		File experimentDirectory = new File(database.getDirectoryInDatabase(aid, eid));
+		if (!experimentDirectory.mkdir()) {
+			throw new ResultsRepositoryException(
+					"Error creating experiment directory.");
+		}
+		
+		File experimentScriptsDirectory = new File(database.getRScriptsDirectory(aid,
+				eid));
+		if (!experimentScriptsDirectory.mkdir()) {
+			throw new ResultsRepositoryException(
+					"Error creating experiment scritps directory.");
+
+		}
+		
+		File experimentInvalidateScriptsDirectory 
+			= new File(database.getInvalidateScriptsDirectory(aid, eid));
+		if (!experimentInvalidateScriptsDirectory.mkdir()) {
+			throw new ResultsRepositoryException(
+					"Error creating experiment invalidate scripts directory.");
+		}
+
+!!!532610.java!!!	experimentFinished(inout aid : AID, inout eid : EID) : boolean
+		
+		EntityStatus experimentStatus = null;
+		
+		try {
+			
+		    BenchmarkManagerGUIInterface bmInstance = database.getBenchmarkManagerInstance();
+		    if (bmInstance != null) {
+		    	experimentStatus = bmInstance.getAnalysisInterface()
+		    		.getSubentityInterface(aid).getEntity(eid).getStatus();
+		    	Logger.logDebug(Database.getExperimentReferenceString(aid, eid) + " status is " + experimentStatus);
+		    } else {
+		    	Logger.logError(BM_CONTACT_DELETE_PERMIT_ERROR);
+		    	return false;
+		    }
+		    
+		} catch (RemoteException e) {
+			
+		    Logger.logError(BM_CONTACT_DELETE_PERMIT_ERROR);
+		    return false;
+		    
+		} catch (IllegalArgumentException e) {
+			
+			Logger.logInfo("Test \"experiment finished\": experiment no longer exists in Benchmark Manager.");
+			return true;
+		}
+		
+		if (experimentStatus == null) {
+			
+			Logger.logError(BM_CONTACT_DELETE_PERMIT_ERROR);
+			return false;
+			
+		}
+		
+		return experimentStatus.equals(EntityStatus.FINISHED); 
+!!!532738.java!!!	getExperimentsInAnalysis(inout aid : AID) : Entity
+
+		analysisEntityManager.ensureValidAid(aid);
+
+		File[] directoryList;
+		ArrayList<Entity<EID>> result = new ArrayList<Entity<EID>>();
+
+		File path = new File(database.getDirectoryInDatabase(aid));
+		if ((directoryList = path.listFiles()) == null) {
+			throw new RuntimeException(new ResultsRepositoryException(
+					"Error reading experiments directory ("
+							+ Database.getAnalysisReferenceString(aid) + ")."));
+		}
+
+		MetadataRef metadataFile = new MetadataRef(new Metadata());
+
+		for (int i = 0; i < directoryList.length; i++) {
+			if (directoryList[i].isDirectory()) {
+
+				EID eid;
+				try {
+					eid = new EID(new Long(directoryList[i].getName())
+							.longValue());
+				} catch (NumberFormatException e) {
+					Logger.logTrace(
+							"Encountered non-EID item in analysis directory: "
+									+ directoryList[i].getName() + ".");
+					continue;
+				}
+
+				ensureSuccessLoadExperimentMetadata(metadataFile, aid, eid);
+
+				Statistics[] stat = statisticsManager.loadExperimentStatistics(
+						aid, eid);
+
+				/*Logger.logDebug(
+						"Reading " + getExperimentReferenceString(aid, eid));*/
+
+				String metaItem;
+				boolean complete;
+				
+				if (Database.ensureMetadataNotNull(metaItem = metadataFile.metadata
+						.getItemByKey("complete"), "complete",
+						Database.getExperimentReferenceString(aid, eid))) {
+					complete = new Boolean(metaItem);
+				} else {
+					/* invalid metadata shouldn't prevent deleting of entity */
+					complete = true; 
+				}
+				
+				result.add(new Entity<EID>(eid, metadataFile.metadata
+						.getMetadata(), stat, 
+						(rScriptsRunner.isDeleteExperimentAllowed(aid, eid) || 
+								experimentFinished(aid, eid)) 
+								&& (complete || experimentFinished(aid, eid))));
+			}
+		}
+
+		Collections.sort((List<Entity<EID>>) result);
+
+		return result;
+!!!532866.java!!!	isValidEid(inout aid : AID, inout eid : EID) : boolean
+		File experimentDir = new File(database.getDirectoryInDatabase(aid, eid));
+
+		return experimentDir.exists() && experimentDir.isDirectory()
+				&& experimentDir.canRead();
+!!!532994.java!!!	ensureValidEid(inout aid : AID, inout eid : EID) : void
+		if (!isValidEid(aid, eid)) {
+			throw new IllegalArgumentException(Database.getExperimentReferenceString(
+					aid, eid) + " doesn't exist.");
+		}
+!!!533122.java!!!	isDeletable(inout aid : AID, inout eid : EID) : boolean
+
+		MetadataRef metadataFile = new MetadataRef(new Metadata());
+
+		ensureSuccessLoadExperimentMetadata(metadataFile, aid, eid);
+
+		String metaItem;
+		boolean complete;
+		
+		if (Database.ensureMetadataNotNull(metaItem = metadataFile.metadata
+				.getItemByKey("complete"), "complete",
+				Database.getExperimentReferenceString(aid, eid))) {
+			complete = new Boolean(metaItem);
+		} else {
+			/* invalid metadata shouldn't prevent deleting of entity */
+			complete = true; 
+		}
+		
+		return complete;
+
+!!!533250.java!!!	getExperiment(inout aid : AID, inout eid : EID) : Entity
+
+		ensureValidEid(aid, eid);
+
+		Entity<EID> result;
+		MetadataRef metadataFile = new MetadataRef(new Metadata());
+
+		ensureSuccessLoadExperimentMetadata(metadataFile, aid, eid);
+
+		Statistics[] stat = statisticsManager.loadExperimentStatistics(aid, eid);
+
+		String metaItem;
+		boolean complete;
+		
+		if (Database.ensureMetadataNotNull(metaItem = metadataFile.metadata
+				.getItemByKey("complete"), "complete",
+				Database.getExperimentReferenceString(aid, eid))) {
+			complete = new Boolean(metaItem);
+		} else {
+			/* invalid metadata shouldn't prevent deleting of entity */
+			complete = true; 
+		}
+		
+		result = new Entity<EID>(eid, metadataFile.metadata.getMetadata(), stat, 
+				rScriptsRunner.isDeleteExperimentAllowed(aid, eid) && 
+				(complete || experimentFinished(aid, eid)));
+
+		return result;
+!!!533378.java!!!	ensureSuccessLoadExperimentMetadata(inout experimentMetadata : MetadataRef, inout aid : AID, inout eid : EID) : boolean
+		try {
+			experimentMetadata.metadata = metaManager.loadExperimentMetadata(
+					aid, eid);
+		} catch (IOException e) {
+			e.printStackTrace();
+			Logger.logError(
+					Metadata.IO_ERROR_METADATA_READING_MESSAGE
+							+ Database.getExperimentReferenceString(aid, eid));
+			return false;
+		}
+		return true;
+!!!533506.java!!!	ensureSuccessStoreExperimentMetadata(inout experimentMetadata : Metadata, inout aid : AID, inout eid : EID) : boolean
+		try {
+			metaManager.storeExperimentMetadata(aid, eid, experimentMetadata);
+		} catch (IOException e) {
+			e.printStackTrace();
+			Logger.logError(
+					Metadata.IO_ERROR_METADATA_STORING_MESSAGE
+							+ Database.getExperimentReferenceString(aid, eid));
+			return false;
+		}
+		return true;
+!!!533634.java!!!	setExperimentComment(inout aid : AID, inout eid : EID, in comment : String) : void
+
+		ensureValidEid(aid, eid);
+		metaManager.setExperimentMetadataItem(aid, eid, "comment", comment);
+!!!533762.java!!!	eraseExperiment(inout aid : AID, inout eid : EID) : boolean
+
+		ensureValidEid(aid, eid);
+		
+		synchronized (LockManager.eraseLock) {
+		
+			/* Note: for further improvement of synchronization, callbacks should be locked too 
+			 * (because they handle metadata of existing entities), now it cannot happen. For 
+			 * additional measurements, it must be introduced */
+			
+			if (!(rScriptsRunner.isDeleteExperimentAllowed(aid, eid) && 
+					(isDeletable(aid, eid) || experimentFinished(aid, eid))
+					)) {
+				Logger.logWarning("Tried to delete locked " 
+						+ Database.getExperimentReferenceString(aid, eid) + ".");
+				throw new DeleteLockedException("Experiment is being processed, unable to delete.");
+			}
+	
+			MetadataRef analysisMetadata = new MetadataRef(new Metadata());
+			MetadataRef experimentMetadata = new MetadataRef(new Metadata());
+			Integer experiments;
+			Integer completeExperiments;
+			Integer validExperiments;
+			String metaItem;
+			Boolean completeFlag;
+			boolean valid;
+	
+			/* Update experiments count in analysis metadata */
+			if (!(AnalysisEntityManager.ensureSuccessLoadAnalysisMetadata(analysisMetadata, aid))
+					|| !(ensureSuccessLoadExperimentMetadata(experimentMetadata,
+							aid, eid))) {
+				return false;
+			}
+	
+			if (Database.ensureMetadataNotNull(metaItem = analysisMetadata.metadata
+					.getItemByKey("complete experiments"), "complete experiments",
+					Database.getAnalysisReferenceString(aid))) {
+				completeExperiments = new Integer(metaItem);
+			} else {
+				completeExperiments = new Integer(0);
+			}
+	
+			if (Database.ensureMetadataNotNull(metaItem = analysisMetadata.metadata
+					.getItemByKey("valid experiments"), "valid experiments",
+					Database.getAnalysisReferenceString(aid))) {
+				validExperiments = new Integer(metaItem);
+			} else {
+				validExperiments = new Integer(0);
+			}
+	
+			if (Database.ensureMetadataNotNull(metaItem = analysisMetadata.metadata
+					.getItemByKey("experiments"), "experiments",
+					Database.getAnalysisReferenceString(aid))) {
+				experiments = new Integer(metaItem);
+			} else {
+				experiments = new Integer(0);
+			}
+	
+			if (Database.ensureMetadataNotNull(metaItem = experimentMetadata.metadata
+					.getItemByKey("complete"), "complete",
+					Database.getAnalysisReferenceString(aid))) {
+				completeFlag = new Boolean(metaItem);
+			} else {
+				completeFlag = false;
+			}
+	
+			if (Database.ensureMetadataNotNull(metaItem = experimentMetadata.metadata
+					.getItemByKey("valid"), "valid", Database.getExperimentReferenceString(
+					aid, eid))) {
+				valid = metaItem.equals("true");
+			} else {
+				valid = false;
+			}
+	
+			experiments--;
+			analysisMetadata.metadata.setItemByKey("experiments", experiments
+					.toString());
+	
+			if (completeFlag) {
+				completeExperiments--;
+				analysisMetadata.metadata.setItemByKey("complete experiments",
+						completeExperiments.toString());
+			}
+	
+			if (valid && experiments > 0) {
+				validExperiments--;
+				analysisMetadata.metadata.setItemByKey("valid experiments",
+						validExperiments.toString());
+	
+				if (validExperiments == 0) {
+					analysisMetadata.metadata.setItemByKey("valid", "false");
+					analysisMetadata.metadata
+							.setItemByKey("valid experiments", "0");
+				}
+			}
+	
+			if (experiments == 0) {
+				analysisMetadata.metadata.setItemByKey("valid", "true");
+			}
+	
+			if (!AnalysisEntityManager.ensureSuccessStoreAnalysisMetadata(analysisMetadata.metadata, aid)) {
+				return false;
+			}
+	
+			File file = new File(database.getDirectoryInDatabase(aid, eid));
+			// Note: if this fails, metadata might quite well be inconsistent
+			
+			boolean result = Database.eraseDirectoryRecursively(file); 		 
+
+			/* Now execute invalidation callbacks */
+			try {
+				
+				File scriptsFile = new File(
+		        		database.getInvalidateScriptsDirectory(aid) + File.separator +
+		        		RManager.INVALIDATE_SCRIPT_FILENAME);
+				
+				if (scriptsFile.exists()) {
+		        		
+			        BufferedReader scriptsReader = new BufferedReader(new FileReader(scriptsFile));
+			        		        
+			        String script;
+			        
+			        while ((script = scriptsReader.readLine()) != null) {
+			        	
+			        	if (!script.trim().equals("")) {
+			        		rScriptsRunner.enqueueScriptExecution(aid, eid, script);
+			        	}
+			        }
+			        
+			        scriptsReader.close();
+				}
+			        
+		    } catch (IOException e) {
+		    	Logger.logError("I/O error accessing invalidation script files.");
+		    }
+			
+			return result;
+		}
+!!!533890.java!!!	uploadExperimentFile(inout aid : AID, inout eid : EID, in name : String, in host : String, in port : int, inout blocking : boolean) : UploadHandle
+
+		ensureValidEid(aid, eid);
+		return database.uploadFile(database.getFileInDatabase(aid, eid, name), host, port,
+				blocking, false, null, null);
+!!!534018.java!!!	downloadExperimentFile(inout aid : AID, inout eid : EID, in name : String, in host : String, in port : int, inout blocking : boolean) : DownloadHandle
+
+		ensureValidEid(aid, eid);
+
+		if (database.isBusy() && !blocking) {
+			throw new ResultsRepositoryBusyException(
+					Database.TOO_MANY_CONNECTIONS_MESSAGE);
+		}
+		return database.downloadFile(database.getFileInDatabase(aid, eid, name), host, port,
+				blocking);
+!!!534146.java!!!	getExperimentContext(inout aid : AID, inout eid : EID) : String
+		
+		MetadataRef experimentMetadata = new MetadataRef(new Metadata());
+		
+		if (!ensureSuccessLoadExperimentMetadata(experimentMetadata, 
+			    aid, eid)) {
+			Logger.logError("Error reading metadata - \"context name \" not found for " +
+					Database.getExperimentReferenceString(aid, eid));
+		}
+		    
+		String metaItem;
+		    
+		Database.ensureMetadataNotNull(metaItem = experimentMetadata.metadata.getItemByKey(
+				"context name"), "context name", Database.getExperimentReferenceString(aid, eid));
+		
+		return metaItem;
+!!!534274.java!!!	getExperimentGraphCount(inout graphType : GraphType, inout aid : AID, inout eid : EID) : int
+		ensureValidEid(aid, eid);
+		return graphManager.getExperimentGraphCount(graphType, aid, eid);
+!!!534402.java!!!	getExperimentGraphInfo(inout graphType : GraphType, inout aid : AID, inout eid : EID, in index : int) : GraphInfo
+
+		ensureValidEid(aid, eid);
+		if (!graphManager.validExperimentGraph(graphType, aid, eid, index)) {
+			throw new IllegalArgumentException(GraphManager.GRAPH_DOESNT_EXIST_MESSAGE);
+		}
+		return graphManager.getExperimentGraphInfo(graphType, aid, eid, index);
+!!!534530.java!!!	getExperimentGraphPath(inout graphType : GraphType, inout aid : AID, inout eid : EID, in index : int) : String
+		ensureValidEid(aid, eid);
+		if (!graphManager.validExperimentGraph(graphType, aid, eid, index)) {
+			throw new IllegalArgumentException(GraphManager.GRAPH_DOESNT_EXIST_MESSAGE);
+		}
+		return graphManager.getExperimentGraphPath(graphType, aid, eid, index);
+!!!534658.java!!!	reportExperimentColumnNames(inout aid : AID, inout eid : EID, inout columnNames : ArrayList<String>) : void
+		
+		ensureValidEid(aid, eid);
+		
+		String columnsFilename = database.getFileInDatabase(aid, eid, COLUMNS_FILE);
+		
+		if (new File(columnsFilename).exists()) {
+			return;
+		}
+		
+		int i;		
+		PrintWriter outputWriter;
+		
+		try {
+		
+			outputWriter = new PrintWriter(new BufferedWriter(new FileWriter(columnsFilename)));
+		
+			for (i = 0; i < columnNames.size(); i++) {
+				
+				if (i > 0) {
+					outputWriter.print(ASCII_TAB);
+				}
+				
+				outputWriter.print(columnNames.get(i));
+				
+			}
+			outputWriter.println();
+		
+			outputWriter.close();
+			
+		} catch (IOException e) {
+			Logger.logError("Error writing columns file.");
+		}
+		

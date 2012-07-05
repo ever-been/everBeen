@@ -1,0 +1,37 @@
+class HostRuntimeNode
+!!!717954.java!!!	HostRuntimeNode(inout hostRuntimeEntry : HostRuntimeEntry)
+		/* Check input parameters. */
+		if (hostRuntimeEntry == null) {
+			throw new NullPointerException("Parameter hostRuntimeEntry is "
+					+ "null.");
+		}
+		
+		/* Store hostRuntimeEntry. */
+			this.hostRuntimeEntry = hostRuntimeEntry;
+!!!718082.java!!!	isEmpty() : boolean
+		return (tasks.size() == 0);
+!!!718210.java!!!	getHostRuntimeEntry() : HostRuntimeEntry
+		return this.hostRuntimeEntry;
+!!!718338.java!!!	getTasks() : TaskNode
+		return this.tasks;
+!!!718466.java!!!	getCheckPoints() : CheckPointNode
+		return this.checkPoints;
+!!!718594.java!!!	addTask(inout taskNode : TaskNode) : void
+		this.tasks.add(taskNode);
+!!!718722.java!!!	addCheckPoint(inout checkPointNode : CheckPointNode) : void
+		this.checkPoints.add(checkPointNode);
+!!!718850.java!!!	removeTask(inout taskNode : TaskNode) : void
+		boolean removed = this.tasks.remove(taskNode);
+		
+		if (!removed) {
+			throw new DataRuntimeException("TaskNode required to remove not "
+					+ "found list of TaskNode elements in this Host Runtime");
+		}
+!!!718978.java!!!	removeCheckPoint(inout checkPointNode : CheckPointNode) : void
+		boolean removed = this.checkPoints.remove(checkPointNode);
+		
+		if (!removed) {
+			throw new DataRuntimeException("CheckPointNode required to remove "
+					+ "not found in list of CheckPointNode elements in this "
+					+ "Context");
+		}

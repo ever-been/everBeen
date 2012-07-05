@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sect3
+	xml:id="been.user.cli.reference.benchmarks.examples"
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>Benchmarks Module Examples</title>
+	
+	<para>XML Schema files related to this module: <filename>benchmark.xsd</filename>,
+	<filename>config.xsd</filename></para>
+	
+	<para>The Benchmarks Module controls the Benchmark Manager. It can create, update, run and
+	delete <glossterm baseform="analysis">analyses</glossterm>. Details about available
+	<glossterm>generator</glossterm> and <glossterm>evaluator</glossterm>
+	<glossterm baseform="pluggable module">pluggable modules</glossterm> can be extracted.</para>
+	
+	<para>The <command>analysis-create</command> action requires XML input and all the
+	<command>*-dump</command> actions produce XML output. Example XML data will be shown in this
+	section. Some other actions produce plain text output, which is described in
+	<xref linkend="been.user.cli.reference.benchmarks"/>.</para>
+	
+	<para>The XML <option>changed</option> attribute can be used in analysis descriptions.
+	<xref linkend="been.user.cli.reference.hosts.examples"/> describes the meaning of this attribute.
+	Using the attribute can improve performance when large data structures are modified using
+	CLI.</para>
+	
+	<para>Listing <glossterm baseform="analysis">analyses</glossterm> with optional regular
+	expression filtering and/or human-readable descriptions:</para>
+	<screen>$ <emphasis role="strong">./bcmd benchmarks analysis-list</emphasis></screen>
+	<screen>$ <emphasis role="strong">./bcmd benchmarks analysis-list desc</emphasis></screen>
+	<screen>$ <emphasis role="strong">./bcmd benchmarks analysis-list pattern='Xampler.*'</emphasis></screen>
+	
+	<para>Note that there is an <command>analysis-list</command> action in the Results Module as
+	well. See <xref linkend="been.user.cli.reference.results.examples"/> for details. Both actions read
+	different data structures and produce different output. Analyses known to the Benchmark
+	Manager may or may not be known to the Results Repository. In most cases, the Results Repository
+	doesn't list new analyses that haven't created any
+	<glossterm baseform="dataset">datasets</glossterm> yet.</para>
+	
+	<para>Listing <glossterm baseform="evaluator">evaluators</glossterm> with optional regular
+	expression filtering:</para>
+	<screen>$ <emphasis role="strong">./bcmd benchmarks evaluator-list</emphasis></screen>
+	<screen>$ <emphasis role="strong">./bcmd benchmarks evaluator-list pattern='.*Xampler'</emphasis></screen>
+	
+	<para>Listing <glossterm baseform="generator">generators</glossterm> with optional regular
+	expression filtering:</para>
+	<screen>$ <emphasis role="strong">./bcmd benchmarks generator-list</emphasis></screen>
+	<screen>$ <emphasis role="strong">./bcmd benchmarks generator-list pattern='.*Xampler'</emphasis></screen>
+	
+	<para>Creating a new analysis:</para>
+	<screen>$ <emphasis role="strong">./bcmd -b- benchmarks analysis-create</emphasis></screen>
+	<screen>$ <emphasis role="strong">./bcmd -b analysis.xml benchmarks analysis-create</emphasis></screen>
+	
+	<para>Example XML data:</para>
+	<screen><![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="yes"?>           
+<benchmark
+	xmlns="http://been.mff.cuni.cz/benchmarkmanagerng/benchmark"
+	name="MyXampler"
+>
+    <desc>A Xampler experiment</desc>
+    <rsl>name =~ /.*starling.*/</rsl>
+    <period>10</period>
+    <generator version="1.0" name="xampler-generator">
+        <values name="max.runs">
+            <value>100</value>
+        </values>
+        ]]><emphasis>[...]</emphasis><![CDATA[                                                            
+        <values name="suite">
+            <value>ping</value>
+            <value>dsl</value>
+            <value>id</value>
+            <value>ii</value>
+        </values>
+        ]]><emphasis>[...]</emphasis><![CDATA[
+        <values name="buildrsl">
+            <value>(name =~ /.*/)</value>
+        </values>
+    </generator>
+    <evaluators>
+        <evaluator version="1.0" name="xampler-evaluator">
+            <values name="suite.name">
+                <value>ping</value>
+            </values>
+            ]]><emphasis>[...]</emphasis><![CDATA[
+            <values name="benchmark.name">
+                <value>xampler-ping</value>
+            </values>
+        </evaluator>
+        <evaluator>
+            ]]><emphasis>[...]</emphasis><![CDATA[
+        </evaluator>
+        ]]><emphasis>[...]</emphasis><![CDATA[
+    </evaluators>
+</benchmark>]]></screen>
+		
+	<para>Updating an analysis:</para>
+	<screen>$ <emphasis role="strong">./bcmd -b- benchmarks analysis-update</emphasis></screen>
+	<screen>$ <emphasis role="strong">./bcmd -b analysis.xml benchmarks analysis-update</emphasis></screen>
+	
+	<para>Example XML data with the <option>changed</option> attribute set to false for some
+	items:</para>
+	<screen><![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="yes"?>           
+<benchmark
+	xmlns="http://been.mff.cuni.cz/benchmarkmanagerng/benchmark"
+	name="MyXampler"
+>
+    <desc changed="false"/>
+    <rsl>name =~ /.*skylark.*/</rsl>
+    <period changed="false"/>
+    <generator changed="false" version="1.0" name="xampler-generator"/>
+    <evaluators>
+        <evaluator>
+            ]]><emphasis>[...]</emphasis><![CDATA[
+        </evaluator>
+        ]]><emphasis>[...]</emphasis><![CDATA[
+    </evaluators>
+</benchmark>]]></screen>
+	
+	<para>Running an analysis, optionally forcing a new run even when another instance is currently
+	running:</para>
+	<screen>$ <emphasis role="strong">./bcmd benchmarks analysis-run name=MyXampler</emphasis></screen>
+	<screen>$ <emphasis role="strong">./bcmd benchmarks analysis-run force name=MyXampler</emphasis></screen>
+	
+	<para>Deleting an analysis:</para>
+	<screen>$ <emphasis role="strong">./bcmd benchmarks analysis-delete name=MyXampler</emphasis></screen>
+	
+	<para>Dumping an analysis description to XML:</para>
+	<screen>$ <emphasis role="strong">./bcmd benchmarks analysis-dump name=MyXampler</emphasis></screen>
+	
+	<para>Dumping a generator or evaluator configuration description to XML:</para>
+	<screen>$ <emphasis role="strong">./bcmd benchmarks generator-dump name=xampler-generator version=1.0</emphasis></screen>
+	<screen>$ <emphasis role="strong">./bcmd benchmarks evaluator-dump name=xampler-evaluator version=1.0</emphasis></screen>
+
+	<para>Possible output data:</para>
+<screen><![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<config xmlns="http://been.mff.cuni.cz/benchmarkmanagerng/config">
+    <type id="tsuite" multi="false">
+        <value desc="Ping" name="ping"/>
+        ]]><emphasis>[...]</emphasis><![CDATA[
+        <value desc="Marshal Delayed Any" name="mda"/>
+    </type>
+    <group id="suite" desc="Suite">
+        <item id="suite.name" desc="bla" type="tsuite" default="ping"/>
+        <item id="subsuite.name" desc="]]><emphasis>[...]</emphasis><![CDATA[" type="text" default=""/>
+    </group>
+    ]]><emphasis>[...]</emphasis><![CDATA[
+    <group id="host" desc="Host">
+        <item
+        	id="evaluation.host"
+        	desc="Evaluator task RSL"
+        	type="rsl"
+        	default="(name =~ /.*/)"
+        />
+    </group>
+</config>]]></screen>
+</sect3>

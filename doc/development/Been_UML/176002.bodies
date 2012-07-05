@@ -1,0 +1,259 @@
+class HardwareDescription
+!!!404226.java!!!	HardwareDescription()
+		
+		timeStamp = TimeUtils.convertJavaDateToWindowsTime(new Date());
+!!!404354.java!!!	getCpuCount() : short
+
+		return cpuCount;
+!!!404482.java!!!	setCpuCount(in cpuCount : short) : void
+		
+		this.cpuCount = cpuCount;
+!!!404610.java!!!	getMemorySize() : long
+		
+		return memorySize;
+!!!404738.java!!!	setMemorySize(in memorySize : long) : void
+		
+		this.memorySize = memorySize;
+!!!404866.java!!!	getDriveCount() : int
+		
+		if (drives == null) {
+			return 0;
+		}
+		
+		return drives.length;
+!!!404994.java!!!	getAdapterCount() : int
+		
+		if (adapters == null) {
+			return 0;
+		}
+		
+		return adapters.length;
+!!!405122.java!!!	getAdapters() : String
+		
+		return adapters;
+!!!405250.java!!!	setAdapters(in adapters : String) : void
+		
+		this.adapters = adapters;
+!!!405378.java!!!	getDrives() : String
+		
+		return drives;
+!!!405506.java!!!	setDrives(in drives : String) : void
+		
+		this.drives = drives;
+!!!405634.java!!!	getTimeStamp() : long
+		
+		return timeStamp;
+!!!405762.java!!!	setTimeStamp(in timeStamp : long) : void
+		
+		this.timeStamp = timeStamp;
+!!!405890.java!!!	getDataSize() : int
+		
+		int driveStrings = 0;
+		
+		for (int i = 0; i < getDriveCount(); ++i) {
+			driveStrings += 4 + 2 * drives[i].length();
+		}
+		
+		int adapterStrings = 0;
+		
+		for (int i = 0; i < getAdapterCount(); ++i) {
+			adapterStrings += 4 + 2 * adapters[i].length();
+		}
+
+		return MINIMUM_DATA_SIZE + driveStrings + adapterStrings;
+!!!406018.java!!!	getChunkID() : byte
+		
+		return FILE_CHUNK_ID;
+!!!406146.java!!!	load(inout buffer : ByteBuffer) : ByteBuffer
+
+		/*
+		 * For data storage details see comments in save method.
+		 */
+		
+		try {
+			timeStamp = buffer.getLong();
+			
+			cpuCount = buffer.getShort();
+			if (cpuCount < 0) {
+				throw new InputParseException("CPU count is too small.");
+			}
+
+			memorySize = buffer.getLong();
+			if (memorySize < 0) {
+				throw new InputParseException("Memory size cannot be negative.");
+			}
+			
+			int driveCount = buffer.getShort();
+			
+			if (driveCount < 0) {
+				throw new InputParseException("Drive count is negative.");
+			}
+			
+			if (driveCount > 0) {
+				drives = new String[driveCount];
+				
+				for (int i = 0; i < driveCount; ++i) {
+					drives[i] = readString(buffer);
+				}
+				
+			} else {
+				drives = null;
+			}
+			
+			int adapterCount = buffer.getShort();
+			
+			if (adapterCount < 0) {
+				throw new InputParseException("Adapter count is negative.");
+			}
+			
+			if (adapterCount > 0) {
+				adapters = new String[adapterCount];
+				
+				for (int i = 0; i < adapterCount; ++i) {
+					adapters[i] = readString(buffer);
+				}
+			} else {
+				adapters = null;
+			}
+			
+		} catch (BufferUnderflowException e) {
+			throw new InputParseException("Buffer underflow.", e);
+		}
+		
+		return buffer;
+!!!406274.java!!!	save(inout buffer : ByteBuffer) : ByteBuffer
+		
+		/*
+		 * Data layout:
+		 * 
+		 *     Offset(B)     Type       Description
+		 *        0          long       Time stamp.
+		 *        8          short      Number of processors.
+		 *       10          long       RAM size.
+		 *       18          short      Number of drives.
+		 *       20          String[]   Descriptions for drives
+		 *       ?           short      Number of adapters.
+		 *       ?+2         String[]   Descriptions for adapters.
+		 */
+
+		if (buffer.isReadOnly()) {
+			throw new OutputWriteException("Unable to write to the read-only buffer.");
+		}
+		
+		try {
+			buffer.putLong(timeStamp);
+			
+			buffer.putShort(cpuCount);
+			buffer.putLong(memorySize);
+			buffer.putShort((short) getDriveCount());
+			
+			for (int i = 0; i < getDriveCount(); ++i) {
+				saveString(buffer, drives[i]);
+			}
+			
+			buffer.putShort((short) getAdapterCount());
+			
+			for (int i = 0; i < getAdapterCount(); ++i) {
+				saveString(buffer, adapters[i]);
+			}
+			
+		} catch (BufferOverflowException e) {
+			throw new OutputWriteException("Buffer overflow.", e);
+		}
+		
+		return buffer;
+!!!406402.java!!!	equals(inout o : Object) : boolean
+		
+		if (o instanceof HardwareDescription) {
+			return equals((HardwareDescription) o);
+		} else {
+			return false;
+		}
+!!!406530.java!!!	equals(inout hardware : HardwareDescription) : boolean
+		
+		if (hardware == this) {
+			return true;
+		}
+		
+		if (hardware == null) {
+			return false;
+		}
+		
+		if (timeStamp != hardware.timeStamp) {
+			return false;
+		}
+		
+		if (getDriveCount() > 0) {
+			if (hardware.getDriveCount() != getDriveCount()) {
+				return false;
+			}
+			
+			for (int i = 0; i < getDriveCount(); ++i) {
+				if (!drives[i].equals(hardware.drives[i])) {
+					return false;
+				}
+			}
+		} else {
+			if (hardware.getDriveCount() > 0) {
+				return false;
+			}
+		}
+		
+		if (getAdapterCount() > 0) {
+			if (hardware.getAdapterCount() != getAdapterCount()) {
+				return false;
+			}
+			
+			for (int i = 0; i < getAdapterCount(); ++i) {
+				if (!adapters[i].equals(hardware.adapters[i])) {
+					return false;
+				}
+			}
+		} else {
+			if (hardware.getAdapterCount() > 0) {
+				return false;
+			}
+		}
+
+		return cpuCount == hardware.cpuCount;
+!!!406658.java!!!	hashCode() : int
+		int hash = 2 * (int) timeStamp + 7 * cpuCount;
+		
+		for (int i = 0; i < getDriveCount(); ++i) {
+			hash += 3 * drives[i].hashCode();
+		}
+		
+		for (int i = 0; i < getAdapterCount(); ++i) {
+			hash += 5 * adapters[i].hashCode();
+		}
+		
+		return hash;
+!!!406786.java!!!	toString() : String
+		
+		return "Description: " + String.valueOf(timeStamp); 
+!!!406914.java!!!	saveString(inout buffer : ByteBuffer, in s : String) : void
+		
+		if (s == null) {
+			buffer.putInt(0);
+		} else {
+			buffer.putInt(s.length());
+			
+			for (int i = 0; i < s.length(); ++i) {
+				buffer.putChar(s.charAt(i));
+			}
+		}
+!!!407042.java!!!	readString(inout buffer : ByteBuffer) : String
+		
+		StringBuilder builder = new StringBuilder();
+		
+		int strLen = buffer.getInt();
+		
+		if (strLen < 0) {
+			throw new InputParseException("String length is negative.");
+		}
+		
+		for (int i = 0; i < strLen; ++i) {
+			builder.append(buffer.getChar());
+		}
+		
+		return builder.toString();

@@ -1,0 +1,299 @@
+class ContainsConditionTest
+!!!796162.java!!!	testLongWithUnitParse() : void
+		assertEquals(
+			new ContainsCondition<LongWithUnit>("a", new LongWithUnit(42, 'k', "Hz")),
+			ParserWrapper.parseString("a contains 42kHz")
+		);
+!!!796290.java!!!	testStringParse() : void
+		assertEquals(
+			new ContainsCondition<String>("a", "42"),
+			ParserWrapper.parseString("a contains \"42\"")
+		);
+!!!796418.java!!!	testVersionParse() : void
+		assertEquals(
+			new ContainsCondition<Version>("a", new Version("42")),
+			ParserWrapper.parseString("a contains 42.0")
+		);
+!!!796546.java!!!	testDateParse() : void
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeZone(TimeZone.getTimeZone("GMT"));
+		calendar.set(2006, 4, 17, 23, 30, 42);
+		calendar.setTimeInMillis((calendar.getTimeInMillis() / 1000) * 1000);
+		assertEquals(
+			new ContainsCondition<Date>("a", calendar.getTime()),
+			ParserWrapper.parseString("a contains 2006-05-17T23:30:42Z")
+		);
+!!!796674.java!!!	testPackageTypeParse() : void
+		assertEquals(
+			new ContainsCondition<PackageType>("a", PackageType.realValueOf("source")),
+			ParserWrapper.parseString("a contains source")
+		);
+!!!796802.java!!!	testPatternParse() : void
+		/* Pattern class doesn't override equals method, so we have to compare
+		 * manually.
+		 */
+		Condition expected = new ContainsCondition<Pattern>("a",
+			Pattern.compile("pattern"));
+		Condition actual = ParserWrapper.parseString("a contains /pattern/");
+		
+		Pattern expectedPattern = (Pattern) ((SimpleCondition) expected).value;
+		Pattern actualPattern = (Pattern) ((SimpleCondition) actual).value;
+		
+		assertTrue(
+			expectedPattern.pattern().equals(actualPattern.pattern())
+			&& expectedPattern.flags() == actualPattern.flags()
+		);
+!!!796930.java!!!	testLongWithUnitLongWithUnit() : void
+		try {
+			Utils.eval("longProperty contains 42", context);
+			fail();
+		} catch (InvalidOperatorException e) {
+			/* Eat it. */
+		}
+!!!797058.java!!!	testLongWithUnitString() : void
+		try {
+			Utils.eval("longProperty contains \"42\"", context);
+			fail();
+		} catch (InvalidOperatorException e) {
+			/* Eat it. */
+		}
+!!!797186.java!!!	testLongWithUnitVersion() : void
+		try {
+			Utils.eval("longProperty contains 42.0", context);
+			fail();
+		} catch (InvalidOperatorException e) {
+			/* Eat it. */
+		}
+!!!797314.java!!!	testLongWithUnitDate() : void
+		try {
+			Utils.eval("longProperty contains 2006-05-17T23:30:42.1Z", context);
+			fail();
+		} catch (InvalidOperatorException e) {
+			/* Eat it. */
+		}
+!!!797442.java!!!	testLongWithUnitPackageType() : void
+		try {
+			Utils.eval("longProperty contains source", context);
+			fail();
+		} catch (InvalidOperatorException e) {
+			/* Eat it. */
+		}
+!!!797570.java!!!	testLongWithUnitPattern() : void
+		try {
+			Utils.eval("longProperty contains /pattern/", context);
+			fail();
+		} catch (InvalidOperatorException e) {
+			/* Eat it. */
+		}
+!!!797698.java!!!	testStringLongWithUnit() : void
+		try {
+			Utils.eval("stringProperty contains 42", context);
+			fail();
+		} catch (InvalidOperatorException e) {
+			/* Eat it. */
+		}
+!!!797826.java!!!	testStringString() : void
+		try {
+			Utils.eval("stringProperty contains \"42\"", context);
+			fail();
+		} catch (InvalidOperatorException e) {
+			/* Eat it. */
+		}
+!!!797954.java!!!	testStringVersion() : void
+		try {
+			Utils.eval("stringProperty contains 42.0", context);
+			fail();
+		} catch (InvalidOperatorException e) {
+			/* Eat it. */
+		}
+!!!798082.java!!!	testStringDate() : void
+		try {
+			Utils.eval("stringProperty contains 2006-05-17T23:30:42.1Z", context);
+			fail();
+		} catch (InvalidOperatorException e) {
+			/* Eat it. */
+		}
+!!!798210.java!!!	testStringPackageType() : void
+		try {
+			Utils.eval("stringProperty contains source", context);
+			fail();
+		} catch (InvalidOperatorException e) {
+			/* Eat it. */
+		}
+!!!798338.java!!!	testStringPattern() : void
+		try {
+			Utils.eval("stringProperty contains /pattern/", context);
+			fail();
+		} catch (InvalidOperatorException e) {
+			/* Eat it. */
+		}
+!!!798466.java!!!	testVersionLongWithUnit() : void
+		try {
+			Utils.eval("versionProperty contains 42", context);
+			fail();
+		} catch (InvalidOperatorException e) {
+			/* Eat it. */
+		}
+!!!798594.java!!!	testVersionString() : void
+		try {
+			Utils.eval("versionProperty contains \"42\"", context);
+			fail();
+		} catch (InvalidOperatorException e) {
+			/* Eat it. */
+		}
+!!!798722.java!!!	testVersionVersion() : void
+		try {
+			Utils.eval("versionProperty contains 42.0", context);
+			fail();
+		} catch (InvalidOperatorException e) {
+			/* Eat it. */
+		}
+!!!798850.java!!!	testVersionDate() : void
+		try {
+			Utils.eval("versionProperty contains 2006-05-17T23:30:42.1Z", context);
+			fail();
+		} catch (InvalidOperatorException e) {
+			/* Eat it. */
+		}
+!!!798978.java!!!	testVersionPackageType() : void
+		try {
+			Utils.eval("versionProperty contains source", context);
+			fail();
+		} catch (InvalidOperatorException e) {
+			/* Eat it. */
+		}
+!!!799106.java!!!	testVersionPattern() : void
+		try {
+			Utils.eval("versionProperty contains /pattern/", context);
+			fail();
+		} catch (InvalidOperatorException e) {
+			/* Eat it. */
+		}
+!!!799234.java!!!	testDateLongWithUnit() : void
+		try {
+			Utils.eval("dateProperty contains 42", context);
+			fail();
+		} catch (InvalidOperatorException e) {
+			/* Eat it. */
+		}
+!!!799362.java!!!	testDateString() : void
+		try {
+			Utils.eval("dateProperty contains \"42\"", context);
+			fail();
+		} catch (InvalidOperatorException e) {
+			/* Eat it. */
+		}
+!!!799490.java!!!	testDateVersion() : void
+		try {
+			Utils.eval("dateProperty contains 42.0", context);
+			fail();
+		} catch (InvalidOperatorException e) {
+			/* Eat it. */
+		}
+!!!799618.java!!!	testDateDate() : void
+		try {
+			Utils.eval("dateProperty contains 2006-05-17T23:30:42.1Z", context);
+			fail();
+		} catch (InvalidOperatorException e) {
+			/* Eat it. */
+		}
+!!!799746.java!!!	testDatePackageType() : void
+		try {
+			Utils.eval("dateProperty contains source", context);
+			fail();
+		} catch (InvalidOperatorException e) {
+			/* Eat it. */
+		}
+!!!799874.java!!!	testDatePattern() : void
+		try {
+			Utils.eval("dateProperty contains /pattern/", context);
+			fail();
+		} catch (InvalidOperatorException e) {
+			/* Eat it. */
+		}
+!!!800002.java!!!	testPackageTypeLongWithUnit() : void
+		try {
+			Utils.eval("packageTypeProperty contains 42", context);
+			fail();
+		} catch (InvalidOperatorException e) {
+			/* Eat it. */
+		}
+!!!800130.java!!!	testPackageTypeString() : void
+		try {
+			Utils.eval("packageTypeProperty contains \"42\"", context);
+			fail();
+		} catch (InvalidOperatorException e) {
+			/* Eat it. */
+		}
+!!!800258.java!!!	testPackageTypeVersion() : void
+		try {
+			Utils.eval("packageTypeProperty contains 42.0", context);
+			fail();
+		} catch (InvalidOperatorException e) {
+			/* Eat it. */
+		}
+!!!800386.java!!!	testPackageTypeDate() : void
+		try {
+			Utils.eval("packageTypeProperty contains 2006-05-17T23:30:42.1Z", context);
+			fail();
+		} catch (InvalidOperatorException e) {
+			/* Eat it. */
+		}
+!!!800514.java!!!	testPackageTypePackageType() : void
+		try {
+			Utils.eval("packageTypeProperty contains source", context);
+			fail();
+		} catch (InvalidOperatorException e) {
+			/* Eat it. */
+		}
+!!!800642.java!!!	testPackageTypePattern() : void
+		try {
+			Utils.eval("packageTypeProperty contains /pattern/", context);
+			fail();
+		} catch (InvalidOperatorException e) {
+			/* Eat it. */
+		}
+!!!800770.java!!!	testListLongWithUnit() : void
+		try {
+			Utils.eval("listProperty contains 42", context);
+			fail();
+		} catch (InvalidValueTypeException e) {
+			/* Eat it. */
+		}
+!!!800898.java!!!	testListStringTrue() : void
+		assertTrue(Utils.eval("listProperty contains \"42\"", context));
+!!!801026.java!!!	testListStringFalse() : void
+		assertFalse(Utils.eval("listProperty contains \"43\"", context));
+!!!801154.java!!!	testListVersion() : void
+		try {
+			Utils.eval("listProperty contains 42.0", context);
+			fail();
+		} catch (InvalidValueTypeException e) {
+			/* Eat it. */
+		}
+!!!801282.java!!!	testListDate() : void
+		try {
+			Utils.eval("listProperty contains 2006-05-17T23:30:42.1Z", context);
+			fail();
+		} catch (InvalidValueTypeException e) {
+			/* Eat it. */
+		}
+!!!801410.java!!!	testListPackageType() : void
+		try {
+			Utils.eval("listProperty contains source", context);
+			fail();
+		} catch (InvalidValueTypeException e) {
+			/* Eat it. */
+		}
+!!!801538.java!!!	testListPattern() : void
+		try {
+			Utils.eval("listProperty contains /pattern/", context);
+			fail();
+		} catch (InvalidValueTypeException e) {
+			/* Eat it. */
+		}
+!!!801666.java!!!	testToString() : void
+		assertEquals(
+			"a contains 42",
+			ParserWrapper.parseString("a contains 42").toString()
+		);

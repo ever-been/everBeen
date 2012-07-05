@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sect1
+	xml:id="been.devel.cli.api"
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>API and the Protocol</title>
+	
+	<para>The CLI component is a <glossterm>core service</glossterm>. It implements standard
+	interfaces necessary for the BEEN framework integration. Public interfaces specific to this
+	service are minimalistic. CLI is not designed to be controlled by other components. Its control
+	interface is documented in JavaDoc.</para>
+	
+	<para><glossterm baseform="command line module">Modules</glossterm> and
+	<glossterm baseform="command line action">actions</glossterm> are the only extension points of CLI.</para>
+	
+	<para>This section focuses on the protocol used for communication between the command
+	line client and the BEEN service.</para>
+	
+	<sect2>
+		<title>The BEEN Client Protocol</title>
+		
+		<para>The communication protocol is built over TCP. It is a stateless protocol. There is
+		no interactive communication. Only one request and one response is transferred
+		per connection.</para>
+		
+		<para>The protocol is asymmetric in the sense that the data format is different depending
+		on the direction of transfer.</para>
+		
+		<para>The command line client first transfers the whole command line. The command line must
+		not contain zero bytes. More precisely, the client will replace zero bytes in the command
+		line with space bytes (value of 32). When the whole command line is sent, two possible scenarios can
+		follow. When no data input is specified, the client closes the connection for writing.
+		Otherwise a zero byte is sent, followed by the contents of the data input. The data input
+		is sent as-is, with no escaping or preprocessing. Again, the client closes the connection
+		for writing once finished.</para>
+		
+		<para>When the BEEN service (referred to as "the Java side" in some parts of the
+		documentation) detects an error during the transfer, it will close its socket for reading
+		immediately. (There is no point in completing the transfer in such case.) After either
+		all the input data has been received or the socket has been closed for reading due to
+		malformed input, the Java side may send a response to the socket. The response can
+		contain error messages or output from the requested operation. Finally, the socket
+		is closed for writing.</para>
+		
+		<para>No matter if the transmission has finished successfully or not, the command line
+		client will attempt data reception on the socket after closing the socket for
+		writing.</para>
+		
+		<para>The data stream in the response is written to standard output by default. However,
+		zero bytes have a special meaning. They are used as escape characters. The sequence of
+		<code>"\0\0"</code> instructs the client to write a zero byte to the current output stream.
+		The <code>"\0\1"</code> sequence will switch the client to standard output. Presumably,
+		<code>"\0\2"</code> instructs the client to switch to error output. All other escape
+		sequences <code>"\0\?"</code>, where <code>?</code> stands for a byte value, set the return
+		code the command line client will produce on process exit. The return code can be set
+		multiple times. The latest value will be used.</para>
+		
+		<para>When the client encounters an error, it will set its return code according to the
+		<varname>errno</varname> value. When both a local error is encountered and an error code is
+		set by an escape sequence, the remote error code will be preferred. Error
+		codes are described in <xref linkend="been.user.cli.inout"/>.</para>
+	</sect2>
+</sect1>

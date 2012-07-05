@@ -1,0 +1,234 @@
+class HostManagerOptions
+!!!306562.java!!!	HostManagerOptions(in fileName : String)
+		
+		listeners = new HashSet< ValueChangeListener >();
+		
+		load(fileName);
+!!!306690.java!!!	getActivityMonitorInterval() : long
+		
+		return activityMonitorInterval;
+!!!306818.java!!!	setActivityMonitorInterval(in activityMonitorInterval : long) : void
+		
+		if (this.activityMonitorInterval == activityMonitorInterval) {
+			return;
+		}
+		
+		if (activityMonitorInterval < 1) {
+			throw new IllegalArgumentException("Activity Monitor interval of \""
+					+ activityMonitorInterval + " is too small. Minimum value is 1 ms.");
+		}
+
+		valueChanged(Option.ACTIVITY_MONITOR_INTERVAL, activityMonitorInterval);
+		
+		this.activityMonitorInterval = activityMonitorInterval;
+
+		save();
+!!!306946.java!!!	getDeadHostTimeout() : long
+		
+		return deadHostTimeout;
+!!!307074.java!!!	setDeadHostTimeout(in deadHostTimeout : long) : void
+		
+		if (this.deadHostTimeout == deadHostTimeout) {
+			return;
+		}
+		
+		if (deadHostTimeout <= getBriefModeInterval()) {
+			throw new IllegalArgumentException("Dead host timeout is too small. It has to "
+					+ "be greater than brief mode interval.");
+		}
+
+		valueChanged(Option.DEAD_HOST_TIMEOUT, deadHostTimeout);
+		
+		this.deadHostTimeout = deadHostTimeout;
+		save();
+!!!307202.java!!!	getHostDetectionTimeout() : long
+		
+		return hostDetectionTimeout;
+!!!307330.java!!!	setHostDetectionTimeout(in hostDetectionTimeout : long) : void
+		
+		if (this.hostDetectionTimeout == hostDetectionTimeout) {
+			return;
+		}
+		
+		if (hostDetectionTimeout <= 500) {
+			throw new IllegalArgumentException("Host detection timeout has to be at least 500 ms.");
+		}
+
+		valueChanged(Option.HOST_DETECTION_TIMEOUT, hostDetectionTimeout);
+		
+		this.hostDetectionTimeout = hostDetectionTimeout;
+		save();
+!!!307458.java!!!	getPendingRefreshInterval() : long
+		
+		return pendingRefreshInterval;
+!!!307586.java!!!	setPendingRefreshInterval(in pendingRefreshInterval : long) : void
+		
+		if (pendingRefreshInterval == this.pendingRefreshInterval) {
+			return;
+		}
+		
+		if (pendingRefreshInterval < 1) {
+			throw new IllegalArgumentException("Pending host refresh interval is too small."
+					+ " Minimum value is 1 ms.");
+		}
+		
+		valueChanged(Option.PENDING_HOSTS_REFRESH_INTERVAL, pendingRefreshInterval);
+		
+		this.pendingRefreshInterval = pendingRefreshInterval;
+		save();
+!!!307714.java!!!	getBriefModeInterval() : long
+		
+		return briefModeInterval;
+!!!307842.java!!!	setBriefModeInterval(in briefModeInterval : long) : void
+		
+		if (this.briefModeInterval == briefModeInterval) {
+			return;
+		}
+		
+		if (briefModeInterval < 1) {
+			throw new IllegalArgumentException("Brief mode interval is too small."
+					+ " Minimum value is 1 ms.");
+		}
+		
+		valueChanged(Option.BRIEF_MODE_INTERVAL, briefModeInterval);
+		
+		this.briefModeInterval = briefModeInterval;
+		save();
+!!!307970.java!!!	getDefaultDetailedModeInterval() : long
+		
+		return defaultDetailedModeInterval;
+!!!308098.java!!!	setDefaultDetailedModeInterval(in defaultDetailedModeInterval : long) : void
+		
+		if (this.defaultDetailedModeInterval == defaultDetailedModeInterval) {
+			return;
+		}
+		
+		if (defaultDetailedModeInterval < 1) {
+			throw new IllegalArgumentException("Default detailed mode interval is too small."
+					+ " Minimum value is 1 ms.");
+		}
+		
+		valueChanged(Option.DEFAULT_DETAILED_MODE_INTERVAL, defaultDetailedModeInterval);
+		
+		this.defaultDetailedModeInterval = defaultDetailedModeInterval;
+		save();
+!!!308226.java!!!	registerValueChangeListener(inout listener : ValueChangeListener) : void
+
+		synchronized (listeners) {
+			
+			if (listener == null) {
+				throw new IllegalArgumentException("null listeners are not allowed.");
+			}
+		
+			if (listeners.contains(listener)) {
+				throw new IllegalArgumentException("Listener is already registered.");
+			}
+			
+			listeners.add(listener);
+		}
+!!!308354.java!!!	unregisterValueChangeListener(inout listener : ValueChangeListener) : void
+
+		synchronized (listeners) {
+			
+			if (listener == null) {
+				throw new IllegalArgumentException("Unable to unregister null listener.");
+			}
+			
+			if (!listeners.contains(listener)) {
+				throw new IllegalArgumentException("Listener is not registered.");
+			}
+			
+			listeners.remove(listener);
+		}
+!!!308482.java!!!	load(in fileName : String) : void
+		
+		properties = new Properties();
+		
+		FileInputStream stream = null;
+		
+		try {
+			stream = new FileInputStream(fileName);
+		} catch (FileNotFoundException e) {
+			throw new InputParseException("Unable to open options file.", e);
+		}
+		try {
+			properties.load(stream);
+		} catch (IOException e) {
+			throw new InputParseException("Error reading properties.", e);
+		} finally {
+			try {
+				stream.close();
+			} catch (IOException e) {
+				throw new InputParseException("Unable to close input file.", e);
+			}
+		}
+		
+		this.fileName = fileName;
+		
+		hostDetectionTimeout = rStrProp2Long(Option.HOST_DETECTION_TIMEOUT.getName(), 500);
+		pendingRefreshInterval = rStrProp2Long(Option.PENDING_HOSTS_REFRESH_INTERVAL.getName(), 1);
+		activityMonitorInterval = rStrProp2Long(Option.ACTIVITY_MONITOR_INTERVAL.getName(), 1);
+		briefModeInterval = rStrProp2Long(Option.BRIEF_MODE_INTERVAL.getName(), 1);
+		deadHostTimeout = rStrProp2Long(Option.DEAD_HOST_TIMEOUT.getName(), briefModeInterval);
+		defaultDetailedModeInterval = rStrProp2Long(Option.DEFAULT_DETAILED_MODE_INTERVAL.getName(), 1);
+!!!308610.java!!!	rStrProp2Long(in propName : String, in min : long) : long
+		
+		String value = properties.getProperty(propName);
+		
+		if (value == null) {
+			throw new InputParseException("Unable to find property \"" + propName + "\".");
+		}
+		
+		long res = 0;
+		
+		try {
+			res = Long.valueOf(value).longValue();
+		} catch (NumberFormatException e) {
+			throw new InputParseException("Error convertin value of \"" + propName + "\" property.", e);
+		}
+		
+		if (res < min) {
+			throw new InputParseException("Value of property \"" + propName + "\" is too small."
+					+ " Minimum value is " + min + ".");
+		}
+		
+		return res;
+!!!308738.java!!!	sLong2StrProp(in value : long, in name : String) : void
+		
+		properties.setProperty(name, String.valueOf(value));
+!!!308866.java!!!	save() : void
+		
+		sLong2StrProp(hostDetectionTimeout, Option.HOST_DETECTION_TIMEOUT.getName());
+		sLong2StrProp(pendingRefreshInterval, Option.PENDING_HOSTS_REFRESH_INTERVAL.getName());
+		sLong2StrProp(activityMonitorInterval, Option.ACTIVITY_MONITOR_INTERVAL.getName());
+		sLong2StrProp(deadHostTimeout, Option.DEAD_HOST_TIMEOUT.getName());
+		sLong2StrProp(briefModeInterval, Option.BRIEF_MODE_INTERVAL.getName());
+		sLong2StrProp(defaultDetailedModeInterval, Option.DEFAULT_DETAILED_MODE_INTERVAL.getName());
+		
+		FileOutputStream stream = null;
+		
+		try {
+			stream = new FileOutputStream(fileName, false);
+		} catch (FileNotFoundException e) {
+			throw new OutputWriteException("Unable to create configuration file \""
+					+ fileName + "\".", e);
+		}
+		try {
+			properties.store(stream, "Host Manager Options");
+		} catch (IOException e) {
+			throw new OutputWriteException("Unable to save configuration.", e);
+		} finally {
+			try {
+				stream.close();
+			} catch (IOException e) {
+				throw new OutputWriteException("Unable to close output file.", e);
+			}
+		}
+!!!308994.java!!!	valueChanged(inout option : Option, in newValue : long) : void
+	
+		synchronized (listeners) {
+
+			for (ValueChangeListener listener: listeners) {
+				listener.valueChanged(option, newValue);
+			}
+		}

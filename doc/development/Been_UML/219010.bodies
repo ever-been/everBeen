@@ -1,0 +1,36 @@
+class AliasDefinitionBuilder
+!!!848002.java!!!	main(in args : String) : void
+
+		// create output directory if it does not exists
+		{
+			System.out.println(OUTPUT_DIRECTORY);
+			File od = new File(OUTPUT_DIRECTORY);
+		
+			od.mkdirs();
+		}
+		
+		SoftwareAliasList aliasList = new SoftwareAliasList();
+		
+		for (SoftwareAliasDefinition def: definitions) {
+			aliasList.add(def);
+		}
+		
+		System.out.println("Alias definition table size: " + definitions.length + " definitions");
+		System.out.print("Writing output file...");
+		try {
+			aliasList.save(OUTPUT_DIRECTORY + OUTPUT_FILE_NAME);
+		} catch (Exception e) {
+			System.out.println("FAILED");
+			e.printStackTrace();
+			return;
+		}
+		System.out.println("OK");
+!!!848130.java!!!	newDefinition(in aliasName : String, in resultName : String, in resultVendor : String, in resultVersion : String, inout os : RSLRestriction, in appRestriction : String) : SoftwareAliasDefinition
+			
+			try {
+				return new SoftwareAliasDefinition(aliasName, resultName, resultVendor, resultVersion, 
+						os, new RSLRestriction(appRestriction));
+			} catch (Exception e) {
+				System.err.println("Alias error \"" + aliasName + "\", msg: " + e.getMessage());
+				return null;
+			}

@@ -1,0 +1,21 @@
+class RMIReference
+!!!792194.java!!!	referenceIsValid() : boolean
+		return reference != null 
+			&& acquireTime + TIMEOUT * MILISECONDS_IN_SECOND >= new Date().getTime();
+!!!792322.java!!!	get() : T
+		if (referenceIsValid()) {
+			return reference;
+		} else {
+			reference = acquire();
+			acquireTime = new Date().getTime();
+			return reference;
+		}
+!!!792450.java!!!	hasReference() : boolean
+		try {
+			get();
+			return true;
+		} catch (ComponentInitializationException e) {
+			return false;
+		}
+!!!792578.java!!!	drop() : void
+		reference = null;

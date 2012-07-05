@@ -1,0 +1,25 @@
+class PatternCondition
+!!!272898.java!!!	PatternCondition(in propertyPath : String, inout value : T)
+		super(propertyPath, value);
+!!!273026.java!!!	check(inout context : ContainerProperty) : void
+		/* Check if evaluated property exists in the context. */
+		checkPropertyExists(context);
+				
+		/* Check if evaluated property is or implements interface List. */
+		checkIsOrImplementsInterface(context, List.class, false);
+
+		/* Check if the evaluated property is String. */
+		for (SimpleProperty p: pathToProperties(propertyPath, context)) {
+			Class propertyClass = p.getValueClass();
+			if (!(propertyClass.equals(String.class))) {
+				throw new InvalidOperatorException("Invalid operator applied to property \""
+						+ propertyPath + "\" as it's class \"" + propertyClass.getName()
+						+ "\" is not \"java.lang.String\".");
+			}
+		}
+		
+		/* Check if the value is Pattern. */
+		if (!value.getClass().equals(Pattern.class)) {
+			throw new InvalidValueTypeException("Invalid value type specified: "
+				+ "\"" + value.getClass().getName() + "\".");
+		}

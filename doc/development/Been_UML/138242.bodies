@@ -1,0 +1,53 @@
+class Condition
+!!!269186.java!!!	toRSL(inout o : Object) : String
+		if (o instanceof LongWithUnit) {
+			return o.toString();
+		} else if (o instanceof Version) {
+			return o.toString();
+		} else if (o instanceof Date) {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SZ");
+			return sdf.format((Date) o);
+		} else if (o instanceof String) {
+			return "\"" + o.toString().replaceAll("\"", "\\\\\"") + "\"";
+		} else if (o instanceof PackageType) {
+			return o.toString();
+		} else if (o instanceof Pattern) {
+			return "/" + o.toString().replaceAll("/", "\\\\/") + "/";
+		} else {
+			throw new IllegalArgumentException("Class \""
+					+ o.getClass().getName() 
+					+ "\" is not supported by RSL.");
+		}
+!!!269314.java!!!	makeChildPropertyPath(in pathElements : String) : String
+		String result = "";
+		for (int i = 1; i < pathElements.length; i++) {
+			if (i != 1) {
+				result += ".";
+			}
+			result += pathElements[i];
+		}
+		return result;
+!!!269442.java!!!	pathToProperties(in propertyPath : String, inout context : ContainerProperty) : SimpleProperty
+		String[] pathElements = propertyPath.split("\\.");
+		assert pathElements.length > 0: "Invalid propertyPath.";
+		
+		if (!context.hasProperty(pathElements[0])) {
+			return Collections.emptyList();
+		}
+		
+		Property property = context.getProperty(pathElements[0]);
+		List<SimpleProperty> result = new LinkedList<SimpleProperty>();
+		if (property instanceof SimpleProperty) {
+			result.add((SimpleProperty) property);
+		} else  if (property instanceof ContainerProperty) {
+			String childPropertyPath = makeChildPropertyPath(pathElements);
+			result.addAll(pathToProperties(childPropertyPath, (ContainerProperty) property));
+		} else if (property instanceof ArrayProperty) {
+			String childPropertyPath = makeChildPropertyPath(pathElements);
+			for (ContainerProperty p: ((ArrayProperty) property).getItems()) {
+				result.addAll(pathToProperties(childPropertyPath, p));
+			}
+		} else {
+			assert false: "Invalid property class.";
+		}
+		return result;

@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+  BEEN: Benchmarking Environment
+  ==============================
+
+  File author: Michal Tomcanyi
+
+  GNU Lesser General Public License Version 2.1
+  - - - - - - - - - - - - - - - - - - - - - - -
+  Copyright (C) 2004-2006 Distributed Systems Research Group,
+  Faculty of Mathematics and Physics, Charles University in Prague
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License version 2.1, as published by the Free Software Foundation.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+  MA  02111-1307  USA
+
+-->
+
+<!-- import symbolic name bindings from DTD file
+	symbolic names will be mapped to real software names found in the system
+	the mapping must be provided by user
+-->
+<!ENTITY % symbolic-names SYSTEM "symbolic-names.dtd">
+%symbolic-names;
+
+<!-- BENCHMARK: root element representing benchmark configuration -->
+<!ELEMENT benchmark (description,properties,roles)>		
+
+	<!-- name and version of benchmarking software e.g. Xampler, Rubis -->
+	<!ATTLIST benchmark
+		name CDATA #REQUIRED
+		version CDATA #REQUIRED
+	>
+<!-- END OF BENCHMARK -->
+
+<!-- DESCRIPTION: general description of plugin intended to carry developer's comments for users -->
+<!ELEMENT description (#PCDATA)>
+<!-- END OF DESCRIPTION -->
+
+	
+<!-- PROPERTIES:  plugin-specific properties -->
+<!ELEMENT properties (property*)> 					
+<!-- END OF PROPERTIES -->
+
+	<!-- PROPERTY: name/value pair representing benchmark property -->
+	<!ELEMENT property EMPTY>
+		<!-- 
+			benchmark-specific properties which are used by generator
+			name - name of the property
+			value - default value
+		-->
+		<!ATTLIST property 
+			name CDATA #REQUIRED
+			value CDATA #IMPLIED
+		>
+		<!-- END OF PROPERTY -->
+
+<!-- ROLES:  host roles needed for benchmark execution -->
+<!ELEMENT roles (role+)> 							
+<!-- END OF ROLES -->
+
+	<!-- ROLE: single host role specification -->
+	<!ELEMENT role (products?,hardware?,os?,software?)>			
+		<!--
+			single role:
+			count - specifies total number of hosts running in this role
+			default value that might be redefined by user, 
+			however must be within [min,max] (if specified)
+			min,max - optional contraints given on number of hosts
+		-->
+		<!ATTLIST role
+			name CDATA #REQUIRED
+			count CDATA #IMPLIED
+			min CDATA #IMPLIED
+			max CDATA #IMPLIED
+		>
+	<!-- END OF ROLE -->
+	
+		<!-- PRODUCTS: products that may be tested in the role -->
+		<!ELEMENT products (product+)>
+		
+		<!-- PRODUCT: single software product reference -->
+		<!ELEMENT product (version?) >
+		
+		<!-- name attribute should reference a symbolic-name entity 
+			which is mapped by user to software's real name in current system -->
+		<!ATTLIST product
+			name CDATA #REQUIRED
+		>
+
+		<!-- HARDWARE: hardware requirements put on host role -->
+		<!ELEMENT hardware (architectures?,cpu?,ram?,disk?)>
+		<!-- END OF HARDWARE -->
+		
+			<!-- ARCHITECTURES: architectures supported by benchmark -->
+			<!ELEMENT architectures (architecture+)>
+			<!--  END OF ARCHITECTURES -->
+		
+				<!-- ARCHITECTURE: single architecture specification -->
+				<!ELEMENT architecture EMPTY>						
+				
+					<!ATTLIST architecture
+						name (x86|sparc) #REQUIRED
+					>
+				<!-- END OF ARCHITECTURE -->
+		
+			<!-- CPU: CPU requirements -->
+			<!ELEMENT cpu (count?,vendor?,speed?,cache?)>		
+			<!-- END OF CPU- -->
+						
+				<!-- COUNT: number of CPUs needed required by benchmark -->
+				<!ELEMENT count EMPTY>								
+				
+					<!ATTLIST count
+							min CDATA #IMPLIED
+							max CDATA #IMPLIED
+							default CDATA #IMPLIED
+					>
+				<!-- END OF COUNT -->
+							
+				<!-- VENDOR: CPU vendor -->
+				<!ELEMENT vendor (set)>							
+				<!-- END OF VENDOR -->
+			
+				<!-- SPEED: CPU speed -->
+				<!ELEMENT speed EMPTY>								
+				
+					<!ATTLIST speed
+						min CDATA #IMPLIED
+						max CDATA #IMPLIED
+						default CDATA #IMPLIED
+					>
+				<!-- END OF SPEED -->
+			
+				<!-- CACHE: CPU cache -->
+				<!ELEMENT cache EMPTY>								
+				
+					<!ATTLIST cache
+						min CDATA #IMPLIED
+						max CDATA #IMPLIED
+						default CDATA #IMPLIED
+					>
+				<!-- END OF CACHE -->
+		
+			<!-- RAM: host RAM memory requirements -->
+			<!ELEMENT ram EMPTY>								
+		
+				<!ATTLIST ram
+					min CDATA #IMPLIED
+					max CDATA #IMPLIED
+					default CDATA #IMPLIED
+				>
+			<!-- END OF RAM -->
+		
+			<!-- DISK: disk space requirements -->
+			<!ELEMENT disk EMPTY>								
+			
+				<!ATTLIST disk
+					min CDATA #IMPLIED
+					max CDATA #IMPLIED
+					default CDATA #IMPLIED
+				>
+			<!-- END OF DISK -->
+	
+		<!-- OS: operating system requirements -->
+		<!ELEMENT os (families?,linux?,windows?,solaris?)>	
+		<!-- END OF OS -->
+		
+			<!-- FAMILIES: OS families supported -->
+			<!ELEMENT families (family+)>						
+			<!-- END OF FAMILIES -->
+			
+			<!-- FAMILY: single OS family -->
+			<!ELEMENT family EMPTY>					
+				<!-- operating system family -->
+				<!ATTLIST family
+					name (Windows|Linux|Solaris) #REQUIRED
+				>
+			<!-- END OF FAMILY -->
+		
+			<!-- DISTRIBUTION: distribution(s) of a single OS family -->
+			<!ELEMENT distribution EMPTY>
+			
+			<!-- Linux distribution -->
+			<!ATTLIST distribution 
+				name (Fedora|Gentoo) #REQUIRED
+			>
+			<!-- END OF DISTRIBUTION -->
+		
+			<!-- LINUX: Linux-specific requirements -->
+			<!ELEMENT linux (kernel?,distribution*)>
+			<!-- END OF LINUX -->
+			
+					<!-- KERNEL: kernel requirements for Linux -->
+					<!ELEMENT kernel EMPTY>
+						
+						<!ATTLIST kernel 
+							min CDATA #IMPLIED
+							max CDATA #IMPLIED
+							default CDATA #IMPLIED
+						>
+					<!-- END OF KERNEL -->
+						
+				<!-- WINDOWS: Windows-specifis requirements -->
+				<!ELEMENT windows (sp?,version?)>
+				<!-- END OF WINDOWS -->
+					
+						<!-- SP: Windows service pack specification -->
+						<!ELEMENT sp EMPTY>
+							<!ATTLIST sp 
+								min CDATA #IMPLIED
+								max CDATA #IMPLIED
+								default CDATA #IMPLIED
+							>
+						<!-- END OF SP -->
+		
+			<!-- SOLARIS: Solaris-specific requirements -->
+			<!ELEMENT solaris (generation?)>
+		
+				<!ATTLIST generation
+					min CDATA #IMPLIED
+					max CDATA #IMPLIED
+					default CDATA #IMPLIED
+				>
+			<!-- END OF SOLARIS -->
+				
+				<!-- GENERATION: Solaris generation -->
+				<!ELEMENT generation EMPTY>
+				<!-- END OF GENERATION -->
+				
+			<!-- SOFTWARE: software packages required by benchmark -->
+			<!ELEMENT software (product+)>
+			<!-- END OF SOFTWARE -->
+				
+					
+					<!-- VERSION -->
+					<!ELEMENT version EMPTY>
+				
+					<!ATTLIST version
+						min CDATA #IMPLIED
+						max CDATA #IMPLIED
+						default CDATA #IMPLIED
+					>
+					<!-- END OF VERSION -->
+				
+<!-- 
+	SET 
+	general set of values 
+-->
+<!ELEMENT set (member+)>
+<!-- END OF SET -->
+
+	<!-- 
+		MEMBER
+		general set memeber 
+	 -->
+	<!ELEMENT member EMPTY >
+ 
+
+	<!ATTLIST member
+	value CDATA #REQUIRED>
+
+	<!-- END OF MEMBER -->

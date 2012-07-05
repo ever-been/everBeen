@@ -1,0 +1,60 @@
+class LoadFile
+!!!414082.java!!!	LoadFile(in contextId : String, in taskId : String, in fullPath : String)
+		
+		hostName = MiscUtils.getCanonicalLocalhostName();
+		this.contextId = contextId;
+		this.taskId = taskId;
+		this.fullPath = fullPath;
+!!!414210.java!!!	createSampleParser(inout loadFile : LoadFile) : LoadFileParserInterface
+		
+		String currentHost = MiscUtils.getCanonicalLocalhostName();
+		
+		if (!currentHost.equals(loadFile.hostName)) {
+			throw new InvalidArgumentException("Load file comes from different host.");
+		}
+		
+		LoadFileParserInterface< LoadSample > parser = null;
+		
+		try {
+			parser = new LoadFileParser< LoadSample >(loadFile.fullPath, false, LoadSample.class);
+		} catch (FileNotFoundException e) {
+			throw new FileNotFoundException("Unable to find file for ["
+					+ loadFile.hostName + ":"
+					+ loadFile.contextId + "/"
+					+ loadFile.taskId + "].");
+		} catch (IOException e) {
+			// this should never happen, since we only read file
+		}
+		
+		return parser;
+!!!414338.java!!!	createEventParser(inout loadFile : LoadFile) : LoadFileParserInterface
+		
+		String currentHost = MiscUtils.getCanonicalLocalhostName();
+		
+		if (!currentHost.equals(loadFile.hostName)) {
+			throw new InvalidArgumentException("Load file comes from different host.");
+		}
+		
+		LoadFileParserInterface< LoadMonitorEvent > parser = null;
+		
+		try {
+			parser = new LoadFileParser< LoadMonitorEvent >(loadFile.fullPath, false, LoadMonitorEvent.class);
+		} catch (FileNotFoundException e) {
+			throw new FileNotFoundException("Unable to find file for ["
+					+ loadFile.hostName + ":"
+					+ loadFile.contextId + "/"
+					+ loadFile.taskId + "].");
+		} catch (IOException e) {
+			// this should never happen, since we only read file
+		}
+		
+		return parser;
+!!!414466.java!!!	getContextId() : String
+		
+		return contextId;
+!!!414594.java!!!	getHostName() : String
+		
+		return hostName;
+!!!414722.java!!!	getTaskId() : String
+		
+		return taskId;

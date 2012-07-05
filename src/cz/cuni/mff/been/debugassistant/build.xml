@@ -1,0 +1,121 @@
+<?xml version="1.0"?>
+<!--
+
+  BEEN: Benchmarking Environment
+  ==============================
+
+  Original file author: Michal Tomcanyi
+  Copied and modified by: Jan Tattermusch
+
+  GNU Lesser General Public License Version 2.1
+  - - - - - - - - - - - - - - - - - - - - - - -
+  Copyright (C) 2004-2006 Distributed Systems Research Group,
+  Faculty of Mathematics and Physics, Charles University in Prague
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License version 2.1, as published by the Free Software Foundation.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+  MA  02111-1307  USA
+
+-->
+<project name="BEEN" default="dist" basedir=".">
+	
+	<!-- ================ PROPERTIES ================ -->
+	
+	<!-- Name of the task -->
+	<property name="task.name" value="debugassistant"/>
+
+	<!-- version of the task. -->	
+	<property name="task.version" value="1.0"/>
+
+	<!-- the task's source directory -->
+	<property name="rrng.src.dir" value="${src.dir}/cz/cuni/mff/been/debugassistant" />
+	
+	<!-- The packages directory  -->
+	<property name="task.packages.dir" location="${packages.dir}/debugassistant" />
+	
+	<!-- Directory path of the package -->
+	<property name="task.package.path" location="cz/cuni/mff/been/debugassistant" />
+	
+	<!-- Name of the JAR file with Results Repository's classes -->
+	<property name="task.jar" value="${task.name}.jar" />
+
+	<!-- Package's filename -->
+	<property name="task.bpk" value="${task.name}-${task.version}.bpk"/>
+
+	<property name="task.data.root" value="${data.dir}/resultsrepositoryng"/>
+	
+	<!-- ============== FILESETS, CLASSPATH, etc. ================ -->
+	
+	<!-- Results Repository's class files -->
+	<zipfileset id="task.classes" dir="${build.classes.dir}">
+		<!-- this line does not include anything, which is a little bit suspicious -->
+		<include name="${task.package.path}/**/*.class" />
+	</zipfileset>
+	
+	<!-- ================ TARGETS ================ -->
+	
+	<!-- Checks if we need to regenerate the BEEN package. -->
+	<target name="package-uptodate">
+		<uptodate property="dont.build.package" targetfile="${dist.tasks.dir}/${task.bpk}">
+			<srcfiles refid="task.classes"></srcfiles>
+			<srcfiles dir="${task.packages.dir}">
+				<include name="config.xml" />
+				<include name="metadata.xml" />
+			</srcfiles>
+			
+			<!-- JPDA tools jar -->
+			<srcfiles dir="${lib.dir}">
+					<include name="${jpda.jar}" />
+			</srcfiles>
+		</uptodate>
+	</target>
+
+	<!-- Create a BEEN package  -->
+	<target name="package" depends="package-uptodate" unless="dont.build.package">
+		<!-- create directories -->
+		<mkdir dir="${task.data.root}" />
+		
+		<!-- Create the JAR file classes -->
+		<jar destfile="${task.data.root}/${task.jar}">
+			<zipfileset refid="task.classes" />
+		</jar>
+		
+		<!-- Create the BEEN package in the distribution directory -->
+		<zip destfile="${dist.tasks.dir}/${task.bpk}" update="false">
+			<zipfileset dir="${task.packages.dir}">
+				<include name="config.xml" />
+				<include name="metadata.xml" />
+			</zipfileset>
+			<zipfileset prefix="files" dir="${task.data.root}">	
+				<include name="${task.jar}" />
+			</zipfileset>
+			
+			<!-- JPDA tools jar -->
+			<zipfileset prefix="files" dir="${lib.dir}">	
+				<include name="${jpda.jar}" />
+			</zipfileset>
+		</zip>
+
+		<!-- delete the dist. direcotry -->
+		<delete failonerror="false" dir="${task.data.root}"/>
+
+	</target>
+	
+	
+	<target name="dist" depends="package">
+	</target>
+	
+	<target name="clean">
+	</target>
+	
+</project>

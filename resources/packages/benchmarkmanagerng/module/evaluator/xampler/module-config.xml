@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config
+	xmlns="http://been.mff.cuni.cz/benchmarkmanagerng/config"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+>
+
+	<type id="tsuite" multi="false">
+		<value name="ping" desc="Ping"/>
+		<!--<value name="ccc" desc="Concurrency Client Connections"/>-->
+		<value name="dsi" desc="Dispatch Servant Instances"/>
+		<value name="dsl" desc="Dispatch Servant Lifecycle"/>
+		<value name="id" desc="Invocation Dynamic"/>
+		<value name="ii" desc="Invocation Initial"/>
+		<value name="is" desc="Invocation Static"/>
+		<value name="void" desc="Void"/>
+		<value name="mta" desc="Marshal Types Array"/>
+		<value name="mts" desc="Marshal Types Single"/>
+		<value name="mos" desc="Marshal Octet Sequence"/>
+		<value name="mds" desc="Marshal Delayed Sequence"/>
+		<value name="mda" desc="Marshal Delayed Any"/>
+	</type>
+
+	<!--<group id="common" desc="Common Generator Properties">
+		<item id="treePathPrefix" type="text" desc="Task tree-path prefix" constraint="this != empty" default="/experiments/simpletest"/>
+	</group>-->
+
+	<group id="suite" desc="Suite">
+		<item id="suite.name" type="tsuite" desc="Suite to evaluate" default="ping"/>
+		<item id="subsuite.name" type="text" desc="Subsuite to evaluate (leave empty if none)" default=""/>
+	</group>
+
+	<group id="dirs" desc="Directories">
+		<item id="dest.dir" type="text" desc="Directory where to export data for Regression Benchmarking web" default=""/>
+		<item id="benchmark.name" type="text" desc="Name of benchmark folder (in export dir)" default="xampler-ping"/>
+		<item id="platform.name" type="text" desc="Name of platform folder (in export dir)" default="default"/>		
+	</group>
+
+	<group id="parser" desc="Parser notification">
+		<item id="site.url" type="text" desc="Regression Benchmarking web base URL" default="http://localhost/rbw"/>
+		<item id="dependency.id" type="text" desc="Dependency ID of existing RBW's project" default="1"/>
+	</group>
+
+	<group id="options" desc="Options">
+		<item id="process.old.data" type="checkbox" desc="Always reevaluate old data too (slow)" default="false"/>
+	</group>
+
+	<group id="host" desc="Host">
+		<item id="evaluation.host" type="rsl" desc="Evaluator task RSL" default="(name =~ /.*/)"/>
+	</group>
+	
+
+</config>

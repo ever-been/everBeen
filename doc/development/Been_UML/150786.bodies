@@ -1,0 +1,3 @@
+class NotEmptyInputValidator
+!!!244994.java!!!	validate(in value : String) : String
+		return StringUtils.isEmpty(value) ? "Value must not be empty!" : null;

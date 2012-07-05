@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<!--
+
+  BEEN: Benchmarking Environment
+  ==============================
+
+  File author: Jiri Tauber
+
+  GNU Lesser General Public License Version 2.1
+  - - - - - - - - - - - - - - - - - - - - - - -
+  Copyright (C) 2004-2006 Distributed Systems Research Group,
+  Faculty of Mathematics and Physics, Charles University in Prague
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License version 2.1, as published by the Free Software Foundation.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+  MA  02111-1307  USA
+
+-->
+<project name="BEEN" default="dist" basedir=".">
+
+	<!-- ================ PROPERTIES ================ -->
+
+	<!-- Directory path of the pluggable modules' interface -->
+	<property name="module.interface.path" value="${modules.package.path}" />
+
+	<!-- Directory of the pluggable modules' resources -->
+	<property name="evaluator.resources.dir" location="${modules.resources.dir}/evaluator" />
+	
+	<!-- Source directories -->
+	<property name="evaluator.src.dir" location="${modules.src.dir}/evaluator" />
+	<property name="evaluator.package.path" value="${modules.package.path}/evaluator" />
+
+	<!-- ================ TARGETS ================ -->
+
+	<target name="dist">
+		<!-- dist all the evaluators -->
+		<ant inheritrefs="true" dir="${evaluator.src.dir}/simpletest" target="dist" />
+		<ant inheritrefs="true" dir="${evaluator.src.dir}/genericr" target="dist" />
+		<ant inheritrefs="true" dir="${evaluator.src.dir}/xampler" target="dist" />
+	</target>
+
+	<target name="clean">
+		<!-- clean all the evaluators -->
+		<ant inheritrefs="true" dir="${evaluator.src.dir}/simpletest" target="clean" />
+		<ant inheritrefs="true" dir="${evaluator.src.dir}/genericr" target="clean" />
+		<ant inheritrefs="true" dir="${evaluator.src.dir}/xampler" target="clean" />
+	</target>
+
+	<!-- The other targets -->
+	<target name="install" depends="dist" />
+
+</project>

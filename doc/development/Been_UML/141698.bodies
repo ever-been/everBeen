@@ -1,0 +1,220 @@
+class SequenceItem
+!!!187522.java!!!	SequenceItem(inout objectID : OID)
+			this.id = objectID;
+!!!187650.java!!!	getID() : OID
+			return id;
+!!!187778.java!!!	addTask(inout td : TaskDescriptor) : TaskItem
+			TaskItem item = new TaskItem(td);
+			tasks.add(item);
+			return item;
+!!!187906.java!!!	addChild(inout child : SequenceItem) : void
+			if (children == null) {
+				children = new ArrayList<SequenceItem>();
+			}
+			children.add(child);
+!!!188034.java!!!	equals(inout obj : Object) : boolean
+			if (obj instanceof SequenceItem == false) {
+				return false;
+			}
+			
+			SequenceItem otherItem = (SequenceItem)obj;
+			return getID().equals(otherItem.getID());
+!!!188162.java!!!	findByID(inout id : OID) : SequenceItem
+			
+			/*
+			 * check self
+			 * this also check for correct type
+			 */ 
+			if (this.id.equals(id)) {
+				return this;
+			}
+			
+			// if no children -> no match immediately
+			if (children == null) {
+				return null;
+			}
+
+			/*
+			 *  if children are of correct 'ID level' perform binary search 
+			 *  on children
+			 */ 
+			if (id.getClass().isInstance(children.get(0).getID())) {
+				SequenceItem tmp = new SequenceItem(id);
+				int matchIndex = Collections.binarySearch(children,tmp,ID_COMPARATOR);
+				return matchIndex < 0 ? null : children.get(matchIndex);
+			}
+			
+			/*
+			 * if children don't have correct level of IDs, go to the next
+			 * level of hierarchy
+			 */ 
+			for (SequenceItem child : children) {
+				SequenceItem result = child.findByID(id);
+				if (result != null) {
+					return result;
+				}
+			}
+			
+			/*
+			 * child with given ID was not found neither in this item
+			 * nor in the subtree of this item
+			 */
+			return null;
+!!!188290.java!!!	getAllTasks(inout id : OID) : TaskDescriptor
+			SequenceItem item = findByID(id);
+			if (item == null) {
+				return new TaskDescriptor[0];
+			}
+			
+			List<TaskDescriptor> result = new LinkedList<TaskDescriptor>();
+			item.getAllTasks(result);
+			return (TaskDescriptor[]) result.toArray(new TaskDescriptor[result.size()]);
+!!!188418.java!!!	getAllTasks() : TaskDescriptor
+			return getAllTasks(getID());
+!!!188546.java!!!	getTasks(inout id : OID) : TaskDescriptor
+			SequenceItem item = findByID(id);
+			if (item == null) {
+				return new TaskDescriptor[0];
+			}
+			
+			return item.getTasks();
+!!!188674.java!!!	getTasks() : TaskDescriptor
+			List<TaskDescriptor> taskList = getItemsTasks();
+			return (TaskDescriptor[]) taskList.toArray(new TaskDescriptor[taskList.size()]);
+!!!188802.java!!!	getChildrenIds() : OID
+			List<SequenceItem> chlds = getChildren();
+			OID[] result = new OID[chlds.size()];
+			int i=0;
+			for (SequenceItem child : chlds) {
+				result[i++] = child.getID();
+			}
+			
+			return result;
+!!!188930.java!!!	toString() : String
+			StringBuffer buf = new StringBuffer();
+			buf.append("(").append(id.toString()).append(",");
+			buf.append(tasks.toString());
+			buf.append(",");
+			buf.append(hasChildren() ? children.toString() : "[]" );
+			buf.append(")");
+			return buf.toString();
+!!!189058.java!!!	mergeWith(inout item : SequenceItem) : void
+			/* 
+			 * this should not happen as tasksequence starts merge on experiment
+			 * level and mergeWith() implementation preserves this
+			 */
+			assert getID().getClass().isInstance(item.getID())  :
+					   "Merging items with incompatible ID class!!!";
+			
+			if (getID().equals(item.getID())) {
+				/*
+				 *  the other item is 'the same' as we are
+				 *  -> all its tasks and children belong to us!
+				 */
+				if (item.hasTasks()) {
+					tasks.addAll(item.tasks);
+				}
+				for (SequenceItem otherChild : item.getChildren()) {
+					SequenceItem myChild = findByID(otherChild.getID());
+					if (myChild == null) {
+						// we don't have this child among ours -> take it!
+						children.add(otherChild);
+					} else {
+						// we have this child already -> merge it with us
+						myChild.mergeWith(otherChild);
+					}
+				}
+			} else {
+				assert false : "Merging items with different values: " +
+					getID().getClass().getCanonicalName() + "(" + getID() + ") and "
+					+ item.getID().getClass().getCanonicalName() + "(" + item.getID() + ")";
+			}
+				  
+!!!189186.java!!!	getStatus() : EntityStatus
+			
+			/*
+			 * When finished, our status can't change
+			 */
+			if (status == EntityStatus.FINISHED) {
+				return EntityStatus.FINISHED;
+			}
+			
+			/* No children and no tasks -> finished immediately */
+			if (!hasChildren() && !hasTasks()) {
+				this.status = EntityStatus.FINISHED;
+				return EntityStatus.FINISHED;
+			}
+			
+			/*
+			 * Compute status from 
+			 * 1. tasks 
+			 * 2. children (causes recursive computation of status)
+			 * 
+			 * If any of tasks/children is running, return running
+			 * Check also, whether all tasks and children are finished.
+			 * Once finished, our state can't change
+			 */
+			boolean allFinished = true;
+			
+			if (hasTasks()) {
+				for (TaskItem item : tasks) {
+					EntityStatus itemStatus = item.getStatus();
+					if (itemStatus == EntityStatus.RUNNING) {
+						this.status = EntityStatus.RUNNING;
+						return EntityStatus.RUNNING;
+					}
+					allFinished = allFinished && itemStatus == EntityStatus.FINISHED;
+				}
+			}
+			
+			for (SequenceItem item : getChildren()) {
+				EntityStatus itemStatus = item.getStatus();
+				if (itemStatus == EntityStatus.RUNNING) {
+					this.status = EntityStatus.RUNNING;
+					return EntityStatus.RUNNING;
+				}
+				allFinished = allFinished && itemStatus == EntityStatus.FINISHED;
+			}
+			
+			// all children are finished -> this item is also finished
+			if (allFinished) {
+				this.status = EntityStatus.FINISHED;
+			}
+
+			return status;
+
+!!!189314.java!!!	hasChildren() : boolean
+			return children != null;
+!!!189442.java!!!	hasTasks() : boolean
+			return tasks != null;
+!!!189570.java!!!	getChildren() : SequenceItem
+			return hasChildren() ? children : Collections.<SequenceItem>emptyList();
+!!!189698.java!!!	getAllTasks(inout result : List<TaskDescriptor>) : void
+			result.addAll(getItemsTasks());
+			
+			for (SequenceItem child : getChildren()) {
+				child.getAllTasks(result);
+			}
+!!!189826.java!!!	getItemsTasks() : TaskDescriptor
+			if (!hasTasks()) {
+				return Collections.<TaskDescriptor>emptyList();
+			}
+			
+			LinkedList<TaskDescriptor> result = new LinkedList<TaskDescriptor>();
+			for (TaskItem item : tasks) {
+				result.add(item.getDescriptor());
+			}
+			
+			return result;
+!!!189954.java!!!	setStatus(inout status : EntityStatus) : void
+			this.status = status;
+			
+			if (hasTasks()) {
+				for (TaskItem item : tasks) {
+					item.setStatus(status);
+				}
+			}
+			
+			for (SequenceItem child : getChildren()) {
+				child.setStatus(status);
+			}

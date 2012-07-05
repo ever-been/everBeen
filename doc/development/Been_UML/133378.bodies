@@ -1,0 +1,9 @@
+class EID
+!!!264962.java!!!	EID(in value : long)
+		super(value);
+!!!265090.java!!!	EID()
+		
+!!!265218.java!!!	valueOf(in s : String) : EID
+		return new EID(Long.parseLong(s));
+!!!265346.java!!!	toNamedString(inout id : EID) : String
+		return "EID(" + id + ")";

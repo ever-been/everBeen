@@ -1,0 +1,9 @@
+class TaskException
+!!!625154.java!!!	TaskException()
+		super();
+!!!625282.java!!!	TaskException(in message : String)
+		super(message);
+!!!625410.java!!!	TaskException(inout cause : Throwable)
+		super(cause);
+!!!625538.java!!!	TaskException(in message : String, inout cause : Throwable)
+		super(message, cause);

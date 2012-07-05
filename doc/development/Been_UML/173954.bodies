@@ -1,0 +1,128 @@
+class GroupsRestrictions
+!!!392450.java!!!	main(in args : String) : void
+
+		String managerURL = MANAGER_URL_DEFAULT;
+		
+		/* set path to the manager from the commandline.
+		 */
+		if (args.length > 0) {
+			managerURL = args[0];
+		}
+		
+		/* Connect to the Host Manager
+		 */
+		HostManagerInterface manager = null;
+		
+		try {
+			manager = (HostManagerInterface) Naming.lookup("rmi://" + managerURL + INTERFACE_URL);
+		} catch (Exception e) {
+			System.err.println("Unable to connect to the Host Manager.");
+			System.err.println("Error message: " + e.getMessage());
+			return;
+		}
+
+		/* Create restriction on the processor: we want compilation host to have CPU faster than 1600 MHz.
+		 */
+		NameValuePair cpu = 
+			new NameValuePair(Processor.Properties.SPEED, 
+			                  new ValueRange< ValueInteger >(new ValueInteger(1600), null));
+		ObjectRestriction cpuRestr = 
+			new ObjectRestriction(HostInfoInterface.Objects.PROCESSOR + "(?)", cpu);
+
+		/* Create restriction on the memory of the host - we want it to be bigger than 512 MB.
+		 */
+		NameValuePair memory = 
+			new NameValuePair(Memory.Properties.PHYSICAL_MEMORY_SIZE, 
+			                  new ValueRange< ValueInteger >(new ValueInteger(536870912L), null));
+		ObjectRestriction memRestr = 
+			new ObjectRestriction(HostInfoInterface.Objects.MEMORY, memory);
+
+		/* Create restriction on the free space left - we want at least one partition to have more than
+		 * 1 GB free. 
+		 */
+		NameValuePair disk = 
+			new NameValuePair(DiskPartition.Properties.FREE_SPACE, 
+			                  new ValueRange< ValueInteger >(new ValueInteger(10737418240L), null));
+		ObjectRestriction diskRestr = 
+			new ObjectRestriction(HostInfoInterface.Objects.DRIVE + "(?)."
+			                    + DiskDrive.Objects.PARTITION + "(?)", disk);
+
+		/* Create restriction on the Microsoft Visual Studio compiler - we want at least version 7.1 (that
+		 * is at least MSVS .NET).
+		 */
+		NameValuePair []msvc = 
+			{
+				new NameValuePair(Product.Properties.NAME, 
+				                  new ValueRegexp(".*Visual Studio.*")),
+				new NameValuePair(Product.Properties.VENDOR, 
+				                  new ValueString(".*Microsoft.*")),
+				new NameValuePair(Product.Properties.VERSION, 
+		                          new ValueRange< ValueVersion >(new ValueVersion("7.1"), null))
+			};
+		ObjectRestriction msvcRestr = 
+			new ObjectRestriction(HostInfoInterface.Objects.APPLICATION + "(?)", msvc);
+
+		/* Create restriction on the gcc compiler - we want at least version 2.8.
+		 */
+		NameValuePair []gcc = 
+			{
+				new NameValuePair(Product.Properties.NAME, 
+				                  new ValueString("gcc")),
+				new NameValuePair(Product.Properties.VERSION, 
+				                  new ValueRange< ValueVersion >(new ValueVersion("2.8"), null))
+			};
+		ObjectRestriction gccRestr = 
+			new ObjectRestriction(HostInfoInterface.Objects.APPLICATION + "(?)", gcc);
+
+		/* Now create alternative restriction which will accept either MSVS or gcc (or both).
+		 */
+		AlternativeRestriction someCompiler = 
+			new AlternativeRestriction(msvcRestr, gccRestr);
+		
+		/* Build array of all restrictions. Host needs to pass all of them to be included in the resulting
+		 * group.  
+		 */
+		RestrictionInterface []restrictions = 
+			{
+				cpuRestr,
+				memRestr,
+				diskRestr,
+				someCompiler
+			};
+		
+		/* Create group based on our restrictions.
+		 */
+		do {
+			HostGroup group = null;
+			
+			try {
+				group = manager.createGroup(restrictions, "compilers");
+			} catch (Exception e) {
+				System.err.println("Unable to create compilers group.");
+				System.err.println("Error message: " + e.getMessage());
+				break;
+			}
+	
+			group.setDescription("Compilers");
+			
+			System.out.println("Number of groups in database: " + manager.getGroupCount());
+			System.out.println("Hosts in new group:");
+			System.out.println(group);
+			System.out.println();
+	
+			/* Output hosts in our group.
+			 */
+			System.out.println("Adding group...");
+
+			/* Add group to the database.
+			 */
+			try {
+				manager.addGroup(group);
+			} catch (Exception e) {
+				System.err.println("Unable to add compilers group to the database.");
+				System.err.println("Error message: " + e.getMessage());
+				break;
+			}
+			
+			System.out.println("Number of groups in database: " + manager.getGroupCount());
+		} while (false);

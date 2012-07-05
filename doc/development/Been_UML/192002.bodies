@@ -1,0 +1,33 @@
+class RCallbacksManagerFactory
+!!!561282.java!!!	RCallbacksManagerFactory()
+		
+!!!561410.java!!!	getInstance() : RCallbacksManagerFactory
+		if (rcmfInstance == null) {
+			rcmfInstance = new RCallbacksManagerFactory();
+		}
+		return rcmfInstance;
+!!!561538.java!!!	initialize() : void
+		// NOTE: now void - this method exist to follow standard architecture of Results Repository
+!!!561666.java!!!	getRCallbacksManager(inout aid : AID) : RCallbacksManager
+		RCallbacksManager rcManager = callbacksManagers.get(
+			RCallbacksManagerFactory.getInstance().new IDPair(aid, null));
+		if (rcManager == null) {
+		    	Logger.logTrace("Creating new analysis callback manager for " 
+		    		+ Database.getAnalysisReferenceString(aid) + ".");
+			rcManager = new RCallbacksManager(aid, null, true);
+			callbacksManagers.put(RCallbacksManagerFactory.getInstance().new IDPair(aid, null), 
+				rcManager);
+		}
+		return rcManager;
+!!!561794.java!!!	getRCallbacksManager(inout aid : AID, inout eid : EID) : RCallbacksManager
+		RCallbacksManager rcManager = callbacksManagers.get(
+			RCallbacksManagerFactory.getInstance().new IDPair(aid, eid));
+		if (rcManager == null) {
+		    	Logger.logTrace("Creating new experiment callback manager for " 
+		    		+ Database.getExperimentReferenceString(aid, eid) + ".");
+			rcManager = new RCallbacksManager(aid, eid, false);
+			callbacksManagers.put(RCallbacksManagerFactory.getInstance().new IDPair(aid, eid), 
+				rcManager);
+			
+		}
+		return rcManager;

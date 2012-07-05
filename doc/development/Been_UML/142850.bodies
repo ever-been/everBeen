@@ -1,0 +1,112 @@
+class PackageMetadata
+!!!610690.java!!!	getGetter(in name : String) : Method
+		try {
+			return PackageMetadata.class.getMethod(name, (Class[]) null);
+		} catch (SecurityException e) {
+			assert false : "This should never happen.";
+			return null;
+		} catch (NoSuchMethodException e) {
+			assert false : "This should never happen.";
+		return null;
+		}
+!!!610818.java!!!	getFilename() : String
+		return filename;
+!!!610946.java!!!	getSize() : long
+		return size;
+!!!611074.java!!!	getName() : String
+		return name;
+!!!611202.java!!!	getVersion() : Version
+		return version;
+!!!611330.java!!!	getHardwarePlatforms() : ArrayList
+		return hardwarePlatforms;
+!!!611458.java!!!	getSoftwarePlatforms() : ArrayList
+		return softwarePlatforms;
+!!!611586.java!!!	getType() : PackageType
+		return type;
+!!!611714.java!!!	getHumanName() : String
+		return humanName;
+!!!611842.java!!!	getDownloadURL() : String
+		return downloadURL;
+!!!611970.java!!!	getDownloadDate() : Date
+		return downloadDate;
+!!!612098.java!!!	getSourcePackageFilename() : String
+		return sourcePackageFilename;
+!!!612226.java!!!	getBinaryIdentifier() : String
+		return binaryIdentifier;
+!!!612354.java!!!	getBuildConfiguration() : String
+		return buildConfiguration;
+!!!612482.java!!!	PackageMetadata(in filename : String, in size : long, in name : String, inout version : Version, inout hardwarePlatforms : ArrayList, inout softwarePlatforms : ArrayList, inout type : PackageType, in humanName : String, in downloadURL : String, inout downloadDate : Date, in sourcePackageFilename : String, in binaryIdentifier : String, in buildConfiguration : String)
+		super();
+		this.filename = filename;
+		this.size = size;
+		this.name = name;
+		this.version = version;
+		this.hardwarePlatforms = hardwarePlatforms;
+		this.softwarePlatforms = softwarePlatforms;
+		this.type = type;
+		this.humanName = humanName;
+		this.downloadURL = downloadURL;
+		this.downloadDate = downloadDate;
+		this.sourcePackageFilename = sourcePackageFilename;
+		this.binaryIdentifier = binaryIdentifier;
+		this.buildConfiguration = buildConfiguration;
+!!!612610.java!!!	PackageMetadata()
+		super();
+!!!612738.java!!!	appendIfNotNull(inout parent : Element, inout child : Element) : void
+		if (child != null) {
+			parent.appendChild(child);
+		}
+!!!612866.java!!!	saveToFile(in metadataFile : String) : void
+		Document document = null;
+		try {
+			document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+		} catch (ParserConfigurationException e) {
+			assert false: "ParserConfigurationException thrown where it should be not.";
+		}
+		
+		Element rootElement = document.createElement("package");
+		document.appendChild(rootElement);
+		
+		appendIfNotNull(rootElement,
+			StringAttributeHelper.getInstance().writeValueToElement(document, "name", name)
+		);
+		appendIfNotNull(rootElement,
+			VersionAttributeHelper.getInstance().writeValueToElement(document, "version", version)
+		);
+		appendIfNotNull(rootElement,
+			ArrayListAttributeHelper.getInstance().writeValueToElement(document, "hardwarePlatforms", hardwarePlatforms)
+		);
+		appendIfNotNull(rootElement,
+			ArrayListAttributeHelper.getInstance().writeValueToElement(document, "softwarePlatforms", softwarePlatforms)
+		);
+		appendIfNotNull(rootElement,
+			PackageTypeAttributeHelper.getInstance().writeValueToElement(document, "type", type)
+		);
+		appendIfNotNull(rootElement,
+			StringAttributeHelper.getInstance().writeValueToElement(document, "humanName", humanName)
+		);
+		appendIfNotNull(rootElement,
+			StringAttributeHelper.getInstance().writeValueToElement(document, "downloadURL", downloadURL)
+		);
+		appendIfNotNull(rootElement,
+			DateAttributeHelper.getInstance().writeValueToElement(document, "downloadDate", downloadDate)
+		);
+		appendIfNotNull(rootElement,
+			StringAttributeHelper.getInstance().writeValueToElement(document, "sourcePackageFilename", sourcePackageFilename)
+		);
+		appendIfNotNull(rootElement,
+			StringAttributeHelper.getInstance().writeValueToElement(document, "binaryIdentifier", binaryIdentifier)
+		);
+		appendIfNotNull(rootElement,
+				StringAttributeHelper.getInstance().writeValueToElement(document, "buildConfiguration", buildConfiguration)
+			);
+		
+		TransformerFactory factory = TransformerFactory.newInstance();
+		Transformer transformer = null;
+		try {
+			transformer = factory.newTransformer();
+		} catch (TransformerConfigurationException e) {
+			assert false: "TransformerConfigurationException thrown where it should be not.";
+		}
+		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+		transformer.transform(new DOMSource(document), new StreamResult(new File(metadataFile)));

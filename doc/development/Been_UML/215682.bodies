@@ -1,0 +1,21 @@
+class PackageListQueryCallback
+!!!791938.java!!!	PackageListQueryCallback(inout atoms : Condition)
+		super();
+		this.atoms = atoms;
+!!!792066.java!!!	match(inout metadata : PackageMetadata) : boolean
+		/* If the atoms need to prepare, do it. */ 
+		if (!atomsPrepared) {
+			for (int i = 0; i < atoms.length; i++) {
+				atoms[i].prepare();
+			}
+		}
+        
+		/* We apply all atoms in "and" relation (they must all hold true).
+		 * Boolean short-circuit evaluation is used for better performance.
+		 */
+		for (int i = 0; i < atoms.length; i++) {
+			if (!atoms[i].execute(metadata)) {
+				return false;
+			}
+		}
+		return true;

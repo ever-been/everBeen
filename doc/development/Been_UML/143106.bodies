@@ -1,0 +1,21 @@
+class Dependency
+!!!669314.java!!!	Dependency(in taskID : String, in type : String, inout value : Serializable)
+		this.taskId = taskID;
+		this.type = type;
+		this.value = value;
+!!!669442.java!!!	Dependency(in taskID : String, in type : String)
+		this(taskID, type, null);
+!!!669570.java!!!	clone() : Object
+		return new Dependency(this.taskId, this.type, this.value);
+!!!669698.java!!!	setTaskId(in taskID : String) : void
+		this.taskId = taskID;
+!!!669826.java!!!	setType(in type : String) : void
+		this.type = type;
+!!!669954.java!!!	setValue(inout value : Serializable) : void
+		this.value = value;
+!!!670082.java!!!	getTaskId() : String
+		return this.taskId;
+!!!670210.java!!!	getType() : String
+		return this.type;
+!!!670338.java!!!	getValue() : Serializable
+		return this.value;

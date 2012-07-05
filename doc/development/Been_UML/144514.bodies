@@ -1,0 +1,5 @@
+class Exclusivity
+!!!208770.java!!!	Exclusivity(in name : String)
+			this.name = name;
+!!!208898.java!!!	toString() : String
+			return name;

@@ -1,0 +1,23 @@
+class RubisVersionProvider
+!!!207362.java!!!	handleTimestamp(in timestamp : long) : ExperimentMetadata
+		ExperimentMetadata newExp = duplicateModel();
+		
+		/*
+		 * Create a nice name for the new experiment that contains
+		 * the name of the benchmarked software and time.
+		 */
+		
+		String ejbServer = newExp.getProperty(RubisTaskGenerator.EJB_SERVER);
+		DateFormat formatter = DateFormat.getDateTimeInstance();
+		if (ejbServer.equals("JBoss")) {
+			newExp.setName("JBoss " + formatter.format(new Date(timestamp)));
+		}
+		if (ejbServer.equals("Jonas")) {
+			newExp.setName("Jonas " + formatter.format(new Date(timestamp)));
+		}
+		
+		// set the ejb server version to the time stamp
+		newExp.setProperty(RubisTaskGenerator.EJB_SERVER_VERSION,
+				String.valueOf(timestamp));
+		
+		return newExp;

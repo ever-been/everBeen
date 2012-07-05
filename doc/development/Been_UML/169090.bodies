@@ -1,0 +1,4 @@
+class ReverseComparator
+!!!352258.java!!!	compare(inout a : Date, inout b : Date) : int
+			
+			return -a.compareTo(b);

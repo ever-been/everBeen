@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sect1
+	xml:id="been.devel.jaxb.purpose"
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>Purpose of the XML Framework</title>
+	
+	<para>The JAXB technology can use XML Schema for data definitions. Schema files are used to validate both input
+	and output data. (Furthermore, the binding compiler reads them when generating binding classes.)
+	Data objects can be created using thread-safe <classname>ObjectFactory</classname> instances.
+	Marshallers and unmarshallers are produced by <classname>JAXBContext</classname> instances.
+	These are thread-safe as well.</para>
+	
+	<para>Since links to XML Schema files and the core JAXB technology components are thread-safe,
+	it makes sense to use them as singletons. The <package>cz.cuni.mff.been.jaxb</package> package
+	stores and maps these singletons and instantiates them on demand. Parsing an XML Schema and
+	creating a JAXB context is an expensive operation which should only happen once per schema.</para>
+	
+	<para>Unlike contexts and factories, JAXB marshallers and unmarshallers are not thread-safe.
+	Fortunately, they are rather unexpensive to instantiate. Marshallers and unmarshallers
+	are therefore produced (instantiated) whenever needed. They are wrapped as instances of the
+	<classname>BindingParser</classname> and <classname>BindingComposer</classname>
+	interfaces. Multiple marshallers and unmarshallers produced by the same context can be accessed
+	at the same time.</para>
+	
+	<para>The XML framework package (<package>cz.cuni.mff.been.jaxb</package>) implements the
+	initialization operations mentioned above and provides simple interfaces to obtain parsers and
+	composers with just one line of code. It also lists all the available XML Schema files.</para>
+	
+	<para>The <classname>BindingParser</classname> and <classname>BindingComposer</classname>
+	instances are reusable. This means they do not contain any state. They can be reused even when
+	the previous operation threw an exception. The Command Line Interface modules
+	take advantage of this feature and keep the same parser and composer instances in pooled
+	module instances across multiple requests.</para>
+</sect1>

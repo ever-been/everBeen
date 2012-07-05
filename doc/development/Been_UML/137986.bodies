@@ -1,0 +1,9 @@
+class InvalidServiceStateException
+!!!625666.java!!!	InvalidServiceStateException()
+		super();
+!!!625794.java!!!	InvalidServiceStateException(in message : String)
+		super(message);
+!!!625922.java!!!	InvalidServiceStateException(inout cause : Throwable)
+		super(cause);
+!!!626050.java!!!	InvalidServiceStateException(in message : String, inout cause : Throwable)
+		super(message, cause);

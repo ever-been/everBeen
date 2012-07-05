@@ -1,0 +1,112 @@
+class UploadThread
+!!!149506.java!!!	getHandle() : UploadHandle
+		return handle;
+!!!149634.java!!!	getIp() : InetAddress
+		return ip;
+!!!149762.java!!!	getPort() : int
+		return port;
+!!!149890.java!!!	getErrorMesssages() : String
+		return (String[]) errorMessages.toArray(new String[errorMessages.size()]);
+!!!150018.java!!!	UploadThread(inout handle : UploadHandle, inout ip : InetAddress, in port : int)
+		super();
+		this.handle = handle;
+		this.ip = ip;
+		this.port = port;
+		setStatus(UploadStatus.INITIALIZING);
+!!!150146.java!!!	setStatus(inout status : UploadStatus) : void
+		this.status = status;
+!!!150274.java!!!	addErrorMessage(in error : String) : void
+		errorMessages.add(error);
+!!!150402.java!!!	getStatus() : UploadStatus
+		return status;
+!!!150530.java!!!	getTemporaryFile() : File
+		return tempFile;
+!!!150658.java!!!	getPrefix() : String
+		return "upload";
+!!!150786.java!!!	getSuffix() : String
+		return ".tmp";
+!!!150914.java!!!	getTempDirectory() : File
+		return null;
+!!!151042.java!!!	uploadPackage(inout file : File) : void
+		byte[] buffer = new byte[UPLOAD_BUFFER_SIZE];
+		int bytesRead;
+		Socket socket = new Socket(ip, port);
+		try {
+			InputStream inputStream = new BufferedInputStream(
+				socket.getInputStream(),
+				UPLOAD_BUFFER_SIZE
+			);
+			OutputStream outputStream = new BufferedOutputStream(
+				new FileOutputStream(file.getPath()),
+				UPLOAD_BUFFER_SIZE
+			);
+			try {
+				while ((bytesRead = inputStream.read(buffer)) != -1) {
+					outputStream.write(buffer, 0, bytesRead);
+				}
+			} finally {
+				inputStream.close();
+				outputStream.close();
+			}
+		} finally {
+			socket.close();
+		}                 
+!!!151170.java!!!	deleteFileIfExists(inout file : File) : void
+		if (file.exists()) {
+			file.delete();
+		}
+!!!151298.java!!!	createTempFile() : File
+		/*
+		 * There is a bug in the Sun's JVM which causes the File.createTempFile
+		 * call throw IOException with message "Access is denied" occasionally on
+		 * Windows. We work around the bug by simply retrying the call multiple
+		 * times. After a while we give up, to avoid hanging-up. 
+		 * 
+		 * See http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6325169 for more
+		 * information about the bug.
+		 */
+		File result = null;
+		int tryCount = 0;
+		boolean failed;
+		IOException thrownException = null;
+		
+		do {
+			failed = false;
+			try {
+				result = File.createTempFile(getPrefix(), getSuffix(), getTempDirectory());
+			} catch (IOException e) {
+				failed = true;
+				thrownException = e;
+			}
+			tryCount++;
+		} while (failed && tryCount < MAX_CREATE_TEMP_FILE_TRY_COUNT);
+		
+		if (result != null) {
+			return result;
+		} else {
+			throw thrownException;
+		}
+!!!151682.java!!!	run() : void
+		setStatus(UploadStatus.UPLOADING);
+		try {
+			/* Create the temp file. */
+			tempFile = createTempFile();
+			try {
+				/* Download the file form specified host and port to the temp file. */
+				uploadPackage(tempFile);
+				processFile();
+				/* After all operations finish (either succesfully or due to some error),
+				 * delete the temporary file if it still exists. 
+				 */
+			} catch (Exception e) {
+				e.printStackTrace();
+				setStatus(UploadStatus.ERROR);
+			} finally {
+				deleteFileIfExists(tempFile);
+			}
+		} catch (IOException e) {
+			setStatus(UploadStatus.ERROR);
+			addErrorMessage("Upload failed: " + e.getMessage());
+			// call user-method to handle error status
+			uploadFailed();
+		} 

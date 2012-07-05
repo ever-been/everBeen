@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<glossary
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>Glossary</title>
+
+	<glossentry>
+		<glossterm>analysis</glossterm>
+		<glossdef><para>A structure in <glossterm>Benchmark Manger</glossterm> which defines
+		benchmark measurements. It contains a <glossterm>generator</glossterm> and any number of
+		<glossterm>evaluators</glossterm> and other information about the benchmark it represents.
+		</para></glossdef>
+	</glossentry>
+
+	<glossentry>
+		<glossterm>analysis run</glossterm>
+		<glossdef><para>One run of <glossterm>analysis</glossterm> <glossterm>generator</glossterm>.
+		Generator may generate a sequence of <glossterm baseform="task">tasks</glossterm> that run
+		more than one benchmark measurement run. In that sense analysis runs are generally not tied
+		to conventional benchmark runs in any way.</para></glossdef>
+	</glossentry>
+
+	<glossentry>
+		<glossterm>Benchmark Manager</glossterm>
+		<glossdef><para>BEEN <glossterm>service</glossterm> that manages <glossterm
+		baseform="analysis">analyses</glossterm>. User can create, update or delete any analysis
+		using the Benchmark Manager interface. The service automatically runs analyses that are
+		configured for automatic scheduling.</para></glossdef>
+	</glossentry>
+	
+	<glossentry>
+		<glossterm>command line action</glossterm>
+		<glossdef><para>Command line actions work like shell commands or HTTP requests. When the
+		<glossterm>Command Line Client</glossterm> is invoked, a
+		<glossterm>command line module</glossterm> and a command line action are specified as
+		arguments. From a user's point of view, actions take parameters and flags, read input data
+		and produce output data.</para></glossdef>
+	</glossentry>
+	
+	<glossentry>
+		<glossterm>Command Line Client</glossterm>
+		<glossdef><para>A POSIX compatible command line tool written in C99. It is the client part
+		of the <glossterm>Command Line Interface</glossterm>. The binary is called
+		<command>bcmd</command> by default.</para></glossdef>
+	</glossentry>
+	
+	<glossentry>
+		<glossterm>Command Line Interface</glossterm>
+		<glossdef><para>A software solution that can be used to control the BEEN framework from a
+		shell. It consists of the <glossterm>Command Line Service</glossterm> written in Java
+		and from the <glossterm>Command Line Client</glossterm> written in C.</para></glossdef>
+	</glossentry>
+	
+	<glossentry>
+		<glossterm>command line module</glossterm>
+		<glossdef><para>A group of related
+		<glossterm baseform="command line action">command line actions</glossterm> that query
+		the same <glossterm>service</glossterm> and share data structures. Each request from the
+		<glossterm>Command Line Client</glossterm> is handled by a command line module instance
+		on the <glossterm>Command Line Service</glossterm> side.</para></glossdef>
+	</glossentry>
+	
+	<glossentry>
+		<glossterm>Command Line Service</glossterm>
+		<glossdef><para>A <glossterm>core service</glossterm> of the BEEN framework. It listens for
+		connections from command line clients, parses commands obtained from their users and performs
+		the requested operations on other components of BEEN.</para></glossdef>
+	</glossentry>
+	
+	<glossentry>
+		<glossterm>context</glossterm>
+		<glossdef><para>A namespace containing <glossterm baseform="task">tasks</glossterm>.
+		Each task must be in a context. Contexts cannot be nested.</para></glossdef>
+	</glossentry>
+	
+	<glossentry>
+		<glossterm>context-monitor</glossterm>
+		<glossdef><para>A <glossterm>task</glossterm> used by the <glossterm>Benchmark Manager</glossterm> to monitor
+		<glossterm>analysis</glossterm> progress. It reports end of <glossterm>analysis run</glossterm>
+		to the Benchmark Manager service when all <glossterm baseform="task">tasks</glossterm> in
+		its <glossterm>context</glossterm> have finished or can't start.</para></glossdef>
+	</glossentry>
+
+	<glossentry>
+		<glossterm>core service</glossterm>
+		<glossdef><para>Is a <glossterm>service</glossterm> that's vital part of BEEN. Core services can be started directly from BEEN's WebUI.</para></glossdef>
+	</glossentry>
+	
+	<glossentry>
+		<glossterm>data handle</glossterm>
+		<glossdef><para>Is a data structure to hold a typed   
+		value stored in Results Repository. Data handle has its type 
+		set according to what data the data handle contains.</para></glossdef>
+	</glossentry>
+	
+	<glossentry>
+		<glossterm>dataset</glossterm>
+		<glossdef><para>Table-like structure in 
+		<glossterm>Results Repository</glossterm> holding results of one type. 
+		Dataset is defined by its name, <glossterm>analysis</glossterm> name and 
+		set of <glossterm>tags</glossterm> with their names and types.</para></glossdef>
+	</glossentry>
+	
+	<glossentry>
+		<glossterm>Debug Assistant</glossterm>
+		<glossdef><para>BEEN <glossterm>service</glossterm> that helps with debugging BEEN
+		<glossterm>tasks</glossterm>. When Debug Assistant runs, tasks started in debug mode are
+		stopped before they start execution. User can connect to them using any Java debugger or
+		simply run them using the Debug Assistant interface.</para></glossdef>
+	</glossentry>
+	
+	<glossentry>
+		<glossterm>generator</glossterm>
+		<glossdef><para>A <glossterm>pluggable module</glossterm> which is responsible for
+		generating a series of <glossterm baseform="task">tasks</glossterm> which measure
+		benchmark data. Generator also creates <glossterm baseform="dataset">datasets</glossterm> in
+		the <glossterm>Results Repository</glossterm> which will hold the benchmark data.</para></glossdef>
+	</glossentry>
+
+	<glossentry>
+		<glossterm>generator-runner</glossterm>
+		<glossdef><para>A <glossterm>task</glossterm> used by the
+		<glossterm>Benchmark Manager</glossterm> to execute <glossterm>generator</glossterm>
+		in each <glossterm>analysis run</glossterm>.</para></glossdef>
+	</glossentry>
+
+	<glossentry>
+		<glossterm>Host Manager</glossterm>
+		<glossdef><para>BEEN <glossterm>service</glossterm> that manages BEEN <glossterm
+		baseform="host runtime">host runtimes</glossterm>. The <glossterm>Task Manager</glossterm>
+		queries the Host Manager almost every time it schedules a new <glossterm>task</glossterm>.
+		Part of this service is a load monitor which monitors load on all connected hosts.</para></glossdef>
+	</glossentry>
+	
+	<glossentry>
+		<glossterm>host properties</glossterm>
+		<glossdef><para>A hierarchical tree-like data structure containing both hardware information
+		produced by a hardware <glossterm>detector</glossterm> and user-defined properties. The
+		<glossterm>Command Line Interface</glossterm> can load, store and modify host properties
+		using an XML representation.</para></glossdef>
+	</glossentry>
+	
+	<glossentry>
+		<glossterm>host property</glossterm>
+		<glossdef><para>A named data item associated with the host. It is stored in the
+		<glossterm>host properties</glossterm> structure. In most cases, the singular form referes
+		to a <quote>user-defined</quote> host property, which is a simple data type residing
+		in the <option>user</option> subtree of host properties. Before the advent of CLI, this was the only
+		modifiable part of host properties.</para></glossdef>
+	</glossentry>
+		
+	<glossentry>
+		<glossterm>evaluator</glossterm>
+		<glossdef><para>A <glossterm>pluggable module</glossterm> that manages one or more
+		<glossterm baseform="evaluator task">evaluator tasks</glossterm> and creates their
+		<glossterm baseform="trigger">triggers</glossterm> in the <glossterm>Results Repository</glossterm>
+		when attached to an <glossterm>analysis</glossterm>.</para></glossdef>
+	</glossentry>
+
+	<glossentry>
+		<glossterm>evaluator task</glossterm>
+		<glossdef><para>The <glossterm>task</glossterm> that is fired by any <glossterm>trigger</glossterm>
+		in the <glossterm>Results Repository</glossterm>. All the triggers in the Results Repository
+		are set by an <glossterm>evaluator</glossterm>.</para></glossdef>
+	</glossentry>
+	
+	<glossentry>
+		<glossterm>host group</glossterm>
+		<glossdef><para>A set of hosts defined by the user. Host groups can be used as a host
+		selection criterion by the <glossterm>Task Manager</glossterm>.</para></glossdef>
+	</glossentry>
+	
+	<glossentry>
+		<glossterm>Host Runtime</glossterm>
+		<glossdef><para>Java program that serves as a host for running BEEN <glossterm>tasks</glossterm>.
+		At startup it connects to the <glossterm>Task Manager</glossterm>.</para></glossdef>
+	</glossentry>
+	
+	<glossentry>
+		<glossterm>inheritance rule</glossterm>
+		<glossdef><para>A method implementing an aggregate function. This method is implemented by
+		<glossterm baseform="task tree flag">task tree flags</glossterm>. It computes a value of a flag
+		assigned to a node based on the values of the same flag obtained from the node's children.</para></glossdef>
+	</glossentry>
+	
+	<glossentry>
+		<glossterm>job</glossterm>
+		<glossdef><para>Is a <glossterm>task</glossterm> that just does its one-time work and terminates. Most of <glossterm>tasks</glossterm> in BEEN are jobs. Sometimes, when it cannot lead to confusion, "job" is referred to just as "task".</para></glossdef>
+	</glossentry>
+
+	<glossentry>
+		<glossterm>leaf</glossterm>
+		<glossdef><para>A record in the <glossterm>Task Tree</glossterm> similar to a file system
+		file. It contains a reference to data structures associated with a <glossterm>task</glossterm>.
+		It does not have any child records.</para></glossdef>
+	</glossentry>
+	
+	<glossentry>
+		<glossterm>load sample</glossterm>
+		<glossdef><para>A data structure produced by a <glossterm>Host Runtime</glossterm> and
+		containing up-to-date load information for processors, disk drives and network interfaces.
+		Load samples can be used by the <glossterm>Host Manager</glossterm> to generate load
+		statistics.</para></glossdef>
+	</glossentry>
+		
+	<glossentry>
+		<glossterm>node</glossterm>
+		<glossdef><para>A record in the <glossterm>Task Tree</glossterm> similar to a file system
+		directory. It contains references to child records, which can be both nodes
+		and <glossterm baseform="leaf">leaves</glossterm>.</para></glossdef>
+	</glossentry>
+	
+	<glossentry>
+		<glossterm>package</glossterm>
+		<glossdef><para>Is a packed unit containing some metadata 
+		(information about itself) in format that BEEN understands. 
+		Technically speaking, package is a zipped file with <code>.bpk</code> 
+		extension that contains <filename>metadata.xml</filename> file with 
+		proper content in its root.</para></glossdef>
+	</glossentry>
+	
+	<glossentry>
+		<glossterm>pluggable module</glossterm>
+		<glossdef><para>Is a package of type "module". Pluggable module contains shared code with well-defined API that can loaded by a <glossterm>task</glossterm> on demand.</para></glossdef> 
+	</glossentry>
+	
+	<glossentry>
+		<glossterm>Pluggable Module Manager</glossterm>
+		<glossdef><para>Component that takes care of loading <glossterm>pluggable modules</glossterm>.</para></glossdef> 
+	</glossentry>
+	
+	<glossentry>
+		<glossterm>Results Repository</glossterm>
+		<glossdef><para>BEEN <glossterm>service</glossterm> that serves like a central database for
+		results. Any BEEN <glossterm>task</glossterm> can save or retrieve data using the Results
+		Repository.</para></glossdef>
+	</glossentry>
+	
+	<glossentry>
+		<glossterm>RSL</glossterm>
+		<glossdef><para>Restriction Specification Language. A language that is used for selection
+		of hosts and software packages based on a set of constraints.</para></glossdef>
+	</glossentry>
+	
+	<glossentry>
+		<glossterm>service</glossterm>
+		<glossdef><para>Is a <glossterm>task</glossterm> that can be started and stopped (and runs forever if not stopped). It offers 
+		an API that other running <glossterm>tasks</glossterm> can use.</para></glossdef>
+	</glossentry>
+	
+	<glossentry>
+		<glossterm>software alias</glossterm>
+		<glossdef><para>A platform-independent representation of a software <glossterm>package</glossterm>
+		identifier. It hides the differences in naming and versioning conventions on different
+		platforms.</para></glossdef>
+	</glossentry>
+	
+	<glossentry>
+		<glossterm>Software Repository</glossterm>
+		<glossdef><para>BEEN <glossterm>service</glossterm> that stores and manages BEEN packages
+		(<glossterm baseform="task">tasks</glossterm> and <glossterm
+		baseform="pluggable module">pluggable modules</glossterm>). It can search the packages and
+		send the required package to other BEEN task.</para></glossdef>
+	</glossentry>
+	
+	<glossentry>
+		<glossterm>tag</glossterm>
+		<glossdef><para>Is a "column" of a dataset. It is defined by its name and 
+		data type it can contain. Tag's value is internally held by a data handle.</para></glossdef>
+	</glossentry>
+	
+	<glossentry>
+		<glossterm>task</glossterm>
+		<glossdef><para>Basic execution unit of BEEN Framework. Technically speaking, task is a package of type "task".</para></glossdef>
+	</glossentry>
+
+	<glossentry>
+		<glossterm>task descriptor</glossterm>
+		<glossdef><para>A XML bound data structure used by the <glossterm>Task Manager</glossterm>,
+		<glossterm>Host Runtime</glossterm> and other components to describe a <glossterm>task</glossterm>.
+		The most important data items include task name, task identifier, <glossterm>context</glossterm>
+		identifier, a <glossterm>task tree address</glossterm>, software <glossterm>package</glossterm>
+		information and information on <glossterm baseform="Host Runtime">Host Runtimes</glossterm>
+		the task can run on. It contains all the data needed to spawn a task.</para></glossdef>
+	</glossentry>
+	
+	<glossentry>
+		<glossterm>Task Manager</glossterm>
+		<glossdef><para>Java program that serves as the central authority in BEEN. From
+		<glossterm baseform="task">task's</glossterm> point of view it behaves like any other
+		<glossterm>service</glossterm> but it is started separatelly.</para></glossdef>
+	</glossentry>
+	
+	<glossentry>
+		<glossterm>Task Tree</glossterm>
+		<glossdef><para>A new component of the <glossterm>Task Manager</glossterm> that provides a hierarchical
+		and thread-safe structure for storing task data. It can also automatically manage status information
+		called <glossterm baseform="task tree flag">task tree flags</glossterm>.</para></glossdef>
+	</glossentry>
+	
+	<glossentry>
+		<glossterm>task tree address</glossterm>
+		<glossdef><para>An identifier that can be used to identify <glossterm>Task Tree</glossterm>
+		leaves and nodes. There is a one-to-one mapping between
+		<glossterm baseform="task tree path">task tree paths</glossterm> and task tree addresses
+		throughout the whole BEEN framework.</para></glossdef>
+	</glossentry>
+	
+	<glossentry>
+		<glossterm>task tree flag</glossterm>
+		<glossdef><para>A class that provides a <classname>String</classname> identifier and implements
+		an <glossterm>inheritance rule</glossterm>. Tree flags can be used as keys that map to
+		values stored in <glossterm>Task Tree</glossterm> nodes and leaves.</para></glossdef>
+	</glossentry>
+	
+	<glossentry>
+		<glossterm>task tree path</glossterm>
+		<glossdef><para>A string similar to a UNIX path representing a position of a node or a leaf
+		in the <glossterm>Task Tree</glossterm>. There is a one-to-one mapping between
+		<glossterm baseform="task tree address">task tree addresses</glossterm> and task tree paths
+		throughout the whole BEEN framework.</para></glossdef>
+	</glossentry>
+	
+	<glossentry>
+		<glossterm>trigger</glossterm>
+		<glossdef><para>An event-driven mechanism of the <glossterm>Results Repository</glossterm>,
+		which listens for events related to <glossterm baseform="dataset">datasets</glossterm>. When
+		new data is added, it spawns a <glossterm>task</glossterm> associated with the trigger.</para></glossdef>
+	</glossentry>
+</glossary>

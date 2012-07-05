@@ -1,0 +1,9 @@
+class DataRuntimeException
+!!!712194.java!!!	DataRuntimeException()
+		super();
+!!!712322.java!!!	DataRuntimeException(in message : String)
+		super(message);
+!!!712450.java!!!	DataRuntimeException(in message : String, inout cause : Throwable)
+		super(message, cause);
+!!!712578.java!!!	DataRuntimeException(inout cause : Throwable)
+		super(cause);

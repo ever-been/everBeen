@@ -1,0 +1,22 @@
+class IntegerIntervalInputValidator
+!!!244610.java!!!	IntegerIntervalInputValidator(in min : int, in max : int)
+		this.min = min;
+		this.max = max;
+!!!244738.java!!!	validate(in value : String) : String
+		String message;
+		if ((message = super.validate(value)) != null) {
+			return message;
+		}
+		
+		int i = Integer.valueOf(value);
+		if (i < min) {
+			return "Invalid value '" + value 
+				+ "'. Must be greater or equal to '" + min + "'.";
+		}
+		if (i > max) {
+			return "Invalid value '" + value 
+				+ "'. Must be less or equal to '" + max + "'.";
+		}
+		
+		// OK
+		return null;

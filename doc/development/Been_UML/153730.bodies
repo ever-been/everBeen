@@ -1,0 +1,46 @@
+class Cvs
+!!!257794.java!!!	Cvs()
+		// dummy ant project
+		Project antProject = new Project();
+		antProject.init();
+		setProject(antProject);
+		// dummy ant task name
+		setTaskName("cvs");
+		setTaskType("cvs");
+		// dummy ant target
+		setOwningTarget(null);
+!!!257922.java!!!	checkout(in repository : String, in pass : String, in cvsRsh : String, in module : String, in tag : String, in date : String, in dest : String) : void
+
+		Cvs cvs = new Cvs();
+		cvs.setCommand("checkout");
+		cvs.setCvsRoot(repository);
+		cvs.setCvsRsh(cvsRsh);
+		cvs.setPackage(module);
+		cvs.setTag(tag);
+		cvs.setDate(date);
+		cvs.setDest(new File(dest));
+		
+		//if password is set, create temp password file
+		try {
+			if (pass != null) {
+				File passFile = File.createTempFile("cvs","pass");
+				passFile.deleteOnExit();
+				FileWriter fw = new FileWriter(passFile);
+				fw.write(pass);
+				fw.flush();
+				fw.close();
+				cvs.setPassfile(passFile);
+			}
+			
+		} catch (IOException e) {
+			throw new AntTaskException("Can't write password file",e);
+		}
+		
+		cvs.execute();
+!!!258050.java!!!	getOutputStream() : OutputStream
+		return System.out;
+!!!258178.java!!!	getErrorStream() : OutputStream
+		return System.err;
+!!!258306.java!!!	main(in args : String) : void
+		Cvs.checkout(":pserver:anonymous@omniorb.cvs.sourceforge.net:/cvsroot/omniorb",
+				null,null,"omni","omni4_0_develop","2 Jan 2005","data");

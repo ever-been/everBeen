@@ -1,0 +1,35 @@
+class OutputReader
+!!!245122.java!!!	OutputReader()
+		super();
+!!!245250.java!!!	OutputReader(inout is : java.io.InputStream, inout type : OutputType)
+		inputStream = is;
+		inputType = type;
+!!!245378.java!!!	setInputStream(inout is : InputStream) : void
+		this.inputStream = is;
+!!!245506.java!!!	setOutputStream(inout os : OutputStream) : void
+		this.outputStream = os;
+!!!245634.java!!!	run() : void
+		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream),
+				BUFFER_SIZE);
+		BufferedWriter writer = null;
+		if (outputStream != null) {
+			writer = new BufferedWriter(
+					new OutputStreamWriter(outputStream), 
+					BUFFER_SIZE);
+		} else {
+			writer = new BufferedWriter(
+					new OutputStreamWriter(inputType == OutputType.STDOUT ? System.out : System.err),
+					BUFFER_SIZE);
+		}
+
+		char[] buf = new char[BUFFER_SIZE];
+		int read = 0;
+		try {
+			while ((read = reader.read(buf)) != -1) {
+				writer.write(buf, 0, read);
+			}
+			reader.close();
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}

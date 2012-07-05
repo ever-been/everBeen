@@ -1,0 +1,191 @@
+class TaskGenerator
+!!!196610.java!!!	TaskGenerator()
+		
+!!!196738.java!!!	startGenerator() : void
+		checkRemoteReferences();
+		dumpProperties();
+		setupResults();
+		generate();
+		generateLogCollection();
+!!!196866.java!!!	setBenchmarkManager(inout bm : BenchmarkManager) : void
+		this.bm = bm;
+!!!196994.java!!!	setExperiment(inout experiment : ExperimentMetadata) : void
+		this.experiment = experiment;
+!!!197122.java!!!	getExperiment() : ExperimentMetadata
+		return experiment;
+!!!197250.java!!!	setRegression(inout isRegression : boolean) : void
+		this.isRegression = isRegression;
+!!!197634.java!!!	isRegression() : boolean
+		return isRegression;
+!!!197762.java!!!	setActiveRole(in activeRole : String) : void
+		this.activeRole = activeRole;
+!!!197890.java!!!	createTaskDescriptor(in taskName : String, in indexOfHost : int) : TaskDescriptor
+
+		assert experiment.getRole(getActiveRole()).getHostNames().length > 0 :
+			"No host available for '" + getActiveRole() + "'";
+
+		final Condition hostRSL = experiment.getRole(getActiveRole()).getRSL(indexOfHost);
+		
+		return TaskDescriptor.createTask(getNextTID().toString(), taskName, 
+				getExperiment().getContextID(), hostRSL);
+!!!198018.java!!!	createTaskDescriptor(in taskName : String) : TaskDescriptor
+		return createTaskDescriptor(taskName,0);
+!!!198146.java!!!	getSoftwareRepository() : SoftwareRepositoryInterface
+		return (SoftwareRepositoryInterface) lookupBeenService(
+				SoftwareRepositoryService.SERVICE_NAME);
+!!!198274.java!!!	getHostManager() : HostManagerInterface
+		return (HostManagerInterface) lookupBeenService(
+				HostManagerService.SERVICE_NAME);
+!!!198402.java!!!	getResultsRepository() : ResultsRepositoryInterface
+		return (ResultsRepositoryInterface) lookupBeenService(
+				ResultsRepositoryService.SERVICE_NAME);
+!!!198530.java!!!	logDebug(in errorMessage : String) : void
+		bm.logDebug(errorMessage);
+!!!198658.java!!!	logError(in errorMessage : String) : void
+		bm.logError(errorMessage);
+!!!198786.java!!!	logFatal(in errorMessage : String) : void
+		bm.logFatal(errorMessage);
+!!!198914.java!!!	logInfo(in infoMessage : String) : void
+		bm.logInfo(infoMessage);
+!!!199042.java!!!	logTrace(in infoMessage : String) : void
+		bm.logTrace(infoMessage);
+!!!199170.java!!!	logWarning(in warningMessage : String) : void
+		bm.logWarning(warningMessage);
+!!!199298.java!!!	isRerun() : boolean
+		return getExperiment().isRerun();
+!!!199426.java!!!	getNewBinaryCount() : int
+		return getExperiment().getBinaryCount();
+!!!199554.java!!!	getDefaultRunCount() : int
+		return getExperiment().getRunCount();
+!!!199682.java!!!	createNewBinaries() : boolean
+		return getNewBinaryCount() > 0;
+!!!199810.java!!!	createNewRuns() : boolean
+		for (BinaryMetadata binary : getExperiment().getBinaries()) {
+			if (binary.getNewRunCount() > 0) {
+				return true;
+			}
+		}
+		
+		return false;
+!!!199938.java!!!	isPackageAvailable(inout condition : Condition) : boolean
+		return availablePackages(condition).length > 0;
+!!!200066.java!!!	availablePackages(inout condition : Condition) : PackageMetadata
+			
+		SoftwareRepositoryInterface swRepo = getSoftwareRepository();
+		if (swRepo == null){
+			throw new GeneratorException("Software repository not available");
+		}
+		
+		try {
+			RSLPackageQueryCallback ri = new RSLPackageQueryCallback(condition);
+			return swRepo.queryPackages(ri);
+		} catch (Exception e) {
+			throw new GeneratorException("Can't query software repository",e);
+		}
+		
+!!!200194.java!!!	getNextBinaryID() : BID
+		return bm.getIDManager().getNext(BID.class);
+!!!200322.java!!!	getNextRunID() : RID
+		return bm.getIDManager().getNext(RID.class);
+!!!200450.java!!!	findUnusedBinaries(inout query : Condition, in packageName : String) : PackageMetadata
+		// find used metadata flags for given package 
+		HashSet<String> usedMetadataFlags = new HashSet<String>();
+		for (BinaryMetadata binary : getExperiment().getBinaries()) {
+			String flag = binary.getPackage(packageName);
+			if (flag != null) {
+				usedMetadataFlags.add(flag);
+			}
+		}
+		
+		// no binaries need to be filtered - return all matching packages
+		if (usedMetadataFlags.size() == 0) {
+			return availablePackages(query);
+		}
+		
+		List<PackageMetadata> result = new LinkedList<PackageMetadata>();
+		
+		for (PackageMetadata available : availablePackages(query)) {
+			if (! usedMetadataFlags.contains(available.getBinaryIdentifier())) {
+				result.add(available);
+			}
+		}
+		
+		return result.toArray(new PackageMetadata[result.size()]);
+		
+!!!200578.java!!!	createNewBinary() : BID
+		BID id = getNextBinaryID();
+		experiment.getTaskSequence().openBinary(id);
+		return id;
+!!!200706.java!!!	getOpenBinary() : BID
+		return experiment.getTaskSequence().getOpenBinary();
+!!!200834.java!!!	closeBinary() : void
+		experiment.getTaskSequence().closeBinary();
+!!!200962.java!!!	createNewRun() : RID
+		RID id = getNextRunID();
+		experiment.getTaskSequence().openRun(id);
+		return id;
+!!!201090.java!!!	getOpenRun() : RID
+		return experiment.getTaskSequence().getOpenRun();
+!!!201218.java!!!	closeRun() : void
+		experiment.getTaskSequence().closeRun();
+!!!201346.java!!!	addWithDependency(inout task : TaskDescriptor, in dependency : String, in checkPoint : String) : void
+		task.addDependencyCheckPoint(new Dependency(dependency,checkPoint));
+		addTask(task);
+!!!201474.java!!!	addTask(inout task : TaskDescriptor) : void
+		lastAdded = task;
+		experiment.getTaskSequence().addTask(task);
+!!!201602.java!!!	addAfterLast(inout task : TaskDescriptor) : void
+		task.addDependencyCheckPoint(success(lastAdded.getTaskTid()));
+		addTask(task);
+!!!201730.java!!!	addResultsMapping(in role : String, in host : String) : void
+		getExperiment().addRoleMapping(role,host);
+!!!201858.java!!!	getLastAdded() : TaskDescriptor
+		return lastAdded;
+!!!201986.java!!!	lookupBeenService(in serviceName : String) : Remote
+		try {
+			return bm.lookup(serviceName);
+		} catch (BenchmarkManagerException e) {
+			throw new GeneratorException("Service lookup failed",e);
+		}
+!!!202114.java!!!	setupResults() : void
+		registerResults(experiment.getRoles());
+!!!202242.java!!!	checkRemoteReferences() : void
+		if (getSoftwareRepository() == null) {
+			throw new GeneratorException("Software repository reference invalid");
+		}
+		if (getResultsRepository() == null) {
+			throw new GeneratorException("Results repository reference invalid");
+		}
+		
+		if (getHostManager() == null) {
+			throw new GeneratorException("Host manager reference invalid");
+		}
+!!!202370.java!!!	getNextTID() : TID
+		return bm.getIDManager().getNext(TID.class);
+!!!202498.java!!!	getActiveRole() : String
+		return this.activeRole;
+!!!202626.java!!!	success(in taskId : String) : Dependency
+		return new Dependency(taskId, Task.CHECKPOINT_NAME_FINISHED, Task.EXIT_CODE_SUCCESS);
+!!!202754.java!!!	error(in taskId : String) : Dependency
+		return new Dependency(taskId, Task.CHECKPOINT_NAME_FINISHED, Task.EXIT_CODE_ERROR);
+!!!202882.java!!!	finish(in taskId : String) : Dependency
+		return new Dependency(taskId, Task.CHECKPOINT_NAME_FINISHED, null);
+!!!203010.java!!!	generateLogCollection() : void
+			TaskDescriptor logUploadTask = createTaskDescriptor("log-upload");
+		
+			TaskDescriptor[] allTasks = experiment.getTaskSequence().getAllTasks();		
+		
+			for (TaskDescriptor taskIterator : allTasks) {
+				logUploadTask.addDependencyCheckPoint(finish(taskIterator.getTaskTid()));
+			}
+			
+			logUploadTask.addTaskProperties("analysis.id", getExperiment().getAnalysis().toString());
+			logUploadTask.addTaskProperties("experiment.id", getExperiment().getID().toString());
+			addTask(logUploadTask);
+!!!203138.java!!!	dumpProperties() : void
+		String[] properties = experiment.getPropertyNames();
+		String logMessage = "Benchmark properties:\n";
+		for (String property : properties) {
+			logMessage += "  " + property + "=" + experiment.getProperty(property) + "\n";
+		}
+		logDebug(logMessage);

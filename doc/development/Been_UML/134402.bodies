@@ -1,0 +1,5 @@
+class BRID
+!!!264578.java!!!	BRID(in value : long)
+		super(value);
+!!!264834.java!!!	valueOf(in s : String) : BRID
+		return new BRID(Long.parseLong(s));

@@ -1,0 +1,67 @@
+class CheckAndConvertRubisTask
+!!!650370.java!!!	CheckAndConvertRubisTask()
+		super();
+!!!650498.java!!!	checkAndConvertOneRun(inout bid : BID, inout rid : RID, in sourceName : String, in destinatioName : String, in resultsRole : String, in suiteName : String, in sampleCount : long) : boolean
+				
+		PrintWriter resultsWriter;		
+		String line;
+		int counter;
+	
+		BufferedReader sourceReader = null;
+		Long value = 0L;
+
+		counter = 0;
+		
+
+		
+		for (int tableIndex = 0; tableIndex < TABLE_COUNT; tableIndex++) {
+			
+			resultsWriter = new PrintWriter(new BufferedWriter(new FileWriter(destinatioName + "-" + tableIndex)));
+			
+			try {
+				sourceReader = new BufferedReader(new FileReader(new File(sourceName + File.separator 
+						+ "state-" + tableIndex + "-times.txt")));
+			} catch (IOException e) {
+				logError("Error opening results file : " + sourceName + File.separator
+						+ "state-" + tableIndex + "-times.txt");
+				notifyTableCreation(tableIndex, TABLE_COUNT , bid, rid, false);
+				return false;
+			}		
+
+			try {
+				
+				while ((line = sourceReader.readLine()) != null) {
+					
+					try {
+						value = Long.valueOf(line) / GRANULARITY;
+						resultsWriter.println(value);
+					} catch (NumberFormatException e) {													
+						value = Long.valueOf(INVALID_VALUE);
+					} 										
+				}
+
+			} catch (IOException e) {
+				
+				e.printStackTrace();
+				logError("I/O error converting " + sourceName + " - table number " + tableIndex + ".");
+				notifyTableCreation(tableIndex, TABLE_COUNT , bid, rid, false);
+				return false; // Run is corrupted
+				
+			} finally {				
+				resultsWriter.close();				
+			}
+			
+			PrintWriter metaWriter = new PrintWriter(new BufferedWriter(new FileWriter(destinatioName + "-" 
+					+ tableIndex + ".meta")));
+
+			metaWriter.println(suiteName);
+			metaWriter.println(TABLE_NAMES[tableIndex]);
+			metaWriter.close();
+		
+			notifyTableCreation(tableIndex, TABLE_COUNT , bid, rid, true);
+			
+		}
+
+		return true;
+!!!650626.java!!!	getCrashList(in srcName : String) : List<String>
+		return Arrays.asList(new String[] { null });		

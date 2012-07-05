@@ -1,0 +1,39 @@
+class LoadDatabaseEntry
+!!!432002.java!!!	LoadDatabaseEntry(in contextId : String, in taskId : String, in fileName : String)
+			
+			MiscUtils.verifyStringParameterBoth(contextId, "contextId");
+			MiscUtils.verifyStringParameterBoth(taskId, "taskId");
+			MiscUtils.verifyStringParameterBoth(fileName, "fileName");
+			
+			this.contextId = contextId;
+			this.taskId = taskId;
+			this.fileName = fileName;
+!!!432130.java!!!	LoadDatabaseEntry(inout node : Node)
+			
+			parseXMLNode(node);
+!!!432258.java!!!	getContextId() : String
+			
+			return contextId;
+!!!432386.java!!!	getFileName() : String
+			
+			return fileName;
+!!!432514.java!!!	getTaskId() : String
+			
+			return taskId;
+!!!432642.java!!!	exportAsElement(inout document : Document) : Element
+
+			Element element = document.createElement(getXMLNodeName());
+			
+			element.setAttribute(ATTRIBUTE_CONTEXT_ID, contextId);
+			element.setAttribute(ATTRIBUTE_TASK_ID, taskId);
+			element.setAttribute(ATTRIBUTE_FILE_NAME, fileName);
+			
+			return element;
+!!!432770.java!!!	getXMLNodeName() : String
+
+			return XML_NODE_NAME;
+!!!432898.java!!!	parseXMLNode(inout node : Node) : void
+			
+			contextId = XMLHelper.getAttributeValueByName(ATTRIBUTE_CONTEXT_ID, node);
+			taskId = XMLHelper.getAttributeValueByName(ATTRIBUTE_TASK_ID, node);
+			fileName = XMLHelper.getAttributeValueByName(ATTRIBUTE_FILE_NAME, node);

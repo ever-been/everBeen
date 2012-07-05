@@ -1,0 +1,55 @@
+class PackageDownloadThread
+!!!620546.java!!!	getHandle() : DownloadHandle
+			return handle;
+!!!620674.java!!!	getFilename() : String
+			return filename;
+!!!620802.java!!!	getIp() : InetAddress
+			return ip;
+!!!620930.java!!!	getPort() : int
+			return port;
+!!!621058.java!!!	PackageDownloadThread(inout handle : DownloadHandle, in filename : String, inout ip : InetAddress, in port : int)
+			super();
+			this.handle = handle;
+			this.filename = filename;
+			this.ip = ip;
+			this.port = port;
+			setStatus(DownloadStatus.INITIALIZING);
+!!!621186.java!!!	setStatus(inout status : DownloadStatus) : void
+			downloadStatuses.put(handle, status);
+!!!621314.java!!!	downloadPackage(inout file : File) : void
+			byte[] buffer = new byte[DOWNLOAD_BUFFER_SIZE];
+			int bytesRead;
+			Socket socket = new Socket(ip, port);
+			try {
+				OutputStream outputStream = new BufferedOutputStream(
+					socket.getOutputStream(),
+					DOWNLOAD_BUFFER_SIZE
+				);
+				InputStream inputStream = new BufferedInputStream(
+					new FileInputStream(file.getPath()),
+					DOWNLOAD_BUFFER_SIZE
+				);
+				try {
+					while ((bytesRead = inputStream.read(buffer)) != -1) {
+						outputStream.write(buffer, 0, bytesRead);     
+					}
+				} finally {
+					outputStream.close();
+					inputStream.close();
+				}
+			} finally {
+				socket.close();
+			}                 
+!!!621442.java!!!	run() : void
+			setStatus(DownloadStatus.DOWNLOADING);
+			File packageFile = new File(dataDir + File.separator + filename);
+			try {
+				downloadPackage(packageFile);
+				setStatus(DownloadStatus.SUCCEEDED);
+			} catch (UnknownHostException e) {
+				setStatus(DownloadStatus.ERROR);
+				logError(e.getMessage());
+			} catch (IOException e) {
+				setStatus(DownloadStatus.ERROR);
+				logError(e.getMessage());
+			}

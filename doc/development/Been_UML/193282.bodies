@@ -1,0 +1,144 @@
+class RoleList
+!!!575746.java!!!	RoleList()
+		roleTable = new ArrayList<RoleItem>();
+		this.lastItem = 0;
+!!!575874.java!!!	getRolesTable() : RoleItem
+		return roleTable.toArray(new RoleItem[] {});
+!!!576002.java!!!	RoleList(in filename : String)
+				
+		String[] lineTokens;
+		String line;
+		BufferedReader inputReader;
+		
+		try {
+			inputReader = new BufferedReader(new FileReader(filename));
+		} catch (FileNotFoundException e) {			
+			roleTable = new ArrayList<RoleItem>();
+			return;
+		}
+				
+		roleTable = new ArrayList<RoleItem>();
+		
+		while ((line = inputReader.readLine()) != null) {								
+			lineTokens = line.split(ASCII_TAB);
+			try {
+				if (lineTokens.length == 3) { 					
+					addItem(new Integer(lineTokens[0]), lineTokens[1], lineTokens[2]);					
+				} else {
+					throw new IOException("Invalid format in roles table, file " + filename + ".");
+				}
+			} catch (IndexOutOfBoundsException e) {
+				throw new IOException("Invalid format in table, file " + filename + ".");
+			}
+		}
+				
+		inputReader.close();
+!!!576130.java!!!	store(in filename : String) : void
+		
+		int i;		
+		PrintWriter outputWriter;
+		
+		outputWriter = new PrintWriter(new BufferedWriter(new FileWriter(filename)));
+		
+		for (i = 0; i < roleTable.size(); i++) {
+			outputWriter.println(getItemKey(i) + ASCII_TAB 
+					+ getItemRoleName(i) + ASCII_TAB + getItemHostName(i));		
+		}
+		
+		outputWriter.close();
+!!!576258.java!!!	getItemCount() : int
+		return roleTable.size();
+!!!576386.java!!!	addItem(in index : long, in roleName : String, in hostName : String) : void
+		
+		roleTable.add(new RoleItem(index, roleName, hostName));
+		lastItem++;
+!!!576514.java!!!	addItem(inout item : RoleItem) : void
+		
+		roleTable.add(item);
+		lastItem++;
+!!!576642.java!!!	getItem(in index : int) : RoleItem
+		return roleTable.get(index);
+!!!576770.java!!!	deleteItemByKey(in key : long) : void
+		
+		int i = 0;		
+		try {		
+			while (getItemKey(i) != key) {
+				i++;
+				if (i == lastItem) {
+					return; // not found
+				}
+			}
+		} catch (IndexOutOfBoundsException e) {
+			return; //not found
+		}
+		
+		roleTable.remove(i);
+!!!576898.java!!!	getItemKey(in index : int) : long
+		return roleTable.get(index).getKey();
+!!!577026.java!!!	getItemRoleName(in index : int) : String
+		return roleTable.get(index).getRoleName();
+!!!577154.java!!!	getItemHostName(in index : int) : String
+		return roleTable.get(index).getHostName();
+!!!577282.java!!!	getItemIndex(in key : long) : int
+		
+		if (roleTable == null) {
+			Logger.logError("While trying to read long " + key + ", encountered " 
+					+ "null!");
+			assert false : "Table unitialized!";
+			return -1; 			
+		}
+		
+		int i = 0;
+		
+		try {		
+			while (getItemKey(i) != key) {
+				i++;
+				if (i == lastItem) {
+					return -1;
+				}
+			}
+		} catch (IndexOutOfBoundsException e) {
+			return -1;
+		}
+		
+		return i;
+!!!577410.java!!!	getItemIndexByHostname(in hostName : String) : int
+		
+		if (roleTable == null) {
+			Logger.logError("While trying to search for " + hostName + "in metadata, encountered " 
+					+ "null roles table!");
+			assert false : "Table unitialized!";
+			return -1; 			
+		}
+		
+		int i = 0;
+		
+		try {		
+			while (!getItemHostName(i).equals(hostName)) {
+				i++;
+				if (i == lastItem) {
+					return -1;
+				}
+			}
+		} catch (IndexOutOfBoundsException e) {
+			return -1;
+		}
+		
+		return i;
+!!!577538.java!!!	setItemByKey(in key : long, in roleName : String, in hostName : String) : boolean
+		int i = 0;
+		
+		while (getItemKey(i) != key) {
+			i++;
+			if (i == lastItem) {
+				return false; 
+			}
+		}
+		
+		try {
+			roleTable.set(i, new RoleItem(key, roleName, hostName));
+		} catch (IndexOutOfBoundsException e) {
+			return false;
+		}
+				
+		return true; 		

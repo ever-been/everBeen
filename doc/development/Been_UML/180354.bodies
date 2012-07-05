@@ -1,0 +1,118 @@
+class ValueInteger
+!!!455682.java!!!	ValueInteger(inout node : Node)
+		
+		parseXMLNode(node);
+		unit = null;
+!!!455810.java!!!	ValueInteger(inout node : Node, in unit : String)
+		
+		parseXMLNode(node);
+		this.unit = unit;
+!!!455938.java!!!	ValueInteger()
+		
+		value = 0;
+		unit = null;
+!!!456066.java!!!	ValueInteger(inout v : ValueDouble)
+		
+		value = v.intValue();
+		unit = v.getUnit();
+!!!456194.java!!!	ValueInteger(in newValue : long)
+		
+		value = newValue;
+		unit = null;
+!!!456322.java!!!	ValueInteger(in newValue : long, in unit : String)
+		
+		value = newValue;
+		this.unit = unit;
+!!!456450.java!!!	toString() : String
+
+		return String.valueOf(value);
+!!!456578.java!!!	compareTo(inout vb : ValueInteger) : int
+
+		return (int) (value - vb.value); 
+!!!456706.java!!!	equals(inout vc : Object) : boolean
+		
+		if (vc instanceof ValueInteger) {
+			return equals((ValueInteger) vc);
+		} else {
+			return false;
+		}
+!!!456834.java!!!	equals(inout v : ValueInteger) : boolean
+		
+		return v.value == value;
+!!!456962.java!!!	equals(in l : long) : boolean
+		
+		return value == l;
+!!!457090.java!!!	greaterThan(inout o : Object) : boolean
+		
+		if (o instanceof ValueInteger) {
+			return greaterThan((ValueInteger) o);
+		} else if (o instanceof ValueDouble) {
+			return greaterThan(new ValueInteger((ValueDouble) o));
+		} else {
+			return false;
+		}
+!!!457218.java!!!	greaterThan(inout vb : ValueInteger) : boolean
+		
+		return value > vb.value;
+!!!457346.java!!!	lessThan(inout o : Object) : boolean
+		
+		if (o instanceof ValueInteger) {
+			return lessThan((ValueInteger) o);
+		} else if (o instanceof ValueDouble) {
+			return lessThan(new ValueInteger((ValueDouble) o));
+		} else {
+			return false;
+		}
+!!!457474.java!!!	lessThan(inout vb : ValueInteger) : boolean
+		
+		return value < vb.value;
+!!!457602.java!!!	hashCode() : int
+		
+		return (new Long(value)).hashCode();
+!!!457730.java!!!	parseXMLNode(inout node : Node) : void
+		
+		if (!node.getNodeName().equals(getXMLNodeName())) {
+			throw new InputParseException("Node does not contain integer data. Node name is \""
+					+ node.getNodeName() + "\".");
+		}
+
+		String attr = XMLHelper.getAttributeValueByName("value", node);
+
+		try {
+			value = Long.valueOf(attr).longValue();
+		} catch (NumberFormatException e) {
+			throw new InputParseException("Invalid number \"" + attr + "\".", e);
+		}
+!!!457858.java!!!	exportAsElement(inout document : Document) : Element
+		
+		/*
+		 * Resulting node:
+		 * 
+		 * <integer value="123456"/>
+		 */
+		Element element = document.createElement(getXMLNodeName());
+		
+		element.setAttribute("value", String.valueOf(value));
+		
+		return element;
+!!!457986.java!!!	getXMLNodeName() : String
+		
+		return "integer";
+!!!458114.java!!!	longValue() : long
+		
+		return value;
+!!!458242.java!!!	doubleValue() : double
+		
+		return value;
+!!!458370.java!!!	intValue() : int
+		
+		return (int) value;
+!!!458498.java!!!	floatValue() : float
+		
+		return value;
+!!!458626.java!!!	setValue(in value : long) : void
+		
+		this.value = value;
+!!!458754.java!!!	getUnit() : String
+		
+		return unit;

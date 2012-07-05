@@ -1,0 +1,11 @@
+name	Binary 0000
+comment	<binary comment>	
+created on	15-February-2004 17:21 pm	
+expected runs	4
+valid runs	3
+crashed runs	1
+runs	4
+complete	true
+last valid run idx	4
+last crashed run idx	0
+valid	true

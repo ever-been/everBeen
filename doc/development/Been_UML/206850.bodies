@@ -1,0 +1,15 @@
+class TaskData
+!!!722050.java!!!	TaskData(inout taskDescriptor : TaskDescriptor)
+		this.taskDescriptor = taskDescriptor;
+!!!722178.java!!!	setTaskInterface(inout taskInterface : TaskInterface) : void
+		this.taskInterface = taskInterface;
+!!!722306.java!!!	getTaskDescriptor() : TaskDescriptor
+		return this.taskDescriptor;
+!!!722434.java!!!	getTaskInterface() : TaskInterface
+		return this.taskInterface;
+!!!722562.java!!!	clone() : TaskData
+		TaskData taskData = (TaskData) super.clone();
+		taskData.taskDescriptor = this.taskDescriptor;
+		taskData.taskInterface = this.taskInterface;
+		
+		return taskData;

@@ -1,0 +1,581 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sect2
+	xml:id="been.user.cli.reference.results"
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>Results Module</title>
+	<subtitle>Datasets, Triggers and Files</subtitle>
+	
+	<para>The Results Module controls the <glossterm>Results Repository</glossterm>. It can manipulate datasets and triggers
+	and store and retrieve files.</para>
+
+	<para>Module identifier: <command>results</command></para>
+
+	<table xml:id="been.user.cli.reference.results.table" tocentry="1" frame="none">
+		<title>Actions of the Results Module</title>
+
+		<tgroup cols="3" align="left" colsep="0" rowsep="0">
+			<colspec colnum="1" colname="action" colwidth="3*"/>
+			<colspec colnum="2" colname="option" colwidth="3*"/>
+			<colspec colnum="3" colname="desc" colwidth="9*"/>
+			
+			<tbody valign="top">
+			
+				<!-- analysis-list -->
+				<row>
+					<entry morerows="2">
+						<command>analysis-list</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Lists analyses that have datasets stored in the
+						<glossterm>Results Repository</glossterm> and dataset names.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>pattern</option></emphasis><footnote
+						xml:id="been.user.cli.reference.results.regexp">
+						<para>Expressions recognized by
+						<classname>java.util.regex.Pattern</classname> are accepted.
+						When unspecified, no filtering will take place.</para></footnote>
+					</entry>
+					<entry>
+						A regular expression to filter analysis names.
+					</entry>
+				</row>
+				<row>
+					<entry><emphasis role="strong"><option>STDOUT</option></emphasis></entry>
+					<entry>
+						<code>[name] [[dataset_name],...]</code>
+					</entry>
+				</row>
+				
+				<!-- dataset-list -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="3">
+						<command>dataset-list</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Lists datasets of an analysis stored in the
+						<glossterm>Results Repository</glossterm> and their columns.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>analysis</option></emphasis><footnote
+						xml:id="been.user.cli.reference.results.mandatory">
+							<para>This parameter is mandatory.</para>
+						</footnote>
+					</entry>
+					<entry>
+						Name of the analysis.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>pattern</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.results.regexp"/>
+					</entry>
+					<entry>
+						A regular expression to filter analysis names.
+					</entry>
+				</row>
+				<row>
+					<entry><emphasis role="strong"><option>STDOUT</option></emphasis></entry>
+					<entry>
+						<code>[name] [(*)</code><footnote>
+							<para>Key tags (indexed columns) are marked with an asterisk
+							(<code>*</code>).</para>
+						</footnote><code>[column_name]:[column_type],...]</code>
+					</entry>
+				</row>
+				
+				<!-- dataset-dump -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="3">
+						<command>dataset-dump</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Dumps the definition (metadata, schema) of a dataset as XML.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>analysis</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.results.mandatory"/>
+					</entry>
+					<entry>
+						Name of the analyis.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>dataset</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.results.mandatory"/>
+					</entry>
+					<entry>
+						Name of the dataset.
+					</entry>
+				</row>
+				<row>
+					<entry><emphasis role="strong"><option>STDOUT</option></emphasis></entry>
+					<entry>
+						<code>"http://been.mff.cuni.cz/resultsrepositoryng/dataset":dataset</code>
+					</entry>
+				</row>
+				
+				<!-- dataset-data -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="10">
+						<command>dataset-data</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Outputs the data (rows) form a dataset. Either XML or a plain text format
+						can be used.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>STDIN</option></emphasis><footnote>
+							<para>Standard input is optional. When no condition structure is sent,
+							there will be no restriction on the retrieved rows.</para>
+						</footnote>
+					</entry>
+					<entry>
+						<code>"http://been.mff.cuni.cz/resultsrepositoryng/condition":condition</code>
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>analysis</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.results.mandatory"/>
+					</entry>
+					<entry>
+						Name of the analyis.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>dataset</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.results.mandatory"/>
+					</entry>
+					<entry>
+						Name of the dataset.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>from</option></emphasis><footnote>
+						<para>When unspecified, there will be no lower bound.</para></footnote>
+					</entry>
+					<entry>
+						Lower bound on serial numbers of rows to output.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>to</option></emphasis><footnote>
+						<para>When unspecified, there will be no upper bound.</para></footnote>
+					</entry>
+					<entry>
+						Upper bound on serial numbers of rows to output.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<option>plain</option>
+					</entry>
+					<entry>
+						Output the data in plain text instead of XML.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<option>names</option><footnote>
+							<para>The <option>names</option> flag can only be used together with
+							the <option>plain</option> flag.</para>
+						</footnote>
+					</entry>
+					<entry>
+						Prefix the values with column names.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>STDOUT</option></emphasis><footnote>
+							<para>The XML output is generated when neither <option>plain</option>
+							nor <option>names</option> flags are present.</para>
+						</footnote>
+					</entry>
+					<entry>
+						<code>"http://been.mff.cuni.cz/resultsrepositoryng/tuplit":tuplit</code>
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>STDOUT</option></emphasis><footnote>
+							<para>This output is generated when the <option>plain</option> flag
+							is present and the <option>names</option> flag is absent.</para>
+						</footnote>
+					</entry>
+					<entry>
+						<code>[serial] [[value] ...]</code>
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>STDOUT</option></emphasis><footnote>
+							<para>This output is generated whe both the <option>plain</option> and
+							<option>names</option> flags are present.</para>
+						</footnote>
+					</entry>
+					<entry>
+						<code>serial:[serial] [[name]:[value] ...]</code>
+					</entry>
+				</row>
+				
+				<!-- dataset-store -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="4">
+						<command>dataset-store</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Stores new records (rows) into a dataset based on the supplied XML data.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>STDIN</option></emphasis>
+					</entry>
+					<entry>
+						<code>"http://been.mff.cuni.cz/resultsrepositoryng/tuplit":tuplit</code>
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>analysis</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.results.mandatory"/>
+					</entry>
+					<entry>
+						Name of the analyis.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>dataset</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.results.mandatory"/>
+					</entry>
+					<entry>
+						Name of the dataset.
+					</entry>
+				</row>
+				<row>
+					<entry><emphasis role="strong"><option>STDOUT</option></emphasis></entry>
+					<entry>
+						<code>[serial]</code>
+					</entry>
+				</row>
+				
+				<!-- dataset-create -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="1">
+						<command>dataset-create</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Creates a new dataset based on the supplied XML data.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>STDIN</option></emphasis>
+					</entry>
+					<entry>
+						<code>"http://been.mff.cuni.cz/resultsrepositoryng/dataset":dataset</code>
+					</entry>
+				</row>
+				
+				<!-- dataset-delete -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="2">
+						<command>dataset-delete</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Deletes a dataset from the <glossterm>Results Repository</glossterm>.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>analysis</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.results.mandatory"/>
+					</entry>
+					<entry>
+						Name of the analyis.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>dataset</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.results.mandatory"/>
+					</entry>
+					<entry>
+						Name of the dataset.
+					</entry>
+				</row>
+				
+				<!-- trigger-list -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="4">
+						<command>trigger-list</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Lists triggers on a dataset stored in the
+						<glossterm>Results Repository</glossterm> and details about them.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>analysis</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.results.mandatory"/>
+					</entry>
+					<entry>
+						Name of the analysis.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>dataset</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.results.mandatory"/>
+					</entry>
+					<entry>
+						Name of the dataset.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>pattern</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.results.regexp"/>
+					</entry>
+					<entry>
+						A regular expression to filter evaluator names.
+					</entry>
+				</row>
+				<row>
+					<entry><emphasis role="strong"><option>STDOUT</option></emphasis></entry>
+					<entry>
+						<code>
+							[analysis_name] [dataset_name] [evaluator_name] [last_serial]
+							[trigger_uuid]
+						</code>
+					</entry>
+				</row>
+				
+				<!-- trigger-dump -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="3">
+						<command>trigger-dump</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Dumps the structure of a trigger and the associated task descriptor
+						and condition to XML.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>uuid</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.results.mandatory"/>
+					</entry>
+					<entry>
+						UUID of the trigger in the standard string form.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<option>binary</option>
+					</entry>
+					<entry>
+						Serialize patterns from comparison and equality conditions into
+						base64 instead of using the <methodname>toString()</methodname> output.
+					</entry>
+				</row>
+				<row>
+					<entry><emphasis role="strong"><option>STDOUT</option></emphasis></entry>
+					<entry>
+						<code>"http://been.mff.cuni.cz/resultsrepositoryng/trigger":trigger</code>
+					</entry>
+				</row>
+				
+				<!-- trigger-create -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="2">
+						<command>trigger-create</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Creates a new trigger based on the supplied XML data.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>STDIN</option></emphasis>
+					</entry>
+					<entry>
+						<code>"http://been.mff.cuni.cz/benchmarkmanagerng/trigger":trigger</code>
+					</entry>
+				</row>
+				<row>
+					<entry><emphasis role="strong"><option>STDOUT</option></emphasis></entry>
+					<entry>
+						<code>[trigger_uuid]</code>
+					</entry>
+				</row>
+				
+				<!-- trigger-delete -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="4">
+						<command>trigger-delete</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Deletes a trigger from the <glossterm>Results Repository</glossterm>.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>analysis</option></emphasis><footnote
+						xml:id="been.user.cli.reference.results.idtrigger">
+							<para>Either <option>uuid</option> or (<option>analysis</option>,
+							<option>dataset</option>, <option>evaluator</option>) must be
+							specified.</para>
+						</footnote><footnote xml:id="been.user.cli.reference.results.uniqtrigger">
+							<para>If multiple triggers are associated with (<option>analysis</option>,
+							<option>dataset</option>, <option>evaluator</option>), all of them
+							will be deleted.</para>
+						</footnote>
+					</entry>
+					<entry>
+						Name of the analysis.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>dataset</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.results.idtrigger"/><footnoteref
+						linkend="been.user.cli.reference.results.uniqtrigger"/>
+					</entry>
+					<entry>
+						Name of the dataset.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>evaluator</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.results.idtrigger"/><footnoteref
+						linkend="been.user.cli.reference.results.uniqtrigger"/>
+					</entry>
+					<entry>
+						Name of the evaluator.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>uuid</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.results.idtrigger"/>
+					</entry>
+					<entry>
+						UUID of the trigger in the standard string form.
+					</entry>
+				</row>
+				
+				<!-- file-upload -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="2">
+						<command>file-upload</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Creates a new file from the data on standard input.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>STDIN</option></emphasis>
+					</entry>
+					<entry>
+						<code>Data to store in a new file.</code>
+					</entry>
+				</row>
+				<row>
+					<entry><emphasis role="strong"><option>STDOUT</option></emphasis></entry>
+					<entry>
+						<code>[file_uuid]</code>
+					</entry>
+				</row>
+				
+				<!-- file-download -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="2">
+						<command>file-download</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Writes a file stored in the <glossterm>Results Repository</glossterm>
+						to standard output.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>uuid</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.results.mandatory"/>
+					</entry>
+					<entry>
+						UUID of the file in the standard string form.
+					</entry>
+				</row>
+				<row>
+					<entry><emphasis role="strong"><option>STDOUT</option></emphasis></entry>
+					<entry>
+						<code>Data contained in the file.</code>
+					</entry>
+				</row>
+				
+				<!-- file-delete -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="1">
+						<command>file-delete</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Deletes a file from the <glossterm>Results Repository</glossterm>.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>uuid</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.results.mandatory"/>
+					</entry>
+					<entry>
+						UUID of the file in the standard string form.
+					</entry>
+				</row>
+				
+				<row><entry namest="action" nameend="desc"/></row>
+			</tbody>
+		</tgroup>
+	</table>
+
+	<xi:include href="../examples/results.xml"/>
+</sect2>

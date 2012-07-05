@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sect2
+	xml:id="been.user.cli.reference.dummy"
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>Dummy Module</title>
+	<subtitle>Testing the Command Line Interface</subtitle>
+
+	<para>The Dummy Module does not control any particular BEEN component. It is useful to test
+	the Command Line Interface and get familiar with the way it handles command line parameters
+	and flags.</para>
+
+	<para>Module identifier: <command>dummy</command></para>
+	
+	<table xml:id="been.user.cli.reference.dummy.table" tocentry="1" frame="none">
+		<title>Actions of the Dummy Module</title>
+
+		<tgroup cols="3" align="left" colsep="0" rowsep="0">
+			<colspec colnum="1" colname="action" colwidth="3*"/>
+			<colspec colnum="2" colname="option" colwidth="3*"/>
+			<colspec colnum="3" colname="desc" colwidth="9*"/>
+			
+			<tbody valign="top">
+			
+				<!-- *** -->
+				<row>
+					<entry morerows="5">
+						<command>***</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Any action name can be specified.
+					</entry>
+				</row>
+				<row>
+					<entry><emphasis role="strong"><option>STDIN</option></emphasis></entry>
+					<entry>
+						An optional standard input. When present, size of the input in bytes
+						will be sent back.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>***</option></emphasis>
+					</entry>
+					<entry>
+						Any number of arbitrary parameters can be specified.
+					</entry>
+				</row>
+				<row>
+					<entry><option>***</option></entry>
+					<entry>
+						Any number of arbitrary flags can be specified.
+					</entry>
+				</row>
+				<row>
+					<entry><emphasis role="strong"><option>STDOUT</option></emphasis></entry>
+					<entry>
+						Command line parameters and flags will be sent back.
+					</entry>
+				</row>
+				<row>
+					<entry><emphasis role="strong"><option>STDERR</option></emphasis></entry>
+					<entry>
+						Command line parameters and flags will be sent back.
+					</entry>
+				</row>
+								
+				<row><entry namest="action" nameend="desc"/></row>
+			</tbody>
+		</tgroup>
+	</table>
+
+	<xi:include href="../examples/dummy.xml"/>
+</sect2>

@@ -1,0 +1,20 @@
+class DownloadThread
+!!!630402.java!!!	DownloadThread(inout socketChan : ServerSocketChannel, inout outputChannel : WritableByteChannel)
+		this.servSockChan = socketChan;
+		this.outputChannel = outputChannel;
+!!!630530.java!!!	run() : void
+		try {
+			SocketChannel chan = servSockChan.accept();
+			chan.configureBlocking(true);
+			ByteBuffer buf = ByteBuffer.allocate(1024);
+			while (chan.read(buf) > 0) {
+				buf.flip();
+				outputChannel.write(buf);
+				buf.clear();
+			}
+			chan.close();
+		} catch (Exception e) {
+			this.storedException = e;
+		}
+!!!630658.java!!!	getStoredException() : Exception
+		return(storedException);

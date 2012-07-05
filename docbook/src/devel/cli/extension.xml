@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sect1
+	xml:id="been.devel.cli.extension"
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>Extending the CLI</title>
+	
+	<para>The Command Line Interface has two main extension points. You can implement new
+	<glossterm baseform="module">modules</glossterm> and add
+	<glossterm baseform="action">actions</glossterm> to existing modules.</para>
+	
+	<sect2>
+		<title>Implementing a Module</title>
+		
+		<para>The <classname>DummyModule</classname> provides a simple overview of the API that
+		needs to be implemented. However, it does not respect the standard layout and coding
+		conventions used in all other modules. The <classname>MetaModule</classname> class is a
+		good piece of code to start with when implementing your own modules.</para>
+		
+		<para>The most important thing that needs to be done is populating the static mapping of
+		action names to anonymous inner classes. The module-level action handling method is just a
+		dispatcher that finds an action instance and runs its local hander. It can be left
+		unmodified. The second most important task of a module implementor is to maintain
+		the enumeration of error messages nested in the module class and used by actions to report
+		errors.</para>
+		
+		<para>You should carefully consider which shared data structures will be dynamic (created
+		for each module instance) and which will be static. In general, all thread-safe data
+		structures should be static, especially for performance reasons. Other shared data
+		structures (if any) should be dynamic.</para>
+		
+		<para>Module instances are pooled and reused. Each module must implement a method that
+		restores its default state. It should modify the module instance so that it cannot be
+		distinguished from a new one. When some of your actions change the state of dynamic module
+		instance fields, this is a good place to restore it. Note that JAXB marshallers and
+		unmarshallers are reusable, which means you need not recreate them or restore their
+		state.</para>
+	</sect2>
+	
+	<sect2>
+		<title>Implementing an Action</title>
+		
+		<para>An action is just an item in a static map. By convention, actions are implemented
+		as anonymous inner classes in static initializers of module classes.</para>
+		
+		<para>When implementing the action handler method, make sure you verify the input parameters
+		and flags carefully. The abstract ancestor of action classes contains powerful helper
+		methods for this purpose. All actions use them to verify that required parameters are
+		present and all flags and parameters are known. Unknown flags and parameters might result
+		from a typo.</para>
+		
+		<para>You should maintain and extend the enumeration of error messages contained in the
+		module class when adding actions. There are some simple rules of thumb when reporting
+		errors.</para>
+		
+		<para>First, provide as much information as possible. The constructors of
+		<classname>ModuleSpecificException</classname> are designed for that. When re-reporting an
+		exception obtained from the component you control, always pass a reference to it. The
+		CLI core runtime will print out messages from the whole exception chain, which makes both
+		debugging and normal work much simpler. Whenever you know the parameter (or more generally
+		the piece of string data) that caused the error, use it in the exception constructor as
+		well. There are lots of examples throughout the modules code.</para>
+		
+		<para>Second, make all errors distinguishable. When you catch two different exceptions,
+		do not report one single error code for both of them. Just extend the enumeration of error
+		messages to report the problem as precisely as possible.</para>
+		
+		<para>Third, beware of <classname>RuntimeException</classname>s thrown by some old BEEN
+		components. Browse through the code in your IDE, find out whether they can be produced
+		and catch them. The CLI service will exit when such an unknown exception is thrown by
+		a handler method.</para>
+		
+		<para>Forth, report <emphasis role="strong">all</emphasis> errors and failures. Never
+		swallow exceptions. When an I/O error occurs and nothing can be sent back to the command
+		line client, always report it with a <classname>ModuleOutputException</classname>.</para>
+		
+		<para>You always need to verify the input data. When designing JAXB bound
+		classes, include all the integrity constraints you may think of into your XML Schema.
+		When accepting parameters with constrained sets of values (such as numbers), always make
+		sure you report the possible <classname>NumberFormatException</classname>s properly.</para>
+		
+		<para>Do not perform any synchronization on the CLI level. The BEEN component you control
+		exposes a public RMI interface and it should (must) be designed to handle concurrent access.
+		The CLI runtime support takes care of request concurrency, so you should not need to think
+		about it, providing that your modules and actions are implemented correctly. Make
+		<emphasis role="strong">sure</emphasis> your code can never hang or deadlock on the CLI
+		level.</para>
+	</sect2>
+	
+	<sect2>
+		<title>Design Notes</title>
+		
+		<para>The Command Line Interface should provide a complete and standalone interface to the
+		BEEN framework with no complex dependencies (GUI, servlet container). It should be independent
+		of the Web Inerface or other control interfaces.</para>
+		
+		<para>CLI should not implement any functionality on its own. Instead, inconvenient data
+		structures and interfaces from the old BEEN framework should be modified so that control
+		by CLI is as straightforward as possible. Interfaces should be designed with RMI and
+		concurrency in mind.</para>
+		
+		<para>The command line client binary is meant to be started repeatedly by shell scripts.
+		It is very important to keep its code small and fast. It should be portable (at least)
+		across POSIX compliant systems.</para>
+		
+		<para>CLI modules need not be thread-safe. There is always one module instance per request.
+		When multiple requests are handled by the same module, multiple instances will be created
+		for them (and pooled for later reuse). However, it is important to find out whether
+		shared static data structures in modules are thread-safe as well. Take care when using
+		JAXB. JAXB contexts and factories are thread-safe and reusable. JAXB marshallers and
+		unmarshallers are reusable, but <emphasis role="strong">not</emphasis> thread-safe.</para>
+		
+		<para>CLI actions must be thread-safe. In the current implementation, all instances of
+		a module share one static mapping of action intances. The action implementation should
+		be an anomymous inner class. It should contain only immutable and read-only data fields.
+		All shared data structures can be accessed using the module instance reference supplied
+		to the action's handler method. It is guaranteed that the referenced module instance is not
+		manipulated by any other thread when the action's handler is running.</para>
+	</sect2>
+</sect1>

@@ -1,0 +1,62 @@
+class Product
+!!!378242.java!!!	Product(in name : String, in vendor : String, in version : String)
+		
+		super(HostInfoInterface.Objects.APPLICATION, null);
+		
+		this.name = name;
+		this.vendor = vendor;
+		this.version = version;
+		
+		try {
+			putProperty(Properties.NAME, new ValueString(this.name));
+			putProperty(Properties.VENDOR, new ValueString(this.vendor));
+			putProperty(Properties.VERSION, new ValueVersion(this.version));
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+			assert false : "Unable to add properties to the Product.";
+		}
+!!!378370.java!!!	Product(inout prodNode : Node)
+		
+		super(HostInfoInterface.Objects.APPLICATION, null);
+		
+		parseXMLNode(prodNode);
+!!!378498.java!!!	parseXMLNode(inout node : Node) : void
+		
+		name = XMLHelper.getSubNodeValueByName("name", node);
+		vendor = XMLHelper.getSubNodeValueByName("vendor", node);
+		version = XMLHelper.getSubNodeValueByName("version", node);
+		
+		try {
+			putProperty(Properties.NAME, new ValueString(name));
+			putProperty(Properties.VENDOR, new ValueString(vendor));
+			putProperty(Properties.VERSION, new ValueVersion(version));
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+			assert false : "Unable to add properties to the Product.";
+		}
+!!!378626.java!!!	getName() : String
+		
+		return name;
+!!!378754.java!!!	getVendor() : String
+		
+		return vendor;
+!!!378882.java!!!	getVersion() : String
+		
+		return version;
+!!!379010.java!!!	exportAsElement(inout document : Document) : Element
+		
+		Element productElement = document.createElement("product");
+		
+		productElement.appendChild(XMLHelper.writeValueToElement(document, name, "name"));
+		productElement.appendChild(XMLHelper.writeValueToElement(document, vendor, "vendor"));
+		productElement.appendChild(XMLHelper.writeValueToElement(document, version, "version"));
+		
+		return productElement;
+!!!379138.java!!!	toString() : String
+		
+		return "Product{" + name + ", " + vendor + ", " + version + "}";
+!!!379266.java!!!	getXMLNodeName() : String
+		
+		return "product";

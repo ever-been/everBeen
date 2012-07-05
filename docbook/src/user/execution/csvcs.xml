@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sect1
+	xml:id="been.user.execution.csvcs"
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>Core BEEN Services</title>
+
+	<para>BEEN includes several services of key importance. This section lists
+	these core services and instructs user where to find more information about them.</para>
+	
+	<sect2>
+		<title>Software Repository</title>
+		<para>
+		Software Repository is a component that stores BEEN packages containing tasks, pluggable 
+		modules and possibly also other types of packages. It has an interface through which
+		these packages can be searched for, uploaded and downloaded.
+		</para>
+		<para>
+		Software Repository can be started from "Services" tab of WebUI and controlled
+		from "Software Repository" tab.
+		</para>
+		<para>
+		More information about Software Repository you can find in Development Documentation,
+		<xref linkend="been.devel.sr"/>
+		</para>
+	</sect2>
+	
+	<sect2>
+		<title>Host Manager</title>
+		<para>This section has been copied from <biblioref linkend="BUD2" units="page" begin="24"/>.</para>
+		<para>The Host Manager is responsible for maintaining an up-to-date list of all hosts in the
+		benchmarking environment and maintains database which stores data about hardware and
+		software configuration of each host.</para>
+		<para>The Host Manager is also responsible for monitoring availability and utilization of hosts in the
+		environment. It provides tools to generate basic statistics about the utilization of a specific
+		host over time.</para>
+	</sect2>
+	
+	<sect2>
+		<title>Debug Assistant</title>
+		<para>
+		Debug Assistant is a service that simplifies debugging
+		of tasks run by BEEN. It can be started from "Services" tab of WebUI
+		and controlled from "Debug Assistant" tab. 
+		</para>
+		<para>
+		More information about debugging BEEN and tasks run by it you can 
+		find in <xref linkend="been.devel.theory.debug"/>.
+		</para>	
+	</sect2>
+	
+	
+	<sect2>
+		<title>Results Repository</title>
+		<para>
+		The Results Repository service can be started from "Services" tab
+		of WebUI.
+		</para>
+		<para>
+		Detailed information about how to use Results Repository
+		can be found in Development Documentation, <xref linkend="been.devel.rrng"/>
+		 and User Documentation, <xref linkend="been.user.benchmark.results"/>.
+		</para>
+	</sect2>
+	
+	<sect2>
+		<title>Benchmark Manager</title>
+		<para>The Benchmark Manager service can be started from "Services" tab
+		of WebUI.</para>
+		<para>
+		Detailed information about how to use Benchmark Manager
+		can be found in Development Documentation, <xref linkend="been.devel.bmng"/>
+		 and User Documentation, <xref linkend="been.user.benchmark"/>.
+		</para>
+	</sect2>
+	
+	<sect2>
+		<title>Command Line Interface</title>
+		<para>
+		The Command Line Interface service can be started from "Services" tab
+		of WebUI.
+		</para>
+		<para>
+		Detailed information about how to use Command Line Interface
+		can be found in Development Documentation, <xref linkend="been.devel.cli"/>
+		 and User Documentation, <xref linkend="been.user.cli"/>.
+		</para>
+	</sect2>
+</sect1>

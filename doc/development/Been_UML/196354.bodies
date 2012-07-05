@@ -1,0 +1,20 @@
+class RSLPackageQueryCallback
+!!!615042.java!!!	getCondition() : Condition
+		return condition;
+!!!615170.java!!!	match(inout metadata : PackageMetadata) : boolean
+		ContainerProperty context = new PackageMetadataPropertyRoot(metadata);
+		try {
+			condition.check(context);
+		} catch (RSLSemanticException e) {
+			throw new MatchException(e);
+		}
+		return condition.evaluate(context);
+!!!615298.java!!!	RSLPackageQueryCallback(in condition : String)
+		try {
+			this.condition = ParserWrapper.parseString(condition);
+		} catch (ParseException e) {
+			throw new IllegalArgumentException(e);
+		}
+!!!615426.java!!!	RSLPackageQueryCallback(inout condition : Condition)
+		this.condition = condition;
+		

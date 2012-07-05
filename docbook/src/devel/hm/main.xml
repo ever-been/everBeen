@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<chapter
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>Host Manager</title>
+	
+	<para>See the detailed description of the Host Manager and its features in
+	<biblioref linkend="BUD1" units="page" begin="24" end="30"/></para>
+	
+	<para>The WillBeen project extended the Host Manager to provide basic support for
+	Task Manager's load limitation mechanism. See <xref linkend="been.devel.tm.limitation"/>
+	for more details. Some algorithms inside the Host Manager have been optimized and numerous
+	bugs have been fixed.</para>
+	
+<!--<xi:include href="purpose.xml"/>
+	<xi:include href="components.xml"/>
+	<xi:include href="data.xml"/>
+	<xi:include href="api.xml"/>
+	<xi:include href="extension.xml"/>
+	<xi:include href="future.xml"/>-->
+</chapter>

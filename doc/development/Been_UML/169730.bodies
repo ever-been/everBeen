@@ -1,0 +1,91 @@
+class Processor
+!!!376834.java!!!	Processor(in model : String, in vendor : String, in speed : int, in cache : long)
+
+		super(HostInfoInterface.Objects.PROCESSOR, null);
+		
+		this.modelName = model;
+		this.vendorName = vendor;
+		this.speed = speed * 1000000;
+		this.cacheSize = cache * 1024;
+		
+		try {
+			putProperty(Properties.MODEL_NAME, new ValueString(this.modelName));
+			putProperty(Properties.VENDOR_NAME, new ValueString(this.vendorName));
+			putProperty(Properties.SPEED, new ValueInteger(this.speed, "Hz"));
+			putProperty(Properties.CACHE_SIZE, new ValueInteger(this.cacheSize, "B"));
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+			assert false : "Unable to add properties to Processor.";
+		}
+!!!376962.java!!!	Processor(inout procNode : Node)
+		
+		super(HostInfoInterface.Objects.PROCESSOR, null);
+		
+		parseXMLNode(procNode);
+!!!377090.java!!!	parseXMLNode(inout node : Node) : void
+	
+		modelName = XMLHelper.getSubNodeValueByName("model", node);
+		vendorName = vendorIDToVendorName(XMLHelper.getSubNodeValueByName("vendor", node));
+		speed = 1000000L * Long.valueOf(XMLHelper.getSubNodeValueByName("speed", node)).intValue();
+		cacheSize = 1024L * Long.valueOf(XMLHelper.getSubNodeValueByName("l2CacheSize", node)).intValue();		
+
+		try {
+			putProperty(Properties.MODEL_NAME, new ValueString(modelName));
+			putProperty(Properties.VENDOR_NAME, new ValueString(vendorName));
+			putProperty(Properties.SPEED, new ValueInteger(speed, "Hz"));
+			putProperty(Properties.CACHE_SIZE, new ValueInteger(cacheSize, "B"));
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+			assert false : "Unable to add properties to Processor.";
+		}
+!!!377218.java!!!	getModelName() : String
+		
+		return modelName;
+!!!377346.java!!!	getVendorName() : String
+	
+		return vendorName;
+!!!377474.java!!!	vendorIDToVendorName(in cpuID : String) : String
+
+		if (cpuID.equals("AuthenticAMD")) {
+			return "AMD";
+		} else if (cpuID.equals("GenuineIntel")) {
+			return "Intel";
+		} else if (cpuID.equals("CentaurHauls")) {
+			return "Centaur";
+		} else if (cpuID.equals("CyrixInstead")) {
+			return "Cyrix";
+		} else if (cpuID.equals("UMC UMC UMC")) {
+			return "UMC";
+		} else if (cpuID.equals("NexGenDriven")) {
+			return "NexGen";
+		} else if (cpuID.equals("RiseRiseRise")) {
+			return "Rise";
+		} else if (cpuID.equals("GenuineTMx86")) {
+			return "Transmeta";
+		} else {
+			return cpuID;
+		}
+!!!377602.java!!!	getSpeed() : long
+		
+		return speed;
+!!!377730.java!!!	getCacheSize() : long
+		
+		return cacheSize;
+!!!377858.java!!!	exportAsElement(inout document : Document) : Element
+		
+		Element processorElement = document.createElement("processor");
+		
+		processorElement.appendChild(XMLHelper.writeValueToElement(document, modelName, "model"));
+		processorElement.appendChild(XMLHelper.writeValueToElement(document, vendorName, "vendor"));
+		processorElement.appendChild(XMLHelper.writeValueToElement(document, speed / 1000000, "speed"));
+		processorElement.appendChild(XMLHelper.writeValueToElement(document, cacheSize / 1024, "l2CacheSize"));
+		
+		return processorElement;
+!!!377986.java!!!	toString() : String
+		
+		return "Processor{" + modelName + " @ " + (speed / 1000000) + " MHz}";
+!!!378114.java!!!	getXMLNodeName() : String
+		
+		return "processor";

@@ -1,0 +1,115 @@
+<!--
+
+  BEEN: Benchmarking Environment
+  ==============================
+   
+  File author: David Majda
+
+  GNU Lesser General Public License Version 2.1
+  ---------------------------------------------
+  Copyright (C) 2004-2006 Distributed Systems Research Group,
+  Faculty of Mathematics and Physics, Charles University in Prague
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License version 2.1, as published by the Free Software Foundation.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+  MA  02111-1307  USA
+
+-->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>analysis-list-basic</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">analysis-list-basic</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>/been/results/analysis-list/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTitle</td>
+	<td>exact:BEEN: Analyses</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>//h1</td>
+	<td>exact:Analyses</td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>//div[2]/div/div/div/div/div/a</td>
+	<td>Analyses</td>
+</tr>
+<tr>
+	<td>assertValue</td>
+	<td>//input[@type='checkbox']</td>
+	<td>off</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//td[1]/table.0.0</td>
+	<td>Analysis 0000 (sample xampler analysis)</td>
+</tr>
+<tr>
+	<td>assertValue</td>
+	<td>//input[@value='Delete']</td>
+	<td>Delete</td>
+</tr>
+<tr>
+	<td>assertValue</td>
+	<td>//input[@type='checkbox' and @onclick='resultsAnalysisListAnalysisCheckboxClick(this, 1001);']</td>
+	<td>off</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//td[1]/table.1.0</td>
+	<td>Analysis 0001 (sample xampler analysis)</td>
+</tr>
+<tr>
+	<td>assertValue</td>
+	<td>document.forms[2].elements[1]</td>
+	<td>Delete</td>
+</tr>
+<tr>
+	<td>assertValue</td>
+	<td>//input[@type='checkbox' and @onclick='resultsAnalysisListAnalysisCheckboxClick(this, 1002);']</td>
+	<td>off</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//td[1]/table.2.0</td>
+	<td>Analysis 0002 (sample xampler analysis)</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//form/table.0.0</td>
+	<td>exact:Format:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//form/table.2.0</td>
+	<td>To enable export, select entities from the list on the left.</td>
+</tr>
+<tr>
+	<td>assertValue</td>
+	<td>document.forms[1].elements[1]</td>
+	<td>Delete</td>
+</tr>
+</tbody></table>
+</body>
+</html>

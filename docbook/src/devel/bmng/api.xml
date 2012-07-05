@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sect1
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>API Documentation</title>
+	
+	<sect2>
+		<title>RMI Interfaces</title>
+
+		<para>
+		The Benchmark Manager <glossterm>service</glossterm> only has 2 public RMI interfaces. Each of them has a separate RMI binding but both of them are implemented in the same class.
+		</para>
+
+		<sect3>
+			<title><interfacename>BenchmarkManagerInterface</interfacename></title>
+
+			<para>This interface is intended for general use by any user interface. It provides methods for querying and manipulating analyses, their configurations and modules.</para>
+
+			<itemizedlist>
+				<listitem>
+					<para>
+						<methodname>getGenerators</methodname>, <methodname>getEvaluators</methodname>
+					</para>
+					<para>
+					These methods return list of available pluggable modules. No filtering or sorting is performed. List is given as returned by the <glossterm>Software Repository</glossterm>.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						<methodname>createAnalysis</methodname>, <methodname>updateAnalysis</methodname>, <methodname>deleteAnalysis</methodname>
+					</para>
+					<para>
+					These methods manipulate analysis meta data. Update method requires an object retrieved by <methodname>getAnalysis</methodname>. Object ID is immutable outside the Benchmark Manager and serves as an identifier of the analysis.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						<methodname>getAnalysis</methodname>, <methodname>getAnalyses</methodname>
+					</para>
+					<para>
+					Get one specific or all <classname>Analysis</classname> object. Again no ordering is performed, analyses are most likely in the order how they were added in the database.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						<methodname>getActiveContexts</methodname>
+					</para>
+					<para>
+					Returns the list of known contexts where an analysis is either running or generating.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						<methodname>runAnalysis</methodname>
+					</para>
+					<para>
+					Creates new <glossterm>context</glossterm> and plans <glossterm>generator-runner</glossterm> in this context. This action is performed only if the analysis has no active context or the second parameter is set to true. If the analysis is generating then it is not started in any case.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						<methodname>getConfigurationDescription</methodname>, <methodname>validateModuleConfiguration</methodname>
+					</para>
+					<para>
+					Methods used for creating a valid module configuration. Configuration description helps web UI to create the input form. Any configuration should be validated in the corresponding module by the validation method. By convention the validation should return list of errors found in the configuration.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						<methodname>stopScheduler</methodname>, <methodname>isSchedulerRunning</methodname>
+					</para>
+					<para>
+					Obvious names for simple methods. Scheduler runs in a separate thread (which may not be started once finished). On the top of it stopping scheduler should be used only in shutdown process. Implementing the startup method wasn't considered necessary. To start scheduler one has to restart the whole Benchmark Manager service.
+					</para>
+				</listitem>
+			</itemizedlist>
+		</sect3>
+
+		<sect3>
+			<title>BenchmarkManagerCallbackInterface</title>
+
+			<para>This interface is used mostly by tasks related to the analysis. It contains methods for manipulating analysis state.</para>
+
+			<itemizedlist>
+				<listitem>
+					<para>
+						<methodname>reportGeneratorSuccess()</methodname>
+					</para>
+					<para>
+					Changes the analysis context state in the <classname>AnalysesTracker</classname> from generating (or unknown) to running. The tracker checks generator id and throws an exception if different task is reporting back.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						<methodname>reportAnalysisFinish()</methodname>
+					</para>
+					<para>
+					Changes the analysis context state from generating (or unknown) to idle and deletes the context from the <classname>AnalysisTracker</classname>.
+					</para>
+				</listitem>
+			</itemizedlist>
+		</sect3>
+	</sect2>
+	
+	<sect2>
+		<title>Other interfaces</title>
+
+		<para>
+		Internal-only interfaces are not described here. It's interface to <classname>AnalysesTracker</classname> and <classname>BMModule</classname>. They contain only simple getters, setters and helper functions. See JavaDoc for details about those.
+		</para>
+
+		<para>
+		If you create new generator or evaluator pluggable module it has to implement one of the following interfaces from package <package>cz.cuni.mff.been.benchmarkmanagerng.module</package>. The base classes located in the same package contain useful template and helper methods (see the JavaDoc for <classname>GeneratorPluggableModule</classname> and <classname>EvaluatorPluggableModule</classname>). It should be easier to use the provided base classes than implementing the interfaces from scratch although both approaches are possible and valid. Don't forget to mention the provided interface in the pluggable module package meta data.
+		</para>
+
+		<itemizedlist>
+			<listitem>
+				<para>
+					<interfacename>ModuleInteface</interfacename> - <methodname>validateConfiguration()</methodname>
+				</para>
+				<para>
+				This interface contains only one function common for both evaluators and generators. Both the following interfaces extend this one.
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					<interfacename>GeneratorInterface</interfacename> - <methodname>configure()</methodname>, <methodname>createDatasets()</methodname>, <methodname>generate()</methodname>
+				</para>
+				<para>
+				Every generator pluggable module has to implement this interface. When saving a new analysis to the Benchmark Manager, generator is first configured and then the method <methodname>createDatasets</methodname> is called. In each run, the generator is configured again and then the method <methodname>generate</methodname> is called. It is recommended to extend class <classname>GeneratorPluggableModule</classname> instead of implementing this interface.
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					<interfacename>EvaluatorInterface</interfacename> - <methodname>attachToAnalysis()</methodname>, <methodname>detachFromAnalysis()</methodname>
+				</para>
+				<para>
+				Every evaluator pluggable module has to implement this interface. Evaluator is attached to analysis when it is added to analysis configuration. It is detached from analysis when it is removed from analysis configuration. It is detached and then attached again every time its configuration is changed. It is recommended to extend class <classname>EvaluatorPluggableModule</classname> instead of implementing this interface.
+				</para>
+			</listitem>
+		</itemizedlist>
+	</sect2>
+	
+</sect1>

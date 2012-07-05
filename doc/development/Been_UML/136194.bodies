@@ -1,0 +1,32 @@
+class PluginUploadThread
+!!!151810.java!!!	PluginUploadThread(inout handle : UploadHandle, inout ip : InetAddress, in port : int)
+			super(handle, ip, port);
+!!!151938.java!!!	processFile() : void
+			File tempFile = getTemporaryFile();
+			try {
+				pluginManager.registerPlugin(tempFile);
+				setStatus(UploadStatus.ACCEPTED);
+			} catch (IOException e) {
+				addErrorMessage(e.getMessage());
+				addErrorMessage("Check structure of plugin file and plugin descriptor");
+				addErrorMessage("Plugin file:" + tempFile.getName());
+				e.printStackTrace();
+				setStatus(UploadStatus.REJECTED);
+			} catch (BeenException e) {
+				addErrorMessage(e.getMessage());
+				addErrorMessage("Check structure of plugin file and plugin descriptor");
+				addErrorMessage("Plugin file:" + tempFile.getName());
+				e.printStackTrace();
+				setStatus(UploadStatus.REJECTED);
+			}
+!!!152066.java!!!	uploadFailed() : void
+			logError("Plugin upload failed: " + errorMessages.getFirst());
+!!!152194.java!!!	getPrefix() : String
+			// give some meaningful name for plugin files
+			return "plugin";
+!!!152322.java!!!	getSuffix() : String
+			// need to be zip or jar so the file is detected by JPF scanner
+			return ".jar";
+!!!152450.java!!!	getTempDirectory() : File
+			// use BM's temp directory for upload
+			return new File(task.getTempDirectory());

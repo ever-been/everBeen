@@ -1,0 +1,361 @@
+class RunUploadCallback
+!!!591106.java!!!	RunUploadCallback(inout database : Database, inout aid : AID, inout eid : EID, inout bid : BID, inout rid : RID, inout validRun : boolean, in totalTables : int)
+		this.rScriptsRunner = RScriptsRunner.getInstance();
+		this.runEntityManager = database.getRunEntityManager();
+		this.rridManager = database.getRunValidityMapsManager();
+		this.lockManager = database.getLockManager();
+		this.aid = aid;
+		this.eid = eid;
+		this.bid = bid;
+		this.rid = rid;
+		this.validRun = validRun;
+		this.totalTables = totalTables;
+!!!591234.java!!!	getAid() : AID
+		return aid;
+!!!591362.java!!!	getEid() : EID
+		return eid;
+!!!591490.java!!!	getBid() : BID
+		return bid;
+!!!591618.java!!!	getRid() : RID
+		return rid;
+!!!591746.java!!!	enqueueRunScripts(inout runValidity : boolean) : void
+		for (int i = 0; i < callbacks.getRegisteredRunCallbackCount(); i++) {
+			/* Now build the string to send to R evaluator containing function call - name and all
+			 * neccessary arguments */ 
+			String functionOrigCallString = callbacks.getRegisteredRunFunction(i);
+			if ((functionOrigCallString == null) || (functionOrigCallString.equals(""))) {
+			    continue;
+			}
+			
+			int firstLeftPar = functionOrigCallString.indexOf('(');
+			int firstRightPar = functionOrigCallString.indexOf(')', firstLeftPar);
+			String functionCallString = functionOrigCallString.substring(0, firstLeftPar + 1);
+			
+			/* Each run function has got AID, EID, BID, RID as mandatory first arguments */
+			functionCallString += aid + "," + eid + "," + bid + "," + rid + ", valid = " 
+					+ Boolean.toString(runValidity).toUpperCase();
+			/* If function has other arguments, then we must include another -**- */ 
+			if (firstRightPar != firstLeftPar + 1) {
+				functionCallString += ",";
+			}
+			functionCallString += functionOrigCallString.substring(firstRightPar,
+					functionOrigCallString.length());
+				
+			Logger.logTrace("Enqueuing : " + functionCallString + ".");
+			rScriptsRunner.enqueueScriptExecution(aid, eid, bid, rid, functionCallString);
+		}
+!!!591874.java!!!	enqueueBinaryScripts(inout complete : boolean, inout runValidity : boolean) : void
+		
+		for (int i = 0; i < callbacks.getRegisteredBinaryCallbackCount(complete); i++) {
+			/* Now build the string to send to R evaluator containing function call 
+			 * - name and all neccessary arguments */ 
+			String functionOrigCallString = callbacks.getRegisteredBinaryFunction(i, complete);
+			if ((functionOrigCallString == null) || (functionOrigCallString.trim().equals(""))) {
+			    continue;				
+			}
+			int firstLeftPar = functionOrigCallString.indexOf('(');
+			int firstRightPar = functionOrigCallString.indexOf(')', firstLeftPar);
+			String functionCallString = functionOrigCallString.substring(0, firstLeftPar + 1);
+			
+			/* Each binary function has got AID, EID, BID as mandatory first arguments */
+			functionCallString += aid + "," + eid + "," + bid + ", valid = " 
+					+ Boolean.toString(runValidity).toUpperCase();
+			/* If function has other arguments, then we must include another -**- */ 
+			if (firstRightPar != firstLeftPar + 1) {
+				functionCallString += ",";
+			}
+			functionCallString += functionOrigCallString.substring(firstRightPar,
+					functionOrigCallString.length());
+			
+			Logger.logTrace("Enqueuing : " + functionCallString + ".");
+			rScriptsRunner.enqueueScriptExecution(aid, eid, bid, functionCallString);
+		}
+!!!592002.java!!!	enqueueExperimentScripts(inout complete : boolean, inout runValidity : boolean) : void
+		/* Now iterate through all registered R functions for binary */
+		for (int i = 0; i < callbacks.getRegisteredExperimentCallbackCount(complete); i++) {
+			/* Now build the string to send to R evaluator containing function call 
+			 * - name and all neccessary arguments */ 
+			String functionOrigCallString = callbacks.getRegisteredExperimentFunction(i, complete);
+			if ((functionOrigCallString == null) || (functionOrigCallString.trim().equals(""))) {
+			    continue;					
+			}
+			int firstLeftPar = functionOrigCallString.indexOf('(');
+			int firstRightPar = functionOrigCallString.indexOf(')', firstLeftPar);
+			String functionCallString = functionOrigCallString.substring(0, firstLeftPar + 1);
+			
+			/* Each experiment function has got AID, EID as mandatory first arguments */
+			functionCallString += aid + "," + eid + ", valid = " 
+					+ Boolean.toString(runValidity).toUpperCase();
+			/* If function has other arguments, then we must include another -**- */ 
+			if (firstRightPar != firstLeftPar + 1) {
+				functionCallString += ",";
+			}
+			functionCallString += functionOrigCallString.substring(firstRightPar,
+					functionOrigCallString.length());
+		
+			Logger.logTrace("Enqueuing : " + functionCallString + ".");
+			rScriptsRunner.enqueueScriptExecution(aid, eid, functionCallString);					
+		}		
+!!!592130.java!!!	callbackFunction(inout data : Object) : void
+		
+		callbacks = RCallbacksManagerFactory.getRCallbacksManager(aid, eid);
+		
+		boolean rScripting = RManager.getInstance().rScriptingEnabled(); 
+		if (!rScripting) {
+			Logger.logWarning("R scripting disabled, skipping graphs "
+					+ "and statistics computation.");		
+		}
+
+		MetadataRef analysisMetadata = new MetadataRef(new Metadata()); 
+		MetadataRef experimentMetadata = new MetadataRef(new Metadata());
+		MetadataRef binaryMetadata = new MetadataRef(new Metadata()); 			
+		Integer runs;
+		Integer totalRuns;
+		Integer validRuns;
+		String binaryValid;
+		String metaItem;		
+
+		runEntityManager.ensureValidRid(aid, eid, bid, rid);
+		if (!rridManager.allHostsUploaded(aid, eid, bid, rid, totalTables) ||
+				lockManager.isAnyLock(aid, eid, bid, "uploading-" + rid)) {			
+			
+			if (!validRun) {
+				lockManager.getLock(aid, eid, bid, "invalidrun-" + rid);
+			}
+			
+			return; 
+			// upload is still not complete
+		}
+		
+		if (lockManager.isLocked(aid, eid, bid, "invalidrun-" + rid)) {
+			/* Tidy up */
+			lockManager.clearLock(aid, eid, bid, "invalidrun-" + rid);			
+			/* Some results from other hosts are not correct */
+			validRun = false;			
+		}
+		
+		
+		/* We have uploaded run, read binary, experiment and analysis metadata... */		
+		if (!BinaryEntityManager.ensureSuccessLoadBinaryMetadata(binaryMetadata, aid, eid, bid) 
+				|| !ExperimentEntityManager.ensureSuccessLoadExperimentMetadata(experimentMetadata, aid, eid) 
+				|| !AnalysisEntityManager.ensureSuccessLoadAnalysisMetadata(analysisMetadata, aid)) {
+			return;
+		}		
+				
+		/* ...read number of runs, expected runs and valid runs in given binary... */
+		if (Database.ensureMetadataNotNull(metaItem = binaryMetadata.metadata.getItemByKey("runs"),
+				"runs", Database.getBinaryReferenceString(aid, eid, bid))) {
+			runs = new Integer(metaItem);
+		} else {
+			runs = new Integer(0);
+		}
+	
+		if (Database.ensureMetadataNotNull(metaItem = binaryMetadata.metadata.getItemByKey("expected runs"),
+				"expected runs", Database.getBinaryReferenceString(aid, eid, bid))) {		
+			totalRuns = new Integer(metaItem);			
+		} else {
+			totalRuns = new Integer(0);
+		}
+		
+		if (Database.ensureMetadataNotNull(metaItem = binaryMetadata.metadata.getItemByKey("valid runs"),
+				"valid runs", Database.getBinaryReferenceString(aid, eid, bid))) {		
+			validRuns = new Integer(metaItem);			
+		} else {
+			validRuns = new Integer(0);
+		}
+	
+		/* ...increase number of runs ... */ 
+		runs++;
+		
+		/* ...check, if run has finished correctly and change metadata accordingly... */
+		if (validRun) { 
+			validRuns++;
+		}
+		
+		/* Now our long validity update mechanism */
+		if (!Database.ensureMetadataNotNull(binaryValid = binaryMetadata.metadata.getItemByKey("valid"),
+				"valid", Database.getBinaryReferenceString(aid, eid, bid))) {
+			binaryValid = "false";
+		}
+
+		if (validRuns == 0) {
+			Logger.logDebug("We've added invalid run!!!");
+			/* If we add invalid run to invalid binary, nothing happens, so act
+			 * only if binary was valid */
+			if (!Database.ensureMetadataNotNull(metaItem = binaryMetadata.metadata.getItemByKey("valid"), 
+					"valid", Database.getBinaryReferenceString(aid, eid, bid))) {
+				metaItem = "false";
+			}
+				
+			if (metaItem.equals("true")) {				
+				binaryValid = "false";
+				
+				int validBins;
+				validBins = (Database.ensureMetadataNotNull(metaItem = 
+						experimentMetadata.metadata.getItemByKey("valid binaries"),
+						"valid binaries", Database.getExperimentReferenceString(aid, eid))) 
+						? Integer.parseInt(metaItem) : 0;				
+
+				experimentMetadata.metadata.setItemByKey("valid binaries", String.valueOf(validBins - 1));
+				
+				/* Now check, whether experiment didn't become invalid, ie this was last valid
+				 * binary (although rare and prob. temporary case ) */
+				if (validBins == 0) {
+					experimentMetadata.metadata.setItemByKey("valid", "false");
+					experimentMetadata.metadata.setItemByKey("valid binaries", "0");
+					if (!ExperimentEntityManager.ensureSuccessStoreExperimentMetadata(
+							experimentMetadata.metadata, aid, eid)) {
+						return;
+					}
+					
+					int validExps = Integer.parseInt(analysisMetadata.metadata.getItemByKey("valid experiments")); 
+					analysisMetadata.metadata.setItemByKey("valid experiments", String.valueOf(validExps - 1));
+
+					/* Now the same with analysis level */
+					if (validExps == 0) {
+						analysisMetadata.metadata.setItemByKey("valid", "false");
+						analysisMetadata.metadata.setItemByKey("valid experiments", "0");
+						if (!AnalysisEntityManager.ensureSuccessStoreAnalysisMetadata(
+								analysisMetadata.metadata, aid)) {
+							return;
+						}
+						
+					} else {
+						if (!AnalysisEntityManager.ensureSuccessStoreAnalysisMetadata(
+								analysisMetadata.metadata, aid)) {
+							return;
+						}
+					}
+				} else {
+					if (!ExperimentEntityManager.ensureSuccessStoreExperimentMetadata(
+							experimentMetadata.metadata, aid, eid)) {
+						return; 
+					}
+				}
+			}
+		} else {
+			/* Binary, experiment and analysis are valid for sure, if valid run was uploaded */			
+			if (binaryValid.equals("false")) {
+				/* One valid binary has been added */
+				boolean expValid = experimentMetadata.metadata.getItemByKey("valid").equals("true"); 
+				int validBins = Integer.parseInt(experimentMetadata.metadata.getItemByKey("valid binaries"));
+				experimentMetadata.metadata.setItemByKey("valid binaries", String.valueOf(validBins + 1));
+				experimentMetadata.metadata.setItemByKey("valid", "true");
+				Logger.logDebug("updating experiment");
+				if (!ExperimentEntityManager.ensureSuccessStoreExperimentMetadata(
+						experimentMetadata.metadata, aid, eid)) {
+					return;
+				}
+				if (!expValid) {
+					/* One valid experiment has been added */
+					int validExps = Integer.parseInt(analysisMetadata.metadata.getItemByKey("valid experiments"));
+					analysisMetadata.metadata.setItemByKey("valid experiments", String.valueOf(validExps + 1));
+					analysisMetadata.metadata.setItemByKey("valid", "true");
+					Logger.logDebug("updating analysis");
+					if (!AnalysisEntityManager.ensureSuccessStoreAnalysisMetadata(
+							analysisMetadata.metadata, aid)) {
+						return;
+					}
+				}
+			}
+			
+			binaryValid = "true";						
+		}		
+		
+		/* Set new number of runs and valid runs into metadata and store */ 
+		binaryMetadata.metadata.setItemByKey("runs", runs.toString());
+		binaryMetadata.metadata.setItemByKey("valid runs", validRuns.toString());
+		binaryMetadata.metadata.setItemByKey("valid", binaryValid);
+		
+		if (!BinaryEntityManager.ensureSuccessStoreBinaryMetadata(binaryMetadata.metadata, 
+				aid, eid, bid)) {
+			return;
+		}
+		
+		/* time to call all registered functions associated with upload of run */
+		Logger.logInfo("Calling registered R run-associated functions.");		
+			
+		/* Iterate through all registered R functions for run */
+		enqueueRunScripts(validRun);
+		enqueueBinaryScripts(false, validRun);
+		enqueueExperimentScripts(false, validRun);
+
+		/* ... now read binaries number (means binaries with complete run set uploaded) */ 
+		Integer completeBinaries = null;		
+		Integer expectedBinaries = null;
+		
+		if (Database.ensureMetadataNotNull(metaItem = experimentMetadata.metadata.getItemByKey("complete binaries"),
+				"complete binaries", Database.getExperimentReferenceString(aid, eid))) {				
+			completeBinaries = new Integer(metaItem);			
+		} else {
+			completeBinaries = new Integer(0);
+		}
+		
+		if (Database.ensureMetadataNotNull(metaItem = experimentMetadata.metadata.getItemByKey("expected binaries"),
+				"expected binaries", Database.getExperimentReferenceString(aid, eid))) {				
+			expectedBinaries = new Integer(metaItem);		
+		} else {
+			expectedBinaries = new Integer(0);
+		}
+		
+		Integer completeExperiments = null; 
+		
+		/* Read experiments number (means experiments with all binaries results uploaded) */
+		if (Database.ensureMetadataNotNull(metaItem = analysisMetadata.metadata.getItemByKey("complete experiments"),
+				"complete experiments", Database.getExperimentReferenceString(aid, eid))) {				
+			completeExperiments = new Integer(metaItem);
+		} else {
+			completeExperiments = new Integer(0);
+		}
+				
+		/* Now, if runs in actual binary has reached total number of runs, 
+		 * update results uploaded binary count metadata */
+		if (runs.equals(totalRuns)) {
+			
+			/* Increase number of binaries and store it into metadata */  
+			completeBinaries++;
+			
+			binaryMetadata.metadata.setItemByKey("complete", "true");
+			if (!BinaryEntityManager.ensureSuccessStoreBinaryMetadata(binaryMetadata.metadata, 
+					aid, eid, bid)) {
+				return;
+			}
+						
+			experimentMetadata.metadata.setItemByKey("complete binaries", completeBinaries.toString());
+			if (!ExperimentEntityManager.ensureSuccessStoreExperimentMetadata(
+					experimentMetadata.metadata, aid, eid)) {
+				return;
+			}			
+		
+			
+			/* time to call all registered functions associated with upload of run */
+			Logger.logInfo("Calling registered R binary-associated functions.");
+			
+			/* Now iterate through all registered R functions for binary */
+			enqueueBinaryScripts(true, validRun);
+			
+			/* Now, when binaries count has been updated, check if we have reached totalBinaries count
+			 * for a given experiment and update this number accordingly */
+			
+			if (completeBinaries.equals(expectedBinaries)) {
+				
+				/* Increase number of compete experimentsand store it into metadata */
+				completeExperiments++;				
+				
+				experimentMetadata.metadata.setItemByKey("complete", "true");
+				if (!ExperimentEntityManager.ensureSuccessStoreExperimentMetadata(
+						experimentMetadata.metadata, aid, eid)) {
+					return;
+				}				
+				
+				analysisMetadata.metadata.setItemByKey("complete experiments", completeExperiments.toString());
+				if (!AnalysisEntityManager.ensureSuccessStoreAnalysisMetadata(analysisMetadata.metadata, aid)) {
+					return;
+				}				
+			
+				/* time to call all registered functions associated with upload of experiment */
+				Logger.logInfo("Calling registered R experiment-associated functions.");
+	
+				enqueueExperimentScripts(true, validRun);
+			}
+		}									

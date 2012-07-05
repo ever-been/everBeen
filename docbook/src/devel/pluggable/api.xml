@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sect1
+	xml:id="been.devel.pluggable.api"
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>API Documentation</title>
+	
+	<para>This section describes APIs you need to know in order to be able to use a <glossterm>pluggable module</glossterm> or create your own ones. 
+	</para>
+	
+	<sect2>
+		<title>Pluggable Module Manager API</title>
+		<para>
+		<glossterm>Pluggable Module Manager</glossterm> is the most important component of <glossterm>pluggable module</glossterm> framework.
+		It takes care about <glossterm>pluggable module</glossterm> loading, including dependency solving, class-loading
+		and keeping <glossterm>pluggable module registry</glossterm> up-to-date.
+		</para>
+		
+		<para>
+		<glossterm>Pluggable Module Manager</glossterm>'s interface is very simple. This is how it looks like:
+		
+		<programlisting language="java"><![CDATA[public interface PluggableModuleManager {
+     PluggableModule getModule(
+                PluggableModuleDescriptor moduleDescriptor) 
+                    throws PluggableModuleException;
+			
+     PluggableModule loadModule(
+                PluggableModuleDescriptor moduleDescriptor) 
+                    throws PluggableModuleException;
+		
+     boolean isModuleLoaded(
+               PluggableModuleDescriptor moduleDescriptor);
+}]]>
+		</programlisting>
+		where <code>PluggableModuleDescriptor</code> is only a tuple <code>(name, version)</code>
+		identifying <glossterm>pluggable module</glossterm> uniquely.
+		</para>
+		
+		<para>
+		The method you will you use in 90% of cases is <methodname>getModule</methodname>.
+		It simply loads a <glossterm>pluggable module</glossterm> if the module wasn't loaded before. If so, existing <glossterm>pluggable module</glossterm> 
+		instance is retrieved from <glossterm>pluggable module registry</glossterm> (which is usually the desired behavior).
+		For detailed information on the other methods, see the JavaDocs.
+		</para> 			
+	</sect2>
+	
+	
+	<sect2 xml:id="been.devel.pluggable.api.pmapi">
+		<title>Pluggable Module API</title>
+		<para>
+		Basic rule for a <glossterm>pluggable module</glossterm> is that it has to extend base class <classname>PluggableModule</classname>.
+		The contract of this class is as follows:
+		</para>
+		
+		<programlisting language="java"><![CDATA[public abstract class PluggableModule {
+	
+    private PluggableModuleManager pluggableModuleManager;
+	
+    public PluggableModule(PluggableModuleManager manager) {
+        this.pluggableModuleManager = manager;
+    }
+	
+    protected void doStart() throws PluggableModuleException {
+        
+    }    
+}]]>
+</programlisting>
+
+		<para>
+		As you can see, <glossterm>pluggable module</glossterm>'s contract is very simple. The only condition
+		is every <glossterm>pluggable module</glossterm> has 1-parametric constructor that takes instance of <classname>PluggableModuleManager</classname>
+		as a parameter (<glossterm>pluggable module</glossterm> constructors are called using reflection).  
+		</para>
+		<para>
+		Pluggable module framework supports module specific initialization. If you want <glossterm>pluggable module</glossterm>
+		to be initialized by some code, override <methodname>doStart</methodname> method and put your <code>pluggable module</code> initialization code in it. 
+		<methodname>doStart</methodname> method does nothing by default.   
+		</para>
+	</sect2>
+	
+	
+	<!-- <sect2>
+		<title>Important notes</title>
+		<itemizedlist>
+			<listitem><para>Special conventions.</para></listitem>
+			<listitem><para>Contracts not obvious from JavaDoc.</para></listitem>
+			<listitem><para>Performance tips and recommendations.</para></listitem>
+			<listitem><para>Slow Path / Fast Path scenarios.</para></listitem>
+		</itemizedlist>
+	</sect2>-->
+</sect1>

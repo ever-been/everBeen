@@ -1,0 +1,99 @@
+class DispatcherThread
+!!!140674.java!!!	DispatcherThread()
+			super("DispatcherThread");
+			start();
+!!!140802.java!!!	refreshRunningAnalyses() : void
+			running.clear();
+			synchronized (monitorQueue) {
+				for (ExperimentMetadata exp : monitorQueue){
+					updateRunCount(exp.getAnalysis());
+				}
+			}
+!!!140930.java!!!	updateRunCount(inout aid : AID) : void
+			if (running.containsKey(aid)) {
+				running.put(aid,running.get(aid)+1);
+			} else {
+				running.put(aid,1);
+			}
+!!!141058.java!!!	canStart(inout exp : ExperimentMetadata) : boolean
+			if (! getAnalysis(exp.getAnalysis()).isRegression()) {
+				// comparison - run ASAP
+				return true;
+			} else {
+				/*
+				 * regression - check if not too many experiments are running
+				 */
+				Integer runningCount = running.get(exp.getAnalysis());
+				if (runningCount == null || runningCount < MAX_RUNNING_EXPERIMENTS) {
+					return true;
+				}
+				
+				return false;
+					
+			}
+!!!141186.java!!!	run() : void
+			boolean tmNotAvailable = false;
+						
+			while (true) {
+				try {
+				// refresh list of running analyses from monitor queue
+				refreshRunningAnalyses();
+				// go over entries starting experiments
+				synchronized (analysisQueues) {
+					for (Entry<AID,List<ExperimentMetadata>> entry : analysisQueues.entrySet()) {
+						
+						// check if we have some experiments to run
+						if (entry.getValue().isEmpty()) {
+							continue;
+						}
+						
+						// fire found experiments
+						for (ListIterator<ExperimentMetadata> iter = entry.getValue().listIterator();  iter.hasNext(); ) {
+							try {
+								ExperimentMetadata exp = iter.next();
+								if (canStart(exp)) {
+									bm.logInfo("Starting experiment " + EID.toNamedString(exp.getID())
+											+ ", analysis " + AID.toNamedString(exp.getAnalysis()) 
+											+": " +  exp.getAllTasks().length + " tasks");
+									bm.runExperiment(exp);
+									exp.setStatus(EntityStatus.SUBMITTED);
+									storeExperiment(exp);
+									iter.remove();
+									monitorQueue.add(exp);
+									updateRunCount(exp.getAnalysis());
+								}
+							} catch (BenchmarkManagerException e) {
+								e.printStackTrace();
+								// task manager is not available, we will skip the experiment and try starting it later
+								bm.logError("Unable to start experiment: " + e.getMessage());
+								// set flag so that we don't try starting more experiments, instead we go sleeping
+								tmNotAvailable = true;
+								break;
+							} catch (IOException e) {
+								e.printStackTrace();
+								bm.logError("Experiment was started, but restore log could not be written: "  + e.getMessage());
+								bm.logError("When benchmark manager will be restared, experiment will have incorrect status");
+							}
+						}
+						
+						if (tmNotAvailable) {
+							// task manager is not available, go sleeping
+							tmNotAvailable = false;
+							break;
+						}
+					}
+				}
+				
+				} catch (Exception e) {
+					e.printStackTrace();
+					// keep running
+				}
+					
+				
+				try {
+					sleep(AnalysisManager.EXPERIMENT_START_INTERVAL);
+				} catch (InterruptedException e) {
+					// ignored
+				}
+				
+			}

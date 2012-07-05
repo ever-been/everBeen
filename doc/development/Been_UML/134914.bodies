@@ -1,0 +1,23 @@
+class Role
+!!!225410.java!!!	getName() : String
+		return name;
+!!!225538.java!!!	getCount() : int
+		return count;
+!!!225666.java!!!	getHosts() : String
+		return hosts;
+!!!225794.java!!!	getSelectedHosts() : String
+		return selectedHosts;
+!!!225922.java!!!	Role(in name : String, in count : int, in hosts : String, in selectedHosts : String)
+		this.name = name;
+		this.count = count;
+		this.hosts = hosts;
+		this.selectedHosts = selectedHosts;
+		Arrays.sort(this.selectedHosts);
+!!!226050.java!!!	Role(inout benchmarkRole : StandardRole, in selectedHosts : String)
+		name = benchmarkRole.getName();
+		count = benchmarkRole.getCount();
+		this.hosts = benchmarkRole.getHostNames();
+		this.selectedHosts = selectedHosts;
+		Arrays.sort(this.selectedHosts);
+!!!226178.java!!!	isHostSelected(in host : String) : boolean
+		return Arrays.binarySearch(selectedHosts, host) >= 0;

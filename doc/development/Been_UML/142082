@@ -1,0 +1,929 @@
+format 70
+"packages" // been::src::cz::cuni::mff::been::webinterface::packages
+  revision 2
+  modified_by 8 "BoRiS"
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+  show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+  show_infonote default drawing_language default show_stereotype_properties default
+  
+  java_dir "cz/cuni/mff/been/webinterface/packages"
+  java_package "cz.cuni.mff.been.webinterface.packages"
+  classview 138626 "packages"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+    //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+    show_infonote default drawing_language default show_stereotype_properties default
+    class 214786 "Operator"
+      abstract visibility public stereotype "enum"
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}enum ${name}${implements} {
+${items};
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Abstract class representing an operator used in the package query form (and maybe
+in other forms later). Should be specialized for each operator used. 
+
+Operator can be viewed as a relation between tho objects. It contains
+abstract method <code>apply</code>, which is executed when the operator 
+needs to be applied on some operads during the queries. This method shoud tell,
+whether two objects passed as arguments are in relation represended by this 
+operator, or not. 
+ 
+@author David Majda
+"
+      classrelation 288386 // <realization>
+	relation 288386 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 288386 // <realization>
+	  b parent class_ref 148226 // Serializable
+      end
+
+      classrelation 288514 // STRING_OPERATORS (<unidirectional association>)
+	relation 288514 --->
+	  a role_name "STRING_OPERATORS" multiplicity "[]" init_value "=  new Operator[] {
+			new Operator(\"is\", \"is\") {
+				public boolean apply(Object metadataValue, Object formValue) {
+					if (metadataValue == null) {
+						return false;
+					}
+					return ((String) metadataValue).equals((String) formValue);
+				}
+			},      
+			new Operator(\"is-not\", \"is not\") {
+				public boolean apply(Object metadataValue, Object formValue) {
+					if (metadataValue == null) {
+						return false;
+					}
+					return !((String) metadataValue).equals((String) formValue);
+				}
+			},      
+			new Operator(\"contains\", \"contains\") {
+				public boolean apply(Object metadataValue, Object formValue) {
+					if (metadataValue == null) {
+						return false;
+					}
+					return ((String) metadataValue).indexOf((String) formValue) != -1;
+				}
+			},      
+			new Operator(\"does-not-contain\", \"does not contain\") {
+				public boolean apply(Object metadataValue, Object formValue) {
+					if (metadataValue == null) {
+						return false;
+					}
+					return ((String) metadataValue).indexOf((String) formValue) == -1;
+				}
+			},      
+	}" class_relation const_relation private
+	    comment " String operators. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	    classrelation_ref 288514 // STRING_OPERATORS (<unidirectional association>)
+	  b parent class_ref 214786 // Operator
+      end
+
+      classrelation 288642 // DATE_OPERATORS (<unidirectional association>)
+	relation 288642 --->
+	  a role_name "DATE_OPERATORS" multiplicity "[]" init_value "=  new Operator[] {
+			new Operator(\"eq\", \"equal to\") {
+				public boolean apply(Object metadataValue, Object formValue) {
+					if (metadataValue == null) {
+						return false;
+					}
+					return ((Date) metadataValue).equals((Date) formValue);
+				}
+			},      
+			new Operator(\"ne\", \"not equal to\") {
+				public boolean apply(Object metadataValue, Object formValue) {
+					if (metadataValue == null) {
+						return false;
+					}
+					return !((Date) metadataValue).equals((Date) formValue);
+				}
+			},      
+			new Operator(\"gt\", \"greater than\") {
+				public boolean apply(Object metadataValue, Object formValue) {
+					if (metadataValue == null) {
+						return false;
+					}
+					return ((Date) metadataValue).compareTo((Date) formValue) > 0;
+				}
+			},      
+			new Operator(\"ge\", \"greater or equal to\") {
+				public boolean apply(Object metadataValue, Object formValue) {
+					if (metadataValue == null) {
+						return false;
+					}
+					return ((Date) metadataValue).compareTo((Date) formValue) >= 0;
+				}
+			},      
+			new Operator(\"lt\", \"smaller than\") {
+				public boolean apply(Object metadataValue, Object formValue) {
+					if (metadataValue == null) {
+						return false;
+					}
+					return ((Date) metadataValue).compareTo((Date) formValue) < 0;
+				}
+			},      
+			new Operator(\"le\", \"smaller or equal to\") {
+				public boolean apply(Object metadataValue, Object formValue) {
+					if (metadataValue == null) {
+						return false;
+					}
+					return ((Date) metadataValue).compareTo((Date) formValue) <= 0;
+				}
+			},      
+	}" class_relation const_relation private
+	    comment " Date operators. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	    classrelation_ref 288642 // DATE_OPERATORS (<unidirectional association>)
+	  b parent class_ref 214786 // Operator
+      end
+
+      classrelation 288770 // ARRAY_LIST_OPERATORS (<unidirectional association>)
+	relation 288770 --->
+	  a role_name "ARRAY_LIST_OPERATORS" multiplicity "[]" init_value "=  new Operator[] {
+			new Operator(\"contains\", \"contains\") {
+				public boolean apply(Object metadataValue, Object formValue) {
+					if (metadataValue == null) {
+						return false;
+					}
+					return ((ArrayList) metadataValue).contains((String) formValue);
+				}
+			},      
+			new Operator(\"does-not-contain\", \"does not contain\") {
+				public boolean apply(Object metadataValue, Object formValue) {
+					if (metadataValue == null) {
+						return false;
+					}
+					return !((ArrayList) metadataValue).contains((String) formValue);
+				}
+			},      
+	}" class_relation const_relation private
+	    comment " ArrayList operators. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	    classrelation_ref 288770 // ARRAY_LIST_OPERATORS (<unidirectional association>)
+	  b parent class_ref 214786 // Operator
+      end
+
+      classrelation 288898 // VERSION_OPERATORS (<unidirectional association>)
+	relation 288898 --->
+	  a role_name "VERSION_OPERATORS" multiplicity "[]" init_value "=  new Operator[] {
+			new Operator(\"eq\", \"equal to\") {
+				public boolean apply(Object metadataValue, Object formValue) {
+					if (metadataValue == null) {
+						return false;
+					}
+					return ((Version) metadataValue).equals((Version) formValue);
+				}
+			},      
+			new Operator(\"ne\", \"not equal to\") {
+				public boolean apply(Object metadataValue, Object formValue) {
+					if (metadataValue == null) {
+						return false;
+					}
+					return !((Version) metadataValue).equals((Version) formValue);
+				}
+			},      
+			new Operator(\"gt\", \"greater than\") {
+				public boolean apply(Object metadataValue, Object formValue) {
+					if (metadataValue == null) {
+						return false;
+					}
+					return ((Version) metadataValue).compareTo((Version) formValue) > 0;
+				}
+			},      
+			new Operator(\"ge\", \"greater or equal to\") {
+				public boolean apply(Object metadataValue, Object formValue) {
+					if (metadataValue == null) {
+						return false;
+					}
+					return ((Version) metadataValue).compareTo((Version) formValue) >= 0;
+				}
+			},      
+			new Operator(\"lt\", \"smaller than\") {
+				public boolean apply(Object metadataValue, Object formValue) {
+					if (metadataValue == null) {
+						return false;
+					}
+					return ((Version) metadataValue).compareTo((Version) formValue) < 0;
+				}
+			},      
+			new Operator(\"le\", \"smaller or equal to\") {
+				public boolean apply(Object metadataValue, Object formValue) {
+					if (metadataValue == null) {
+						return false;
+					}
+					return ((Version) metadataValue).compareTo((Version) formValue) <= 0;
+				}
+			},      
+	}" class_relation const_relation private
+	    comment " Version operators. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	    classrelation_ref 288898 // VERSION_OPERATORS (<unidirectional association>)
+	  b parent class_ref 214786 // Operator
+      end
+
+      classrelation 289026 // PACKAGE_TYPE_OPERATORS (<unidirectional association>)
+	relation 289026 --->
+	  a role_name "PACKAGE_TYPE_OPERATORS" multiplicity "[]" init_value "=  new Operator[] {
+			new Operator(\"is\", \"is\") {
+				public boolean apply(Object metadataValue, Object formValue) {
+					if (metadataValue == null) {
+						return false;
+					}
+					return ((PackageType) metadataValue).equals(((PackageType) formValue));
+				}
+			},      
+			new Operator(\"is-not\", \"is not\") {
+				public boolean apply(Object metadataValue, Object formValue) {
+					if (metadataValue == null) {
+						return false;
+					}
+					return !((PackageType) metadataValue).equals(((PackageType) formValue));
+				}
+			},      
+	}" class_relation const_relation private
+	    comment " PackageType operators. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	    classrelation_ref 289026 // PACKAGE_TYPE_OPERATORS (<unidirectional association>)
+	  b parent class_ref 214786 // Operator
+      end
+
+      classrelation 289154 // operatorMap (<unidirectional association>)
+	relation 289154 --->
+	  stereotype "HashMap"
+	  a role_name "operatorMap" init_value "=  new HashMap<Class, Operator[]>()" class_relation private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<Class, ${type}[]> ${name}${value};
+"
+	    classrelation_ref 289154 // operatorMap (<unidirectional association>)
+	  b parent class_ref 214786 // Operator
+      end
+
+      attribute 356482 "name"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Operator name (identification). 
+"
+      end
+
+      attribute 356610 "title"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Operator title (intended to be displayed in the UI). 
+"
+      end
+
+      operation 790786 "getName"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return returns the name "
+      end
+
+      operation 790914 "getTitle"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return returns the title "
+      end
+
+      extra_member 128770 "initialization"
+	
+	cpp "" ""
+	java "  static {
+		operatorMap.put(String.class, STRING_OPERATORS);
+		operatorMap.put(Date.class, DATE_OPERATORS);
+		operatorMap.put(ArrayList.class, ARRAY_LIST_OPERATORS);
+		operatorMap.put(Version.class, VERSION_OPERATORS);
+		operatorMap.put(PackageType.class, PACKAGE_TYPE_OPERATORS);
+	}"
+	php ""
+	python ""
+	idl ""
+      end
+
+      operation 791042 "forKlass"
+	class_operation public return_type class_ref 214786 // Operator
+	nparams 1
+	  param inout name "klass" explicit_type "Class"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Finds operators for given class name.
+
+@param klass class name
+@return te operators
+"
+      end
+
+      operation 791170 "getKlasses"
+	class_operation public explicit_return_type "Set<Class>"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns a set of classes for which we have operators.
+
+@return set of classes
+"
+      end
+
+      operation 791298 "Operator"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "name" explicit_type "String"
+	  param in name "title" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>Operator</code> object.
+
+@param name operator name (identification)
+@param title operator title (intended to be displayed in the UI)
+"
+      end
+
+      operation 791426 "apply"
+	abstract public explicit_return_type "boolean"
+	nparams 2
+	  param inout name "metadataValue" explicit_type "Object"
+	  param inout name "formValue" explicit_type "Object"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Function executed during the queries. It tells whether two objects
+are in relation according to this oeprator.
+
+Note that descendats can constrain allowed argument types.
+
+<code>metadataValue</code> parameter can be null, because packages do not
+necessairly have all metadata attributes specified. On the contrary,
+<code>formvalue</code> can't be null, as there is no way for the web
+interface user to specify <code>null</code> value.
+
+All operators should return <code>false</code> if the
+<code>metadataValue</code> parameter is <code>null</code>, because it is
+the only consistent behaviour.
+
+@param metadataValue value of the package metadata attribute, can be <code>null</code> 
+@param formValue value of the form field, can't be <code>null</code>
+@return <code>true</code> if both arguments are in the relation
+         represented by this operator;
+         <code>false</code> otherwise
+"
+      end
+    end
+
+    class 214914 "Condition"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+One atomic condition of the global package query.
+
+The whole system is a bit tricky: The whole query
+(<code>PackageListQueryCallback</code>) is composed of atomic conditions,
+which are built on the client and then passed through the RMI to the
+Software Repository. The Software Repository then invokes the
+<code>PackageListQueryCallback.match</code> method, which invokes
+<code>Condition.execute</code> as needed.
+
+The system of atomical queries is designed to be as flexible as possible.
+This (among other things) means that the atomic query must remember,
+against which package metadata attribute it is executed - it has to know,
+which getter to call on the <code>PackageMetadata</code> class when matching.
+
+Easiest way how to handle this is use the <code>AttributeInfo</code> class,
+which contains all necessary attribute information. But this class
+contains some unserializable fields, so we choose another way: We initialize
+<code>Condition</code> only with a attribute name
+(<code>attributeName</code> field) and when the
+<code>PackageListQueryCallback.match</code> method is run for the first
+time in the Software Repository context, it calls the <code>prepare</code>
+method for each atomic query. This method walks through the
+<code>PackageMetadata.attributeInfo</code> array and finds necessary
+information from there.  
+
+@author David Majda
+"
+      classrelation 288002 // <realization>
+	relation 288002 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 288002 // <realization>
+	  b parent class_ref 148226 // Serializable
+      end
+
+      attribute 356226 "attributeName"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Matched attribute name. 
+"
+      end
+
+      classrelation 288130 // attributeInfo (<unidirectional association>)
+	relation 288130 --->
+	  a role_name "attributeInfo" private
+	    comment " Information about matched attribute. 
+"
+	    transient
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 288130 // attributeInfo (<unidirectional association>)
+	  b parent class_ref 195330 // AttributeInfo
+      end
+
+      classrelation 288258 // operator (<unidirectional association>)
+	relation 288258 --->
+	  a role_name "operator" private
+	    comment " Operator used for matching. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 288258 // operator (<unidirectional association>)
+	  b parent class_ref 214786 // Operator
+      end
+
+      attribute 356354 "value"
+	private explicit_type "Object"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Value to match the metadata attribute against. 
+"
+      end
+
+      operation 789890 "getAttributeName"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return returns the attributeName "
+      end
+
+      operation 790018 "getAttributeInfo"
+	public return_type class_ref 195330 // AttributeInfo
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return returns the attributeInfo "
+      end
+
+      operation 790146 "getOperator"
+	public return_type class_ref 214786 // Operator
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return returns the operator "
+      end
+
+      operation 790274 "getValue"
+	public explicit_return_type "Object"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return Returns the value "
+      end
+
+      operation 790402 "Condition"
+	public explicit_return_type ""
+	nparams 3
+	  param in name "attributeName" explicit_type "String"
+	  param inout name "operator" type class_ref 214786 // Operator
+	  param inout name "value" explicit_type "Object"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>Condition</code> object.
+
+@param attributeName matched attribute name
+@param operator operator used for matching
+@param value value to match the metadata attribute against
+"
+      end
+
+      operation 790530 "prepare"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Walks through the <code>PackageMetadata.attributeInfo</code>
+and extract information about attribute specified in
+<code>attributeName</code> field.
+"
+      end
+
+      operation 790658 "execute"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "metadata" type class_ref 142850 // PackageMetadata
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Executes the atomic query.
+
+@param metadata package metadata
+@return <code>true</code> if the package metadata attribute is
+         in relation with <code>value</code> according to the
+         <code>operator</code>;
+         <code>false</code> otherwise
+"
+      end
+    end
+
+    class 215554 "PackageDetailsQueryCallback"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Package query callback implementation, used to view data about specified
+package. 
+
+@author David Majda
+"
+      classrelation 289282 // <realization>
+	relation 289282 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 289282 // <realization>
+	  b parent class_ref 182530 // PackageQueryCallbackInterface
+      end
+
+      classrelation 289410 // <realization>
+	relation 289410 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 289410 // <realization>
+	  b parent class_ref 148226 // Serializable
+      end
+
+      attribute 356738 "packageFilename"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Package filename to match. 
+"
+      end
+
+      operation 791554 "getPackageFilename"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return Returns the packageFilename. "
+      end
+
+      operation 791682 "PackageDetailsQueryCallback"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "packageFilename" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>PackageDetailsQueryCallback</code> object.
+
+@param packageFilename package filename to match
+"
+      end
+
+      operation 791810 "match"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "metadata" type class_ref 142850 // PackageMetadata
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " 
+@see cz.cuni.mff.been.softwarerepository.PackageQueryCallbackInterface#match(cz.cuni.mff.been.softwarerepository.PackageMetadata)
+"
+      end
+    end
+
+    class 215682 "PackageListQueryCallback"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Package query callback implementation, used to query pakages based
+on their metadata. 
+
+@author David Majda
+"
+      classrelation 289538 // <realization>
+	relation 289538 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 289538 // <realization>
+	  b parent class_ref 182530 // PackageQueryCallbackInterface
+      end
+
+      classrelation 289666 // <realization>
+	relation 289666 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 289666 // <realization>
+	  b parent class_ref 148226 // Serializable
+      end
+
+      classrelation 289794 // atoms (<unidirectional association>)
+	relation 289794 --->
+	  a role_name "atoms" multiplicity "[]" private
+	    comment " Atomical queries. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	    classrelation_ref 289794 // atoms (<unidirectional association>)
+	  b parent class_ref 214914 // Condition
+      end
+
+      attribute 356866 "atomsPrepared"
+	private explicit_type "boolean"
+	init_value "=  false"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Indicates if the atomical queries are prepared.
+For explanation see long comment at <code>Condition</code>
+class declaration.
+
+"
+      end
+
+      operation 791938 "PackageListQueryCallback"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "atoms" type class_ref 214914 // Condition
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0}[] ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>PackageListQueryCallback</code> object.
+
+@param atoms atomcial queries
+"
+      end
+
+      operation 792066 "match"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "metadata" type class_ref 142850 // PackageMetadata
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.softwarerepository.PackageQueryCallbackInterface#match(cz.cuni.mff.been.softwarerepository.PackageMetadata)
+"
+      end
+    end
+  end
+
+  deploymentview 137730 "packages"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+    artifact 193666 "Condition"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import cz.cuni.mff.been.softwarerepository.AttributeInfo;
+import cz.cuni.mff.been.softwarerepository.PackageMetadata;
+${definition}"
+      associated_classes
+	class_ref 214914 // Condition
+      end
+    end
+
+    artifact 193794 "Operator"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Set;
+import cz.cuni.mff.been.common.Version;
+import cz.cuni.mff.been.softwarerepository.PackageType;
+${definition}"
+      associated_classes
+	class_ref 214786 // Operator
+      end
+    end
+
+    artifact 193922 "PackageDetailsQueryCallback"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.Serializable;
+import cz.cuni.mff.been.softwarerepository.PackageMetadata;
+import cz.cuni.mff.been.softwarerepository.PackageQueryCallbackInterface;
+${definition}"
+      associated_classes
+	class_ref 215554 // PackageDetailsQueryCallback
+      end
+    end
+
+    artifact 194050 "PackageListQueryCallback"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.Serializable;
+import cz.cuni.mff.been.softwarerepository.PackageMetadata;
+import cz.cuni.mff.been.softwarerepository.PackageQueryCallbackInterface;
+${definition}"
+      associated_classes
+	class_ref 215682 // PackageListQueryCallback
+      end
+    end
+  end
+end

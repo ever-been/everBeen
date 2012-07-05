@@ -1,0 +1,16 @@
+class ValidatingDataProvider
+!!!389250.java!!!	ValidatingDataProvider(in allowedVariables : String)
+			
+			allowedNames = new HashSet< String >();
+			
+			for (String c: allowedVariables) {
+				allowedNames.add(c);
+			}
+!!!389378.java!!!	getValue(in variableName : String) : String
+			
+			if (allowedNames.contains(variableName)) {
+				
+				return "#" + variableName + "#";
+			} else {
+				return null;
+			}

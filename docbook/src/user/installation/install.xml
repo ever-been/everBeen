@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sect1
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>How to install BEEN</title>
+	
+	<para>You can install been either from source code installation or from precompiled distribution
+	package.</para>
+
+	<para>For compiling the sources you will need Apache ant version 1.7. or newer.
+	Make sure your ant installation has write rights for the <filename>been</filename> directory and
+	run <code>ant dist</code>. To compile the native command line client on Linux systems use
+	<code>ant compile-client</code>. Please consult the development documentation (<xref linkend="been.devel.theory"/>) if the build fails.
+	The compiled distribution files will be created in the <filename>dist</filename> subdirectory.</para>
+
+	<para>Two directories <filename>full</filename> and <filename>hostruntime</filename> and a file
+	<filename>been.war</filename> are contained inside the precompiled package. Use your favourite
+	decompiler to extract them.</para>
+
+	<sect2>
+		<title>BEEN framework</title>
+
+		<sect3>
+			<title>Installation</title>
+
+			<para>The BEEN framework is distributed application with one central authority.
+			This authority is the BEEN Task Manager. At first you need to choose the computer which
+			will host it. Coppy the direcotry <filename>full</filename> to that host. Make sure that
+			the user which runs BEEN has read rights to the whole directory and write rights to
+			<filename>full/data</filename> subdirectory.</para>
+
+			<para>Coppy the directory <filename>hostruntime</filename> to the other hosts that will
+			run BEEN. Again make sure that BEEN will have read permission to the whole directory and
+			write permission to the <filename>hostruntime/data</filename> subdirectory.</para>
+
+		</sect3>
+
+		<sect3>
+			<title>Startup</title>
+
+			<para>First thing to be started is the Task Manager. Go to the <filename>full/bin</filename>
+			directory on the central machine and run <filename>taskmanager.bat</filename> or
+			<filename>taskmanager.sh</filename> depending on the host system. You probably want to
+			start a Host Runtime on the same computer. Execute the script <filename>hostruntime.bat</filename>
+			or <filename>hostruntime.sh</filename> in the same directory.</para>
+
+			<para>The Task Manager can be issued to start some of the BEEN core services on the first
+			Host Runtime that connects to the Task Manager. This feature is very usefull when you
+			don't use the web interface and want to control been only through the CLI. There are two
+			environment variables that enable this feature.
+			<itemizedlist>
+				<listitem>
+					<para><constant>RUN_TASKS</constant>: This environment variable contains
+					whitespace-separated list of XML task descriptor filenames. These descriptors
+					can be found in <filename>full/data/taskmanager/task-descriptors</filename>.
+					Contents of this variable is passed as command line parameters so don't forget
+					to escape any dangerous characters in the file path.</para>
+				</listitem>
+				<listitem>
+					<para><constant>BEEN_SERVICES</constant>: If this variable is set to any value
+					then the variable <constant>RUN_TASKS</constant> will be set to contain all the
+					BEEN core services.</para>
+				</listitem>
+			</itemizedlist>
+			</para>
+
+			<para>To start a Host Runtime on other computer go to the <filename>hostruntime/bin</filename>
+			directory and execute the script <filename>hostruntime.bat</filename> or
+			<filename>hostruntime.sh</filename> with the first parameter set to the hostname of the
+			Task Manager host.</para>
+
+			<para>The command line interface client can be currently executed only on Linux systems.
+			To start it, first compile the client binary using the <command>compile-client</command>
+			target (Development Documentation, <xref linkend="been.devel.theory.compile"/>),
+			then go to the <filename>native/client/bin</filename> directory in either
+			<filename>full</filename> or <filename>hostruntime</filename> directory.
+			If everything goes fine, you should find the <command>bcmd</command> binary there. Use the CLI
+			reference manual (<xref linkend="been.user.cli.reference"/>) to learn more about
+			what the <command>bcmd</command> command can do. The
+			Command Line Service must be running so that <command>bcmd</command> can connect to the
+			BEEN framework.</para>
+		</sect3>
+	</sect2>
+
+	<sect2>
+		<title>Web Interface</title>
+
+		<para>If you have administration tools installed in your Tomcat server then simply deploy
+		the file <filename>been.war</filename> using the web interface.</para>
+
+		<para>If you do not have administration tools installed then you will have to deploy the web
+		interface manually. There are two ways of doing it. Either you can extract the war package
+		into your Tomcat's <filename>webapps</filename> directory or you can put a symlink
+		in the <filename>webapps</filename> directory
+		that will point to the <filename>been.war</filename> file. (Make sure Tomcat is allowed to access the file.)
+		Either way you might need to
+		restart your Tomcat server to make it notice the changes.</para>
+
+		<para>If your Tomcat server is running on a different host than your Task Manager then you
+		need to go to the <guilabel>Configuration</guilabel> tab and set the <guilabel>Task Manager
+		host name</guilabel>.</para>
+	</sect2>
+
+</sect1>

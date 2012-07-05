@@ -1,0 +1,684 @@
+class ResultsCollectionTask
+!!!648578.java!!!	ResultsCollectionTask()
+		super();
+!!!648706.java!!!	initUpload() : void
+				
+		resultsRepositoryInstance = (ResultsRepositoryInterface) getTasksPort().serviceFind(
+				ResultsRepositoryService.SERVICE_NAME, ResultsRepositoryInterface.RMI_NAME);		
+	  	
+		benchmarkManagerInstance = (BenchmarkManagerGUIInterface) getTasksPort().serviceFind(
+				BenchmarkManagerService.SERVICE_NAME, BenchmarkManagerService.RMI_MAIN_IFACE);		
+	  	
+		
+	  	srvSocket = new ServerSocket(0);
+	  	logInfo("server socket intialized");
+!!!648834.java!!!	getCanonicalLocalhostName() : String
+		
+		try {
+			return InetAddress.getLocalHost().getCanonicalHostName();
+		} catch (Exception e) {
+			return "localhost";
+		}
+!!!648962.java!!!	convertOneRunTable(in srcName : String, in dstName : String, in suiteName : String, in columnNames : String) : void
+		int columnCount = columnNames.length;
+		String debugMessage;
+		debugMessage = "Converting ";
+		for (int i = 0; i < columnNames.length; i++) {
+			debugMessage += columnNames[i] + "   ";
+		}
+		logDebug(debugMessage);
+		int[][] value = new int[20][columnCount];
+		int[] origin = new int[2];
+		int counter;
+		File file = new File(srcName);
+		String line;
+		String[] lineTokens;
+		
+		logDebug("Column count for converting run is " + columnCount);
+			
+		/*BufferedReader inputReader = new BufferedReader(new FileReader(file));
+		NetcdfFileWriteable ncfile = NetcdfFileWriteable.createNew(dstName, false);*/
+		BufferedReader inputReader = new BufferedReader(new FileReader(file));
+		NetcdfFileWriteable ncfile = new NetcdfFileWriteable();
+		
+		if (file.exists()) {
+			try {								
+				ncfile.setName(dstName);
+								
+				Dimension columnDim = ncfile.addDimension("columns", columnCount);
+				Dimension measurementDim = ncfile.addDimension("measurements", -1);
+				
+				Dimension[] dim2 = new Dimension[2];
+				
+				dim2[0] = measurementDim;
+				dim2[1] = columnDim;
+							
+				/*ncfile.addVariable("values", DataType.Int, Arrays.asList(dim2));*/
+				ncfile.addVariable("values", int.class, dim2);
+				ncfile.addVariableAttribute("values", "long_name", "Table of measured values");
+				
+				ncfile.create();				
+				
+				origin[0] = 0; counter = 0;			
+				while ((line = inputReader.readLine()) != null) {
+										
+					lineTokens = line.split("\t");
+					
+					for (int i = 0; i < columnCount; i++) {
+						try {
+							value[(counter++) % 20][i] = Integer.valueOf(lineTokens[i]);
+							//logDebug("stored value " + Integer.valueOf(lineTokens[i]) + "into array");
+						} catch (NumberFormatException e) {
+							value[counter % 20][i] = new Integer(0);
+							logInfo("invalid number format - column " + i + " sample " + counter);
+							
+						}
+					}
+					
+					if ((counter % 20) == 0) {
+						ArrayInt valueA = new ArrayInt.D2(20, columnDim.getLength());
+						Index ima = valueA.getIndex();
+						for (int i = 0; i < 20; i++) {
+							for (int j = 0; j < columnCount; j++) {
+								valueA.setInt(ima.set(i, j), value[i][j]);
+							}
+						}
+						
+//						try {
+							ncfile.write("values", origin, valueA);
+						/*} catch (InvalidRangeException e) {
+							logInfo("Invlaid ");
+						}*/
+						origin[0] += 20;
+						
+					}
+				}
+								
+				/*if ((counter % 20) > 0) {
+				    long[][] value2 = new long[counter % 20][columnCount];
+				    for (int i = 0; i < counter % 20; i++)				    	
+				    	value2[i] = value[i];
+					ArrayInt valueA = new ArrayInt.D2(20, columnDim.getLength());
+					Index ima = valueA.getIndex();
+					for (int i = 0; i < 20; i++) {
+						for (int j=0; j < columnCount; j++)
+							valueA.setLong(ima.set(i,j), value[i][j]);
+					}
+
+					ncfile.write("values", origin, valueA);
+					ncfile.write("values", origin, ArrayAbstract.factory(value2));
+				}*/
+				
+			} catch (IOException e) {
+				e.printStackTrace();
+				logError("io error converting " + srcName);				
+			} finally {
+				ncfile.close();
+				inputReader.close();
+			}
+		}			
+!!!649090.java!!!	uploadBinaryFile(inout aid : AID, inout eid : EID, inout bid : BID, inout rid : RID, inout validRun : boolean, in sourceName : String, in roleName : String, in hostName : String, in tableIndex : int, in totalTables : int) : void
+	
+		byte[] buffer = new byte[1024];
+	
+	  	UploadHandle upHandle = resultsRepositoryInstance.uploadRunResults(
+	  			aid, eid, bid, rid, roleName,
+	  			 hostName, srvSocket.getLocalPort(), validRun, false, tableIndex, totalTables);
+	  	Socket clientSocket = srvSocket.accept();		  	
+	  		
+	  	try {
+			OutputStream outputStream = clientSocket.getOutputStream();
+			InputStream inputStream = new FileInputStream(sourceName);
+			try {
+				int bytesRead;
+				while ((bytesRead = inputStream.read(buffer)) != -1) {
+					outputStream.write(buffer, 0, bytesRead);
+				}
+			} finally {
+				inputStream.close();
+			}
+		} finally {
+			clientSocket.close();
+		}
+		
+	  	//logInfo("send data finished, waiting for Results Repository to acknowlege... ");
+		String chkPntValue;
+		do {
+			/* Wait one hour - infinite would be more suitable */ 
+			chkPntValue = (String) Task.getTaskHandle().getTasksPort().checkPointWait("system", 
+				"resultsrepository-tid", "upload-finish-" + upHandle.hashCode(), 
+				TaskManagerInterface.INFINITE_TIME);
+			Task.getTaskHandle().logDebug("Value of checkpoint scanned = " + chkPntValue);
+		} while ((chkPntValue == null) || (!chkPntValue.equals("1")));
+        if (resultsRepositoryInstance.getFileUploadStatus(upHandle) 
+        		== UploadStatus.UPLOADING) {
+        	logError("Error in synchronization of upload with Results Repository - state still uploading");
+        }
+	  	
+		switch (resultsRepositoryInstance.getFileUploadStatus(upHandle)) {
+			case ACCEPTED:
+				logInfo("uploaded: " + sourceName);
+				resultsRepositoryInstance.endRunUpload(aid, eid, bid, rid, hostName, upHandle);
+				break;
+			case ERROR:
+				logError("error uploading " + sourceName);
+				resultsRepositoryInstance.endRunUpload(aid, eid, bid, rid, hostName, upHandle);
+				break;
+			default:
+				logError("error synchronizing upload of " + sourceName);
+				resultsRepositoryInstance.endRunUpload(aid, eid, bid, rid, hostName, upHandle);
+				break;
+		}
+!!!649218.java!!!	uploadLoadFile(inout aid : AID, inout eid : EID, inout bid : BID, inout rid : RID, in sourceFile : String, in loadDataFile : String, in hostName : String) : void
+		byte[] buffer = new byte[1024];
+		
+	  	UploadHandle upHandle = resultsRepositoryInstance.uploadLoadInfo(
+	  			aid, eid, bid, rid, loadDataFile, 
+	  			 hostName, srvSocket.getLocalPort(), false);
+		
+	  	Socket clientSocket = srvSocket.accept();		  	
+	  		
+	  	try {
+			OutputStream outputStream = clientSocket.getOutputStream();
+			InputStream inputStream = new FileInputStream(sourceFile);
+			try {
+				int bytesRead;
+				while ((bytesRead = inputStream.read(buffer)) != -1) {
+					outputStream.write(buffer, 0, bytesRead);
+				}
+			} finally {
+				inputStream.close();
+			}
+		} finally {
+			clientSocket.close();
+		}
+		
+	  	//logInfo("send data finished, waiting for Results Repository to acknowlege... ");
+		String chkPntValue;
+		do {
+			/* Wait one hour - infinite would be more suitable */ 
+			chkPntValue = (String) Task.getTaskHandle().getTasksPort().checkPointWait("system", 
+				"resultsrepository-tid", "upload-finish-" + upHandle.hashCode(), 
+				TaskManagerInterface.INFINITE_TIME);
+			Task.getTaskHandle().logDebug("Value of checkpoint scanned = " + chkPntValue);
+		} while ((chkPntValue == null) || (!chkPntValue.equals("1")));
+        if (resultsRepositoryInstance.getFileUploadStatus(upHandle) 
+        		== UploadStatus.UPLOADING) {
+        	logError("Error in synchronization of upload with Results Repository - state still uploading");
+        }
+	  	
+		switch (resultsRepositoryInstance.getFileUploadStatus(upHandle)) {
+			case ACCEPTED:
+				logInfo("uploaded: " + sourceFile);
+				resultsRepositoryInstance.endRunUpload(aid, eid, bid, rid, hostName, upHandle);
+				break;
+			case ERROR:
+				logError("error uploading " + sourceFile);
+				resultsRepositoryInstance.endRunUpload(aid, eid, bid, rid, hostName, upHandle);
+				break;
+			default:
+				logError("error synchronizing upload of " + sourceFile);
+				resultsRepositoryInstance.endRunUpload(aid, eid, bid, rid, hostName, upHandle);
+				break;
+		}		
+!!!649346.java!!!	closeFiles() : void
+		
+		if (maxMemoryWriter != null) maxMemoryWriter.close();
+		if (memoryWriter != null) memoryWriter.close();
+		if (processorWriter != null) processorWriter.close();
+		if (diskWriter != null) diskWriter.close();
+		if (netWriter != null) netWriter.close();
+		if (diskNamesWriter != null) diskNamesWriter.close();
+		if (netNamesWriter != null) netNamesWriter.close();
+		if (titleWriter != null) titleWriter.close();
+		
+!!!649474.java!!!	uploadLoadFiles(inout bid : BID, inout rid : RID, in loadDir : String, in loadDataFiles : String, in hostname : String) : void
+		
+		for (String loadDataFile : loadDataFiles) {
+			uploadLoadFile(analysisId, experimentId, bid, rid, loadDir 
+					+ File.separator + loadDataFile, loadDataFile, hostname);			
+		}		
+!!!649602.java!!!	doLoadUpload(inout bid : BID, inout rid : RID) : boolean
+
+		if (loadMonitorReference == null)
+			return false;
+				
+		LoadFileParserInterface<LoadSample> loadParser;
+
+		String loadDir = tempDir + File.separator + bid.toString() + File.separator + rid.toString();
+		
+		new File(loadDir).mkdirs();		 
+		
+		String contextName;
+		String[] taskNames;
+		String taskId = null;
+		
+		try {
+			contextName = benchmarkManagerInstance.getAnalysisInterface()
+					.getSubentityInterface(analysisId).getContext(experimentId);
+		} catch (Exception e) {
+			logError("Couldn't get contextName from Benchmark Manager");
+			return false;
+		}
+
+		try {
+			
+			taskNames = BeenUtils.extractTaskIDs(benchmarkManagerInstance.getAnalysisInterface()
+				.getSubentityInterface(analysisId)
+				.getSubentityInterface(experimentId)
+				.getSubentityInterface(bid).getAllTasks(rid));
+		} catch (RemoteException e) {
+			logError("RMI error contacting Benchmark Manager when uploading load");
+			return false;
+		}
+		
+		logDebug("Candidate tasks with logs : " + taskNames.length);
+		
+		try {
+			for (int i = 0; i < taskNames.length; i++) {
+				/*if (loadresultsRepositoryInstance.performLogUpload(analysisId, 
+						experimentId, contextName, taskNames[i]);*/
+				if (loadMonitorReference.hasDetailedModeData(contextName, taskNames[i])) {
+					taskId = taskNames[i];
+				}
+			}
+		} catch (RemoteException e) {
+			logError("RMI error contacting Load Monitor when uploading load");
+			return false;
+		}
+		
+		if (taskId == null) {
+			return false;
+		}
+				
+		try {
+			logDebug("LOAD: Context is " + contextName);
+			logDebug("LOAD: Task name is " + taskId);
+			loadParser = LoadFile.createSampleParser(loadMonitorReference.getDetailedModeLoadData(
+					contextName, taskId));
+		} catch (FileNotFoundException e) {
+			logError("File with load not found.");
+			return false;
+		} catch (InvalidArgumentException e) {
+			logError("Invalid argument when getting LoadFile : " + e.getMessage());
+			return false;
+		} catch (RemoteException e) {
+			logError("Error contacting load monitor RMI.");
+			return false;
+		}
+		
+		logDebug("Starting load reading...");
+		
+		boolean first = true;
+		long startTimestamp = 0;
+		long endTimestamp = 0;
+		
+		int driveCount = 0;
+		int netIfaceCount = 0;
+		int processorCount = 0;
+		
+		try {
+		
+			memoryWriter = new PrintWriter(new BufferedWriter(
+					new FileWriter(loadDir + File.separator + MEMORY_FILE)));
+			maxMemoryWriter = new PrintWriter(new BufferedWriter(
+					new FileWriter(loadDir + File.separator + MAX_MEMORY_FILE)));			
+			processorWriter = new PrintWriter(new BufferedWriter(
+					new FileWriter(loadDir + File.separator + PROCESSOR_FILE)));
+			diskWriter = new PrintWriter(new BufferedWriter(
+					new FileWriter(loadDir + File.separator + DISK_FILE)));
+			netWriter = new PrintWriter(new BufferedWriter(
+					new FileWriter(loadDir + File.separator + NET_FILE)));
+			diskNamesWriter = new PrintWriter(new BufferedWriter(
+					new FileWriter(loadDir + File.separator + DISK_NAMES_FILE)));
+			netNamesWriter = new PrintWriter(new BufferedWriter(
+					new FileWriter(loadDir + File.separator + NET_NAMES_FILE)));
+			titleWriter = new PrintWriter(new BufferedWriter(
+					new FileWriter(loadDir + File.separator + TITLE_FILE)));
+			
+		} catch (IOException e) {
+			
+			logError("Error initializting files for storing load");
+			closeFiles();			 
+			return false;			
+		}
+
+		/* Conversion of load information into Results Repository format */
+		while(true) {
+			try {
+				if (!loadParser.hasNext()) {
+					
+					logDebug("Load parser didn't have next sample.");
+					break;
+				}
+			} catch (Exception e){
+				e.printStackTrace();
+				continue;
+			}
+						
+			try {
+						
+				try {
+					
+					LoadSample sample = loadParser.getNext();
+										
+					short[] processorUsage = sample.getProcessorUsage();
+					
+					long memoryFree = sample.getMemoryFree();
+					
+					long[] diskRead = sample.getDiskReadBytesPerSecond();
+					long[] diskWrite = sample.getDiskWriteBytesPerSecond();
+					
+					int[] netReceive = sample.getNetworkBytesReceivedPerSecond();
+					int[] netSend = sample.getNetworkBytesSentPerSecond();
+					
+					
+					if (first) {
+						
+						driveCount = sample.getDriveCount();
+						
+						netIfaceCount = sample.getNetworkInterfaceCount();
+						
+						processorCount = sample.getProcessorCount();
+						
+						startTimestamp = sample.getTimeStamp();
+						first = false;
+						
+					} else {
+						
+						if (driveCount != sample.getDriveCount()) {
+							logError("Load error : drive count changed.");
+							return false;
+						}
+						
+						if (netIfaceCount != sample.getNetworkInterfaceCount()) {
+							logError("Load error : interface count changed.");
+							return false;
+						}
+						
+						if (processorCount != sample.getProcessorCount()) {
+							logError("Load error : processor count changed.");
+							return false;
+						}
+						
+						endTimestamp = sample.getTimeStamp();
+						
+					}
+					
+					/* Store processors percentage */
+					for (int i = 0; i < processorUsage.length; i++) {
+						
+						if (i == 0) {
+							processorWriter.print(processorUsage[i]);
+						} else {
+							processorWriter.print(ASCII_TAB + processorUsage[i]);
+						}
+					}
+					processorWriter.println();
+
+					/* Store memory usage */
+					memoryWriter.println(memoryFree);
+
+					/* Store disks usage */
+					for (int i = 0; i < diskRead.length; i++) {
+						
+						if (i == 0) {
+							diskWriter.print(diskRead[i]);
+							diskWriter.print(ASCII_TAB + diskWrite[i]);
+						} else {
+							diskWriter.print(ASCII_TAB + diskRead[i]);
+							diskWriter.print(ASCII_TAB + diskWrite[i]);
+						}
+					}					
+					diskWriter.println();
+
+					/* Store net usage */
+					for (int i = 0; i < netReceive.length; i++) {
+						
+						if (i == 0) {
+							netWriter.print(netReceive[i]);
+							netWriter.print(ASCII_TAB + netSend[i]);						
+						} else {
+							netWriter.print(ASCII_TAB + netReceive[i]);
+							netWriter.print(ASCII_TAB + netSend[i]);
+						}
+					}					
+					netWriter.println();
+					
+				} catch (IOException e) {
+					
+					logError("I/O error converting load information : " + e.getMessage());					
+					closeFiles();
+					
+					return false;
+					
+				}				
+			} catch (Exception e) {
+				e.printStackTrace();
+				closeFiles();
+				
+				continue;
+			}
+		}
+		
+		HardwareDescription hwDesc;
+		
+		try { 
+			 hwDesc = loadMonitorReference.getHardwareDescription();
+		} catch (RemoteException e) {
+			logError("RMI error contacting Load Monitor when uploading load");
+			return false;
+		}
+		
+		long memorySize = hwDesc.getMemorySize();
+		maxMemoryWriter.println(memorySize);
+
+		String[] discNames = hwDesc.getDrives();
+		
+		for (String driveName : discNames) {
+			diskNamesWriter.println(driveName);
+		}
+
+		String[] netNames = hwDesc.getAdapters();
+		
+		for (String netName : netNames) {
+			netNamesWriter.println(netName);
+		}
+		
+		Date startTime = TimeUtils.convertWindowsTimeToJavaDate(startTimestamp);
+		Date endTime = TimeUtils.convertWindowsTimeToJavaDate(endTimestamp);
+		
+		SimpleDateFormat format = 
+            new SimpleDateFormat("dd MMM yyyy HH:mm:ss.SSS");
+		
+		String timeTitle = "from " + format.format(startTime) + " to " + format.format(endTime);
+		
+		titleWriter.println(timeTitle);		
+		
+		closeFiles();
+			
+		try {
+			uploadLoadFiles(bid, rid, loadDir, new String[] { TITLE_FILE, NET_NAMES_FILE, DISK_NAMES_FILE, MEMORY_FILE, 
+					MAX_MEMORY_FILE, PROCESSOR_FILE, DISK_FILE, NET_FILE }, hostName);
+		} catch (ResultsRepositoryException e) {
+			logError("Results repository error : " + e.getMessage());
+			return false;
+		} catch (IOException e) {
+			logError("I/O error during load upload : " + e.getMessage());
+			e.printStackTrace();
+		}
+		
+		return true;
+!!!649730.java!!!	run() : void
+		tempDir = getWorkingDirectory();
+		analysisId = new AID(new Integer(getTaskProperty(AID_PROPERTY))); 
+		experimentId = new EID(new Integer(getTaskProperty(EID_PROPERTY)));
+		srcDirectories = getTaskProperty(RESULTS_PATHS_PROPERTY);
+		hostName = getCanonicalLocalhostName();
+		
+		/* We suppose all methods addAnalysis, addExperiment, and addBinary has been called. 
+		 * Otherwise, attempt to upload results will result in an "analysis/experiment/binary 
+		 * doesn't exist" error */
+		
+		String contextName;
+		
+		try {
+			initUpload();
+			contextName = benchmarkManagerInstance.getAnalysisInterface().getSubentityInterface(analysisId)
+					.getContext(experimentId);
+			
+		} catch (Exception e) {
+			throw new TaskException("Results Repository upload initialization has failed (results collection task)", e);
+		}
+		
+		try {
+			loadMonitorReference = (LoadMonitorInterface) Naming.lookup("rmi://localhost/" 
+					+ LoadMonitorInterface.RMI_NAME);
+		} catch (RemoteException e) {
+			logError("Couldn't connect to Load Monitor : " + e.getMessage());
+		} catch (MalformedURLException e) {
+			logError("Couldn't connect to Load Monitor : " + e.getMessage());
+		} catch (NotBoundException e) {
+			logError("Couldn't connect to Load Monitor : " + e.getMessage());
+		}
+						
+		BufferedReader inputReader;
+		
+		/* Create list of paths to working directories of all results converting tasks */
+		inputReader = new BufferedReader(new StringReader(srcDirectories));
+		
+		ArrayList<String>resultsTable = new ArrayList<String>();
+		String[] lineTokens;
+		String line;
+		
+		try {
+		
+			while ((line = inputReader.readLine()) != null) {								
+				lineTokens = line.split("\t");			
+					if (lineTokens.length == 1) {						 
+						String temp = new String(lineTokens[0]);
+								
+						resultsTable.add(temp); 
+					} else {
+						throw new TaskException("Invalid task arguments (results directory table)");
+					}										
+			}
+			inputReader.close();
+		} catch (IOException e) {
+			throw new TaskException("Cannot read results...", e);
+		}		
+
+		Iterator it = resultsTable.iterator();
+
+		
+		try {
+			/* For each task, which was converting */
+			while (it.hasNext()) {
+			
+				BID bid;
+				RID rid;
+				String currentRun = (String) it.next();
+				/* Read tables with all metdata about data to upload */ 
+				BufferedReader tablesReader = new BufferedReader(new FileReader(
+						currentRun + File.separator + "tables.meta"));
+				
+				
+				while ((line = tablesReader.readLine()) != null) {
+					logDebug("Read line from tables.meta:" + line);
+					lineTokens = line.split("\t");
+					if (lineTokens.length == 7) {
+
+						BufferedReader metaReader = new BufferedReader(new FileReader(
+								currentRun + File.separator + lineTokens[RUN_ID_INDEX] + "-"
+								+ lineTokens[TABLE_NUMBER_INDEX] + ".meta"));
+						String suiteTitle = (line = metaReader.readLine()); 
+						
+						ArrayList<String> columnNames = new ArrayList<String>();						
+						
+						while ((line = metaReader.readLine()) != null) {
+							if (line.compareTo("") != 0 && line.compareTo("\n") != 0) {
+								columnNames.add(line);
+							}
+						}
+						
+						resultsRepositoryInstance.reportExperimentColumnNames(analysisId, 
+								experimentId, columnNames);
+
+						metaReader.close();
+						
+						bid = new BID(Integer.valueOf(lineTokens[BINARY_ID_INDEX]));
+						rid = new RID(Integer.valueOf(lineTokens[RUN_ID_INDEX]));
+						
+						if (lineTokens[VALIDITY_INDEX].compareTo("0") == 0) {							
+							uploadBinaryFile(analysisId, experimentId,
+									bid, rid, false,
+									currentRun + File.separator + lineTokens[RUN_ID_INDEX],
+									lineTokens[RESULTS_ROLE_INDEX], lineTokens[HOSTNAME_INDEX],
+									Integer.valueOf(lineTokens[TABLE_NUMBER_INDEX]),
+									Integer.valueOf(lineTokens[TOTAL_TABLES_INDEX]));
+																		
+						} else {
+							
+							convertOneRunTable(currentRun + File.separator 
+									+ lineTokens[RUN_ID_INDEX] + "-" + lineTokens[TABLE_NUMBER_INDEX], 
+									tempDir + File.separator + lineTokens[RUN_ID_INDEX] + "-" 
+									+ lineTokens[TABLE_NUMBER_INDEX], 
+									suiteTitle, columnNames.toArray(new String[] { null }));
+							uploadBinaryFile(analysisId, experimentId,
+									bid, rid, true,
+									tempDir + File.separator + lineTokens[RUN_ID_INDEX] + "-" 
+									+ lineTokens[TABLE_NUMBER_INDEX],
+									lineTokens[RESULTS_ROLE_INDEX], lineTokens[HOSTNAME_INDEX],
+									Integer.valueOf(lineTokens[TABLE_NUMBER_INDEX]),
+									Integer.valueOf(lineTokens[TOTAL_TABLES_INDEX]));
+						}
+					} else {
+						throw new TaskException("Invalid 'tables.meta' file generated from checking tasks");
+					}
+					
+					try {																		
+						String[] taskNames = BeenUtils.extractTaskIDs(benchmarkManagerInstance.getAnalysisInterface()
+								.getSubentityInterface(analysisId)
+								.getSubentityInterface(experimentId).getAllTasks(bid));						
+						for (int i = 0; i < taskNames.length; i++) {
+							resultsRepositoryInstance.performLogUpload(analysisId, 
+								experimentId, contextName, taskNames[i]);
+						}
+					} catch (RemoteException e) {
+						logError("RMI error contacting task manager when uploading logs : " + e.getMessage());
+					} catch (ResultsRepositoryException e) {
+						logError("Results repository error in logs upload : " + e.getMessage());
+					}
+					
+					logInfo("Uploading load for " 
+							+ Database.getRunReferenceString(analysisId, experimentId, bid, rid));
+					
+					resultsRepositoryInstance.initLoadUpload(analysisId, experimentId, bid, rid);
+					
+					if (doLoadUpload(bid, rid)) {		
+						resultsRepositoryInstance.closeLoadUpload(analysisId, experimentId, 
+								bid, rid, true);
+						logInfo("Load uploaded for " 
+								+ Database.getRunReferenceString(analysisId, experimentId, bid, rid));
+					} else {
+						resultsRepositoryInstance.closeLoadUpload(analysisId, experimentId, 
+								bid, rid, false);
+						logInfo("No load info to upload for " 
+								+ Database.getRunReferenceString(analysisId, experimentId, bid, rid));
+					}
+
+				}
+				tablesReader.close();
+				
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new TaskException("I/O error during results upload", e);
+		}  catch (ResultsRepositoryBusyException e) {
+			throw new TaskException("Results Repository overloaded (too many network connections)", e);
+		}
+		
+		logInfo("Results, logs and load uploaded.");
+
+!!!649858.java!!!	checkRequiredProperties() : void
+		checkRequiredProperties(new String[]{AID_PROPERTY, EID_PROPERTY, RESULTS_PATHS_PROPERTY});

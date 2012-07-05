@@ -1,0 +1,15 @@
+class PluginsIntegrityReport
+!!!136322.java!!!	getEntries() : IntegrityEntry
+		return entries.toArray(new IntegrityEntry[entries.size()]); 
+!!!136450.java!!!	addErrorEntry(in pluginName : String, in errorMessage : String, inout severity : IntegrityErrorSeverity) : void
+		entries.add(new IntegrityEntry(pluginName, errorMessage, severity));
+!!!136578.java!!!	addOKEntry(in pluginName : String) : void
+		entries.add(new IntegrityEntry(pluginName, "Plugin is valid", IntegrityErrorSeverity.OK));
+!!!136706.java!!!	toString() : String
+		String message = "Integrity report:\n";
+		for (IntegrityEntry entry : entries) {
+			message = message + entry + "\n";
+		}
+		
+		return message;
+		

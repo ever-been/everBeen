@@ -1,0 +1,175 @@
+class XamplerLinuxCompile
+!!!666498.java!!!	XamplerLinuxCompile()
+		super();
+!!!666626.java!!!	run() : void
+		try {
+			omniorbRoot = findOmniorbRoot(getTaskProperty(PROPERTY_OMNIORB_ROOT));
+			versionSuffix = determineVersionSuffix();
+			dearchive();
+			xamplerRoot = findXamplerRoot(getTempDirectory());
+			writeBenchmarkConstants();
+			setNamingMethod();
+			make();
+			install();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new TaskException("Build failed", e);
+		}
+!!!666754.java!!!	checkRequiredProperties() : void
+		checkRequiredProperties(new String[]{
+			PROPERTY_XAMPLER_DIR, 
+			PROPERTY_OMNIORB_ROOT,
+			PROPERTY_OMNIORB_VERSION
+		});
+		
+		File sourceDir = new File(getTaskProperty(PROPERTY_XAMPLER_DIR));
+		if (!sourceDir.exists() || sourceDir.list().length == 0) {
+			throw new TaskException("Source file does not exist in "
+				+ sourceDir.getAbsolutePath());
+		}
+		
+!!!666882.java!!!	determineVersionSuffix() : String
+		String omniVersion = getTaskProperty(PROPERTY_OMNIORB_VERSION);
+		String result = new Version(omniVersion).compareTo(new Version("4.1")) < 0 ? "4.0.X" : "4.1.X";
+		logInfo("omniORB version detected: " + result);
+		return result;
+!!!667010.java!!!	dearchive() : void
+		logInfo("Extracting from archive");
+		File archiveLocation = new File(getTaskProperty(PROPERTY_XAMPLER_DIR));
+		File archiveFile = null;
+		for (File f : archiveLocation.listFiles()) {
+			if (f.isFile() && f.getName().endsWith(".tar.bz2")) {
+				archiveFile = f;
+				break;
+			}
+		}
+		if (archiveFile == null) {
+			throw new TaskException("Can't find xampler archive in " + archiveLocation.getPath());
+		}
+		Untar.untar(archiveFile.getAbsolutePath(), getTempDirectory(), "bzip2");
+!!!667138.java!!!	writeBenchmarkConstants() : void
+		File target = new File(xamplerRoot, "C++/all_defs.h");
+		// write defaults
+		BufferedWriter writer = new BufferedWriter(new FileWriter(target));
+		writer.write(
+				"#define SAM_GlobalVersionMajor  1\n"
+				+ "#define SAM_GlobalVersionMinor  10\n" 
+				+ "#define SAM_GlobalVersion       \"post 1.10\"\n"
+				+ "#define SAM_GlobalDate          \"post 04/02/02\"\n"
+				+ "#define SAM_BenchmarkName       \"Xampler\"\n"
+		);
+		
+		for (String[] item : TEST_CONSTANTS) {
+			String value = getTaskProperty(item[0]);
+			if (StringUtils.isEmpty(value)) {
+				value = item[1];
+			}
+			writer.write("#define " + item[0] + " " + value + "\n");
+		}
+		
+		writer.flush();
+		writer.close();
+		
+!!!667266.java!!!	setNamingMethod() : void
+		File target = new File(xamplerRoot,
+				"C++/_Broker/omniORB/" + versionSuffix + "_Linux_GCC/make_ini.inc");
+		logInfo("Setting naming: " + target.getAbsolutePath());
+		Replace.replace(target.getAbsolutePath(),
+				"LOC_BASE := loc_naming_service",
+				"LOC_BASE := loc_file");
+!!!667394.java!!!	make() : void
+		logInfo("Running compilation");
+		String pythonLibs = new File(omniorbRoot,
+				"lib/python2.4/site-packages").getAbsolutePath();
+		
+		// we will run 'make raw' for each suite
+		procBuilder.command(new String[]{"make", "raw"});
+		Map<String, String> env = procBuilder.environment();
+		
+		// add omniorb dir and python libs to make environment
+		String pythonPath = env.containsKey("PYTHONPATH")
+							? env.get("PYTHONPATH") + ":" + pythonLibs
+							: pythonLibs; 
+		
+		env.put("OMNIORB_DIR", omniorbRoot.getAbsolutePath());
+		env.put("PYTHONPATH", pythonPath);
+		
+		File suiteRoot = new File(xamplerRoot, "C++/_Suites");
+		if (!suiteRoot.exists() || ! suiteRoot.isDirectory()) {
+			throw new TaskException("Invalid suites directory: " + suiteRoot.getPath());
+		}
+		
+		for (File suite : suiteRoot.listFiles()) {
+			// skip non-directory entries
+			if (!suite.isDirectory()) {
+				continue;
+			}
+			
+			
+			try {
+				logInfo("Building '" + suite.getName() + "'");
+				suite = new File(suite, "omniORB_" + versionSuffix + "_Linux_GCC");
+				makeSuite(suite);
+			} catch (IOException e) {
+				logError("Couldn't start 'make' for suite: '" + suite + "'");
+			} catch (InterruptedException e) {
+				throw new TaskException("Interrupted");
+			}
+		}
+		
+		logInfo("Build finished");
+!!!667522.java!!!	makeSuite(inout suiteDirectory : File) : int
+		procBuilder.directory(suiteDirectory);
+		Process p = procBuilder.start();
+		
+		OutputReader stdOutReader = new OutputReader(p.getInputStream(), OutputType.STDOUT);
+		stdOutReader.setOutputStream(System.out);
+		stdOutReader.start();
+		OutputReader stdErrReader = new OutputReader(p.getErrorStream(), OutputType.STDERR);
+		stdErrReader.setOutputStream(System.err);
+		stdErrReader.start();
+	
+		int result = -1;
+		try {
+			result = p.waitFor();
+			if (result != 0) {
+				logWarning("Build finished with non-null return value");
+			} else {
+				logDebug("Suite built OK");
+			}
+		} catch (InterruptedException e) {
+			p.destroy();
+			throw e;
+		} finally {
+			// stop reader threads in any case
+			if (stdOutReader.isAlive()) {
+				stdOutReader.interrupt();
+			}
+			if (stdErrReader.isAlive()) {
+				stdErrReader.interrupt();
+			}
+		}
+		
+		return result;
+!!!667650.java!!!	install() : void
+		try {
+			Move.filesetMove(getTempDirectory(), "**/Server", getWorkingDirectory());
+			Move.filesetMove(getTempDirectory(), "**/Client", getWorkingDirectory());
+		} catch (AntTaskException e) {
+			logFatal("Unable to install binaries");
+			throw new TaskException("Unable to install binaries", e);
+		}
+!!!667778.java!!!	findOmniorbRoot(in rootDir : String) : File
+		File root = BeenUtils.findRootDir(rootDir,"lib");
+		if (root == null) {
+			throw new TaskException("Can't find omniOrb root directory!");
+		}
+		
+		return root;
+!!!667906.java!!!	findXamplerRoot(in rootDir : String) : File
+		File root = BeenUtils.findRootDir(rootDir,"C++");
+		if (root == null) {
+			throw new TaskException("Can't find Xampler root directory");
+		}
+		
+		return root;

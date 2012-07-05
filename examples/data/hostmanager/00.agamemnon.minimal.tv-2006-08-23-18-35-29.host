@@ -1,0 +1,5866 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hostInfo>
+<hostName>00.agamemnon.minimal.tv</hostName>
+<lastCheckDate>2006/08/23</lastCheckDate>
+<lastCheckTime>18:35.29</lastCheckTime>
+<detector>hwdet3_linux</detector>
+<operatingSystem>
+<basicInfo>
+<name>Fedora Core release 5 (Bordeaux)</name>
+<vendor>Red Hat Inc.</vendor>
+<arch>x86_64</arch>
+</basicInfo>
+<advancedInfo>
+<distribution>Fedora Core</distribution>
+<distroVersion>5</distroVersion>
+<release>2.6.15-1.2054_FC5</release>
+<version>#1 SMP Tue Mar 14 15:48:20 EST 2006</version>
+<kernelVersion>2.6.15</kernelVersion>
+</advancedInfo>
+</operatingSystem>
+<network>
+<networkAdapter>
+<name>eth0</name>
+<vendor>(unknown)</vendor>
+<adapterType>Ethernet</adapterType>
+<macAddress>00:0C:29:A6:80:57</macAddress>
+</networkAdapter>
+<networkAdapter>
+<name>lo</name>
+<vendor>(unknown)</vendor>
+<adapterType>Local Loopback</adapterType>
+<macAddress>(unknown)</macAddress>
+</networkAdapter>
+</network>
+<memory>
+<physicalMemorySize>1073741824</physicalMemorySize>
+<virtualMemorySize>35184372087808</virtualMemorySize>
+<swapSize>1073741824</swapSize>
+<pagingFileSize>0</pagingFileSize>
+</memory>
+<processors>
+<processor>
+<model>AMD Athlon(tm) 64 Processor 3000+</model>
+<vendor>AMD</vendor>
+<speed>1800</speed>
+<l2CacheSize>512</l2CacheSize>
+</processor>
+</processors>
+<installedProducts>
+<product>
+<name>termcap</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>5.4</version>
+</product>
+<product>
+<name>glibc</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.4</version>
+</product>
+<product>
+<name>glib2</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.10.1</version>
+</product>
+<product>
+<name>libICE</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>ncurses</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>5.5</version>
+</product>
+<product>
+<name>libSM</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>nspr</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.6.1</version>
+</product>
+<product>
+<name>libusb</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.1.11</version>
+</product>
+<product>
+<name>startup-notification</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.8</version>
+</product>
+<product>
+<name>libXfixes</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.0.1.2</version>
+</product>
+<product>
+<name>libpng</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.2.8</version>
+</product>
+<product>
+<name>make</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.80</version>
+</product>
+<product>
+<name>glib</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.2.10</version>
+</product>
+<product>
+<name>SDL</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.2.9</version>
+</product>
+<product>
+<name>libidn</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.6.2</version>
+</product>
+<product>
+<name>wireless-tools</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>28</version>
+</product>
+<product>
+<name>perl-URI</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.35</version>
+</product>
+<product>
+<name>xorg-x11-xinit</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.1</version>
+</product>
+<product>
+<name>less</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>394</version>
+</product>
+<product>
+<name>ncurses</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>5.5</version>
+</product>
+<product>
+<name>bzip2</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.3</version>
+</product>
+<product>
+<name>libXrandr</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.1.0.2</version>
+</product>
+<product>
+<name>libIDL</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.8.6</version>
+</product>
+<product>
+<name>libdrm</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.0</version>
+</product>
+<product>
+<name>cryptsetup-luks</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.3</version>
+</product>
+<product>
+<name>libXdamage</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.2.2</version>
+</product>
+<product>
+<name>perl-Digest-HMAC</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.01</version>
+</product>
+<product>
+<name>perl-Compress-Zlib</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.41</version>
+</product>
+<product>
+<name>libXres</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>gpm</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.20.1</version>
+</product>
+<product>
+<name>cdparanoia-libs</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>alpha9.8</version>
+</product>
+<product>
+<name>libdrm</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.0</version>
+</product>
+<product>
+<name>gmime</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.1.19</version>
+</product>
+<product>
+<name>zip</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.31</version>
+</product>
+<product>
+<name>rmt</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.4b41</version>
+</product>
+<product>
+<name>gdk-pixbuf</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.22.0</version>
+</product>
+<product>
+<name>grub</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.97</version>
+</product>
+<product>
+<name>telnet</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.17</version>
+</product>
+<product>
+<name>bitstream-vera-fonts</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.10</version>
+</product>
+<product>
+<name>rdate</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.4</version>
+</product>
+<product>
+<name>finger</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.17</version>
+</product>
+<product>
+<name>words</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.0</version>
+</product>
+<product>
+<name>e2fsprogs-libs</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.38</version>
+</product>
+<product>
+<name>fontconfig</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.3.94</version>
+</product>
+<product>
+<name>python</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.4.2</version>
+</product>
+<product>
+<name>esound</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.2.36</version>
+</product>
+<product>
+<name>libXft</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.1.8.2</version>
+</product>
+<product>
+<name>libgnomecanvas</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0</version>
+</product>
+<product>
+<name>pyxf86config</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.3.24</version>
+</product>
+<product>
+<name>man</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.6c</version>
+</product>
+<product>
+<name>pam</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.99.3.0</version>
+</product>
+<product>
+<name>nfs-utils-lib</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.8</version>
+</product>
+<product>
+<name>gnome-mag</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.12.4</version>
+</product>
+<product>
+<name>python-numeric</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>23.7</version>
+</product>
+<product>
+<name>pam</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.99.3.0</version>
+</product>
+<product>
+<name>samba-common</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.0.21b</version>
+</product>
+<product>
+<name>alchemist</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.36</version>
+</product>
+<product>
+<name>httpd</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.2.0</version>
+</product>
+<product>
+<name>libgdiplus</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.1.13.4</version>
+</product>
+<product>
+<name>docbook-dtds</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0</version>
+</product>
+<product>
+<name>openldap</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.3.19</version>
+</product>
+<product>
+<name>ppp</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.4.3</version>
+</product>
+<product>
+<name>system-config-rootpassword</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.1.8</version>
+</product>
+<product>
+<name>cadaver</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.22.3</version>
+</product>
+<product>
+<name>stunnel</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.14</version>
+</product>
+<product>
+<name>psacct</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>6.3.2</version>
+</product>
+<product>
+<name>nss_db</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.2</version>
+</product>
+<product>
+<name>dhclient</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.0.3</version>
+</product>
+<product>
+<name>glibc-kernheaders</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.0</version>
+</product>
+<product>
+<name>mutt</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.4.2.1</version>
+</product>
+<product>
+<name>ipsec-tools</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.6.4</version>
+</product>
+<product>
+<name>hal</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.5.7</version>
+</product>
+<product>
+<name>kudzu</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.2.34.3</version>
+</product>
+<product>
+<name>NetworkManager</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.6.0</version>
+</product>
+<product>
+<name>libgnomeprint22</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.12.1</version>
+</product>
+<product>
+<name>hal-cups-utils</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.5.5</version>
+</product>
+<product>
+<name>kdepim</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.5.1</version>
+</product>
+<product>
+<name>gnome-spell</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.5</version>
+</product>
+<product>
+<name>nautilus-cd-burner</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0.1</version>
+</product>
+<product>
+<name>beagle</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.2.2</version>
+</product>
+<product>
+<name>gdm</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0</version>
+</product>
+<product>
+<name>kdeutils</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.5.1</version>
+</product>
+<product>
+<name>evolution-webcal</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.4.1</version>
+</product>
+<product>
+<name>gnome-screensaver</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0</version>
+</product>
+<product>
+<name>xorg-x11-fonts-misc</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>7.0</version>
+</product>
+<product>
+<name>gstreamer</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.10.3</version>
+</product>
+<product>
+<name>system-config-network</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.3.30</version>
+</product>
+<product>
+<name>gnome-applets</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0</version>
+</product>
+<product>
+<name>system-config-display</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.37</version>
+</product>
+<product>
+<name>xorg-x11-drv-siliconmotion</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.3.1.5</version>
+</product>
+<product>
+<name>xorg-x11-drv-dummy</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.1.0.5</version>
+</product>
+<product>
+<name>xorg-x11-drv-via</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.1.33.2</version>
+</product>
+<product>
+<name>xorg-x11-drv-elo2300</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0.5</version>
+</product>
+<product>
+<name>xorg-x11-drv-magellan</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0.5</version>
+</product>
+<product>
+<name>firstboot</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.4.6</version>
+</product>
+<product>
+<name>libX11</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>InventorXt</name>
+<vendor>(none)</vendor>
+<version>2.1.5</version>
+</product>
+<product>
+<name>wxGTK-gl</name>
+<vendor>Fedora Project</vendor>
+<version>2.6.3</version>
+</product>
+<product>
+<name>libXp-devel</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>perl-TeX-Hyphen</name>
+<vendor>(none)</vendor>
+<version>0.140</version>
+</product>
+<product>
+<name>libICE-devel</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>Macaulay2</name>
+<vendor>Fedora Project</vendor>
+<version>0.9.2</version>
+</product>
+<product>
+<name>libXt-devel</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>xemacs-sumo</name>
+<vendor>Fedora Project</vendor>
+<version>20060510</version>
+</product>
+<product>
+<name>tetex-fonts</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.0</version>
+</product>
+<product>
+<name>tetex</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.0</version>
+</product>
+<product>
+<name>XaraLX-examples</name>
+<vendor>Fedora Project</vendor>
+<version>0.7</version>
+</product>
+<product>
+<name>link-grammar</name>
+<vendor>Fedora Project</vendor>
+<version>4.2.2</version>
+</product>
+<product>
+<name>mysql</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>5.0.22</version>
+</product>
+<product>
+<name>tclsoap</name>
+<vendor>(none)</vendor>
+<version>1.6.7</version>
+</product>
+<product>
+<name>libmusicbrainz</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.1.1</version>
+</product>
+<product>
+<name>perl-IO-Zlib</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.04</version>
+</product>
+<product>
+<name>perl-LDAP</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.33</version>
+</product>
+<product>
+<name>perl-Convert-TNEF</name>
+<vendor>(none)</vendor>
+<version>0.17</version>
+</product>
+<product>
+<name>ruby</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.8.4</version>
+</product>
+<product>
+<name>lha</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.14i</version>
+</product>
+<product>
+<name>aplus-fsf-devel</name>
+<vendor>Fedora Project</vendor>
+<version>4.20.2</version>
+</product>
+<product>
+<name>clamav-server</name>
+<vendor>Fedora Project</vendor>
+<version>0.88.4</version>
+</product>
+<product>
+<name>php-snmp</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>5.1.4</version>
+</product>
+<product>
+<name>bigloo-libs</name>
+<vendor>Fedora Project</vendor>
+<version>2.8b</version>
+</product>
+<product>
+<name>gdb</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>6.3.0.0</version>
+</product>
+<product>
+<name>gecko-sharp2</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.11</version>
+</product>
+<product>
+<name>cdlabelgen</name>
+<vendor>(none)</vendor>
+<version>3.5.0</version>
+</product>
+<product>
+<name>bzflag</name>
+<vendor>Fedora Project</vendor>
+<version>2.0.8</version>
+</product>
+<product>
+<name>bmp-xosd</name>
+<vendor>Fedora Project</vendor>
+<version>2.2.14</version>
+</product>
+<product>
+<name>bochs</name>
+<vendor>(none)</vendor>
+<version>2.2.6</version>
+</product>
+<product>
+<name>glibc-common</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.4</version>
+</product>
+<product>
+<name>cpp</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.1.1</version>
+</product>
+<product>
+<name>easytag</name>
+<vendor>(none)</vendor>
+<version>1.1</version>
+</product>
+<product>
+<name>eric</name>
+<vendor>Fedora Project</vendor>
+<version>3.9.1</version>
+</product>
+<product>
+<name>fltk</name>
+<vendor>(none)</vendor>
+<version>1.1.7</version>
+</product>
+<product>
+<name>fluidsynth</name>
+<vendor>Fedora Project</vendor>
+<version>1.0.7</version>
+</product>
+<product>
+<name>glib-java</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.2.5</version>
+</product>
+<product>
+<name>libglade-java</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.12.4</version>
+</product>
+<product>
+<name>fyre</name>
+<vendor>(none)</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>gstreamer08-python</name>
+<vendor>(none)</vendor>
+<version>0.8.4</version>
+</product>
+<product>
+<name>gdeskcal</name>
+<vendor>Fedora Project</vendor>
+<version>0.57.1</version>
+</product>
+<product>
+<name>libdap</name>
+<vendor>(none)</vendor>
+<version>3.6.0</version>
+</product>
+<product>
+<name>fortune-mod</name>
+<vendor>(none)</vendor>
+<version>1.99.1</version>
+</product>
+<product>
+<name>hddtemp</name>
+<vendor>Fedora Project</vendor>
+<version>0.3</version>
+</product>
+<product>
+<name>kanatest</name>
+<vendor>Fedora Project</vendor>
+<version>0.3.6</version>
+</product>
+<product>
+<name>kicad</name>
+<vendor>Fedora Project</vendor>
+<version>2006.06.26</version>
+</product>
+<product>
+<name>desktop-backgrounds-basic</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.0</version>
+</product>
+<product>
+<name>tzdata</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2006b</version>
+</product>
+<product>
+<name>libSM</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>zlib</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.2.3</version>
+</product>
+<product>
+<name>audit-libs</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.1.5</version>
+</product>
+<product>
+<name>desktop-file-utils</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.10</version>
+</product>
+<product>
+<name>libsepol</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.11.18</version>
+</product>
+<product>
+<name>libattr</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.4.28</version>
+</product>
+<product>
+<name>libXdmcp</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>libXinerama</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.1</version>
+</product>
+<product>
+<name>libXxf86misc</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>popt</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.10.2</version>
+</product>
+<product>
+<name>cdparanoia-libs</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>alpha9.8</version>
+</product>
+<product>
+<name>glib</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.2.10</version>
+</product>
+<product>
+<name>iproute</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.6.15</version>
+</product>
+<product>
+<name>beecrypt</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.1.2</version>
+</product>
+<product>
+<name>gdbm</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.8.0</version>
+</product>
+<product>
+<name>libavc1394</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.5.1</version>
+</product>
+<product>
+<name>libXp</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>ed</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.2</version>
+</product>
+<product>
+<name>libfontenc</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.1</version>
+</product>
+<product>
+<name>libXext</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>gtk+</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.2.10</version>
+</product>
+<product>
+<name>gnome-speech</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.3.9</version>
+</product>
+<product>
+<name>freeglut</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.4.0</version>
+</product>
+<product>
+<name>libmng</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.9</version>
+</product>
+<product>
+<name>libXScrnSaver</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.1</version>
+</product>
+<product>
+<name>perl-Net-IP</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.24</version>
+</product>
+<product>
+<name>intltool</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.34.2</version>
+</product>
+<product>
+<name>elfutils-libs</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.119</version>
+</product>
+<product>
+<name>xorg-x11-server-utils</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.1</version>
+</product>
+<product>
+<name>unzip</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>5.52</version>
+</product>
+<product>
+<name>db4</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.3.29</version>
+</product>
+<product>
+<name>lcms</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.15</version>
+</product>
+<product>
+<name>net-snmp-libs</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>5.3</version>
+</product>
+<product>
+<name>mingetty</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.07</version>
+</product>
+<product>
+<name>anacron</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.3</version>
+</product>
+<product>
+<name>fbset</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.1</version>
+</product>
+<product>
+<name>ftp</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.17</version>
+</product>
+<product>
+<name>jwhois</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.2.3</version>
+</product>
+<product>
+<name>libtermcap</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.0.8</version>
+</product>
+<product>
+<name>tree</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.5.0</version>
+</product>
+<product>
+<name>dosfstools</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.11</version>
+</product>
+<product>
+<name>libselinux</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.29.7</version>
+</product>
+<product>
+<name>libsetrans</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.1.18</version>
+</product>
+<product>
+<name>dbus-glib</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.61</version>
+</product>
+<product>
+<name>newt</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.52.2</version>
+</product>
+<product>
+<name>procps</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.2.6</version>
+</product>
+<product>
+<name>gtk2</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.8.15</version>
+</product>
+<product>
+<name>gnome-icon-theme</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.1</version>
+</product>
+<product>
+<name>rpm-libs</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.4.2</version>
+</product>
+<product>
+<name>system-config-securitylevel-tui</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.6.16</version>
+</product>
+<product>
+<name>utempter</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.5.5</version>
+</product>
+<product>
+<name>libgnomecanvas</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0</version>
+</product>
+<product>
+<name>libnotify</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.3.0</version>
+</product>
+<product>
+<name>xorg-x11-utils</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.1</version>
+</product>
+<product>
+<name>libselinux-python</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.29.7</version>
+</product>
+<product>
+<name>authconfig</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>5.2.2</version>
+</product>
+<product>
+<name>usermode-gtk</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.85</version>
+</product>
+<product>
+<name>ntp</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.2.0.a.20050816</version>
+</product>
+<product>
+<name>htmlview</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.0.0</version>
+</product>
+<product>
+<name>dbus-sharp</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.61</version>
+</product>
+<product>
+<name>e2fsprogs-libs</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.38</version>
+</product>
+<product>
+<name>kdelibs</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.5.1</version>
+</product>
+<product>
+<name>mtools</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.9.10</version>
+</product>
+<product>
+<name>pam_ccreds</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3</version>
+</product>
+<product>
+<name>autofs</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.1.4</version>
+</product>
+<product>
+<name>slrn</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.9.8.1pl1</version>
+</product>
+<product>
+<name>logwatch</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>7.1</version>
+</product>
+<product>
+<name>cups</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.1.23</version>
+</product>
+<product>
+<name>caching-nameserver</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>7.3</version>
+</product>
+<product>
+<name>cyrus-sasl</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.1.21</version>
+</product>
+<product>
+<name>gnome-user-share</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.9</version>
+</product>
+<product>
+<name>acpid</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.4</version>
+</product>
+<product>
+<name>libbonoboui</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0</version>
+</product>
+<product>
+<name>gphoto2</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.1.99</version>
+</product>
+<product>
+<name>mkinitrd</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>5.0.32</version>
+</product>
+<product>
+<name>librsvg2</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.2</version>
+</product>
+<product>
+<name>gthumb</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.7.3</version>
+</product>
+<product>
+<name>openssh-clients</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.3p2</version>
+</product>
+<product>
+<name>mozilla</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.7.12</version>
+</product>
+<product>
+<name>selinux-policy-targeted</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.2.23</version>
+</product>
+<product>
+<name>kdeaddons</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.5.1</version>
+</product>
+<product>
+<name>pcmciautils</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>011</version>
+</product>
+<product>
+<name>kdenetwork</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.5.1</version>
+</product>
+<product>
+<name>gnome-system-monitor</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0</version>
+</product>
+<product>
+<name>prelink</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.3.6</version>
+</product>
+<product>
+<name>xorg-x11-fonts-Type1</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>7.0</version>
+</product>
+<product>
+<name>xorg-x11-drv-mouse</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.4</version>
+</product>
+<product>
+<name>gnome-python2-gtkhtml2</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0</version>
+</product>
+<product>
+<name>hal-gnome</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.5.7</version>
+</product>
+<product>
+<name>xorg-x11-drv-microtouch</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0.5</version>
+</product>
+<product>
+<name>xorg-x11-drv-savage</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.0.2.3</version>
+</product>
+<product>
+<name>xorg-x11-drv-jamstudio</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0.5</version>
+</product>
+<product>
+<name>xorg-x11-drv-dynapro</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0.5</version>
+</product>
+<product>
+<name>xorg-x11-drv-penmount</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0.5</version>
+</product>
+<product>
+<name>yum-fedorafaq</name>
+<vendor>(none)</vendor>
+<version>5</version>
+</product>
+<product>
+<name>pkgconfig</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.20</version>
+</product>
+<product>
+<name>freetype-devel</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.1.10</version>
+</product>
+<product>
+<name>mikmod</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.1.6</version>
+</product>
+<product>
+<name>perl-Apache-LogRegex</name>
+<vendor>(none)</vendor>
+<version>1.2</version>
+</product>
+<product>
+<name>perl-Pod-Simple</name>
+<vendor>(none)</vendor>
+<version>3.04</version>
+</product>
+<product>
+<name>perl-Template-Toolkit</name>
+<vendor>Fedora Project</vendor>
+<version>2.15</version>
+</product>
+<product>
+<name>mesa-libGL-devel</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>6.4.2</version>
+</product>
+<product>
+<name>InventorXt-devel</name>
+<vendor>(none)</vendor>
+<version>2.1.5</version>
+</product>
+<product>
+<name>emacs-common</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>21.4</version>
+</product>
+<product>
+<name>slib</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3a1</version>
+</product>
+<product>
+<name>tetex-latex</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.0</version>
+</product>
+<product>
+<name>mathml-fonts</name>
+<vendor>Fedora Project</vendor>
+<version>1.0</version>
+</product>
+<product>
+<name>glibmm24</name>
+<vendor>Fedora Project</vendor>
+<version>2.8.9</version>
+</product>
+<product>
+<name>perl-DBD-MySQL</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.0004</version>
+</product>
+<product>
+<name>ClanLib06</name>
+<vendor>Fedora Project</vendor>
+<version>0.6.5</version>
+</product>
+<product>
+<name>binutils</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.16.91.0.6</version>
+</product>
+<product>
+<name>perl-Mail-SPF-Query</name>
+<vendor>(none)</vendor>
+<version>1.999.1</version>
+</product>
+<product>
+<name>perl-TimeDate</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.16</version>
+</product>
+<product>
+<name>freeze</name>
+<vendor>(none)</vendor>
+<version>2.5.0</version>
+</product>
+<product>
+<name>perl-Authen-SASL</name>
+<vendor>Fedora Project</vendor>
+<version>2.10</version>
+</product>
+<product>
+<name>aide</name>
+<vendor>(none)</vendor>
+<version>0.11</version>
+</product>
+<product>
+<name>fedora-usermgmt-shadow-utils</name>
+<vendor>(none)</vendor>
+<version>0.8</version>
+</product>
+<product>
+<name>timidity++</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.13.2</version>
+</product>
+<product>
+<name>php-mysql</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>5.1.4</version>
+</product>
+<product>
+<name>patchutils</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.2.31</version>
+</product>
+<product>
+<name>svgalib</name>
+<vendor>Fedora Project</vendor>
+<version>1.9.25</version>
+</product>
+<product>
+<name>ogre</name>
+<vendor>Fedora Project</vendor>
+<version>1.2.1</version>
+</product>
+<product>
+<name>chess</name>
+<vendor>Fedora Project</vendor>
+<version>1.0</version>
+</product>
+<product>
+<name>bigloo</name>
+<vendor>Fedora Project</vendor>
+<version>2.8b</version>
+</product>
+<product>
+<name>conglomerate</name>
+<vendor>(none)</vendor>
+<version>0.9.1</version>
+</product>
+<product>
+<name>mozilla</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.7.13</version>
+</product>
+<product>
+<name>glibc</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.4</version>
+</product>
+<product>
+<name>kover</name>
+<vendor>(none)</vendor>
+<version>2.9.6</version>
+</product>
+<product>
+<name>PyQt</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.15</version>
+</product>
+<product>
+<name>fbida</name>
+<vendor>Fedora Project</vendor>
+<version>2.03</version>
+</product>
+<product>
+<name>libofx</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.8.0</version>
+</product>
+<product>
+<name>fontforge</name>
+<vendor>(none)</vendor>
+<version>20060125</version>
+</product>
+<product>
+<name>jpackage-utils</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.6.6</version>
+</product>
+<product>
+<name>asm</name>
+<vendor>JPackage Project</vendor>
+<version>1.5.3</version>
+</product>
+<product>
+<name>frotz</name>
+<vendor>(none)</vendor>
+<version>2.43</version>
+</product>
+<product>
+<name>hwbrowser</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.26</version>
+</product>
+<product>
+<name>gonvert</name>
+<vendor>Fedora Project</vendor>
+<version>0.2.15</version>
+</product>
+<product>
+<name>tetex-unicode</name>
+<vendor>(none)</vendor>
+<version>0</version>
+</product>
+<product>
+<name>icon-slicer</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.3</version>
+</product>
+<product>
+<name>qt4</name>
+<vendor>Fedora Project</vendor>
+<version>4.1.4</version>
+</product>
+<product>
+<name>kasablanca</name>
+<vendor>Fedora Project</vendor>
+<version>0.4.0.2</version>
+</product>
+<product>
+<name>kchmviewer</name>
+<vendor>Fedora Project</vendor>
+<version>2.6</version>
+</product>
+<product>
+<name>libgcc</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.1.0</version>
+</product>
+<product>
+<name>gnome-mime-data</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.4.2</version>
+</product>
+<product>
+<name>cracklib-dicts</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.8.6</version>
+</product>
+<product>
+<name>zlib</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.2.3</version>
+</product>
+<product>
+<name>libICE</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>chkconfig</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.3.29</version>
+</product>
+<product>
+<name>libjpeg</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>6b</version>
+</product>
+<product>
+<name>libstdc++</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.1.0</version>
+</product>
+<product>
+<name>bzip2-libs</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.3</version>
+</product>
+<product>
+<name>libxml2</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.6.23</version>
+</product>
+<product>
+<name>sed</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.1.5</version>
+</product>
+<product>
+<name>readline</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>5.0</version>
+</product>
+<product>
+<name>freetype</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.1.10</version>
+</product>
+<product>
+<name>libogg</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.1.3</version>
+</product>
+<product>
+<name>libcap</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.10</version>
+</product>
+<product>
+<name>libgcrypt</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.2.2</version>
+</product>
+<product>
+<name>elfutils-libelf</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.119</version>
+</product>
+<product>
+<name>libXrender</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.9.0.2</version>
+</product>
+<product>
+<name>libXmu</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>libXScrnSaver</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.1</version>
+</product>
+<product>
+<name>libexif</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.6.12</version>
+</product>
+<product>
+<name>diffutils</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.8.1</version>
+</product>
+<product>
+<name>cyrus-sasl-lib</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.1.21</version>
+</product>
+<product>
+<name>gnutls</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.2.10</version>
+</product>
+<product>
+<name>gamin</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.1.7</version>
+</product>
+<product>
+<name>libart_lgpl</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.3.17</version>
+</product>
+<product>
+<name>tcp_wrappers</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>7.6</version>
+</product>
+<product>
+<name>libsoup</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.2.91</version>
+</product>
+<product>
+<name>libXaw</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.1</version>
+</product>
+<product>
+<name>m4</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.4.4</version>
+</product>
+<product>
+<name>libusb</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.1.11</version>
+</product>
+<product>
+<name>libXau</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>hesiod</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.0.2</version>
+</product>
+<product>
+<name>patch</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.5.4</version>
+</product>
+<product>
+<name>xorg-x11-xkb-utils</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.1</version>
+</product>
+<product>
+<name>libXcomposite</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.2.2.2</version>
+</product>
+<product>
+<name>libdmx</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.1</version>
+</product>
+<product>
+<name>flac</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.1.2</version>
+</product>
+<product>
+<name>time</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.7</version>
+</product>
+<product>
+<name>iptables</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.3.5</version>
+</product>
+<product>
+<name>libgtop2</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0</version>
+</product>
+<product>
+<name>ORBit2</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0</version>
+</product>
+<product>
+<name>libX11</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>libXfixes</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.0.1.2</version>
+</product>
+<product>
+<name>libXt</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>libgpg-error</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.1</version>
+</product>
+<product>
+<name>libbonobo</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0</version>
+</product>
+<product>
+<name>libdv</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.104</version>
+</product>
+<product>
+<name>imlib</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.9.13</version>
+</product>
+<product>
+<name>bluez-libs</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.25</version>
+</product>
+<product>
+<name>libxslt</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.1.15</version>
+</product>
+<product>
+<name>libXevie</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>giflib</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.1.3</version>
+</product>
+<product>
+<name>lm_sensors</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.9.2</version>
+</product>
+<product>
+<name>perl-HTML-Parser</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.50</version>
+</product>
+<product>
+<name>perl-XML-Parser</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.34</version>
+</product>
+<product>
+<name>libXTrap</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>libXfontcache</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.1</version>
+</product>
+<product>
+<name>vim-common</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>6.4.007</version>
+</product>
+<product>
+<name>cpp</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.1.0</version>
+</product>
+<product>
+<name>gamin</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.1.7</version>
+</product>
+<product>
+<name>fedora-release</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>5</version>
+</product>
+<product>
+<name>pnm2ppa</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.04</version>
+</product>
+<product>
+<name>gmp</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.1.4</version>
+</product>
+<product>
+<name>mesa-libGLU</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>6.4.2</version>
+</product>
+<product>
+<name>libmng</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.9</version>
+</product>
+<product>
+<name>eject</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.1.2</version>
+</product>
+<product>
+<name>libnl</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0</version>
+</product>
+<product>
+<name>libdaemon</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.10</version>
+</product>
+<product>
+<name>rsh</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.17</version>
+</product>
+<product>
+<name>dump</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.4b41</version>
+</product>
+<product>
+<name>dvd+rw-tools</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>5.21.4.10.8</version>
+</product>
+<product>
+<name>aspell-en</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>6.0</version>
+</product>
+<product>
+<name>cyrus-sasl-plain</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.1.21</version>
+</product>
+<product>
+<name>rsync</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.6.6</version>
+</product>
+<product>
+<name>talk</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.17</version>
+</product>
+<product>
+<name>nano</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.3.8</version>
+</product>
+<product>
+<name>readline</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>5.0</version>
+</product>
+<product>
+<name>autorun</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.18</version>
+</product>
+<product>
+<name>tcp_wrappers</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>7.6</version>
+</product>
+<product>
+<name>pam_passwdqc</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.2</version>
+</product>
+<product>
+<name>symlinks</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.2</version>
+</product>
+<product>
+<name>hdparm</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>6.3</version>
+</product>
+<product>
+<name>lsof</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.76</version>
+</product>
+<product>
+<name>gnome-audio</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.0.0</version>
+</product>
+<product>
+<name>findutils</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.2.27</version>
+</product>
+<product>
+<name>net-tools</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.60</version>
+</product>
+<product>
+<name>libselinux</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.29.7</version>
+</product>
+<product>
+<name>shadow-utils</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.0.14</version>
+</product>
+<product>
+<name>krb5-libs</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.4.3</version>
+</product>
+<product>
+<name>libXft</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.1.8.2</version>
+</product>
+<product>
+<name>cups-libs</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.1.23</version>
+</product>
+<product>
+<name>fontconfig</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.3.94</version>
+</product>
+<product>
+<name>gtk2</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.8.15</version>
+</product>
+<product>
+<name>gnome-keyring</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.4.9</version>
+</product>
+<product>
+<name>gail</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.8.11</version>
+</product>
+<product>
+<name>hwdata</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.177</version>
+</product>
+<product>
+<name>metacity</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0</version>
+</product>
+<product>
+<name>rpm</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.4.2</version>
+</product>
+<product>
+<name>poppler</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.5.1</version>
+</product>
+<product>
+<name>dbus-python</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.61</version>
+</product>
+<product>
+<name>libgssapi</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.7</version>
+</product>
+<product>
+<name>nscd</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.4</version>
+</product>
+<product>
+<name>poppler-utils</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.5.1</version>
+</product>
+<product>
+<name>gail</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.8.11</version>
+</product>
+<product>
+<name>xscreensaver-extras</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.24</version>
+</product>
+<product>
+<name>pycairo</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.2</version>
+</product>
+<product>
+<name>sox</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>12.17.9</version>
+</product>
+<product>
+<name>libsemanage</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.5.28</version>
+</product>
+<product>
+<name>pygtk2-libglade</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.8.4</version>
+</product>
+<product>
+<name>python-sqlite</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.1.7</version>
+</product>
+<product>
+<name>SysVinit</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.86</version>
+</product>
+<product>
+<name>at</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.1.8</version>
+</product>
+<product>
+<name>authconfig-gtk</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>5.2.2</version>
+</product>
+<product>
+<name>system-config-securitylevel</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.6.16</version>
+</product>
+<product>
+<name>libxml2-python</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.6.23</version>
+</product>
+<product>
+<name>postgresql-libs</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>8.1.3</version>
+</product>
+<product>
+<name>MAKEDEV</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.21</version>
+</product>
+<product>
+<name>system-config-users</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.2.42</version>
+</product>
+<product>
+<name>mono-data</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.1.13.4</version>
+</product>
+<product>
+<name>sgml-common</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.6.3</version>
+</product>
+<product>
+<name>tcsh</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>6.14</version>
+</product>
+<product>
+<name>krb5-libs</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.4.3</version>
+</product>
+<product>
+<name>samba-common</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.0.21b</version>
+</product>
+<product>
+<name>dmraid</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0.rc9</version>
+</product>
+<product>
+<name>sudo</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.6.8p12</version>
+</product>
+<product>
+<name>pam_krb5</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.2.6</version>
+</product>
+<product>
+<name>system-config-services</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.9.0</version>
+</product>
+<product>
+<name>nss_ldap</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>249</version>
+</product>
+<product>
+<name>xterm</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>209</version>
+</product>
+<product>
+<name>readahead</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.2</version>
+</product>
+<product>
+<name>gnupg</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.4.2.2</version>
+</product>
+<product>
+<name>lftp</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.4.2</version>
+</product>
+<product>
+<name>utempter</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.5.5</version>
+</product>
+<product>
+<name>sysreport</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.4.3</version>
+</product>
+<product>
+<name>parted</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.6.25</version>
+</product>
+<product>
+<name>initscripts</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>8.31.1</version>
+</product>
+<product>
+<name>libgnomecups</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.2.2</version>
+</product>
+<product>
+<name>bind</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>9.3.2</version>
+</product>
+<product>
+<name>foomatic</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.0.2</version>
+</product>
+<product>
+<name>spamassassin</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.1.0</version>
+</product>
+<product>
+<name>fetchmail</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>6.3.2.1</version>
+</product>
+<product>
+<name>rhgb</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.16.3</version>
+</product>
+<product>
+<name>rng-utils</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.0</version>
+</product>
+<product>
+<name>quota</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.13</version>
+</product>
+<product>
+<name>policycoreutils</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.29.26</version>
+</product>
+<product>
+<name>libgnomeui</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0</version>
+</product>
+<product>
+<name>evolution-data-server</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.5.92</version>
+</product>
+<product>
+<name>gnome-mount</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.4</version>
+</product>
+<product>
+<name>kdebase</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.5.1</version>
+</product>
+<product>
+<name>libgsf</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.13.3</version>
+</product>
+<product>
+<name>urw-fonts</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.3</version>
+</product>
+<product>
+<name>gtk-sharp2</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.8.2</version>
+</product>
+<product>
+<name>gtksourceview</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.6.0</version>
+</product>
+<product>
+<name>gtkhtml3</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.10.0</version>
+</product>
+<product>
+<name>gimp-print</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.2.7</version>
+</product>
+<product>
+<name>sane-backends</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.17</version>
+</product>
+<product>
+<name>gnome-netstatus</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.12.0</version>
+</product>
+<product>
+<name>evolution-sharp</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.10.2</version>
+</product>
+<product>
+<name>nautilus</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0</version>
+</product>
+<product>
+<name>xorg-x11-fonts-base</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>7.0</version>
+</product>
+<product>
+<name>file-roller</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0</version>
+</product>
+<product>
+<name>kdegraphics</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.5.1</version>
+</product>
+<product>
+<name>tomboy</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.3.5</version>
+</product>
+<product>
+<name>nfs-utils</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.8.rc2</version>
+</product>
+<product>
+<name>gnopernicus</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.2</version>
+</product>
+<product>
+<name>kdeaccessibility</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.5.1</version>
+</product>
+<product>
+<name>smartmontools</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>5.33</version>
+</product>
+<product>
+<name>gnome-power-manager</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.13.93</version>
+</product>
+<product>
+<name>gok</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.6</version>
+</product>
+<product>
+<name>redhat-lsb</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.0</version>
+</product>
+<product>
+<name>xorg-x11-fonts-truetype</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>7.0</version>
+</product>
+<product>
+<name>xorg-x11-fonts-ISO8859-1-100dpi</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>7.0</version>
+</product>
+<product>
+<name>gnome-python2-canvas</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.12.4</version>
+</product>
+<product>
+<name>gnome-python2-desktop</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0</version>
+</product>
+<product>
+<name>gnome-media</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0</version>
+</product>
+<product>
+<name>gnome-python2-extras</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0</version>
+</product>
+<product>
+<name>gnome-session</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0</version>
+</product>
+<product>
+<name>gnome-python2-bonobo</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.12.4</version>
+</product>
+<product>
+<name>rhpxl</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.18</version>
+</product>
+<product>
+<name>xorg-x11-drv-nv</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.1.5</version>
+</product>
+<product>
+<name>xorg-x11-drv-spaceorb</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0.5</version>
+</product>
+<product>
+<name>xorg-x11-drv-fbdev</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.1.0.5</version>
+</product>
+<product>
+<name>xorg-x11-drv-sis</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.8.1.3</version>
+</product>
+<product>
+<name>xorg-x11-drv-i810</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.4.1.3</version>
+</product>
+<product>
+<name>xorg-x11-drv-palmax</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0.5</version>
+</product>
+<product>
+<name>xorg-x11-drv-voodoo</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0.5</version>
+</product>
+<product>
+<name>xorg-x11-drv-elographics</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0.5</version>
+</product>
+<product>
+<name>xorg-x11-drv-citron</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.1.5</version>
+</product>
+<product>
+<name>xorg-x11-drv-dmc</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0.5</version>
+</product>
+<product>
+<name>xorg-x11-drivers</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>7.0</version>
+</product>
+<product>
+<name>Canna-libs</name>
+<vendor>(none)</vendor>
+<version>3.7p3</version>
+</product>
+<product>
+<name>libkipi</name>
+<vendor>Fedora Project</vendor>
+<version>0.1.4</version>
+</product>
+<product>
+<name>gpg-pubkey</name>
+<vendor>(none)</vendor>
+<version>4f2a6fd2</version>
+</product>
+<product>
+<name>mesa-libGLU</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>6.4.2</version>
+</product>
+<product>
+<name>perl-Glib</name>
+<vendor>(none)</vendor>
+<version>1.120</version>
+</product>
+<product>
+<name>libjpeg-devel</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>6b</version>
+</product>
+<product>
+<name>fontconfig-devel</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.3.94</version>
+</product>
+<product>
+<name>perl-XML-SAX</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.13</version>
+</product>
+<product>
+<name>xmms-libs</name>
+<vendor>Fedora Project</vendor>
+<version>1.2.10</version>
+</product>
+<product>
+<name>Inventor-data</name>
+<vendor>(none)</vendor>
+<version>2.1.5</version>
+</product>
+<product>
+<name>t1lib</name>
+<vendor>(none)</vendor>
+<version>5.1.0</version>
+</product>
+<product>
+<name>perl-Text-Autoformat</name>
+<vendor>(none)</vendor>
+<version>1.13</version>
+</product>
+<product>
+<name>perl-Pod-POM</name>
+<vendor>Fedora Project</vendor>
+<version>0.17</version>
+</product>
+<product>
+<name>libXau-devel</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>Sprog</name>
+<vendor>(none)</vendor>
+<version>0.14</version>
+</product>
+<product>
+<name>MagicPoint</name>
+<vendor>(none)</vendor>
+<version>1.11b</version>
+</product>
+<product>
+<name>mesa-libGLU-devel</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>6.4.2</version>
+</product>
+<product>
+<name>libXrender-devel</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.9.0.2</version>
+</product>
+<product>
+<name>Inventor-examples</name>
+<vendor>(none)</vendor>
+<version>2.1.5</version>
+</product>
+<product>
+<name>emacs</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>21.4</version>
+</product>
+<product>
+<name>netpbm</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>10.33</version>
+</product>
+<product>
+<name>guile</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.6.7</version>
+</product>
+<product>
+<name>XaraLX</name>
+<vendor>Fedora Project</vendor>
+<version>0.7</version>
+</product>
+<product>
+<name>fig2ps</name>
+<vendor>Fedora Project</vendor>
+<version>1.3.5</version>
+</product>
+<product>
+<name>gtkmathview</name>
+<vendor>(none)</vendor>
+<version>0.7.6</version>
+</product>
+<product>
+<name>libwmf</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.2.8.4</version>
+</product>
+<product>
+<name>tcl</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>8.4.13</version>
+</product>
+<product>
+<name>tcllib</name>
+<vendor>(none)</vendor>
+<version>1.8</version>
+</product>
+<product>
+<name>lua</name>
+<vendor>Fedora Project</vendor>
+<version>5.1</version>
+</product>
+<product>
+<name>tclxml</name>
+<vendor>Fedora Project</vendor>
+<version>3.1</version>
+</product>
+<product>
+<name>gtkmm24</name>
+<vendor>Fedora Project</vendor>
+<version>2.8.8</version>
+</product>
+<product>
+<name>perl-Convert-BinHex</name>
+<vendor>(none)</vendor>
+<version>1.119</version>
+</product>
+<product>
+<name>libnjb</name>
+<vendor>(none)</vendor>
+<version>2.2.5</version>
+</product>
+<product>
+<name>taglib</name>
+<vendor>(none)</vendor>
+<version>1.4</version>
+</product>
+<product>
+<name>lzo</name>
+<vendor>Fedora Project</vendor>
+<version>1.08</version>
+</product>
+<product>
+<name>gift</name>
+<vendor>(none)</vendor>
+<version>0.11.8.1</version>
+</product>
+<product>
+<name>libgpod</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.3.0</version>
+</product>
+<product>
+<name>perl-MailTools</name>
+<vendor>Fedora Project</vendor>
+<version>1.74</version>
+</product>
+<product>
+<name>perl-Unix-Syslog</name>
+<vendor>(none)</vendor>
+<version>0.100</version>
+</product>
+<product>
+<name>perl-Convert-UUlib</name>
+<vendor>(none)</vendor>
+<version>1.06</version>
+</product>
+<product>
+<name>perl-Net-Server</name>
+<vendor>Fedora Project</vendor>
+<version>0.94</version>
+</product>
+<product>
+<name>tcltls</name>
+<vendor>Fedora Project</vendor>
+<version>1.5.0</version>
+</product>
+<product>
+<name>amarok</name>
+<vendor>Fedora Project</vendor>
+<version>1.4.1</version>
+</product>
+<product>
+<name>archmage</name>
+<vendor>Fedora Project</vendor>
+<version>0.0.7</version>
+</product>
+<product>
+<name>agave</name>
+<vendor>Fedora Project</vendor>
+<version>0.4.0</version>
+</product>
+<product>
+<name>fedora-usermgmt</name>
+<vendor>(none)</vendor>
+<version>0.8</version>
+</product>
+<product>
+<name>php</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>5.1.4</version>
+</product>
+<product>
+<name>SDL_mixer</name>
+<vendor>Fedora Project</vendor>
+<version>1.2.6</version>
+</product>
+<product>
+<name>DevIL</name>
+<vendor>Fedora Project</vendor>
+<version>1.6.8</version>
+</product>
+<product>
+<name>SDL_ttf</name>
+<vendor>(none)</vendor>
+<version>2.0.7</version>
+</product>
+<product>
+<name>perl-XML-Twig</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.23</version>
+</product>
+<product>
+<name>gtkglext</name>
+<vendor>(none)</vendor>
+<version>1.2.0</version>
+</product>
+<product>
+<name>pinentry</name>
+<vendor>(none)</vendor>
+<version>0.7.2</version>
+</product>
+<product>
+<name>xosd</name>
+<vendor>Fedora Project</vendor>
+<version>2.2.14</version>
+</product>
+<product>
+<name>bmp</name>
+<vendor>(none)</vendor>
+<version>0.9.7.1</version>
+</product>
+<product>
+<name>dasher</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.0.2</version>
+</product>
+<product>
+<name>celestia</name>
+<vendor>Fedora Project</vendor>
+<version>1.4.1</version>
+</product>
+<product>
+<name>brightside</name>
+<vendor>Fedora Project</vendor>
+<version>1.4.0</version>
+</product>
+<product>
+<name>csmash</name>
+<vendor>(none)</vendor>
+<version>0.6.6</version>
+</product>
+<product>
+<name>clanbomber</name>
+<vendor>Fedora Project</vendor>
+<version>1.05</version>
+</product>
+<product>
+<name>php-pear</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.4.9</version>
+</product>
+<product>
+<name>baobab</name>
+<vendor>Fedora Project</vendor>
+<version>2.3.2</version>
+</product>
+<product>
+<name>bwbar</name>
+<vendor>(none)</vendor>
+<version>1.2.2</version>
+</product>
+<product>
+<name>devhelp</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.11</version>
+</product>
+<product>
+<name>diffstat</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.41</version>
+</product>
+<product>
+<name>libstdc++</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.1.1</version>
+</product>
+<product>
+<name>libgomp</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.1.1</version>
+</product>
+<product>
+<name>kompose</name>
+<vendor>(none)</vendor>
+<version>0.5.3</version>
+</product>
+<product>
+<name>enigma</name>
+<vendor>(none)</vendor>
+<version>0.92</version>
+</product>
+<product>
+<name>sip</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.3.1</version>
+</product>
+<product>
+<name>PyQt-qscintilla</name>
+<vendor>Fedora Project</vendor>
+<version>3.15</version>
+</product>
+<product>
+<name>epylog</name>
+<vendor>Fedora Project</vendor>
+<version>1.0.3</version>
+</product>
+<product>
+<name>fluidsynth-libs</name>
+<vendor>Fedora Project</vendor>
+<version>1.0.7</version>
+</product>
+<product>
+<name>openjade</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.3.2</version>
+</product>
+<product>
+<name>fltk-fluid</name>
+<vendor>(none)</vendor>
+<version>1.1.7</version>
+</product>
+<product>
+<name>fetchlog</name>
+<vendor>(none)</vendor>
+<version>1.0</version>
+</product>
+<product>
+<name>f-spot</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.1.10</version>
+</product>
+<product>
+<name>libgtk-java</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.8.5</version>
+</product>
+<product>
+<name>antlr</name>
+<vendor>JPackage Project</vendor>
+<version>2.7.6</version>
+</product>
+<product>
+<name>gnet2</name>
+<vendor>(none)</vendor>
+<version>2.0.7</version>
+</product>
+<product>
+<name>gauche</name>
+<vendor>Fedora Project</vendor>
+<version>0.8.7</version>
+</product>
+<product>
+<name>gcviewer</name>
+<vendor>JPackage Project</vendor>
+<version>1.22</version>
+</product>
+<product>
+<name>libsidplay</name>
+<vendor>(none)</vendor>
+<version>1.36.57</version>
+</product>
+<product>
+<name>hexedit</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.2.12</version>
+</product>
+<product>
+<name>gnome-python2-gconf</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.12.4</version>
+</product>
+<product>
+<name>gperiodic</name>
+<vendor>(none)</vendor>
+<version>2.0.8</version>
+</product>
+<product>
+<name>geomview</name>
+<vendor>Fedora Project</vendor>
+<version>1.8.2</version>
+</product>
+<product>
+<name>fftw2</name>
+<vendor>(none)</vendor>
+<version>2.1.5</version>
+</product>
+<product>
+<name>perl-TermReadKey</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.30</version>
+</product>
+<product>
+<name>gtkwave</name>
+<vendor>Fedora Project</vendor>
+<version>3.0.9</version>
+</product>
+<product>
+<name>grisbi</name>
+<vendor>(none)</vendor>
+<version>0.5.8</version>
+</product>
+<product>
+<name>ibmonitor</name>
+<vendor>(none)</vendor>
+<version>1.3</version>
+</product>
+<product>
+<name>qt4-x11</name>
+<vendor>Fedora Project</vendor>
+<version>4.1.4</version>
+</product>
+<product>
+<name>ipe</name>
+<vendor>Fedora Project</vendor>
+<version>6.0</version>
+</product>
+<product>
+<name>krecipes</name>
+<vendor>(none)</vendor>
+<version>0.9.1</version>
+</product>
+<product>
+<name>kdirstat</name>
+<vendor>Fedora Project</vendor>
+<version>2.5.3</version>
+</product>
+<product>
+<name>filesystem</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.3.7</version>
+</product>
+<product>
+<name>mailcap</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.1.20</version>
+</product>
+<product>
+<name>glibc</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.4</version>
+</product>
+<product>
+<name>atk</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.11.3</version>
+</product>
+<product>
+<name>libart_lgpl</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.3.17</version>
+</product>
+<product>
+<name>mktemp</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.5</version>
+</product>
+<product>
+<name>libXau</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>audit-libs</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.1.5</version>
+</product>
+<product>
+<name>bash</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.1</version>
+</product>
+<product>
+<name>freetype</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.1.10</version>
+</product>
+<product>
+<name>redhat-menus</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>6.7.5</version>
+</product>
+<product>
+<name>libjpeg</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>6b</version>
+</product>
+<product>
+<name>db4</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.3.29</version>
+</product>
+<product>
+<name>libgpg-error</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.1</version>
+</product>
+<product>
+<name>libacl</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.2.34</version>
+</product>
+<product>
+<name>libfontenc</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.1</version>
+</product>
+<product>
+<name>libXext</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>libXi</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>libXxf86vm</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>libXcursor</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.1.5.2</version>
+</product>
+<product>
+<name>nss</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.11</version>
+</product>
+<product>
+<name>expat</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.95.8</version>
+</product>
+<product>
+<name>libXfont</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>xorg-x11-filesystem</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>7.0</version>
+</product>
+<product>
+<name>libogg</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.1.3</version>
+</product>
+<product>
+<name>dmidecode</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.7</version>
+</product>
+<product>
+<name>libraw1394</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.2.0</version>
+</product>
+<product>
+<name>libXpm</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.5.4.2</version>
+</product>
+<product>
+<name>tar</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.15.1</version>
+</product>
+<product>
+<name>slang</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.0.5</version>
+</product>
+<product>
+<name>grep</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.5.1</version>
+</product>
+<product>
+<name>mailx</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>8.1.1</version>
+</product>
+<product>
+<name>aspell</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.60.3</version>
+</product>
+<product>
+<name>bc</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.06</version>
+</product>
+<product>
+<name>libxklavier</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.1.0.2006.02.23</version>
+</product>
+<product>
+<name>libXv</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.1</version>
+</product>
+<product>
+<name>libtheora</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0alpha5</version>
+</product>
+<product>
+<name>gzip</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.3.5</version>
+</product>
+<product>
+<name>libsepol</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.11.18</version>
+</product>
+<product>
+<name>aspell</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.60.3</version>
+</product>
+<product>
+<name>libIDL</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.8.6</version>
+</product>
+<product>
+<name>libXdmcp</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>libXi</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>libXinerama</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.1</version>
+</product>
+<product>
+<name>libXtst</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.1</version>
+</product>
+<product>
+<name>ORBit2</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0</version>
+</product>
+<product>
+<name>liboil</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.3.6</version>
+</product>
+<product>
+<name>lcms</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.15</version>
+</product>
+<product>
+<name>libtool-ltdl</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.5.22</version>
+</product>
+<product>
+<name>libgcrypt</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.2.2</version>
+</product>
+<product>
+<name>libXcomposite</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.2.2.2</version>
+</product>
+<product>
+<name>libxkbfile</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.1</version>
+</product>
+<product>
+<name>lm_sensors</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.9.2</version>
+</product>
+<product>
+<name>perl-HTML-Tagset</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.10</version>
+</product>
+<product>
+<name>perl-libwww-perl</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>5.805</version>
+</product>
+<product>
+<name>libtheora</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0alpha5</version>
+</product>
+<product>
+<name>libXevie</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>speex</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.5</version>
+</product>
+<product>
+<name>libidn</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.6.2</version>
+</product>
+<product>
+<name>shared-mime-info</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.16.cvs20060212</version>
+</product>
+<product>
+<name>xorg-x11-xkbdata</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.1</version>
+</product>
+<product>
+<name>cdrecord</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.01.01.0.a03</version>
+</product>
+<product>
+<name>libraw1394</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.2.0</version>
+</product>
+<product>
+<name>freeglut</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.4.0</version>
+</product>
+<product>
+<name>imlib</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.9.13</version>
+</product>
+<product>
+<name>ethtool</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3</version>
+</product>
+<product>
+<name>libieee1284</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.2.9</version>
+</product>
+<product>
+<name>libsilc</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.9.12</version>
+</product>
+<product>
+<name>fribidi</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.10.4</version>
+</product>
+<product>
+<name>xorg-x11-xsm</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.1</version>
+</product>
+<product>
+<name>gtk-engines</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.12</version>
+</product>
+<product>
+<name>iptstate</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.4</version>
+</product>
+<product>
+<name>cyrus-sasl-plain</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.1.21</version>
+</product>
+<product>
+<name>acl</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.2.34</version>
+</product>
+<product>
+<name>mtr</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.69</version>
+</product>
+<product>
+<name>mgetty</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.1.33</version>
+</product>
+<product>
+<name>nc</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.84</version>
+</product>
+<product>
+<name>pam_smb</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.1.7</version>
+</product>
+<product>
+<name>vconfig</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.9</version>
+</product>
+<product>
+<name>rdist</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>6.1.5</version>
+</product>
+<product>
+<name>dos2unix</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.1</version>
+</product>
+<product>
+<name>traceroute</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.4</version>
+</product>
+<product>
+<name>gnome-backgrounds</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0</version>
+</product>
+<product>
+<name>rootfiles</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>8.1</version>
+</product>
+<product>
+<name>device-mapper</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.02.02</version>
+</product>
+<product>
+<name>apr</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.2.2</version>
+</product>
+<product>
+<name>coreutils</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>5.93</version>
+</product>
+<product>
+<name>dbus</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.61</version>
+</product>
+<product>
+<name>openssl</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.9.8a</version>
+</product>
+<product>
+<name>qt</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.3.5</version>
+</product>
+<product>
+<name>alsa-lib</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.11</version>
+</product>
+<product>
+<name>module-init-tools</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.2</version>
+</product>
+<product>
+<name>cairo</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.2</version>
+</product>
+<product>
+<name>GConf2</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.13.5</version>
+</product>
+<product>
+<name>libglade2</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.5.1</version>
+</product>
+<product>
+<name>libwnck</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0</version>
+</product>
+<product>
+<name>gnome-menus</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.13.5</version>
+</product>
+<product>
+<name>gettext</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.14.5</version>
+</product>
+<product>
+<name>rpm-python</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.4.2</version>
+</product>
+<product>
+<name>gtkspell</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.0.11</version>
+</product>
+<product>
+<name>cracklib</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.8.6</version>
+</product>
+<product>
+<name>dbus-x11</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.61</version>
+</product>
+<product>
+<name>ghostscript-fonts</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>5.50</version>
+</product>
+<product>
+<name>bluez-pin</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.30</version>
+</product>
+<product>
+<name>at-spi</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.7.6</version>
+</product>
+<product>
+<name>xsri</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.1.0</version>
+</product>
+<product>
+<name>esound</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.2.36</version>
+</product>
+<product>
+<name>ntsysv</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.3.29</version>
+</product>
+<product>
+<name>gnome-doc-utils</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.6.0</version>
+</product>
+<product>
+<name>python-elementtree</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.2.6</version>
+</product>
+<product>
+<name>cracklib</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.8.6</version>
+</product>
+<product>
+<name>passwd</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.71</version>
+</product>
+<product>
+<name>xorg-x11-xdm</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.1</version>
+</product>
+<product>
+<name>system-config-keyboard</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.2.7</version>
+</product>
+<product>
+<name>python-urlgrabber</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.9.8</version>
+</product>
+<product>
+<name>libpcap</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.9.4</version>
+</product>
+<product>
+<name>apr-util</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.2.2</version>
+</product>
+<product>
+<name>udev</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>084</version>
+</product>
+<product>
+<name>bitmap-fonts</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.3</version>
+</product>
+<product>
+<name>mono-data-sqlite</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.1.13.4</version>
+</product>
+<product>
+<name>xml-common</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.6.3</version>
+</product>
+<product>
+<name>sysklogd</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.4.1</version>
+</product>
+<product>
+<name>openssl</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.9.8a</version>
+</product>
+<product>
+<name>cups-libs</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.1.23</version>
+</product>
+<product>
+<name>logrotate</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.7.3</version>
+</product>
+<product>
+<name>nss_ldap</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>249</version>
+</product>
+<product>
+<name>pinfo</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.6.8</version>
+</product>
+<product>
+<name>pam_krb5</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.2.6</version>
+</product>
+<product>
+<name>at-spi</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.7.6</version>
+</product>
+<product>
+<name>gtk2-engines</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.7.4</version>
+</product>
+<product>
+<name>xorg-x11-apps</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.1</version>
+</product>
+<product>
+<name>elinks</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.11.0</version>
+</product>
+<product>
+<name>mlocate</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.12</version>
+</product>
+<product>
+<name>ksh</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>20060124</version>
+</product>
+<product>
+<name>tmpwatch</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.9.6</version>
+</product>
+<product>
+<name>libgnome</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0</version>
+</product>
+<product>
+<name>avahi-glib</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.6.9</version>
+</product>
+<product>
+<name>vixie-cron</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.1</version>
+</product>
+<product>
+<name>yum</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.6.0</version>
+</product>
+<product>
+<name>audit-libs-python</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.1.5</version>
+</product>
+<product>
+<name>xorg-x11-drv-vmware</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>10.11.1.3</version>
+</product>
+<product>
+<name>pirut</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.1</version>
+</product>
+<product>
+<name>rp-pppoe</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.5</version>
+</product>
+<product>
+<name>dhcpv6_client</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.10</version>
+</product>
+<product>
+<name>chkfontpath</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.10.1</version>
+</product>
+<product>
+<name>gnome-vfs2</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0</version>
+</product>
+<product>
+<name>gnome-desktop</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0</version>
+</product>
+<product>
+<name>openssh</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.3p2</version>
+</product>
+<product>
+<name>kdebase</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.5.1</version>
+</product>
+<product>
+<name>NetworkManager-glib</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.6.0</version>
+</product>
+<product>
+<name>portmap</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.0</version>
+</product>
+<product>
+<name>libgnomeprintui22</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.12.1</version>
+</product>
+<product>
+<name>gmime-sharp</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.1.19</version>
+</product>
+<product>
+<name>gsf-sharp</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.6</version>
+</product>
+<product>
+<name>gtk-sharp</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.10</version>
+</product>
+<product>
+<name>kdemultimedia</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.5.1</version>
+</product>
+<product>
+<name>system-config-network-tui</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.3.30</version>
+</product>
+<product>
+<name>evolution</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.6.0</version>
+</product>
+<product>
+<name>gnome-vfs2-smb</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0</version>
+</product>
+<product>
+<name>selinux-policy</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.2.23</version>
+</product>
+<product>
+<name>nautilus-sendto</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.4</version>
+</product>
+<product>
+<name>netdump</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.7.14</version>
+</product>
+<product>
+<name>gimp-print-utils</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.2.7</version>
+</product>
+<product>
+<name>eog</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0</version>
+</product>
+<product>
+<name>NetworkManager-gnome</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.6.0</version>
+</product>
+<product>
+<name>kdemultimedia</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.5.1</version>
+</product>
+<product>
+<name>openssh-askpass</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.3p2</version>
+</product>
+<product>
+<name>gaim</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.5.0</version>
+</product>
+<product>
+<name>vino</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.13.5</version>
+</product>
+<product>
+<name>pm-utils</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.15</version>
+</product>
+<product>
+<name>redhat-lsb</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.0</version>
+</product>
+<product>
+<name>xorg-x11-fonts-75dpi</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>7.0</version>
+</product>
+<product>
+<name>gnome-python2</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.12.4</version>
+</product>
+<product>
+<name>gstreamer-plugins-good</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.10.2</version>
+</product>
+<product>
+<name>gnome-python2-gtksourceview</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0</version>
+</product>
+<product>
+<name>system-config-date</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.8.2</version>
+</product>
+<product>
+<name>system-config-printer-gui</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.6.151</version>
+</product>
+<product>
+<name>system-config-lvm</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.13</version>
+</product>
+<product>
+<name>xorg-x11-server-Xorg</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.1</version>
+</product>
+<product>
+<name>xorg-x11-drv-summa</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0.5</version>
+</product>
+<product>
+<name>xorg-x11-drv-s3</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.3.5.5</version>
+</product>
+<product>
+<name>xorg-x11-drv-acecad</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0.5</version>
+</product>
+<product>
+<name>xorg-x11-drv-sisusb</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.7.1.3</version>
+</product>
+<product>
+<name>xorg-x11-drv-void</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0.5</version>
+</product>
+<product>
+<name>xorg-x11-drv-evdev</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0.5</version>
+</product>
+<product>
+<name>xorg-x11-drv-tdfx</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.1.1.3</version>
+</product>
+<product>
+<name>xorg-x11-drv-s3virge</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.8.6.5</version>
+</product>
+<product>
+<name>xorg-x11-drv-vga</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.0.0.5</version>
+</product>
+<product>
+<name>xorg-x11-drv-joystick</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0.5</version>
+</product>
+<product>
+<name>xorg-x11-drv-magictouch</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0.5</version>
+</product>
+<product>
+<name>synaptics</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.14.4</version>
+</product>
+<product>
+<name>xemacs-common</name>
+<vendor>Fedora Project</vendor>
+<version>21.4.19</version>
+</product>
+<product>
+<name>id3lib</name>
+<vendor>(none)</vendor>
+<version>3.8.3</version>
+</product>
+<product>
+<name>gpg-pubkey</name>
+<vendor>(none)</vendor>
+<version>1ac70ce6</version>
+</product>
+<product>
+<name>ghostscript</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>8.15.2</version>
+</product>
+<product>
+<name>Inventor</name>
+<vendor>(none)</vendor>
+<version>2.1.5</version>
+</product>
+<product>
+<name>perl-Gtk2</name>
+<vendor>Fedora Project</vendor>
+<version>1.121</version>
+</product>
+<product>
+<name>wxGTK</name>
+<vendor>Fedora Project</vendor>
+<version>2.6.3</version>
+</product>
+<product>
+<name>libpng-devel</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.2.8</version>
+</product>
+<product>
+<name>perl-Gnome2-Canvas</name>
+<vendor>(none)</vendor>
+<version>1.002</version>
+</product>
+<product>
+<name>pyxmms</name>
+<vendor>Fedora Project</vendor>
+<version>2.06</version>
+</product>
+<product>
+<name>perl-XML-LibXML-Common</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.13</version>
+</product>
+<product>
+<name>perl-Imager</name>
+<vendor>Fedora Project</vendor>
+<version>0.50</version>
+</product>
+<product>
+<name>libXdmcp-devel</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>libXmu-devel</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>perl-YAML</name>
+<vendor>Fedora Project</vendor>
+<version>0.62</version>
+</product>
+<product>
+<name>Inventor-demos</name>
+<vendor>(none)</vendor>
+<version>2.1.5</version>
+</product>
+<product>
+<name>xorg-x11-proto-devel</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>7.0</version>
+</product>
+<product>
+<name>Inventor-devel</name>
+<vendor>(none)</vendor>
+<version>2.1.5</version>
+</product>
+<product>
+<name>libXft-devel</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.1.8.2</version>
+</product>
+<product>
+<name>neXtaw</name>
+<vendor>Fedora Project</vendor>
+<version>0.15.1</version>
+</product>
+<product>
+<name>xemacs</name>
+<vendor>Fedora Project</vendor>
+<version>21.4.19</version>
+</product>
+<product>
+<name>netpbm-progs</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>10.33</version>
+</product>
+<product>
+<name>gd</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.0.33</version>
+</product>
+<product>
+<name>psutils</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.17</version>
+</product>
+<product>
+<name>TeXmacs</name>
+<vendor>Fedora Project</vendor>
+<version>1.0.6.5</version>
+</product>
+<product>
+<name>libwpd</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.8.4</version>
+</product>
+<product>
+<name>enchant</name>
+<vendor>Fedora Project</vendor>
+<version>1.2.5</version>
+</product>
+<product>
+<name>libsigc++20</name>
+<vendor>(none)</vendor>
+<version>2.0.17</version>
+</product>
+<product>
+<name>perl-IO-stringy</name>
+<vendor>(none)</vendor>
+<version>2.110</version>
+</product>
+<product>
+<name>tolua++</name>
+<vendor>Fedora Project</vendor>
+<version>1.0.92</version>
+</product>
+<product>
+<name>tcldom</name>
+<vendor>Fedora Project</vendor>
+<version>3.1</version>
+</product>
+<product>
+<name>perl-DBD-SQLite</name>
+<vendor>Fedora Project</vendor>
+<version>1.12</version>
+</product>
+<product>
+<name>tkdnd</name>
+<vendor>Fedora Project</vendor>
+<version>1.0a2</version>
+</product>
+<product>
+<name>fonts-x11-apl</name>
+<vendor>Fedora Project</vendor>
+<version>4.20.2</version>
+</product>
+<product>
+<name>nomarch</name>
+<vendor>Fedora Project</vendor>
+<version>1.4</version>
+</product>
+<product>
+<name>lzop</name>
+<vendor>(none)</vendor>
+<version>1.02</version>
+</product>
+<product>
+<name>perl-Convert-ASN1</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.20</version>
+</product>
+<product>
+<name>chmlib</name>
+<vendor>Fedora Project</vendor>
+<version>0.38</version>
+</product>
+<product>
+<name>perl-MIME-tools</name>
+<vendor>Fedora Project</vendor>
+<version>5.420</version>
+</product>
+<product>
+<name>cabextract</name>
+<vendor>(none)</vendor>
+<version>1.1</version>
+</product>
+<product>
+<name>ruby-libs</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.8.4</version>
+</product>
+<product>
+<name>perl-BerkeleyDB</name>
+<vendor>(none)</vendor>
+<version>0.27</version>
+</product>
+<product>
+<name>perl-Razor-Agent</name>
+<vendor>(none)</vendor>
+<version>2.77</version>
+</product>
+<product>
+<name>amsn</name>
+<vendor>Fedora Project</vendor>
+<version>0.96</version>
+</product>
+<product>
+<name>apollon</name>
+<vendor>(none)</vendor>
+<version>1.0.1</version>
+</product>
+<product>
+<name>apg</name>
+<vendor>(none)</vendor>
+<version>2.3.0b</version>
+</product>
+<product>
+<name>clamav-lib</name>
+<vendor>Fedora Project</vendor>
+<version>0.88.4</version>
+</product>
+<product>
+<name>SDL_image</name>
+<vendor>(none)</vendor>
+<version>1.2.4</version>
+</product>
+<product>
+<name>net-snmp</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>5.3</version>
+</product>
+<product>
+<name>cegui</name>
+<vendor>Fedora Project</vendor>
+<version>0.4.1</version>
+</product>
+<product>
+<name>graphviz</name>
+<vendor>(none)</vendor>
+<version>2.8</version>
+</product>
+<product>
+<name>zziplib</name>
+<vendor>(none)</vendor>
+<version>0.13.45</version>
+</product>
+<product>
+<name>coldet</name>
+<vendor>Fedora Project</vendor>
+<version>1.1</version>
+</product>
+<product>
+<name>gnupg2</name>
+<vendor>Fedora Project</vendor>
+<version>1.9.22</version>
+</product>
+<product>
+<name>perl-DBD-Pg</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.49</version>
+</product>
+<product>
+<name>boost</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.33.1</version>
+</product>
+<product>
+<name>bugzilla</name>
+<vendor>Fedora Project</vendor>
+<version>2.22</version>
+</product>
+<product>
+<name>bonnie++</name>
+<vendor>(none)</vendor>
+<version>1.03a</version>
+</product>
+<product>
+<name>bluefish</name>
+<vendor>Fedora Project</vendor>
+<version>1.0.5</version>
+</product>
+<product>
+<name>bwm-ng</name>
+<vendor>(none)</vendor>
+<version>0.5</version>
+</product>
+<product>
+<name>buoh</name>
+<vendor>(none)</vendor>
+<version>0.8.1</version>
+</product>
+<product>
+<name>d4x</name>
+<vendor>Fedora Project</vendor>
+<version>2.5.7.1</version>
+</product>
+<product>
+<name>bubblemon</name>
+<vendor>(none)</vendor>
+<version>1.46</version>
+</product>
+<product>
+<name>basket</name>
+<vendor>(none)</vendor>
+<version>0.5.0</version>
+</product>
+<product>
+<name>diction</name>
+<vendor>Fedora Project</vendor>
+<version>1.10</version>
+</product>
+<product>
+<name>glibc</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.4</version>
+</product>
+<product>
+<name>libstdc++-devel</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.1.1</version>
+</product>
+<product>
+<name>gcc</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.1.1</version>
+</product>
+<product>
+<name>emelfm2</name>
+<vendor>Fedora Project</vendor>
+<version>0.1.8</version>
+</product>
+<product>
+<name>qscintilla</name>
+<vendor>(none)</vendor>
+<version>1.6</version>
+</product>
+<product>
+<name>festival</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.95</version>
+</product>
+<product>
+<name>lash</name>
+<vendor>Fedora Project</vendor>
+<version>0.5.1</version>
+</product>
+<product>
+<name>fltk-devel</name>
+<vendor>(none)</vendor>
+<version>1.1.7</version>
+</product>
+<product>
+<name>planner</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.13</version>
+</product>
+<product>
+<name>libuninameslist</name>
+<vendor>(none)</vendor>
+<version>0.0</version>
+</product>
+<product>
+<name>firestarter</name>
+<vendor>Fedora Project</vendor>
+<version>1.0.3</version>
+</product>
+<product>
+<name>cairo-java</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.4</version>
+</product>
+<product>
+<name>libvte-java</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.12.0</version>
+</product>
+<product>
+<name>OpenEXR</name>
+<vendor>(none)</vendor>
+<version>1.2.2</version>
+</product>
+<product>
+<name>fractal</name>
+<vendor>JPackage Project</vendor>
+<version>2.2</version>
+</product>
+<product>
+<name>galculator</name>
+<vendor>(none)</vendor>
+<version>1.2.5</version>
+</product>
+<product>
+<name>pyparted</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.6.10</version>
+</product>
+<product>
+<name>istanbul</name>
+<vendor>(none)</vendor>
+<version>0.1.1</version>
+</product>
+<product>
+<name>xforms</name>
+<vendor>Fedora Project</vendor>
+<version>1.0.90</version>
+</product>
+<product>
+<name>gentoo</name>
+<vendor>(none)</vendor>
+<version>0.11.55</version>
+</product>
+<product>
+<name>ghex</name>
+<vendor>Fedora Project</vendor>
+<version>2.8.2</version>
+</product>
+<product>
+<name>libnc-dap</name>
+<vendor>(none)</vendor>
+<version>3.6.0</version>
+</product>
+<product>
+<name>nedit</name>
+<vendor>(none)</vendor>
+<version>5.5</version>
+</product>
+<product>
+<name>highlight</name>
+<vendor>Fedora Project</vendor>
+<version>2.4.7</version>
+</product>
+<product>
+<name>gtypist</name>
+<vendor>Fedora Project</vendor>
+<version>2.7</version>
+</product>
+<product>
+<name>grads</name>
+<vendor>Fedora Project</vendor>
+<version>1.9b4</version>
+</product>
+<product>
+<name>nas</name>
+<vendor>Fedora Project</vendor>
+<version>1.8</version>
+</product>
+<product>
+<name>iozone</name>
+<vendor>(none)</vendor>
+<version>3</version>
+</product>
+<product>
+<name>arts</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.5.3</version>
+</product>
+<product>
+<name>kdissert</name>
+<vendor>Fedora Project</vendor>
+<version>1.0.6</version>
+</product>
+<product>
+<name>kphotoalbum</name>
+<vendor>Fedora Project</vendor>
+<version>2.2</version>
+</product>
+<product>
+<name>setup</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.5.49</version>
+</product>
+<product>
+<name>popt</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.10.2</version>
+</product>
+<product>
+<name>libpng</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.2.8</version>
+</product>
+<product>
+<name>libtermcap</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.0.8</version>
+</product>
+<product>
+<name>gawk</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.1.5</version>
+</product>
+<product>
+<name>atk</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.11.3</version>
+</product>
+<product>
+<name>cyrus-sasl-lib</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.1.21</version>
+</product>
+<product>
+<name>libXtst</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.1</version>
+</product>
+<product>
+<name>libxslt</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.1.15</version>
+</product>
+<product>
+<name>libxkbfile</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.1</version>
+</product>
+<product>
+<name>audiofile</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.2.6</version>
+</product>
+<product>
+<name>gtk+</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.2.10</version>
+</product>
+<product>
+<name>pilot-link</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.12.0</version>
+</product>
+<product>
+<name>pcre</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>6.3</version>
+</product>
+<product>
+<name>perl</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>5.8.8</version>
+</product>
+<product>
+<name>libvorbis</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.1.2</version>
+</product>
+<product>
+<name>giflib</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.1.3</version>
+</product>
+<product>
+<name>libbeagle</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.2.2</version>
+</product>
+<product>
+<name>xorg-x11-font-utils</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.1</version>
+</product>
+<product>
+<name>libXrender</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.9.0.2</version>
+</product>
+<product>
+<name>libXxf86vm</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>liblbxutil</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>libtiff</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.7.4</version>
+</product>
+<product>
+<name>libacl</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.2.34</version>
+</product>
+<product>
+<name>libXxf86misc</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>perl-Net-DNS</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.55</version>
+</product>
+<product>
+<name>flac</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.1.2</version>
+</product>
+<product>
+<name>elfutils</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.119</version>
+</product>
+<product>
+<name>libcroco</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.6.1</version>
+</product>
+<product>
+<name>iputils</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>20020927</version>
+</product>
+<product>
+<name>libtiff</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.7.4</version>
+</product>
+<product>
+<name>mpage</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.5.4</version>
+</product>
+<product>
+<name>libevent</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.1a</version>
+</product>
+<product>
+<name>gtk-engines</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.12</version>
+</product>
+<product>
+<name>numactl</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.6.4</version>
+</product>
+<product>
+<name>attr</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.4.28</version>
+</product>
+<product>
+<name>gpm</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.20.1</version>
+</product>
+<product>
+<name>pam_passwdqc</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.2</version>
+</product>
+<product>
+<name>pam_smb</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.1.7</version>
+</product>
+<product>
+<name>unix2dos</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.2</version>
+</product>
+<product>
+<name>specspo</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>10</version>
+</product>
+<product>
+<name>lvm2</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.02.01</version>
+</product>
+<product>
+<name>dbus</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.61</version>
+</product>
+<product>
+<name>hicolor-icon-theme</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.9</version>
+</product>
+<product>
+<name>alsa-lib</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.11</version>
+</product>
+<product>
+<name>pango</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.12.0</version>
+</product>
+<product>
+<name>qt</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.3.5</version>
+</product>
+<product>
+<name>neon</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.25.5</version>
+</product>
+<product>
+<name>pwlib</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.10.0</version>
+</product>
+<product>
+<name>lockdev</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.1</version>
+</product>
+<product>
+<name>libglade2</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.5.1</version>
+</product>
+<product>
+<name>notify-daemon</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.3.1</version>
+</product>
+<product>
+<name>netconfig</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.8.24</version>
+</product>
+<product>
+<name>pyorbit</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.0.1</version>
+</product>
+<product>
+<name>usermode</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.85</version>
+</product>
+<product>
+<name>system-config-language</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.1.11</version>
+</product>
+<product>
+<name>wpa_supplicant</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.4.8</version>
+</product>
+<product>
+<name>which</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.16</version>
+</product>
+<product>
+<name>mono-web</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.1.13.4</version>
+</product>
+<product>
+<name>device-mapper</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.02.02</version>
+</product>
+<product>
+<name>kdelibs</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.5.1</version>
+</product>
+<product>
+<name>pam_ccreds</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3</version>
+</product>
+<product>
+<name>gnome-user-docs</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0</version>
+</product>
+<product>
+<name>gnome-themes</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0</version>
+</product>
+<product>
+<name>irda-utils</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.9.16</version>
+</product>
+<product>
+<name>krb5-workstation</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.4.3</version>
+</product>
+<product>
+<name>nss_db</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.2</version>
+</product>
+<product>
+<name>avahi</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.6.9</version>
+</product>
+<product>
+<name>dhcdbd</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.12</version>
+</product>
+<product>
+<name>sendmail</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>8.13.5</version>
+</product>
+<product>
+<name>bluez-utils</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.25</version>
+</product>
+<product>
+<name>irqbalance</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.12</version>
+</product>
+<product>
+<name>hal</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.5.7</version>
+</product>
+<product>
+<name>xorg-x11-xfs</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.1</version>
+</product>
+<product>
+<name>kernel</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.6.15</version>
+</product>
+<product>
+<name>eel2</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0</version>
+</product>
+<product>
+<name>gnome-utils</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0</version>
+</product>
+<product>
+<name>system-config-soundcard</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.2.16</version>
+</product>
+<product>
+<name>gtkhtml2</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.6.3</version>
+</product>
+<product>
+<name>evince</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.5.1</version>
+</product>
+<product>
+<name>yp-tools</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.9</version>
+</product>
+<product>
+<name>krb5-auth-dialog</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.6.cvs20060212</version>
+</product>
+<product>
+<name>openssh-server</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.3p2</version>
+</product>
+<product>
+<name>gnome-terminal</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0</version>
+</product>
+<product>
+<name>vnc-server</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.1.1</version>
+</product>
+<product>
+<name>xorg-x11-fonts-ISO8859-1-75dpi</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>7.0</version>
+</product>
+<product>
+<name>gnome-python2-gnomeprint</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0</version>
+</product>
+<product>
+<name>gnome-python2-gnomevfs</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.12.4</version>
+</product>
+<product>
+<name>xorg-x11-drv-keyboard</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.1.3</version>
+</product>
+<product>
+<name>xorg-x11-drv-ati</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>6.5.7.3</version>
+</product>
+<product>
+<name>xorg-x11-drv-calcomp</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0.5</version>
+</product>
+<product>
+<name>xorg-x11-drv-ur98</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0.5</version>
+</product>
+<product>
+<name>xorg-x11-drv-mga</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.2.1.3</version>
+</product>
+<product>
+<name>xorg-x11-drv-mutouch</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0.5</version>
+</product>
+<product>
+<name>yumex</name>
+<vendor>Fedora Project</vendor>
+<version>1.0.2</version>
+</product>
+<product>
+<name>openmotif</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.3.0</version>
+</product>
+<product>
+<name>zlib-devel</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.2.3</version>
+</product>
+<product>
+<name>perl-Gtk2-GladeXML</name>
+<vendor>(none)</vendor>
+<version>1.005</version>
+</product>
+<product>
+<name>perl-XML-LibXML</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.58</version>
+</product>
+<product>
+<name>perl-Pod-Escapes</name>
+<vendor>(none)</vendor>
+<version>1.04</version>
+</product>
+<product>
+<name>perl-AppConfig</name>
+<vendor>(none)</vendor>
+<version>1.56</version>
+</product>
+<product>
+<name>libX11-devel</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>openmotif-devel</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.3.0</version>
+</product>
+<product>
+<name>FreeWnn-libs</name>
+<vendor>(none)</vendor>
+<version>1.10pl020</version>
+</product>
+<product>
+<name>transfig</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.2.4</version>
+</product>
+<product>
+<name>tetex-dvips</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.0</version>
+</product>
+<product>
+<name>goffice</name>
+<vendor>Fedora Project</vendor>
+<version>0.2.1</version>
+</product>
+<product>
+<name>perl-DBI</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.50</version>
+</product>
+<product>
+<name>bwidget</name>
+<vendor>(none)</vendor>
+<version>1.7.0</version>
+</product>
+<product>
+<name>Hermes</name>
+<vendor>Fedora Project</vendor>
+<version>1.3.3</version>
+</product>
+<product>
+<name>aplus-fsf</name>
+<vendor>Fedora Project</vendor>
+<version>4.20.2</version>
+</product>
+<product>
+<name>perl-Net-CIDR-Lite</name>
+<vendor>(none)</vendor>
+<version>0.20</version>
+</product>
+<product>
+<name>python-chm</name>
+<vendor>Fedora Project</vendor>
+<version>0.8.3</version>
+</product>
+<product>
+<name>libesmtp</name>
+<vendor>(none)</vendor>
+<version>1.0.3r1</version>
+</product>
+<product>
+<name>perl-GSSAPI</name>
+<vendor>Fedora Project</vendor>
+<version>0.23</version>
+</product>
+<product>
+<name>balsa</name>
+<vendor>(none)</vendor>
+<version>2.3.12</version>
+</product>
+<product>
+<name>amaya</name>
+<vendor>(none)</vendor>
+<version>8.5</version>
+</product>
+<product>
+<name>pth</name>
+<vendor>(none)</vendor>
+<version>2.0.6</version>
+</product>
+<product>
+<name>php-pdo</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>5.1.4</version>
+</product>
+<product>
+<name>libstatgrab</name>
+<vendor>(none)</vendor>
+<version>0.12</version>
+</product>
+<product>
+<name>gpgme</name>
+<vendor>Fedora Project</vendor>
+<version>1.1.2</version>
+</product>
+<product>
+<name>libglademm24</name>
+<vendor>(none)</vendor>
+<version>2.6.2</version>
+</product>
+<product>
+<name>bash-completion</name>
+<vendor>(none)</vendor>
+<version>20060301</version>
+</product>
+<product>
+<name>blogtk</name>
+<vendor>(none)</vendor>
+<version>1.1</version>
+</product>
+<product>
+<name>centericq</name>
+<vendor>(none)</vendor>
+<version>4.21.0</version>
+</product>
+<product>
+<name>gpg-pubkey</name>
+<vendor>(none)</vendor>
+<version>c431416d</version>
+</product>
+<product>
+<name>ddrescue</name>
+<vendor>(none)</vendor>
+<version>1.10</version>
+</product>
+<product>
+<name>glibc-devel</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.4</version>
+</product>
+<product>
+<name>gcc-c++</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.1.1</version>
+</product>
+<product>
+<name>ImageMagick</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>6.2.5.4</version>
+</product>
+<product>
+<name>jack-audio-connection-kit</name>
+<vendor>Fedora Project</vendor>
+<version>0.101.1</version>
+</product>
+<product>
+<name>kmymoney2</name>
+<vendor>Fedora Project</vendor>
+<version>0.8.4</version>
+</product>
+<product>
+<name>fish</name>
+<vendor>(none)</vendor>
+<version>1.12.0</version>
+</product>
+<product>
+<name>vte</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.12.2</version>
+</product>
+<product>
+<name>fpc</name>
+<vendor>(none)</vendor>
+<version>2.0.2</version>
+</product>
+<product>
+<name>gstreamer08</name>
+<vendor>Fedora Project</vendor>
+<version>0.8.12</version>
+</product>
+<product>
+<name>libgda</name>
+<vendor>Fedora Project</vendor>
+<version>1.9.100</version>
+</product>
+<product>
+<name>gftp</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.0.18</version>
+</product>
+<product>
+<name>libshout</name>
+<vendor>(none)</vendor>
+<version>2.2</version>
+</product>
+<product>
+<name>grace</name>
+<vendor>Fedora Project</vendor>
+<version>5.1.20</version>
+</product>
+<product>
+<name>gnuplot</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.0.0</version>
+</product>
+<product>
+<name>arts</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.5.3</version>
+</product>
+<product>
+<name>kid3</name>
+<vendor>Fedora Project</vendor>
+<version>0.7</version>
+</product>
+<product>
+<name>basesystem</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>8.0</version>
+</product>
+<product>
+<name>glib2</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.10.1</version>
+</product>
+<product>
+<name>expat</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.95.8</version>
+</product>
+<product>
+<name>info</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.8</version>
+</product>
+<product>
+<name>audiofile</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.2.6</version>
+</product>
+<product>
+<name>fedora-logos</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.1.42</version>
+</product>
+<product>
+<name>sqlite</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.3.3</version>
+</product>
+<product>
+<name>libXt</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>libXrandr</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.1.0.2</version>
+</product>
+<product>
+<name>libxml2</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.6.23</version>
+</product>
+<product>
+<name>libvorbis</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.1.2</version>
+</product>
+<product>
+<name>libcap</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.10</version>
+</product>
+<product>
+<name>libXdamage</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.2.2</version>
+</product>
+<product>
+<name>cpio</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.6</version>
+</product>
+<product>
+<name>file</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.16</version>
+</product>
+<product>
+<name>perl-Digest-SHA1</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.11</version>
+</product>
+<product>
+<name>xorg-x11-xauth</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.1</version>
+</product>
+<product>
+<name>ttmkfdir</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.0.9</version>
+</product>
+<product>
+<name>procmail</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.22</version>
+</product>
+<product>
+<name>bzip2-libs</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.3</version>
+</product>
+<product>
+<name>libXcursor</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.1.5.2</version>
+</product>
+<product>
+<name>libattr</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.4.28</version>
+</product>
+<product>
+<name>pax</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.4</version>
+</product>
+<product>
+<name>mkisofs</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.01.01.0.a03</version>
+</product>
+<product>
+<name>libXmu</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>libbonobo</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0</version>
+</product>
+<product>
+<name>perl-String-CRC32</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.3</version>
+</product>
+<product>
+<name>libXxf86dga</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>groff</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.18.1.1</version>
+</product>
+<product>
+<name>crontabs</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.10</version>
+</product>
+<product>
+<name>pcre</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>6.3</version>
+</product>
+<product>
+<name>mesa-libGL</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>6.4.2</version>
+</product>
+<product>
+<name>libao</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.8.6</version>
+</product>
+<product>
+<name>libFS</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>comps-extras</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>11.1</version>
+</product>
+<product>
+<name>glx-utils</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>6.4.2</version>
+</product>
+<product>
+<name>xorg-x11-twm</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.1</version>
+</product>
+<product>
+<name>crash</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.0</version>
+</product>
+<product>
+<name>mcelog</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.6</version>
+</product>
+<product>
+<name>setarch</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.8</version>
+</product>
+<product>
+<name>setserial</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.17</version>
+</product>
+<product>
+<name>man-pages</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.21</version>
+</product>
+<product>
+<name>psmisc</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>21.8</version>
+</product>
+<product>
+<name>cairo</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.2</version>
+</product>
+<product>
+<name>openldap</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.3.19</version>
+</product>
+<product>
+<name>dbus-glib</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.61</version>
+</product>
+<product>
+<name>pango</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.12.0</version>
+</product>
+<product>
+<name>redhat-artwork</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.241</version>
+</product>
+<product>
+<name>rhpl</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.185</version>
+</product>
+<product>
+<name>pciutils</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.2.1</version>
+</product>
+<product>
+<name>bind-libs</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>9.3.2</version>
+</product>
+<product>
+<name>opal</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.2.1</version>
+</product>
+<product>
+<name>gtk2-engines</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.7.4</version>
+</product>
+<product>
+<name>alsa-utils</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.11</version>
+</product>
+<product>
+<name>pygtk2</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.8.4</version>
+</product>
+<product>
+<name>libuser</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.54.5</version>
+</product>
+<product>
+<name>firstboot-tui</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.4.6</version>
+</product>
+<product>
+<name>PyXML</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.8.4</version>
+</product>
+<product>
+<name>wget</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.10.2</version>
+</product>
+<product>
+<name>mono-core</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.1.13.4</version>
+</product>
+<product>
+<name>scrollkeeper</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.3.14</version>
+</product>
+<product>
+<name>e2fsprogs</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.38</version>
+</product>
+<product>
+<name>vim-minimal</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>6.4.007</version>
+</product>
+<product>
+<name>setuptool</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.18.1</version>
+</product>
+<product>
+<name>bind-utils</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>9.3.2</version>
+</product>
+<product>
+<name>diskdumputils</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.2.8</version>
+</product>
+<product>
+<name>tcpdump</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.9.4</version>
+</product>
+<product>
+<name>vim-enhanced</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>6.4.007</version>
+</product>
+<product>
+<name>kbd</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.12</version>
+</product>
+<product>
+<name>mdadm</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.3.1</version>
+</product>
+<product>
+<name>cpuspeed</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.2.1</version>
+</product>
+<product>
+<name>util-linux</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.13</version>
+</product>
+<product>
+<name>gnome-panel</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0</version>
+</product>
+<product>
+<name>libgail-gnome</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.1.3</version>
+</product>
+<product>
+<name>system-config-printer</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.6.151</version>
+</product>
+<product>
+<name>ypbind</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.19</version>
+</product>
+<product>
+<name>gnome-pilot</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.0.13</version>
+</product>
+<product>
+<name>control-center</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0</version>
+</product>
+<product>
+<name>yelp</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0</version>
+</product>
+<product>
+<name>desktop-printing</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.19</version>
+</product>
+<product>
+<name>kdeartwork</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>3.5.1</version>
+</product>
+<product>
+<name>ekiga</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.0.1</version>
+</product>
+<product>
+<name>firefox</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.5.0.1</version>
+</product>
+<product>
+<name>xorg-x11-fonts-100dpi</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>7.0</version>
+</product>
+<product>
+<name>gstreamer-plugins-base</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.10.3</version>
+</product>
+<product>
+<name>gnome-volume-manager</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.5.15</version>
+</product>
+<product>
+<name>gedit</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0</version>
+</product>
+<product>
+<name>xorg-x11-drv-vesa</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.1.3</version>
+</product>
+<product>
+<name>xorg-x11-drv-digitaledge</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.1.3</version>
+</product>
+<product>
+<name>xorg-x11-drv-hyperpen</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0.5</version>
+</product>
+<product>
+<name>xorg-x11-drv-fpit</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0.5</version>
+</product>
+<product>
+<name>xorg-x11-drv-trident</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.1.2</version>
+</product>
+<product>
+<name>xorg-x11-drv-aiptek</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0.5</version>
+</product>
+<product>
+<name>linuxwacom</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.7.2</version>
+</product>
+<product>
+<name>mesa-libGL</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>6.4.2</version>
+</product>
+<product>
+<name>perl-XML-NamespaceSupport</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.09</version>
+</product>
+<product>
+<name>wxPython</name>
+<vendor>Fedora Project</vendor>
+<version>2.6.3.2</version>
+</product>
+<product>
+<name>gc</name>
+<vendor>Fedora Project</vendor>
+<version>6.8</version>
+</product>
+<product>
+<name>perl-Text-Reform</name>
+<vendor>(none)</vendor>
+<version>1.11</version>
+</product>
+<product>
+<name>libSM-devel</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>CastPodder</name>
+<vendor>Fedora Project</vendor>
+<version>5.0</version>
+</product>
+<product>
+<name>libXext-devel</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.0</version>
+</product>
+<product>
+<name>Xaw3d</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.5E</version>
+</product>
+<product>
+<name>dialog</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.0.20051107</version>
+</product>
+<product>
+<name>gv</name>
+<vendor>(none)</vendor>
+<version>3.6.1</version>
+</product>
+<product>
+<name>ots</name>
+<vendor>Fedora Project</vendor>
+<version>0.4.2</version>
+</product>
+<product>
+<name>abiword</name>
+<vendor>Fedora Project</vendor>
+<version>2.4.5</version>
+</product>
+<product>
+<name>fedora-usermgmt-setup</name>
+<vendor>(none)</vendor>
+<version>0.8</version>
+</product>
+<product>
+<name>gconfmm26</name>
+<vendor>(none)</vendor>
+<version>2.12.0</version>
+</product>
+<product>
+<name>libtunepimp</name>
+<vendor>Fedora Project</vendor>
+<version>0.4.2</version>
+</product>
+<product>
+<name>perl-Archive-Tar</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.29</version>
+</product>
+<product>
+<name>perl-Archive-Zip</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.16</version>
+</product>
+<product>
+<name>mhash</name>
+<vendor>(none)</vendor>
+<version>0.9.2</version>
+</product>
+<product>
+<name>perl-IO-Multiplex</name>
+<vendor>(none)</vendor>
+<version>1.08</version>
+</product>
+<product>
+<name>libifp</name>
+<vendor>(none)</vendor>
+<version>1.0.0.2</version>
+</product>
+<product>
+<name>auriferous</name>
+<vendor>Fedora Project</vendor>
+<version>1.0.1</version>
+</product>
+<product>
+<name>curl</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>7.15.1</version>
+</product>
+<product>
+<name>allegro</name>
+<vendor>(none)</vendor>
+<version>4.2.0</version>
+</product>
+<product>
+<name>libksba</name>
+<vendor>Fedora Project</vendor>
+<version>0.9.15</version>
+</product>
+<product>
+<name>rrdtool</name>
+<vendor>Fedora Project</vendor>
+<version>1.2.15</version>
+</product>
+<product>
+<name>c-ares</name>
+<vendor>Fedora Project</vendor>
+<version>1.3.1</version>
+</product>
+<product>
+<name>bug-buddy</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.14.0</version>
+</product>
+<product>
+<name>comical</name>
+<vendor>Fedora Project</vendor>
+<version>0.8</version>
+</product>
+<product>
+<name>blobwars</name>
+<vendor>Fedora Project</vendor>
+<version>1.05</version>
+</product>
+<product>
+<name>cowbell</name>
+<vendor>Fedora Project</vendor>
+<version>0.2.7.1</version>
+</product>
+<product>
+<name>libgcc</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.1.1</version>
+</product>
+<product>
+<name>imlib2</name>
+<vendor>Fedora Project</vendor>
+<version>1.2.1</version>
+</product>
+<product>
+<name>dillo</name>
+<vendor>Fedora Project</vendor>
+<version>0.8.6</version>
+</product>
+<product>
+<name>erlang</name>
+<vendor>Fedora Project</vendor>
+<version>R11B</version>
+</product>
+<product>
+<name>opensp</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>1.5.2</version>
+</product>
+<product>
+<name>qsynth</name>
+<vendor>Fedora Project</vendor>
+<version>0.2.5</version>
+</product>
+<product>
+<name>libgcj</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>4.1.1</version>
+</product>
+<product>
+<name>libgnome-java</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>2.12.3</version>
+</product>
+<product>
+<name>frysk</name>
+<vendor>Red Hat, Inc.</vendor>
+<version>0.0.1.2006.06.15.rh4</version>
+</product>
+<product>
+<name>aalib</name>
+<vendor>Fedora Project</vendor>
+<version>1.4.0</version>
+</product>
+<product>
+<name>gnofract4d</name>
+<vendor>Fedora Project</vendor>
+<version>2.14</version>
+</product>
+<product>
+<name>glabels</name>
+<vendor>Fedora Project</vendor>
+<version>2.0.4</version>
+</product>
+<product>
+<name>recode</name>
+<vendor>(none)</vendor>
+<version>3.6</version>
+</product>
+<product>
+<name>gprolog</name>
+<vendor>Fedora Project</vendor>
+<version>1.2.19</version>
+</product>
+<product>
+<name>ipython</name>
+<vendor>Fedora Project</vendor>
+<version>0.7.2</version>
+</product>
+<product>
+<name>exiv2</name>
+<vendor>Fedora Project</vendor>
+<version>0.10</version>
+</product>
+<product>
+<name>kmobiletools</name>
+<vendor>Fedora Project</vendor>
+<version>0.4.3.3</version>
+</product>
+</installedProducts>
+<diskDrives>
+<diskDrive>
+<model>(unknown)</model>
+<deviceName>/dev/sda</deviceName>
+<size>301721452544</size>
+<mediaType>HDD</mediaType>
+<diskPartition>
+<deviceName>/dev/sda1</deviceName>
+<name>/boot</name>
+<fileSystem>ext3</fileSystem>
+<size>106896384</size>
+<freeSpace>88269824</freeSpace>
+</diskPartition>
+<diskPartition>
+<deviceName>/dev/sda2</deviceName>
+<name>(unknown)</name>
+<fileSystem>Linux Swap</fileSystem>
+<size>1073741824</size>
+<freeSpace>0</freeSpace>
+</diskPartition>
+<diskPartition>
+<deviceName>/dev/sda3</deviceName>
+<name>/</name>
+<fileSystem>ext3</fileSystem>
+<size>301509698560</size>
+<freeSpace>193273528320</freeSpace>
+</diskPartition>
+</diskDrive>
+<diskDrive>
+<model>HL-DT-ST DVDRAM GSA-4163B</model>
+<deviceName>/dev/hdc</deviceName>
+<size>0</size>
+<mediaType>CD-ROM</mediaType>
+</diskDrive>
+</diskDrives>
+<beenDisk>
+<path>/home/usr2568/workspace/BEEN</path>
+<size>301509698560</size>
+<freeSpace>193273528320</freeSpace>
+</beenDisk>
+<javaInfo>
+<version>1.5.0_05</version>
+<vendor>Sun Microsystems Inc.</vendor>
+<runtimeName>Java(TM) 2 Runtime Environment, Standard Edition</runtimeName>
+<vmVersion>1.5.0_05-b05</vmVersion>
+<vmVendor>Sun Microsystems Inc.</vmVendor>
+<runtimeVersion>1.5.0_05-b05</runtimeVersion>
+<specification>1.5</specification>
+</javaInfo>
+<user>
+<propertyTree typeName="user">
+<properties>
+<namevalue name="doubleProperty" valueType="cz.cuni.mff.been.hostmanager.value.ValueDouble">
+<double value="42.0"/>
+</namevalue>
+<namevalue name="stringProperty" valueType="cz.cuni.mff.been.hostmanager.value.ValueString">
+<string caseSensitive="no" value="a"/>
+</namevalue>
+<namevalue name="regexpProperty" valueType="cz.cuni.mff.been.hostmanager.value.ValueRegexp">
+<regexp caseSense="no" value="a"/>
+</namevalue>
+<namevalue name="listProperty" valueType="cz.cuni.mff.been.hostmanager.value.ValueList">
+<list type="cz.cuni.mff.been.hostmanager.value.ValueInteger">
+<integer value="42"/>
+<integer value="43"/>
+<integer value="44"/>
+</list>
+</namevalue>
+<namevalue name="versionProperty" valueType="cz.cuni.mff.been.hostmanager.value.ValueVersion">
+<version value="42.0.0"/>
+</namevalue>
+<namevalue name="booleanProperty" valueType="cz.cuni.mff.been.hostmanager.value.ValueBoolean">
+<boolean value="false"/>
+</namevalue>
+<namevalue name="integerProperty" valueType="cz.cuni.mff.been.hostmanager.value.ValueInteger">
+<integer value="42"/>
+</namevalue>
+<namevalue name="rangeProperty" valueType="cz.cuni.mff.been.hostmanager.value.ValueRange">
+<range subtype="cz.cuni.mff.been.hostmanager.value.ValueInteger">
+<min open="no">
+<integer value="42"/>
+</min>
+<max open="no">
+<integer value="45"/>
+</max>
+</range>
+</namevalue>
+</properties>
+</propertyTree>
+</user>
+</hostInfo>

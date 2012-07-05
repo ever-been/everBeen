@@ -1,0 +1,5 @@
+class TidComparator
+!!!242306.java!!!	compare(inout o1 : TaskDescriptor, inout o2 : TaskDescriptor) : int
+			Long l1 = Long.valueOf(o1.getTaskTid());
+			Long l2 = Long.valueOf(o2.getTaskTid());
+			return l1.compareTo(l2);

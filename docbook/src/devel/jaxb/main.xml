@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<chapter
+	xml:id="been.devel.jaxb"
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>JAXB Technology Integration</title>
+	
+	<para>The WillBeen project added numerous XML interfaces to the BEEN framework. The JAXB
+	technology has been chosen to implement direct XML bindings and produce automatically generated
+	data structures.</para>
+	
+	<para>A new package containing XML related singletons and helper methods has been added to the
+	project. The package is described in this section.</para>
+	
+	<xi:include href="purpose.xml"/>
+	<xi:include href="api.xml"/>
+	<xi:include href="extension.xml"/>
+</chapter>

@@ -1,0 +1,6 @@
+class PackageNameQueryCallback
+!!!479746.java!!!	PackageNameQueryCallback(in packageFilename : String)
+			this.packageFilename = packageFilename;
+!!!479874.java!!!	match(inout metadata : PackageMetadata) : boolean
+			return metadata.getType().equals(PackageType.TASK) 
+				&& metadata.getFilename().equals(packageFilename);

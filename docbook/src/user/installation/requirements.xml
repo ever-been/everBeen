@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sect1
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>System Requirements</title>
+
+	<para>What you need to run BEEN</para>
+	
+	<itemizedlist>
+		<listitem><para>Java v.1.5. or higher</para></listitem>
+		<listitem><para>Tomcat v.6.0. or higher to run the web interface</para></listitem>
+		<listitem><para>R for statistical computation (r-evaluator-task and generic-r-evaluator)</para></listitem>
+		<listitem><para>SVN or CVS client for the respective download tasks</para></listitem>
+		<listitem><para>Apache Ant v.1.7. for building BEEN source</para></listitem>
+		<listitem><para>BEEN packages</para></listitem>
+		<listitem><para>Linux for running the BEEN Command Line Interface</para></listitem>
+		<listitem><para>Linux, Solaris or Windows for system load monitoring</para></listitem>
+		<listitem><para>Machines</para></listitem>
+	</itemizedlist>	
+</sect1>

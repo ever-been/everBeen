@@ -1,0 +1,628 @@
+class BinaryEntityManager
+!!!518530.java!!!	BinaryEntityManager()
+		database = Database.getInstance();
+!!!518658.java!!!	getInstance() : BinaryEntityManager
+		if (binaryEntityManager == null) {
+			return new BinaryEntityManager();
+		} else {
+			return binaryEntityManager;
+		}
+!!!518786.java!!!	initialize(inout database : Database, inout metaManager : MetadataManager, inout statisticsManager : StatisticsManager, inout taskListManager : TaskListManager, inout scriptsRunner : RScriptsRunner, inout analysisEntityManager : AnalysisEntityManager, inout experimentEntityManager : ExperimentEntityManager) : void
+		
+		this.database = database;
+		BinaryEntityManager.metaManager = metaManager;
+		this.statisticsManager = statisticsManager;
+		this.taskListManager = taskListManager;
+		this.rScriptsRunner = scriptsRunner;
+		
+		this.analysisEntityManager = analysisEntityManager;		
+		this.experimentEntityManager = experimentEntityManager;
+!!!518914.java!!!	addBinary(inout description : BinaryEntity) : void
+		String runsPerBinary;
+		String metaItem;
+		Integer binaries;
+		Integer validBinaries;
+
+		AID analysisId = description.getAnalysis();
+		EID experimentId = description.getExperiment();
+
+		analysisEntityManager.ensureValidAid(analysisId);
+		experimentEntityManager.ensureValidEid(analysisId, experimentId);
+
+		createBinary(analysisId, experimentId, description.getId());
+
+		MetadataRef experimentMetadata = new MetadataRef(new Metadata());
+		MetadataRef analysisMetadata = new MetadataRef(new Metadata());
+
+		ExperimentEntityManager.ensureSuccessLoadExperimentMetadata(experimentMetadata, analysisId,
+				experimentId);
+		AnalysisEntityManager.ensureSuccessLoadAnalysisMetadata(analysisMetadata, analysisId);
+
+		runsPerBinary = experimentMetadata.metadata
+				.getItemByKey("expected runs per binary");
+		if (runsPerBinary == null) {
+			throw new ResultsRepositoryException(
+					"Experiment metadata error, 'expected runs per binary' "
+					+ "item not found when creating binary.");
+		}
+
+		MetadataRef binaryMetadata = new MetadataRef(new Metadata());
+		binaryMetadata.metadata.addItem("name", description.getName());
+		binaryMetadata.metadata.addItem("comment", "");
+		binaryMetadata.metadata.addItem("created on", new Date().toString());
+		binaryMetadata.metadata.addItem("runs", "0");
+		binaryMetadata.metadata.addItem("valid runs", "0");
+		binaryMetadata.metadata.addItem("valid", "true");
+		binaryMetadata.metadata.addItem("expected runs", runsPerBinary);
+		binaryMetadata.metadata.addItem("complete", "false");
+		binaryMetadata.metadata.addItem("last valid run idx", "0");
+		binaryMetadata.metadata.addItem("last crashed run idx", "0");
+
+		ensureSuccessStoreBinaryMetadata(binaryMetadata.metadata, analysisId,
+				experimentId, description.getId());
+
+		/* Now update binaries count in experiment metadata */
+
+		if (Database.ensureMetadataNotNull(metaItem = experimentMetadata.metadata
+				.getItemByKey("binaries"), "binaries",
+				Database.getAnalysisReferenceString(analysisId))) {
+			binaries = new Integer(metaItem);
+		} else {
+			binaries = new Integer(0);
+		}
+
+		if (Database.ensureMetadataNotNull(metaItem = experimentMetadata.metadata
+				.getItemByKey("valid binaries"), "binaries",
+				Database.getAnalysisReferenceString(analysisId))) {
+			validBinaries = new Integer(metaItem);
+		} else {
+			validBinaries = new Integer(0);
+		}
+
+		binaries++;
+		experimentMetadata.metadata.setItemByKey("binaries", binaries
+				.toString());
+
+		validBinaries++;
+		experimentMetadata.metadata.setItemByKey("valid binaries", binaries
+				.toString());
+
+		if (experimentMetadata.metadata.getItemByKey("valid").equals("false")) {
+			/* New experiment become valid in analysis */
+			int validExps = Integer.parseInt(analysisMetadata.metadata
+					.getItemByKey("valid experiments"));
+			analysisMetadata.metadata.setItemByKey("valid experiments", String
+					.valueOf(validExps + 1));
+			analysisMetadata.metadata.setItemByKey("valid", "true");
+			if (!AnalysisEntityManager.ensureSuccessStoreAnalysisMetadata(analysisMetadata.metadata,
+					analysisId)) {
+				return;
+			}
+			experimentMetadata.metadata.setItemByKey("valid", "true");
+		}
+
+		if (!ExperimentEntityManager.ensureSuccessStoreExperimentMetadata(experimentMetadata.metadata,
+				analysisId, experimentId)) {
+			return;
+		}
+		
+		String[] taskNames = null; 
+		
+		try {
+			BenchmarkManagerGUIInterface bmInstance = database.getBenchmarkManagerInstance();
+			
+			if (bmInstance == null) {
+		    	Logger.logError("Error contacting Benchmark Manager.");
+		    } else {
+		    	taskNames = BeenUtils.extractTaskIDs(bmInstance.getAnalysisInterface()
+		    		.getSubentityInterface(analysisId)
+		    		.getSubentityInterface(experimentId).getAllTasks(description.getId()));
+		    	
+				if (taskNames == null) {
+					Logger.logError("Task names list of binary is null.");
+					return;
+				}
+		                
+				synchronized (LockManager.taskListLock) {
+					
+					taskListManager.loadBinaryTaskList(analysisId, experimentId, description.getId());
+					taskListManager.addNewBinaryTasks(taskNames);
+					taskListManager.storeBinaryTaskList(analysisId, experimentId, description.getId());
+					
+				}
+
+		    }
+		} catch (RemoteException e) {
+			Logger.logError("Error contacting Benchmark Manager.");
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			Logger.logError("Entities integrity error while creating binary.");
+			e.printStackTrace();
+		}
+                
+
+!!!519042.java!!!	addBinaryMetadata(inout analysisId : AID, inout experimentId : EID, inout binaryId : BID, in key : String, in value : String) : void
+
+		ensureValidBid(analysisId, experimentId, binaryId);
+		MetadataRef binaryMetadata = new MetadataRef(new Metadata());
+		ensureSuccessLoadBinaryMetadata(binaryMetadata, analysisId,
+				experimentId, binaryId);
+
+		if (binaryMetadata.metadata.getItemByKey(key) != null) {
+			throw new ResultsRepositoryException(
+					"Trying to overwrite analysis metadata - "
+							+ Database.getBinaryReferenceString(analysisId,
+									experimentId, binaryId) + ".");
+		}
+
+		binaryMetadata.metadata.addItem(key, value);
+
+		ensureSuccessStoreBinaryMetadata(binaryMetadata.metadata, analysisId,
+				experimentId, binaryId);
+
+!!!519170.java!!!	createBinary(inout aid : AID, inout eid : EID, inout bid : BID) : void
+
+		if (isValidBid(aid, eid, bid)) {
+			throw new ResultsRepositoryException(new IllegalArgumentException(
+					Database.getBinaryReferenceString(aid, eid, bid)
+							+ " already exists."));
+		}
+
+		File binaryDirectory = new File(database.getDirectoryInDatabase(aid, eid, bid));
+		if (!binaryDirectory.mkdir()) {
+			throw new ResultsRepositoryException(
+					"Error creating binary directory...");
+		}
+		
+		File binaryInvalidateScriptsDirectory 
+			= new File(database.getInvalidateScriptsDirectory(aid, eid, bid));
+		if (!binaryInvalidateScriptsDirectory.mkdir()) {
+			throw new ResultsRepositoryException(
+					"Error creating binary invalidate scripts directory.");
+		}
+		
+		File loadInfoDirectory
+			= new File(database.getLoadDirectory(aid, eid, bid));
+		if (!loadInfoDirectory.mkdir()) {
+			throw new ResultsRepositoryException(
+					"Error creating binary load storage scripts directory.");
+		}
+	
+!!!519298.java!!!	binaryFinished(inout aid : AID, inout eid : EID, inout bid : BID) : boolean
+		
+		EntityStatus binaryStatus = null;
+		
+		try {
+			
+		    BenchmarkManagerGUIInterface bmInstance = database.getBenchmarkManagerInstance();
+		    if (bmInstance != null) {
+			Logger.logDebug(Database.getBinaryReferenceString(aid, eid, bid) + " status is " + binaryStatus);
+		    	binaryStatus = bmInstance.getAnalysisInterface()
+		    		.getSubentityInterface(aid).getSubentityInterface(eid)
+		    		.getEntity(bid).getStatus();
+		    } else {
+		    	Logger.logError(BM_CONTACT_DELETE_PERMIT_ERROR);
+		    	return false;
+		    }
+		    
+		} catch (RemoteException e) {
+			
+		    Logger.logError(BM_CONTACT_DELETE_PERMIT_ERROR);
+		    return false;
+		    
+		} catch (IllegalArgumentException e) {
+			
+			Logger.logInfo("Test \"binary finished\": binary no longer exists in Benchmark Manager.");
+			return true;
+		}
+		
+		if (binaryStatus == null) {
+			
+			Logger.logError(BM_CONTACT_DELETE_PERMIT_ERROR);
+			return false;
+			
+		}
+		
+		return binaryStatus.equals(EntityStatus.FINISHED); 
+!!!519426.java!!!	getBinariesInExperiment(inout aid : AID, inout eid : EID) : Entity
+
+		experimentEntityManager.ensureValidEid(aid, eid);
+
+		File[] directoryList;
+		ArrayList<Entity<BID>> result = new ArrayList<Entity<BID>>();
+
+		File path = new File(database.getDirectoryInDatabase(aid, eid));
+		if ((directoryList = path.listFiles()) == null) {
+			throw new RuntimeException(new ResultsRepositoryException(
+					"Error reading binaries directory ("
+							+ Database.getExperimentReferenceString(aid, eid) + ")."));
+		}
+
+		MetadataRef metadataFile = new MetadataRef(new Metadata());
+		MetadataRef metadataExperimentFile = new MetadataRef(new Metadata());
+
+		for (int i = 0; i < directoryList.length; i++) {
+			if (directoryList[i].isDirectory()) {
+
+				BID bid;
+				try {
+					bid = new BID(new Long(directoryList[i].getName())
+							.longValue());
+				} catch (NumberFormatException e) {
+					Logger.logTrace(
+							"Encountered non-BID item in experiment: "
+									+ directoryList[i].getName() + ".");
+					continue;
+				}
+				
+				ensureSuccessLoadBinaryMetadata(metadataFile, aid, eid, bid);
+				ExperimentEntityManager.ensureSuccessLoadExperimentMetadata(
+						metadataExperimentFile, aid, eid);
+				
+				Statistics[] stat = statisticsManager.loadBinaryStatistics(aid,
+						eid, bid);
+				
+				String metaItem;
+				boolean completeBinary;
+				boolean completeExperiment;
+				
+				if (Database.ensureMetadataNotNull(metaItem = metadataFile.metadata
+						.getItemByKey("complete"), "complete",
+						Database.getBinaryReferenceString(aid, eid, bid))) {
+					completeBinary = new Boolean(metaItem);
+				} else {
+					/* invalid metadata shouldn't prevent deleting of entity */
+					completeBinary = true; 
+				}
+
+				if (Database.ensureMetadataNotNull(metaItem = metadataExperimentFile.metadata
+						.getItemByKey("complete"), "complete",
+						Database.getExperimentReferenceString(aid, eid))) {
+					completeExperiment = new Boolean(metaItem);
+				} else {
+					/* invalid metadata shouldn't prevent deleting of entity */
+					completeExperiment = true; 
+				}
+				
+				result.add(new Entity<BID>(bid, metadataFile.metadata
+						.getMetadata(), stat, 
+						rScriptsRunner.isDeleteBinaryAllowed(aid, eid, bid) && ( (completeBinary 
+								&&  completeExperiment) || 
+									experimentEntityManager.experimentFinished(aid, eid) 
+								)
+				));
+			}
+		}
+
+		Collections.sort((List<Entity<BID>>) result);
+
+		return result;
+!!!519554.java!!!	isValidBid(inout aid : AID, inout eid : EID, inout bid : BID) : boolean
+
+		File binaryDir = new File(database.getDirectoryInDatabase(aid, eid, bid));
+		return binaryDir.exists() && binaryDir.isDirectory()
+				&& binaryDir.canRead();
+!!!519682.java!!!	ensureValidBid(inout aid : AID, inout eid : EID, inout bid : BID) : void
+		if (!isValidBid(aid, eid, bid)) {
+			throw new IllegalArgumentException(Database.getBinaryReferenceString(aid,
+					eid, bid)
+					+ " doesn't exist.");
+		}
+!!!519810.java!!!	isDeletable(inout aid : AID, inout eid : EID, inout bid : BID) : boolean
+		
+		MetadataRef metadataBinaryFile = new MetadataRef(new Metadata());
+		MetadataRef metadataExperimentFile = new MetadataRef(new Metadata());
+
+		ensureSuccessLoadBinaryMetadata(metadataBinaryFile, aid, eid, bid);
+		ExperimentEntityManager.ensureSuccessLoadExperimentMetadata(
+				metadataExperimentFile, aid, eid);
+
+		String metaItem;
+		boolean completeBinary;
+		boolean completeExperiment;
+		
+		if (Database.ensureMetadataNotNull(metaItem = metadataBinaryFile.metadata
+				.getItemByKey("complete"), "complete",
+				Database.getBinaryReferenceString(aid, eid, bid))) {
+			completeBinary = new Boolean(metaItem);
+		} else {
+			/* invalid metadata shouldn't prevent deleting of entity */
+			completeBinary = true; 
+		}
+
+		if (Database.ensureMetadataNotNull(metaItem = metadataExperimentFile.metadata
+				.getItemByKey("complete"), "complete",
+				Database.getExperimentReferenceString(aid, eid))) {
+			completeExperiment = new Boolean(metaItem);
+		} else {
+			/* invalid metadata shouldn't prevent deleting of entity */
+			completeExperiment = true; 
+		}
+		
+		return completeBinary && completeExperiment;
+
+!!!519938.java!!!	getBinary(inout aid : AID, inout eid : EID, inout bid : BID) : Entity
+
+		File binaryDir;
+		Entity<BID> result;
+
+		ensureValidBid(aid, eid, bid);
+
+		binaryDir = new File(database.getDirectoryInDatabase(aid, eid, bid));
+
+		MetadataRef metadataFile = new MetadataRef(new Metadata());
+		MetadataRef metadataExperimentFile = new MetadataRef(new Metadata());
+		
+		ensureSuccessLoadBinaryMetadata(metadataFile, aid, eid, bid);
+		ExperimentEntityManager.ensureSuccessLoadExperimentMetadata(
+				metadataExperimentFile, aid, eid);
+
+		Statistics[] stat = statisticsManager.loadBinaryStatistics(aid, eid,
+				bid);
+		
+		String metaItem;
+		boolean completeBinary;
+		boolean completeExperiment;
+		
+		if (Database.ensureMetadataNotNull(metaItem = metadataFile.metadata
+				.getItemByKey("complete"), "complete",
+				Database.getBinaryReferenceString(aid, eid, bid))) {
+			completeBinary = new Boolean(metaItem);
+		} else {
+			/* invalid metadata shouldn't prevent deleting of entity */
+			completeBinary = true; 
+		}
+
+		if (Database.ensureMetadataNotNull(metaItem = metadataExperimentFile.metadata
+				.getItemByKey("complete"), "complete",
+				Database.getExperimentReferenceString(aid, eid))) {
+			completeExperiment = new Boolean(metaItem);
+		} else {
+			/* invalid metadata shouldn't prevent deleting of entity */
+			completeExperiment = true; 
+		}
+		
+		result = new Entity<BID>(new BID(new Long(binaryDir.getName())
+				.longValue()), metadataFile.metadata.getMetadata(), stat, 
+				rScriptsRunner.isDeleteBinaryAllowed(aid, eid, bid) && completeBinary 
+				&& (completeExperiment || experimentEntityManager.experimentFinished(aid, eid)));
+
+		return result;
+!!!520066.java!!!	ensureSuccessLoadBinaryMetadata(inout binaryMetadata : MetadataRef, inout aid : AID, inout eid : EID, inout bid : BID) : boolean
+		try {
+			binaryMetadata.metadata = metaManager.loadBinaryMetadata(aid, eid,
+					bid);
+		} catch (IOException e) {
+			e.printStackTrace();
+			Logger.logError(
+					Metadata.IO_ERROR_METADATA_READING_MESSAGE
+							+ Database.getBinaryReferenceString(aid, eid, bid));
+			return false;
+		}
+		return true;
+!!!520194.java!!!	ensureSuccessStoreBinaryMetadata(inout binaryMetadata : Metadata, inout aid : AID, inout eid : EID, inout bid : BID) : boolean
+		try {
+			metaManager.storeBinaryMetadata(aid, eid, bid, binaryMetadata);
+		} catch (IOException e) {
+			e.printStackTrace();
+			Logger.logError(
+					Metadata.IO_ERROR_METADATA_STORING_MESSAGE
+							+ Database.getBinaryReferenceString(aid, eid, bid));
+			return false;
+		}
+		return true;
+!!!520322.java!!!	setBinaryComment(inout aid : AID, inout eid : EID, inout bid : BID, in comment : String) : void
+
+		ensureValidBid(aid, eid, bid);
+		metaManager.setBinaryMetadataItem(aid, eid, bid, "comment", comment);
+!!!520450.java!!!	eraseBinary(inout aid : AID, inout eid : EID, inout bid : BID) : boolean
+
+		ensureValidBid(aid, eid, bid);
+		
+		synchronized (LockManager.eraseLock) {
+			
+			/* Note: for further improvement of synchronization, callbacks should be locked too 
+			 * (because they handle metadata of existing entities), now it cannot happen. For 
+			 * additional measurements, it must be introduced */
+			
+			if (!(rScriptsRunner.isDeleteBinaryAllowed(aid, eid, bid) && 
+					(isDeletable(aid, eid, bid) || experimentEntityManager.experimentFinished(aid, eid))
+				)) {
+				Logger.logWarning("Tried to delete locked " +
+						Database.getBinaryReferenceString(aid, eid, bid) + ".");				
+				throw new DeleteLockedException("Binary is being processed, unable to delete.");
+			}
+	
+	
+			MetadataRef analysisMetadata = new MetadataRef(new Metadata());
+			MetadataRef experimentMetadata = new MetadataRef(new Metadata());
+			MetadataRef binaryMetadata = new MetadataRef(new Metadata());
+	
+			Integer binaries;
+			Integer completeBinaries;
+			Integer expectedBinaries;
+			Integer validBinaries;
+			String metaItem;
+			boolean valid;
+			boolean complete;
+	
+			/* Update binaries count in experiment metadata */
+			if (!AnalysisEntityManager.ensureSuccessLoadAnalysisMetadata(analysisMetadata, aid)
+					|| !ExperimentEntityManager.ensureSuccessLoadExperimentMetadata(experimentMetadata,
+							aid, eid)
+					|| !ensureSuccessLoadBinaryMetadata(binaryMetadata, aid, eid,
+							bid)) {
+				
+				return false;
+			}
+	
+			if (Database.ensureMetadataNotNull(metaItem = experimentMetadata.metadata
+					.getItemByKey("complete binaries"), "complete binaries",
+					Database.getExperimentReferenceString(aid, eid))) {
+				completeBinaries = new Integer(metaItem);
+			} else {
+				completeBinaries = new Integer(0);
+			}
+	
+			if (Database.ensureMetadataNotNull(metaItem = experimentMetadata.metadata
+					.getItemByKey("binaries"), "binaries",
+					Database.getExperimentReferenceString(aid, eid))) {
+				binaries = new Integer(metaItem);
+			} else {
+				binaries = new Integer(0);
+			}
+	
+			if (Database.ensureMetadataNotNull(metaItem = experimentMetadata.metadata
+					.getItemByKey("expected binaries"), "expected binaries",
+					Database.getExperimentReferenceString(aid, eid))) {
+				expectedBinaries = new Integer(metaItem);
+			} else {
+				expectedBinaries = new Integer(0);
+			}
+	
+			if (Database.ensureMetadataNotNull(metaItem = experimentMetadata.metadata
+					.getItemByKey("valid binaries"), "valid binaries",
+					Database.getExperimentReferenceString(aid, eid))) {
+				validBinaries = new Integer(metaItem);
+			} else {
+				validBinaries = new Integer(0);
+			}
+	
+			if (Database.ensureMetadataNotNull(metaItem = binaryMetadata.metadata
+					.getItemByKey("valid"), "valid", Database.getBinaryReferenceString(aid,
+					eid, bid))) {
+				valid = metaItem.equals("true");
+			} else {
+				valid = false;
+			}
+			
+			if (Database.ensureMetadataNotNull(metaItem = binaryMetadata.metadata
+					.getItemByKey("complete"), "complete", Database.getBinaryReferenceString(aid,
+					eid, bid))) {
+				complete = metaItem.equals("true");
+			} else {
+				complete = false;
+			}
+	
+			if (complete) {
+				completeBinaries--; 
+			}
+			
+			expectedBinaries--;
+			binaries--;
+			experimentMetadata.metadata.setItemByKey("binaries", binaries
+					.toString());
+			experimentMetadata.metadata.setItemByKey("complete binaries",
+					completeBinaries.toString());
+			experimentMetadata.metadata.setItemByKey("expected binaries",
+					expectedBinaries.toString());
+	
+			if (valid && binaries > 0) {
+				validBinaries--;
+				experimentMetadata.metadata.setItemByKey("valid binaries",
+						validBinaries.toString());
+				if (validBinaries == 0) {
+					experimentMetadata.metadata.setItemByKey("valid", "false");
+	
+					int validExps = Integer.parseInt(analysisMetadata.metadata
+							.getItemByKey("valid experiments"));
+					analysisMetadata.metadata.setItemByKey("valid experiments",
+							String.valueOf(validExps - 1));
+	
+					if (validExps == 0) {
+						analysisMetadata.metadata.setItemByKey("valid", "false");
+						analysisMetadata.metadata.setItemByKey("valid experiments",
+								"0");
+						if (!AnalysisEntityManager.ensureSuccessStoreAnalysisMetadata(
+								analysisMetadata.metadata, aid)) {
+							return false;
+						}
+	
+					} else {
+						if (!AnalysisEntityManager.ensureSuccessStoreAnalysisMetadata(
+								analysisMetadata.metadata, aid)) {
+							return false;
+						}
+					}
+				}
+			}
+	
+			if (binaries == 0) {
+	
+				if (experimentMetadata.metadata.getItemByKey("valid").equals(
+						"false")) {
+					/* New experiment become valid in analysis */
+					int validExps = Integer.parseInt(analysisMetadata.metadata
+							.getItemByKey("valid experiments"));
+					analysisMetadata.metadata.setItemByKey("valid experiments",
+							String.valueOf(validExps + 1));
+					analysisMetadata.metadata.setItemByKey("valid", "true");
+					if (!AnalysisEntityManager.ensureSuccessStoreAnalysisMetadata(
+							analysisMetadata.metadata, aid)) {
+						return false;
+					}
+					experimentMetadata.metadata.setItemByKey("valid", "true");
+				}
+			}
+	
+			if (!ExperimentEntityManager.ensureSuccessStoreExperimentMetadata(experimentMetadata.metadata,
+					aid, eid)) {
+				return false;
+			}
+	
+			File file = new File(database.getDirectoryInDatabase(aid, eid, bid));
+			boolean result = Database.eraseDirectoryRecursively(file);
+			
+			/* Now execute invalidation callbacks */
+			try {
+				
+				File scriptsFile = new File(
+		        		database.getInvalidateScriptsDirectory(aid, eid) + File.separator +
+		        		RManager.INVALIDATE_SCRIPT_FILENAME);
+				
+				if (scriptsFile.exists()) {
+		        		
+			        BufferedReader scriptsReader = new BufferedReader(new FileReader(scriptsFile));
+			        		        
+			        String script;
+			        
+			        while ((script = scriptsReader.readLine()) != null) {
+			        	
+			        	if (!script.trim().equals("")) {
+			        		rScriptsRunner.enqueueScriptExecution(aid, eid, script);
+			        	}			        	
+			        }
+			        
+			        scriptsReader.close();
+				}
+			        
+		    } catch (IOException e) {
+		    	Logger.logError("I/O error accessing invalidation script files.");
+		    }
+			
+			return result;
+		}
+!!!520578.java!!!	getContext(inout aid : AID, inout eid : EID, inout bid : BID) : String
+		// Note: bid is not used, as contexts are mapped to experiments
+		return experimentEntityManager.getExperimentContext(aid, eid);
+!!!520706.java!!!	uploadBinaryFile(inout aid : AID, inout eid : EID, inout bid : BID, in name : String, in host : String, in port : int, inout blocking : boolean) : UploadHandle
+
+		ensureValidBid(aid, eid, bid);
+
+		if (database.isBusy() && !blocking) {
+			throw new ResultsRepositoryBusyException(
+					Database.TOO_MANY_CONNECTIONS_MESSAGE);
+		}
+
+		return database.uploadFile(database.getFileInDatabase(aid, eid, bid, name), host, port,
+				blocking, false, null, null);
+!!!520834.java!!!	downloadBinaryFile(inout aid : AID, inout eid : EID, inout bid : BID, in name : String, in host : String, in port : int, inout blocking : boolean) : DownloadHandle
+
+		ensureValidBid(aid, eid, bid);
+
+		if (database.isBusy() && !blocking) {
+			throw new ResultsRepositoryBusyException(
+					Database.TOO_MANY_CONNECTIONS_MESSAGE);
+		}
+		return database.downloadFile(database.getFileInDatabase(aid, eid, bid, name), host, port,
+				blocking);

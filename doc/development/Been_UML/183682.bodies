@@ -1,0 +1,14 @@
+class TaskProcessKiller
+!!!485378.java!!!	TaskProcessKiller(in timeout : long)
+				this.timeout = timeout; 
+!!!485506.java!!!	run() : void
+				try {
+					sleep(timeout);
+					processTimedOut = true;
+					process.destroy();
+					writeMessage("Task killed after a timeout (" + timeout + " ms).");
+				} catch (InterruptedException e) {
+					/* This happens when the task has ended before the timeout and the
+					 * killer thread is woken up so it can finish.
+					 */ 
+				}

@@ -1,0 +1,698 @@
+class RunEntityManager
+!!!586498.java!!!	RunEntityManager()
+		database = Database.getInstance();
+!!!586626.java!!!	getInstance() : RunEntityManager
+		if (runEntityManager == null) {
+			return new RunEntityManager();
+		} else {
+			return runEntityManager;
+		}
+!!!586754.java!!!	initialize(inout database : Database, inout statisticsManager : StatisticsManager, inout taskListManager : TaskListManager, inout graphManager : GraphManager, inout ridManager : RunValidityMapsManager, inout lockManager : LockManager, inout scriptsRunner : RScriptsRunner, inout binaryEntityManager : BinaryEntityManager, inout experimentEntityManager : ExperimentEntityManager) : void
+		
+		this.database = database;
+		this.statisticsManager = statisticsManager;
+		this.taskListManager = taskListManager;
+		this.graphManager = graphManager;
+		RunEntityManager.ridManager = ridManager;
+		this.lockManager = lockManager;
+		this.rScriptsRunner = scriptsRunner;
+		
+		this.binaryEntityManager = binaryEntityManager;
+		this.experimentEntityManager = experimentEntityManager;
+
+!!!586882.java!!!	getRunPaths(inout aid : AID, inout eid : EID, inout bid : BID, inout rid : RID) : String
+		return ridManager.getRunPaths(aid, eid, bid, rid);
+!!!587010.java!!!	getRunsInBinary(inout aid : AID, inout eid : EID, inout bid : BID) : Entity
+
+		binaryEntityManager.ensureValidBid(aid, eid, bid);
+
+		RRIDTable runList;
+		ArrayList<Entity<RID>> result;
+
+		runList = ridManager.getRunTable(aid, eid, bid);
+		result = new ArrayList<Entity<RID>>(runList.getItemCount());
+
+		if (runList == null) {
+			throw new RuntimeException(new ResultsRepositoryException(
+					"Error reading run's files ("
+							+ Database.getBinaryReferenceString(aid, eid, bid) + ")."));
+		}
+
+		MetadataRef metadataBinaryFile = new MetadataRef(new Metadata());
+		MetadataRef metadataExperimentFile = new MetadataRef(new Metadata());
+		Metadata metadataFile;
+
+		HashSet<RID> ridSet = new HashSet();
+		
+		for (int i = 0; i < runList.getItemCount(); i++) {
+
+			RID rid = runList.getItemKey(i);
+			if (ridSet.contains(rid)) {
+				continue;
+			}
+			
+			ridSet.add(rid);						
+
+			/*
+			 * optimize these? event. create and use getRun<whatever>Path(aid,
+			 * eid, bid, index)
+			 */
+			String metadataPath = ridManager.getRunMetadataPath(aid, eid, bid,
+					rid);
+
+			try {
+				metadataFile = new Metadata(metadataPath);
+			} catch (IOException e) {
+				throw new RuntimeException(new ResultsRepositoryException(
+						Metadata.IO_ERROR_METADATA_READING_MESSAGE + "runs in "
+								+ Database.getBinaryReferenceString(aid, eid, bid)) + ".");
+			}
+
+			Statistics[] stat;
+
+			stat = statisticsManager.loadRunStatistics(aid, eid, bid, rid);
+
+			metadataFile.addItem("valid", new Boolean(ridManager.isValidRun(
+					aid, eid, bid, rid)).toString());
+
+			/*
+			 * There is no "partially uploaded run" - this operation is (hope,
+			 * will it will be true :-P) atomic
+			 */
+			metadataFile.addItem("complete", "true");
+			
+			BinaryEntityManager.ensureSuccessLoadBinaryMetadata(metadataBinaryFile, aid, eid, bid);
+			ExperimentEntityManager.ensureSuccessLoadExperimentMetadata(
+					metadataExperimentFile, aid, eid);
+			
+			String metaItem;
+			boolean completeBinary;
+			boolean completeExperiment;
+			
+			if (Database.ensureMetadataNotNull(metaItem = metadataBinaryFile.metadata
+					.getItemByKey("complete"), "complete",
+					Database.getBinaryReferenceString(aid, eid, bid))) {
+				completeBinary = new Boolean(metaItem);
+			} else {
+				/* invalid metadata shouldn't prevent deleting of entity */
+				completeBinary = true; 
+			}
+
+			if (Database.ensureMetadataNotNull(metaItem = metadataExperimentFile.metadata
+					.getItemByKey("complete"), "complete",
+					Database.getExperimentReferenceString(aid, eid))) {
+				completeExperiment = new Boolean(metaItem);
+			} else {
+				/* invalid metadata shouldn't prevent deleting of entity */
+				completeExperiment = true; 
+			}
+
+			result.add(new Entity<RID>(rid, metadataFile.getMetadata(), stat, 
+					rScriptsRunner.isDeleteRunAllowed(aid, eid, bid, rid) 
+					&& ((completeBinary && completeExperiment) 
+							||	(binaryEntityManager.binaryFinished(aid, eid, bid) 
+								&& experimentEntityManager.experimentFinished(aid, eid))
+						)));
+		}
+
+		Collections.sort((List<Entity<RID>>) result);
+
+		return result;
+!!!587138.java!!!	isValidRid(inout aid : AID, inout eid : EID, inout bid : BID, inout rid : RID) : boolean
+
+		/*
+		 * Reads validity map table and ensure, that file it points to is
+		 * readable
+		 */
+		String[] runPaths = getRunPaths(aid, eid, bid, rid);
+
+		if (runPaths == null || runPaths.length == 0) {
+			return false;
+		}
+
+		for (String runPath : runPaths) {
+			String fullRunPath = database.getFileInDatabase(aid, eid, bid, runPath);
+			File runFile = new File(fullRunPath);
+			
+			Logger.logTrace("Check path to " + Database.getRunReferenceString(aid, eid, bid, rid) 
+					+ " - it is " + fullRunPath);
+
+			if (!(runFile.exists() && runFile.isFile() && runFile.canRead())) {
+				Logger.logTrace("Check failed...");
+				return false;
+			}
+			Logger.logTrace("Check passed...");
+		}
+
+		return true;
+!!!587266.java!!!	ensureValidRid(inout aid : AID, inout eid : EID, inout bid : BID, inout rid : RID) : void
+		if (!isValidRid(aid, eid, bid, rid)) {
+			throw new IllegalArgumentException(Database.getRunReferenceString(aid, eid,
+					bid, rid)
+					+ " doesn't exist.");
+		}
+!!!587394.java!!!	isDeletable(inout aid : AID, inout eid : EID, inout bid : BID, inout rid : RID) : boolean
+		
+		MetadataRef metadataBinaryFile = new MetadataRef(new Metadata());
+		MetadataRef metadataExperimentFile = new MetadataRef(new Metadata());
+		
+		BinaryEntityManager.ensureSuccessLoadBinaryMetadata(metadataBinaryFile, aid, eid, bid);
+		ExperimentEntityManager.ensureSuccessLoadExperimentMetadata(
+				metadataExperimentFile, aid, eid);
+		
+		String metaItem;
+		boolean completeBinary;
+		boolean completeExperiment;
+		
+		if (Database.ensureMetadataNotNull(metaItem = metadataBinaryFile.metadata
+				.getItemByKey("complete"), "complete",
+				Database.getBinaryReferenceString(aid, eid, bid))) {
+			completeBinary = new Boolean(metaItem);
+		} else {
+			/* invalid metadata shouldn't prevent deleting of entity */
+			completeBinary = true; 
+		}
+
+		if (Database.ensureMetadataNotNull(metaItem = metadataExperimentFile.metadata
+				.getItemByKey("complete"), "complete",
+				Database.getExperimentReferenceString(aid, eid))) {
+			completeExperiment = new Boolean(metaItem);
+		} else {
+			/* invalid metadata shouldn't prevent deleting of entity */
+			completeExperiment = true; 
+		}
+		
+		return completeBinary && completeExperiment;
+		
+!!!587522.java!!!	getRun(inout aid : AID, inout eid : EID, inout bid : BID, inout rid : RID) : Entity
+
+		ensureValidRid(aid, eid, bid, rid);
+
+		Entity<RID> result;
+
+		MetadataRef metadataBinaryFile = new MetadataRef(new Metadata());
+		MetadataRef metadataExperimentFile = new MetadataRef(new Metadata());
+		Metadata metadataFile;
+
+		try {
+			metadataFile = new Metadata(ridManager.getRunMetadataPath(aid, eid,
+					bid, rid));
+		} catch (IOException e) {
+			e.printStackTrace();
+			Logger.logError("Unable to read run data.");
+			return null;
+		}
+
+		metadataFile.addItem("valid", new Boolean(ridManager.isValidRun(aid,
+				eid, bid, rid)).toString());
+		
+		/* There is no "partially uploaded run" - this operation is atomic */
+		metadataFile.addItem("complete", "true");
+		
+		BinaryEntityManager.ensureSuccessLoadBinaryMetadata(metadataBinaryFile, aid, eid, bid);
+		ExperimentEntityManager.ensureSuccessLoadExperimentMetadata(
+				metadataExperimentFile, aid, eid);
+		
+		String metaItem;
+		boolean completeBinary;
+		boolean completeExperiment;
+		
+		if (Database.ensureMetadataNotNull(metaItem = metadataBinaryFile.metadata
+				.getItemByKey("complete"), "complete",
+				Database.getBinaryReferenceString(aid, eid, bid))) {
+			completeBinary = new Boolean(metaItem);
+		} else {
+			/* invalid metadata shouldn't prevent deleting of entity */
+			completeBinary = true; 
+		}
+
+		if (Database.ensureMetadataNotNull(metaItem = metadataExperimentFile.metadata
+				.getItemByKey("complete"), "complete",
+				Database.getExperimentReferenceString(aid, eid))) {
+			completeExperiment = new Boolean(metaItem);
+		} else {
+			/* invalid metadata shouldn't prevent deleting of entity */
+			completeExperiment = true; 
+		}
+
+		result = new Entity<RID>(rid, metadataFile.getMetadata(),
+				statisticsManager.loadRunStatistics(aid, eid, bid, rid), 
+		rScriptsRunner.isDeleteRunAllowed(aid, eid, bid, rid) 
+			&& ((completeBinary && completeExperiment) 
+				|| (binaryEntityManager.binaryFinished(aid, eid, bid) 
+					&& experimentEntityManager.experimentFinished(aid, eid))
+			));
+
+		return result;
+!!!587650.java!!!	setRunComment(inout aid : AID, inout eid : EID, inout bid : BID, inout rid : RID, in comment : String) : void
+
+		ensureValidRid(aid, eid, bid, rid);
+
+		String metaPath = ridManager.getRunMetadataPath(aid, eid, bid, rid);
+
+		File file = new File(metaPath);
+		Metadata metadata;
+
+		if (file.exists()) {
+			try {
+				metadata = new Metadata(metaPath);
+			} catch (IOException e) {
+				throw new RuntimeException(new ResultsRepositoryException(
+						Metadata.IO_ERROR_METADATA_READING_MESSAGE
+								+ Database.getRunReferenceString(aid, eid, bid, rid)));
+			}
+			metadata.setItemByKey("comment", comment);
+
+		} else {
+			metadata = new Metadata();
+			metadata.addItem("name", "");
+			metadata.addItem("comment", comment);
+		}
+
+		try {
+			metadata.store(metaPath);
+		} catch (IOException e) {
+			throw new RuntimeException(new ResultsRepositoryException(
+					Metadata.IO_ERROR_METADATA_READING_MESSAGE
+							+ Database.getRunReferenceString(aid, eid, bid, rid)));
+		}
+!!!587778.java!!!	eraseRun(inout aid : AID, inout eid : EID, inout bid : BID, inout rid : RID) : boolean
+
+		ensureValidRid(aid, eid, bid, rid);
+		
+		synchronized (LockManager.eraseLock) {
+				
+			/* Note: for further improvement of synchronization, callbacks should be locked too 
+			 * (because they handle metadata of existing entities), now it cannot happen. For 
+			 * additional measurements, it must be introduced */
+			
+			if (!rScriptsRunner.isDeleteRunAllowed(aid, eid, bid, rid) 
+					&& (isDeletable(aid, eid, bid, rid)
+							|| (binaryEntityManager.binaryFinished(aid, eid, bid) 
+									&& experimentEntityManager.experimentFinished(aid, eid)								
+								) 
+						)
+				) {
+				Logger.logWarning("Tried to delete locked " 
+						+ Database.getRunReferenceString(aid, eid, bid, rid) + ".");
+				throw new DeleteLockedException("Run is being processed, unable to delete.");
+
+			}
+					
+			MetadataRef binaryMetadata = new MetadataRef(new Metadata());
+			MetadataRef experimentMetadata = new MetadataRef(new Metadata());
+			MetadataRef analysisMetadata = new MetadataRef(new Metadata());
+			Integer runs;
+			Integer validRuns;
+			Integer expectedRuns;
+			String metaItem;
+			boolean validRun;
+			
+			validRun = ridManager.isValidRun(aid, eid, bid, rid); 
+	
+			/* Update run count in binary metadata */
+			if (!BinaryEntityManager.ensureSuccessLoadBinaryMetadata(binaryMetadata, aid, eid, bid)) {			
+				return false;
+			}
+	
+			if (Database.ensureMetadataNotNull(metaItem = binaryMetadata.metadata
+					.getItemByKey("valid runs"), "valid runs",
+					Database.getBinaryReferenceString(aid, eid, bid))) {
+				validRuns = new Integer(metaItem);
+			} else {
+				validRuns = new Integer(0);
+			}
+	
+			if (Database.ensureMetadataNotNull(metaItem = binaryMetadata.metadata
+					.getItemByKey("runs"), "runs", Database.getBinaryReferenceString(aid,
+					eid, bid))) {
+				runs = new Integer(metaItem);
+			} else {
+				runs = new Integer(0);
+			}
+	
+			if (Database.ensureMetadataNotNull(metaItem = binaryMetadata.metadata
+					.getItemByKey("expected runs"), "expected runs",
+					Database.getBinaryReferenceString(aid, eid, bid))) {
+				expectedRuns = new Integer(metaItem);
+			} else {
+				expectedRuns = new Integer(0);
+			}
+	
+			expectedRuns--;
+			runs--;
+			binaryMetadata.metadata.setItemByKey("runs", runs.toString());
+			binaryMetadata.metadata.setItemByKey("expected runs", expectedRuns
+					.toString());
+	
+			if (validRun) {
+	
+				validRuns--;
+				binaryMetadata.metadata.setItemByKey("valid runs", validRuns
+						.toString());
+				
+				if (Database.ensureMetadataNotNull(metaItem = binaryMetadata.metadata
+						.getItemByKey("last valid run idx"), "last valid run idx",
+						Database.getBinaryReferenceString(aid, eid, bid))) {
+					Integer lastValidRunIndex = Integer.valueOf(metaItem);
+					lastValidRunIndex--;
+					binaryMetadata.metadata.setItemByKey("last valid run idx", 
+							lastValidRunIndex.toString());
+				}
+				
+				if (runs > 0) {
+	
+					if (validRuns == 0) {
+						binaryMetadata.metadata.setItemByKey("valid", "false");
+						if (!ExperimentEntityManager.ensureSuccessLoadExperimentMetadata(
+								experimentMetadata, aid, eid)) {
+							return false;
+						}
+	
+						Integer validBins;
+						
+						if (Database.ensureMetadataNotNull(metaItem = experimentMetadata.metadata
+								.getItemByKey("valid binaries"), "valid binaries",
+								Database.getExperimentReferenceString(aid, eid))) {
+	
+							validBins = Integer.valueOf(metaItem);
+							experimentMetadata.metadata.setItemByKey("valid binaries",
+									String.valueOf(validBins - 1));
+						} else {
+							validBins = new Integer(0);
+						}
+	
+						/*
+						 * Now check, whether experiment didn't become invalid, ie
+						 * this was last valid binary (although rare and prob.
+						 * temporary case )
+						 */
+						if (validBins.equals(new Integer(0))) {
+							experimentMetadata.metadata.setItemByKey("valid",
+									"false");
+							experimentMetadata.metadata.setItemByKey(
+									"valid binaries", "0");
+							if (!ExperimentEntityManager.ensureSuccessStoreExperimentMetadata(
+									experimentMetadata.metadata, aid, eid)) {
+								return false;
+							}
+	
+							if (!AnalysisEntityManager.ensureSuccessLoadAnalysisMetadata(
+									analysisMetadata, aid)) {
+								return false;
+							}
+	
+							Integer validExps;
+							
+							if (Database.ensureMetadataNotNull(metaItem = analysisMetadata.metadata
+									.getItemByKey("valid experiments"), "valid experiments",
+									Database.getAnalysisReferenceString(aid))) {
+								
+								validExps = Integer.valueOf(metaItem);
+								analysisMetadata.metadata.setItemByKey(
+										"valid experiments", String
+												.valueOf(validExps - 1));
+							} else {
+								validExps = new Integer(0);
+							}						
+	
+							/* Now the same with analysis level */
+							if (validExps == 0) {
+								analysisMetadata.metadata.setItemByKey("valid",
+										"false");
+								analysisMetadata.metadata.setItemByKey(
+										"valid experiments", "0");
+								if (!AnalysisEntityManager.ensureSuccessStoreAnalysisMetadata(
+										analysisMetadata.metadata, aid)) {
+									return false;
+								}
+							} else {
+								if (!AnalysisEntityManager.ensureSuccessStoreAnalysisMetadata(
+										analysisMetadata.metadata, aid)) {
+									return false;
+								}
+							}
+						} else {
+							if (!ExperimentEntityManager.ensureSuccessStoreExperimentMetadata(
+									experimentMetadata.metadata, aid, eid)) {
+								return false;
+							}
+						}
+					}
+				} else /* runs == 0 */ {
+	
+					String binaryValid = binaryMetadata.metadata
+							.getItemByKey("valid");
+	
+					if (binaryValid.equals("false")) {
+						/* One valid binary has been added */
+						if (!ExperimentEntityManager.ensureSuccessLoadExperimentMetadata(
+								experimentMetadata, aid, eid)) {
+							return false;
+						}
+						
+						boolean expValid = experimentMetadata.metadata
+								.getItemByKey("valid").equals("true");
+						
+						Integer validBins;
+						
+						if (Database.ensureMetadataNotNull(metaItem = experimentMetadata.metadata
+								.getItemByKey("valid binaries"), "valid binaries", 
+								Database.getExperimentReferenceString(aid, eid))) {
+							validBins = Integer.valueOf(metaItem);
+							experimentMetadata.metadata.setItemByKey("valid binaries",
+									String.valueOf(validBins + 1));
+						} else {
+							validBins = new Integer(0);
+						}						
+						
+						experimentMetadata.metadata.setItemByKey("valid", "true");
+
+						if (!ExperimentEntityManager.ensureSuccessStoreExperimentMetadata(
+								experimentMetadata.metadata, aid, eid)) {
+							return false;
+						}
+						if (!expValid) {
+							/* One valid experiment has been added */
+							if (!AnalysisEntityManager.ensureSuccessLoadAnalysisMetadata(
+									analysisMetadata, aid)) {
+								return false;
+							}
+							
+							Integer validExps;
+	
+							if (Database.ensureMetadataNotNull(metaItem = analysisMetadata.metadata
+									.getItemByKey("valid experiments"), "valid experiments", 
+									Database.getAnalysisReferenceString(aid))) {
+								validExps = Integer.valueOf(metaItem);
+								analysisMetadata.metadata.setItemByKey(
+										"valid experiments", String
+												.valueOf(validExps + 1));
+							} else {
+								validExps = new Integer(0);
+							}						
+							
+							analysisMetadata.metadata.setItemByKey("valid", "true");
+
+							if (!AnalysisEntityManager.ensureSuccessStoreAnalysisMetadata(
+									analysisMetadata.metadata, aid)) {
+								return false;
+							}
+						}
+					}
+	
+					binaryMetadata.metadata.setItemByKey("valid", "true");
+				}
+			}
+	
+			if (!BinaryEntityManager.ensureSuccessStoreBinaryMetadata(binaryMetadata.metadata, aid,
+					eid, bid)) {
+				return false;
+			}
+	
+			boolean result;
+	
+			result = true;
+			
+			String[] runPaths = getRunPaths(aid, eid, bid, rid);
+	
+			for (String runPath : runPaths) {
+				File file = new File(database.getFileInDatabase(aid, eid, bid, runPath));
+	
+				if (!file.delete()) {
+					return false;
+				}
+	
+				file = new File(database.getFileInDatabase(aid, eid, bid, 
+						ridManager.getRunStatisticsPath(aid, eid, bid, rid)));
+				if (file.exists()) {
+					result = result && file.delete();
+				}
+	
+				file = new File(database.getFileInDatabase(aid, eid, bid, 
+						ridManager.getRunMetadataPath(aid, eid, bid, rid)));
+				if (file.exists()) {
+					result = result && file.delete();
+				}
+			}
+	
+			long runIndex = ridManager.getRealRunIndex(aid, eid, bid, rid);
+			
+			if (runIndex == -1) {
+				Logger.logError("Couldn't get internal runs index of " 
+						+ Database.getRunReferenceString(aid, eid, bid, rid) +
+						" reindexing not performed, database is probably inconsistent for this binary " +
+						"- delete recommended.");
+				
+				return false;
+			}
+			
+			ridManager.deleteItem(aid, eid, bid, rid);
+			
+			if (validRun) {
+				RRIDTable ridTable = ridManager.getRunTable(aid, eid, bid);
+				
+				Integer[] indexes;
+				while ((indexes = ridTable.getAllIndexesEqualTo(++runIndex)).length > 0) {
+					for (int i : indexes ) {
+						(ridTable.getRridTable())[i].getTableName();
+		
+						File tableFile = new File(database.getFileInDatabase(aid, eid, 
+								bid, ridTable.getItemTablename(i)));
+						
+						File tableNewFile = new File(database.getFileInDatabase(aid, eid, 
+								bid, ridTable.getItemDecreasedTablename(i)));				
+					
+						tableFile.renameTo(tableNewFile);
+						
+						ridManager.decreaseIndexByOne(i);
+					}
+				}
+			}
+	
+			Logger.logDebug("Success of run erasing = " + result);
+
+			/* Now execute invalidation callbacks */
+			try {
+				
+				File scriptsFile = new File(
+		        		database.getInvalidateScriptsDirectory(aid, eid, bid) + File.separator +
+		        		RManager.INVALIDATE_SCRIPT_FILENAME);
+				
+				if (scriptsFile.exists()) {
+		        		
+			        BufferedReader scriptsReader = new BufferedReader(new FileReader(scriptsFile));
+			        		        
+			        String script;
+			        
+			        while ((script = scriptsReader.readLine()) != null) {
+			        	
+			        	if (!script.trim().equals("")) {
+			        		rScriptsRunner.enqueueScriptExecution(aid, eid, bid, script);
+			        	}			        	
+			        }
+			        
+			        scriptsReader.close();
+				}
+			        
+		    } catch (IOException e) {
+		    	Logger.logError("I/O error accessing invalidation script files.");
+		    }
+			
+			return result;
+		}
+!!!587906.java!!!	getRunLoadGraphCount(inout aid : AID, inout eid : EID, inout bid : BID, inout rid : RID) : int
+		
+		ensureValidRid(aid, eid, bid, rid);
+		return graphManager.getRunLoadGraphCount(aid, eid, bid, rid);
+!!!588034.java!!!	getRunLoadGraphInfo(inout aid : AID, inout eid : EID, inout bid : BID, inout rid : RID, in index : int) : GraphInfo
+		
+		ensureValidRid(aid, eid, bid, rid);
+		
+		if (!graphManager.validRunLoadGraph(aid, eid, bid, rid, index)) {
+			throw new IllegalArgumentException(GraphManager.LOAD_GRAPH_DOESNT_EXIST_MESSAGE);
+		}
+		return graphManager.getRunLoadGraphInfo(aid, eid, bid, rid, index);
+!!!588162.java!!!	getRunLoadGraphPath(inout aid : AID, inout eid : EID, inout bid : BID, inout rid : RID, in index : int) : String
+		if (!graphManager.validRunLoadGraph(aid, eid, bid, rid, index)) {
+			throw new IllegalArgumentException(GraphManager.LOAD_GRAPH_DOESNT_EXIST_MESSAGE);
+		}
+		return graphManager.getRunLoadGraphPath(aid, eid, bid, rid, index);
+!!!588290.java!!!	getContext(inout aid : AID, inout eid : EID, inout bid : BID, inout rid : RID) : String
+		// Note: bid is not used, as contexts are mapped to experiments
+		return binaryEntityManager.getContext(aid, eid, bid);
+!!!588418.java!!!	uploadRunResults(inout aid : AID, inout eid : EID, inout bid : BID, inout rid : RID, in roleName : String, in host : String, in port : int, inout validRun : boolean, inout blocking : boolean, in tableIndex : int, in totalTables : int) : UploadHandle
+
+		binaryEntityManager.ensureValidBid(aid, eid, bid);
+
+		Logger.logInfo(
+				"Results upload intialized for "
+						+ Database.getRunReferenceString(aid, eid, bid, rid) + " - table " 
+						+ tableIndex + "/" + totalTables + " from " + host + ".");
+
+		if (database.isBusy() && !blocking) {
+			Logger.logWarning(
+					"Refusing upload - too many connections ("
+							+ Database.getRunReferenceString(aid, eid, bid, rid) + ").");
+			throw new ResultsRepositoryBusyException(
+					Database.TOO_MANY_CONNECTIONS_MESSAGE);
+		}
+
+		String[] taskNames = null; 
+		
+		try {
+			BenchmarkManagerGUIInterface bmInstance = database.getBenchmarkManagerInstance();
+
+			if (bmInstance == null) {
+		    	Logger.logError("Error contacting Benchmark Manager.");
+		    } else {
+
+		    	TaskDescriptor[] descs = bmInstance.getAnalysisInterface()
+		    		.getSubentityInterface(aid).getSubentityInterface(eid).getSubentityInterface(bid).getTasks(rid);
+		    	taskNames = new String[descs.length];
+		    	for (int i = 0; i < descs.length; i++) {
+		    		taskNames[i] = descs[i].getTaskTid();
+				}
+		    	if (descs.length == 0) {
+		    		Logger.logWarning("Zero tasks registered for upload of the log" 
+		    				+ Database.getRunReferenceString(aid, eid, bid, rid) + ".");
+		    	}
+		    	for (String taskName : taskNames) {
+					Logger.logTrace("Task to be registered under given run : " + taskName);
+				}
+		                
+		    	synchronized (LockManager.taskListLock) {
+		    		
+		    		taskListManager.loadRunsTaskList(aid, eid, bid);
+		    		taskListManager.addNewRunsTasks(rid, taskNames);
+		    		taskListManager.storeRunsTaskList(aid, eid, bid);
+		    		
+		    	}
+		    }
+		} catch (RemoteException e) {
+			Logger.logError("Error contacting Benchmark Manager.");
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			Logger.logError("Entities integrity error while creating binary.");
+			e.printStackTrace();
+		}				
+		
+		String name;
+		
+		synchronized (LockManager.validityMapLock) {
+			
+			name = ridManager.generateNewFilename(aid, eid, bid, rid, tableIndex, totalTables,
+					host, roleName, validRun);
+			
+		}
+		
+		lockManager.getLock(aid, eid, bid, "uploading-" + rid + "-" + host);
+
+		return database.uploadFile(database.getFileInDatabase(aid, eid, bid, name), host, port,
+				blocking, false, new RunUploadCallback(database, 
+						aid, eid, bid, rid, validRun, totalTables), null);
+!!!588546.java!!!	endRunUpload(inout aid : AID, inout eid : EID, inout bid : BID, inout rid : RID, in host : String, inout handle : UploadHandle) : void
+
+		lockManager.clearLock(aid, eid, bid, "uploading-" + rid + "-" + host);
+		database.endFileUpload(handle);
+		

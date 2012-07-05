@@ -1,0 +1,15 @@
+class StringToken
+!!!248706.java!!!	StringToken(in s : String, in position : int)
+			
+			super(position);
+			
+			this.s = s;
+!!!248834.java!!!	isDelimiter() : boolean
+			
+			return false;
+!!!248962.java!!!	getString() : String
+			
+			return s;
+!!!249090.java!!!	toString() : String
+			
+			return s;

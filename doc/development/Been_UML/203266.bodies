@@ -1,0 +1,199 @@
+class RubisMySQLInitialize
+!!!652930.java!!!	RubisMySQLInitialize()
+		super();
+!!!653058.java!!!	createDatabase() : void
+		String fSep = File.separator;
+		
+		// create the database for Rubis
+		logInfo("Creating database");
+		try {
+			String[] cmdArray = { mysqlRoot + fSep + "bin" + fSep + "mysql" ,
+					"-u", "root",
+					"-e",  "CREATE DATABASE " + DATABASE_NAME};
+
+			logDebug("Executing: " + ArrayUtils.join(" ", cmdArray));
+
+			Process p = Runtime.getRuntime().exec(cmdArray, null, new File(mysqlRoot));
+			
+			/* Read in the output from the subprocess */
+			OutputReader stdoutReader = 
+				new OutputReader(p.getInputStream(), OutputType.STDOUT);
+			OutputReader stderrReader = 
+				new OutputReader(p.getErrorStream(), OutputType.STDERR);
+			stdoutReader.start();
+			stderrReader.start();
+			// wait untill the script finishes
+			if (p.waitFor() != 0) {
+				throw new TaskException("Database creation failed, see the standard "
+						+ "output of this task.");
+			}
+		} catch (Exception e) {
+			throw new TaskException("Cannot create the \""
+					+ DATABASE_NAME + "\" database", 
+					e);
+		}
+	
+		logInfo("Database created: " + DATABASE_NAME);
+!!!653186.java!!!	createTables() : void
+		String fSep = File.separator;
+		
+		// create tables in the database
+		logInfo("Creating tables in the database: " + DATABASE_NAME);
+		try {
+			String[] cmdArray = { mysqlRoot + fSep + "bin" + fSep + "mysql" ,
+					"-u", "root",
+					DATABASE_NAME};
+
+			logDebug("Executing: " + ArrayUtils.join(" ", cmdArray));
+			logDebug("Piping file as input for mysql: " + dumpRoot + fSep
+					+ "create_tables.sql");
+
+			Process p = Runtime.getRuntime().exec(cmdArray, null, new File(mysqlRoot));
+			
+			/* Read in the output from the subprocess */
+			OutputReader stdoutReader = 
+				new OutputReader(p.getInputStream(), OutputType.STDOUT);
+			OutputReader stderrReader = 
+				new OutputReader(p.getErrorStream(), OutputType.STDERR);
+			stdoutReader.start();
+			stderrReader.start();
+			
+			// pipe a file as input to the mysql process, the input
+			// creates the needed tables for rubis
+			
+			InputStream in = new FileInputStream(dumpRoot + fSep
+					+ "create_tables.sql");
+			BufferedReader reader = new BufferedReader(
+					new InputStreamReader(in),
+					BUFFER_SIZE);
+			OutputStream out = p.getOutputStream();
+			BufferedWriter writer = new BufferedWriter(
+					new OutputStreamWriter(out), 
+					BUFFER_SIZE);
+
+			char[] buf = new char[BUFFER_SIZE];
+			int read = 0;
+			try {
+				while ((read = reader.read(buf)) != -1) {
+					writer.write(buf, 0, read);
+				}
+				reader.close();
+				writer.close();
+			} catch (IOException e) {
+				throw new TaskException("Cannot pipe file as input for the mysql command",
+						e);
+			}
+			
+			// wait untill the script finishes
+			if (p.waitFor() != 0) {
+				throw new Exception("Failed creating tables in the database,"
+						+ " see the standard output of this task.");
+			}
+		} catch (Exception e) {
+			throw new TaskException("Cannot create tables in the database", e);
+		}
+	
+		logInfo("Created tables in the database: " + DATABASE_NAME);
+!!!653314.java!!!	fillDatabase() : void
+		String fSep = File.separator;
+		
+		// filling database with data
+		logInfo("Filling database: " + DATABASE_NAME);
+		
+		String[] files = {
+				"bids.txt",
+				"buy_now.txt",
+				"categories.txt",
+				"comments.txt",
+				"ids.txt",
+				"items.txt",
+				"old_items.txt",
+				"regions.txt",
+				"users.txt",
+			};
+		
+		// fill tables in a cycle, because putting all those filenames in
+		// one command might exceed the length of the commad line
+		for (int i = 0; i < files.length; i++) {
+			try {
+				String[] cmdArray = { mysqlRoot + fSep + "bin" + fSep + "mysqlimport" ,
+						"-u", "root",
+						"--local",
+						"--fields-terminated-by=,",
+						"--fields-optionally-enclosed-by='",
+						"--fields-escaped-by=\\",
+						DATABASE_NAME,
+						dumpRoot + fSep + files[i],
+				};
+				
+				logDebug("Executing: " + ArrayUtils.join(" ", cmdArray));
+				
+				Process p = Runtime.getRuntime().exec(cmdArray, null, new File(mysqlRoot));
+				
+				/* Read in the output from the subprocess */
+				OutputReader stdoutReader = 
+					new OutputReader(p.getInputStream(), OutputType.STDOUT);
+				OutputReader stderrReader = 
+					new OutputReader(p.getErrorStream(), OutputType.STDERR);
+				stdoutReader.start();
+				stderrReader.start();
+				
+				// wait untill the script finishes
+				if (p.waitFor() != 0) {
+					throw new Exception("Failed filling the database, see the standard "
+							+ "output of this task.");
+				}
+			} catch (Exception e) {
+				throw new TaskException("Cannot fill the \"" + DATABASE_NAME + "\" database", 
+						e);
+			}
+		}
+	
+		logInfo("Database filled: " + DATABASE_NAME);
+!!!653442.java!!!	updateOldItems() : void
+		String fSep = File.separator;
+		
+		logInfo("Updating old items");
+		try {
+			String[] cmdArray = { mysqlRoot + fSep + "bin" + fSep + "mysql" ,
+					"-u", "root",
+					DATABASE_NAME,
+					"-e",  "INSERT INTO old_items SELECT * FROM items WHERE"
+					+ " end_date < \"2001-10-18 16:17:00\"; "
+					+ "DELETE FROM items WHERE end_date < \"2001-10-18 16:17:00\""};
+
+			logDebug("Executing: " + ArrayUtils.join(" ", cmdArray));
+
+			Process p = Runtime.getRuntime().exec(cmdArray, null, new File(mysqlRoot));
+			
+			/* Read in the output from the subprocess */
+			OutputReader stdoutReader = 
+				new OutputReader(p.getInputStream(), OutputType.STDOUT);
+			OutputReader stderrReader = 
+				new OutputReader(p.getErrorStream(), OutputType.STDERR);
+			stdoutReader.start();
+			stderrReader.start();
+			// wait untill the script finishes
+			if (p.waitFor() != 0) {
+				throw new Exception("Old items updating failed, see the standard "
+						+ "output of this task.");
+			}
+		} catch (Exception e) {
+			throw new TaskException("Cannot update old items in the database",
+					e);
+		}
+		
+		logInfo("Updated old items");
+!!!653570.java!!!	run() : void
+		mysqlRoot = getTaskProperty(MYSQL_ROOT);
+		logInfo("MySQL installation root directory: " + mysqlRoot);
+		
+		dumpRoot = getTaskProperty(DUMP_ROOT);
+		logInfo("MySQL dump root directory: " + dumpRoot);
+
+		createDatabase();
+		createTables();
+		fillDatabase();
+		updateOldItems();
+!!!653698.java!!!	checkRequiredProperties() : void
+		checkRequiredProperties(new String[]{MYSQL_ROOT, DUMP_ROOT});

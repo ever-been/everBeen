@@ -1,0 +1,9 @@
+class MissingParamException
+!!!736258.java!!!	MissingParamException()
+        super();
+!!!736386.java!!!	MissingParamException(in message : String)
+        super(message);
+!!!736514.java!!!	MissingParamException(inout cause : Throwable)
+        super(cause);
+!!!736642.java!!!	MissingParamException(in message : String, inout cause : Throwable)
+        super(message, cause);

@@ -1,0 +1,61 @@
+class PythonTaskContext
+!!!639618.java!!!	PythonTaskContext(inout task : Task)
+        this.task = task;
+!!!639746.java!!!	getTasksPort() : TasksPortInterface
+        return task.getTasksPort();
+!!!639874.java!!!	getWorkingDirectory() : String
+        return task.getWorkingDirectory();
+!!!640002.java!!!	getTempDirectory() : String
+        return task.getTempDirectory();
+!!!640130.java!!!	getTaskDirectory() : String
+        return task.getTaskDirectory();
+!!!640258.java!!!	setLogLevel(inout level : LogLevel) : void
+        task.setLogLevel(level);
+!!!640386.java!!!	getLogLevel() : LogLevel
+        return task.getLogLevel();
+!!!640514.java!!!	logDebug(in message : String) : void
+        task.getLogger().debug(message);
+!!!640642.java!!!	logError(in message : String) : void
+        task.getLogger().error(message);
+!!!640770.java!!!	logFatal(in message : String) : void
+        task.getLogger().fatal(message);
+!!!640898.java!!!	logInfo(in message : String) : void
+        task.getLogger().info(message);
+!!!641026.java!!!	logTrace(in message : String) : void
+        task.getLogger().trace(message);
+!!!641154.java!!!	logWarning(in message : String) : void
+        task.getLogger().warn(message);
+!!!641282.java!!!	getLogger() : Logger
+
+        return task.getLogger();
+!!!641410.java!!!	checkPointReached(in name : String, inout value : Serializable) : void
+        task.checkPointReached(name, value);
+!!!641538.java!!!	checkPointWait(in contextID : String, in taskID : String, in name : String, in timeout : long) : Serializable
+        return task.checkPointWait(contextID, taskID, name, timeout);
+!!!641666.java!!!	isPropertyNull(in name : String) : boolean
+
+        return task.isPropertyNull(name);
+!!!641794.java!!!	getTaskProperties() : Properties
+
+        return task.getTaskProperties();
+!!!641922.java!!!	getTaskProperty(in name : String) : String
+        return task.getTaskProperty(name);
+!!!642050.java!!!	getTaskProperty(in name : String, in defaultValue : String) : String
+
+        return task.getTaskProperty(name, defaultValue);
+!!!642178.java!!!	getBooleanTaskProperty(in name : String) : boolean
+        return task.getBooleanTaskProperty(name);
+!!!642306.java!!!	getTaskPropertyObject(in name : String) : Serializable
+        return task.getTaskPropertyObject(name);
+!!!642434.java!!!	exitSuccess() : void
+        throw new UnsupportedOperationException();
+!!!642562.java!!!	exitError() : void
+        throw new UnsupportedOperationException();
+        
+!!!642690.java!!!	getTaskDescriptor() : TaskDescriptor
+        return task.getTaskDescriptor();
+!!!642818.java!!!	isRunningInWindows() : boolean
+        return task.isRunningInWindows();
+        
+!!!642946.java!!!	isRunningInLinux() : boolean
+        return task.isRunningInLinux();

@@ -1,0 +1,31 @@
+class Delete
+!!!258434.java!!!	Delete()
+		// dummy ant project
+		Project antProject = new Project();
+		antProject.init();
+		setProject(antProject);
+		// dummy ant task name
+		setTaskName("delete");
+		setTaskType("delete");
+		// dummy ant target
+		setOwningTarget(null);
+!!!258562.java!!!	deleteFile(in path : String) : void
+		Delete d = new Delete();
+		
+		File f = new File(path);
+		d.setFile(f);
+		try {
+			d.execute();
+		} catch (Exception e) {
+			throw new AntTaskException(e);
+		}
+!!!258690.java!!!	deleteDirectory(in path : String) : void
+		Delete d = new Delete();
+		
+		File dir = new File(path);
+		d.setDir(dir);
+		try {
+			d.execute();
+		} catch (Exception e) {
+			throw new AntTaskException(e);
+		}

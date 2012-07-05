@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+
+  BEEN: Benchmarking Environment
+  ==============================
+
+  File author: David Majda
+
+  GNU Lesser General Public License Version 2.1
+  - - - - - - - - - - - - - - - - - - - - - - -
+  Copyright (C) 2004-2006 Distributed Systems Research Group,
+  Faculty of Mathematics and Physics, Charles University in Prague
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License version 2.1, as published by the Free Software Foundation.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+  MA  02111-1307  USA
+
+-->
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+	version="2.4">
+
+	<!-- ========== General Information ========== -->
+
+	<display-name>BEEN</display-name>
+	<description>
+		Benchmarking Environment
+	</description>
+
+	<!-- ========== Servlets ========== -->
+
+ 	<servlet>
+		<servlet-name>beenWebInterface</servlet-name>
+		<servlet-class>cz.cuni.mff.been.webinterface.WebInterfaceServlet</servlet-class>
+
+		<init-param>
+			<param-name>work-directory</param-name>
+			<param-value>WEB-INF/work</param-value>
+		</init-param>
+	</servlet>
+
+	<!-- This directive is copied (and slightly modified) from Tomcat's main
+	     web.xml file. I don't know why the original directive doesn't work
+	     here. -->
+	<servlet>
+		<servlet-name>static</servlet-name>
+		<servlet-class>org.apache.catalina.servlets.DefaultServlet</servlet-class>
+		<init-param>
+			<param-name>debug</param-name>
+			<param-value>0</param-value>
+		</init-param>
+		<init-param>
+			<param-name>listings</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<param-name>work-directory</param-name>
+			<param-value>WEB-INF/work</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<!-- ========== Mappings ========== -->
+
+	<!-- Statically-served directories & files -->
+
+	<servlet-mapping>
+		<servlet-name>static</servlet-name>
+		<url-pattern>*.gif</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>static</servlet-name>
+		<url-pattern>*.png</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>static</servlet-name>
+		<url-pattern>*.ico</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>static</servlet-name>
+		<url-pattern>*.html</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>static</servlet-name>
+		<url-pattern>*.css</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>static</servlet-name>
+		<url-pattern>*.js</url-pattern>
+	</servlet-mapping>
+
+	<!-- Web interface servlet -->
+
+	<servlet-mapping>
+		<servlet-name>beenWebInterface</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+
+	<!-- JSP-served directories & files -->
+
+	<servlet-mapping>
+		<servlet-name>jsp</servlet-name>
+		<url-pattern>/templates/*</url-pattern>
+		<init-param>
+			<param-name>compilerSourceVM</param-name>
+			<param-value>1.6</param-value>
+		</init-param>
+		<init-param>
+			<param-name>compilerTargetVM</param-name>
+			<param-value>1.6</param-value>
+		</init-param>
+	</servlet-mapping>
+
+</web-app>

@@ -1,0 +1,12 @@
+class EventReceiver
+!!!403074.java!!!	EventReceiver(inout queue : EventQueue, inout listeners : ConcurrentMap< OID, LoadMonitorEventListener >, inout logger : HostManagerLogger)
+		
+		this.logger = logger;
+		thread = new EventProcessorThread(queue, listeners);
+		thread.start();
+!!!403202.java!!!	kill() : void
+
+		thread.interrupt();
+!!!403330.java!!!	stop() : void
+		
+		thread.stopMe();

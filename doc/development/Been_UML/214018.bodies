@@ -1,0 +1,21 @@
+class HostListInGroupComparator
+!!!771202.java!!!	getGroupHosts() : List<String>
+			return new ArrayList<String>(groupHosts);
+!!!771330.java!!!	HostListInGroupComparator(inout groupHosts : List<String>)
+			this.groupHosts = groupHosts;
+!!!771458.java!!!	compare(inout o1 : HostInfoInterface, inout o2 : HostInfoInterface) : int
+			String hostname1 = o1.getHostName();
+			String hostname2 = o2.getHostName();
+			
+			/* One of the host belongs to the group, the other does not. */
+			boolean groupContainsHost1 = groupHosts.contains(hostname1);
+			boolean groupContainsHost2 = groupHosts.contains(hostname2);
+			if (groupContainsHost1 && !groupContainsHost2) {
+				return -1;
+			}
+			if (!groupContainsHost1 && groupContainsHost2) {
+				return 1;
+			}
+				
+			/* Both hosts belong to the group or both do not. */
+			return o1.getHostName().compareToIgnoreCase(o2.getHostName());

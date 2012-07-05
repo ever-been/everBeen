@@ -1,0 +1,782 @@
+class HostDataStatistician
+!!!410114.java!!!	HostDataStatistician(in mapFile : String, in eventFile : String)
+		
+		MiscUtils.verifyStringParameterBoth(mapFile, "mapFile");
+		MiscUtils.verifyStringParameterBoth(eventFile, "eventFile");
+		
+		this.mapFile = mapFile;
+		this.eventFile = eventFile;
+		
+		eventParser = new LoadFileParser< LoadMonitorEvent >(this.eventFile, false, LoadMonitorEvent.class);
+		
+		closed = false;
+!!!410242.java!!!	getHardwareDescription(in timestamp : long) : HardwareDescription
+		
+		parseData();
+
+		int prev = findPreviousEventByTimeAndType(timestamp, 
+		                                          LoadMonitorEvent.EventType.MONITOR_HW_DESCRIPTION);
+		int next = findNextEventByTimeAndType(timestamp, 
+		                                      LoadMonitorEvent.EventType.MONITOR_HW_DESCRIPTION);
+		int res = -1;
+		
+		if (prev >= 0) { 
+			if (next >= 0) {
+				long dp = timestamp - loadMapEntries.get(prev).getTimeStamp();
+				long dn = loadMapEntries.get(next).getTimeStamp() - timestamp;
+				
+				if (dp <= dn) {
+					res = prev;
+				} else {
+					res = next;
+				}
+			} else {
+				res = prev;
+			}
+		} else {
+			if (next >= 0) {
+				res = next;
+			} else {
+				throw new ValueNotFoundException("No hardware description available for "
+						+ "specified timestamp.");
+			}
+		}
+		
+		long filePos = loadMapEntries.get(res).getPosition();
+		
+		try {
+			eventParser.seek(filePos);
+			LoadMonitorEvent event = eventParser.getNext();
+			
+			if (!event.hasHardwareDescription()) {
+				throw new InputParseException("Load map file is out of sync with event file.");
+			}
+			
+			return event.getHardwareDescription();
+		} catch (IOException e) {
+			throw new InputParseException("Error reading input file.", e);
+		} catch (IllegalOperationException e) {
+			throw new InputParseException("Error reading input file.", e);
+		}
+!!!410370.java!!!	getHardwareDescription(inout date : Date) : HardwareDescription
+		
+		MiscUtils.verifyParameterIsNotNull(date, "date");
+		
+		return getHardwareDescription(TimeUtils.convertJavaDateToWindowsTime(date));
+!!!410498.java!!!	getPreviousHardwareDescription(in timestamp : long) : HardwareDescription
+		
+		parseData();
+
+		int prev = findPreviousEventByTimeAndType(timestamp, 
+		                                          LoadMonitorEvent.EventType.MONITOR_HW_DESCRIPTION);
+		
+		if (prev == -1) {
+			throw new ValueNotFoundException("No hardware description available for "
+					+ "specified timestamp.");
+		}
+		
+		long filePos = loadMapEntries.get(prev).getPosition();
+		
+		try {
+			eventParser.seek(filePos);
+			LoadMonitorEvent event = eventParser.getNext();
+			
+			if (!event.hasHardwareDescription()) {
+				throw new InputParseException("Load map file is out of sync with event file.");
+			}
+			
+			return event.getHardwareDescription();
+		} catch (IOException e) {
+			throw new InputParseException("Error reading input file.", e);
+		} catch (IllegalOperationException e) {
+			throw new InputParseException("Error reading input file.", e);
+		}
+!!!410626.java!!!	getPreviousHardwareDescription(inout date : Date) : HardwareDescription
+		
+		MiscUtils.verifyParameterIsNotNull(date, "date");
+		
+		return getPreviousHardwareDescription(TimeUtils.convertJavaDateToWindowsTime(date));
+!!!410754.java!!!	getSamples(inout start : Long, inout end : Long) : LoadSample
+		
+		parseData();
+		
+		long s = 0;
+		long e = 0;
+		
+		if (start == null) {
+			s = loadMapEntries.get(0).getTimeStamp();
+		} else {
+			s = start;
+		}
+		
+		if (end == null) {
+			e = loadMapEntries.get(loadMapEntries.size() - 1).getTimeStamp();
+		} else {
+			e = end;
+		}
+		
+		if (s > e) {
+			throw new InvalidArgumentException("Invalid time interval.");
+		}
+		
+		ArrayList< LoadSample > result = new ArrayList< LoadSample >();
+		
+		int spos = findPreviousEventByTime(s);
+
+		if (spos < 0) {
+			spos = 0;
+		}
+		
+		synchronized (eventParser) {
+			try {
+				eventParser.seek(loadMapEntries.get(spos).getPosition());
+			} catch (IOException f) {
+				throw new InputParseException("Unable to seek in the event file.", f);
+			}
+			
+			try {
+				while (eventParser.hasNext()) {
+					
+					LoadMonitorEvent event = eventParser.getNext();
+					
+					if (event.hasSample()) {
+						LoadSample sample = event.getSample();
+						
+						// Original version in which we compared time stamp of the sample
+//						if (sample.getTimeStamp() >= s) {
+//							if (sample.getTimeStamp() <= e) {
+//								result.add(sample);
+//							} else {
+//								break;
+//							}
+//						}
+						if (event.getTimestamp() >= s) {
+							if (event.getTimestamp() <= e) {
+								result.add(sample);
+							} else {
+								// Too big time stamp -> no need to read more samples.
+								break;
+							}
+						}
+					} else {
+						// This event does not contain sample, but we can still check if we need
+						// to bother reading another one.
+						if (event.getTimestamp() > e) {
+							break;
+						}
+					}
+				}
+			} catch (IOException f) {
+				throw new InputParseException("Unable to read input file.", f);
+			} catch (IllegalOperationException f) {
+				throw new InputParseException("Unable to read input file.", f);
+			}
+		}
+		
+		return result;
+!!!410882.java!!!	getSamples(inout start : Date, inout end : Date) : LoadSample
+		
+		Long s = null;
+		Long e = null;
+		
+		if (start != null) {
+			s = TimeUtils.convertJavaDateToWindowsTime(start);
+		}
+		
+		if (end != null) {
+			TimeUtils.convertJavaDateToWindowsTime(end);
+		}
+		
+		return getSamples(s, e);
+!!!411010.java!!!	getEvents(inout start : Long, inout end : Long) : LoadMonitorEvent
+		
+		parseData();
+		
+		long s = 0;
+		long e = 0;
+		
+		if (start == null) {
+			s = loadMapEntries.get(0).getTimeStamp();
+		} else {
+			s = start;
+		}
+		
+		if (end == null) {
+			e = loadMapEntries.get(loadMapEntries.size() - 1).getTimeStamp();
+		} else {
+			e = end;
+		}
+		
+		if (s > e) {
+			throw new InvalidArgumentException("Invalid time interval.");
+		}
+		
+		ArrayList< LoadMonitorEvent > result = new ArrayList< LoadMonitorEvent >();
+		
+		int spos = findPreviousEventByTime(s);
+
+		if (spos < 0) {
+			spos = 0;
+		}
+		
+		synchronized (eventParser) {
+			try {
+				eventParser.seek(loadMapEntries.get(spos).getPosition());
+			} catch (IOException f) {
+				throw new InputParseException("Unable to seek in the event file.", f);
+			}
+			
+			try {
+				while (eventParser.hasNext()) {
+					
+					LoadMonitorEvent event = eventParser.getNext();
+
+					long timestamp = event.getTimestamp();
+
+					if (timestamp >= s) {
+						if (timestamp <= e) {
+							result.add(event);
+						}
+					}
+				}
+			} catch (IOException f) {
+				throw new InputParseException("Unable to read input file.", f);
+			} catch (IllegalOperationException f) {
+				throw new InputParseException("Unable to read input file.", f);
+			}
+		}
+		
+		return result;
+!!!411138.java!!!	getEvents(inout start : Date, inout end : Date) : LoadMonitorEvent
+		
+		Long s = null;
+		Long e = null;
+		
+		if (start != null) {
+			s = TimeUtils.convertJavaDateToWindowsTime(start);
+		}
+		
+		if (end != null) {
+			TimeUtils.convertJavaDateToWindowsTime(end);
+		}
+		
+		return getEvents(s, e);
+!!!411266.java!!!	getProcessCountStats(inout start : Long, inout end : Long) : ValueStatistics
+		
+		parseData();
+		
+		List< LoadSample > samples = getSamples(start, end);
+		
+		ValueStatistics stats = new ValueStatistics("Process count", new Long(0), (Long) null);
+		
+		for (LoadSample s: samples) {
+			stats.addSamplePoint(s.getProcessCount());
+		}
+		
+		return stats;
+!!!411394.java!!!	getProcessQueueLengthStats(inout start : Long, inout end : Long) : ValueStatistics
+		
+		parseData();
+		
+		List< LoadSample > samples = getSamples(start, end);
+		
+		ValueStatistics stats = new ValueStatistics("Process queue length", new Long(0), (Long) null);
+		
+		for (LoadSample s: samples) {
+			stats.addSamplePoint(s.getProcessQueueLength());
+		}
+		
+		return stats;
+!!!411522.java!!!	getFreeMemoryStats(inout start : Long, inout end : Long) : ValueStatistics
+
+		parseData();
+		
+		List< LoadSample > samples = getSamples(start, end);
+
+		if (samples.isEmpty()) {
+			return new ValueStatistics("Free physical memory.", new Long(0), null);
+		}
+		
+		Long upperBound = null;
+		
+		try {
+			long s = 0;
+			
+			if (start == null) {
+				s = loadMapEntries.get(0).getTimeStamp();
+			} else {
+				s = start;
+			}
+			
+			HardwareDescription desc = getHardwareDescription(s);
+			
+			upperBound = desc.getMemorySize();
+		} catch (ValueNotFoundException e) {
+			upperBound = null;
+		}
+				
+		ValueStatistics stats = new ValueStatistics("Free physical memory", new Long(0), upperBound);
+		
+		for (LoadSample s: samples) {
+			stats.addSamplePoint(s.getMemoryFree());
+		}
+		
+		return stats;
+!!!411650.java!!!	getNetworkStats(inout start : Long, inout end : Long) : Pair
+		
+		parseData();
+		
+		List< LoadSample > samples = getSamples(start, end);
+		ArrayList< Pair< ValueStatistics, ValueStatistics > > result = 
+			new ArrayList< Pair< ValueStatistics, ValueStatistics > >();
+		
+		if (samples.isEmpty()) {
+			// No data -> No stats
+			return result;
+		}
+			
+		try {
+			long s = 0;
+			
+			if (start == null) {
+				s = loadMapEntries.get(0).getTimeStamp();
+			} else {
+				s = start;
+			}
+			
+			HardwareDescription desc = getHardwareDescription(s);
+			
+			if (desc.getAdapterCount() == 0) {
+				// No adapters -> no stats
+				return result;
+			} else {
+				for (int i = 0; i < desc.getAdapterCount(); ++i) {
+					ValueStatistics read = new ValueStatistics(desc.getAdapters()[i], 
+					                                           new Long(0),
+					                                           (Long) null); 
+					ValueStatistics write = new ValueStatistics(desc.getAdapters()[i], 
+					                                            new Long(0), 
+					                                            (Long) null);
+					
+					result.add(new Pair< ValueStatistics, ValueStatistics >(read, write));
+				}
+			}
+		} catch (ValueNotFoundException e) {
+			// No description found -> generate names automatically
+			LoadSample first = samples.get(0);
+		
+			if (first.getNetworkInterfaceCount() == 0) {
+				// No network interfaces -> no stats
+				return result;
+			}
+			
+			for (int i = 0; i < first.getNetworkInterfaceCount(); ++i) {
+				ValueStatistics read = new ValueStatistics("Network " + i, 
+				                                           new Long(0),
+				                                           (Long) null); 
+				ValueStatistics write = new ValueStatistics("Network " + i,
+				                                            new Long(0),
+				                                            (Long) null);
+				
+				result.add(new Pair< ValueStatistics, ValueStatistics >(read, write));
+			}
+		}
+		
+		int lastNetCount = samples.get(0).getNetworkInterfaceCount();
+		
+		if (lastNetCount == 0) {
+			return result;
+		}
+		
+		for (LoadSample s: samples) {
+			int []reads = s.getNetworkBytesReceivedPerSecond();
+			int []writes = s.getNetworkBytesSentPerSecond();
+			
+			if (reads.length != lastNetCount) {
+				throw new IllegalOperationException("Number of network adapters changed "
+						+ "while evaluating data (" + lastNetCount + "->" + reads.length + ").");
+			}
+			
+			for (int i = 0; i < reads.length; ++i) {
+				result.get(i).getFirst().addSamplePoint(reads[i]);
+				result.get(i).getSecond().addSamplePoint(writes[i]);
+			}
+		}
+		
+		return result;
+!!!411778.java!!!	getDriveStats(inout start : Long, inout end : Long) : Pair
+
+		parseData();
+		
+		List< LoadSample > samples = getSamples(start, end);
+		ArrayList< Pair< ValueStatistics, ValueStatistics > > result = 
+			new ArrayList< Pair< ValueStatistics, ValueStatistics > >();
+		
+		if (samples.isEmpty()) {
+			// No data -> no stats
+			return result;
+		}
+		
+		try {
+			long s = 0;
+			
+			if (start == null) {
+				s = loadMapEntries.get(0).getTimeStamp();
+			} else {
+				s = start;
+			}
+			
+			HardwareDescription desc = getHardwareDescription(s);
+			
+			if (desc.getDriveCount() == 0) {
+				// No drives -> no stats
+				return result;
+			} else {
+				for (int i = 0; i < desc.getDriveCount(); ++i) {
+					ValueStatistics read = new ValueStatistics(desc.getDrives()[i], 
+					                                           new Long(0),
+					                                           (Long) null); 
+					ValueStatistics write = new ValueStatistics(desc.getDrives()[i], 
+					                                            new Long(0), 
+					                                            (Long) null);
+					
+					result.add(new Pair< ValueStatistics, ValueStatistics >(read, write));
+				}
+			}
+		} catch (ValueNotFoundException e) {
+			// No description found -> generate names automatically
+			LoadSample first = samples.get(0);
+		
+			if (first.getDriveCount() == 0) {
+				// No drives -> no stats
+				return result;
+			}
+			
+			for (int i = 0; i < first.getDriveCount(); ++i) {
+				ValueStatistics read = new ValueStatistics("Drive " + i, 
+				                                           new Long(0),
+				                                           (Long) null); 
+				ValueStatistics write = new ValueStatistics("Drive " + i,
+				                                            new Long(0),
+				                                            (Long) null);
+				
+				result.add(new Pair< ValueStatistics, ValueStatistics >(read, write));
+			}
+		}
+		
+		int lastDriveCount = samples.get(0).getDriveCount();
+		
+		if (lastDriveCount == 0) {
+			return result;
+		}
+		
+		for (LoadSample s: samples) {
+			long []reads = s.getDiskReadBytesPerSecond();
+			long []writes = s.getDiskWriteBytesPerSecond();
+			
+			if (reads.length != lastDriveCount) {
+				throw new IllegalOperationException("Number of disk drives changed while "
+						+ "evaluating data (" + lastDriveCount + "->" + reads.length + ").");
+			}
+			
+			for (int i = 0; i < reads.length; ++i) {
+				result.get(i).getFirst().addSamplePoint(reads[i]);
+				result.get(i).getSecond().addSamplePoint(writes[i]);
+			}
+		}
+		
+		return result;
+!!!411906.java!!!	getProcessorStats(inout start : Long, inout end : Long) : ValueStatistics
+
+		parseData();
+		
+		List< LoadSample > samples = getSamples(start, end);
+		ArrayList< ValueStatistics > result = new ArrayList< ValueStatistics >();
+		
+		if (!samples.isEmpty()) {
+			// There's no HW desc for processors, just the count, but we can determine that easily
+			// from the sample.
+			LoadSample first = samples.get(0);
+			
+			if (first.getProcessorCount() == 0) {
+				// Well, this should not happen, but if we don't have CPU (veeery strange computer)
+				// we will return empty stats
+				return result;
+			}
+			
+			for (int i = 0; i < first.getProcessorCount(); ++i) {
+				ValueStatistics cpu = new ValueStatistics("Processor " + i, 
+				                                          new Long(0),
+				                                          new Long(100)); 
+				
+				result.add(cpu);
+			}
+			
+			int lastCpuCount = samples.get(0).getProcessorCount();
+			
+			if (lastCpuCount == 0) {
+				return result;
+			}
+			
+			for (LoadSample s: samples) {
+				short []usage = s.getProcessorUsage();
+				
+				if (usage.length != lastCpuCount) {
+					throw new IllegalOperationException("Number of processors changed while "
+							+ "evaluating data (" + lastCpuCount + "->" + usage.length + ").");
+				}
+				
+				for (int i = 0; i < usage.length; ++i) {
+					result.get(i).addSamplePoint(usage[i]);
+				}
+			}
+		}
+		
+		return result;
+!!!412034.java!!!	getTimestamps(inout start : Long, inout end : Long, inout type : EventType) : List< Long >
+		
+		parseData();
+		
+		ArrayList< Long > result = new ArrayList< Long >();
+		
+		long s = 0;
+		long e = 0;
+		
+		if (start == null) {
+			s = loadMapEntries.get(0).getTimeStamp();
+		} else {
+			s = start;
+		}
+		
+		if (end == null) {
+			e = loadMapEntries.get(loadMapEntries.size() - 1).getTimeStamp();
+		} else {
+			e = end;
+		}
+		
+		if (s > e) {
+			throw new InvalidArgumentException("Invalid time interval.");
+		}
+
+		int posFirst = findNextEventByTime(s);
+		int posLast = findPreviousEventByTime(e);
+		
+		if (type == null) {
+			for (int i = posFirst; i < posLast; ++i) {
+				result.add(loadMapEntries.get(i).getTimeStamp());
+			}
+		} else {
+			for (int i = posFirst; i < posLast; ++i) {
+				LoadMapFile.FileEntry entry = loadMapEntries.get(i);
+				
+				if (entry.getType() == type) {
+					result.add(entry.getTimeStamp());
+				}
+			}
+		}
+		
+		return result;
+!!!412162.java!!!	getTimestamps(inout start : Long, inout end : Long) : List< Long >
+		
+		return getTimestamps(start, end, null);
+!!!412290.java!!!	getEventInfo(inout start : Long, inout end : Long) : Pair
+		
+		parseData();
+		
+		ArrayList< Pair< Long, LoadMonitorEvent.EventType > > result = 
+			new ArrayList< Pair< Long, LoadMonitorEvent.EventType > >();
+
+		long s = 0;
+		long e = 0;
+		
+		if (start == null) {
+			s = loadMapEntries.get(0).getTimeStamp();
+		} else {
+			s = start;
+		}
+		
+		if (end == null) {
+			e = loadMapEntries.get(loadMapEntries.size() - 1).getTimeStamp();
+		} else {
+			e = end;
+		}
+		
+		if (s > e) {
+			throw new InvalidArgumentException("Invalid time interval.");
+		}
+
+		int posFirst = findNextEventByTime(s);
+		int posLast = findPreviousEventByTime(e);
+		
+		for (int i = posFirst; i < posLast; ++i) {
+			LoadMapFile.FileEntry entry = loadMapEntries.get(i);
+			result.add(new Pair< Long, LoadMonitorEvent.EventType >(entry.getTimeStamp(), 
+					entry.getType()));
+		}
+		
+		return result;
+!!!412418.java!!!	getEvent(inout time : Date) : LoadMonitorEvent
+		
+		MiscUtils.verifyParameterIsNotNull(time, "time");
+		
+		return getEvent(TimeUtils.convertJavaDateToWindowsTime(time));
+!!!412546.java!!!	getEvent(in timestamp : long) : LoadMonitorEvent
+		
+		parseData();
+		
+		LoadMapFile.FileEntry entry = new LoadMapFile.FileEntry(timestamp, 0, 
+				LoadMonitorEvent.EventType.MONITOR_UNKNOWN);
+		
+		int index = Collections.binarySearch(loadMapEntries, entry, new ET1Comparator());
+		
+		if (index >= 0) {
+			long filePos = loadMapEntries.get(index).getPosition();
+			
+			try {
+				eventParser.seek(filePos);
+				
+				LoadMonitorEvent event = eventParser.getNext();
+				
+				return event;
+			} catch (IOException e) {
+				throw new InputParseException("Unable to seek in the event file.", e);
+			} catch (IllegalOperationException e) {
+				throw new InputParseException("Unable to read event file.", e);
+			}
+		} else {
+			throw new ValueNotFoundException("No event found for given timestamp.");
+		}
+!!!412674.java!!!	getLastTimestamp() : Long
+		
+		parseData();
+		
+		if (loadMapEntries.size() == 0) {
+			return null;
+		} else {
+			return loadMapEntries.get(loadMapEntries.size() - 1).getTimeStamp();
+		}
+!!!412802.java!!!	getLastTimestamp(inout eventType : EventType) : Long
+		
+		MiscUtils.verifyParameterIsNotNull(eventType, "eventType");
+		
+		parseData();
+		
+		if (loadMapEntries.size() == 0) {
+			return null;
+		} else {
+			for (int i = loadMapEntries.size() - 1; i >= 0; --i) {
+				LoadMapFile.FileEntry entry = loadMapEntries.get(i);
+				if (entry.getType().equals(eventType)) {
+					return entry.getTimeStamp();
+				}
+			}
+			
+			return null;
+		}
+!!!412930.java!!!	refresh() : void
+		
+		parsed = false;
+		
+		parseData();
+!!!413058.java!!!	close() : void
+		
+		loadMapEntries.clear();
+		eventParser.close();
+!!!413186.java!!!	findPreviousEventByTimeAndType(in timestamp : long, inout type : EventType) : int
+
+		parseData();
+
+		int index = findPreviousEventByTime(timestamp);
+		
+		if (index == -1) {
+			return -1;
+		}
+		
+		for (int i = index; i > 0; --i) {
+			if (loadMapEntries.get(i).getType() == type) {
+				return i;
+			}
+		}
+		
+		return -1;
+!!!413314.java!!!	findPreviousEventByTime(in timestamp : long) : int
+		
+		parseData();
+		
+		if (loadMapEntries.size() == 0) {
+			return -1;
+		}
+		
+		LoadMapFile.FileEntry entry = new LoadMapFile.FileEntry(timestamp, 0, 
+				LoadMonitorEvent.EventType.MONITOR_UNKNOWN);
+		
+		int result = Collections.binarySearch(loadMapEntries, entry, new ET1Comparator());
+		
+		if (result >= 0) {
+			return result;
+		} else {
+			return -result - 2;
+		}
+!!!413442.java!!!	findNextEventByTime(in timestamp : long) : int
+		
+		parseData();
+		
+		if (loadMapEntries.size() == 0) {
+			return -1;
+		}
+		
+		LoadMapFile.FileEntry entry = 
+			new LoadMapFile.FileEntry(timestamp, 0, LoadMonitorEvent.EventType.MONITOR_UNKNOWN);
+
+		int result = Collections.binarySearch(loadMapEntries, entry, new ET1Comparator());
+		
+		if (result >= 0) {
+			return result;
+		} else {
+			return -result - 1;
+		}
+!!!413570.java!!!	findNextEventByTimeAndType(in timestamp : long, inout type : EventType) : int
+
+		int index = findNextEventByTime(timestamp);
+		
+		if (index == -1) {
+			return -1;
+		}
+		
+		for (int i = index; i < loadMapEntries.size(); ++i) {
+			if (loadMapEntries.get(i).getType() == type) {
+				return i;
+			}
+		}
+		
+		return -1; 
+!!!413826.java!!!	parseData() : void
+
+		if (closed) {
+			throw new IllegalOperationException("Input files have been closed.");
+		}
+		
+		if (!parsed) {
+
+			LoadMapFile loadMap = null;
+			try {
+				loadMap = new LoadMapFile(mapFile, false);
+			} catch (Exception e) {
+				throw new InputParseException("Unable to open load map file.", e);
+			}
+			
+			try {
+				int count = loadMap.getCount();
+				loadMapEntries = loadMap.readFrom(0, count);
+			} catch (Exception e) {
+				throw new InputParseException("Unable to parse load map file.", e);
+			} finally {
+				try {
+					loadMap.close();
+				} catch (IOException e) {
+					throw new InputParseException("Unable to close load map file.", e);
+				}
+			}
+			
+			parsed = true;
+		}

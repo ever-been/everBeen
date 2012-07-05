@@ -1,0 +1,1063 @@
+class HostsModule
+!!!771842.java!!!	HostsModule()
+		super();
+		
+		/* Initialize general module info... */
+		id = "hosts";
+		name = "Hosts";
+		defaultAction = "host-list";
+		
+		menu = new MenuItem[] {
+				new MenuItem("host-list", "Hosts"), 
+				//new MenuItem("host-add", "Add host"),
+				new MenuItem("group-list", "Groups"),
+				new MenuItem("group-add", "Add group"),
+				new MenuItem("alias-list", "Aliases"),
+				new MenuItem("alias-add", "Add alias"),
+		};
+	
+		eventManager.registerEventListener(this);
+!!!771970.java!!!	getInstance() : HostsModule
+		if (instance == null) {
+			 instance = new HostsModule();
+		}
+		return instance;
+!!!772098.java!!!	receiveEvent(inout event : Event) : void
+		taskManager.drop();
+		hostManager.drop();
+		loadServer.drop();
+!!!772226.java!!!	invokeMethodForAction(inout request : HttpServletRequest, inout response : HttpServletResponse, in action : String) : void
+		try {
+			super.invokeMethodForAction(request, response, action);
+		} catch (InvocationTargetException e) {
+			if (e.getCause() instanceof ConnectException) {
+				throw new InvocationTargetException(
+					new ConnectException(
+						"<strong>Can't execute remote call to the Host Manager."
+						+ "</strong><br /><br />"
+						+ "Try to reload the page. If the error persists after multiple reloads, "
+						+ "go to the <a href=\"../../services/>Services</a> tab and make "
+						+ "sure the Host Manager is running.<br /><br/>"
+						+ "Most probale causes of this error are network-related problems or "
+						+ "crash of the service."
+					),
+					e.getMessage()
+				);
+			} else {
+				throw e;
+			}
+		}
+!!!772354.java!!!	closeOperationHandle(inout request : HttpServletRequest, in handleParamName : String) : void
+		params.ensureExists(handleParamName);
+		params.ensureCondition(handleParamName, params.isLong(handleParamName));
+		try {
+			hostManager.get().removeOperationStatus(
+					OperationHandle.valueOf(request.getParameter(handleParamName))
+			);
+		} catch (IllegalArgumentException e) {
+			throw new InvalidParamValueException("Parameter \"" + handleParamName
+				+ "\" has invalid value.");
+		}
+!!!772482.java!!!	operationStatus(inout request : HttpServletRequest, inout response : HttpServletResponse) : void
+		params.ensureExists("handle");
+		
+		params.ensureCondition("handle", params.isLong("handle"));
+		
+		HostOperationStatus status;
+		try {
+			status = hostManager.get().getOperationStatus(
+				OperationHandle.valueOf(request.getParameter("handle"))
+			);
+		} catch (IllegalArgumentException e) {
+			status = null;
+		}
+
+		HashMap<String, Object> data = new HashMap<String, Object>();
+		data.put("status", status);
+		
+		response.setContentType("text/javascript");
+		page.writeTemplate("hosts-operation-status", data);
+!!!772610.java!!!	hostList(inout request : HttpServletRequest, inout response : HttpServletResponse) : void
+		if (params.exists("action")) {
+			String action = request.getParameter("action");
+			if (action.equals("added")) {
+				closeOperationHandle(request, "handle");
+				infoMessages.addTextMessage("Host added successfully.");
+			} else if (action.equals("deleted")) {
+				infoMessages.addTextMessage("Host deleted successfully.");
+			} else {
+				throw new InvalidParamValueException("Parameter \"action\" has invalid value.");
+			}
+		}
+		
+		List<HostInfoInterface> hosts = new LinkedList<HostInfoInterface>();
+		for (String hostName: hostManager.get().getHostNames()) {
+			try {
+				hosts.add(hostManager.get().getHostInfo(hostName));
+			} catch (ValueNotFoundException e) {
+				/*
+				 * We ignore this exception, which could happen only if someone changes
+				 * the host database under our hands. The host simply won't be included
+				 * in the list.
+				 */
+			}
+		}
+		
+		Collections.sort(hosts, new HostListComparator());
+		
+		HashMap<String, Object> data = new HashMap<String, Object>();
+		data.put("hosts", hosts);
+		data.put("hostStatusMap", loadServer.get().getHostStatusMap());
+				
+		page.setTitle("Hosts");
+		page.writeHeader();
+		page.writeTemplate("hosts-host-list", data);
+		page.writeFooter();
+!!!772738.java!!!	hostJavascriptList(inout request : HttpServletRequest, inout response : HttpServletResponse) : void
+
+		List<HostInfoInterface> hosts = new LinkedList<HostInfoInterface>();
+		try {
+			for (String hostName: hostManager.get().getHostNames()) {
+				try {
+					hosts.add(hostManager.get().getHostInfo(hostName));
+				} catch (ValueNotFoundException e) {
+					/*
+					 * We ignore this exception, which could happen only if someone changes
+					 * the host database under our hands. The host simply won't be included
+					 * in the list.
+					 */
+				}
+			}
+		} catch (ComponentInitializationException e) {
+			/* This exception means that we can't connect to the Host manager.
+			 * We don't want to report anything, just send the client empty list of
+			 * hosts.
+			 */ 
+		}
+					
+		response.setContentType("Content-Type: text/javascript; charset=utf-8");
+		HashMap<String, Object> data = new HashMap<String, Object>();
+		data.put("hosts", hosts);
+		page.writeTemplate("hosts-host-javascript-list", data);
+!!!772866.java!!!	hostJavascriptListRsl(inout request : HttpServletRequest, inout response : HttpServletResponse) : void
+		params.ensureExists("rsl");
+		
+		HostInfoInterface[] hosts = {};
+		String validationResult = RSLValidator.validate(request.getParameter("rsl"));
+		if (validationResult == null) { /* RSL is lexically and syntactically correct. */
+			try {
+				hosts = hostManager.get().queryHosts(new RestrictionInterface[] {
+						new RSLRestriction(request.getParameter("rsl"))
+				});
+			} catch (ValueNotFoundException e) {
+				validationResult = Routines.htmlspecialchars(e.getMessage());
+			} catch (ValueTypeIncorrectException e) {
+				validationResult = Routines.htmlspecialchars(e.getMessage());
+			} catch (HostManagerException e) {
+				validationResult = "Error matching hosts: "
+					+ Routines.htmlspecialchars(e.getMessage());
+			}
+		}
+							
+		response.setContentType("Content-Type: text/javascript; charset=utf-8");
+		HashMap<String, Object> data = new HashMap<String, Object>();
+		data.put("validationResult", validationResult);
+		data.put("hosts", hosts);
+		page.writeTemplate("hosts-host-javascript-list-rsl", data);
+!!!772994.java!!!	hostAdd(inout request : HttpServletRequest, inout response : HttpServletResponse) : void
+		HashMap<String, Object> data = new HashMap<String, Object>();
+
+		if (params.exists("add")) {
+			params.ensureExists("hostname");
+		
+			params.checkCondition(params.notEmpty("hostname"),
+				"Enter non-empty hostname.");
+			try {
+				params.checkCondition(!hostManager.get().isHostInDatabase(request.getParameter("hostname")),
+					"Entered hostname is already in the database.");
+			} catch (UnknownHostException e) {
+				params.checkCondition(false, "Unknown hostname: " + request.getParameter("hostname") + ".");
+			}
+		
+			if (errorMessages.isEmpty()) {
+				OperationHandle handle = hostManager.get().addHost(
+					request.getParameter("hostname")
+				);
+				
+				HashMap<String, String> actionParams = new HashMap<String, String>();
+				actionParams.put("hostname", request.getParameter("hostname"));
+				actionParams.put("handle", handle.toString());
+				page.redirectToAction("host-adding", actionParams);
+				return;
+			} else {
+				data.put("hostname", request.getParameter("hostname"));
+			}
+		} else if (params.exists("cancel")) {
+			page.redirectToAction("host-list");
+			return;
+		} else {
+			data.put("hostname", "");
+		}
+		
+		page.setTitle("Add host");
+		page.setFocusedElement(0, "hostname");
+		page.writeHeader();
+		page.writeTemplate("hosts-host-add", data);
+		page.writeFooter();
+!!!773122.java!!!	hostAdding(inout request : HttpServletRequest, inout response : HttpServletResponse) : void
+		params.ensureExist("hostname", "handle");
+		
+		params.ensureCondition("handle", params.isLong("handle"));
+		
+		HashMap<String, Object> data = new HashMap<String, Object>();
+		data.put("hostname", request.getParameter("hostname"));
+		data.put("handle", OperationHandle.valueOf(request.getParameter("handle")));
+
+		page.setTitle("Adding host");
+		page.writeHeader();
+		page.writeTemplate("hosts-host-adding", data);
+		page.writeFooter();
+!!!773250.java!!!	buildUserProperties(inout userProperties : NameValuePair) : Map<String, String>
+		Map<String, String> result = new HashMap<String, String>();
+		for (NameValuePair property: userProperties) {
+			result.put(property.getName(), property.getValue().toString());
+		}
+		return result;
+		
+!!!773378.java!!!	hostDetails(inout request : HttpServletRequest, inout response : HttpServletResponse) : void
+		String activeSheet = "general-sheet";
+
+		if (params.exists("action")) {
+			String action = request.getParameter("action");
+			if (action.equals("refreshed")) {
+				closeOperationHandle(request, "handle");
+				infoMessages.addTextMessage("Host configuration refreshed successfully.");
+			} else if (action.equals("user-property-added")) {
+				infoMessages.addTextMessage("User property added successfully.");
+				activeSheet = "user-properties-sheet";
+			} else if (action.equals("user-properties-edited")) {
+				infoMessages.addTextMessage("User properties edited successfully.");
+				activeSheet = "user-properties-sheet";
+			} else if (action.equals("user-property-deleted")) {
+				infoMessages.addTextMessage("User property deleted successfully.");
+				activeSheet = "user-properties-sheet";
+			} else {
+				throw new InvalidParamValueException("Parameter \"action\" has invalid value.");
+			}
+		}
+
+		params.ensureExists("hostname");
+
+		Date[] dates = null;
+		try {
+			dates = hostManager.get().getHostHistoryDates(request.getParameter("hostname"));
+		} catch (ValueNotFoundException e) {
+			throw new InvalidParamValueException("Parameter \"hostname\" has invalid value.");
+		}
+
+		Date date = null;
+		if (params.exists("date")) {
+			params.ensureCondition("date", params.isLong("date"));
+			date = new Date(Long.valueOf(request.getParameter("date")));
+		} else {
+			if (dates.length > 0) {
+				date = dates[0];
+			}
+		}
+		
+		HostInfoInterface hostInfo = null;
+		try {
+			hostInfo = hostManager.get().getHostHistoryEntry(
+				request.getParameter("hostname"),
+				date
+			);
+		} catch (ValueNotFoundException e) {
+			throw new InvalidParamValueException("Parameter \"hostname\" has invalid value.");
+		} catch (HostDatabaseException e) {
+			errorMessages.addTextMessage("Error retrieving information about host: "
+				+ e.getMessage() + ".");
+		}
+		
+		Map<String, String> userProperties = null;
+		String newUserPropertyName = null;
+		String newUserPropertyType = null;
+		String newUserPropertyValue = null;
+		
+		if (params.exists("add")) {
+			params.ensureExist("new-name", "new-type", "new-value-boolean", "new-value-text");
+			Set<String> types = new HashSet<String>();
+			types.add(VALUE_TYPE_BOOLEAN);
+			types.add(VALUE_TYPE_INTEGER);
+			types.add(VALUE_TYPE_DOUBLE);
+			types.add(VALUE_TYPE_STRING);
+			types.add(VALUE_TYPE_REGEXP);
+			types.add(VALUE_TYPE_VERSION);
+			params.ensureCondition("new-type", params.isInSet("new-type", types));
+			
+			params.checkCondition(params.notEmpty("new-name"),
+			  "Enter non-empty property name.");
+			if (params.notEmpty("new-name")) {
+				params.checkCondition(PropertyTreeFactory.isValidTypeName(request.getParameter("new-name")),
+					"Enter valid property name.");
+				params.checkCondition(!hostInfo.hasUserProperty(request.getParameter("new-name")),
+					"Property \"" + request.getParameter("new-name") + "\" already exists.");
+			}
+			
+			Map<String, String> typesToNames = new HashMap<String, String>();
+			typesToNames.put(VALUE_TYPE_BOOLEAN, "boolean");
+			typesToNames.put(VALUE_TYPE_INTEGER, "text");
+			typesToNames.put(VALUE_TYPE_DOUBLE, "text");
+			typesToNames.put(VALUE_TYPE_STRING, "text");
+			typesToNames.put(VALUE_TYPE_REGEXP, "text");
+			typesToNames.put(VALUE_TYPE_VERSION, "text");
+			
+			Map<String, ValueCommonInterface> typesToValues
+				= new HashMap<String, ValueCommonInterface>();
+			typesToValues.put(VALUE_TYPE_BOOLEAN, new ValueBoolean(false));
+			typesToValues.put(VALUE_TYPE_INTEGER, new ValueInteger(0));
+			typesToValues.put(VALUE_TYPE_DOUBLE, new ValueDouble(0.0));
+			typesToValues.put(VALUE_TYPE_STRING, new ValueString(""));
+			typesToValues.put(VALUE_TYPE_REGEXP, new ValueRegexp(""));
+			typesToValues.put(VALUE_TYPE_VERSION, new ValueVersion(""));
+
+			NameValuePair[] properties = new NameValuePair[] { new NameValuePair(
+				typesToNames.get(request.getParameter("new-type")),
+				typesToValues.get(request.getParameter("new-type"))
+			) };
+
+			UserPropertiesHandler handler = new UserPropertiesHandler(request, "new-value", false);
+			handler.ensure(properties);
+			handler.check(properties);
+			
+			if (errorMessages.isEmpty()) {
+				NameValuePair[] newProperties = handler.getValues(properties);
+				for (NameValuePair property: newProperties) {
+					hostInfo.addUserProperty(request.getParameter("new-name"), property.getValue());
+				}
+				try {
+					hostManager.get().updateUserProperties(hostInfo);
+				} catch (InvalidArgumentException e) {
+					throw new InvalidParamValueException("Some parameter has invalid value.");
+				} catch (HostDatabaseException e) {
+					errorMessages.addTextMessage("Error adding host properties: "
+						+ e.getMessage() + ".");
+				}
+
+				HashMap<String, String> actionParams = new HashMap<String, String>();
+				actionParams.put("hostname", request.getParameter("hostname"));
+				actionParams.put("action", "user-property-added");
+				page.redirectToAction("host-details", actionParams);
+				return;
+			} else {
+				userProperties = buildUserProperties(hostInfo.getUserProperties());
+				newUserPropertyName = request.getParameter("new-name");
+				newUserPropertyType = request.getParameter("new-type");
+				newUserPropertyValue = request.getParameter(
+					request.getParameter("new-type").equals(VALUE_TYPE_BOOLEAN)
+						? "new-value-boolean"
+						: "new-value-text"
+				);
+				activeSheet = "user-properties-sheet";
+			}
+		} else if (params.exists("edit-all")) {
+			NameValuePair[] properties = hostInfo.getUserProperties();
+			UserPropertiesHandler handler = new UserPropertiesHandler(request, "value", true);
+			handler.ensure(properties);
+			handler.check(properties);
+			
+			if (errorMessages.isEmpty()) {
+				NameValuePair[] newProperties = handler.getValues(properties);
+				for (NameValuePair property: newProperties) {
+					hostInfo.putUserProperty(property);
+				}
+				try {
+					hostManager.get().updateUserProperties(hostInfo);
+				} catch (InvalidArgumentException e) {
+					throw new InvalidParamValueException("Some parameter has invalid value.");
+				} catch (HostDatabaseException e) {
+					errorMessages.addTextMessage("Error editing host properties: "
+						+ e.getMessage() + ".");
+				}
+				
+				HashMap<String, String> actionParams = new HashMap<String, String>();
+				actionParams.put("hostname", request.getParameter("hostname"));
+				actionParams.put("action", "user-properties-edited");
+				page.redirectToAction("host-details", actionParams);
+				return;
+			} else {
+				userProperties = new HashMap<String, String>();
+				for (NameValuePair property: properties) {
+					String paramValue = request.getParameter("value-" + property.getName());
+					userProperties.put(
+						property.getName(),
+						paramValue != null ? paramValue : property.getValue().toString()
+					); 
+				}
+				newUserPropertyName = "";
+				newUserPropertyType = "boolean";
+				newUserPropertyValue = "";
+				activeSheet = "user-properties-sheet";
+			}
+		} else  if (params.existsIndexed("delete")) {
+			String index = params.getIndex("delete");
+			try {
+				hostInfo.removeUserProperty(index);
+				hostManager.get().updateUserProperties(hostInfo);
+
+				HashMap<String, String> actionParams = new HashMap<String, String>();
+				actionParams.put("hostname", request.getParameter("hostname"));
+				actionParams.put("action", "user-property-deleted");
+				page.redirectToAction("host-details", actionParams);
+				return;
+			} catch (ValueNotFoundException e) {
+				throw new InvalidParamValueException("Parameter \"delete\" has invalid value.");
+			} catch (InvalidArgumentException e) {
+				throw new InvalidParamValueException("Parameter \"delete\" has invalid value.");
+			} catch (HostDatabaseException e) {
+				errorMessages.addTextMessage("Error deleting host properties: "
+					+ e.getMessage() + ".");
+			}
+		} else {
+			userProperties = buildUserProperties(hostInfo.getUserProperties());
+			newUserPropertyName = "";
+			newUserPropertyType = "boolean";
+			newUserPropertyValue = "";
+		}
+		
+		HostDataStatisticianInterface loadData = null;
+		try {
+			loadData = loadServer.get().getStatsProvider(request.getParameter("hostname"));
+			try {
+				loadData.refresh();
+			} catch (InputParseException e) {
+				/* I don't care at all if the files are corrupted. That's not my
+				 * problem.
+				 */
+			}
+		} catch (LoadMonitorException e) {
+			errorMessages.addTextMessage("Error retrieving load data: " + e.getMessage());
+		} catch (ValueNotFoundException e) {
+			throw new InvalidParamValueException("Parameter \"hostname\" has invalid value.");
+		}
+		
+		TaskEntry[] tasks = taskManager.get().getTasksOnHost(request.getParameter("hostname")); 
+		Map<TaskEntry, CheckPoint[]> checkpoints = TaskUtils.getCheckPointsForTasks(
+			taskManager.get(),
+			tasks
+		);
+
+		LogRecord[] logRecords = null;
+		try {
+			logRecords = LogUtils.getLogRecordsForTasks(
+				taskManager.get(), 
+				taskManager.get().getTasksOnHost(request.getParameter("hostname"))
+			);
+		} catch (LogStorageException e) {
+			errorMessages.addTextMessage("Error retrieving logs: " + e.getMessage());
+		}
+									
+		HashMap<String, Object> data = new HashMap<String, Object>();
+		data.put("date", date);
+		data.put("hostInfo", hostInfo);
+		data.put("dates", dates);
+		data.put("userProperties", userProperties);
+		data.put("newUserPropertyName", newUserPropertyName);
+		data.put("newUserPropertyType", newUserPropertyType);
+		data.put("newUserPropertyValue", newUserPropertyValue);
+		data.put("loadData", loadData);
+		data.put("tasks", tasks);
+		data.put("checkpoints", checkpoints);
+		data.put("logRecords", logRecords);
+		data.put("logFields", EnumSet.of(
+			LogRecord.Fields.CONTEXT,
+			LogRecord.Fields.TASK_ID,
+			LogRecord.Fields.HOSTNAME,
+			LogRecord.Fields.TIMESTAMP,
+			LogRecord.Fields.LEVEL,
+			LogRecord.Fields.MESSAGE
+		));
+		data.put("activeSheet", activeSheet);
+			
+		page.setTitle("Host details: " + hostInfo.getHostName());
+		page.writeHeader();
+		page.writeTemplate("hosts-host-details", data);
+		page.writeFooter();
+!!!773506.java!!!	hostRefresh(inout request : HttpServletRequest, inout response : HttpServletResponse) : void
+		params.ensureExists("hostname");
+		
+		OperationHandle handle = null;
+		try {
+			handle = hostManager.get().refreshHost(request.getParameter("hostname"));
+		} catch (ValueNotFoundException e) {
+			throw new InvalidParamValueException("Parameter \"hostname\" has invalid value.");
+		} catch (UnknownHostException e) {
+			throw new InvalidParamValueException("Unknown hostname: " + request.getParameter("hostname") + ".");
+		}
+			
+		HashMap<String, String> actionParams = new HashMap<String, String>();
+		actionParams.put("hostname", request.getParameter("hostname"));
+		actionParams.put("handle", handle.toString());
+		page.redirectToAction("host-refreshing", actionParams);
+		return;
+!!!773634.java!!!	hostRefreshing(inout request : HttpServletRequest, inout response : HttpServletResponse) : void
+		params.ensureExist("hostname", "handle");
+		
+		params.ensureCondition("handle", params.isLong("handle"));
+		
+		HashMap<String, Object> data = new HashMap<String, Object>();
+		data.put("hostname", request.getParameter("hostname"));
+		data.put("handle", OperationHandle.valueOf(request.getParameter("handle")));
+
+		page.setTitle("Refreshing host configuration");
+		page.writeHeader();
+		page.writeTemplate("hosts-host-refreshing", data);
+		page.writeFooter();
+!!!773762.java!!!	hostDelete(inout request : HttpServletRequest, inout response : HttpServletResponse) : void
+		params.ensureExists("hostname");
+		
+		try {
+			hostManager.get().removeHost(request.getParameter("hostname"));
+		} catch (ValueNotFoundException e) {
+			throw new InvalidParamValueException("Parameter \"hostname\" has invalid value.");
+		} catch (HostDatabaseException e) {
+			errorMessages.addTextMessage("Error deleting host: "
+					+ e.getMessage() + ".");
+		}
+		
+		if (errorMessages.isEmpty()) {
+			HashMap<String, String> actionParams = new HashMap<String, String>();
+			actionParams.put("action", "deleted");
+			page.redirectToAction("host-list", actionParams);
+		}
+!!!773890.java!!!	groupList(inout request : HttpServletRequest, inout response : HttpServletResponse) : void
+		if (params.exists("action")) {
+			String action = request.getParameter("action");
+			if (action.equals("added")) {
+				infoMessages.addTextMessage("Group added successfully.");
+			} else if (action.equals("edited")) {
+				infoMessages.addTextMessage("Group edited successfully.");
+			} else if (action.equals("deleted")) {
+				infoMessages.addTextMessage("Group deleted successfully.");
+			} else {
+				throw new InvalidParamValueException("Parameter \"action\" has invalid value.");
+			}
+		}
+
+		List<HostGroup> groups = new LinkedList<HostGroup>();
+		for (String groupName: hostManager.get().getGroupNames()) {
+			try {
+				groups.add(hostManager.get().getGroup(groupName));
+			} catch (ValueNotFoundException e) {
+				/**
+				 * We ignore this exception, which could happen only if someone changes
+				 * the host database under our hands. The group simply won't be
+				 * included in the list.
+				 */
+			}
+		}
+
+		Collections.sort(groups, new GroupListComparator());
+		
+		HashMap<String, Object> data = new HashMap<String, Object>();
+		data.put("groups", groups);
+			
+		page.setTitle("Groups");
+		page.writeHeader();
+		page.writeTemplate("hosts-group-list", data);
+		page.writeFooter();
+!!!774018.java!!!	groupAddOrEdit(inout request : HttpServletRequest, inout response : HttpServletResponse, inout editing : boolean) : void
+		HashMap<String, Object> data = new HashMap<String, Object>();
+		
+		if ((editing && params.exists("edit")) || (!editing && params.exists("add"))) {
+			HostGroup group = null;
+			if (editing) {
+				params.ensureExists("group");
+				try {
+					group = hostManager.get().getGroup(request.getParameter("group"));
+				} catch (ValueNotFoundException e) {
+					throw new InvalidParamValueException("Parameter \"group\" has invalid value.");
+				}
+				if (!group.isDefaultGroup()) {
+					params.ensureExists("name");
+				}
+			} else {
+				params.ensureExists("name");
+				/* If the group name is empty or equal to "All hosts", create temporary
+				 * group with random name, because HostGroup constructor doesn't allow
+				 * empty group name and will mess up when creating group with name "All
+				 * hosts".
+				 * 
+				 * This is to simplify the code bellow, where we can assume that the
+				 * group object is allways created.
+				 * 
+				 * Incorrect group name doesn't harm anything, because if the "name"
+				 * parameter is empty or equal to "All hosts", group won't be added to
+				 * the Host Manager.
+				 */
+				if (params.isEmpty("name")
+						|| request.getParameter("name").equals(HostGroup.DEFAULT_GROUP_NAME)) {
+					try {
+						group = new HostGroup(Double.toString(Math.random()));
+					} catch (InvalidArgumentException e) {
+						assert false: "Should not happen, group name should be allways valid.";
+					}
+				} else {
+					try {
+						group = new HostGroup(request.getParameter("name"));
+					} catch (InvalidArgumentException e) {
+						assert false: "Should not happen, non-empty group name should be "
+							+ "allways valid.";
+					}
+				}
+			}						
+			params.ensureExists("description");
+			if (!group.isDefaultGroup()) {
+				params.ensureExists("rsl");
+			}
+		
+			int hostCount = hostManager.get().getHostCount();
+			String[] hostNames = hostManager.get().getHostNames();
+			
+			if (!group.isDefaultGroup()) {
+				for (int i = 0; i < hostCount; i++) {
+				  String paramName = params.makeIndexed("group-hosts", hostNames[i]);
+					if (params.exists(paramName)) {
+						params.ensureCondition(paramName, params.isCheckboxBool(paramName));
+					}
+				}
+			}
+			
+			if (!group.isDefaultGroup()) {
+				params.checkCondition(params.notEmpty("name"),
+					"Enter non-empty name.");
+				if (errorMessages.isEmpty()) {
+					if (editing) {
+						if (!request.getParameter("name").equals(group.getName())) {
+							params.checkCondition(!hostManager.get().isGroup(request.getParameter("name")),
+								"Entered name is already in the database.");
+						}
+					} else {
+						params.checkCondition(!hostManager.get().isGroup(request.getParameter("name")),
+							"Entered name is already in the database.");
+					}
+				}
+			}
+
+			if (errorMessages.isEmpty()) {
+				try {
+					if (editing
+							&& !group.isDefaultGroup()
+							&& !request.getParameter("group").equals(request.getParameter("name"))) {
+						hostManager.get().renameGroup(
+							request.getParameter("group"),
+							request.getParameter("name")
+						);
+						group = hostManager.get().getGroup(request.getParameter("name"));
+					}
+					group.setDescription(request.getParameter("description"));
+					if (!group.isDefaultGroup()) {
+						if (editing) {
+							group.removeAllHosts();
+						}
+						for (int i = 0; i < hostCount; i++) {
+						  String paramName = params.makeIndexed("group-hosts", hostNames[i]);
+							if (params.exists(paramName)) {
+								group.addHost(hostNames[i]);
+							}
+						}
+					}
+					if (editing) {
+						hostManager.get().updateGroup(group);
+					} else {
+						hostManager.get().addGroup(group);
+					}
+				} catch (Exception e) {
+					errorMessages.addTextMessage("Error "
+						+ (editing ? "editing" : "adding")
+						+ " group \"" + request.getParameter("name") + "\": "
+						+ e.getMessage());
+				}
+			}
+			
+			if (errorMessages.isEmpty()) {
+				HashMap<String, String> actionParams = new HashMap<String, String>(); 
+				actionParams.put("action", editing ? "edited" : "added");
+				page.redirectToAction("group-list", actionParams);
+				return;
+			} else {
+				if (editing) {
+					data.put("group", request.getParameter("group"));
+				}
+				data.put("name", group.isDefaultGroup() ? group.getName() : request.getParameter("name"));
+				data.put("description", request.getParameter("description"));
+				data.put("isDefault", new Boolean(group.isDefaultGroup()));
+				
+				List<HostInfoInterface> hosts = new LinkedList<HostInfoInterface>();
+				for (String hostName: hostNames) {
+					try {
+						hosts.add(hostManager.get().getHostInfo(hostName));
+					} catch (ValueNotFoundException e) {
+						/*
+						 * We ignore this exception, which could happen only if someone changes
+						 * the host database under our hands. The host simply won't be included
+						 * in the list.
+						 */
+					}
+				}
+				
+				List<String> groupHosts = new LinkedList<String>();
+				for (int i = 0; i < hostCount; i++) {
+				  String paramName = params.makeIndexed("group-hosts", hostNames[i]);
+					if (params.exists(paramName)) {
+						groupHosts.add(hostNames[i]);
+					}
+				}
+
+				Collections.sort(hosts, new HostListInGroupComparator(groupHosts));
+
+				data.put("hosts", hosts);
+				data.put("groupHosts", groupHosts);
+				if (group.isDefaultGroup()) {
+					data.put("rsl", request.getParameter("rsl"));
+				}
+				data.put("editing", new Boolean(editing));
+			}
+		} else if (params.exists("cancel")) {
+			page.redirectToAction("group-list");
+			return;
+		} else {
+			List<String> groupHosts = new ArrayList<String>();
+			if (editing) {
+				params.ensureExists("group");
+				HostGroup group = null;
+				try {
+					group = hostManager.get().getGroup(request.getParameter("group"));
+				} catch (ValueNotFoundException e) {
+					throw new InvalidParamValueException("Parameter \"group\" has invalid value.");
+				}
+				data.put("group", request.getParameter("group"));
+				data.put("name", request.getParameter("group"));
+				data.put("description", group.getDescription());
+				data.put("isDefault", new Boolean(group.isDefaultGroup()));
+				for (String host: group) {
+					groupHosts.add(host);
+				}
+				data.put("groupHosts", groupHosts);
+				if (group.isDefaultGroup()) {
+					data.put("rsl", "");
+				}
+			} else {
+				data.put("name", "");
+				data.put("description", "");
+				data.put("isDefault", new Boolean(false));
+				data.put("groupHosts", groupHosts);
+				data.put("rsl", "");
+			}
+			data.put("editing", new Boolean(editing));
+
+			List<HostInfoInterface> hosts = new LinkedList<HostInfoInterface>();
+			for (String hostName: hostManager.get().getHostNames()) {
+				try {
+					hosts.add(hostManager.get().getHostInfo(hostName));
+				} catch (ValueNotFoundException e) {
+					/*
+					 * We ignore this exception, which could happen only if someone changes
+					 * the host database under our hands. The host simply won't be included
+					 * in the list.
+					 */
+				}
+			}
+
+			Collections.sort(hosts, new HostListInGroupComparator(groupHosts));
+			
+			data.put("hosts", hosts);
+		}
+		
+		page.setTitle(editing ? "Edit group: " + data.get("name") : "Add group");
+		if (!((Boolean) data.get("isDefault")).booleanValue()) {
+			page.setFocusedElement(0, "name");
+		}
+		page.writeHeader();
+		page.writeTemplate("hosts-group-add-edit", data);
+		page.writeFooter();
+!!!774146.java!!!	groupAdd(inout request : HttpServletRequest, inout response : HttpServletResponse) : void
+		groupAddOrEdit(request, response, false);
+!!!774274.java!!!	groupEdit(inout request : HttpServletRequest, inout response : HttpServletResponse) : void
+		groupAddOrEdit(request, response, true);
+!!!774402.java!!!	groupDelete(inout request : HttpServletRequest, inout response : HttpServletResponse) : void
+		params.ensureExists("group");
+		
+		try {
+			hostManager.get().removeGroup(request.getParameter("group"));
+		} catch (ValueNotFoundException e) {
+			throw new InvalidParamValueException("Parameter \"group\" has invalid value.");
+		} catch (HostDatabaseException e) {
+			errorMessages.addTextMessage("Error deleting group: "
+					+ e.getMessage() + ".");
+		}
+		
+		if (errorMessages.isEmpty()) {
+			HashMap<String, String> actionParams = new HashMap<String, String>();
+			actionParams.put("action", "deleted");
+			page.redirectToAction("group-list", actionParams);
+		}
+!!!774530.java!!!	aliasList(inout request : HttpServletRequest, inout response : HttpServletResponse) : void
+		if (params.exists("action")) {
+			String action = request.getParameter("action");
+			if (action.equals("added")) {
+				infoMessages.addTextMessage("Alias added successfully.");
+			} else if (action.equals("edited")) {
+				infoMessages.addTextMessage("Alias edited successfully.");
+			} else if (action.equals("deleted")) {
+				infoMessages.addTextMessage("Alias deleted successfully.");
+			} else {
+				throw new InvalidParamValueException("Parameter \"action\" has invalid value.");
+			}
+		}
+		
+		List<SoftwareAliasDefinition> aliases = new LinkedList<SoftwareAliasDefinition>();
+		for (int i = 0; i < hostManager.get().getAliasDefinitionCount(); i++) {
+			try {
+				aliases.add(hostManager.get().getAliasDefinition(i));
+			} catch (ValueNotFoundException e) {
+				/*
+				 * We ignore this exception, which could happen only if someone changes
+				 * the software alias definition database under our hands. The software
+				 * alias definition simply won't be included in the list.
+				 */
+			}
+		}
+		
+		Collections.sort(aliases, new AliasListComparator());
+		
+		HashMap<String, Object> data = new HashMap<String, Object>();
+		data.put("aliases", aliases);
+				
+		page.setTitle("Software aliases");
+		page.writeHeader();
+		page.writeTemplate("hosts-alias-list", data);
+		page.writeFooter();
+!!!774658.java!!!	findSoftwareAliasDefinitionByName(in aliasName : String) : SoftwareAliasDefinition
+		for (int i = 0; i < hostManager.get().getAliasDefinitionCount(); i++) {
+			SoftwareAliasDefinition alias = null;
+			try {
+				alias = hostManager.get().getAliasDefinition(i);
+			} catch (ValueNotFoundException e) {
+				/*
+				 * We ignore this exception, which could happen only if someone changes
+				 * the software alias definition database under our hands. The software
+				 * alias definition simply won't be included in the list.
+				 */
+			}
+			/* The alias can be null here only as a result of the exception above. */
+			if (alias != null && alias.getAliasName().equals(aliasName)) {
+				return alias;
+			}
+		}
+		return null;
+!!!774786.java!!!	deleteSoftwareAliasDefinitionByName(in aliasName : String) : void
+		for (int i = 0; i < hostManager.get().getAliasDefinitionCount(); i++) {
+			SoftwareAliasDefinition alias = null;
+			try {
+				alias = hostManager.get().getAliasDefinition(i);
+			} catch (ValueNotFoundException e) {
+				/*
+				 * We ignore this exception, which could happen only if someone changes
+				 * the software alias definition database under our hands. The software
+				 * alias definition simply won't be included in the list.
+				 */
+			}
+			/* The alias can be null here only as a result of the exception above. */
+			if (alias != null && alias.getAliasName().equals(aliasName)) {
+				try {
+					hostManager.get().removeAliasDefinition(i);
+				} catch (ValueNotFoundException e) {
+					/*
+					 * We ignore this exception, which could happen only if someone
+					 * changes the software alias definition database under our hands.
+					 * Somebody deleted the software alias definition for us :-) 
+					 */
+				}
+				return;
+			}
+		}
+		throw new IllegalArgumentException("Alias \"" + aliasName + "\" not found.");
+!!!774914.java!!!	checkRSLParam(inout request : HttpServletRequest, in paramName : String, in paramDescription : String) : void
+		String rsl = request.getParameter(paramName);
+		String validationResult = RSLValidator.validate(rsl);
+		if (validationResult != null) {
+			errorMessages.addHTMLMessage(paramDescription + ": " + validationResult);
+		}
+!!!775042.java!!!	aliasAddOrEdit(inout request : HttpServletRequest, inout response : HttpServletResponse, inout editing : boolean) : void
+		HashMap<String, Object> data = new HashMap<String, Object>();
+		
+		if ((editing && params.exists("edit")) || (!editing && params.exists("add"))) {
+			if (editing) {
+				params.ensureExists("alias");
+			}					
+			params.ensureExist("alias-name", "result-name", "result-vendor",
+				"result-version", "os-restriction", "app-restriction");
+			
+			params.checkCondition(params.notEmpty("alias-name"),
+				"Enter non-empty alias name.");
+			if (editing) {
+				params.checkCondition(
+					request.getParameter("alias-name").equals(request.getParameter("alias"))
+						|| findSoftwareAliasDefinitionByName(request.getParameter("alias-name")) == null,
+					"Entered alias name is already in the database.");
+			} else {
+				params.checkCondition(
+					findSoftwareAliasDefinitionByName(request.getParameter("alias-name")) == null,
+					"Entered alias name is already in the database."
+				);
+			}
+			params.checkCondition(params.notEmpty("result-name"),
+				"Enter non-empty result name.");
+			if (params.notEmpty("os-restriction")) {
+				checkRSLParam(request, "os-restriction", "Restriction for the operating system");
+			}
+			params.checkCondition(params.notEmpty("app-restriction"),
+				"Enter non-empty restriction for the application.");
+			if (params.notEmpty("app-restriction")) {
+				checkRSLParam(request, "app-restriction", "Restriction for the application");
+			}
+			
+			RSLRestriction osRestriction = null;
+			RSLRestriction appRestriction = null;
+			try {
+				osRestriction = !request.getParameter("os-restriction").equals("")
+					? new RSLRestriction(request.getParameter("os-restriction"))
+					: null; 
+				appRestriction = new RSLRestriction(request.getParameter("app-restriction"));
+			} catch (IllegalArgumentException e) {
+				errorMessages.addTextMessage(e.getMessage());
+			}
+				
+			SoftwareAliasDefinition definition = null;
+			if (errorMessages.isEmpty()) {
+				try {
+					definition = new SoftwareAliasDefinition(
+						request.getParameter("alias-name"),
+						request.getParameter("result-name"),
+						request.getParameter("result-vendor"),
+						request.getParameter("result-version"),
+						osRestriction,
+						appRestriction
+					);
+				} catch (InvalidArgumentException e) {
+					errorMessages.addTextMessage(e.getMessage());
+				}
+			}
+			
+			if (errorMessages.isEmpty()) {
+				try {
+					if (editing) {
+						try {
+							deleteSoftwareAliasDefinitionByName(request.getParameter("alias"));
+						} catch (IllegalArgumentException e) {
+							throw new InvalidParamValueException("Parameter \"alias\" has invalid value.");
+						}
+					}
+					hostManager.get().addAliasDefinition(definition);
+					hostManager.get().rebuildAliasTableForAllHosts();
+				} catch (HostDatabaseException e) {
+					errorMessages.addTextMessage("Error "
+						+ (editing ? "editing" : "adding")
+						+ " software alias definition \""
+						+ request.getParameter("alias") + "\": " + e.getMessage());
+				}
+			}
+
+			if (errorMessages.isEmpty()) {
+				HashMap<String, String> actionParams = new HashMap<String, String>(); 
+				actionParams.put("action", editing ? "edited" : "added");
+				page.redirectToAction("alias-list", actionParams);
+			} else {
+				data.put("alias", request.getParameter("alias"));
+				data.put("aliasName", request.getParameter("alias-name"));
+				data.put("resultName", request.getParameter("result-name"));
+				data.put("resultVendor", request.getParameter("result-vendor"));
+				data.put("resultVersion", request.getParameter("result-version"));
+				data.put("osRestriction", request.getParameter("os-restriction"));
+				data.put("appRestriction", request.getParameter("app-restriction"));
+			}
+		} else if (params.exists("cancel")) {
+			page.redirectToAction("alias-list");
+			return;
+		} else {
+			if (editing) {
+				params.ensureExists("alias");
+				SoftwareAliasDefinition alias
+					= findSoftwareAliasDefinitionByName(request.getParameter("alias"));
+				params.ensureCondition("alias", alias != null);
+				
+				data.put("alias", alias.getAliasName());
+				data.put("aliasName", alias.getAliasName());
+				data.put("resultName", alias.getResultName());
+				data.put("resultVendor", alias.getResultVendor());
+				data.put("resultVersion", alias.getResultVersion());
+				RSLRestriction osRestriction = (RSLRestriction) alias.getOsRestriction(); 
+				data.put("osRestriction", osRestriction != null
+					? osRestriction.getRSLString()
+					: "");
+				RSLRestriction appRestriction = (RSLRestriction) alias.getAppRestriction(); 
+				data.put("appRestriction", appRestriction.getRSLString());
+			} else {
+				data.put("aliasName", "");
+				data.put("resultName", "");
+				data.put("resultVendor", "");
+				data.put("resultVersion", "");
+				data.put("osRestriction", "");
+				data.put("appRestriction", "");
+			}
+			data.put("editing", new Boolean(editing));
+		}
+		
+		page.setTitle(editing
+			? "Edit software alias definition: " + data.get("aliasName")
+			: "Add software alias definition");
+		page.setFocusedElement(0, "alias-name");
+		page.writeHeader();
+		page.writeTemplate("hosts-alias-add-edit", data);
+		page.writeFooter();
+!!!775170.java!!!	aliasAdd(inout request : HttpServletRequest, inout response : HttpServletResponse) : void
+		aliasAddOrEdit(request, response, false);
+!!!775298.java!!!	aliasEdit(inout request : HttpServletRequest, inout response : HttpServletResponse) : void
+		aliasAddOrEdit(request, response, true);
+!!!775426.java!!!	aliasDelete(inout request : HttpServletRequest, inout response : HttpServletResponse) : void
+		params.ensureExists("alias");
+		
+		try {
+			deleteSoftwareAliasDefinitionByName(request.getParameter("alias"));
+		} catch (IllegalArgumentException e) {
+			throw new InvalidParamValueException("Parameter \"alias\" has invalid value.");
+		} catch (HostDatabaseException e) {
+			errorMessages.addTextMessage("Error deleting alias: " + e.getMessage() + ".");
+		}
+		
+		if (errorMessages.isEmpty()) {
+			HashMap<String, String> actionParams = new HashMap<String, String>();
+			actionParams.put("action", "deleted");
+			page.redirectToAction("alias-list", actionParams);
+		}
+!!!775554.java!!!	rslHelp(inout request : HttpServletRequest, inout response : HttpServletResponse) : void
+		params.ensureExists("type");
+
+		Set<String> types = new HashSet<String>();
+		types.add(RSL_HELP_TYPE_OS);
+		types.add(RSL_HELP_TYPE_APP);
+		params.ensureCondition("type", params.isInSet("type", types));
+		
+		HashMap<String, Object> data = new HashMap<String, Object>();
+		data.put("type", request.getParameter("type"));
+
+		page.setTitle("RSL help ("
+			+ (request.getParameter("type").equals(RSL_HELP_TYPE_OS)
+				? "operating system"
+				: "application")
+			+ " specific)");
+		page.setShowTitle(false);
+		page.setLayoutType(LayoutType.SIMPLE);
+		page.writeHeader();
+		page.writeTemplate("rsl-help", data);
+		page.writeFooter();

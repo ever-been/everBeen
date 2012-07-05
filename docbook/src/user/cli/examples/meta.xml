@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sect3
+	xml:id="been.user.cli.reference.meta.examples"
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>Meta Module Examples</title>
+	
+	<para>The meta module controls the CLI service and sets its tunable parameters. This module
+	does not use XML input or output. Structure of the output data is listed in
+	<xref linkend="been.user.cli.reference.meta"/>.</para>
+	
+	<para>Get the request counter:</para>
+	<screen>$ <emphasis role="strong">./bcmd meta counter</emphasis></screen>
+	
+	<para>Flush the instance pool for the <command>results</command> module:</para>
+	<screen>$ <emphasis role="strong">./bcmd meta flush pool=results</emphasis></screen>
+	
+	<para>Flush all the module instance pools:</para>
+	<screen>$ <emphasis role="strong">./bcmd meta flush all</emphasis></screen>
+	
+	<para>Switch to detailed debugging output style and back to normal output style:</para>
+	<screen>$ <emphasis role="strong">./bcmd meta output debug</emphasis></screen>
+	<screen>$ <emphasis role="strong">./bcmd meta output normal</emphasis></screen>
+</sect3>

@@ -1,0 +1,13 @@
+class InputParseException
+!!!311426.java!!!	InputParseException()
+		
+		super();
+!!!311554.java!!!	InputParseException(inout cause : Throwable)
+	
+		super(cause);
+!!!311682.java!!!	InputParseException(in message : String)
+		
+		super(message);
+!!!311810.java!!!	InputParseException(in message : String, inout cause : Throwable)
+		
+		super(message, cause);

@@ -1,0 +1,6 @@
+analysis.name=R_test_2
+dataset.name=SomeDataset
+destination.file=d:\Temp\export\?dateTime?.txt
+file.tag=data
+replace.regex=(?<!d)[ :]+
+replace.with=.

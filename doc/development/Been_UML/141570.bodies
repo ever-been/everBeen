@@ -1,0 +1,6 @@
+class RunEntity
+!!!186626.java!!!	RunEntity(inout experiment : ExperimentMetadata, inout id : RID)
+		super(id, "Run " + id, null, experiment.getPluginName());
+		status = experiment.getStatus(id);
+!!!186754.java!!!	getStatus() : EntityStatus
+		return status;

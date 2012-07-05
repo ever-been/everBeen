@@ -1,0 +1,22 @@
+class VersionAttributeHelper
+!!!624514.java!!!	VersionAttributeHelper()
+		super();
+!!!624642.java!!!	validateInXML(inout element : Element) : String
+		return extractTextValueFromElement(element) == null
+			? "Invalid value of element <" + element.getNodeName() + ">."
+			: null;
+!!!624770.java!!!	readValueFromElement(inout element : Element) : Version
+		return new Version(extractTextValueFromElement(element));
+!!!624898.java!!!	writeValueToElement(inout document : Document, in tagName : String, inout value : Version) : Element
+		if (value != null) {
+			Element result = document.createElement(tagName);
+			result.appendChild(document.createTextNode(value.toString()));
+			return result;
+		} else {
+			return null;
+		}
+!!!625026.java!!!	getInstance() : VersionAttributeHelper
+		if (instance == null) {
+			 instance = new VersionAttributeHelper();
+		}
+		return instance;

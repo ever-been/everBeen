@@ -1,0 +1,63 @@
+class TaskManagerRunner
+!!!700802.java!!!	TaskManagerRunner()
+		// Do nothing... (overwrites default constructor...)
+!!!700930.java!!!	main(in args : String) : void
+		/* Check command-line arguments. */
+		if (args.length < 1) {
+			System.out.println("Usage: java cz.cuni.mff.been."
+				+ "taskmanager.TaskManagerRunner "
+				+ "<TRACE | DEBUG | INFO | WARN | ERROR | FATAL> "
+				+ "<path_to_TaskManager_directory>[ "
+				+ "<XML_task_descriptor>[ "
+				+ "<XML_task_descriptor>[ ...]]]");
+			System.exit(1);
+		}
+		/* Number of currently (lastly) processed argument. */
+		int argNo = 0;
+		
+		/* Set log level. */
+		LogLevel level = LogLevel.valueOf(args[0]);
+		System.out.println("Log level: " + level);
+		argNo = 1;
+		
+		try {
+			LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
+		} catch (RemoteException e) {
+			System.err.println("Note: Can't start the RMI registry - "
+					+ "another instance is probably running. Usually you can "
+					+ "ignore this.");
+		}
+		
+		TaskManagerInterface taskManager;
+		try {
+			/* Root directory for Task Manager. */
+			String rootDirectory = args[argNo++];
+			
+			/* Create a new Task Manager. */
+			taskManager = new TaskManagerImplementation(
+					rootDirectory, level);
+			
+			/* Register main RMI interface of this Task Manager. */
+			Naming.rebind("rmi://localhost:1099"
+				+ TaskManagerInterface.URL, taskManager);
+			
+			/* Print message to the standard output stream. */
+			System.out.println("Task Manager started...");
+		} catch (Exception e) {
+			throw new RuntimeException("Unexpected failure!", e);
+		}
+		
+		try {
+			/* Array containing paths to TaskDescriptors to run. */
+			String[] taskDescriptors = new String[args.length - argNo];
+
+			for (int i = 0; i < taskDescriptors.length; i++) {
+				taskDescriptors[i] = args[argNo++];
+			}
+
+			/* Run all specified tasks by their task descriptors. */
+			taskManager.runTask(taskDescriptors);
+		} catch (RemoteException e) {
+			System.err.println("Running of tasks specified by their task "
+					+ "descriptors failed: " + e.getMessage());
+		}

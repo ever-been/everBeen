@@ -1,0 +1,12 @@
+class EqualsCondition
+!!!273538.java!!!	EqualsCondition(in propertyPath : String, inout value : T)
+		super(propertyPath, value);
+!!!273666.java!!!	toString() : String
+		return propertyPath + " == " + toRSL(value);
+!!!273794.java!!!	evaluate(inout context : ContainerProperty) : boolean
+		for (SimpleProperty p: pathToProperties(propertyPath, context)) {
+			if (value.equals(p.getValue())) {
+				return true;
+			}
+		}
+		return false;

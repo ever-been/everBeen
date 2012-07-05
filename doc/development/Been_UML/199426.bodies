@@ -1,0 +1,175 @@
+class XamplerExecute
+!!!634882.java!!!	XamplerExecute()
+		super();
+!!!635010.java!!!	setup() : void
+		roleName = getTaskProperty(PROPERTY_XAMPLER_ROLE).toLowerCase();
+		File omniorbRoot = BeenUtils.findRootDir(getTaskProperty(PROPERTY_OMNIORB_ROOT),"lib");
+		ldLibraryPath = new File(omniorbRoot,"lib").getAbsolutePath();
+		isServer = roleName.equals("server");
+		File xamplerRoot = BeenUtils.findRootDir(getTaskProperty(PROPERTY_XAMPLER_ROOT),"C++");
+		suiteDir = new File(xamplerRoot,"C++/_Suites/" + getTaskProperty(PROPERTY_SUITE_PATH)).getAbsolutePath();
+		executable = new File(suiteDir, isServer ? "Server" : "Client").getAbsolutePath();
+		
+		// parse command line arguments
+		runtimeParams = StringUtils.split(getTaskProperty(isServer ? PROPERTY_SERVER_PARAMS : PROPERTY_CLIENT_PARAMS), " ");
+!!!635138.java!!!	reportIOR() : void
+		File iorFile = new File(getTempDirectory(), XAMPLER_IOR_FILE);
+		 
+		// wait until the IOR file is created by the server process
+		int i = 0;
+		for (i = 0; i < IOR_WAIT_DELAY; i++) {
+			if (iorFile.exists() && iorFile.length() > 50) {
+				break;
+			} else {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					logFatal("Interrupted");
+					throw new TaskException("Interrupted");
+				}
+			}
+		}
+		
+		if (i >= IOR_WAIT_DELAY) {
+			throw new TaskException("Xampler server didn't start in allowed interval (" + IOR_WAIT_DELAY + "s)");
+		}
+		
+		try {
+			BufferedReader rd = new BufferedReader(new FileReader(iorFile));
+			String iorValue = rd.readLine();
+			rd.close();
+			if (iorValue.length() == 0){
+				logFatal("Corrupted IOR file encountered");
+				throw new TaskException("Corrupted IOR file encountered");
+			}
+			checkPointReached(CHECKPOINT_SERVER_STARTED, iorValue);
+		} catch (IOException e) {
+			logFatal("I/O error occured when reading " + XAMPLER_IOR_FILE);
+			throw new TaskException(XAMPLER_IOR_FILE + " not found", e);
+		}
+		
+!!!635266.java!!!	createIOR() : void
+		try {
+			String ior = (String) getTasksPort().checkPointWait(
+					null, // we are waiting for server in current context
+					getTaskProperty(PROPERTY_SERVER_TID), 
+					CHECKPOINT_SERVER_STARTED, 0);
+			File iorFile = new File(getTempDirectory(), XAMPLER_IOR_FILE);
+			BufferedWriter wr = new BufferedWriter(new FileWriter(iorFile));
+			wr.write(ior);
+			wr.flush();
+			wr.close();
+			logInfo("Created Xampler.IOR: " + iorFile.length() + " bytes");
+		} catch (IOException e) {
+			throw new TaskException("Can't create IOR reference file", e);
+		}
+!!!635394.java!!!	run() : void
+
+		setup();
+		
+		logDebug("Starting executable: " + executable);
+		logDebug("Suite: " + getTaskProperty(PROPERTY_SUITE_PATH));
+		
+		Process proc = null;
+		try {
+			// create file with IOR iff running as client
+			if (!isServer) {
+				createIOR();
+			}
+			
+			// fire xampler process
+			proc = fireXampler();
+			
+			// when running as server, report IOR as value in checkpoint
+			if (isServer) {
+				reportIOR();
+			}
+			
+			proc.waitFor();
+			
+		} catch (InterruptedException e) {
+			logFatal("Interrupted by external process - killing Xampler process");
+			proc.destroy();
+			throw new TaskException("Interrupted by external signal");
+		} catch (TaskException e) {
+			logFatal("Xampler execution failed: " + e.getMessage());
+			logFatal("Killing Xampler process");
+			if (proc != null) {
+				proc.destroy();
+			}
+			throw e;
+		}
+
+!!!635522.java!!!	checkRequiredProperties() : void
+		// required properties
+		final String requiredProperties[] = new String[] {
+				PROPERTY_XAMPLER_ROLE,
+				PROPERTY_XAMPLER_ROOT,
+				PROPERTY_OMNIORB_ROOT,
+				PROPERTY_SUITE_PATH,
+		};
+		
+		checkRequiredProperties(requiredProperties);
+		
+		// role : client or server
+		String role = getTaskProperty(PROPERTY_XAMPLER_ROLE).toLowerCase();
+		if (!"server".equals(role) && !"client".equals(role)) {
+			throw new TaskException("Property '" + PROPERTY_XAMPLER_ROLE + "' must be one of  'client' or 'server'");
+		}
+		
+		// when running as client, server TID must be specified 
+		if ("client".equals(role)) {
+			if (StringUtils.isEmpty(getTaskProperty(PROPERTY_SERVER_TID))) {
+				throw new TaskException("Required property '" + PROPERTY_SERVER_TID + "' not set");
+			}
+		}
+		
+		// for concurrent client connections and server, the number of clients must be specified
+		String suiteName = getTaskProperty(PROPERTY_SUITE_PATH);
+		if ("server".equals(role) && suiteName.startsWith("Concurrency_Client_Connections")) {
+			if (StringUtils.isEmpty(getTaskProperty(PROPERTY_SERVER_PARAMS))) {
+				throw new TaskException("Number of clients not set for Concurrency_Client_Connections server");
+			}
+
+		}
+		
+!!!635650.java!!!	fireXampler() : Process
+		
+		Process proc = null;
+
+		ProcessBuilder pb = new ProcessBuilder();
+		if (runtimeParams.length == 0) {
+			pb.command(new String[]{executable});
+		} else {
+			String[] cmd = new String[runtimeParams.length + 1];
+			System.arraycopy(runtimeParams, 0, cmd, 1, runtimeParams.length);
+			cmd[0] = executable;
+			for (String c : cmd) {
+				logDebug("'" + c + "'");
+			}
+			pb.command(cmd);
+		}
+		Map <String, String> env = pb.environment();
+		String LD_LIBPATH = env.get("LD_LIBRARY_PATH");
+		env.put("LD_LIBRARY_PATH", ldLibraryPath + ":" + LD_LIBPATH);
+		pb.directory(new File(getTempDirectory()));
+
+		try {
+			stdOutReader.setOutputStream(
+					new FileOutputStream(new File(getWorkingDirectory(), roleName + ".out")));
+			stdErrReader.setOutputStream(
+					new FileOutputStream(new File(getWorkingDirectory(), roleName + ".err")));
+			proc = pb.start();
+		} catch (FileNotFoundException e) {
+			throw new TaskException("Can't create output file", e);
+		} catch (IOException e) {
+			throw new TaskException("Can't start xampler process", e);
+		}
+
+		stdOutReader.setInputStream(proc.getInputStream());
+		stdOutReader.start();
+		
+		stdErrReader.setInputStream(proc.getErrorStream());
+		stdErrReader.start();
+
+		return proc;

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sect1
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>Testing BEEN</title>
+	
+	<para>BEEN comes with a set of unit tests for all its critical components.
+	Naturally, these test reside in <filename>test</filename> dictionary. They
+	can be run either using Ant <code>test</code> target or from
+	Eclipse IDE ("Run As..." menu item). All the unit test
+	supplied with BEEN follow the JUnit4 API. 
+	</para>	
+</sect1>

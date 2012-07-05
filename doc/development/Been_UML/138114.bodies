@@ -1,0 +1,16 @@
+class BenchmarkRole
+!!!167042.java!!!	BenchmarkRole(in name : String, inout rsl : Condition, in count : int)
+		super(name, rsl, count);
+!!!167170.java!!!	isBenchmarking() : boolean
+		return true;
+!!!167298.java!!!	setUserHosts(in hosts : String) : void
+		
+		assert hosts.length == getCount() : 
+			"Role does not contain required number of hosts: " + getName();
+		this.userHosts = hosts;
+!!!167426.java!!!	getRSL(in host : int) : Condition
+		return new EqualsCondition<String>("name",userHosts[host]);
+!!!167554.java!!!	getUserHosts() : String
+		String[] result = new String[userHosts.length];
+		System.arraycopy(userHosts, 0, result, 0, result.length);
+		return result;

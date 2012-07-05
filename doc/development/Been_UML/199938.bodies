@@ -1,0 +1,107 @@
+class JBossStartupTest
+!!!636930.java!!!	JBossStartupTest(in directory : String, in port : int)
+		if (directory == null) {
+			taskHandle.logFatal("directory is null");
+			throw new NullPointerException("directory is null");
+		}
+		if (directory.equals("")) {
+			taskHandle.logFatal("directory is an empty string");
+			throw new IllegalArgumentException("directory is an empty String");
+		}
+		
+		this.directory = directory;
+		taskHandle.logDebug("directory: " + directory);
+		this.port = port;
+		taskHandle.logDebug("port: " + port);
+!!!637058.java!!!	jbossRunning() : boolean
+		boolean started = false;
+
+		Process twiddleProcess = null;
+		String fSep = File.separator;
+		
+		String[] cmdArray = null;
+		if (System.getProperty("os.name").toLowerCase().indexOf("linux") != -1) { 
+			String[] commands = {directory  + fSep + "bin" + fSep + "twiddle.sh",
+					"-s",
+					"localhost:" + port,
+					"get",
+					"jboss.system:type=Server",
+					"Started"
+			};
+			cmdArray = commands;
+		}
+		if (System.getProperty("os.name").toLowerCase().indexOf("windows") != -1) { 
+			String[] commands = {
+					"cmd",
+					"/C",
+					"call",
+					directory  + fSep + "bin" + fSep + "twiddle.bat",
+					"-s",
+					"localhost:" + port,
+					"get",
+					"\"jboss.system:type=Server\"",
+					"Started"
+			};
+			cmdArray = commands;
+		}
+
+		try {
+			taskHandle.logDebug("Executing: " + ArrayUtils.join(" ", cmdArray));
+
+			ProcessBuilder builder = new ProcessBuilder(cmdArray);
+			Map<String, String> env = builder.environment();
+			if (env.containsKey(JBOSS_HOME_VARIABLE)) {
+				taskHandle.logDebug("Environment variable " + JBOSS_HOME_VARIABLE + " was set." +
+				" It's removed from the new process.");
+				env.remove(JBOSS_HOME_VARIABLE);
+			}
+			builder.directory(new File(directory));
+			twiddleProcess = builder.start();
+
+			// read the output of the twiddle program, and test if it
+			// is equall to "Started=true"
+			BufferedReader reader = new BufferedReader(
+					new InputStreamReader(twiddleProcess.getInputStream()));
+			String line;
+			while ((line = reader.readLine()) == null) {
+			}
+			if (line.equals("Started=true")) {
+				started = true;	
+			} else {
+				// JBoss not started, print the output of twiddle
+				// usually it will print some exceptions which are normal
+				// to occur while JBoss is starting, but in case of some problem
+				// the output can help
+				System.err.println(" *** twiddle output (JBoss startup test)");
+				System.err.println(" *** some exceptions are usuall while JBoss is starting up");
+				do {
+					System.err.println(line);
+				} while ((line = reader.readLine()) != null);
+				System.err.println(" *** twiddle output end");
+				reader.close();
+			}
+			
+			try {
+				taskHandle.logDebug("waiting for twiddle to finish");
+				twiddleProcess.waitFor();
+				taskHandle.logDebug("twiddle finished");
+			} catch (InterruptedException e) {
+				taskHandle.logDebug("output readers interrupted");
+				System.err.println(e);	// shouldn't happen
+			}
+		} catch (IOException e)	{
+			taskHandle.logError("JBoss startup test aborted: " + e.getMessage());
+			System.err.println("FATAL: JBoss startup test aborted: " + e.getMessage());
+			e.printStackTrace();
+		} catch (SecurityException e) { 
+			// Subprocess creation not allowed
+			taskHandle.logError("Cannot create JBoss startup test process: " + e.getMessage());
+			System.err.println("FATAL: Cannot create JBoss startup test process: " + e.getMessage());
+			e.printStackTrace();
+		} catch (Exception e) {
+			// Invalid command in exec
+			taskHandle.logError("Invalid command in exec");
+			e.printStackTrace();
+		}
+
+		return started;

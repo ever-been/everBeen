@@ -1,0 +1,178 @@
+class Service
+!!!162306.java!!!	Service()
+		try {
+			addRemoteInterface(RMI_CONTROL_IFACE, 
+				new ServiceControlImplementation());
+		} catch (RemoteException e) {
+			e.printStackTrace();
+			logFatal("Couldn't create ServiceControlInterface: " + e.getMessage());
+			throw new TaskInitializationException(e);
+		}
+!!!162818.java!!!	startService() : void
+		synchronized (lock) {
+			logInfo("Service is starting");
+			checkPointReached(STATUS_CHECKPOINT, STATUS_STARTING);
+			status = Status.STARTING;
+			try {
+				start();
+			} catch (TaskException e) { 
+				logFatal("Cannot start service: " + e.getMessage());
+				stateChangeError(e);
+				throw e;
+			}
+			try {
+				bindInterfaces();
+			} catch (Exception e) {
+				throw bindError(e);
+			}
+			checkPointReached(STATUS_CHECKPOINT, STATUS_RUNNING);
+			status = Status.RUNNING;
+			logInfo("Service is running");
+		}
+!!!162946.java!!!	getControlInterface() : ServiceControlInterface
+		return (ServiceControlInterface) rmiInterfaces.get(RMI_CONTROL_IFACE);
+!!!163074.java!!!	addRemoteInterface(in name : String, inout iface : Remote) : void
+		String fullRMIName = RMI_BEEN_PREFIX + "/" + getName() + "/" + name;
+		rmiInterfaces.put(fullRMIName, iface);
+		interfaceNames.put(fullRMIName, name);
+		logInfo("Added service interface " + fullRMIName);
+!!!163202.java!!!	removeRemoteInterface(in name : String) : void
+		String fullRMIName = RMI_BEEN_PREFIX + "/" + getName() + "/" + name;
+		rmiInterfaces.remove(fullRMIName);
+		interfaceNames.remove(fullRMIName);
+!!!163330.java!!!	exitSuccessDelayed() : void
+		exitDelayed(true, EXIT_DELAY_TIME);
+!!!163458.java!!!	exitErrorDelayed() : void
+		exitDelayed(true, EXIT_DELAY_TIME);
+!!!163586.java!!!	exitDelayed(inout success : boolean, in time : long) : void
+		// a small trick, we need the parameters to be final to 
+		// be able to use them in the anonymous Thread class,
+		// but we don't want final parameters of this method
+		final boolean successFlag = success;
+		final long millis = time;
+		
+		Thread exiter = new Thread() {
+			@Override
+			public void run() {
+				try {
+					Thread.sleep(millis);
+				} catch (InterruptedException e) {
+					//nothing bad happened
+				}
+				if (successFlag) {
+					exitSuccess();
+				} else {
+					exitError();
+				}
+			}
+		};
+		exiter.start();
+!!!163714.java!!!	bindInterfaces() : void
+		for (String key : rmiInterfaces.keySet()) {
+			try {
+				Naming.rebind(key, rmiInterfaces.get(key));
+				
+				String hostname = InetAddress.getLocalHost().getCanonicalHostName();
+				String contextId = getTaskDescriptor().getContextId();
+				String taskId = getTaskDescriptor().getTaskTid();
+				
+				// register in the BEEN naming service
+				ServiceEntry serviceEntry = new ServiceEntry(
+						getName(),
+						interfaceNames.get(key),
+						new URI("rmi://" + hostname + "/" + key),
+						rmiInterfaces.get(key),
+						contextId,
+						taskId);
+				
+				TasksPortInterface tasksPort = getTasksPort();
+				tasksPort.serviceRegister(serviceEntry);
+			} catch (Exception e) {
+				throw new Exception("Cannot bind interface " + key, e);
+			}
+		}
+
+!!!163842.java!!!	unbindInterfaces() : void
+		for (String key : rmiInterfaces.keySet()) {
+			try {
+				Naming.unbind(key);
+				
+				String hostname = InetAddress.getLocalHost().getCanonicalHostName();
+				String contextId = getTaskDescriptor().getContextId();
+				String taskId = getTaskDescriptor().getTaskTid();
+
+				// unregister in the BEEN naming service
+				ServiceEntry serviceEntry = new ServiceEntry(
+						getName(),
+						interfaceNames.get(key),
+						new URI("rmi://" + hostname + "/" + key),
+						rmiInterfaces.get(key),
+						contextId,
+						taskId);
+				
+				TasksPortInterface tasksPort = getTasksPort();
+				tasksPort.serviceUnregister(serviceEntry);
+			} catch (Exception e) {
+				throw new Exception("Cannot unbind interface " + key, e);
+			}
+		}
+!!!163970.java!!!	bindError(inout e : Exception) : TaskException
+		e.printStackTrace();
+		logFatal(e.getMessage());
+		status = Status.STOPPING;
+		exitErrorDelayed();
+		return new TaskException(e);
+!!!164098.java!!!	stateChangeError(inout e : TaskException) : void
+		e.printStackTrace();
+		status = Status.STOPPING;
+		exitErrorDelayed();
+!!!164226.java!!!	copyFile(inout src : File, inout dest : File) : void
+		InputStream in = new BufferedInputStream(new FileInputStream(src));
+		OutputStream out = new BufferedOutputStream(new FileOutputStream(dest));
+		byte[] buffer = new byte[COPY_FILE_BUFFER_SIZE];
+		int bytesRead;
+		
+		try {
+			while ((bytesRead = in.read(buffer)) != -1) {
+				out.write(buffer, 0, bytesRead);
+			}
+		} finally {
+			in.close();
+			out.close();
+		}
+!!!164354.java!!!	copyDirectoryContentsRecursive(inout srcDir : File, inout destDir : File) : void
+		for (File f: srcDir.listFiles()) {
+			File newFileOrDir = new File(destDir, f.getName());
+			if (!newFileOrDir.exists()) {
+				if (!f.isDirectory()) {
+					copyFile(f, newFileOrDir);
+				} else {
+					newFileOrDir.mkdir();
+					copyDirectoryContentsRecursive(f, newFileOrDir);
+				}
+			}
+		}
+!!!164482.java!!!	tryCopyExampleData() : void
+		File workingDir = new File(getWorkingDirectory());
+		
+		File packageDataDir = new File(getTaskDirectory() + File.separator + "data");
+		if (packageDataDir.isDirectory()) {
+			copyDirectoryContentsRecursive(packageDataDir, workingDir);
+		}
+		
+		String beenHome = System.getenv("BEEN_HOME");
+		File globalDataDir = new File(
+			beenHome + File.separator + "data" + File.separator + getName()
+		);
+		if (globalDataDir.isDirectory()) {
+			copyDirectoryContentsRecursive(globalDataDir, workingDir);
+		}
+!!!164610.java!!!	tryCopyExampleData(in targetDir : String) : void
+
+		File dataDir = new File(getTaskDirectory() + File.separator + "data");
+		
+		if (dataDir.isDirectory()) {
+		
+			String targetPath = getWorkingDirectory() + File.separator + targetDir;
+			copyDirectoryContentsRecursive(dataDir,	new File(targetPath));
+		}

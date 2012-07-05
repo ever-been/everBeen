@@ -1,0 +1,29 @@
+class RegressionAnalysisMetadata
+!!!183810.java!!!	RegressionAnalysisMetadata(inout id : AID)
+		super(id);
+!!!183938.java!!!	setModelExperiment(inout modelExperiment : ExperimentMetadata) : void
+		this.modelExperiment = modelExperiment;
+!!!184066.java!!!	getModelExperiment() : ExperimentMetadata
+		return modelExperiment;
+!!!184194.java!!!	setLastRunDate(in lastRunDate : long) : void
+		this.lastRunDate = lastRunDate;
+!!!184322.java!!!	setNextRunDate(in nextRunDate : long) : void
+		this.nextRunDate = nextRunDate;
+!!!184450.java!!!	getNextRunDate() : long
+		return nextRunDate;
+!!!184578.java!!!	getLastRunDate() : long
+		return lastRunDate;
+!!!184706.java!!!	getProcessedVersions() : Version
+		return processedVersions.toArray(new Version[processedVersions.size()]);
+!!!184834.java!!!	addProcessedVersions(inout versions : Version) : void
+		this.processedVersions.addAll(Arrays.asList(versions));
+!!!184962.java!!!	isRegression() : boolean
+		return true;
+!!!185090.java!!!	setSchedule(inout schedule : SchedulerInfo) : void
+		this.schedule = schedule;
+!!!185218.java!!!	getSchedule() : SchedulerInfo
+		return schedule;
+!!!185346.java!!!	getHistoricalStart() : long
+		return schedule.getHistoricalStartDate();
+!!!185474.java!!!	getHistoricalEnd() : long
+		return schedule.getHistoricalEndDate();

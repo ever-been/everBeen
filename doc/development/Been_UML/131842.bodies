@@ -1,0 +1,14 @@
+class Entity
+!!!139010.java!!!	Entity(inout id : ID, in name : String, in description : String, in plugin : String)
+		this.id = id;
+		this.name = name;
+		this.description = description;
+		this.plugin = plugin;
+!!!139138.java!!!	getId() : ID
+		return id;
+!!!139266.java!!!	getName() : String
+		return name;
+!!!139394.java!!!	getDescription() : String
+		return description;
+!!!139522.java!!!	getPlugin() : String
+		return plugin;

@@ -1,0 +1,269 @@
+Meaning of some weird symbols:
+
+	M:	mandatory parameter
+	O:	optional parameter
+	F:	(optional) flag
+	BLOB:	a blob (standard/file input) parameter
+	*:	any string
+
+The following tree is structured like this:
+
+	module
+		action
+			parameter
+			flag
+
+HERE it comes!
+
+	dummy
+		*
+			O: BLOB
+			O: *
+			F: *
+
+	meta
+		counter
+		flush
+			O: pool
+			F: all
+		output
+			F: debug
+			F: normal
+		
+	csvcs
+		list
+			O: pattern
+			F: all
+		start
+			M: service
+			M: host
+			F: debug
+		stop
+			M: service
+		restart
+			M: service
+			F: debug
+		start-all
+			M: host
+			F: debug
+		stop-all
+		logs
+			M: service
+			O: from
+			O: to
+			F: numbers
+		stdout
+			M: service
+			O: from
+			O: to
+			F: numbers
+		stderr
+			M: service
+			O: from
+			O: to
+			F: numbers
+		
+
+	tasks
+		context-list
+			O: id
+			O: pattern
+			F: desc
+		context-new
+			M: name
+			O: id
+			O: desc
+		context-delete
+			M: id
+		tree-list
+			O: path
+			F: recursive
+			F: desc
+		info
+			O: path
+			O: id
+			O: context
+			F: desc
+		logs:
+			O: path
+			O: id
+			O: context
+			O: from
+			O: to
+			F: numbers
+		stdout:
+			O: path
+			O: id
+			O: context
+			O: from
+			O: to
+			F: numbers
+		stderr:
+			O: path
+			O: id
+			O: context
+			O: from
+			O: to
+			F: numbers
+		dump:
+			O: path
+			O: id
+			O: context
+			F: resolved
+		run
+			M: BLOB
+		kill
+			O: path
+			O: id
+			O: context
+			F: recursive
+			F: delete
+
+	hosts
+		list
+			O: pattern
+		sample
+			M: host
+		config
+			M: host
+			O: date
+			F: system
+			F: cpu
+			F: storage
+			F: network
+			F: history
+		refresh:
+			O: host
+			F: all
+		tasks
+			M: host
+			O: pattern
+			F: desc
+		logs
+			M: host
+			F: numbers
+		alias-list
+			O: pattern
+			F: restrict
+		alias-dump
+			M: name
+		alias-put
+			M: BLOB
+			O: edit
+		alias-del
+			M: name
+		group-list
+			O: pattern
+			O: host
+			F: desc
+		group-dump
+			M: name
+		group-put
+			M: BLOB
+			O: edit
+		group-del
+			M: name
+		property-list
+			M: host
+			O: pattern
+			F: desc
+			F: user
+		property-dump
+			M: host
+			F: user
+		property-put
+			M: BLOB
+			M: host
+		property-del
+			M: host
+			M: name
+			F: tree
+
+	packages
+		list
+			O: pattern
+			F: desc
+			F: source
+			F: binary
+			F: task
+			F: data
+			F: module
+		upload
+			M: BLOB
+		download
+			M: filename
+		delete
+			M: filename
+
+	benchmarks
+		generator-list
+			O: pattern
+		generator-dump
+			M: name
+			M: version
+		evaluator-list
+			O: pattern
+		evaluator-dump
+			M: name
+			M: version
+		analsis-list
+			O: pattern
+			F: desc
+		analysis-dump
+			M: name
+		analysis-create
+			M: BLOB
+		analysis-update
+			M: BLOB
+		analysis-run
+			M: name
+			F: force
+		analysis-delete
+			M: name
+
+	results
+		analysis-list
+			O: pattern
+		dataset-list
+			M: analysis
+			O: pattern
+		dataset-dump
+			M: analysis
+			M: dataset
+		dataset-data
+			M: analysis
+			M: dataset
+			O: from
+			O: to
+			F: plain
+			F: names
+			O: BLOB
+		dataset-store
+			M: BLOB
+			M: analysis
+			M: dataset
+		dataset-create
+			M: BLOB
+		dataset-delete
+			M: analysis
+			M: dataset
+		trigger-list
+			M: analysis
+			M: dataset
+			O: pattern
+		trigger-dump
+			M: uuid
+			F: binary
+		trigger-create
+			M: blob
+		trigger-delete
+			O: uuid
+			O: analysis
+			O: dataset
+			O: evaluator
+		file-upload
+			M: BLOB
+		file-download
+			M: uuid
+		file-delete
+			M: uuid

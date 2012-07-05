@@ -1,0 +1,306 @@
+class Database
+!!!523778.java!!!	getInstance() : Database
+		if (dbInstance == null) {
+			dbInstance = new Database();
+		}
+		return dbInstance;
+!!!523906.java!!!	initialize(in dataPath : String, in tempDir : String, in aMaxConnections : int) : void
+		
+		/* Basic setting of database class */
+		databasePath = dataPath;
+		tempDirectory = tempDir;
+		maxConnections = aMaxConnections;
+		activeConnections = 0;
+		connectionSemaphore = new Semaphore(maxConnections, true);
+		
+		/* Initialize locks manager */
+		lockManager = LockManager.getInstance();
+		LockManager.initialize(this);
+		
+		/* Initialize metadata manager */
+		metaManager = MetadataManager.getInstance();
+		MetadataManager.initialize(this);
+		
+		/* Intialize roles manager */
+		rolesManager = RolesManager.getInstance();
+		RolesManager.initialize(this);
+		
+		/* Initialization of low-level run validity maps manager */
+		ridManager = RunValidityMapsManager.getInstance();
+		RunValidityMapsManager.initialize(this, rolesManager);
+		
+		/* Intializes r packages manager (this is itself boss of few other managers) */
+		rManager = RManager.getInstance();
+		RManager.initialize(this);
+		
+		rScriptsRunner = RManager.getRScriptsRunner();
+		
+		/* Initialization of low-level graphs manager */
+		graphManager = GraphManager.getInstance();
+		GraphManager.initialize(this);
+		
+		/* Initialize statistics manager */
+		statisticsManager = StatisticsManager.getInstance();
+		StatisticsManager.initialize(this);
+		
+		/* Initialize task-entity mapping manager */
+		taskListManager = TaskListManager.getInstance();
+		TaskListManager.initialize(this);
+		
+		/* Intialize reference to benchmark manager */
+		initBMReference();
+		
+		/* Intialize log storage */
+		try {
+			logStorage = new FilesystemLogStorage(getDatabasePath()
+					+ File.separator + "logs");
+		} catch (LogStorageException e) {
+			Logger.logError(
+					"Error intializing results repository log storage: "
+							+ e.getMessage() + ".");
+		}
+		
+		/* Intialize log collector */ 
+		logCollector = LogCollector.getInstance();
+		LogCollector.initialize(this, experimentEntityManager);
+		
+		/* Initialize high-level analyses manager */
+		analysisEntityManager = AnalysisEntityManager.getInstance();
+		analysisEntityManager.initialize(this, metaManager, statisticsManager, graphManager,
+				rScriptsRunner);
+
+		/* Initialize high-level experiments manager */
+		experimentEntityManager = ExperimentEntityManager.getInstance();
+		experimentEntityManager.initialize(this, metaManager, statisticsManager, graphManager,
+				logCollector, taskListManager, rolesManager, rScriptsRunner, analysisEntityManager);		
+		
+		/* Initialize high-level binaries manager */
+		binaryEntityManager = BinaryEntityManager.getInstance();
+		binaryEntityManager.initialize(this, metaManager, statisticsManager, taskListManager, 
+				rScriptsRunner, analysisEntityManager, experimentEntityManager);
+
+		/* Initialize high-level runs manager */
+		runEntityManager = RunEntityManager.getInstance();
+		runEntityManager.initialize(this, statisticsManager, taskListManager, graphManager, 
+				ridManager, lockManager, rScriptsRunner, binaryEntityManager, experimentEntityManager);
+
+		/* Initialize load collector */
+		loadCollector = LoadCollector.getInstance();
+		LoadCollector.initialize(this, binaryEntityManager);
+
+		/* Intialize importer and exporter */
+		importer = Importer.getInstance();
+		Importer.initialize(this);
+		exporter = Exporter.getInstance();
+		Exporter.initialize(this);
+		
+!!!524034.java!!!	initBMReference() : void
+	    
+	    Task task = Task.getTaskHandle();
+	    
+	    if (task != null) {	    
+		try {
+	            benchmarkManagerInstance = (BenchmarkManagerGUIInterface) task.getTasksPort().serviceFind(
+	            	BenchmarkManagerService.SERVICE_NAME, BenchmarkManagerService.RMI_MAIN_IFACE);
+                } catch (RemoteException e) {
+                    Logger.logError("Unable to get Benchmark Manager RMI reference.");
+                    e.printStackTrace();
+                }
+	    }
+	    
+!!!524162.java!!!	getLogStorage() : FilesystemLogStorage
+		return logStorage;
+!!!524290.java!!!	getAnalysisEntityManager() : AnalysisEntityManager
+		return analysisEntityManager;
+!!!524418.java!!!	getExperimentEntityManager() : ExperimentEntityManager
+		return experimentEntityManager;
+!!!524546.java!!!	getBinaryEntityManager() : BinaryEntityManager
+		return binaryEntityManager;
+!!!524674.java!!!	getRunEntityManager() : RunEntityManager
+		return runEntityManager;
+!!!524802.java!!!	getRManager() : RManager
+		return rManager;
+!!!524930.java!!!	getRunValidityMapsManager() : RunValidityMapsManager
+		return ridManager;
+!!!525058.java!!!	getLockManager() : LockManager
+		return lockManager;
+!!!525186.java!!!	getBenchmarkManagerInstance() : BenchmarkManagerGUIInterface
+		
+		/*if (!benchmarkManagerInstanceIsStillAlive) */
+		initBMReference();
+		
+		return benchmarkManagerInstance;
+!!!525314.java!!!	getTempDirectory() : String
+	    return tempDirectory;
+!!!525442.java!!!	shutdown() : void
+		rManager.shutdown();
+!!!525570.java!!!	getLoadCollector() : LoadCollector
+		return loadCollector;
+!!!525698.java!!!	getLogCollector() : LogCollector
+		return logCollector;
+!!!525826.java!!!	getDatabasePath() : String
+		return databasePath;
+!!!525954.java!!!	getDirectoryInDatabase(inout aid : AID) : String
+		return getDatabasePath() + File.separator + aid;
+!!!526082.java!!!	getFileInDatabase(inout aid : AID, in filename : String) : String
+		return getDirectoryInDatabase(aid) + File.separator + filename;
+!!!526210.java!!!	getDirectoryInDatabase(inout aid : AID, inout eid : EID) : String
+		return getDatabasePath() + File.separator + aid + File.separator + eid;
+!!!526338.java!!!	getFileInDatabase(inout aid : AID, inout eid : EID, in filename : String) : String
+		return getDirectoryInDatabase(aid, eid) + File.separator + filename;
+!!!526466.java!!!	getDirectoryInDatabase(inout aid : AID, inout eid : EID, inout bid : BID) : String
+		return getDatabasePath() + File.separator + aid + File.separator + eid
+				+ File.separator + bid;
+!!!526594.java!!!	getFileInDatabase(inout aid : AID, inout eid : EID, inout bid : BID, in filename : String) : String
+		return getDirectoryInDatabase(aid, eid, bid) + File.separator
+				+ filename;
+!!!526722.java!!!	getRScriptsDirectory(inout aid : AID) : String
+		return getDirectoryInDatabase(aid) + File.separator
+				+ RSCRIPTS_DIRECTORY;
+!!!526850.java!!!	getRScriptsDirectory(inout aid : AID, inout eid : EID) : String
+		return getDirectoryInDatabase(aid, eid) + File.separator
+				+ RSCRIPTS_DIRECTORY;
+!!!526978.java!!!	getInvalidateScriptsDirectory(inout aid : AID) : String
+		return getDirectoryInDatabase(aid) + File.separator
+			+ INVALIDATE_RSCRIPTS_DIRECTORY;		
+!!!527106.java!!!	getInvalidateScriptsDirectory(inout aid : AID, inout eid : EID) : String
+		return getDirectoryInDatabase(aid, eid) + File.separator
+			+ INVALIDATE_RSCRIPTS_DIRECTORY;		
+!!!527234.java!!!	getInvalidateScriptsDirectory(inout aid : AID, inout eid : EID, inout bid : BID) : String
+		return getDirectoryInDatabase(aid, eid, bid) + File.separator
+			+ INVALIDATE_RSCRIPTS_DIRECTORY;		
+!!!527362.java!!!	getLoadDirectory(inout aid : AID, inout eid : EID, inout bid : BID) : String
+		
+		return getDirectoryInDatabase(aid, eid, bid) + File.separator
+			+ LOAD_STORAGE_DIRECTORY;
+!!!527490.java!!!	getAnalysisReferenceString(inout aid : AID) : String
+		return "Analysis " + aid;
+!!!527618.java!!!	getExperimentReferenceString(inout aid : AID, inout eid : EID) : String
+		return "Experiment " + eid + " (analysis " + aid + ")";
+!!!527746.java!!!	getBinaryReferenceString(inout aid : AID, inout eid : EID, inout bid : BID) : String
+		return "Binary " + bid + " (analysis " + aid + ", experiment " + eid
+				+ ")";
+!!!527874.java!!!	getRunReferenceString(inout aid : AID, inout eid : EID, inout bid : BID, inout rid : RID) : String
+		return "run " + rid + " (analysis " + aid + ", experiment " + eid
+				+ ", binary " + bid + ")";
+!!!528002.java!!!	getActiveConnections() : int
+		return activeConnections;
+!!!528130.java!!!	isBusy() : boolean
+		return (maxConnections > 0)
+				&& (getActiveConnections() >= maxConnections);
+!!!528258.java!!!	ensureMetadataNotNull(in metadata : String, in itemName : String, in referenceString : String) : boolean
+		if (metadata == null) {
+			Logger.logWarning(
+					"Error reading metadata item '" + itemName + "' - null ("
+							+ referenceString + ").");
+			return false;
+		} else {
+			return true;
+		}
+!!!529794.java!!!	uploadFile(in filename : String, in host : String, in port : int, inout blocking : boolean, inout rScript : boolean, inout callbackInterface : FileUploadCallbackInterface, inout data : Object) : UploadHandle
+
+		// every upload goes through this method
+
+		if (isBusy() && !blocking) {
+			throw new ResultsRepositoryBusyException(
+					TOO_MANY_CONNECTIONS_MESSAGE);
+		}
+
+		UploadHandle handle = UploadHandle.createUploadHandle();
+
+		uploadCallbacks.put(handle, callbackInterface);
+
+		uploadCallbackData.put(handle, data);
+
+		FileUploader uploader = new FileUploader(handle, filename, host, port,
+				rScript);
+		uploader.start();
+		return handle;
+!!!529922.java!!!	downloadFile(in filename : String, in host : String, in port : int, inout blocking : boolean) : DownloadHandle
+
+		// every download goes through this method
+
+		if (isBusy() && !blocking) {
+			throw new ResultsRepositoryBusyException(
+					TOO_MANY_CONNECTIONS_MESSAGE);
+		}
+
+		DownloadHandle handle = DownloadHandle.createDownloadHandle();
+		FileDownloader downloader = new FileDownloader(handle, filename, host,
+				port);
+		downloader.start();
+		return handle;
+!!!530050.java!!!	getFileUploadStatus(inout handle : UploadHandle) : UploadStatus
+
+		UploadStatus value = uploadStatuses.get(handle);
+
+		if (value != null) {
+			return value;
+		} else {
+			throw new IllegalArgumentException("Invalid file upload handle.");
+		}
+!!!530178.java!!!	getFileDownloadStatus(inout handle : DownloadHandle) : DownloadStatus
+
+		DownloadStatus value = downloadStatuses.get(handle);
+
+		if (value != null) {
+			return value;
+		} else {
+			throw new IllegalArgumentException("Invalid file download handle.");
+		}
+!!!530306.java!!!	endFileUpload(inout handle : UploadHandle) : void
+
+		Object callback;
+		Object callbackData;
+
+		callback = uploadCallbacks.get(handle);
+		callbackData = uploadCallbackData.get(handle);
+
+		if (callback != null) {
+			
+			RScriptsRunner rScriptsRunner = RManager.getRScriptsRunner();
+			
+			rScriptsRunner.enqueueCallbackExecution(
+					((FileUploadCallbackInterface) callback).getAid(),
+					((FileUploadCallbackInterface) callback).getEid(),
+					((FileUploadCallbackInterface) callback).getBid(),
+					((FileUploadCallbackInterface) callback).getRid(),
+					(FileUploadCallbackInterface) callback,
+					callbackData);
+					
+		} else {
+			Logger.logInfo(
+			"Upload thread: callback function is not mapped for upload.");
+		}
+
+		uploadStatuses.remove(handle);
+		uploadErrorMessages.remove(handle);
+		uploadCallbacks.remove(handle);
+		uploadCallbackData.remove(handle);
+!!!530434.java!!!	endFileDownload(inout handle : DownloadHandle) : void
+		downloadStatuses.remove(handle);
+!!!530562.java!!!	eraseDirectoryRecursively(inout dir : File) : boolean
+		if (dir == null) {
+			return false;
+		}
+		if (dir.isDirectory()) {
+			String[] children = dir.list();
+			for (int i = 0; i < children.length; i++) {
+				boolean success = eraseDirectoryRecursively(new File(dir,
+						children[i]));
+				if (!success) {
+					return false;
+				}
+			}
+		}
+
+		return dir.delete();
+!!!530690.java!!!	getRejectedUploadErrorMessages(inout handle : UploadHandle) : String
+		UploadStatus uploadStatus = uploadStatuses.get(handle);
+		if (uploadStatus == null) {
+			throw new IllegalArgumentException("Invalid handle.");
+		}
+		if (uploadStatus != UploadStatus.REJECTED) {
+			throw new IllegalStateException("R Package not rejected.");
+		}
+		return uploadErrorMessages.get(handle);

@@ -1,0 +1,144 @@
+class PackageUploadThread
+!!!619266.java!!!	getHandle() : UploadHandle
+			return handle;
+!!!619394.java!!!	getIp() : InetAddress
+			return ip;
+!!!619522.java!!!	getPort() : int
+			return port;
+!!!619650.java!!!	PackageUploadThread(inout handle : UploadHandle, inout ip : InetAddress, in port : int)
+			super();
+			this.handle = handle;
+			this.ip = ip;
+			this.port = port;
+			setStatus(UploadStatus.INITIALIZING);
+			setErrorMessages(new String[] {});
+!!!619778.java!!!	setStatus(inout status : UploadStatus) : void
+			uploadStatuses.put(handle, status);
+!!!619906.java!!!	setErrorMessages(in errorMessages : String) : void
+			uploadErrorMessages.put(handle, errorMessages);
+!!!620034.java!!!	uploadPackage(inout file : File) : void
+			byte[] buffer = new byte[UPLOAD_BUFFER_SIZE];
+			int bytesRead;
+			Socket socket = new Socket(ip, port);
+			try {
+				InputStream inputStream = new BufferedInputStream(
+					socket.getInputStream(),
+					UPLOAD_BUFFER_SIZE
+				);
+				OutputStream outputStream = new BufferedOutputStream(
+					new FileOutputStream(file.getPath()),
+					UPLOAD_BUFFER_SIZE
+				);
+				try {
+					while ((bytesRead = inputStream.read(buffer)) != -1) {
+						outputStream.write(buffer, 0, bytesRead);
+					}
+				} finally {
+					inputStream.close();
+					outputStream.close();
+				}
+			} finally {
+				socket.close();
+			}                 
+!!!620162.java!!!	deleteFileIfExists(inout file : File) : void
+			if (file.exists()) {
+				file.delete();
+			}
+!!!620290.java!!!	createTempFile() : File
+			/*
+			 * There is a bug in the Sun's JVM which causes the File.createTempFile
+			 * call throw IOException with message "Access is denied" occasionally on
+			 * Windows. We work around the bug by simply retrying the call multiple
+			 * times. After a while we give up, to avoid hanging-up. 
+			 * 
+			 * See http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6325169 for more
+			 * information about the bug.
+			 */
+			File result = null;
+			int tryCount = 0;
+			boolean failed;
+			IOException thrownException = null;
+			
+			do {
+				failed = false;
+				try {
+					result = File.createTempFile(TEMPFILE_PREFIX, TEMPFILE_SUFFIX, new File(tempDir));
+				} catch (IOException e) {
+					failed = true;
+					thrownException = e;
+				}
+				tryCount++;
+			} while (failed && tryCount < MAX_CREATE_TEMP_FILE_TRY_COUNT);
+			
+			if (result != null) {
+				return result;
+			} else {
+				throw thrownException;
+			}
+!!!620418.java!!!	run() : void
+			setStatus(UploadStatus.UPLOADING);
+			try {
+				/* Create the temp file. */
+				File tempFile = createTempFile();
+				try {
+					/* Download the file form specified host and port to the temp file. */
+					uploadPackage(tempFile);
+					
+					/* OK, now let's dig in and see if it is a valid package. */
+					String[] errorMessages = validatePackage(tempFile.getPath());
+					if (errorMessages.length > 0) {
+						throw new PackageUploadException("Tried to upload invalid package "
+								+ "(host = " + ip.getCanonicalHostName() + " (" + ip
+								+ "), port = " + port + ".", errorMessages);
+					}
+					
+					/* Extract the metadata from the file and create an unique file name.
+					 * Corresponding method needs to be synchronized as two uploads can try
+					 * to create unique name in the same time.
+					 */
+					PackageMetadata metadata = readPackageMetadata(tempFile.getPath());
+					String packageFilename = createPackageFilename(metadata);
+					
+					/* Try to move the file. If the move fails, bail everything and delete
+					 * the temp file. The file name won't be reused and is lost forever.
+					 */
+					File packageFile = new File(dataDir + File.separator + packageFilename);
+					if (!tempFile.renameTo(packageFile)) {
+						throw new IOException("Cant't rename file \""
+								+ tempFile.getPath() + "\" to \""
+								+ packageFile.getPath() + "\".");
+					}
+					
+					/* If copying succeded, re-read the metadata (this is hack only to change
+					 * the filename) and try adding the package metadata and serialize it. 
+					 */
+					metadata = readPackageMetadata(packageFile.getPath());
+					addMetadata(metadata);
+					logInfo("Successfully uploaded package \"" + packageFile.getPath() + "\".");
+					setStatus(UploadStatus.ACCEPTED);
+
+				/* After all operations finish (either succesfully or due to some error),
+				 * delete the temporary file if it still exists. 
+				 */
+				} finally {
+					deleteFileIfExists(tempFile);
+				}
+			} catch (IOException e) {
+				logError(e.getMessage());
+				setStatus(UploadStatus.ERROR);
+			} catch (PackageUploadException e) {
+				String[] errorMessages = e.getErrorMessages();
+				logError(e.getMessage() + " " + Integer.toString(errorMessages.length)
+					+ " messages reported:");
+				for (String errorMessage: errorMessages) {
+					logError("  " + errorMessage);
+				}
+				setErrorMessages(errorMessages);
+				setStatus(UploadStatus.REJECTED);
+			} catch (ParserConfigurationException e) {
+				logError(e.getMessage());
+				setStatus(UploadStatus.ERROR);
+			} catch (FactoryConfigurationError e) {
+				logError(e.getMessage());
+				setStatus(UploadStatus.ERROR);
+			}

@@ -1,0 +1,33 @@
+class RestrictionsTest
+!!!394242.java!!!	main(in args : String) : void
+
+		String managerURL = MANAGER_URL_DEFAULT;
+		
+		/* set path to the manager from the commandline.
+		 */
+		if (args.length > 0) {
+			managerURL = args[0];
+		}
+		
+		/* Connect to the Host Manager
+		 */
+		HostManagerInterface manager = null;
+		
+		try {
+			manager = (HostManagerInterface) Naming.lookup("rmi://" + managerURL + INTERFACE_URL);
+		} catch (Exception e) {
+			System.err.println("Unable to connect to the Host Manager.");
+			System.err.println("Error message: " + e.getMessage());
+			return;
+		}
+
+		RestrictionInterface []restr = 
+			new RSLRestriction[] {new RSLRestriction("name!=\"www.google.com\"")};
+		
+		HostInfoInterface []result = manager.queryHosts(restr);
+
+		System.out.println("Number of hosts matched: " + result.length);
+		System.out.println("Hosts:");
+		for (HostInfoInterface h: result) {
+			System.out.println("  " + h.getHostName());
+		}

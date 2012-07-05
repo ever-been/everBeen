@@ -1,0 +1,16 @@
+class Input
+!!!221314.java!!!	getValue() : String
+		return value;
+!!!221442.java!!!	setValue(in value : String) : void
+		this.value = value;
+!!!221570.java!!!	getSize() : Size
+		return size;
+!!!221698.java!!!	getValidator() : InputValidator
+		return validator;
+!!!221826.java!!!	Input(in label : String, in value : String, inout size : Size, inout validator : InputValidator)
+		super(label);
+		this.value = value;
+		this.size = size;
+		this.validator = validator;
+!!!221954.java!!!	toString() : String
+		return "Input(name=" + getLabel() + ", value='" + value + "')";

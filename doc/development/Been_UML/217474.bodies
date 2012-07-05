@@ -1,0 +1,65 @@
+class OrConditionTest
+!!!830210.java!!!	setUp() : void
+		subConditionsAB = new Condition[] {
+				new EqualsCondition<LongWithUnit>("a", new LongWithUnit("5")),
+				new EqualsCondition<LongWithUnit>("b", new LongWithUnit("6"))
+		};
+		subConditionsABCD = new Condition[] {
+				new EqualsCondition<LongWithUnit>("a", new LongWithUnit("5")),
+				new EqualsCondition<LongWithUnit>("b", new LongWithUnit("6")),
+				new EqualsCondition<LongWithUnit>("c", new LongWithUnit("7")),
+				new EqualsCondition<LongWithUnit>("d", new LongWithUnit("8"))
+		};
+		subConditionsXAYB = new Condition[] {
+				new QualifiedCondition(
+					"x",
+					new EqualsCondition<LongWithUnit>("a", new LongWithUnit("5"))
+				),
+				new QualifiedCondition(
+					"y",
+					new EqualsCondition<LongWithUnit>("b", new LongWithUnit("6"))
+				)
+		};
+		subConditionsCD = new Condition[] {
+				new EqualsCondition<LongWithUnit>("c", new LongWithUnit("7")),
+				new EqualsCondition<LongWithUnit>("d", new LongWithUnit("8"))
+		};
+		subConditionsABxCD = new Condition[] {
+				new AndCondition(subConditionsAB),
+				new AndCondition(subConditionsCD),
+		};
+!!!830338.java!!!	testAndCondition1() : void
+		assertEquals(
+			new OrCondition(subConditionsAB),
+			ParserWrapper.parseString("a == 5 || b == 6")
+		);
+!!!830466.java!!!	testAndCondition2() : void
+		assertEquals(
+			new OrCondition(subConditionsABCD),
+			ParserWrapper.parseString("a == 5 || b == 6 || c == 7 || d == 8")
+		);
+!!!830594.java!!!	testAndCondition3() : void
+		assertEquals(
+			new OrCondition(subConditionsAB),
+			ParserWrapper.parseString("(a == 5) || (b == 6)")
+		);
+!!!830722.java!!!	testAndCondition4() : void
+		assertEquals(
+			new OrCondition(subConditionsXAYB),
+			ParserWrapper.parseString("x { a == 5 } || y { b == 6 }")
+		);
+!!!830850.java!!!	testAndCondition5() : void
+		assertEquals(
+			new OrCondition(subConditionsABxCD),
+			ParserWrapper.parseString("a == 5 && b == 6 || c == 7 && d == 8")
+		);
+!!!830978.java!!!	testToString1() : void
+		assertEquals(
+			"(a == 5) || (b == 6)",
+			ParserWrapper.parseString("a == 5 || b == 6").toString()
+		);
+!!!831106.java!!!	testToString2() : void
+		assertEquals(
+			"(a == 5) || (b == 6) || (c == 7) || (d == 8)",
+			ParserWrapper.parseString("a == 5 || b == 6 || c == 7 || d == 8").toString()
+		);

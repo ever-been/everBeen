@@ -1,0 +1,9 @@
+class TaskManagerException
+!!!685186.java!!!	TaskManagerException()
+		super();
+!!!685314.java!!!	TaskManagerException(in message : String)
+		super(message);
+!!!685442.java!!!	TaskManagerException(in message : String, inout cause : Throwable)
+		super(message, cause);
+!!!685570.java!!!	TaskManagerException(inout cause : Throwable)
+		super(cause);

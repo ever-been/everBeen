@@ -1,0 +1,25 @@
+class GUnzip
+!!!258818.java!!!	GUnzip()
+		// dummy ant project
+		Project antProject = new Project();
+		antProject.init();
+		setProject(antProject);
+		// dummy ant task name
+		setTaskName("gunzip");
+		setTaskType("gunzip");
+		// dummy ant target
+		setOwningTarget(null);
+!!!258946.java!!!	unzip(in archive : String, in directory : String) : void
+		
+		GUnzip z = new GUnzip();
+		
+		File srcArchive = new File(archive);
+		File destDir = new File(directory);
+		
+		z.setSrc(srcArchive);
+		z.setDest(destDir);
+		try {
+			z.execute();
+		} catch (Exception e) {
+			throw new AntTaskException("Extract failed", e);
+		}

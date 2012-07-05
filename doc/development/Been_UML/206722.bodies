@@ -1,0 +1,665 @@
+class Data
+!!!707458.java!!!	Data(inout rescueRootDir : File)
+		this.data = new DataStructures();
+//		this.rescue = new Rescue(rescueRootDir);
+!!!707586.java!!!	newTask(inout taskEntry : TaskEntry, inout taskData : TaskData) : void
+		/* Check input parameters. */
+		if (taskEntry == null) {
+			throw new NullPointerException("taskEntry is null");
+		}
+		if (taskData == null) {
+			throw new NullPointerException("taskData is null");
+		}
+		
+		TaskEntry newTaskEntry;
+		
+		/* Clone TaskEntry. */
+		try {
+			newTaskEntry = taskEntry.clone();
+		} catch (CloneNotSupportedException e) {
+			throw new DataRuntimeException("Could not clone taskEntry", e);
+		}
+		
+		/* Set values of new TaskEntry. */
+		newTaskEntry.setState(TaskState.SUBMITTED);
+		newTaskEntry.setTimeSubmitted(System.currentTimeMillis());
+		
+		/* Add new TaskEntry to Data. */
+		this.data.addTask(newTaskEntry, taskData);
+		
+		/* Add task to rescue. */
+//		this.rescue.addTask(newTaskEntry, taskData);
+!!!707714.java!!!	newContext(inout contextEntry : ContextEntry) : void
+		/* Check input parameters. */
+		if (contextEntry == null) {
+			throw new NullPointerException("contextEntry is null");
+		}
+		
+		ContextEntry newContextEntry;
+		
+		/* Clone ContextEntry. */
+		try {
+			newContextEntry = contextEntry.clone();
+		} catch (CloneNotSupportedException e) {
+			throw new DataRuntimeException("Could not clone contextEntry", e);
+		}
+		
+		/* Set values of new ContextEntry. */
+		// nothing to do
+		
+		/* Add new ContextEntry to Data. */
+		this.data.addContext(newContextEntry);
+		
+		/* Add context to rescue. */
+//		this.rescue.addContext(newContextEntry);
+!!!707842.java!!!	newCheckPoint(inout checkPointEntry : CheckPointEntry) : void
+		/* Check input parameters. */
+		if (checkPointEntry == null) {
+			throw new NullPointerException("checkPointEntry is null");
+		}
+		
+		CheckPointEntry newCheckPointEntry;
+		
+		/* Clone CheckPointEntry. */
+		try {
+			newCheckPointEntry = checkPointEntry.clone();
+		} catch (CloneNotSupportedException e) {
+			throw new DataRuntimeException("Could not clone checkPointEntry",
+					e);
+		}
+		
+		/* Set values of new CheckPointEntry. */
+		newCheckPointEntry.setTimeReached(System.currentTimeMillis());
+		
+		/* Add new CheckPointEntry to Data. */
+		this.data.addCheckPoint(newCheckPointEntry);
+		
+		/* Add checkPoint to rescue. */
+//		this.rescue.addCheckPoint(newCheckPointEntry);
+!!!707970.java!!!	newCheckPointOver(inout checkPointEntry : CheckPointEntry) : void
+		/* Check input parameters. */
+		if (checkPointEntry == null) {
+			throw new NullPointerException("checkPointEntry is null");
+		}
+		
+		/* Find checkPoints with the same name, taskId and contextId. */
+		CheckPointEntry[] foundedCheckPoints = this.data.getCheckPoints(
+				checkPointEntry.getName(),
+				checkPointEntry.getTaskId(), checkPointEntry.getContextId(),
+				null);
+		/* Remove all founded. */
+		for (CheckPointEntry checkPoint : foundedCheckPoints) {
+			this.data.removeCheckPoint(checkPoint);
+			/* Remove checkPoint from rescue. */
+//			this.rescue.remCheckPoint(checkPoint.getName(),
+//					checkPoint.getTaskId(), checkPoint.getContextId());
+		}
+		
+		/* Add new checkPoint. */
+		this.newCheckPoint(checkPointEntry);
+!!!708098.java!!!	delTask(in taskId : String, in contextId : String) : void
+		/* Check input parameters. */
+		if (taskId == null) {
+			throw new NullPointerException("taskId is null");
+		}
+		if (contextId == null) {
+			throw new NullPointerException("contextId is null");
+		}
+		
+		TaskEntry taskEntry;
+		
+		/* Get TaskEntry. */
+		taskEntry = this.data.getTask(taskId, contextId);
+		if (taskEntry == null) {
+			throw new IllegalArgumentException("Task not found (taskId \""
+					+ taskId + "\", contextId \"" + contextId + "\")");
+		}
+		
+		/* Remove Task from Data. */
+		this.data.removeTask(taskEntry);
+		
+		/* Remove Task from rescue. */
+//		this.rescue.remTask(taskId, contextId);
+!!!708226.java!!!	delContext(in contextId : String) : void
+		/* Check input parameters. */
+		if (contextId == null) {
+			throw new NullPointerException("contextId is null");
+		}
+		
+		ContextEntry contextEntry;
+		
+		/* Get ContextEntry. */
+		contextEntry = this.data.getContext(contextId);
+		if (contextEntry == null) {
+			throw new IllegalArgumentException("Context not found (contextId "
+					+ "\"" + contextId + "\")");
+		}
+		
+		/* Remove Context from Data. */
+		this.data.removeContext(contextEntry);
+		
+		/* Remove Context from rescue. */
+//		this.rescue.remContext(contextId);
+!!!708354.java!!!	delContextByForce(in contextId : String) : void
+		/* Check input parameters. */
+		if (contextId == null) {
+			throw new NullPointerException("contextId is null");
+		}
+		
+		ContextEntry contextEntry;
+		
+		/* Get ContextEntry. */
+		contextEntry = this.data.getContext(contextId);
+		if (contextEntry == null) {
+			throw new IllegalArgumentException("Context not found (contextId "
+					+ "\"" + contextId + "\")");
+		}
+		
+		/* Remove Context from Data. */
+		this.data.removeContextByForce(contextEntry);
+		
+		/* Remove Context from rescue. */
+//		this.rescue.remContext(contextId);
+!!!708482.java!!!	setTaskInterface(in taskId : String, in contextId : String, inout taskInterface : TaskInterface) : void
+		/* Check input parameters. */
+		if (taskId == null) {
+			throw new NullPointerException("taskId is null");
+		}
+		if (contextId == null) {
+			throw new NullPointerException("contextId is null");
+		}
+		if (taskInterface == null) {
+			throw new NullPointerException("taskInterface is null");
+		}
+		
+		/* Get and check TaskData. */
+		TaskData taskData = this.data.getTaskData(taskId, contextId);
+		if (taskData == null) {
+			throw new IllegalArgumentException("Task not found (taskId \""
+					+ taskId + "\", contextId \"" + contextId + "\")");
+		}
+		
+		/* Check current TaskInterface. */
+		if (taskData.getTaskInterface() != null) {
+			throw new IllegalStateException("TaskInterface is already set");
+		}
+		
+		/* Set taskInterface. */
+		taskData.setTaskInterface(taskInterface);
+!!!708610.java!!!	getTaskHost(in taskId : String, in contextId : String) : String
+		/* Check input parameters. */
+		if (taskId == null) {
+			throw new NullPointerException("taskId is null");
+		}
+		if (contextId == null) {
+			throw new NullPointerException("contextId is null");
+		}
+		
+		/* Find task. */
+		TaskEntry task = this.data.getTask(taskId, contextId);
+		if (task == null) {
+			throw new IllegalArgumentException("Task not found (taskId \""
+					+ taskId + "\", contextId \"" + contextId + "\")");
+		}
+
+		return task.getHostName();
+!!!708738.java!!!	setTaskHostRuntime(in taskId : String, in contextId : String, in hostName : String) : void
+		/* Check input parameters. */
+		if (taskId == null) {
+			throw new NullPointerException("taskId is null");
+		}
+		if (contextId == null) {
+			throw new NullPointerException("contextId is null");
+		}
+		if (hostName == null) {
+			throw new NullPointerException("hostName is null");
+		}
+		
+		/* Find task. */
+		TaskEntry task = this.data.getTask(taskId, contextId);
+		if (task == null) {
+			throw new IllegalArgumentException("Task not found (taskId \""
+					+ taskId + "\", contextId \"" + contextId + "\")");
+		}
+		
+		HostRuntimeEntry hostRuntime = this.data.getHostRuntime(hostName);
+		if (hostRuntime == null) {
+			throw new IllegalArgumentException("HostRuntime not found "
+					+ "(hostName \"" + hostName + "\")");
+		}
+		
+		/* Link Task with HostRuntime. */
+		this.data.linkTaskWithHostRuntime(task, hostRuntime);
+		
+		/* Get TaskData. */
+//		TaskData taskData = this.data.getTaskData(taskId, contextId);
+		
+		/* Change task in rescue. */
+//		this.rescue.changeTask(task, taskData);
+!!!708866.java!!!	setTaskDirectories(in taskId : String, in contextId : String, in taskDirectory : String, in workingDirectory : String, in temporaryDirectory : String) : void
+		/* Check input parameters. */
+		if (taskId == null) {
+			throw new NullPointerException("taskId is null");
+		}
+		if (contextId == null) {
+			throw new NullPointerException("contextId is null");
+		}
+		if (taskDirectory == null) {
+			throw new NullPointerException("taskDirectory is null");
+		}
+		if (workingDirectory == null) {
+			throw new NullPointerException("workingDirectory is null");
+		}
+		if (temporaryDirectory == null) {
+			throw new NullPointerException("temporaryDirectory is null");
+		}
+		
+		/* Find task. */
+		TaskEntry task = this.data.getTask(taskId, contextId);
+		if (task == null) {
+			throw new IllegalArgumentException("Task not found (taskId \""
+					+ taskId + "\", contextId \"" + contextId + "\")");
+		}
+		
+		/* Check if paths are not already set. */
+		if (!(task.getDirectoryPathTask().equals("")
+				&& task.getDirectoryPathWorking().equals("")
+				&& task.getDirectoryPathTemporary().equals(""))) {
+			throw new IllegalArgumentException("Task (taskId \"" + taskId 
+					+ "\", contextId \"" + contextId + "\") has its directory "
+					+ "paths already set");
+		}
+		
+		/* Set directory paths. */
+		task.setDirectoryPathTask(taskDirectory);
+		task.setDirectoryPathWorking(workingDirectory);
+		task.setDirectoryPathTemporary(temporaryDirectory);
+		
+		/* Get TaskData. */
+//		TaskData taskData = this.data.getTaskData(taskId, contextId);
+		
+		/* Change task in rescue. */
+//		this.rescue.changeTask(task, taskData);
+!!!708994.java!!!	changeTaskState(in taskId : String, in contextId : String, inout newState : TaskState) : void
+		/* Check input parameters. */
+		if (taskId == null) {
+			throw new NullPointerException("taskId is null");
+		}
+		if (contextId == null) {
+			throw new NullPointerException("contextId is null");
+		}
+		if (newState == null) {
+			throw new NullPointerException("newState is null");
+		}
+		
+		/* Find task. */
+		TaskEntry task = this.data.getTask(taskId, contextId);
+		if (task == null) {
+			throw new IllegalArgumentException("Task not found (taskId \""
+					+ taskId + "\", contextId \"" + contextId + "\")");
+		}
+		
+		/* Get old (current) state. */
+		TaskState oldState = task.getState();
+		
+		switch (newState) {
+			case SUBMITTED:
+				throw new IllegalArgumentException("State SUBMITTED should "
+						+ "not be set explicitly (taskId \"" + taskId + "\", "
+						+ "contextId \"" + contextId + "\")");
+				// break;  // Unreachable code
+			case SCHEDULED:
+				if (oldState != TaskState.SUBMITTED) {
+					throw new IllegalArgumentException("State SCHEDULED can "
+							+ "be set only if current state is SUBMITTED, but "
+							+ "current state is " + oldState + " (taskId \""
+							+ taskId + "\", contextId \"" + contextId + "\")");
+				}
+				task.setState(TaskState.SCHEDULED);
+				task.setTimeScheduled(System.currentTimeMillis());
+				break;
+			case RUNNING:
+				if ((oldState != TaskState.SCHEDULED)
+						&& (oldState != TaskState.SLEEPING)) {
+					throw new IllegalArgumentException("State RUNNING can be "
+							+ "set only if current state is SCHEDULED or "
+							+ "SLEEPING, but current state is " + oldState
+							+ " (taskId \"" + taskId + "\", contextId " + "\""
+							+ contextId + "\")");
+				}
+				task.setState(TaskState.RUNNING);
+				if (oldState == TaskState.SCHEDULED) {
+					task.setTimeStarted(System.currentTimeMillis());
+				}
+				break;
+			case SLEEPING:
+				if (oldState != TaskState.RUNNING) {
+					throw new IllegalArgumentException("State SLEEPING can be "
+							+ "set only if current state is RUNNING, but "
+							+ "current state is " + oldState + " (taskId "
+							+ "\"" + taskId + "\", contextId \"" + contextId
+							+ "\")");
+				}
+				task.setState(TaskState.SLEEPING);
+				break;
+			case FINISHED:
+				if ((oldState != TaskState.RUNNING)
+						&& (oldState != TaskState.FINISHED)) {
+					throw new IllegalArgumentException("State FINISHED can be "
+							+ "set only if current state is RUNNING, but "
+							+ "current state is " + oldState + "  (taskId "
+							+ "\"" + taskId + "\", contextId \"" + contextId
+							+ "\")");
+				}
+				task.setState(TaskState.FINISHED);
+				task.setTimeFinished(System.currentTimeMillis());
+				break;
+			case ABORTED:
+				if (oldState != TaskState.FINISHED) {
+					task.setState(TaskState.ABORTED);
+					task.setTimeFinished(System.currentTimeMillis());
+				}
+				break;
+			default:
+				throw new DataRuntimeException("Required unknown state for "
+						+ "task (taskId \"" + taskId + "\", contextId \""
+						+ contextId + "\")");
+				// break;  // Unreachable code
+		}
+		
+		/* Get TaskData. */
+//		TaskData taskData = this.data.getTaskData(taskId, contextId);
+		
+		/* Change task in rescue. */
+//		this.rescue.changeTask(task, taskData);
+!!!709122.java!!!	changeHostRuntimeReservation(in hostName : String, in newReservation : String) : void
+		/* Check input parameters. */
+		if (hostName == null) {
+			throw new NullPointerException("hostName is null");
+		}
+		
+		/* Find hostRuntime. */
+		HostRuntimeEntry hostRuntime = this.data.getHostRuntime(hostName);
+		if (hostRuntime == null) {
+			throw new IllegalArgumentException("Host Runtime not found "
+					+ "(hostName \"" + hostName + "\")");
+		}
+		
+		/* Get old (current) reservation. */
+		String oldReservation = hostRuntime.getReservation();
+		
+		if (newReservation == null) {  // clean reservation
+			hostRuntime.setReservation(null);
+		} else {  // set up new reservation
+			if (oldReservation != null) {
+				if (!oldReservation.equals(newReservation)) {
+					// the same context can be reserved several times (e.g. more roles
+					// on the same host)
+					throw new IllegalArgumentException("HostRuntime (hostName \""
+							+ hostName + "\") is already reserved for \""
+							+ oldReservation + "\" so reservation for \""
+							+ newReservation + "\" can not be set");
+				}
+			}
+			hostRuntime.setReservation(newReservation);
+		}
+		
+		/* Change hostRuntime in rescue. */
+//		this.rescue.changeHostRuntime(hostRuntime);
+!!!709250.java!!!	notifyTaskRestarted(in taskId : String, in contextId : String) : void
+		/* Check input parameters. */
+		if (taskId == null) {
+			throw new NullPointerException("taskId is null");
+		}
+		if (contextId == null) {
+			throw new NullPointerException("contextId is null");
+		}
+		
+		/* Find task. */
+		TaskEntry task = this.data.getTask(taskId, contextId);
+		if (task == null) {
+			throw new IllegalArgumentException("Task not found (taskId \""
+					+ taskId + "\", contextId \"" + contextId + "\")");
+		}
+		
+		/* Increase restart count. */
+		int currentRestartCount = task.getRestartCount();
+		task.setRestartCount(currentRestartCount + 1);
+!!!709378.java!!!	closeContext(in contextId : String) : void
+		/* Check input parameters. */
+		if (contextId == null) {
+			throw new NullPointerException("contextId is null");
+		}
+		
+		/* Find context. */
+		ContextEntry context = this.data.getContext(contextId);
+		if (context == null) {
+			throw new IllegalArgumentException("Context not found (contextId "
+					+ "\"" + contextId + "\")");
+		}
+		
+		/* Close context. */
+		context.close();
+		
+		/* Change context in rescue. */
+//		this.rescue.changeContext(context);
+!!!709506.java!!!	cloneTaskEntries(inout taskEntries : TaskEntry) : TaskEntry
+		TaskEntry[] taskEntriesClone = new TaskEntry[taskEntries.length];
+		
+		for (int i = 0; i < taskEntries.length; i++) {
+			try {
+				taskEntriesClone[i] = taskEntries[i].clone();
+			} catch (CloneNotSupportedException e) {
+				throw new DataRuntimeException("Could not clone taskEntry", e);
+			}
+		}
+		
+		return taskEntriesClone;
+!!!709634.java!!!	getTasks(in taskId : String, in contextId : String, in hostName : String) : TaskEntry
+		/* Get entries from Data. */
+		TaskEntry[] taskEntries
+			= this.data.getTasks(taskId, contextId, hostName);
+		
+		/* Return cloned entries. */
+		return this.cloneTaskEntries(taskEntries);
+!!!709762.java!!!	getTasks() : TaskEntry
+		return this.getTasks(null, null, null);
+!!!709890.java!!!	getTasksInContext(in contextId : String) : TaskEntry
+		/* Check input parameters. */
+		if (contextId == null) {
+			throw new NullPointerException("contextId is null");
+		}
+		
+		return this.getTasks(null, contextId, null);
+!!!710018.java!!!	getTasksOnHost(in hostName : String) : TaskEntry
+		/* Check input parameters. */
+		if (hostName == null) {
+			throw new NullPointerException("hostName is null");
+		}
+		
+		return this.getTasks(null, null, hostName);
+!!!710146.java!!!	getTasksByState(inout taskState : TaskState) : TaskEntry
+		/* Check input parameters. */
+		if (taskState == null) {
+			throw new NullPointerException("taskState is null");
+		}
+		
+		/* Get list of all tasks and select all from them with required state.
+		 */
+		TaskEntry[] allTasks = this.getTasks(null, null, null);
+		LinkedList<TaskEntry> matchingTasks = new LinkedList<TaskEntry>();
+		for (int i = 0; i < allTasks.length; i++) {
+			if (allTasks[i].getState() == taskState) {
+				matchingTasks.add(allTasks[i]);
+			}
+		}
+		
+		return matchingTasks.toArray(new TaskEntry[matchingTasks.size()]);
+!!!710274.java!!!	getTaskById(in taskId : String, in contextId : String) : TaskEntry
+		/* Check input parameters. */
+		if (taskId == null) {
+			throw new NullPointerException("taskId is null");
+		}
+		if (contextId == null) {
+			throw new NullPointerException("contextId is null");
+		}
+		
+		/* Get and check result... */
+		TaskEntry[] taskEntries = this.getTasks(taskId, contextId, null);
+		if (taskEntries.length > 1) {
+			throw new DataRuntimeException("There is more then one task with "
+					+ "taskId \"" + taskId + "\" and contextId \"" + contextId
+					+ "\"");
+		}
+		if (taskEntries.length == 0) {
+			return null;
+		}
+		
+		/* Return the first entry. */
+		return taskEntries[0];
+!!!710402.java!!!	getTaskData(in taskId : String, in contextId : String) : TaskData
+		/* Check input parameters. */
+		if (taskId == null) {
+			throw new NullPointerException("taskId is null");
+		}
+		if (contextId == null) {
+			throw new NullPointerException("contextId is null");
+		}
+		
+		/* Get taskData... */
+		TaskData taskData = this.data.getTaskData(taskId, contextId);
+		
+		return taskData;
+!!!710530.java!!!	cloneContextEntries(inout contextEntries : ContextEntry) : ContextEntry
+		ContextEntry[] contextEntriesClone
+			= new ContextEntry[contextEntries.length];
+		
+		for (int i = 0; i < contextEntries.length; i++) {
+			try {
+				contextEntriesClone[i] = contextEntries[i].clone();
+			} catch (CloneNotSupportedException e) {
+				throw new DataRuntimeException("Could not clone contextEntry", e);
+			}
+		}
+		
+		return contextEntriesClone;
+!!!710658.java!!!	getContexts(in contextId : String) : ContextEntry
+		/* Get entries from Data. */
+		ContextEntry[] contextEntries = this.data.getContexts(contextId);
+		
+		/* Return cloned entries. */
+		return this.cloneContextEntries(contextEntries);
+!!!710786.java!!!	getContexts() : ContextEntry
+		return this.getContexts(null);
+!!!710914.java!!!	getContextById(in contextId : String) : ContextEntry
+		/* Check input parameters. */
+		if (contextId == null) {
+			throw new NullPointerException("contextId is null");
+		}
+		
+		/* Get and check result... */
+		ContextEntry[] contextEntries = this.getContexts(contextId);
+		if (contextEntries.length > 1) {
+			throw new DataRuntimeException("There is more then one context "
+					+ "with contextId \"" + contextId + "\"");
+		}
+		if (contextEntries.length == 0) {
+			return null;
+		}
+		
+		/* Return the first entry. */
+		return contextEntries[0];
+!!!711042.java!!!	cloneCheckPointEntries(inout checkPointEntries : CheckPointEntry) : CheckPointEntry
+		CheckPointEntry[] checkPointEntriesClone
+			= new CheckPointEntry[checkPointEntries.length];
+		
+		for (int i = 0; i < checkPointEntries.length; i++) {
+			try {
+				checkPointEntriesClone[i] = checkPointEntries[i].clone();
+			} catch (CloneNotSupportedException e) {
+				throw new DataRuntimeException("Could not clone "
+						+ "checkPointEntry", e);
+			}
+		}
+		
+		return checkPointEntriesClone;
+!!!711170.java!!!	getCheckPoints(in type : String, in taskId : String, in contextId : String, inout magicObject : Serializable) : CheckPointEntry
+		/* Get entries from Data. */
+		CheckPointEntry[] checkPointEntries
+			= this.data.getCheckPoints(type, taskId, contextId, magicObject);
+		
+		/* Return cloned entries. */
+		return this.cloneCheckPointEntries(checkPointEntries);
+!!!711298.java!!!	getCheckPoint(in type : String, in value : String, in taskId : String, in contextId : String) : CheckPointEntry
+		/* Get all matching checkPoints. */
+		CheckPointEntry[] checkPoints
+			= this.getCheckPoints(type, value, taskId, contextId);
+		
+		/* Return appropriate thing. */
+		int length = checkPoints.length;
+		return ((length > 0) ? checkPoints[length - 1] : null);
+!!!711426.java!!!	cloneHostRuntimeEntries(inout hostRuntimeEntries : HostRuntimeEntry) : HostRuntimeEntry
+		HostRuntimeEntry[] hostRuntimeEntriesClone
+			= new HostRuntimeEntry[hostRuntimeEntries.length];
+		
+		for (int i = 0; i < hostRuntimeEntries.length; i++) {
+			try {
+				hostRuntimeEntriesClone[i] = hostRuntimeEntries[i].clone();
+			} catch (CloneNotSupportedException e) {
+				throw new DataRuntimeException("Could not clone "
+						+ "hostRuntimeEntry", e);
+			}
+		}
+		
+		return hostRuntimeEntriesClone;
+!!!711554.java!!!	getHostRuntimes(in hostName : String) : HostRuntimeEntry
+		/* Get entries from Data. */
+		HostRuntimeEntry[] hostRuntimeEntries
+			= this.data.getHostRuntimes(hostName);
+		
+		/* Return cloned entries. */
+		return this.cloneHostRuntimeEntries(hostRuntimeEntries);
+!!!711682.java!!!	getHostRuntimes() : HostRuntimeEntry
+		return this.getHostRuntimes(null);
+!!!711810.java!!!	getHostRuntimeByName(in hostName : String) : HostRuntimeEntry
+		/* Check input parameters. */
+		if (hostName == null) {
+			throw new NullPointerException("hostName is null");
+		}
+		
+		/* Get and check result... */
+		HostRuntimeEntry[] hostRuntimeEntries = this.getHostRuntimes(hostName);
+		if (hostRuntimeEntries.length > 1) {
+			throw new DataRuntimeException("There is more then one hostRuntime "
+					+ "with hostName \"" + hostName + "\"");
+		}
+		if (hostRuntimeEntries.length == 0) {
+			return null;
+		}
+		
+		/* Return the first entry. */
+		return hostRuntimeEntries[0];
+!!!711938.java!!!	addHostRuntime(inout hostRuntime : HostRuntimeEntry) : void
+		if (this.data.getHostRuntime(hostRuntime.getHostName()) == null) {
+			this.data.addHostRuntime(hostRuntime);
+		}
+		
+		/* Add hostRuntime to rescue. */
+//		this.rescue.addHostRuntime(hostRuntime);
+!!!712066.java!!!	removeHostRuntime(inout hostRuntime : HostRuntimeEntry) : void
+		/* Remove all tasks from removed hostRuntime but leave them in
+		 * TaskManager (if task is not FINISHED then set its state to
+		 * ABORTED) */
+		TaskEntry[] tasks
+			= this.data.getTasks(null, null, hostRuntime.getHostName());
+		for (TaskEntry task : tasks) {
+//			if (task.getState() != TaskState.FINISHED) {
+//				task.setState(TaskState.ABORTED);
+//			}
+			this.data.unlinkTaskWithHostRuntime(task);
+		}
+		
+		this.data.removeHostRuntime(hostRuntime);
+		
+		/* Remove hostRuntime from rescue. */
+//		this.rescue.remHostRuntime(hostRuntime.getHostName());

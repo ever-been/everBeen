@@ -1,0 +1,87 @@
+class FileEntry
+!!!419458.java!!!	FileEntry(in timeStamp : long, in position : long, inout type : EventType)
+			
+			MiscUtils.verifyIntParameterGEZero(position, "position");
+			
+			this.timeStamp = timeStamp;
+			this.position = position;
+			this.type = (byte) type.ordinal();
+!!!419586.java!!!	getPosition() : long
+			
+			return position;
+!!!419714.java!!!	getTimeStamp() : long
+			
+			return timeStamp;
+!!!419842.java!!!	getType() : EventType
+			
+			return LoadMonitorEvent.EventType.valueOf(type);
+!!!419970.java!!!	store(inout buffer : ByteBuffer) : ByteBuffer
+
+			try {
+				buffer.putLong(timeStamp);
+				buffer.putLong(position);
+				buffer.put(type);
+			} catch (Exception e) {
+				throw new OutputWriteException("Unable to write to the buffer.", e);
+			}
+			
+			return buffer;
+!!!420098.java!!!	load(inout buffer : ByteBuffer) : ByteBuffer
+			
+			try {
+				timeStamp = buffer.getLong();
+				position = buffer.getLong();
+				type = buffer.get();
+				
+				if (position < 0) {
+					throw new InputParseException("Invalid file position: \"" + position + "\".");
+				}
+				
+			} catch (BufferUnderflowException e) {
+				throw new InputParseException("Buffer underflow.", e);
+			}
+			
+			return buffer;
+!!!420226.java!!!	toString() : String
+			
+			return getType().toString() + ": " + getTimeStamp() + "@" + getPosition();
+!!!420354.java!!!	hashCode() : int
+			
+			final int prime = 31;
+			
+			int result = 1;
+
+			result = prime * result + (int) (position ^ (position >>> 32));
+			result = prime * result + (int) (timeStamp ^ (timeStamp >>> 32));
+			result = prime * result + (type ^ (type >>> 32));
+			
+			return result;
+!!!420482.java!!!	equals(inout obj : Object) : boolean
+			
+			if (this == obj) {
+				return true;
+			}
+			
+			if (obj == null) {
+				return false;
+			}
+			
+			if (getClass() != obj.getClass()) {
+				return false;
+			}
+			
+			final FileEntry other = (FileEntry) obj;
+			
+			if (position != other.position) {
+				return false;
+			}
+			
+			if (timeStamp != other.timeStamp) {
+				return false;
+			}
+			
+			if (type != other.type) {
+				return false;
+			}
+			
+			return true;

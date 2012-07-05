@@ -1,0 +1,5829 @@
+format 70
+"value" // been::src::cz::cuni::mff::been::hostmanager::value
+  revision 2
+  modified_by 8 "BoRiS"
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+  show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+  show_infonote default drawing_language default show_stereotype_properties default
+  
+  java_dir "cz/cuni/mff/been/hostmanager/value"
+  java_package "cz.cuni.mff.been.hostmanager.value"
+  classview 131842 "value"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+    //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+    show_infonote default drawing_language default show_stereotype_properties default
+    class 165890 "ValueCommonInterface"
+      visibility public stereotype "interface"
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}interface ${name}${extends} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Common ancestor to all query related storage classes for Host Manager.
+
+@author Branislav Repcek
+"
+      classrelation 207746 // <generalisation>
+	relation 207746 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 207746 // <generalisation>
+	  b parent class_ref 148226 // Serializable
+      end
+
+      classrelation 207874 // <generalisation>
+	relation 207874 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 207874 // <generalisation>
+	  b parent class_ref 165122 // XMLSerializableInterface
+      end
+
+      operation 448770 "toString"
+	public explicit_return_type "String"
+	nparams 0
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Convert value to string.
+
+@see java.lang.Object#toString() 
+"
+      end
+
+      operation 448898 "equals"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "o" explicit_type "Object"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Test whether other object is equal to this one.
+
+@see java.lang.Object#equals(java.lang.Object) 
+"
+      end
+
+      operation 449026 "hashCode"
+	public explicit_return_type "int"
+	nparams 0
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Calculate has code of current object.
+
+@see java.lang.Object#hashCode()
+"
+      end
+    end
+
+    class 179842 "ValueBasicInterface"
+      visibility public stereotype "interface"
+      nformals 2
+      formal name "T" type "" explicit_default_value ""
+        explicit_extends ""
+      formal name "T" type "" explicit_default_value ""
+        explicit_extends ""
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}interface ${name}${extends} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Interface for query related storage classes for basic data types (int, boolean...).
+
+@param <T> Type of object that instance of class implementing this interface will contain.
+
+@author Branislav Repcek
+"
+      classrelation 208002 // <generalisation>
+	relation 208002 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 208002 // <generalisation>
+	  b parent class_ref 165890 // ValueCommonInterface
+      end
+
+      classrelation 208130 // <realization>
+	relation 208130 -_-|>
+	  a public
+	    java "${type}< T >"
+	    classrelation_ref 208130 // <realization>
+	  b parent class_ref 148098 // Comparable
+      end
+
+      classrelation 208258 // <generalisation>
+	relation 208258 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 208258 // <generalisation>
+	  b parent class_ref 165122 // XMLSerializableInterface
+      end
+
+      classrelation 208386 // <generalisation>
+	relation 208386 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 208386 // <generalisation>
+	  b parent class_ref 148226 // Serializable
+      end
+
+      operation 449154 "greaterThan"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "vb" explicit_type "Object"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Test whether this object is greater than given object.
+
+@param vb Object to test.
+@return <code>true</code> if current object is greater than <code>vb</code>, <code>false</code>
+        otherwise. 
+"
+      end
+
+      operation 449282 "lessThan"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "vb" explicit_type "Object"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Test whether this object is less than given object.
+
+@param vb Object to test.
+@return <code>true</code> if current object is less than <code>vb</code>, <code>false</code>
+        otherwise. 
+"
+      end
+
+      operation 449410 "getUnit"
+	public explicit_return_type "String"
+	nparams 0
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Get unit in which value of the object is measured. Note that units are not serialised or 
+deserialised with the value and they are not used when comparing values.
+
+@return Short name for the unit or <code>null</code> if unit is not applicable to the value.
+"
+      end
+    end
+
+    class 179970 "ValueBoolean"
+      visibility public 
+      nactuals 2
+      actual class class_ref 179842 // ValueBasicInterface
+        rank 0 value class_ref 179970 // ValueBoolean
+      actual class class_ref 179842 // ValueBasicInterface
+        rank 1 explicit_value ""
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Class which represents boolean value.
+
+@author Branislav Repcek
+"
+      classrelation 208514 // <realization>
+	relation 208514 -_-|>
+	  stereotype "bind"
+	  a public
+	    java "${type}"
+	    classrelation_ref 208514 // <realization>
+	  b parent class_ref 179842 // ValueBasicInterface
+      end
+
+      classrelation 208642 // <realization>
+	relation 208642 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 208642 // <realization>
+	  b parent class_ref 148226 // Serializable
+      end
+
+      classrelation 208770 // <realization>
+	relation 208770 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 208770 // <realization>
+	  b parent class_ref 165122 // XMLSerializableInterface
+      end
+
+      attribute 230658 "value"
+	private explicit_type "boolean"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Value of this object.
+
+"
+      end
+
+      operation 449538 "ValueBoolean"
+	public explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocate empty <code>ValueBoolean</code> value.
+"
+      end
+
+      operation 449666 "ValueBoolean"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "node" explicit_type "Node"
+	nexceptions 1
+	  exception class_ref 164226 // InputParseException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Initialise instance from the node in XML file.
+
+@param node Node with data.
+
+@throws InputParseException If there was an error while parsing input.
+"
+      end
+
+      operation 449794 "ValueBoolean"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "newValue" explicit_type "boolean"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " 
+Create new <code>ValueBoolean</code> value.
+
+@param newValue Value.
+"
+      end
+
+      operation 449922 "toString"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+@see java.lang.Object#toString
+"
+      end
+
+      operation 450050 "compareTo"
+	public explicit_return_type "int"
+	nparams 1
+	  param inout name "vb" type class_ref 179970 // ValueBoolean
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see java.lang.Comparable#compareTo
+"
+      end
+
+      operation 450178 "equals"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "vc" explicit_type "Object"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+Compare specified <code>ValueBoolean</code> with this value for equality.
+
+@param vc Value to compare this to.
+@return <code>true</code> if values are equal, <code>false</code> otherwise.
+"
+      end
+
+      operation 450306 "equals"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "v" type class_ref 179970 // ValueBoolean
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Test two values for equality.
+
+@param v Value to test with.
+@return <code>true</code> if values are equal, <code>false</code> otherwise.
+"
+      end
+
+      operation 450434 "greaterThan"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "o" explicit_type "Object"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.value.ValueBasicInterface#greaterThan
+"
+      end
+
+      operation 450562 "greaterThan"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "b" type class_ref 179970 // ValueBoolean
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Test whether this object is greater than given object.
+
+@param b Object to test.
+@return <code>true</code> if current object is less than <code>b</code>, <code>false</code>
+        otherwise. Note that <code>true</code> is greater than <code>false</code>.
+"
+      end
+
+      operation 450690 "lessThan"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "o" explicit_type "Object"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.value.ValueBasicInterface#lessThan
+"
+      end
+
+      operation 450818 "lessThan"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "b" type class_ref 179970 // ValueBoolean
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Test whether this object is less than given object.
+
+@param b Object to test.
+@return <code>true</code> if current object is less than <code>vb</code>, <code>false</code>
+        otherwise. Note that <code>false</code> is less than <code>true</code>.
+"
+      end
+
+      operation 450946 "hashCode"
+	public explicit_return_type "int"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+@see java.lang.Object#hashCode
+"
+      end
+
+      operation 451074 "parseXMLNode"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "node" explicit_type "Node"
+	nexceptions 1
+	  exception class_ref 164226 // InputParseException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.database.XMLSerializableInterface#parseXMLNode
+"
+      end
+
+      operation 451202 "exportAsElement"
+	public explicit_return_type "Element"
+	nparams 1
+	  param inout name "document" explicit_type "Document"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.database.XMLSerializableInterface#exportAsElement
+"
+      end
+
+      operation 451330 "getXMLNodeName"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.database.XMLSerializableInterface#getXMLNodeName
+"
+      end
+
+      operation 451458 "getValue"
+	public explicit_return_type "boolean"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return Value stored in this object.
+"
+      end
+
+      operation 451586 "setValue"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "value" explicit_type "boolean"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@param value New value that will be stored in this object.
+"
+      end
+
+      operation 451714 "getUnit"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.value.ValueBasicInterface#getUnit()
+"
+      end
+    end
+
+    class 180098 "ValueCompoundInterface"
+      visibility public stereotype "interface"
+      nformals 2
+      formal name "T" type "" explicit_default_value ""
+        explicit_extends ""
+      formal name "T" type "" explicit_default_value ""
+        explicit_extends ""
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}interface ${name}${extends} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Interface for compound classes - classes which can contain other basic types. This should be used
+for things like list, range, etc.
+
+@param <T> Type of the elements of the compound. This type has to extend ValueBasicInterface< T >.
+
+@author Branislav Repcek
+"
+      classrelation 208898 // <generalisation>
+	relation 208898 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 208898 // <generalisation>
+	  b parent class_ref 165890 // ValueCommonInterface
+      end
+
+      classrelation 209026 // <generalisation>
+	relation 209026 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 209026 // <generalisation>
+	  b parent class_ref 165122 // XMLSerializableInterface
+      end
+
+      classrelation 209154 // <generalisation>
+	relation 209154 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 209154 // <generalisation>
+	  b parent class_ref 148226 // Serializable
+      end
+
+      operation 451842 "contains"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "vb" explicit_type "T"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Test whether given value is contained within compound. <code>compareTo()</code> and <code>equals()</code> 
+methods from <code>ValueBasicInterface</code> are used to test values.
+
+@param vb Value to test against compound.
+
+@return <code>true</code> if given value is contained in compound, <code>false</code> otherwise.
+"
+      end
+    end
+
+    class 180226 "ValueDouble"
+      visibility public 
+      nactuals 2
+      actual class class_ref 179842 // ValueBasicInterface
+        rank 0 value class_ref 180226 // ValueDouble
+      actual class class_ref 179842 // ValueBasicInterface
+        rank 1 explicit_value ""
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Class representing floating-point numbers in the range of the built-in java double.
+
+@author Branislav Repcek
+"
+      classrelation 209282 // <realization>
+	relation 209282 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 209282 // <realization>
+	  b parent class_ref 148226 // Serializable
+      end
+
+      classrelation 209410 // <realization>
+	relation 209410 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 209410 // <realization>
+	  b parent class_ref 165122 // XMLSerializableInterface
+      end
+
+      classrelation 209538 // <realization>
+	relation 209538 -_-|>
+	  stereotype "bind"
+	  a public
+	    java "${type}"
+	    classrelation_ref 209538 // <realization>
+	  b parent class_ref 179842 // ValueBasicInterface
+      end
+
+      attribute 230786 "value"
+	private explicit_type "double"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Value stored in the class.
+
+"
+      end
+
+      attribute 230914 "unit"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Unit of measure.
+
+"
+      end
+
+      operation 451970 "ValueDouble"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "value" explicit_type "long"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Create new instance with given value. Unit is set to <tt>null</tt>.
+
+@param value New value.
+"
+      end
+
+      operation 452098 "ValueDouble"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "value" explicit_type "long"
+	  param in name "unit" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Create new instance with given value and unit.
+
+@param value New value.
+@param unit Unit of measure for the value.
+"
+      end
+
+      operation 452226 "ValueDouble"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "value" explicit_type "double"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Create new instance with given value.
+
+@param value New value.
+"
+      end
+
+      operation 452354 "ValueDouble"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "value" explicit_type "double"
+	  param in name "unit" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Create new instance with given value.
+
+@param value New value.
+@param unit Unit of measure for given value.
+"
+      end
+
+      operation 452482 "ValueDouble"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "v" type class_ref 180354 // ValueInteger
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Create new <code>ValueDouble</code> object from <code>ValueInteger</code>.
+
+@param v <code>ValueInteger</code> which will be used to initialize this.
+"
+      end
+
+      operation 452610 "ValueDouble"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "node" explicit_type "Node"
+	nexceptions 1
+	  exception class_ref 164226 // InputParseException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Create new instance from data in XML node.
+
+@param node Node with data.
+
+@throws InputParseException If there was and error while parsing XML node data.
+"
+      end
+
+      operation 452738 "ValueDouble"
+	public explicit_return_type ""
+	nparams 2
+	  param inout name "node" explicit_type "Node"
+	  param in name "unit" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 164226 // InputParseException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Create new instance from data in XML node and set unit to given one.
+
+@param node Node with data.
+@param unit Unit.
+
+@throws InputParseException If there was and error while parsing XML node data.
+"
+      end
+
+      operation 452866 "ValueDouble"
+	public explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Create new instance with zero value.
+"
+      end
+
+      operation 452994 "toString"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+@see java.lang.Object#toString
+"
+      end
+
+      operation 453122 "compareTo"
+	public explicit_return_type "int"
+	nparams 1
+	  param inout name "d" type class_ref 180226 // ValueDouble
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see java.lang.Comparable#compareTo
+"
+      end
+
+      operation 453250 "equals"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "o" explicit_type "Object"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+@see java.lang.Object#equals
+"
+      end
+
+      operation 453378 "equals"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "d" type class_ref 180226 // ValueDouble
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Test for equality.
+
+@param d Number to test against.
+
+@return <code>true</code> if both numbers have same value, <code>false</code> otherwise.
+"
+      end
+
+      operation 453506 "equals"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param in name "d" explicit_type "double"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Test for equality. This test may not be accurate for floating-point numbers.
+
+@param d Number to test against.
+
+@return <code>true</code> if both numbers have same value, <code>false</code> otherwise.
+"
+      end
+
+      operation 453634 "hashCode"
+	public explicit_return_type "int"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+@see java.lang.Object#hashCode()
+"
+      end
+
+      operation 453762 "equalsEpsilon"
+	public explicit_return_type "boolean"
+	nparams 2
+	  param inout name "d" type class_ref 180226 // ValueDouble
+	  param in name "epsilon" explicit_type "double"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Test for equality with epsilon.
+
+@param d Number to test against.
+@param epsilon Maximum distance numbers are allowed to be apart to pass the test.
+
+@return <code>true</code> if argument lies in the open interval (this-epsilon, this+epsilon),
+        <code>false</code> otherwise.
+"
+      end
+
+      operation 453890 "equalsEpsilon"
+	public explicit_return_type "boolean"
+	nparams 2
+	  param in name "d" explicit_type "double"
+	  param in name "epsilon" explicit_type "double"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Test for equality with epsilon.
+
+@param d Number to test against.
+@param epsilon Maximum distance numbers are allowed to be apart to pass the test.
+
+@return <code>true</code> if argument lies in the open interval (this-epsilon, this+epsilon),
+        <code>false</code> otherwise.
+"
+      end
+
+      operation 454018 "longValue"
+	public explicit_return_type "long"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Return value of this object as long.
+
+@return long containing value of this object.
+"
+      end
+
+      operation 454146 "doubleValue"
+	public explicit_return_type "double"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Return value of this object as double.
+
+@return double containing value of this object.
+"
+      end
+
+      operation 454274 "intValue"
+	public explicit_return_type "int"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Return value of this object as int.
+
+@return int containing value of this object.
+"
+      end
+
+      operation 454402 "floatValue"
+	public explicit_return_type "float"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Return value of this object as float.
+
+@return float containing value of this object.
+"
+      end
+
+      operation 454530 "setValue"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "value" explicit_type "double"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@param value New value to be stored in this object.
+"
+      end
+
+      operation 454658 "lessThan"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "o" explicit_type "Object"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.value.ValueBasicInterface#lessThan
+"
+      end
+
+      operation 454786 "lessThan"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "d" type class_ref 180226 // ValueDouble
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Test whether this object is less than given object.
+
+@param d Object to test.
+@return <code>true</code> if current object is less than <code>d</code>, <code>false</code>
+        otherwise. 
+"
+      end
+
+      operation 454914 "greaterThan"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "o" explicit_type "Object"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.value.ValueBasicInterface#greaterThan
+"
+      end
+
+      operation 455042 "greaterThan"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "d" type class_ref 180226 // ValueDouble
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Test whether this object is greater than given object.
+
+@param d Object to test.
+@return <code>true</code> if current object is greater than <code>d</code>, <code>false</code>
+        otherwise. 
+"
+      end
+
+      operation 455170 "getXMLNodeName"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.database.XMLSerializableInterface#getXMLNodeName
+"
+      end
+
+      operation 455298 "exportAsElement"
+	public explicit_return_type "Element"
+	nparams 1
+	  param inout name "doc" explicit_type "Document"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.database.XMLSerializableInterface#exportAsElement
+"
+      end
+
+      operation 455426 "parseXMLNode"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "node" explicit_type "Node"
+	nexceptions 1
+	  exception class_ref 164226 // InputParseException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.database.XMLSerializableInterface#parseXMLNode
+"
+      end
+
+      operation 455554 "getUnit"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.value.ValueBasicInterface#getUnit()
+"
+      end
+    end
+
+    class 180354 "ValueInteger"
+      visibility public 
+      nactuals 2
+      actual class class_ref 179842 // ValueBasicInterface
+        rank 0 value class_ref 180354 // ValueInteger
+      actual class class_ref 179842 // ValueBasicInterface
+        rank 1 explicit_value ""
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Class representing integer number. It can store number in range of <code>Long</code>
+
+@author Branislav Repcek
+"
+      classrelation 209666 // <realization>
+	relation 209666 -_-|>
+	  stereotype "bind"
+	  a public
+	    java "${type}"
+	    classrelation_ref 209666 // <realization>
+	  b parent class_ref 179842 // ValueBasicInterface
+      end
+
+      classrelation 209794 // <realization>
+	relation 209794 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 209794 // <realization>
+	  b parent class_ref 148226 // Serializable
+      end
+
+      classrelation 209922 // <realization>
+	relation 209922 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 209922 // <realization>
+	  b parent class_ref 165122 // XMLSerializableInterface
+      end
+
+      attribute 231042 "value"
+	private explicit_type "long"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Value of this object.
+
+"
+      end
+
+      attribute 231170 "unit"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Unit of measure.
+
+"
+      end
+
+      operation 455682 "ValueInteger"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "node" explicit_type "Node"
+	nexceptions 1
+	  exception class_ref 164226 // InputParseException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Create new <code>ValueInteger</code> from XML node.
+
+@param node Node containing data.
+
+@throws InputParseException If there was an error parsing node data.
+"
+      end
+
+      operation 455810 "ValueInteger"
+	public explicit_return_type ""
+	nparams 2
+	  param inout name "node" explicit_type "Node"
+	  param in name "unit" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 164226 // InputParseException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Create new <code>ValueInteger</code> from XML node and set unit to given one.
+
+@param node Node containing data.
+@param unit Unit.
+
+@throws InputParseException If there was an error parsing node data.
+"
+      end
+
+      operation 455938 "ValueInteger"
+	public explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocate zero <code>ValueInteger</code> value.
+"
+      end
+
+      operation 456066 "ValueInteger"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "v" type class_ref 180226 // ValueDouble
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Create new <code>ValueInteger</code> object from <code>ValueDouble</code> object.
+ 
+@param v <code>ValueDouble</code> which will be used to initialise this.
+"
+      end
+
+      operation 456194 "ValueInteger"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "newValue" explicit_type "long"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Create new <code>ValueInteger</code> value,
+
+@param newValue New value.
+"
+      end
+
+      operation 456322 "ValueInteger"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "newValue" explicit_type "long"
+	  param in name "unit" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Create new <code>ValueInteger</code> value,
+
+@param newValue New value.
+@param unit Unit.
+"
+      end
+
+      operation 456450 "toString"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+@see java.lang.Object#toString
+"
+      end
+
+      operation 456578 "compareTo"
+	public explicit_return_type "int"
+	nparams 1
+	  param inout name "vb" type class_ref 180354 // ValueInteger
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see java.lang.Comparable#compareTo
+"
+      end
+
+      operation 456706 "equals"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "vc" explicit_type "Object"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+@see java.lang.Object#equals 
+"
+      end
+
+      operation 456834 "equals"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "v" type class_ref 180354 // ValueInteger
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Test whether other <code>ValueInteger</code> is equal to this.
+
+@param v Value to compare to.
+@return <code>true</code> if values are equal, <code>false</code> otherwise.
+"
+      end
+
+      operation 456962 "equals"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param in name "l" explicit_type "long"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Test for equality.
+
+@param l Number to test against.
+
+@return <code>true</code> if both numbers have same value, <code>false</code> otherwise.
+"
+      end
+
+      operation 457090 "greaterThan"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "o" explicit_type "Object"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.value.ValueBasicInterface#greaterThan
+"
+      end
+
+      operation 457218 "greaterThan"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "vb" type class_ref 180354 // ValueInteger
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Test whether this object is greater than given object.
+
+@param vb Object to test.
+@return <code>true</code> if current object is greater than <code>vb</code>, <code>false</code>
+        otherwise. 
+"
+      end
+
+      operation 457346 "lessThan"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "o" explicit_type "Object"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.value.ValueBasicInterface#lessThan
+"
+      end
+
+      operation 457474 "lessThan"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "vb" type class_ref 180354 // ValueInteger
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Test whether this object is less than given object.
+
+@param vb Object to test.
+@return <code>true</code> if current object is less than <code>vb</code>, <code>false</code>
+        otherwise. 
+"
+      end
+
+      operation 457602 "hashCode"
+	public explicit_return_type "int"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+@see java.lang.Object#hashCode
+"
+      end
+
+      operation 457730 "parseXMLNode"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "node" explicit_type "Node"
+	nexceptions 1
+	  exception class_ref 164226 // InputParseException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.database.XMLSerializableInterface#parseXMLNode
+"
+      end
+
+      operation 457858 "exportAsElement"
+	public explicit_return_type "Element"
+	nparams 1
+	  param inout name "document" explicit_type "Document"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.database.XMLSerializableInterface#exportAsElement
+"
+      end
+
+      operation 457986 "getXMLNodeName"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.database.XMLSerializableInterface#getXMLNodeName
+"
+      end
+
+      operation 458114 "longValue"
+	public explicit_return_type "long"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Return value of this object as long.
+
+@return long containing value of this object.
+"
+      end
+
+      operation 458242 "doubleValue"
+	public explicit_return_type "double"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Return value of this object as double.
+
+@return double containing value of this object.
+"
+      end
+
+      operation 458370 "intValue"
+	public explicit_return_type "int"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Return value of this object as int.
+
+@return int containing value of this object.
+"
+      end
+
+      operation 458498 "floatValue"
+	public explicit_return_type "float"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Return value of this object as float.
+
+@return float containing value of this object.
+"
+      end
+
+      operation 458626 "setValue"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "value" explicit_type "long"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@param value New value to be stored in object.
+"
+      end
+
+      operation 458754 "getUnit"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.value.ValueBasicInterface#getUnit()
+"
+      end
+    end
+
+    class 180482 "ValueList"
+      visibility public 
+      nformals 2
+      formal name "T" type "" explicit_default_value ""
+        explicit_extends ""
+      formal name "T" type "" explicit_default_value ""
+        explicit_extends ""
+      nactuals 2
+      actual class class_ref 180098 // ValueCompoundInterface
+        rank 0 explicit_value "T"
+      actual class class_ref 180098 // ValueCompoundInterface
+        rank 1 explicit_value ""
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Class which represents list of values of the same type. <code>ValueList</code> is limited only 
+to members of simple types (classes which implement <code>ValueBasicInterface</code> interface).
+
+@param <T> Type of the elements of the list. This type has to extend ValueBasicInterface< T >.
+
+@author Branislav Repcek
+"
+      classrelation 210050 // <realization>
+	relation 210050 -_-|>
+	  stereotype "bind"
+	  a public
+	    java "${type}"
+	    classrelation_ref 210050 // <realization>
+	  b parent class_ref 180098 // ValueCompoundInterface
+      end
+
+      classrelation 210178 // <realization>
+	relation 210178 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 210178 // <realization>
+	  b parent class_ref 148226 // Serializable
+      end
+
+      classrelation 210306 // <realization>
+	relation 210306 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 210306 // <realization>
+	  b parent class_ref 165122 // XMLSerializableInterface
+      end
+
+      classrelation 210434 // <realization>
+	relation 210434 -_-|>
+	  a public
+	    java "${type}< T >"
+	    classrelation_ref 210434 // <realization>
+	  b parent class_ref 168834 // Iterable
+      end
+
+      attribute 231298 "value"
+	private explicit_type " T "
+	stereotype "ArrayList"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<${type}> ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+List of values.
+
+"
+      end
+
+      operation 458882 "ValueList"
+	public explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocate empty <code>ValueList</code> value.
+"
+      end
+
+      operation 459010 "ValueList"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "newValue" explicit_type "T"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0}[] ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Create new list form array of objects implementing <code>ValueBasicInterface</code>. 
+Elements are stored in same order as they appear in <code>newValue</code> array.
+
+@param newValue List of objects.
+"
+      end
+
+      operation 459138 "ValueList"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "values" explicit_type "Collection< T >"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Create new list containing all members of given collection.
+
+@param values Collection containing values that will be included in the list.
+"
+      end
+
+      operation 459266 "ValueList"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "node" explicit_type "Node"
+	nexceptions 1
+	  exception class_ref 164226 // InputParseException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@SuppressWarnings(\"unchecked\")
+"
+	
+	
+	
+	comment "
+Create new ValueList and read data from XML node.
+
+@param node Node containing list data.
+
+@throws InputParseException If there was an error while parsing XML data.
+"
+      end
+
+      operation 459394 "toString"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+@see java.lang.Object#toString
+"
+      end
+
+      operation 459522 "length"
+	public explicit_return_type "int"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Get number of elements stored in list.
+
+@return Number of elements stored in list.
+"
+      end
+
+      operation 459650 "get"
+	public explicit_return_type "T"
+	nparams 1
+	  param in name "index" explicit_type "int"
+	nexceptions 1
+	  explicit_exception "IndexOutOfBoundsException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Get element at given position.
+
+@param index Position of element to get.
+@return Element at given position.
+@throws IndexOutOfBoundsException If (index < 0) || (index > length()).
+"
+      end
+
+      operation 459778 "set"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "index" explicit_type "int"
+	  param inout name "val" explicit_type "T"
+	nexceptions 1
+	  explicit_exception "IndexOutOfBoundsException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Set element at given position.
+
+@param index Index of element to set.
+@param val New value.
+@throws IndexOutOfBoundsException If (index < 0) || (index > length()).
+"
+      end
+
+      operation 459906 "add"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "val" explicit_type "T"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Add element to the end of the list.
+
+@param val New element to add to the list.
+"
+      end
+
+      operation 460034 "addAll"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "list" type class_ref 180482 // ValueList
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0}< T > ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Add all elements from specified list. Duplicate values are not removed. Order of elements 
+is not changed.
+
+@param list List of values to add to the current list.
+"
+      end
+
+      operation 460162 "addAll"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "list" explicit_type "Collection< T >"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Add all elements from the specified collection to the current list. Duplicate entries are  
+allowed. Order of elements is not changed.
+
+@param list Collection of elements to add to current list.
+"
+      end
+
+      operation 460290 "remove"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "val" explicit_type "T"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Remove element with given value from the list.
+
+@param val Value to remove.
+@return <code>true</code> if specified value was present in the list, <code>false</code> otherwise.
+"
+      end
+
+      operation 460418 "remove"
+	public explicit_return_type "T"
+	nparams 1
+	  param in name "index" explicit_type "int"
+	nexceptions 1
+	  explicit_exception "IndexOutOfBoundsException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Remove value at given position in the list.
+
+@param index Index of the value to remove.
+@return Value which is being removed.
+
+@throws IndexOutOfBoundsException If (index < 0) || (index > length()).
+"
+      end
+
+      operation 460546 "empty"
+	public explicit_return_type "boolean"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Test whether list contains any elements.
+
+@return <code>true</code> if list is empty, <code>false</code> otherwise.
+"
+      end
+
+      operation 460674 "contains"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "vb" explicit_type "T"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Test whether list contains given element.
+
+@param vb Element to test.
+@return <code>true</code> if element has been found in list, <code>false</code> otherwise.
+"
+      end
+
+      operation 460802 "equals"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "o" explicit_type "Object"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+	@SuppressWarnings(\"unchecked\")
+"
+	
+	
+	
+	comment "
+@see java.lang.Object#equals
+"
+      end
+
+      operation 460930 "equals"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "vc" type class_ref 180482 // ValueList
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0}< T > ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Compare specified <code>ValueList</code> with this value for equality. Comparison is based only 
+on elements contained within respective lists, it does not matter in which order elements are stored.
+
+@param vc Value to compare this to.
+@return <code>true</code> if values are equal, <code>false</code> otherwise.
+"
+      end
+
+      operation 461058 "hashCode"
+	public explicit_return_type "int"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+@see java.lang.Object#hashCode
+"
+      end
+
+      operation 461186 "parseXMLNode"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "node" explicit_type "Node"
+	nexceptions 1
+	  exception class_ref 164226 // InputParseException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@SuppressWarnings(\"unchecked\")
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.database.XMLSerializableInterface#parseXMLNode
+"
+      end
+
+      operation 461314 "exportAsElement"
+	public explicit_return_type "Element"
+	nparams 1
+	  param inout name "document" explicit_type "Document"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.database.XMLSerializableInterface#exportAsElement
+"
+      end
+
+      attribute 231426 "subtypeName"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Canonical name of the type of the elements in list.
+
+"
+      end
+
+      operation 461442 "setSubtypeName"
+	private explicit_return_type "void"
+	nparams 1
+	  param inout name "val" explicit_type "T"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Holy cow batman, this is one stupid hack...
+
+I was unable to find out how to get canonical name of the type of the elements of the list,
+so this method is called every time something is added to the list and it will get name from
+the instance of object being added.
+"
+      end
+
+      operation 461570 "getXMLNodeName"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.database.XMLSerializableInterface#getXMLNodeName
+"
+      end
+
+      operation 461698 "iterator"
+	public explicit_return_type "Iterator< T >"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see java.lang.Iterable#iterator()
+"
+      end
+
+      operation 461826 "getValue"
+	public explicit_return_type "List< T >"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return List containing all elements from this list.
+"
+      end
+    end
+
+    class 180610 "ValueRange"
+      visibility public 
+      nformals 2
+      formal name "T" type "" explicit_default_value ""
+        explicit_extends ""
+      formal name "T" type "" explicit_default_value ""
+        explicit_extends ""
+      nactuals 2
+      actual class class_ref 180098 // ValueCompoundInterface
+        rank 0 explicit_value "T"
+      actual class class_ref 180098 // ValueCompoundInterface
+        rank 1 explicit_value ""
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Class which represents range of values (closed interval). Endpoints can be only of basic types
+(derived from <code>ValueBasicInterface</code> interface).
+
+@param <T> Type of endpoints of the interval. This type has to extend ValueBasicInterface< T >
+
+@author Branislav Repcek
+"
+      classrelation 210562 // <realization>
+	relation 210562 -_-|>
+	  stereotype "bind"
+	  a public
+	    java "${type}"
+	    classrelation_ref 210562 // <realization>
+	  b parent class_ref 180098 // ValueCompoundInterface
+      end
+
+      classrelation 210690 // <realization>
+	relation 210690 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 210690 // <realization>
+	  b parent class_ref 148226 // Serializable
+      end
+
+      classrelation 210818 // <realization>
+	relation 210818 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 210818 // <realization>
+	  b parent class_ref 165122 // XMLSerializableInterface
+      end
+
+      attribute 231554 "valueMin"
+	private explicit_type "T"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Lower bound of interval.
+
+"
+      end
+
+      attribute 231682 "valueMax"
+	private explicit_type "T"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Upper bound of interval.
+
+"
+      end
+
+      attribute 231810 "leftOpen"
+	private explicit_type "boolean"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Is left endpoint of the interval open or closed?
+
+"
+      end
+
+      attribute 231938 "rightOpen"
+	private explicit_type "boolean"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Is right endpoint of the interval open or closed?
+
+"
+      end
+
+      operation 461954 "ValueRange"
+	public explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocate <code>ValueRegexp</code> value which represents whole interval.
+"
+      end
+
+      operation 462082 "ValueRange"
+	public explicit_return_type ""
+	nparams 2
+	  param inout name "min" explicit_type "T"
+	  param inout name "max" explicit_type "T"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Create new <code>ValueRange</code> with given endpoints. Both endpoints will be closed for finite
+values. For infinite value, endpoint will be open.
+
+@param min Left endpoint of interval. Set to <code>null</code> for -&infin;.
+@param max Right endpoint of interval. Set to <code>null</code> for +&infin;.
+"
+      end
+
+      operation 462210 "ValueRange"
+	public explicit_return_type ""
+	nparams 4
+	  param inout name "min" explicit_type "T"
+	  param inout name "max" explicit_type "T"
+	  param inout name "leftOpen" explicit_type "boolean"
+	  param inout name "rightOpen" explicit_type "boolean"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Create new <code>ValueRange</code> with given endpoints.
+
+@param min Left endpoint. Set to <code>null</code> for -&infin;.
+@param max Right endpoint. Set to <code>null</code> for +&infin;.
+@param leftOpen If <code>true</code>, left endpoint will be open. Endpoint will be closed if
+       <code>false</code>. Left endpoint will be always created as open if its value is set to
+       negative infinity.
+@param rightOpen If <code>true</code>, right endpoint will be open. Endpoint will be closed if
+       <code>false</code>. Right endpoint will be always created as open if its value is set to
+       positive infinity.
+"
+      end
+
+      operation 462338 "ValueRange"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "node" explicit_type "Node"
+	nexceptions 1
+	  exception class_ref 164226 // InputParseException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Create new range from XML node.
+
+@param node Node containing range data.
+
+@throws InputParseException If there was an error parsing node data.
+"
+      end
+
+      operation 462466 "toString"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+Convert value to string.
+
+@return String object representing current value. Open side of interval is indicated by round brace, 
+        closed endpoint is indicated by square bracket
+"
+      end
+
+      operation 462594 "contains"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "elem" explicit_type "T"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Test whether given value is contained within interval.
+
+@param elem Value to test.
+@return <code>true</code> if <code>elem</code> is inside current interval, <code>false</code> otherwise.
+"
+      end
+
+      operation 462722 "equals"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "o" explicit_type "Object"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+	@SuppressWarnings(\"unchecked\")
+"
+	
+	
+	
+	comment "
+@see java.lang.Object#equals(java.lang.Object)
+"
+      end
+
+      operation 462850 "equals"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "vc" type class_ref 180610 // ValueRange
+	nexceptions 1
+	  exception class_ref 135298 // ValueTypeIncorrectException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@SuppressWarnings(\"unchecked\")
+"
+	
+	
+	
+	comment "
+Compare specified <code>ValueRange</code> with this value for equality. Values are equal if and only if
+both endpoints and their flags are equal.
+
+@param vc Value to compare this to.
+@return <code>true</code> if values are equal, <code>false</code> otherwise.
+@throws ValueTypeIncorrectException If endpoints in ranges being compared do not have matching types.
+"
+      end
+
+      operation 462978 "isLeftOpen"
+	public explicit_return_type "boolean"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Test whether left endpoint of the interval is open.
+
+@return <code>true</code> if left endpoint is open, <code>false</code> if it is closed.
+"
+      end
+
+      operation 463106 "isRightOpen"
+	public explicit_return_type "boolean"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Test whether right endpoint of the interval is open.
+
+@return <code>true</code> if right endpoint is open, <code>false</code> if it is closed.
+"
+      end
+
+      operation 463234 "setLeftOpen"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "open" explicit_type "boolean"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Set endpoint type for left endpoint.
+
+@param open If set to <code>true</code> endpoint will be set as open. If set to <code>false</code>
+       endpoint is set as closed (unless it is -&infin; which is always open).
+"
+      end
+
+      operation 463362 "setRightOpen"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "open" explicit_type "boolean"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Set endpoint type for right endpoint.
+
+@param open If set to <code>true</code> endpoint will be set as open. If set to <code>false</code>
+       endpoint is set as closed (unless it is +&infin; which is always open).
+"
+      end
+
+      operation 463490 "hashCode"
+	public explicit_return_type "int"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+@see java.lang.Object#hashCode()
+"
+      end
+
+      attribute 232066 "EMPTY_CLASS_NAME"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"(none)\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Empty class name (duh).
+
+"
+      end
+
+      operation 463618 "parseXMLNode"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "node" explicit_type "Node"
+	nexceptions 1
+	  exception class_ref 164226 // InputParseException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@SuppressWarnings(\"unchecked\")
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.database.XMLSerializableInterface#parseXMLNode(org.w3c.dom.Node)
+"
+      end
+
+      operation 463746 "exportAsElement"
+	public explicit_return_type "Element"
+	nparams 1
+	  param inout name "document" explicit_type "Document"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.database.XMLSerializableInterface#exportAsElement(org.w3c.dom.Document)
+"
+      end
+
+      operation 463874 "getXMLNodeName"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.database.XMLSerializableInterface#getXMLNodeName()
+"
+      end
+
+      operation 464002 "getMaxValue"
+	public explicit_return_type "T"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return Value of the right endpoint of the range.
+"
+      end
+
+      operation 464130 "setMaxValue"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "valueMax" explicit_type "T"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@param valueMax New value of the right endpoint of the range.
+"
+      end
+
+      operation 464258 "getMinValue"
+	public explicit_return_type "T"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return Value of the left endpoint of the range.
+"
+      end
+
+      operation 464386 "setMinValue"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "valueMin" explicit_type "T"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@param valueMin New value of the left endpoint of the range.
+"
+      end
+    end
+
+    class 180738 "ValueRegexp"
+      visibility public 
+      nactuals 2
+      actual class class_ref 179842 // ValueBasicInterface
+        rank 0 value class_ref 180738 // ValueRegexp
+      actual class class_ref 179842 // ValueBasicInterface
+        rank 1 explicit_value ""
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+This class represents regular expression.
+
+@author Branislav Repcek
+
+"
+      classrelation 210946 // <realization>
+	relation 210946 -_-|>
+	  stereotype "bind"
+	  a public
+	    java "${type}"
+	    classrelation_ref 210946 // <realization>
+	  b parent class_ref 179842 // ValueBasicInterface
+      end
+
+      classrelation 211074 // <realization>
+	relation 211074 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 211074 // <realization>
+	  b parent class_ref 148226 // Serializable
+      end
+
+      classrelation 211202 // <realization>
+	relation 211202 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 211202 // <realization>
+	  b parent class_ref 165122 // XMLSerializableInterface
+      end
+
+      attribute 232194 "value"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Regular expression string.
+
+"
+      end
+
+      attribute 232322 "caseSensitive"
+	private explicit_type "boolean"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Case sensitivity flag.
+
+"
+      end
+
+      attribute 232450 "pattern"
+	private explicit_type "Pattern"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Pattern.
+
+"
+      end
+
+      operation 464514 "ValueRegexp"
+	public explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocate empty <code>ValueRegexp</code> value.
+"
+      end
+
+      operation 464642 "ValueRegexp"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "newValue" explicit_type "String"
+	  param inout name "caseSense" explicit_type "boolean"
+	nexceptions 1
+	  explicit_exception "PatternSyntaxException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocate new <code>ValueRegexp</code> value.
+
+@param newValue Regular expression string. For more info on format @see 
+       <a href=\"http://java.sun.com/j2se/1.4.2/docs/api/java/util/regex/Pattern.html\">java.util.regex.Pattern</a>
+@param caseSense If <code>true</code> regular expression will be case sensitive.
+@throws PatternSyntaxException If syntax of <code>newValue</code> is invalid.
+"
+      end
+
+      operation 464770 "ValueRegexp"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "node" explicit_type "Node"
+	nexceptions 1
+	  exception class_ref 164226 // InputParseException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Read data from the XML file node.
+
+@param node Node with data to read.
+
+@throws InputParseException If there was an error while parsing input.
+"
+      end
+
+      operation 464898 "ValueRegexp"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "newValue" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "PatternSyntaxException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocate new <code>ValueRegexp</code> value. This method is same as <code>ValueRegexp(String, boolean)</code>, 
+except it always creates case insensitive regular expression.
+
+@param newValue Regular expression string.
+@throws PatternSyntaxException If syntax of <code>newValue</code> is invalid.
+"
+      end
+
+      operation 465026 "toString"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+@see java.lang.Object#toString
+"
+      end
+
+      operation 465154 "compareTo"
+	public explicit_return_type "int"
+	nparams 1
+	  param inout name "vb" type class_ref 180738 // ValueRegexp
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see java.lang.Comparable#compareTo
+"
+      end
+
+      operation 465282 "equals"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "o" explicit_type "Object"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+@see java.lang.Object#equals
+"
+      end
+
+      operation 465410 "equals"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "vc" type class_ref 180738 // ValueRegexp
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Test specified <code>ValueRegexp</code> and this value for equality.
+
+@param vc Value to compare this to.
+@return <code>true</code> if values are equal, <code>false</code> otherwise.
+"
+      end
+
+      operation 465538 "greaterThan"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "o" explicit_type "Object"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.value.ValueBasicInterface#greaterThan
+"
+      end
+
+      operation 465666 "greaterThan"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "v" type class_ref 180738 // ValueRegexp
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Test if current value is greater than specified one.
+
+@param v Value to compare to.
+
+@return <code>true</code> if this instance has greater value than given value, 
+        <code>false</code> otherwise.
+"
+      end
+
+      operation 465794 "lessThan"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "o" explicit_type "Object"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.value.ValueBasicInterface#lessThan
+"
+      end
+
+      operation 465922 "lessThan"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "v" type class_ref 180738 // ValueRegexp
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Test if current value is less than specified one.
+
+@param v Value to compare to.
+
+@return <code>true</code> if this instance has lower value than given value, 
+        <code>false</code> otherwise.
+"
+      end
+
+      operation 466050 "hashCode"
+	public explicit_return_type "int"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+@see java.lang.Object#hashCode
+"
+      end
+
+      operation 466178 "match"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param in name "str" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Test given string against current regular expression.
+
+@param str String to test.
+@return <code>true</code> if string matches current regular expression, <code>false</code> otherwise.
+"
+      end
+
+      operation 466306 "parseXMLNode"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "node" explicit_type "Node"
+	nexceptions 1
+	  exception class_ref 164226 // InputParseException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.database.XMLSerializableInterface#parseXMLNode
+"
+      end
+
+      operation 466434 "exportAsElement"
+	public explicit_return_type "Element"
+	nparams 1
+	  param inout name "document" explicit_type "Document"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.database.XMLSerializableInterface#exportAsElement
+"
+      end
+
+      operation 466562 "isCaseSensitive"
+	public explicit_return_type "boolean"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Test if regular expression is case sensitive.
+
+@return <code>true</code> if regular expression if case sensitive, <code>false</code> otherwise.
+"
+      end
+
+      operation 466690 "setCaseSensitive"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "caseSensitive" explicit_type "boolean"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Set case sensitivity for the regular expression.
+
+@param caseSensitive If set to <code>true</code> expression will be case sensitive, otherwise
+       is is case insensitive.
+"
+      end
+
+      operation 466818 "getXMLNodeName"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.database.XMLSerializableInterface#getXMLNodeName
+"
+      end
+
+      operation 466946 "getValue"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return Regular expression string.
+"
+      end
+
+      operation 467074 "setValue"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "regexp" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "PatternSyntaxException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@param regexp New regular expression.
+
+@throws PatternSyntaxException If given regular expression is invalid.
+"
+      end
+
+      operation 467202 "getUnit"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.value.ValueBasicInterface#getUnit()
+"
+      end
+    end
+
+    class 180866 "ValueString"
+      visibility public 
+      nactuals 2
+      actual class class_ref 179842 // ValueBasicInterface
+        rank 0 value class_ref 180866 // ValueString
+      actual class class_ref 179842 // ValueBasicInterface
+        rank 1 explicit_value ""
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Class which represents strings.
+
+@author Branislav Repcek
+
+"
+      classrelation 211330 // <realization>
+	relation 211330 -_-|>
+	  stereotype "bind"
+	  a public
+	    java "${type}"
+	    classrelation_ref 211330 // <realization>
+	  b parent class_ref 179842 // ValueBasicInterface
+      end
+
+      classrelation 211458 // <realization>
+	relation 211458 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 211458 // <realization>
+	  b parent class_ref 148226 // Serializable
+      end
+
+      classrelation 211586 // <realization>
+	relation 211586 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 211586 // <realization>
+	  b parent class_ref 165122 // XMLSerializableInterface
+      end
+
+      attribute 232578 "value"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Value of this object.
+
+"
+      end
+
+      attribute 232706 "caseSense"
+	private explicit_type "boolean"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Flag which specifies whether case-sensitive methods are used when comparing strings. Default
+value is false (that is, strings are not case-sensitive).
+
+"
+      end
+
+      operation 467330 "ValueString"
+	public explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocate empty <code>ValueString</code> value.
+"
+      end
+
+      operation 467458 "ValueString"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "newValue" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Create new <code>ValueString</code> with given value.
+
+@param newValue Value.
+"
+      end
+
+      operation 467586 "ValueString"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "node" explicit_type "Node"
+	nexceptions 1
+	  exception class_ref 164226 // InputParseException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Read data from XML node.
+
+@param node Node with data.
+
+@throws InputParseException If there was an error while parsing node.
+"
+      end
+
+      operation 467714 "ValueString"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "newValue" explicit_type "String"
+	  param inout name "caseSensitive" explicit_type "boolean"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Create new ValueString object.
+
+@param newValue Value.
+@param caseSensitive If <code>true</code>, string will be case-sensitive.
+"
+      end
+
+      operation 467842 "toString"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+@see java.lang.Object#toString
+"
+      end
+
+      operation 467970 "compareTo"
+	public explicit_return_type "int"
+	nparams 1
+	  param inout name "vb" type class_ref 180866 // ValueString
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see java.lang.Comparable#compareTo
+"
+      end
+
+      operation 468098 "equals"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "o" explicit_type "Object"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+@see java.lang.Object#equals
+"
+      end
+
+      operation 468226 "equals"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "vc" type class_ref 180866 // ValueString
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Test specified <code>ValueString</code> with this value for equality. If at least one of strings 
+to compare is case insensitive, comparison is also case insensitive.
+
+@param vc Value to compare this to.
+@return <code>true</code> if values are equal, <code>false</code> otherwise.
+"
+      end
+
+      operation 468354 "greaterThan"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "o" explicit_type "Object"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.value.ValueBasicInterface#greaterThan
+"
+      end
+
+      operation 468482 "greaterThan"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "v" type class_ref 180866 // ValueString
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Test if current value is greater than specified one.
+
+@param v Value to compare to.
+
+@return <code>true</code> if this instance has greater value than given value, 
+        <code>false</code> otherwise.
+"
+      end
+
+      operation 468610 "lessThan"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "o" explicit_type "Object"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.value.ValueBasicInterface#lessThan
+"
+      end
+
+      operation 468738 "lessThan"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "v" type class_ref 180866 // ValueString
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Test if current value is less than specified one.
+
+@param v Value to compare to.
+
+@return <code>true</code> if this instance has lower value than given value, 
+        <code>false</code> otherwise.
+"
+      end
+
+      operation 468866 "hashCode"
+	public explicit_return_type "int"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+@see java.lang.Object#hashCode
+"
+      end
+
+      operation 468994 "caseSensitive"
+	package explicit_return_type "boolean"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Test whether string uses case-sensitive comparison methods.
+
+@return true if case-sensitive comparison methods are used, false otherwise.
+"
+      end
+
+      operation 469122 "setCaseSensitivity"
+	package explicit_return_type "void"
+	nparams 1
+	  param inout name "newCS" explicit_type "boolean"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Enable/disable case-sensitivity.
+
+@param newCS If true, case-sensitive comparison methods will be used when comparing this string, if
+       false, string is case-insensitive.
+"
+      end
+
+      operation 469250 "parseXMLNode"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "node" explicit_type "Node"
+	nexceptions 1
+	  exception class_ref 164226 // InputParseException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.database.XMLSerializableInterface#parseXMLNode
+"
+      end
+
+      operation 469378 "exportAsElement"
+	public explicit_return_type "Element"
+	nparams 1
+	  param inout name "document" explicit_type "Document"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.database.XMLSerializableInterface#exportAsElement
+"
+      end
+
+      operation 469506 "getXMLNodeName"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.database.XMLSerializableInterface#getXMLNodeName
+"
+      end
+
+      operation 469634 "getValue"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return String value.
+"
+      end
+
+      operation 469762 "setValue"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "s" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@param s New string value.
+"
+      end
+
+      operation 469890 "getUnit"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.value.ValueBasicInterface#getUnit()
+"
+      end
+    end
+
+    class 180994 "ValueVersion"
+      visibility public 
+      nactuals 2
+      actual class class_ref 179842 // ValueBasicInterface
+        rank 0 value class_ref 180994 // ValueVersion
+      actual class class_ref 179842 // ValueBasicInterface
+        rank 1 explicit_value ""
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Class which represents version of software. Version is stored as triplet of numbers and some 
+free form string.<br>
+<br>
+Version should contain at least one version number (major version) but at most 3 version numbers 
+(major, minor and release numbers) and can contain free form string with more precise description 
+(\"beta\", \"rc3\", etc.). This free-form string should be called \"build identification string\".<br>
+Numbers in version string should be separated with \".\" (period) character. Build identification 
+string should be separated from the build numbers by \"-\" (dash) or \"_\" (underscore) character. 
+It should contain only non-capital letters and numbers. Words in build id string should be 
+separated by \"-\" (dash).
+
+Valid examples:<br>
+<br>
+1.0.5-rc1 is represented as major=1, minor=0, release=5, buildID=\"-rc1\"<br>
+1.0-20050404 is represented as major=1, minor=0, release=0, buildID=\"-20050404\"<br>
+<br>
+ValueVersion class is also able to handle \"non-standard\" version representations. For example \"1.0a\" 
+is represented as 1.0.0a (WITHOUT - or _!).
+
+@author Branislav Repcek
+
+"
+      classrelation 211714 // <realization>
+	relation 211714 -_-|>
+	  stereotype "bind"
+	  a public
+	    java "${type}"
+	    classrelation_ref 211714 // <realization>
+	  b parent class_ref 179842 // ValueBasicInterface
+      end
+
+      classrelation 211842 // <realization>
+	relation 211842 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 211842 // <realization>
+	  b parent class_ref 148226 // Serializable
+      end
+
+      classrelation 211970 // <realization>
+	relation 211970 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 211970 // <realization>
+	  b parent class_ref 165122 // XMLSerializableInterface
+      end
+
+      attribute 232834 "NUMERIC_ALIGNMENT"
+	class_attribute const_attribute public explicit_type "int"
+	init_value "=  4"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Number of digits numerical fields will be aligned when converting to string.
+
+"
+      end
+
+      attribute 232962 "major"
+	private explicit_type "int"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Major version number.
+
+"
+      end
+
+      attribute 233090 "minor"
+	private explicit_type "int"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Minor version number.
+
+"
+      end
+
+      attribute 233218 "release"
+	private explicit_type "int"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Release number.
+
+"
+      end
+
+      attribute 233346 "buildIdentifier"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Build identification string (beta, r2...).
+
+"
+      end
+
+      operation 470018 "ValueVersion"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "node" explicit_type "Node"
+	nexceptions 1
+	  exception class_ref 164226 // InputParseException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Read ValueVersion from the XML node.
+
+@param node Node with version data.
+
+@throws InputParseException If there was an error while parsing input.
+"
+      end
+
+      operation 470146 "ValueVersion"
+	public explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocate empty <code>ValueVersion</code> value (all fields are set to 0).
+"
+      end
+
+      operation 470274 "ValueVersion"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "ver" type class_ref 141442 // Version
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Initialise <code>ValueVersion</code> from <code>Version</code>.
+@param ver
+"
+      end
+
+      operation 470402 "ValueVersion"
+	public explicit_return_type ""
+	nparams 4
+	  param in name "majorVer" explicit_type "int"
+	  param in name "minorVer" explicit_type "int"
+	  param in name "releaseNumber" explicit_type "int"
+	  param in name "buildId" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Create new <code>ValueVersion</code>.
+
+@param majorVer Major version number.
+@param minorVer Minor version number.
+@param releaseNumber Release number.
+@param buildId Build identification string.
+"
+      end
+
+      operation 470530 "ValueVersion"
+	public explicit_return_type ""
+	nparams 3
+	  param in name "majorVer" explicit_type "int"
+	  param in name "minorVer" explicit_type "int"
+	  param in name "releaseNumber" explicit_type "int"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Create new <code>ValueVersion</code> with empty buil identification string.
+
+@param majorVer Major version number.
+@param minorVer Minor version number.
+@param releaseNumber Release number.
+"
+      end
+
+      operation 470658 "ValueVersion"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "versionString" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Create new <code>ValueVersion</code> from string.
+
+@param versionString String to convert to version value.
+"
+      end
+
+      operation 470786 "parseString"
+	private explicit_return_type "void"
+	nparams 1
+	  param in name "versionString" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Set value of this ValueVersion according to the string.
+
+@param versionString String containing version.
+"
+      end
+
+      operation 470914 "sgn"
+	private explicit_return_type "int"
+	nparams 1
+	  param in name "x" explicit_type "int"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Return sign of the integer.
+
+@param x Value to test.
+@return Returns -1, 0, or 1 as given parameter is less than, equal to, or greater than zero. 
+"
+      end
+
+      operation 471042 "compareTo"
+	public explicit_return_type "int"
+	nparams 1
+	  param inout name "ver" type class_ref 180994 // ValueVersion
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see java.lang.Comparable#compareTo
+"
+      end
+
+      operation 471170 "equals"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "o" explicit_type "Object"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+@see java.lang.Object#equals
+"
+      end
+
+      operation 471298 "equals"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "ver" type class_ref 180994 // ValueVersion
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Compare specified <code>ValueVersion</code> with this value for equality. Two versions are equal iff
+all their version numbers and build IDs are equal.
+
+@param ver Value to compare this to.
+@return <code>true</code> if values are equal, <code>false</code> otherwise.
+"
+      end
+
+      operation 471426 "hashCode"
+	public explicit_return_type "int"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+@see java.lang.Object#hashCode
+"
+      end
+
+      operation 471554 "toStringAligned"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Create textual representation of version. All numerical fields in the result will be aligned to
+<code>numericalAlignment</code> digits by zeroes from the left. Fields in version are separated
+by dot character.
+
+@return String containing textual representation of version.
+"
+      end
+
+      operation 471682 "toString"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+@see java.lang.Object#toString
+"
+      end
+
+      operation 471810 "greaterThan"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "o" explicit_type "Object"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.value.ValueBasicInterface#greaterThan
+"
+      end
+
+      operation 471938 "greaterThan"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "v" type class_ref 180994 // ValueVersion
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Test if current value is greater than specified one.
+
+@param v Value to compare to.
+
+@return <code>true</code> if this instance has greater value than given value, 
+        <code>false</code> otherwise.
+"
+      end
+
+      operation 472066 "lessThan"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "o" explicit_type "Object"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.value.ValueBasicInterface#lessThan
+"
+      end
+
+      operation 472194 "lessThan"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "v" type class_ref 180994 // ValueVersion
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Test if current value is less than specified one.
+
+@param v Value to compare to.
+
+@return <code>true</code> if this instance has lower value than given value, 
+        <code>false</code> otherwise.
+"
+      end
+
+      operation 472322 "align"
+	class_operation private explicit_return_type "String"
+	nparams 1
+	  param in name "val" explicit_type "int"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Convert number to string and fill with zeroes from right to create string with length of 
+<code>numericalAlignment</code> characters.
+
+@param val Integer to convert.
+@return String with given number, result is at least <code>numericalAlignment</code> characters long.
+"
+      end
+
+      operation 472450 "parseXMLNode"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "node" explicit_type "Node"
+	nexceptions 1
+	  exception class_ref 164226 // InputParseException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.database.XMLSerializableInterface#parseXMLNode
+"
+      end
+
+      operation 472578 "exportAsElement"
+	public explicit_return_type "Element"
+	nparams 1
+	  param inout name "document" explicit_type "Document"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.database.XMLSerializableInterface#exportAsElement
+"
+      end
+
+      operation 472706 "getXMLNodeName"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.database.XMLSerializableInterface#getXMLNodeName
+"
+      end
+
+      operation 472834 "getBuildIdString"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return Build identification string.
+"
+      end
+
+      operation 472962 "setBuildIdString"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "buildId" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@param buildId New build identification string.
+"
+      end
+
+      operation 473090 "getMajorVersion"
+	public explicit_return_type "int"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return Major version number.
+"
+      end
+
+      operation 473218 "setMajorVersion"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "major" explicit_type "int"
+	nexceptions 1
+	  explicit_exception "IllegalArgumentException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@param major New major version number.
+
+@throws IllegalArgumentException If given version number is negative. 
+"
+      end
+
+      operation 473346 "getMinorVersion"
+	public explicit_return_type "int"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return Minor version number.
+"
+      end
+
+      operation 473474 "setMinorVersion"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "minor" explicit_type "int"
+	nexceptions 1
+	  explicit_exception "IllegalArgumentException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@param minor New minor version number.
+
+@throws IllegalArgumentException If given version number is negative.
+"
+      end
+
+      operation 473602 "getReleaseNumber"
+	public explicit_return_type "int"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return Release number.
+"
+      end
+
+      operation 473730 "setReleaseNumber"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "release" explicit_type "int"
+	nexceptions 1
+	  explicit_exception "IllegalArgumentException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@param release New release number.
+
+@throws IllegalArgumentException If given release number is negative.
+"
+      end
+
+      operation 473858 "getUnit"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.hostmanager.value.ValueBasicInterface#getUnit()
+"
+      end
+    end
+
+    class 220418 "TestValueSerialization"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+This will test XML serialization and deserialization routines of ValueXXX and XXXRestriction classes.
+
+Note: If the VM terminates unexpectedly, some files may be left over in current directory (all such
+files will have testfile extension). Please delete those files.
+
+OK, now I really have no idea why some of the files are not sometimes not deleted...
+
+@author Branislav Repcek
+"
+      classrelation 295426 // origBoolean (<unidirectional association>)
+	relation 295426 --->
+	  a role_name "origBoolean" multiplicity "[]" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	    classrelation_ref 295426 // origBoolean (<unidirectional association>)
+	  b parent class_ref 179970 // ValueBoolean
+      end
+
+      classrelation 295554 // origInteger (<unidirectional association>)
+	relation 295554 --->
+	  a role_name "origInteger" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 295554 // origInteger (<unidirectional association>)
+	  b parent class_ref 180354 // ValueInteger
+      end
+
+      classrelation 295682 // origDouble (<unidirectional association>)
+	relation 295682 --->
+	  a role_name "origDouble" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 295682 // origDouble (<unidirectional association>)
+	  b parent class_ref 180226 // ValueDouble
+      end
+
+      classrelation 295810 // origString (<unidirectional association>)
+	relation 295810 --->
+	  a role_name "origString" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 295810 // origString (<unidirectional association>)
+	  b parent class_ref 180866 // ValueString
+      end
+
+      classrelation 295938 // origRegexp (<unidirectional association>)
+	relation 295938 --->
+	  a role_name "origRegexp" multiplicity "[]" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	    classrelation_ref 295938 // origRegexp (<unidirectional association>)
+	  b parent class_ref 180738 // ValueRegexp
+      end
+
+      classrelation 296066 // origVersion (<unidirectional association>)
+	relation 296066 --->
+	  a role_name "origVersion" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 296066 // origVersion (<unidirectional association>)
+	  b parent class_ref 180994 // ValueVersion
+      end
+
+      classrelation 296194 // origRangeInteger (<unidirectional association>)
+	relation 296194 --->
+	  a role_name "origRangeInteger" multiplicity "[]" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}< ValueInteger >${multiplicity} ${name}${value};
+"
+	    classrelation_ref 296194 // origRangeInteger (<unidirectional association>)
+	  b parent class_ref 180610 // ValueRange
+      end
+
+      classrelation 296322 // origRangeBoolean (<unidirectional association>)
+	relation 296322 --->
+	  a role_name "origRangeBoolean" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}< ValueBoolean > ${name}${value};
+"
+	    classrelation_ref 296322 // origRangeBoolean (<unidirectional association>)
+	  b parent class_ref 180610 // ValueRange
+      end
+
+      classrelation 296450 // origRangeDouble (<unidirectional association>)
+	relation 296450 --->
+	  a role_name "origRangeDouble" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}< ValueDouble > ${name}${value};
+"
+	    classrelation_ref 296450 // origRangeDouble (<unidirectional association>)
+	  b parent class_ref 180610 // ValueRange
+      end
+
+      classrelation 296578 // origRangeString (<unidirectional association>)
+	relation 296578 --->
+	  a role_name "origRangeString" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}< ValueString > ${name}${value};
+"
+	    classrelation_ref 296578 // origRangeString (<unidirectional association>)
+	  b parent class_ref 180610 // ValueRange
+      end
+
+      classrelation 296706 // origRangeRegexp (<unidirectional association>)
+	relation 296706 --->
+	  a role_name "origRangeRegexp" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}< ValueRegexp > ${name}${value};
+"
+	    classrelation_ref 296706 // origRangeRegexp (<unidirectional association>)
+	  b parent class_ref 180610 // ValueRange
+      end
+
+      classrelation 296834 // origRangeVersion (<unidirectional association>)
+	relation 296834 --->
+	  a role_name "origRangeVersion" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}< ValueVersion > ${name}${value};
+"
+	    classrelation_ref 296834 // origRangeVersion (<unidirectional association>)
+	  b parent class_ref 180610 // ValueRange
+      end
+
+      classrelation 296962 // origListBoolean (<unidirectional association>)
+	relation 296962 --->
+	  a role_name "origListBoolean" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}< ValueBoolean > ${name}${value};
+"
+	    classrelation_ref 296962 // origListBoolean (<unidirectional association>)
+	  b parent class_ref 180482 // ValueList
+      end
+
+      classrelation 297090 // origListInteger (<unidirectional association>)
+	relation 297090 --->
+	  a role_name "origListInteger" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}< ValueInteger > ${name}${value};
+"
+	    classrelation_ref 297090 // origListInteger (<unidirectional association>)
+	  b parent class_ref 180482 // ValueList
+      end
+
+      classrelation 297218 // origListDouble (<unidirectional association>)
+	relation 297218 --->
+	  a role_name "origListDouble" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}< ValueDouble > ${name}${value};
+"
+	    classrelation_ref 297218 // origListDouble (<unidirectional association>)
+	  b parent class_ref 180482 // ValueList
+      end
+
+      classrelation 297346 // origListString (<unidirectional association>)
+	relation 297346 --->
+	  a role_name "origListString" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}< ValueString > ${name}${value};
+"
+	    classrelation_ref 297346 // origListString (<unidirectional association>)
+	  b parent class_ref 180482 // ValueList
+      end
+
+      classrelation 297474 // origListRegexp (<unidirectional association>)
+	relation 297474 --->
+	  a role_name "origListRegexp" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}< ValueRegexp > ${name}${value};
+"
+	    classrelation_ref 297474 // origListRegexp (<unidirectional association>)
+	  b parent class_ref 180482 // ValueList
+      end
+
+      classrelation 297602 // origListVersion (<unidirectional association>)
+	relation 297602 --->
+	  a role_name "origListVersion" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}< ValueVersion > ${name}${value};
+"
+	    classrelation_ref 297602 // origListVersion (<unidirectional association>)
+	  b parent class_ref 180482 // ValueList
+      end
+
+      classrelation 297730 // readBoolean (<unidirectional association>)
+	relation 297730 --->
+	  a role_name "readBoolean" multiplicity "[]" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	    classrelation_ref 297730 // readBoolean (<unidirectional association>)
+	  b parent class_ref 179970 // ValueBoolean
+      end
+
+      classrelation 297858 // readInteger (<unidirectional association>)
+	relation 297858 --->
+	  a role_name "readInteger" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 297858 // readInteger (<unidirectional association>)
+	  b parent class_ref 180354 // ValueInteger
+      end
+
+      classrelation 297986 // readDouble (<unidirectional association>)
+	relation 297986 --->
+	  a role_name "readDouble" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 297986 // readDouble (<unidirectional association>)
+	  b parent class_ref 180226 // ValueDouble
+      end
+
+      classrelation 298114 // readString (<unidirectional association>)
+	relation 298114 --->
+	  a role_name "readString" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 298114 // readString (<unidirectional association>)
+	  b parent class_ref 180866 // ValueString
+      end
+
+      classrelation 298242 // readRegexp (<unidirectional association>)
+	relation 298242 --->
+	  a role_name "readRegexp" multiplicity "[]" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	    classrelation_ref 298242 // readRegexp (<unidirectional association>)
+	  b parent class_ref 180738 // ValueRegexp
+      end
+
+      classrelation 298370 // readVersion (<unidirectional association>)
+	relation 298370 --->
+	  a role_name "readVersion" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 298370 // readVersion (<unidirectional association>)
+	  b parent class_ref 180994 // ValueVersion
+      end
+
+      classrelation 298498 // readRangeInteger (<unidirectional association>)
+	relation 298498 --->
+	  a role_name "readRangeInteger" multiplicity "[]" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}< ValueInteger >${multiplicity} ${name}${value};
+"
+	    classrelation_ref 298498 // readRangeInteger (<unidirectional association>)
+	  b parent class_ref 180610 // ValueRange
+      end
+
+      classrelation 298626 // readRangeBoolean (<unidirectional association>)
+	relation 298626 --->
+	  a role_name "readRangeBoolean" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}< ValueBoolean > ${name}${value};
+"
+	    classrelation_ref 298626 // readRangeBoolean (<unidirectional association>)
+	  b parent class_ref 180610 // ValueRange
+      end
+
+      classrelation 298754 // readRangeDouble (<unidirectional association>)
+	relation 298754 --->
+	  a role_name "readRangeDouble" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}< ValueDouble > ${name}${value};
+"
+	    classrelation_ref 298754 // readRangeDouble (<unidirectional association>)
+	  b parent class_ref 180610 // ValueRange
+      end
+
+      classrelation 298882 // readRangeString (<unidirectional association>)
+	relation 298882 --->
+	  a role_name "readRangeString" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}< ValueString > ${name}${value};
+"
+	    classrelation_ref 298882 // readRangeString (<unidirectional association>)
+	  b parent class_ref 180610 // ValueRange
+      end
+
+      classrelation 299010 // readRangeRegexp (<unidirectional association>)
+	relation 299010 --->
+	  a role_name "readRangeRegexp" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}< ValueRegexp > ${name}${value};
+"
+	    classrelation_ref 299010 // readRangeRegexp (<unidirectional association>)
+	  b parent class_ref 180610 // ValueRange
+      end
+
+      classrelation 299138 // readRangeVersion (<unidirectional association>)
+	relation 299138 --->
+	  a role_name "readRangeVersion" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}< ValueVersion > ${name}${value};
+"
+	    classrelation_ref 299138 // readRangeVersion (<unidirectional association>)
+	  b parent class_ref 180610 // ValueRange
+      end
+
+      classrelation 299266 // readListBoolean (<unidirectional association>)
+	relation 299266 --->
+	  a role_name "readListBoolean" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}< ValueBoolean > ${name}${value};
+"
+	    classrelation_ref 299266 // readListBoolean (<unidirectional association>)
+	  b parent class_ref 180482 // ValueList
+      end
+
+      classrelation 299394 // readListInteger (<unidirectional association>)
+	relation 299394 --->
+	  a role_name "readListInteger" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}< ValueInteger > ${name}${value};
+"
+	    classrelation_ref 299394 // readListInteger (<unidirectional association>)
+	  b parent class_ref 180482 // ValueList
+      end
+
+      classrelation 299522 // readListDouble (<unidirectional association>)
+	relation 299522 --->
+	  a role_name "readListDouble" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}< ValueDouble > ${name}${value};
+"
+	    classrelation_ref 299522 // readListDouble (<unidirectional association>)
+	  b parent class_ref 180482 // ValueList
+      end
+
+      classrelation 299650 // readListString (<unidirectional association>)
+	relation 299650 --->
+	  a role_name "readListString" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}< ValueString > ${name}${value};
+"
+	    classrelation_ref 299650 // readListString (<unidirectional association>)
+	  b parent class_ref 180482 // ValueList
+      end
+
+      classrelation 299778 // readListRegexp (<unidirectional association>)
+	relation 299778 --->
+	  a role_name "readListRegexp" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}< ValueRegexp > ${name}${value};
+"
+	    classrelation_ref 299778 // readListRegexp (<unidirectional association>)
+	  b parent class_ref 180482 // ValueList
+      end
+
+      classrelation 299906 // readListVersion (<unidirectional association>)
+	relation 299906 --->
+	  a role_name "readListVersion" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}< ValueVersion > ${name}${value};
+"
+	    classrelation_ref 299906 // readListVersion (<unidirectional association>)
+	  b parent class_ref 180482 // ValueList
+      end
+
+      classrelation 300034 // origNVP (<unidirectional association>)
+	relation 300034 --->
+	  a role_name "origNVP" multiplicity "[]" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	    classrelation_ref 300034 // origNVP (<unidirectional association>)
+	  b parent class_ref 166018 // NameValuePair
+      end
+
+      classrelation 300162 // origObjectRestrictions (<unidirectional association>)
+	relation 300162 --->
+	  a role_name "origObjectRestrictions" multiplicity "[]" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	    classrelation_ref 300162 // origObjectRestrictions (<unidirectional association>)
+	  b parent class_ref 165250 // ObjectRestriction
+      end
+
+      classrelation 300290 // origAlternative (<unidirectional association>)
+	relation 300290 --->
+	  a role_name "origAlternative" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 300290 // origAlternative (<unidirectional association>)
+	  b parent class_ref 164994 // AlternativeRestriction
+      end
+
+      classrelation 300418 // readNVP (<unidirectional association>)
+	relation 300418 --->
+	  a role_name "readNVP" multiplicity "[]" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	    classrelation_ref 300418 // readNVP (<unidirectional association>)
+	  b parent class_ref 166018 // NameValuePair
+      end
+
+      classrelation 300546 // readObjectRestrictions (<unidirectional association>)
+	relation 300546 --->
+	  a role_name "readObjectRestrictions" multiplicity "[]" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	    classrelation_ref 300546 // readObjectRestrictions (<unidirectional association>)
+	  b parent class_ref 165250 // ObjectRestriction
+      end
+
+      classrelation 300674 // readAlternative (<unidirectional association>)
+	relation 300674 --->
+	  a role_name "readAlternative" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 300674 // readAlternative (<unidirectional association>)
+	  b parent class_ref 164994 // AlternativeRestriction
+      end
+
+      operation 864258 "setUp"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "Exception"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Before
+"
+	
+	
+	
+	comment "
+Initialize tests.
+"
+      end
+
+      operation 864386 "randomInt"
+	private explicit_return_type "int"
+	nparams 2
+	  param in name "a" explicit_type "int"
+	  param in name "b" explicit_type "int"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Generate random integer from given interval.
+
+@param a Minimum allowed value.
+@param b Maximum allowed value.
+
+@return Random integer from given range.
+"
+      end
+
+      operation 864514 "createValues"
+	private explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "Exception"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@SuppressWarnings(\"unchecked\")
+"
+	
+	
+	
+	comment "
+Create test data.
+
+@throws Exception If an error occured.
+"
+      end
+
+      operation 864642 "deleteFile"
+	class_operation private explicit_return_type "void"
+	nparams 1
+	  param in name "name" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Delete file with specified name on VM termination.
+
+@param name Name of the file.
+"
+      end
+
+      operation 864770 "writeToFile"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "Exception"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Write all data to test file.
+
+@throws Exception If an error occured.
+"
+      end
+
+      operation 864898 "readFromFile"
+	private explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "Exception"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@SuppressWarnings(\"unchecked\")
+"
+	
+	
+	
+      end
+
+      operation 865026 "testBoolean"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "Exception"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+	comment "
+Test <code>ValueBoolean</code> equals method.
+
+@throws Exception If some error occured.
+"
+      end
+
+      operation 865154 "testInteger"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "Exception"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+	comment "
+Test <code>ValueInteger</code> equals method.
+
+@throws Exception If some error occured.
+"
+      end
+
+      operation 865282 "testDouble"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "Exception"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+	comment "
+Test <code>Value</code> equals method.
+
+@throws Exception If some error occured.
+"
+      end
+
+      operation 865410 "testString"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "Exception"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+	comment "
+Test <code>ValueString</code> equals method.
+
+@throws Exception If some error occured.
+"
+      end
+
+      operation 865538 "testRegexp"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "Exception"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+	comment "
+Test <code>ValueRegexp</code> equals method.
+
+@throws Exception If some error occured.
+"
+      end
+
+      operation 865666 "testVersion"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "Exception"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+	comment "
+Test <code>ValueVerions</code> equals method.
+
+@throws Exception If some error occured.
+"
+      end
+
+      operation 865794 "testRangeInteger"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "Exception"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+	comment "
+Test <code>ValueRange</code> equals method.
+
+@throws Exception If some error occured.
+"
+      end
+
+      operation 865922 "testRangeBoolean"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "Exception"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+	comment "
+Test <code>ValueRange</code> equals method.
+
+@throws Exception If some error occured.
+"
+      end
+
+      operation 866050 "testRangeDouble"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "Exception"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+	comment "
+Test <code>ValueRange</code> equals method.
+
+@throws Exception If some error occured.
+"
+      end
+
+      operation 866178 "testRangeString"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "Exception"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+	comment "
+Test <code>ValueRange</code> equals method.
+
+@throws Exception If some error occured.
+"
+      end
+
+      operation 866306 "testRangeRegexp"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "Exception"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+	comment "
+Test <code>ValueRange</code> equals method.
+
+@throws Exception If some error occured.
+"
+      end
+
+      operation 866434 "testRangeVersion"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "Exception"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+	comment "
+Test <code>ValueRange</code> equals method.
+
+@throws Exception If some error occured.
+"
+      end
+
+      operation 866562 "testListBoolean"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "Exception"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+	comment "
+Test <code>ValueList</code> equals method.
+
+@throws Exception If some error occured.
+"
+      end
+
+      operation 866690 "testListInteger"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "Exception"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+	comment "
+Test <code>ValueList</code> equals method.
+
+@throws Exception If some error occured.
+"
+      end
+
+      operation 866818 "testListDouble"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "Exception"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+	comment "
+Test <code>ValueList</code> equals method. 
+
+@throws Exception If some error occured.
+"
+      end
+
+      operation 866946 "testListString"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "Exception"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+	comment "
+Test  <code>ValueList</code> equals method.
+
+@throws Exception If some error occured.
+"
+      end
+
+      operation 867074 "testListRegexp"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "Exception"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+	comment "
+Test  <code>ValueList</code> equals method.
+
+@throws Exception If some error occured.
+"
+      end
+
+      operation 867202 "testListVersion"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "Exception"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+	comment "
+Test <code>ValueList</code> equals method.
+
+@throws Exception If some error occured.
+"
+      end
+
+      operation 867330 "testNameValuePair"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "Exception"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+	comment "
+Test <code>NameValuePair</code> equals method.
+
+@throws Exception If some error occured.
+"
+      end
+
+      operation 867458 "testRestriction"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "Exception"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+	comment "
+Test <code>ObjectRestriction</code> equals method.
+
+@throws Exception If some error occured.
+"
+      end
+
+      operation 867586 "testAlternative"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "Exception"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+	comment "
+Test <code>AlternativeRestriction</code> equals method. 
+
+@throws Exception If some error occured.
+"
+      end
+
+      operation 867714 "tearDown"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@After
+"
+	
+	
+	
+	comment "
+@see junit.framework.TestCase#tearDown()
+"
+      end
+    end
+
+    class 162568 "ValueType"
+      visibility public stereotype "enum"
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}enum ${name}${implements} {
+${items};
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "A simple list of possible value types for easy switching between them.
+
+@author Andrej Podzimek"
+      attribute 215176 "BOOLEAN"
+	public type class_ref 162568 // ValueType
+	cpp_decl ""
+	java_decl "  ${@}${name}( ValueBoolean.class.getCanonicalName() ),${comment}"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 215304 "DOUBLE"
+	public type class_ref 162568 // ValueType
+	cpp_decl ""
+	java_decl "  ${@}${name}( ValueDouble.class.getCanonicalName() ),${comment}"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 215432 "INTEGER"
+	public type class_ref 162568 // ValueType
+	cpp_decl ""
+	java_decl "  ${@}${name}( ValueInteger.class.getCanonicalName() ),${comment}"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 215560 "LIST"
+	public type class_ref 162568 // ValueType
+	cpp_decl ""
+	java_decl "  ${@}${name}( ValueList.class.getCanonicalName() ),${comment}"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 215688 "RANGE"
+	public type class_ref 162568 // ValueType
+	cpp_decl ""
+	java_decl "  ${@}${name}( ValueRange.class.getCanonicalName() ),${comment}"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 215816 "REGEXP"
+	public type class_ref 162568 // ValueType
+	cpp_decl ""
+	java_decl "  ${@}${name}( ValueRegexp.class.getCanonicalName() ),${comment}"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 215944 "STRING"
+	public type class_ref 162568 // ValueType
+	cpp_decl ""
+	java_decl "  ${@}${name}( ValueString.class.getCanonicalName() ),${comment}"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 216072 "VERSION"
+	public type class_ref 162568 // ValueType
+	cpp_decl ""
+	java_decl "  ${@}${name}( ValueVersion.class.getCanonicalName() ),${comment}"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 169608 // typeMap (<unidirectional association>)
+	relation 169608 --->
+	  stereotype "TreeMap"
+	  a role_name "typeMap" class_relation const_relation private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}< String, ${type} > ${name}${value};
+"
+	    classrelation_ref 169608 // typeMap (<unidirectional association>)
+	  b parent class_ref 162568 // ValueType
+      end
+
+      extra_member 130184 "initialization"
+	
+	cpp "" ""
+	java "  static {
+		typeMap = new TreeMap< String, ValueType >();
+		for ( ValueType valueType : ValueType.values() ) {
+			typeMap.put( valueType.NAME, valueType );
+		}
+	}"
+	php ""
+	python ""
+	idl ""
+      end
+
+      attribute 216200 "NAME"
+	const_attribute public explicit_type "String"
+	stereotype "attribute"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      operation 302600 "ValueType"
+	private explicit_return_type ""
+	nparams 1
+	  param in name "name" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 302728 "forName"
+	class_operation public return_type class_ref 162568 // ValueType
+	nparams 1
+	  param in name "name" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+    end
+  end
+
+  deploymentview 130562 "value"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+    artifact 161922 "ValueCommonInterface"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.Serializable;
+import cz.cuni.mff.been.hostmanager.database.XMLSerializableInterface;
+${definition}"
+      associated_classes
+	class_ref 165890 // ValueCommonInterface
+      end
+    end
+
+    artifact 162050 "ValueBasicInterface"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.Serializable;
+import cz.cuni.mff.been.hostmanager.database.XMLSerializableInterface;
+${definition}"
+      associated_classes
+	class_ref 179842 // ValueBasicInterface
+      end
+    end
+
+    artifact 162178 "ValueBoolean"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.Serializable;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import cz.cuni.mff.been.hostmanager.util.XMLHelper;
+import cz.cuni.mff.been.hostmanager.InputParseException;
+import cz.cuni.mff.been.hostmanager.database.XMLSerializableInterface;
+${definition}"
+      associated_classes
+	class_ref 179970 // ValueBoolean
+      end
+    end
+
+    artifact 162306 "ValueCompoundInterface"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.Serializable;
+import cz.cuni.mff.been.hostmanager.database.XMLSerializableInterface;
+${definition}"
+      associated_classes
+	class_ref 180098 // ValueCompoundInterface
+      end
+    end
+
+    artifact 162434 "ValueDouble"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.Serializable;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import cz.cuni.mff.been.hostmanager.InputParseException;
+import cz.cuni.mff.been.hostmanager.database.XMLSerializableInterface;
+import cz.cuni.mff.been.hostmanager.util.XMLHelper;
+${definition}"
+      associated_classes
+	class_ref 180226 // ValueDouble
+      end
+    end
+
+    artifact 162562 "ValueInteger"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.Serializable;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import cz.cuni.mff.been.hostmanager.InputParseException;
+import cz.cuni.mff.been.hostmanager.database.XMLSerializableInterface;
+import cz.cuni.mff.been.hostmanager.util.XMLHelper;
+${definition}"
+      associated_classes
+	class_ref 180354 // ValueInteger
+      end
+    end
+
+    artifact 162690 "ValueList"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import cz.cuni.mff.been.hostmanager.InputParseException;
+import cz.cuni.mff.been.hostmanager.database.XMLSerializableInterface;
+import cz.cuni.mff.been.hostmanager.util.XMLHelper;
+${definition}"
+      associated_classes
+	class_ref 180482 // ValueList
+      end
+    end
+
+    artifact 162818 "ValueRange"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.Serializable;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import cz.cuni.mff.been.hostmanager.InputParseException;
+import cz.cuni.mff.been.hostmanager.ValueTypeIncorrectException;
+import cz.cuni.mff.been.hostmanager.database.XMLSerializableInterface;
+import cz.cuni.mff.been.hostmanager.util.XMLHelper;
+${definition}"
+      associated_classes
+	class_ref 180610 // ValueRange
+      end
+    end
+
+    artifact 162946 "ValueRegexp"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.Serializable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import cz.cuni.mff.been.hostmanager.InputParseException;
+import cz.cuni.mff.been.hostmanager.database.XMLSerializableInterface;
+import cz.cuni.mff.been.hostmanager.util.XMLHelper;
+${definition}"
+      associated_classes
+	class_ref 180738 // ValueRegexp
+      end
+    end
+
+    artifact 163074 "ValueString"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.Serializable;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import cz.cuni.mff.been.hostmanager.InputParseException;
+import cz.cuni.mff.been.hostmanager.database.XMLSerializableInterface;
+import cz.cuni.mff.been.hostmanager.util.XMLHelper;
+${definition}"
+      associated_classes
+	class_ref 180866 // ValueString
+      end
+    end
+
+    artifact 163202 "ValueVersion"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.Serializable;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import cz.cuni.mff.been.common.Version;
+import cz.cuni.mff.been.hostmanager.InputParseException;
+import cz.cuni.mff.been.hostmanager.database.XMLSerializableInterface;
+import cz.cuni.mff.been.hostmanager.util.XMLHelper;
+${definition}"
+      associated_classes
+	class_ref 180994 // ValueVersion
+      end
+    end
+
+    artifact 198658 "TestValueSerialization"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.File;
+import java.util.ArrayList;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import cz.cuni.mff.been.hostmanager.database.AlternativeRestriction;
+import cz.cuni.mff.been.hostmanager.database.NameValuePair;
+import cz.cuni.mff.been.hostmanager.database.ObjectRestriction;
+import cz.cuni.mff.been.hostmanager.util.XMLHelper;
+import static org.junit.Assert.assertTrue;
+${definition}"
+      associated_classes
+	class_ref 220418 // TestValueSerialization
+      end
+    end
+
+    artifact 150408 "ValueType"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.util.TreeMap;
+${definition}"
+      associated_classes
+	class_ref 162568 // ValueType
+      end
+    end
+  end
+end

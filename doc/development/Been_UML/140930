@@ -1,0 +1,395 @@
+format 59
+"metadata" // been::src::cz::cuni::mff::been::task::upload::metadata
+  revision 1
+  modified_by 2 "Administrator"
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default show_stereotype_properties default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+  show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+  show_infonote default drawing_language default show_stereotype_properties default
+  
+  java_dir "cz/cuni/mff/been/task/upload/metadata"
+  java_package "cz.cuni.mff.been.task.upload.metadata"
+  classview 137602 "metadata"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default show_stereotype_properties default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+    //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+    show_infonote default drawing_language default show_stereotype_properties default
+    class 205442 "CreatePackageMetadata"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+<p>Creates metadata file for a BEEN package in its working directory.</p>
+
+<b>Task properties:</b><br>
+<ul>
+<li>{@value #PACKAGE_NAME}: <br>
+		- name of the package<br>
+<li>{@value #PACKAGE_HUMAN_NAME}: <br>
+		- human readable, or a more descriptive package name<br>
+<li>{@value #VERSION}: <br>
+		- version of the package<br>
+<li>{@value #HARDWARE_PLATFORMS}: <br>
+		- hardware platforms supported by the package, separated by spaces<br>
+<li>{@value #SOFTWARE_PLATFORMS}: <br>
+		- software platforms supported by the package, separated by spaces<br>
+<li>{@value #TYPE}: <br>
+		- type of the package, valid values are {@value #TYPE_BINARY},
+		 {@value #TYPE_SOURCE}, {@value #TYPE_DATA} and {@value #TYPE_TASK}<br>
+</ul>
+
+@author Jaroslav Urban
+"
+      classrelation 264194 // <generalisation>
+	relation 264194 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 264194 // <generalisation>
+	  b parent class_ref 197250 // Job
+      end
+
+      attribute 324866 "PACKAGE_NAME"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"package-name\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Property name for the name of the package 
+"
+      end
+
+      attribute 324994 "PACKAGE_HUMAN_NAME"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"package-human-name\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Property name for the human name of the package 
+"
+      end
+
+      attribute 325122 "VERSION"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"version\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Property name for the version of the package 
+"
+      end
+
+      attribute 325250 "HARDWARE_PLATFORMS"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"hardware-platforms\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Property name for the hardware platforms of the package 
+"
+      end
+
+      attribute 325378 "SOFTWARE_PLATFORMS"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"software-platforms\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Property name for the software platforms of the package 
+"
+      end
+
+      attribute 325506 "BINARY_IDENTIFIER"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"binary-identifier\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Property name for the binary identifier of the package 
+"
+      end
+
+      attribute 325634 "TYPE"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"type\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Property name for the type of the package 
+"
+      end
+
+      attribute 325762 "TYPE_BINARY"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"binary\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Property value of the {@value #TYPE} property for a binary package 
+"
+      end
+
+      attribute 325890 "TYPE_SOURCE"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"source\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Property value of the {@value #TYPE} property for a source package 
+"
+      end
+
+      attribute 326018 "TYPE_TASK"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"task\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Property value of the {@value #TYPE} property for a task package 
+"
+      end
+
+      attribute 326146 "TYPE_DATA"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"data\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Property value of the {@value #TYPE} property for a data package 
+"
+      end
+
+      attribute 326274 "packageName"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 326402 "packageHumanName"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 264322 // version (<unidirectional association>)
+	relation 264322 --->
+	  a role_name "version" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 264322 // version (<unidirectional association>)
+	  b parent class_ref 141442 // Version
+      end
+
+      attribute 326530 "hardwarePlatforms"
+	private explicit_type "String"
+	stereotype "ArrayList"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<${type}> ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 326658 "softwarePlatforms"
+	private explicit_type "String"
+	stereotype "ArrayList"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<${type}> ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 264450 // type (<unidirectional association>)
+	relation 264450 --->
+	  a role_name "type" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 264450 // type (<unidirectional association>)
+	  b parent class_ref 145538 // PackageType
+      end
+
+      attribute 326786 "binaryIdentifier"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      operation 665986 "CreatePackageMetadata"
+	public explicit_return_type ""
+	nparams 0
+	nexceptions 1
+	  exception class_ref 137218 // TaskInitializationException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>CreatePackageMetadata</code> object.
+
+@throws TaskInitializationException
+"
+      end
+
+      operation 666114 "init"
+	private explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  exception class_ref 137346 // TaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 666242 "run"
+	protected explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  exception class_ref 137346 // TaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment " (non-Javadoc)
+@see cz.cuni.mff.been.task.Job#run()
+"
+      end
+
+      operation 666370 "checkRequiredProperties"
+	protected explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  exception class_ref 137346 // TaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+      end
+    end
+  end
+
+  deploymentview 136706 "metadata"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+    artifact 185218 "CreatePackageMetadata"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.File;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
+import cz.cuni.mff.been.common.Version;
+import cz.cuni.mff.been.softwarerepository.PackageMetadata;
+import cz.cuni.mff.been.softwarerepository.PackageType;
+import cz.cuni.mff.been.task.Job;
+import cz.cuni.mff.been.task.TaskException;
+import cz.cuni.mff.been.task.TaskInitializationException;
+${definition}"
+      associated_classes
+	class_ref 205442 // CreatePackageMetadata
+      end
+    end
+  end
+end

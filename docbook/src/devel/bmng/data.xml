@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sect1
+	xml:id="been.devel.bmng.data"
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>Data Structures</title>
+
+	<sect2>
+	    <title>Data Type Overview</title>
+
+		<para>
+		This chapter is about external data structures that are used in the public interfaces of Benchmark Manager. Internal data structures are described in JavaDoc and the subcomponents overview (<xref linkend="been.devel.bmng.components"/>).
+		</para>
+
+		<sect3>
+			<title><classname>Analysis</classname></title>
+
+			<para>
+			<glossterm>Analysis</glossterm> data are stored in object <classname>Analysis</classname>. It contains some basic information (name, description, generator host RSL), some automatic content (id, last successful generator run time, numbers of successful generator runs, state) and BMmodules. This whole class is persisted with Java Hibernate into Benchmark Manager's personal Derby database stored in the service's working directory.
+			</para>
+
+			<para>
+			The automatic content of analysis can't be changed by user. It's Benchmark Manager's meta data with some relevance to the user so it can be viewed but not changed. <classname>Analysis</classname> contains one tricky field - analysis state. It's one of the transient fields and only contains cached information of analysis state. This field is used either by scheduler or by user interface. Neither of them minds a few microseconds old data so there was no need for a remote object.
+			</para>
+		</sect3>
+
+		<sect3>
+			<title>BMmodule</title>
+
+			<para>
+			This type of data contains generator and evaluator pluggable modules information stored in an analysis. It holds respective pluggable module name, version and configuration for that pluggable module.
+			</para>
+		</sect3>
+
+		<sect3>
+			<title>BMmodule Configuration</title>
+			<para>
+			<classname>Configuration</classname> is simple property-like object that holds module configuration as key - value pairs where key is always a <type>String</type> and value is always <type>String[]</type>. This configuration is collected from user input and has no meaning for the Benchmark Manager. The pluggable module itself provides function for validation of configuration semantics.
+			</para>
+
+			<para>
+			As stated above we need user to enter the configuration data. In order to do that, user needs interface with at least some hints (not just entering name-value pairs). For describing the user interface there is <classname>ConfigurationDescription</classname> object created from a XML file stored in the BMmodule package. The Benchmark Manager uses JAXB technology to parse the XML and sends it to the user interface, the rest of the work is implemented there.
+			</para>
+		</sect3>
+	</sect2>
+
+</sect1>

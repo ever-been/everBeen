@@ -1,0 +1,3 @@
+class Counter
+!!!265602.java!!!	getNext() : long
+			return count++;

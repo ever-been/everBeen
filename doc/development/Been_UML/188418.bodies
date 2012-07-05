@@ -1,0 +1,115 @@
+class Exporter
+!!!538626.java!!!	Exporter()
+		
+!!!538754.java!!!	getInstance() : Exporter
+		if (exporterInstance == null) {
+			exporterInstance = new Exporter();
+		}
+		return exporterInstance;
+!!!538882.java!!!	initialize(inout database : Database) : void
+		Exporter.database = database;
+!!!539010.java!!!	getExportFormats() : DataFormat
+			
+		return exportFormats;
+!!!539138.java!!!	getExportInterface(in formatId : String) : ExportInterface
+					
+		if (formatId.compareTo(exportFormats[0].getId()) == 0) {
+			return new ExportBEEN();
+		}
+		
+		throw new InvalidArgumentException("Unknow export format: " + formatId + "."); 				
+!!!539266.java!!!	getAnalysisExportFormats() : DataFormat
+		// Return hardcoded list of available export formats
+		return getExportFormats();
+!!!539394.java!!!	beginAnalysesExport(inout aids : AID, in formatId : String, inout ip : InetAddress, in port : int) : DownloadHandle
+		
+		ExportInterface exportInterface;
+		
+		for (int i = 0; i < aids.length; i++) {
+			database.getAnalysisEntityManager().ensureValidAid(aids[i]);
+			for (int j = i + 1; j < aids.length; j++) {
+				if ((aids[i]).equals(aids[j])) {
+					throw new IllegalArgumentException(Database.getAnalysisReferenceString(aids[i])
+							+ " duplicated in analysis list.");
+				}
+			}
+			
+		}
+		
+		exportInterface = getExportInterface(formatId);		
+		
+		exportInterface.setDatabase(database);
+		return exportInterface.beginAnalysesExport(aids, ip, port);
+
+!!!539522.java!!!	getExperimentExportFormats() : DataFormat
+		
+		return getExportFormats();
+!!!539650.java!!!	beginExperimentsExport(inout aid : AID, inout eids : EID, in formatId : String, inout ip : InetAddress, in port : int) : DownloadHandle
+		
+		
+		ExportInterface exportInterface;
+		
+		for (int i = 0; i < eids.length; i++) {
+			database.getExperimentEntityManager().ensureValidEid(aid, eids[i]);			
+			for (int j = i + 1; j < eids.length; j++) {
+				if ((eids[i]).equals(eids[j])) {
+					throw new IllegalArgumentException(Database.getExperimentReferenceString(aid, 
+							eids[i]) + " duplicated in experiment list.");
+				}
+			}
+		}
+		
+		exportInterface = getExportInterface(formatId);
+		
+		exportInterface.setDatabase(database);
+		return exportInterface.beginExperimentsExport(aid, eids, ip, port);
+!!!539778.java!!!	getBinaryExportFormats() : DataFormat
+		// Return hardcoded list
+		return getExportFormats();
+!!!539906.java!!!	beginBinariesExport(inout aid : AID, inout eid : EID, inout bids : BID, in formatId : String, inout ip : InetAddress, in port : int) : DownloadHandle
+		
+		ExportInterface exportInterface;
+		
+		for (int i = 0; i < bids.length; i++) {
+			database.getBinaryEntityManager().ensureValidBid(aid, eid, bids[i]);
+			for (int j = i + 1; j < bids.length; j++) {
+				if ((bids[i]).equals(bids[j])) {
+					throw new IllegalArgumentException(Database.getBinaryReferenceString(aid, eid, 
+							bids[i]) + " duplicated in binary list.");
+				}
+			}
+		}
+		
+		exportInterface = getExportInterface(formatId);				
+		
+		exportInterface.setDatabase(database);
+		return exportInterface.beginBinariesExport(aid, eid, bids, ip, port);
+!!!540034.java!!!	getRunExportFormats() : DataFormat
+		// Return hardcoded list
+		return getExportFormats();
+!!!540162.java!!!	beginRunsExport(inout aid : AID, inout eid : EID, inout bid : BID, inout runIndexes : RID, in formatId : String, inout ip : InetAddress, in port : int) : DownloadHandle
+		
+		ExportInterface exportInterface;
+		
+		if (runIndexes == null) {
+			throw new IllegalArgumentException("Runs argument inavlid - null.");
+		}
+		
+		for (int i = 0; i < runIndexes.length; i++) {
+			database.getRunEntityManager().ensureValidRid(aid, eid, bid, runIndexes[i]);			
+			for (int j = i + 1; j < runIndexes.length; j++) {
+				if ((runIndexes[i] == runIndexes[j])) {
+					throw new IllegalArgumentException(Database.getRunReferenceString(aid, eid, bid,
+							runIndexes[i]) + " duplicated in run list.");
+				}
+			}
+		}
+
+		exportInterface = getExportInterface(formatId);		
+		
+		exportInterface.setDatabase(database);
+		return exportInterface.beginRunsExport(aid, eid, bid, runIndexes, ip, port);
+!!!540290.java!!!	getExportStatus(inout handle : DownloadHandle) : DownloadStatus
+		return database.getFileDownloadStatus(handle);
+!!!540418.java!!!	endExport(inout handle : DownloadHandle) : void
+		database.endFileDownload(handle);

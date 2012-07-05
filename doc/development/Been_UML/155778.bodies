@@ -1,0 +1,44 @@
+class Unzip
+!!!260866.java!!!	Unzip()
+		// dummy ant project
+		Project antProject = new Project();
+		antProject.init();
+		setProject(antProject);
+		// dummy ant task name
+		setTaskName("unzip");
+		setTaskType("unzip");
+		// dummy ant target
+		setOwningTarget(null);
+!!!260994.java!!!	unzip(in archive : String, in directory : String) : void
+		
+		Unzip z = createInstance(archive, directory);
+		
+		try {
+			z.execute();
+		} catch (Exception e) {
+			throw new AntTaskException("Extract failed", e);
+		}
+!!!261122.java!!!	unzip(in archive : String, in includes : String, in directory : String) : void
+
+		Unzip z = createInstance(archive, directory);
+		PatternSet extractPatternSet = new PatternSet();
+		extractPatternSet.setIncludes(includes);
+		try {
+			z.execute();
+		} catch (Exception e) {
+			throw new AntTaskException("Extract failed", e);
+		}
+!!!261250.java!!!	createInstance(in archive : String, in directory : String) : Unzip
+		Unzip z = new Unzip();
+		
+		File srcArchive = new File(archive);
+		if (!srcArchive.exists()) {
+			throw new AntTaskException("Source archive does not exist: " + archive);
+		}
+		
+		File destDir = new File(directory);
+		
+		z.setSrc(srcArchive);
+		z.setDest(destDir);
+		
+		return z;

@@ -1,0 +1,5 @@
+class Utils
+!!!847490.java!!!	eval(in rslCondition : String, inout context : ContainerProperty) : boolean
+		Condition condition = ParserWrapper.parseString(rslCondition);
+		condition.check(context);
+		return condition.evaluate(context);

@@ -1,0 +1,808 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<!--
+
+  BEEN: Benchmarking Environment
+  ==============================
+
+  File author: Jaroslav Urban
+
+  GNU Lesser General Public License Version 2.1
+  - - - - - - - - - - - - - - - - - - - - - - -
+  Copyright (C) 2004-2006 Distributed Systems Research Group,
+  Faculty of Mathematics and Physics, Charles University in Prague
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License version 2.1, as published by the Free Software Foundation.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+  MA  02111-1307  USA
+
+-->
+<project name="BEEN" default="usage" basedir=".">
+	<!-- ============== PROPERTIES ============== -->
+
+	<!-- Environment variables -->
+	<property environment="env" />
+
+	<!-- === Directories === -->
+	
+	<!-- Root directory of BEEN -->
+	<property name="been.dir" location="${basedir}" />
+	
+	<!-- Build output directory -->
+	<property name="build.dir" location="${been.dir}/build" />
+	
+	<!-- Scripts directory -->
+	<property name="bin.dir" location="${been.dir}/bin" />
+	
+	<!-- Output directory of building the classes, so compiled test, reports,
+	     etc. can go to other subdirectories of ${build.dir}. It's the same
+	     as ${build.dir} as for now. -->
+	<property name="build.classes.dir" location="${build.dir}" />
+	
+	<!-- Directory with the distribution files, e.g. the final product of BEEN,
+	     JARs, ZIPs etc -->
+	<property name="dist.dir" location="${been.dir}/dist" />
+	
+	<!-- Directory with distribution files for running hostruntime -->
+	<property name="dist.hostruntime.dir" location="${dist.dir}/hostruntime" />
+	
+	<!--Direcotry with distribution files for running hostruntime, taskmanager and all system services -->
+	<property name="dist.full.dir" location="${dist.dir}/full" />	
+	
+	<!-- Directory with the task packages -->
+	<property name="dist.tasks.dir" location="${dist.dir}/tasks" />	
+	
+	<!-- Documentation directory -->
+	<property name="doc.dir" location="${been.dir}/doc" />
+	
+	<!-- DocBook directory -->
+	<property name="docbook.dir" location="${been.dir}/docbook" />
+	
+	<!-- Source directory -->
+	<property name="src.dir" location="${been.dir}/src" />
+	
+	<!-- JAXB source directory to retrieve .xsd files. -->
+	<property name="jaxb.src.dir" location="${src.dir}/cz/cuni/mff/been/jaxb" />
+	
+	<!-- JAXB packages path relative to ${build.clases.path} to include in .class filesets. -->
+	<property name="jaxb.relative.path" location="cz/cuni/mff/been/jaxb" />
+	
+	<!-- Tests directory -->
+	<property name="tests.dir" location="${been.dir}/tests" />
+	
+	<!-- Tests' mock classes directory -->
+	<property name="mock.dir" location="${been.dir}/mock" />
+
+	<!-- Tests' spy classes directory -->
+	<property name="spy.dir" location="${been.dir}/spy" />
+
+	<!-- 3rd party libraries directory -->
+	<property name="lib.dir" location="${been.dir}/lib" />
+	
+	<!-- temporary directory -->
+		<property name="tmp.dir" location="${been.dir}/tmp" />
+	
+	<!-- Directory with additional data -->
+	<property name="etc.dir" location="${been.dir}/etc" />
+	
+	<!-- Directory with working data of service tasks -->
+	<property name="data.dir" location="${been.dir}/data" />
+	
+	<!-- Directory with resources -->
+	<property name="resources.dir" location="${been.dir}/resources" />
+
+	<!-- Directory with files that belong to the packages -->
+	<property name="packages.dir" location="${resources.dir}/packages" />
+
+	<!-- Directory with DTDs -->
+	<property name="dtd.dir" location="${resources.dir}/dtd" />
+	
+	<!-- Directory with XSDs -->
+	<property name="xsd.dir" location="${src.dir}/cz/cuni/mff/been/jaxb" />
+
+	<!-- Directory with task descriptors -->
+	<property name="task-descriptors.dir" location="${resources.dir}/task-descriptors" />
+	
+	<!-- Directory with examples -->
+	<property name="examples.dir" location="${been.dir}/examples" />
+	
+	<!-- Directory with examples data -->
+	<property name="examples.data.dir" location="${examples.dir}/data" />
+	
+	<!-- Temporary directory with the release of BEEN -->
+	<property name="release.dir" location="${been.dir}/been" />
+	
+	<!-- Version of BEEN release -->
+	<property name="release.version" value="1.0" />
+	
+	<!-- File name of the BEEN release -->
+	<property name="release.file" value="been" />
+	
+	<!-- === Intermediate distribution files === -->
+	
+	<!-- been.jar file -->
+	<property name="been.jar" value="been.jar" />
+	
+	<!-- === Read property files === -->
+
+	<!-- User's build properties -->
+	<property file="${been.dir}/user.properties" />
+	
+	<condition property="user.properties">
+		<available file="${been.dir}/user.properties"/>
+	</condition>
+	
+	<!-- Default build properties -->
+	<property file="${been.dir}/build.properties" />
+	
+	<!-- Properties containing filenames of libraries -->
+	<property file="${lib.dir}/lib.properties" />
+	
+	<!-- === Compiler options === -->
+	
+	<!-- Version of Java used in the source code -->
+	<property name="build.java.version" value="1.5" />
+	
+	<!-- Build with debugging info? -->
+	<property name="build.debug" value="true" />
+	
+	<!-- Include ant in the classpath? Should be set to false-->
+	<property name="build.include.ant.runtime" value="false" />
+	
+	
+	<!-- === Other options === -->
+	
+	<!-- Let's suppose that you want to execute the "script" script with the Ant's
+		"exec" task. Then you set the "executable" property of this task to "script".
+		If the "exec.vmlauncher" property is set to false, then Ant will execute "script.bat"
+		file on Windows and "script" file on Linux. This can be usefull if we will have scripts
+		named e.g. "start" and "start.bat" in the "bin" directory. Then the exec task will
+		run the right one. -->
+	<property name="exec.vmlauncher" value="false" />
+	
+	
+	<!-- === Other properties === -->
+	
+	
+	
+	<!-- ============== FILESETS, CLASSPATH, etc ================ -->
+	
+	<!-- Classpath for compiling BEEN. Add libraries from the ${lib.dir}
+	     directory in the form like	${library.jar}, where the value of
+	     library.jar property is set in the ${lib.dir}/lib.properties file to
+	     the actual filename of the library -->
+	<path id="compile.classpath">
+		<pathelement location="${build.classes.dir}"/>
+		
+		<pathelement location="${lib.dir}/${jaxb-api.jar}" />
+		<pathelement location="${lib.dir}/${jaxb-impl.jar}" />
+		<pathelement location="${lib.dir}/${jaxb-xjc.jar}" />
+		
+		<pathelement location="${lib.dir}/${ant.jar}"/>
+		<pathelement location="${lib.dir}/${cvslib.jar}"/>
+		<pathelement location="${lib.dir}/${commons-io.jar}"/>
+		<pathelement location="${lib.dir}/${commons-fileupload.jar}"/>
+		<pathelement location="${lib.dir}/${javacc.jar}"/>
+		<pathelement location="${lib.dir}/${servlet-api.jar}"/>
+		<pathelement location="${lib.dir}/${jsp-api.jar}"/>
+		<pathelement location="${lib.dir}/${log4j.jar}"/>
+		<pathelement location="${lib.dir}/${hello.jar}"/>
+		<pathelement location="${lib.dir}/${netcdf.jar}"/>
+
+		<pathelement location="${lib.dir}/${rjava.jar}"/>
+
+		<pathelement location="${lib.dir}/${jpf.jar}"/>
+		<pathelement location="${lib.dir}/${jpf-boot.jar}"/>
+		<pathelement location="${lib.dir}/${javasvn.jar}"/>
+		<pathelement location="${lib.dir}/${sofa2.jar}"/>
+		<pathelement location="${lib.dir}/${sofa2-repositoryserver.jar}"/>
+		<pathelement location="${lib.dir}/${sofa2-connectors.jar}"/>
+		<pathelement location="${lib.dir}/${commons-logging.jar}"/>
+
+		<pathelement location="${lib.dir}/${jython.jar}"/>
+		
+		<pathelement location="${lib.dir}/${antlr.jar}"/>
+		<pathelement location="${lib.dir}/${asm-attrs.jar}"/>
+		<pathelement location="${lib.dir}/${asm.jar}"/>
+		<pathelement location="${lib.dir}/${cglib.jar}"/>
+		<pathelement location="${lib.dir}/${commons-collections.jar}"/>
+		<pathelement location="${lib.dir}/${dom4j.jar}"/>
+		<pathelement location="${lib.dir}/${ehcache.jar}"/>
+		<pathelement location="${lib.dir}/${ejb3-persistence.jar}"/>
+		<pathelement location="${lib.dir}/${hibernate3.jar}"/>
+		<pathelement location="${lib.dir}/${hibernate-annotations.jar}"/>
+		<pathelement location="${lib.dir}/${hibernate-commons-annotations.jar}"/>
+		<pathelement location="${lib.dir}/${hibernate-entitymanager.jar}"/>
+		<pathelement location="${lib.dir}/${hibernate-tools.jar}"/>
+		<pathelement location="${lib.dir}/${javassist.jar}"/>
+		<pathelement location="${lib.dir}/${jdbc2_0-stdext.jar}"/>
+		<pathelement location="${lib.dir}/${jta.jar}"/>
+
+		<pathelement location="${lib.dir}/${derby.jar}"/>
+		<pathelement location="${lib.dir}/${derbyclient.jar}"/>
+		<pathelement location="${lib.dir}/${derbynet.jar}"/>
+		<pathelement location="${lib.dir}/${derbytools.jar}"/>
+		
+		<pathelement location="${lib.dir}/${rmiio.jar}"/>
+		<pathelement location="${lib.dir}/${opencsv.jar}"/>
+
+		<pathelement location="${lib.dir}/${collections-generic.jar}"/>
+		
+		<pathelement location="${lib.dir}/${junit.jar}"/>
+		
+		<pathelement location="${lib.dir}/${jpda.jar}"/>
+		
+	</path>
+	
+	<!-- ============== TARGETS =========================== -->
+	
+	<!-- === Help targets  === -->
+	
+	<!-- Print a brief usage guide to the build process -->
+	<target name="usage"  description="Print a brief help">
+		<echo message="Execute 'ant -projecthelp' for build file help."/> 
+        <echo message="Execute 'ant -help' for Ant help."/> 
+	</target>
+	
+	<!-- Alias for the "usage" target -->
+	<target name="help" depends="usage" description="Print a brief help">
+	</target>
+	
+	<!-- === Cleaning targets === -->
+		
+	<!-- Delete the compiled classes, distribution files and documentation -->
+	<target name="clean" depends="distclean" 
+		description="Delete the compiled classes, distribution files and documentation (does not delete generated files)">
+		
+		<delete dir="${data.dir}"/>
+		<delete dir="${tmp.dir}" />
+		<delete dir="${build.dir}"/>
+		<delete dir="${doc.dir}/javadoc"/>
+		<delete dir="${doc.dir}/load-monitor"/>
+		<delete dir="${doc.dir}/detector"/>
+		<delete dir="${doc.dir}/client"/>
+
+		<!-- Deletes generated files of the RSL parser. -->
+		<ant dir="${src.dir}/cz/cuni/mff/been/common/rsl" target="clean" />
+		<ant dir="${src.dir}/cz/cuni/mff/been/benchmarkmanagerng" target="clean" />
+		<ant dir="${docbook.dir}" target="clean" />
+	</target>
+
+	<!-- Remove all compiled files in detector directories. -->	
+	<target name="clean-detector">
+		<ant dir="native/detector" target="clean"/>
+	</target>	
+
+	<!-- Remove all compiled files in Load Monitor directories. -->
+	<target name="clean-monitor">
+		<ant dir="native/monitor" target="clean"/>
+	</target>
+	
+	<!-- Remove all compiled files in the Command Line Client directory -->
+	<target name="clean-client">
+		<ant dir="native/client" target="clean"/>
+	</target>
+	
+	<!-- Delete only the distribution files. It can be usefull when you change
+	     some file belonging to a task package and need to repackage the task.
+	     Then you run "distclean" and "dist". -->
+	<target name="distclean" description="Delete the distribution files only">
+		<delete dir="${dist.dir}"/>
+	</target>
+	
+	<target name="veryclean" description="Same as clean, but deletes also generated classed." depends="clean">
+		<ant dir="${src.dir}/cz/cuni/mff/been/common/rsl" target="genclean" inheritrefs="true"/>
+		<ant dir="${src.dir}/cz/cuni/mff/been/jaxb" target="genclean"/>
+	</target>
+	
+	<!-- === Preparation targets, create directories etc. === -->
+	<target name="check-user-properties" unless="user.properties">
+		<echo level="warning">user.properties file not found, using defaults (see build.properties file)
+		</echo>
+	</target>
+	
+	<!-- Create directories needed for building. -->
+	<target name="prepare" depends="check-user-properties">
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${build.classes.dir}" />
+	</target>
+	
+	<!-- Create directories needed for producing the distribution files. -->
+	<target name="dist-prepare">
+		<mkdir dir="${dist.dir}" />
+		<mkdir dir="${dist.tasks.dir}" />
+		<mkdir dir="${dist.hostruntime.dir}" />
+		<mkdir dir="${dist.full.dir}" />
+	</target>
+	
+	<!-- Create diretory where services have their working directories and files. -->
+	<target name="dist-data-prepare">
+		<mkdir dir="${data.dir}"/>
+	</target>
+	
+	<target name="generate">
+		<!-- Generates the RSL parser source files form the Parser.jj definition
+		     file using javacc. 'inheritrefs="true"' is needed to pass a reference
+		     to "compile.classpath" to the called build file. -->
+		<ant dir="${src.dir}/cz/cuni/mff/been/common/rsl" target="generate" inheritrefs="true" />
+		<ant dir="${src.dir}/cz/cuni/mff/been/jaxb" target="generate"/>
+	</target>
+	
+	<!-- === Compilation targets === -->
+	
+	<!-- Compile the source code. -->
+	<target name="compile" depends="prepare, generate">
+		<javac source="${build.java.version}" 
+			debug="${build.debug}" 
+			includeantruntime="${build.include.ant.runtime}" 
+			srcdir="${src.dir}" destdir="${build.classes.dir}">
+			
+			<classpath>
+				<path refid="compile.classpath"/>				
+			</classpath>
+			<compilerarg value="-Djava.endorsed.dirs=${lib.dir}/jaxb"/>
+		</javac>
+	</target>
+	
+	<!-- Compile the JUnit tests. -->
+	<target name="compile-tests" depends="compile">
+		<!-- compile spy classes -->
+		<javac source="${build.java.version}"
+			debug="${build.debug}" 
+			includeantruntime="${build.include.ant.runtime}" 
+			srcdir="${spy.dir}" destdir="${build.classes.dir}">
+			
+			<classpath>
+				<path refid="compile.classpath"/>
+				<pathelement location="lib/junit/junit.jar"/>
+			</classpath>
+			<compilerarg value="-Djava.endorsed.dirs=${lib.dir}/jaxb"/>
+		</javac>
+
+		<!-- compile mock classes -->
+		<javac source="${build.java.version}"
+			debug="${build.debug}" 
+			includeantruntime="${build.include.ant.runtime}" 
+			srcdir="${mock.dir}" destdir="${build.classes.dir}">
+			
+			<classpath>
+				<path refid="compile.classpath"/>
+				<pathelement location="lib/junit/junit.jar"/>
+			</classpath>
+			<compilerarg value="-Djava.endorsed.dirs=${lib.dir}/jaxb"/>
+		</javac>
+		<javac source="${build.java.version}"
+			debug="${build.debug}" 
+			includeantruntime="${build.include.ant.runtime}" 
+			srcdir="${tests.dir}" destdir="${build.classes.dir}">
+			
+			<classpath>
+				<path refid="compile.classpath"/>
+				<pathelement location="lib/junit/junit.jar"/>
+			</classpath>
+			<compilerarg value="-Djava.endorsed.dirs=${lib.dir}/jaxb"/>
+		</javac>
+	</target>
+
+	<!-- Build native library for current OS. -->
+	<target name="compile-detector" description="Compile the Detector for the current OS">
+		<ant dir="native/detector" target="build"/>
+	</target>
+	
+	<!-- Compile Load Monitor for current platform. -->
+	<target name="compile-monitor" description="Compile the Load Monitor for the current OS">
+		<ant dir="native/monitor" target="build"/>
+	</target>
+	
+	<!-- Compile Command Line Client for the current platform. -->
+	<target name="compile-client" description="Compile the Command Line Client for the current OS.">
+		<ant dir="native/client" target="build"/>
+	</target>
+		
+	<!-- The public "alias" to the compile target -->	
+	<target name="build" depends="compile"
+		description="Compile all classes" />
+	
+	
+	<!-- === Distribution, packaging, deploying etc. targets === -->
+	
+	<!-- Create the distribution packages (jars and bpks). Run internal build
+	     files to accomplish this, keep this build file clean. -->
+	<target name="package" depends="dist-prepare, compile"
+		description="Produce packages files and copy them to dist.">
+		<jar destfile="${dist.dir}/${been.jar}">
+			<fileset dir="${build.classes.dir}">
+				
+				<exclude name="cz/cuni/mff/been/task/**"/>
+				
+
+				<!-- don't want pluggable modules' files in main jar, except for the pluggable module root classes -->
+				<exclude name="cz/cuni/mff/been/pluggablemodule/**"/>
+				<!-- benchmark manager pluggable module implementations, except for the BMng module root classes -->
+				<exclude name="cz/cuni/mff/been/benchmarkmanagerng/module/**"/>
+			    
+			</fileset>
+			<!-- reinclude the class files excluded by the previous fileset -->
+			<fileset dir="${build.classes.dir}">
+				<!-- reinclude task classes we want -->
+				<include name="cz/cuni/mff/been/task/*.class"/>
+				
+				<!-- reinclude pluggable modules' files we want -->
+				<include name="cz/cuni/mff/been/pluggablemodule/*.class"/>
+				<include name="cz/cuni/mff/been/pluggablemodule/jaxb/SelfContainedParser.class"/>
+				
+				<!-- benchmark manager pluggable module interfaces -->
+				<include name="cz/cuni/mff/been/benchmarkmanagerng/module/*.class"/>
+			    
+			</fileset>
+		</jar>
+	
+		<ant dir="${src.dir}/cz/cuni/mff/been/benchmarkmanagerng" target="package" />	
+		<ant dir="${src.dir}/cz/cuni/mff/been/resultsrepositoryng" target="package" />
+		<ant dir="${src.dir}/cz/cuni/mff/been/hostmanager" target="package" />
+		<ant dir="${src.dir}/cz/cuni/mff/been/pluggablemodule" target="package" />
+		<ant dir="${src.dir}/cz/cuni/mff/been/task" target="package" />
+		<ant dir="${src.dir}/cz/cuni/mff/been/softwarerepository" target="package" />		
+		<ant dir="${src.dir}/cz/cuni/mff/been/clinterface" target="package" />
+		<ant dir="${src.dir}/cz/cuni/mff/been/debugassistant" target="package" />
+		
+		<jar destfile="${dist.dir}/hostruntime.jar">
+			<manifest>
+				 <attribute name="Main-Class" value="cz.cuni.mff.been.hostruntime.HostRuntimeRunner" />
+				 <attribute name="Class-Path" value="${been.jar} ${hostruntime.manifest.classpath}" />
+			</manifest>
+		</jar>
+		
+		<jar destfile="${dist.dir}/taskmanager.jar">
+			<manifest>
+				<attribute name="Main-Class" value="cz.cuni.mff.been.taskmanager.TaskManagerRunner" />
+				<attribute name="Class-Path" value="${been.jar} ${taskmanager.manifest.classpath}" />
+			</manifest>
+		</jar>
+		
+		<ant dir="${been.dir}/webinterface" target="war" />
+		
+		<ant target="hostruntime-package"/>
+		<ant target="full-package"/>
+		
+		<delete file="${dist.dir}/${been.jar}"/>
+		<delete file="${dist.dir}/hostruntime.jar"/>
+		<delete file="${dist.dir}/taskmanager.jar"/>
+	</target>
+	
+	<!-- Libraries needed to run hostruntime (belong to hostruntime distribution) -->
+	<fileset id="hostruntime.libraries" dir="${been.dir}">
+		<include name="lib/${log4j.jar}"/>
+		<include name="lib/${ant.jar}"/>
+		<include name="lib/${netcdf.jar}"/>
+		<include name="lib/${rjava.jar}"/>
+		<include name="lib/${jython.jar}"/>
+		<include name="lib/${jpf.jar}"/>
+		<include name="lib/${commons-logging.jar}"/>
+		
+		<include name="lib/${derby.jar}"/>
+		<include name="lib/${derbyclient.jar}"/>
+		<include name="lib/${derbynet.jar}"/>
+		<include name="lib/${derbytools.jar}"/>
+		
+		<include name="lib/hibernate/*.jar"/>
+		
+		<include name="lib/${opencsv.jar}"/>
+		<include name="lib/${servlet-api.jar}"/>
+		<include name="lib/${rmiio.jar}"/>
+		
+		<include name="lib/${collections-generic.jar}"/>
+
+		<include name="lib/${jaxb-api.jar}" />
+		<include name="lib/${jaxb-impl.jar}" />
+	</fileset>
+	
+	<!-- Classpath property for hostruntime.jar file -->
+	<pathconvert property="hostruntime.manifest.classpath" pathsep=" " dirsep="/" refid="hostruntime.libraries">
+		<map from="${been.dir}/" to=""/>
+	</pathconvert>
+	
+	<!-- Libraries needed to run taskmanager (belong to taskmanager distribution) -->
+	<fileset id="taskmanager.libraries" dir="${been.dir}">
+		<include name="lib/${log4j.jar}"/>
+		<include name="lib/${ant.jar}"/>
+		<include name="lib/${netcdf.jar}"/>
+		<include name="lib/${rjava.jar}"/>
+		<include name="lib/${jython.jar}"/>
+		<include name="lib/${commons-logging.jar}"/>
+	</fileset>
+	
+	<!-- Classpath property for taskmanager.jar file -->
+	<pathconvert property="taskmanager.manifest.classpath" pathsep=" " dirsep="/" refid="taskmanager.libraries">
+	  <map from="${been.dir}/" to=""/>		
+	</pathconvert>
+	
+	<!-- Create the distribution files for hostruntime only. -->
+	<target name="hostruntime-package" depends="dist-prepare, compile"
+			description="Produce the packages (jars and bpks) for standalone hostruntime distribution">
+			
+			<copy todir="${dist.hostruntime.dir}/bin">
+				<fileset dir="${bin.dir}">
+					<include name="hostruntime.sh"/>
+					<include name="hostruntime-debug.sh"/>
+					<include name="hostruntime.bat"/>
+					<include name="hostruntime-debug.bat"/>
+				</fileset>
+			</copy>
+		
+			<chmod perm="ug+x" dir="${dist.hostruntime.dir}/bin" includes="**/*.sh"/>
+		
+			<copy todir="${dist.hostruntime.dir}">
+				<fileset refid="hostruntime.libraries"/>
+			</copy>
+		
+			<copy todir="${dist.hostruntime.dir}">
+				<fileset dir="${dist.dir}">
+					<include name="been.jar"/>
+					<include name="hostruntime.jar"/>
+				</fileset>		
+			</copy>
+		
+			<copy todir="${dist.hostruntime.dir}">
+				<fileset dir="${been.dir}">
+					<include name="native/*/bin/"/>			
+				</fileset>		
+			</copy>
+		
+			<chmod perm="u+x" file="${dist.hostruntime.dir}/native/client/bin/bcmd*"/>
+			
+	</target>
+	
+	<!-- Create the distribution files for full distribution (hostruntime, taskmanager and system services) -->
+	<target name="full-package" depends="dist-prepare, compile"
+		description="Produce the packages (jars and bpks) for full distribution (hostruntime, taskmanager, system services)">
+					<copy todir="${dist.full.dir}/bin" >
+						<fileset dir="${bin.dir}">
+							<include name="hostruntime.sh"/>
+							<include name="hostruntime-debug.sh"/>
+							<include name="hostruntime.bat"/>
+							<include name="hostruntime-debug.bat"/>
+							<include name="taskmanager.sh"/>
+							<include name="taskmanager-debug.sh"/>
+							<include name="taskmanager.bat"/>
+							<include name="taskmanager-debug.bat"/>
+						</fileset>
+					</copy>
+		
+					<chmod perm="ug+x" dir="${dist.full.dir}/bin" includes="**/*.sh"/> 
+				
+					<copy todir="${dist.full.dir}">
+						<fileset refid="taskmanager.libraries"/>
+						<fileset refid="hostruntime.libraries"/>
+					</copy>
+				
+					<copy todir="${dist.full.dir}">
+						<fileset dir="${dist.dir}">
+							<include name="been.jar"/>
+							<include name="hostruntime.jar"/>
+							<include name="taskmanager.jar"/>
+						</fileset>		
+					</copy>
+		
+					<copy todir="${dist.full.dir}" >
+						<fileset dir="${been.dir}">
+							<include name="native/*/bin/"/>	
+						</fileset>		
+					</copy>
+		
+					<chmod perm="u+x" file="${dist.full.dir}/native/client/bin/bcmd*"/>
+		
+					<copy todir="${dist.full.dir}">
+						<fileset dir="${dist.dir}">
+							<include name="tasks/"/>
+						</fileset>
+					</copy>
+	</target>
+	
+	
+	<!-- Make two runnable distributions in dist directory.
+		 Distribution dist/hostruntime is intended to be copied on hosts that will run only hostruntime.
+	     Distribution dist/full contains full distribution including taskmanager and softwarerepository packages.
+	     
+	     All services expect to have their files and directories in that
+	     directory by default. 
+	     Run internal build files to accomplish this,
+	     keep this build file clean.-->
+	<target name="dist" depends="dist-data-prepare, package"
+		description="Create runnable full and hostruntime-only BEEN distribution." >
+		<ant dir="${src.dir}/cz/cuni/mff/been/taskmanager" target="dist" />
+		<ant dir="${src.dir}/cz/cuni/mff/been/hostruntime" target="dist" />
+		<ant dir="${src.dir}/cz/cuni/mff/been/hostmanager" target="dist" />
+		<ant dir="${src.dir}/cz/cuni/mff/been/benchmarkmanagerng" target="dist" />
+		<ant dir="${src.dir}/cz/cuni/mff/been/resultsrepositoryng" target="dist" />
+		<ant dir="${src.dir}/cz/cuni/mff/been/softwarerepository" target="dist" />
+		<ant dir="${src.dir}/cz/cuni/mff/been/clinterface" target="dist" />
+		<ant dir="${src.dir}/cz/cuni/mff/been/debugassistant" target="dist" />
+		
+		<ant target="hostruntime-dist"/>
+		<ant target="full-dist"/>
+		
+		<delete dir="${dist.tasks.dir}"/>
+		<delete dir="${data.dir}" />
+	</target>
+	
+	<!-- Copy needed dist files dist/hostruntime -->
+	<target name="hostruntime-dist">
+		<copy todir="${dist.hostruntime.dir}">
+			<fileset dir="${been.dir}">
+				<include name="data/hostruntime/**"/>
+			</fileset>		
+		</copy>
+	</target>
+
+	<!-- Copy needed dist files dist/full -->
+	<target name="full-dist">
+		<copy todir="${dist.full.dir}">
+			<fileset dir="${been.dir}">
+				<include name="data/**"/>	
+			</fileset>		
+		</copy>			
+	</target>
+	
+	<target name="release" depends="dist">
+		<!-- make a temporary directory with the release package content -->
+		<mkdir dir="${release.dir}"/>
+		<copy todir="${release.dir}">
+			<fileset dir="${been.dir}">
+				<include name="*/**"/>
+				<include name="*"/>
+				<!-- exclude unnnecessary directories -->
+				<exclude name="build/"/>
+				<exclude name="examples/"/>
+				<exclude name="native/"/>
+				<exclude name="src/"/>
+				<exclude name="tests/"/>
+				<exclude name="release"/>
+				<exclude name="been"/>
+				<exclude name="resources/packages/"/>
+				<exclude name="resources/tests/"/>
+				<!-- exclude build files, etc. -->
+				<exclude name="user.properties"/>
+				<exclude name="build.properties"/>
+				<exclude name="build.xml"/>
+				<exclude name="checkstyle-been-configuration.xml"/>
+				<!-- exclude CVS stuff -->
+				<exclude name="**/CVS/"/>
+				<exclude name=".cvsignore"/>
+				<exclude name=".project"/>
+			</fileset>
+		</copy>
+		
+		<!-- create the release packages -->
+		
+                <tar destfile="${release.file}.tar.gz" compression="gzip" longfile="gnu">
+                  <tarfileset dir="${been.dir}" mode="755">
+                    <include name="been/bin/*.sh"/>
+                  </tarfileset>
+                  <tarfileset dir="${been.dir}">
+                    <include name="been/**"/>
+                    <exclude name="been/bin/*.sh"/>
+                  </tarfileset>
+                </tar>
+                
+                <zip basedir="${been.dir}" destfile="${release.file}.zip"
+                     includes="been/**"/>
+
+		<!-- remove the temporary directory with the release package content -->
+		<delete dir="${release.dir}"/>
+	</target>
+	
+
+	<!-- === Miscelaneous targets === -->
+	
+	<!-- Do everything, compile, make  documentation and produce the distribution files -->
+	<target name="all" depends="dist, javadoc, docbook"
+		description="Compile, make the distribution files, populate services' directories 
+		and create the Javadoc documentation"/>
+	
+	<!-- Make the Javadoc documentation -->
+	<target name="javadoc" description="Create Javadoc API documentation"
+		depends="compile">
+	        <javadoc destdir="${doc.dir}/javadoc" access="private" use="true"
+        		notree="false" nonavbar="false" noindex="false" splitindex="true"
+        		author="true" version="true" nodeprecatedlist="false"
+	        	nodeprecated="false" packagenames="cz.cuni.mff.been.*"
+        		sourcepath="${src.dir}" source="${build.java.version}"
+				useexternalfile="no">
+			
+	        <arg value="-J-Djava.endorsed.dirs=${lib.dir}/jaxb" />
+			<classpath>
+				<path refid="compile.classpath" />				
+			</classpath>
+			
+			<doctitle><![CDATA[<h1>BEEN: Benchmarking Environment</h1>]]></doctitle>
+			
+			<bottom>
+				<![CDATA[Copyright &#169; 2004-2008 Faculty of Mathematics and Physics,
+				Charles University in Prague]]>
+			</bottom>
+		</javadoc>
+	</target>
+	
+	<target name="docbook" description="Generates all the docbook documentation">
+		<ant dir="${docbook.dir}" target="all" />
+	</target>
+	
+	<!-- Compile documentation for the native libraries (requires doxygen). -->
+	<target name="docs-native" 
+		description="Create Doxygen API documentation for detectors and load monitors and clients.">
+		<ant dir="native/monitor" target="docs"/>
+		<ant dir="native/detector" target="docs"/>
+		<ant dir="native/client" target="docs"/>
+	</target>
+	
+	<!-- Run the JUnit tests -->
+	<target name="test" description="Run the JUnit tests" depends="compile-tests" >
+		<mkdir dir="${tmp.dir}" />
+		
+		<junit fork="yes" haltonfailure="true"  dir="tmp">
+			<jvmarg value="-Dbeen.directory.jaxb=../src/cz/cuni/mff/been/jaxb"/>
+			<env key="BEEN_HOME" value=".."/>
+			
+			<classpath>
+				<path refid="compile.classpath"/>
+				<pathelement location="lib/junit/junit.jar"/>
+			</classpath>
+
+			<formatter type="plain" usefile="false" />
+			<batchtest>
+				<fileset dir="${tests.dir}">
+					<include name="**/*Test*.java"/>
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+
+	<!--
+	This target is invoked first before deploy. It sets tomcat.dir.final to the value
+	of BEEN_TOMCAT_DIR if this environment variable exists.
+	-->
+	<target name="tomcat-dir-from-env" if="env.BEEN_TOMCAT_DIR">
+		<property name="tomcat.dir.final" value="${env.BEEN_TOMCAT_DIR}" />
+		<echo message="The BEEN_TOMCAT_DIR variable is set to ${env.BEEN_TOMCAT_DIR}." />
+	</target>
+
+	<!--
+	This target is invoked second before deploy. It sets tomcat.dir.final to the value
+	of tomcat.dir if this property is set AND if tomcat.dir.final is not already assigned.
+	The BEEN_TOMCAT_DIR variable has priority over the tomcat.dir property when both are set.
+	-->
+	<target name="tomcat-dir-from-props" if="tomcat.dir">
+		<property name="tomcat.dir.final" value="${tomcat.dir}" /><!-- No effect if already set. -->
+		<echo message="The tomcat.dir property is set to ${tomcat.dir}." />
+	</target>
+	
+	<!--
+	This target ensures that the tomcat.dir.final property has been set. It attempts
+	to read its value from the BEEN_TOMCAT_DIR environment variable and from the tomcat.dir
+	property. When both possibilities fail, this target fails as well.
+	-->
+	<target name="tomcat-ensure-dir" depends="tomcat-dir-from-env, tomcat-dir-from-props">
+		<fail
+			unless="tomcat.dir.final"
+			message="Neither BEEN_TOMCAT_DIR variable nor tomcat.dir property set. See build.properties file."
+		/>
+		<echo message="Using tomcat directory ${tomcat.dir.final}." />
+	</target>
+
+	<!-- Deploy the web interface to the Tomcat webapps directory. Should be run
+	     under sufficently priviledged user. -->
+	<target name="deploy" description="Deploy the web interface to the Tomcat webapps directory" depends="tomcat-ensure-dir, dist">
+		<ant dir="${been.dir}/webinterface" target="deploy" />
+	</target>
+	
+</project>

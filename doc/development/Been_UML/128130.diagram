@@ -1,0 +1,359 @@
+format 70
+
+componentcanvas 128002 component_ref 128002 // logging
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 1446 377 2000 119 41
+end
+arrowjunctioncanvas 128008 class_ref 133896 // BenchmarkManagerCallbackInterface
+  xyz 624 278 3005 label_xy 555 297
+componentcanvas 128130 component_ref 128130 // TaskManager
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 623 731 2000 119 41
+end
+componentcanvas 128258 component_ref 128258 // HostRuntime
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 1002 676 2000 119 41
+end
+arrowjunctioncanvas 128264 class_ref 134152 // BenchmarkManagerInterface
+  xyz 624 245 3005 label_xy 573 264
+componentcanvas 128386 component_ref 128386 // HostManager
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 1002 373 6080 119 41
+end
+componentcanvas 128770 component_ref 128770 // Webinterface
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 24 267 2000 119 41
+end
+arrowjunctioncanvas 128776 class_ref 136328 // EvaluatorInterface
+  xyz 894 147 3005 label_xy 864 166
+componentcanvas 128898 component_ref 128898 // SoftwareRepository
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 1373 602 2000 119 41
+end
+arrowjunctioncanvas 129032 class_ref 128648 // GeneratorInterface
+  xyz 798 147 3005 label_xy 768 166
+note 129154 "In development"
+  xyzwh 58 94 1999 306 39
+arrowjunctioncanvas 129288 class_ref 129800 // RRManagerInterface
+  xyz 1052 245 3005 label_xy 1018 264
+arrowjunctioncanvas 129544 class_ref 142594 // SoftwareRepositoryInterface
+  xyz 1052 284 3005 label_xy 1001 303
+componentcanvas 130178 component_ref 129026 // bcmd
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 24 118 2004 119 41
+end
+note 130434 "
+
+
+Not the actual task execution environment.
+This is just the component which takes care
+of the task from the runtime point of view.
+
+It is in fact part of the host runtime environment
+but it almost deserves its own component."
+  xyzwh 1002 782 1995 235 127
+arrowjunctioncanvas 130562 class_ref 181762 // TaskManagerInterface
+  xyz 846 687 3005 label_xy 815 709
+arrowjunctioncanvas 130824 class_ref 181762 // TaskManagerInterface
+  xyz 798 308 3011 label_xy 761 327
+note 131080 "
+
+
+Used to create contexts and run tasks."
+  xyzwh 745 305 3005 125 77
+arrowjunctioncanvas 131330 class_ref 181378 // HostRuntimeInterface
+  xyz 846 742 3005 label_xy 812 762
+arrowjunctioncanvas 131336 class_ref 181762 // TaskManagerInterface
+  xyz 623 687 3005 label_xy 586 706
+note 131592 "This end is linked to Benchmark Manager"
+  xyzwh 580 657 2000 113 65
+arrowjunctioncanvas 131714 class_ref 142594 // SoftwareRepositoryInterface
+  xyz 1288 632 3005 label_xy 1237 651
+arrowjunctioncanvas 131720 class_ref 137352 // RRDataInterface
+  xyz 1052 189 3005 label_xy 1025 208
+note 131976 "Used by benchmark tasks to store data"
+  xyzwh 1005 151 2000 113 75
+componentcanvas 132354 component_ref 128514 // resultsrepository
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 1137 234 2000 119 41
+end
+arrowjunctioncanvas 132360 class_ref 137090 // TasksPortInterface
+  xyz 921 868 3005 label_xy 890 887
+note 132616 "Used by tasks to access the rest of the BEEN"
+  xyzwh 864 828 2000 133 79
+arrowjunctioncanvas 137602 class_ref 184834 // BeenLogger
+  xyz 1361 344 3005 label_xy 1346 363
+arrowjunctioncanvas 137858 class_ref 184962 // ConsoleLogger
+  xyz 1361 388 3005 label_xy 1339 407
+arrowjunctioncanvas 138114 class_ref 185090 // FilesystemLogStorage
+  xyz 1361 430 3005 label_xy 1323 449
+componentcanvas 138370 component_ref 130178 // CLInterface
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 234 118 3005 119 41
+end
+componentcanvas 138626 component_ref 130434 // BenchmarksModule
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 407 267 2000 119 41
+end
+componentcanvas 139266 component_ref 130562 // ConfigurationModule
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 407 408 2019 119 41
+end
+componentcanvas 139394 component_ref 130690 // HostsModule
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 407 454 2000 119 41
+end
+componentcanvas 139522 component_ref 130818 // PackagesModule
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 407 548 2004 119 41
+end
+componentcanvas 139650 component_ref 130946 // ResultsModule
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 407 315 2009 119 41
+end
+componentcanvas 140162 component_ref 131074 // ServicesModule
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 407 361 2014 119 41
+end
+componentcanvas 140290 component_ref 131202 // TasksModule
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 407 501 2008 119 41
+end
+arrowjunctioncanvas 142210 class_ref 162946 // HostRuntimeRegistrationListener
+  xyz 1165 498 3005 label_xy 1105 517
+componentcanvas 142978 component_ref 132482 // LoadMonitor
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 1002 409 6085 119 41
+end
+arrowjunctioncanvas 143618 class_ref 175746 // LoadMonitorInterface
+  xyz 971 498 3010 label_xy 936 517
+arrowjunctioncanvas 143874 class_ref 162690 // LoadServerInterface
+  xyz 624 465 3010 label_xy 591 484
+componentcanvas 144642 component_ref 132610 // BenchmarkManager
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 748 234 2009 119 41
+end
+note 145794 "Too tightly coupled components to be separated in the model but sometimes they are reffered to as separate in the documentation."
+  xyzwh 926 323 6075 227 136
+componentcanvas 146562 component_ref 132738 // Task
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 1002 782 2000 119 41
+end
+note 146690 "Some of the components actually provide more interfaces than shown here but they are probably not used anywhere in BEEN"
+  xyzwh 7 7 2000 296 52
+arrowjunctioncanvas 146818 class_ref 181634 // TaskInterface
+  xyz 1020 742 3005 label_xy 1005 728
+arrowjunctioncanvas 147202 class_ref 181634 // TaskInterface
+  xyz 846 793 3005 label_xy 826 812
+arrowjunctioncanvas 147970 class_ref 181250 // HostRuntimeImplementation
+  xyz 1083 742 3005 label_xy 1064 762
+componentcanvas 148610 component_ref 132866 // PackageCache
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 1238 676 2000 119 41
+end
+arrowjunctioncanvas 148738 class_ref 181890 // PackageCacheManager
+  xyz 1167 687 3005 label_xy 1127 706
+note 149378 "
+
+
+Hostruntime creates
+LoadMonitor instance
+on the host"
+  xyzwh 895 494 1994 133 92
+note 149634 "Inverse relation !"
+  font underlined  xyzwh 809 661 1994 105 67
+arrowjunctioncanvas 151426 class_ref 162946 // HostRuntimeRegistrationListener
+  xyz 798 498 3005 label_xy 738 517
+arrowjunctioncanvas 151938 class_ref 181762 // TaskManagerInterface
+  xyz 457 742 3005 label_xy 420 761
+note 152834 "Modules can talk to each other
+through EventManager
+and EventListener interfaces"
+  xyzwh 389 199 1949 155 401
+arrowjunctioncanvas 153730 class_ref 181762 // TaskManagerInterface
+  xyz 457 707 3005 label_xy 420 726
+arrowjunctioncanvas 154370 class_ref 138498 // HostManagerInterface
+  xyz 624 355 3005 label_xy 587 374
+arrowjunctioncanvas 154626 class_ref 138498 // HostManagerInterface
+  xyz 624 384 5039 label_xy 587 403
+arrowjunctioncanvas 155778 class_ref 142594 // SoftwareRepositoryInterface
+  xyz 624 613 3005 label_xy 573 633
+arrowjunctioncanvas 156034 class_ref 210434 // Module
+  xyz 186 278 3005 label_xy 181 297
+arrowjunctioncanvas 157314 class_ref 138498 // HostManagerInterface
+  xyz 624 415 3005 label_xy 587 434
+arrowjunctioncanvas 157570 class_ref 142594 // SoftwareRepositoryInterface
+  xyz 624 580 3005 label_xy 573 599
+arrowjunctioncanvas 164482 class_ref 210434 // Module
+  xyz 284 173 3010 label_xy 279 192
+componentcanvas 164866 component_ref 135170 // Module
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 234 267 2004 119 41
+end
+note 171266 "Components that could be investigated further:
+Hostmanager & Loadmanager- There is a rather large database component inside"
+  xyzwh 428 7 2000 363 54
+line 128136 ---O
+  from ref 144642 z 3006 to ref 128008
+line 128392 ---O
+  from ref 144642 z 3006 to ref 128264
+line 128520 ---(
+  from ref 138626 z 3006 to ref 128008
+line 128648 ---(
+  from ref 138626 z 3006 to ref 128264
+line 128904 ---(
+  from ref 144642 z 3006 to ref 128776
+line 129160 ---(
+  from ref 144642 z 3006 to ref 129032
+line 129416 ---(
+  from ref 144642 z 3006 to ref 129288
+line 129800 ---O geometry HVH unfixed
+  from ref 128898 z 3006 to point 1295 620
+  line 129928 z 3006 to point 1295 291
+  line 130056 z 3006 to ref 129544
+line 130312 ---( geometry VH decenter_begin 830
+  from ref 144642 z 3006 to point 844 291
+  line 130696 z 3006 to ref 129544
+line 130690 ---O
+  from ref 128130 z 1999 to ref 130562
+line 130952 ---( decenter_begin 495
+  from ref 144642 z 3006 to ref 130824
+line 131208 ---O
+  from ref 132354 z 3006 to ref 129288
+line 131458 ---O
+  from ref 128258 z 1999 to ref 131330
+line 131464 ---O
+  from ref 128130 z 3006 to ref 131336
+line 131842 ---O geometry VHr
+  from ref 128898 z 1999 to point 1295 620
+  line 171138 z 1999 to ref 131714
+line 131848 ---O
+  from ref 132354 z 3006 to ref 131720
+line 132488 ---O
+  from ref 146562 z 3006 to ref 132360
+line 137730 ---O
+  from ref 128002 z 1999 to ref 137602
+line 137986 ---O
+  from ref 128002 z 1999 to ref 137858
+line 138242 ---O
+  from ref 128002 z 1999 to ref 138114
+line 142338 ---O geometry HV
+  from ref 128386 z 5034 to point 1172 391
+  line 147586 z 5034 to ref 142210
+line 143746 ---O
+  from ref 142978 z 5034 to ref 143618
+line 144002 ---O
+  from ref 142978 z 5034 to ref 143874
+line 145282 ---(
+  from ref 139394 z 1999 to ref 143874
+line 145922 ---(
+  from ref 128258 z 1999 to ref 142210
+line 146050 ---(
+  from ref 128258 z 1999 to ref 143618
+line 146946 ---O
+  from ref 146562 z 1999 to ref 146818
+line 147074 ---(
+  from ref 128258 z 1999 to ref 146818
+line 147330 ---O
+  from ref 146562 z 1999 to ref 147202
+line 147458 ---(
+  from ref 128130 z 1999 to ref 147202
+line 148098 ---O
+  from ref 128258 z 1999 to ref 147970
+line 148226 ---(
+  from ref 146562 z 1999 to ref 147970
+line 148866 ---O
+  from ref 148610 z 1999 to ref 148738
+line 148994 ---(
+  from ref 128258 z 1999 to ref 148738
+line 149122 ---(
+  from ref 148610 z 1999 to ref 131714
+line 149250 ---(
+  from ref 128258 z 1999 to ref 130562
+line 149506 ---(
+  from ref 128130 z 1999 to ref 131330
+line 151554 ---(
+  from ref 128130 z 1999 to ref 151426
+line 151682 ---O
+  from ref 128386 z 6039 to ref 151426
+line 152066 ---O
+  from ref 128130 z 1999 to ref 151938
+line 152706 ---( geometry VH
+  from ref 128770 z 1999 to point 81 749
+  line 161282 z 1999 to ref 151938
+line 154114 ---O
+  from ref 128130 z 1999 to ref 153730
+line 154498 ---(
+  from ref 139266 z 1999 to ref 154370
+line 154754 ---(
+  from ref 139394 z 1999 to ref 154626
+line 154882 ---O
+  from ref 128386 z 5038 to ref 154626
+line 155010 ---O geometry HVH unfixed
+  from ref 128386 z 3004 to point 712 391
+  line 160898 z 3004 to point 712 362
+  line 161026 z 3004 to ref 154370
+line 155906 ---(
+  from ref 139522 z 1999 to ref 155778
+line 157442 ---(
+  from ref 140290 z 1999 to ref 157314
+line 157698 ---(
+  from ref 140290 z 1999 to ref 157570
+line 158850 ---O geometry HVH unfixed
+  from ref 128386 z 3004 to point 712 391
+  line 160258 z 3004 to point 712 422
+  line 160386 z 3004 to ref 157314
+line 162178 ---(
+  from ref 128770 z 1999 to ref 156034
+line 162690 ---O
+  from ref 128898 z 1999 to ref 155778
+line 162818 ---O geometry HVH unfixed
+  from ref 128898 z 1999 to point 712 620
+  line 163842 z 1999 to point 712 587
+  line 163970 z 1999 to ref 157570
+line 164610 ---(
+  from ref 138370 z 3004 to ref 164482
+line 164994 ---( geometry HVH unfixed
+  from ref 164866 z 2003 to point 263 285
+  line 169602 z 2003 to point 263 714
+  line 169730 z 2003 to ref 153730
+line 165378 ---O
+  from ref 164866 z 2003 to ref 156034
+simplerelationcanvas 165634 simplerelation_ref 128002
+  from ref 138626 z 1999 to ref 164866
+end
+simplerelationcanvas 165762 simplerelation_ref 128130
+  geometry VHr
+  from ref 139650 z 2003 to point 291 333
+  line 168450 z 2003 to ref 164866
+end
+simplerelationcanvas 165890 simplerelation_ref 128258
+  geometry VHr
+  from ref 140162 z 2003 to point 291 379
+  line 168706 z 2003 to ref 164866
+end
+simplerelationcanvas 166018 simplerelation_ref 128386
+  geometry VHr
+  from ref 139266 z 2003 to point 291 426
+  line 168962 z 2003 to ref 164866
+end
+simplerelationcanvas 166146 simplerelation_ref 128514
+  geometry VHr
+  from ref 139394 z 1999 to point 291 472
+  line 169218 z 1999 to ref 164866
+end
+simplerelationcanvas 166274 simplerelation_ref 128642
+  geometry VHr
+  from ref 140290 z 1999 to point 291 519
+  line 169474 z 1999 to ref 164866
+end
+simplerelationcanvas 166402 simplerelation_ref 128770
+  geometry VHr
+  from ref 139522 z 2003 to point 291 566
+  line 169986 z 2003 to ref 164866
+end
+line 144770 -_-_
+  from ref 128386 z 5034 to ref 142978
+line 164738 -_-_
+  from ref 130178 z 2003 to ref 138370
+end

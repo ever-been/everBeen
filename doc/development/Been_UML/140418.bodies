@@ -1,0 +1,5 @@
+class GeneratorException
+!!!179842.java!!!	GeneratorException(in message : String)
+		super(message);
+!!!179970.java!!!	GeneratorException(in message : String, inout e : Exception)
+		super(message, e);

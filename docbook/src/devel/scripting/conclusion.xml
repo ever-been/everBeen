@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sect1
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>Conclusion</title>
+	
+	<para>
+	As you could see, BEEN's support for scripting is very powerful 
+	tool that could radically speed up development of new tasks.
+	When using scripts for a good purpose (which can be e.g. building binaries
+	from sources), the resulting code is much shorter and simpler
+	than it would be in Java. Of course, not every <glossterm>task</glossterm> can be written
+	using shell scripting, but the way a shell script can interact 
+	with BEEN environment will probably make shell scripting powerful
+	enough to use shell scripts for many commons tasks. And in case shell
+	scripting is not satisfactory for some kind of task, you can 
+	always try to implement the same in Jython (that has almost the 
+	same power as tasks written in Java but is still a scripting language).  
+	</para>
+</sect1>

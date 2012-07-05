@@ -1,0 +1,377 @@
+class TestValueSerialization
+!!!864258.java!!!	setUp() : void
+		
+		createValues();
+		writeToFile();
+		readFromFile();
+!!!864386.java!!!	randomInt(in a : int, in b : int) : int
+		
+		return a + (int) ((b - a) * Math.random()); 
+!!!864514.java!!!	createValues() : void
+
+		origBoolean = new ValueBoolean[] {
+				new ValueBoolean(true),
+				new ValueBoolean(false)
+		};
+		
+		origInteger = new ValueInteger((int) (Math.random() * 100000));
+		
+		origDouble = new ValueDouble(2.58);
+		
+		origString = new ValueString("abcdefghijklmnopqrstuvxyz");
+		
+		origRegexp = new ValueRegexp[] {
+				new ValueRegexp("[1-9]*.*", true),
+				new ValueRegexp("[1-9]*.*", false)
+		};
+		
+		origVersion = new ValueVersion("1.5.7-beta2");
+		
+		origRangeInteger = new ValueRange[] {
+				new ValueRange< ValueInteger >(new ValueInteger(1), new ValueInteger(101), true, true),
+				new ValueRange< ValueInteger >(new ValueInteger(2), new ValueInteger(102), false, true),
+				new ValueRange< ValueInteger >(new ValueInteger(3), new ValueInteger(103), true, false),
+				new ValueRange< ValueInteger >(new ValueInteger(4), new ValueInteger(104), false, false),
+				new ValueRange< ValueInteger >(null, new ValueInteger(5), false, false),
+				new ValueRange< ValueInteger >(null, new ValueInteger(6), false, true),
+				new ValueRange< ValueInteger >(new ValueInteger(7), null, true, false),
+				new ValueRange< ValueInteger >(null, null),
+				new ValueRange< ValueInteger >(new ValueInteger(8), null, false, false)				
+		};
+		
+		origRangeBoolean = new ValueRange< ValueBoolean >(new ValueBoolean(false), new ValueBoolean(true));
+		
+		origRangeDouble = new ValueRange< ValueDouble >(new ValueDouble(1.25), new ValueDouble(10.76));
+		
+		origRangeString = new ValueRange< ValueString >(new ValueString("abc"), new ValueString("def"));
+		
+		origRangeRegexp = new ValueRange< ValueRegexp >(new ValueRegexp("abc"), new ValueRegexp("def"));
+		
+		origRangeVersion = new ValueRange< ValueVersion >(new ValueVersion("1.5"), new ValueVersion("2.0"), true, true);
+		
+		origListBoolean = new ValueList< ValueBoolean >();
+		for (int i = 0; i < randomInt(5, 15); ++i) {
+			origListBoolean.add(new ValueBoolean(Math.random() > 0.5));
+		}
+		
+		origListInteger = new ValueList< ValueInteger >();
+		for (int i = 0; i < randomInt(5, 15); ++i) {
+			origListInteger.add(new ValueInteger(randomInt(-1000, 1000)));
+		}
+		
+		{
+			ValueDouble []doubles = {
+					new ValueDouble(-1235.39847),
+					new ValueDouble(37381.4737),
+					new ValueDouble(111111.11111),
+					new ValueDouble(0)
+			};
+			
+			origListDouble = new ValueList< ValueDouble >(doubles);
+		}
+
+		{
+			ValueString []strings = new ValueString[] {
+					new ValueString("abc"), 
+					new ValueString("def"), 
+					new ValueString("zyz"), 
+					new ValueString("yyyy"), 
+					new ValueString("fff")
+			};
+			origListString = new ValueList< ValueString >(strings);
+		}
+		
+		{
+			ValueRegexp []regs = new ValueRegexp[] {
+					new ValueRegexp("aaaa"),
+					new ValueRegexp(".*"),
+					new ValueRegexp("[0-9]*")
+			};
+			origListRegexp = new ValueList< ValueRegexp >(regs);
+		}
+
+		origListVersion = new ValueList< ValueVersion >();
+		for (int i = 0; i < randomInt(5, 15); ++i) {
+			origListVersion.add(new ValueVersion(randomInt(1, 4), randomInt(0, 20), randomInt(0, 3000)));
+		}
+
+		ValueInteger []ints = new ValueInteger[] {
+				new ValueInteger(100),
+				new ValueInteger(200),
+				new ValueInteger(300),
+				new ValueInteger(400)
+		};
+		
+		origNVP = new NameValuePair[] {
+			new NameValuePair("meno0", new ValueBoolean(true)),
+			new NameValuePair("meno1", new ValueInteger(10)),
+			new NameValuePair("meno2", new ValueString("ahoj")),
+			new NameValuePair("meno3", new ValueRegexp("x.*")),
+			new NameValuePair("meno4", new ValueRange< ValueDouble >(new ValueDouble(10.5), 
+					new ValueDouble(88.3), true, false)),
+			new NameValuePair("meno5", new ValueList< ValueInteger >(ints)),
+			new NameValuePair("meno6", new ValueDouble(3.14156))
+		};
+		
+		origObjectRestrictions = new ObjectRestriction[] {
+				new ObjectRestriction("object0", origNVP[0]),
+				new ObjectRestriction("object1", origNVP[1]),
+				new ObjectRestriction("object2", origNVP[2]),
+				new ObjectRestriction("object3", origNVP[3]),
+				new ObjectRestriction("object4", origNVP[4]),
+				new ObjectRestriction("object5", origNVP[5]),
+				new ObjectRestriction("object6", origNVP[6]),
+				new ObjectRestriction("object7", origNVP)
+		};
+		
+		origAlternative = new AlternativeRestriction(origObjectRestrictions);
+!!!864642.java!!!	deleteFile(in name : String) : void
+		
+		File f = new File(name);
+		
+		f.deleteOnExit();
+!!!864770.java!!!	writeToFile() : void
+
+		{
+			Document doc = XMLHelper.createDocument();
+			Element root = doc.createElement("root");
+			doc.appendChild(root);
+			
+			root.appendChild(origBoolean[0].exportAsElement(doc));
+			root.appendChild(origBoolean[1].exportAsElement(doc));
+			root.appendChild(origInteger.exportAsElement(doc));
+			root.appendChild(origDouble.exportAsElement(doc));
+			root.appendChild(origString.exportAsElement(doc));
+			root.appendChild(origRegexp[0].exportAsElement(doc));
+			root.appendChild(origRegexp[1].exportAsElement(doc));
+			root.appendChild(origVersion.exportAsElement(doc));
+			
+			XMLHelper.saveDocument(doc, "simple.testfile", true, "UTF-16");
+		}		
+
+		{
+			Document doc = XMLHelper.createDocument();
+			Element root = doc.createElement("root");
+			doc.appendChild(root);
+
+			root.appendChild(origRangeBoolean.exportAsElement(doc));
+			for (int i = 0; i < origRangeInteger.length; ++i) {
+				root.appendChild(origRangeInteger[i].exportAsElement(doc));
+			}
+			root.appendChild(origRangeDouble.exportAsElement(doc));
+			root.appendChild(origRangeString.exportAsElement(doc));
+			root.appendChild(origRangeRegexp.exportAsElement(doc));
+			root.appendChild(origRangeVersion.exportAsElement(doc));
+
+			XMLHelper.saveDocument(doc, "range.testfile", true, "UTF-16");
+		}		
+
+		{
+			Document doc = XMLHelper.createDocument();
+			Element root = doc.createElement("root");
+			doc.appendChild(root);
+
+			root.appendChild(origListBoolean.exportAsElement(doc));
+			root.appendChild(origListInteger.exportAsElement(doc));
+			root.appendChild(origListDouble.exportAsElement(doc));
+			root.appendChild(origListString.exportAsElement(doc));
+			root.appendChild(origListRegexp.exportAsElement(doc));
+			root.appendChild(origListVersion.exportAsElement(doc));
+
+			XMLHelper.saveDocument(doc, "list.testfile", true, "UTF-16");
+		}
+		
+		{
+			Document doc = XMLHelper.createDocument();
+			Element root = doc.createElement("root");
+			doc.appendChild(root);
+			
+			for (NameValuePair current: origNVP) {
+				root.appendChild(current.exportAsElement(doc));
+			}
+			
+			XMLHelper.saveDocument(doc, "nvps.testfile");
+		}		
+		
+		{
+			Document doc = XMLHelper.createDocument();
+			Element root = doc.createElement("root");
+			doc.appendChild(root);
+			
+			for (ObjectRestriction current: origObjectRestrictions) {
+				root.appendChild(current.exportAsElement(doc));
+			}
+			
+			XMLHelper.saveDocument(doc, "restr.testfile");
+		}
+
+		{
+			Document doc = XMLHelper.createDocument();
+			Element root = doc.createElement("root");
+			doc.appendChild(root);
+			
+			root.appendChild(origAlternative.exportAsElement(doc));
+			
+			XMLHelper.saveDocument(doc, "alt.testfile");
+		}
+!!!864898.java!!!	readFromFile() : void
+
+		{
+			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			Document doc = builder.parse(new File("simple.testfile"));
+			Node root = XMLHelper.getSubNodeByName("root", doc);
+			
+			ArrayList< Node > boolNodes = XMLHelper.getChildNodesByName("boolean", root);
+			readBoolean = new ValueBoolean[2];
+			readBoolean[0] = new ValueBoolean(boolNodes.get(0));
+			readBoolean[1] = new ValueBoolean(boolNodes.get(1));
+			
+			readInteger = new ValueInteger(XMLHelper.getSubNodeByName("integer", root));
+			
+			readDouble = new ValueDouble(XMLHelper.getSubNodeByName("double", root));
+			
+			readString = new ValueString(XMLHelper.getSubNodeByName("string", root));
+			
+			ArrayList< Node > regNodes = XMLHelper.getChildNodesByName("regexp", root);
+			readRegexp = new ValueRegexp[2];
+			readRegexp[0] = new ValueRegexp(regNodes.get(0));
+			readRegexp[1] = new ValueRegexp(regNodes.get(1));
+			
+			readVersion = new ValueVersion(XMLHelper.getSubNodeByName("version", root));
+		}
+
+		{
+			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			Document doc = builder.parse(new File("range.testfile"));
+			Node root = XMLHelper.getSubNodeByName("root", doc);
+			
+			ArrayList< Node > rangeNodes = XMLHelper.getChildNodesByName("range", root);
+			int i = 0;
+			readRangeBoolean = new ValueRange(rangeNodes.get(i++));
+			
+			readRangeInteger = new ValueRange[origRangeInteger.length];
+			for (int j = 0; j < readRangeInteger.length; ++i, ++j) {
+				readRangeInteger[j] = new ValueRange(rangeNodes.get(i));
+			}
+			
+			readRangeDouble = new ValueRange(rangeNodes.get(i++));
+			readRangeString = new ValueRange(rangeNodes.get(i++));
+			readRangeRegexp = new ValueRange(rangeNodes.get(i++));
+			readRangeVersion = new ValueRange(rangeNodes.get(i++));
+		}
+
+		{
+			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			Document doc = builder.parse(new File("list.testfile"));
+			Node root = XMLHelper.getSubNodeByName("root", doc);
+			
+			ArrayList< Node > listNodes = XMLHelper.getChildNodesByName("list", root);
+			
+			readListBoolean = new ValueList(listNodes.get(0));
+			readListInteger = new ValueList(listNodes.get(1));
+			readListDouble = new ValueList(listNodes.get(2));
+			readListString = new ValueList(listNodes.get(3));
+			readListRegexp = new ValueList(listNodes.get(4));
+			readListVersion = new ValueList(listNodes.get(5));
+		}
+		
+		{
+			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			Document doc = builder.parse(new File("nvps.testfile"));
+			Node root = XMLHelper.getSubNodeByName("root", doc);
+			
+			ArrayList< Node > nodes = XMLHelper.getChildNodesByName("namevalue", root);
+			readNVP = new NameValuePair[origNVP.length];
+			
+			int i = 0;
+			for (Node n: nodes) {
+				readNVP[i] = new NameValuePair(n);
+				i += 1;
+			}
+		}
+		
+		{
+			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			Document doc = builder.parse(new File("restr.testfile"));
+			Node root = XMLHelper.getSubNodeByName("root", doc);
+			
+			ArrayList< Node > nodes = XMLHelper.getChildNodesByName("restriction", root);
+			readObjectRestrictions = new ObjectRestriction[origObjectRestrictions.length];
+			
+			int i = 0;
+			
+			for (Node n: nodes) {
+				readObjectRestrictions[i] = new ObjectRestriction(n);
+				i += 1;
+			}
+		}
+
+		{
+			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			Document doc = builder.parse(new File("alt.testfile"));
+			Node root = XMLHelper.getSubNodeByName("root", doc);
+			
+			Node node = XMLHelper.getSubNodeByName("alternative", root);
+			
+			readAlternative = new AlternativeRestriction(node);
+		}
+!!!865026.java!!!	testBoolean() : void
+
+		assertTrue(origBoolean[0].equals(readBoolean[0]));
+		assertTrue(origBoolean[1].equals(readBoolean[1]));		
+!!!865154.java!!!	testInteger() : void
+		assertTrue(origInteger.equals(readInteger));
+!!!865282.java!!!	testDouble() : void
+		
+		assertTrue(origDouble.equals(readDouble));
+!!!865410.java!!!	testString() : void
+		assertTrue(origString.equals(readString));
+!!!865538.java!!!	testRegexp() : void
+		assertTrue(origRegexp[0].equals(readRegexp[0]));
+		assertTrue(origRegexp[1].equals(readRegexp[1]));
+!!!865666.java!!!	testVersion() : void
+		assertTrue(origVersion.equals(readVersion));
+!!!865794.java!!!	testRangeInteger() : void
+		for (int i = 0; i < origRangeInteger.length; ++i) {
+			assertTrue(origRangeInteger[i].equals(readRangeInteger[i]));
+		}
+!!!865922.java!!!	testRangeBoolean() : void
+		assertTrue(origRangeBoolean.equals(readRangeBoolean));
+!!!866050.java!!!	testRangeDouble() : void
+		assertTrue(origRangeDouble.equals(readRangeDouble));
+!!!866178.java!!!	testRangeString() : void
+		assertTrue(origRangeString.equals(readRangeString));
+!!!866306.java!!!	testRangeRegexp() : void
+		assertTrue(origRangeRegexp.equals(readRangeRegexp));
+!!!866434.java!!!	testRangeVersion() : void
+		assertTrue(origRangeVersion.equals(readRangeVersion));
+!!!866562.java!!!	testListBoolean() : void
+		assertTrue(origListBoolean.equals(readListBoolean));
+!!!866690.java!!!	testListInteger() : void
+		assertTrue(origListInteger.equals(readListInteger));
+!!!866818.java!!!	testListDouble() : void
+		assertTrue(origListDouble.equals(readListDouble));
+!!!866946.java!!!	testListString() : void
+		assertTrue(origListString.equals(readListString));
+!!!867074.java!!!	testListRegexp() : void
+		assertTrue(origListRegexp.equals(readListRegexp));
+!!!867202.java!!!	testListVersion() : void
+		assertTrue(origListVersion.equals(readListVersion));
+!!!867330.java!!!	testNameValuePair() : void
+		for (int i = 0; i < origNVP.length; ++i) {
+			assertTrue(origNVP[i].equals(readNVP[i]));
+		}
+!!!867458.java!!!	testRestriction() : void
+		for (int i = 0; i < origObjectRestrictions.length; ++i) {		
+			assertTrue(origObjectRestrictions[i].equals(readObjectRestrictions[i]));
+		}
+!!!867586.java!!!	testAlternative() : void
+		assertTrue(origAlternative.equals(readAlternative));
+!!!867714.java!!!	tearDown() : void
+		
+		deleteFile("simple.testfile");
+		deleteFile("range.testfile");
+		deleteFile("list.testfile");
+		deleteFile("nvps.testfile");
+		deleteFile("restr.testfile");
+		deleteFile("alt.testfile");

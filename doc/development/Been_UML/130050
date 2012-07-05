@@ -1,0 +1,1550 @@
+format 70
+"anttasks" // been::src::cz::cuni::mff::been::common::anttasks
+  revision 2
+  modified_by 8 "BoRiS"
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+  show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+  show_infonote default drawing_language default show_stereotype_properties default
+  
+  java_dir "cz/cuni/mff/been/common/anttasks"
+  java_package "cz.cuni.mff.been.common.anttasks"
+  classview 129282 "anttasks"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+    //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+    show_infonote default drawing_language default show_stereotype_properties default
+    class 133634 "AntTaskException"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Thrown when a wrapper around an Ant task cannot perform it's function.
+
+@author Jaroslav Urban
+"
+      classrelation 162690 // <generalisation>
+	relation 162690 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 162690 // <generalisation>
+	  b parent class_ref 128130 // BeenException
+      end
+
+      operation 256258 "AntTaskException"
+	public explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>AntTaskException</code> object.
+"
+      end
+
+      operation 256386 "AntTaskException"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "message" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>AntTaskException</code> object
+with specified message.
+
+@param message exception message
+"
+      end
+
+      operation 256514 "AntTaskException"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "cause" explicit_type "Throwable"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>AntTaskException</code> object
+with specified cause.
+
+@param cause exception cause
+"
+      end
+
+      operation 256642 "AntTaskException"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "message" explicit_type "String"
+	  param inout name "cause" explicit_type "Throwable"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>AntTaskException</code> object
+with specified message and cause.
+
+@param message exception message
+@param cause exception cause
+"
+      end
+    end
+
+    class 153218 "Chmod"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Class that works like the UNIX chmod command. Has any effect only
+in UNIX-like systems.
+
+@author Jaroslav Urban
+"
+      classrelation 162818 // <generalisation>
+	relation 162818 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 162818 // <generalisation>
+	  b parent class_ref 153346 // Chmod
+      end
+
+      attribute 177154 "MAX_PARALLEL"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  10"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " 
+Number of files given on the command line to 1 chmod process.
+Shouldn't be too high, otherwise the filenames might not fit on 
+the command line.
+
+"
+      end
+
+      operation 256770 "Chmod"
+	private explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>Chmod</code> object.
+
+"
+      end
+
+      operation 256898 "recursiveDirectoryChmod"
+	class_operation public explicit_return_type "void"
+	nparams 2
+	  param in name "directory" explicit_type "String"
+	  param in name "perms" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 133634 // AntTaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Recursively sets the permissions of the directory and all it's 
+subdirectories and files.
+
+@param directory  directory in which chmod will be performed.
+@param perms new permissions, in the chmod command style, e.g. \"755\",
+\"a+rwx\" etc..
+@throws AntTaskException when anything goes wrong.
+"
+      end
+
+      operation 257026 "chmod"
+	class_operation public explicit_return_type "void"
+	nparams 2
+	  param in name "fileName" explicit_type "String"
+	  param in name "perms" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 133634 // AntTaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Modifies permissions for single file.
+
+@param fileName	target file name.
+@param perms	permissions to set (chmod-like syntax).
+@throws AntTaskException if anything goes wrong.
+"
+      end
+    end
+
+    class 153474 "Copy"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Copies a file to another file or directory using Ant. 
+
+@author Jaroslav Urban
+"
+      classrelation 162946 // <generalisation>
+	relation 162946 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 162946 // <generalisation>
+	  b parent class_ref 153602 // Copy
+      end
+
+      operation 257154 "Copy"
+	private explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>Copy</code> object.
+
+"
+      end
+
+      operation 257282 "copy"
+	class_operation public explicit_return_type "void"
+	nparams 2
+	  param in name "srcFile" explicit_type "String"
+	  param in name "toFile" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 133634 // AntTaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Copy a file to another file.
+
+@param srcFile file to be copied.
+@param toFile copy of the file.
+@throws AntTaskException if anything goes wrong.
+"
+      end
+
+      operation 257410 "copyToDir"
+	class_operation public explicit_return_type "void"
+	nparams 2
+	  param in name "srcFile" explicit_type "String"
+	  param in name "toDir" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 133634 // AntTaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Copy a file to a directory.
+
+@param srcFile file to be copied.
+@param toDir destination directory.
+@throws AntTaskException if anything goes wrong.
+"
+      end
+
+      operation 257538 "directoryCopy"
+	class_operation public explicit_return_type "void"
+	nparams 2
+	  param in name "srcDir" explicit_type "String"
+	  param in name "toDir" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 133634 // AntTaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Copies a directory to another directory.
+
+@param srcDir source directory.
+@param toDir path to the copy of the directory (the full new name).
+@throws AntTaskException if anything goes wrong.
+"
+      end
+
+      operation 257666 "filesetCopy"
+	class_operation public explicit_return_type "void"
+	nparams 3
+	  param in name "srcDir" explicit_type "String"
+	  param in name "fileset" explicit_type "String"
+	  param in name "toDir" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 133634 // AntTaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Copies an Ant's fileset from one directory to another.
+
+@param srcDir source directory.
+@param fileset the Ant's fileset.
+@param toDir target directory.
+@throws AntTaskException if anything goes wrong.
+"
+      end
+    end
+
+    class 153730 "Cvs"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 163074 // <generalisation>
+	relation 163074 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 163074 // <generalisation>
+	  b parent class_ref 153858 // AbstractCvsTask
+      end
+
+      operation 257794 "Cvs"
+	private explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 257922 "checkout"
+	class_operation public explicit_return_type "void"
+	nparams 7
+	  param in name "repository" explicit_type "String"
+	  param in name "pass" explicit_type "String"
+	  param in name "cvsRsh" explicit_type "String"
+	  param in name "module" explicit_type "String"
+	  param in name "tag" explicit_type "String"
+	  param in name "date" explicit_type "String"
+	  param in name "dest" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 133634 // AntTaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}, ${t5} ${p5}, ${t6} ${p6}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 258050 "getOutputStream"
+	protected explicit_return_type "OutputStream"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+      end
+
+      operation 258178 "getErrorStream"
+	protected explicit_return_type "OutputStream"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+      end
+
+      operation 258306 "main"
+	class_operation public explicit_return_type "void"
+	nparams 1
+	  param in name "args" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "Exception"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0}[] ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+    end
+
+    class 153986 "Delete"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Deletes files using Ant.
+
+@author Jaroslav Urban
+"
+      classrelation 163202 // <generalisation>
+	relation 163202 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 163202 // <generalisation>
+	  b parent class_ref 154114 // Delete
+      end
+
+      operation 258434 "Delete"
+	private explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+
+Allocates a new <code>Delete</code> object.
+
+"
+      end
+
+      operation 258562 "deleteFile"
+	class_operation public explicit_return_type "void"
+	nparams 1
+	  param in name "path" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 133634 // AntTaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Deletes a file.
+
+@param path path to the file.
+@throws AntTaskException if anything goes wrong.
+"
+      end
+
+      operation 258690 "deleteDirectory"
+	class_operation public explicit_return_type "void"
+	nparams 1
+	  param in name "path" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 133634 // AntTaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Deletes a directory.
+
+@param path path to the directory.
+@throws AntTaskException if anything goes wrong.
+"
+      end
+    end
+
+    class 154242 "GUnzip"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Class decompresses files from zip/jar archives.
+
+@author Jaroslav Urban
+"
+      classrelation 163330 // <generalisation>
+	relation 163330 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 163330 // <generalisation>
+	  b parent class_ref 154370 // GUnzip
+      end
+
+      operation 258818 "GUnzip"
+	private explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>Zip</code> object
+
+"
+      end
+
+      operation 258946 "unzip"
+	class_operation public explicit_return_type "void"
+	nparams 2
+	  param in name "archive" explicit_type "String"
+	  param in name "directory" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 133634 // AntTaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Decompresses an archive to a directory
+
+@param archive 	to be dearchived
+@param directory to which the dearchived files should be put
+@throws AntTaskException if anyting goes wrong.
+"
+      end
+    end
+
+    class 154498 "Java"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Runs the Java Virtual Machine.
+
+@author Jaroslav Urban
+"
+      classrelation 163458 // <generalisation>
+	relation 163458 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 163458 // <generalisation>
+	  b parent class_ref 154626 // Java
+      end
+
+      operation 259074 "Java"
+	private explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>Java</code> object.
+
+"
+      end
+
+      operation 259202 "runJava"
+	class_operation public explicit_return_type "void"
+	nparams 3
+	  param in name "classname" explicit_type "String"
+	  param in name "classpath" explicit_type "String"
+	  param in name "directory" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 133634 // AntTaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Runs the Java Virtual Machine.
+
+@param classname name of the class that should be run.
+@param classpath classpath for the JVM. You can either \":\" or \";\" characters
+as directory separators 
+@param directory directory in which should the JVM be started
+@throws AntTaskException if anyhthing goes wrong.
+"
+      end
+    end
+
+    class 154754 "Move"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Moves a file to another file or directory using Ant. 
+
+@author Michal Tomcanyi
+"
+      classrelation 163586 // <generalisation>
+	relation 163586 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 163586 // <generalisation>
+	  b parent class_ref 154882 // Move
+      end
+
+      operation 259330 "Move"
+	private explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>Move</code> object
+"
+      end
+
+      operation 259458 "move"
+	class_operation public explicit_return_type "void"
+	nparams 2
+	  param in name "srcFile" explicit_type "String"
+	  param in name "toFile" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 133634 // AntTaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Move a file to another file
+
+@param srcFile file to be moved
+@param toFile target file
+@throws AntTaskException if anything goes wrong.
+"
+      end
+
+      operation 259586 "moveToDir"
+	class_operation public explicit_return_type "void"
+	nparams 2
+	  param in name "srcFile" explicit_type "String"
+	  param in name "toDir" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 133634 // AntTaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Move a file to a directory
+
+@param srcFile file to be moved
+@param toDir destination directory 
+@throws AntTaskException if anything goes wrong.
+"
+      end
+
+      operation 259714 "directoryMove"
+	class_operation public explicit_return_type "void"
+	nparams 2
+	  param in name "srcDir" explicit_type "String"
+	  param in name "toDir" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 133634 // AntTaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Moves a directory to another directory
+
+@param srcDir source directory
+@param toDir destination directory
+@throws AntTaskException if anything goes wrong.
+"
+      end
+
+      operation 259842 "filesetMove"
+	class_operation public explicit_return_type "void"
+	nparams 3
+	  param in name "sourceDir" explicit_type "String"
+	  param in name "sourceIncludes" explicit_type "String"
+	  param in name "toDir" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 133634 // AntTaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Fileset-based move from <code>sourceDir</code> to <code>toDir</code>
+where source files are matched from sourceDir according to 
+<code>sourceIncludes</code>
+@param sourceDir		source directory
+@param sourceIncludes include to use to determine files to move (relative to sourceDir) 
+@param toDir			target directory
+@throws AntTaskException if anything goes wrong.
+"
+      end
+    end
+
+    class 155010 "Replace"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 163714 // <generalisation>
+	relation 163714 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 163714 // <generalisation>
+	  b parent class_ref 155138 // Replace
+      end
+
+      operation 259970 "Replace"
+	public explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 260098 "replace"
+	class_operation public explicit_return_type "void"
+	nparams 3
+	  param in name "sourceFile" explicit_type "String"
+	  param in name "token" explicit_type "String"
+	  param in name "value" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 133634 // AntTaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+    end
+
+    class 155266 "Tar"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 163842 // <generalisation>
+	relation 163842 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 163842 // <generalisation>
+	  b parent class_ref 155394 // Tar
+      end
+
+      operation 260226 "Tar"
+	private explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>Zip</code> object
+"
+      end
+
+      operation 260354 "tar"
+	class_operation public explicit_return_type "void"
+	nparams 3
+	  param in name "sourceDir" explicit_type "String"
+	  param in name "archive" explicit_type "String"
+	  param in name "compression" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 133634 // AntTaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Archives directory to a tar file
+
+@param sourceDir 	directory to archive
+@param archive 		destination archive
+@param compression	optional compression method to use. Available values are:
+<ul>
+  <li>none - no compression
+  <li>gzip - Gzip compression
+  <li>bzip2 - Bzip2 compression
+</ul>
+<code>null</code> defaults to \"none\"
+
+@throws AntTaskException if anything goes wrong.
+						
+"
+      end
+    end
+
+    class 155522 "Untar"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Class decompresses files from zip/jar archives
+
+@author Jaroslav Urban
+"
+      classrelation 163970 // <generalisation>
+	relation 163970 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 163970 // <generalisation>
+	  b parent class_ref 155650 // Untar
+      end
+
+      operation 260482 "Untar"
+	private explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>Zip</code> object
+"
+      end
+
+      operation 260610 "untar"
+	class_operation public explicit_return_type "void"
+	nparams 3
+	  param in name "archive" explicit_type "String"
+	  param in name "directory" explicit_type "String"
+	  param in name "compression" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 133634 // AntTaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Decompresses an archive to a directory
+
+@param archive 	to be dearchived
+@param directory to which the files should be put
+@param compression	compression method to use. Available values are:
+<ul>
+  <li>none - no compression
+  <li>gzip - Gzip compression
+  <li>bzip2 - Bzip2 compression
+</ul>
+<code>null</code> defaults to \"none\"
+
+@throws AntTaskException if anything goes wrong.
+						
+"
+      end
+
+      operation 260738 "untar"
+	class_operation public explicit_return_type "void"
+	nparams 2
+	  param in name "archive" explicit_type "String"
+	  param in name "directory" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 133634 // AntTaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Dearchives .tar archive using no compression to given directory 
+@param archive	Source archive to dearchive
+@param directory	Destination directory
+@throws AntTaskException if anything goes wrong.
+"
+      end
+    end
+
+    class 155778 "Unzip"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Class decompresses files from zip/jar archives
+
+@author Jaroslav Urban
+"
+      classrelation 164098 // <generalisation>
+	relation 164098 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 164098 // <generalisation>
+	  b parent class_ref 155906 // Expand
+      end
+
+      operation 260866 "Unzip"
+	private explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>Zip</code> object
+
+"
+      end
+
+      operation 260994 "unzip"
+	class_operation public explicit_return_type "void"
+	nparams 2
+	  param in name "archive" explicit_type "String"
+	  param in name "directory" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 133634 // AntTaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Decompresses an archive to a directory
+
+@param archive 	to be dearchived
+@param directory to which the dearchived files should be put
+@throws AntTaskException if anything goes wrong.
+"
+      end
+
+      operation 261122 "unzip"
+	class_operation public explicit_return_type "void"
+	nparams 3
+	  param in name "archive" explicit_type "String"
+	  param in name "includes" explicit_type "String"
+	  param in name "directory" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 133634 // AntTaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 261250 "createInstance"
+	class_operation private return_type class_ref 155778 // Unzip
+	nparams 2
+	  param in name "archive" explicit_type "String"
+	  param in name "directory" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 133634 // AntTaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+    end
+
+    class 156034 "Zip"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Class that can compress files to the zip format
+
+@author Jaroslav Urban
+"
+      classrelation 164226 // <generalisation>
+	relation 164226 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 164226 // <generalisation>
+	  b parent class_ref 156162 // Zip
+      end
+
+      operation 261378 "Zip"
+	private explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>Zip</code> object
+
+"
+      end
+
+      operation 261506 "zipDirectory"
+	class_operation public explicit_return_type "void"
+	nparams 2
+	  param in name "directory" explicit_type "String"
+	  param in name "archive" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 133634 // AntTaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Compresses a directory to a zip file
+
+@param directory path to directory that should be compressed
+@param archive path to the created zip file
+@throws AntTaskException if anything goes wrong.
+"
+      end
+    end
+
+    class 157704 "BZip2"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "Class that can compress file to bzip2 file
+
+@author Jaroslav Urban"
+      classrelation 163080 // <generalisation>
+	relation 163080 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 163080 // <generalisation>
+	  b parent class_ref 157832 // BZip2
+      end
+
+      operation 277768 "BZip2"
+	private explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "Allocates a new <code>BZip2</code> object
+"
+      end
+
+      operation 277896 "bzip"
+	class_operation public explicit_return_type "void"
+	nparams 2
+	  param in name "file" explicit_type "String"
+	  param in name "archive" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 133634 // AntTaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "Compresses a file to a bzip2 file
+
+@param file file that should be compressed
+@param archive path to the created zip file
+@throws AntTaskException if anything goes wrong."
+      end
+    end
+
+    class 203016 "CvsClientTest"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment " 
+
+ @author: Jan Tattermusch"
+      operation 609160 "testCVSCheckout"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "Exception"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test(expected=AntTaskException.class)
+"
+	
+	
+	
+	comment "Tests whether checkout failure
+throws an exception
+@throws Exception"
+      end
+    end
+  end
+
+  deploymentview 129538 "anttasks"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+    artifact 142594 "AntTaskException"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import cz.cuni.mff.been.common.BeenException;
+${definition}"
+      associated_classes
+	class_ref 133634 // AntTaskException
+      end
+    end
+
+    artifact 142722 "Chmod"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.File;
+import org.apache.tools.ant.Project;
+${definition}"
+      associated_classes
+	class_ref 153218 // Chmod
+      end
+    end
+
+    artifact 142850 "Copy"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.File;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.types.FileSet;
+${definition}"
+      associated_classes
+	class_ref 153474 // Copy
+      end
+    end
+
+    artifact 142978 "Cvs"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import org.apache.tools.ant.Project;
+${definition}"
+      associated_classes
+	class_ref 153730 // Cvs
+      end
+    end
+
+    artifact 143106 "Delete"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.File;
+import org.apache.tools.ant.Project;
+${definition}"
+      associated_classes
+	class_ref 153986 // Delete
+      end
+    end
+
+    artifact 143234 "GUnzip"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.File;
+import org.apache.tools.ant.Project;
+${definition}"
+      associated_classes
+	class_ref 154242 // GUnzip
+      end
+    end
+
+    artifact 143362 "Java"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.File;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.types.Path;
+${definition}"
+      associated_classes
+	class_ref 154498 // Java
+      end
+    end
+
+    artifact 143490 "Move"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.File;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.types.FileSet;
+${definition}"
+      associated_classes
+	class_ref 154754 // Move
+      end
+    end
+
+    artifact 143618 "Replace"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.File;
+import org.apache.tools.ant.Project;
+${definition}"
+      associated_classes
+	class_ref 155010 // Replace
+      end
+    end
+
+    artifact 143746 "Tar"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.File;
+import org.apache.tools.ant.Project;
+${definition}"
+      associated_classes
+	class_ref 155266 // Tar
+      end
+    end
+
+    artifact 143874 "Untar"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.File;
+import org.apache.tools.ant.Project;
+${definition}"
+      associated_classes
+	class_ref 155522 // Untar
+      end
+    end
+
+    artifact 144002 "Unzip"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.File;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.types.PatternSet;
+${definition}"
+      associated_classes
+	class_ref 155778 // Unzip
+      end
+    end
+
+    artifact 144130 "Zip"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.File;
+import org.apache.tools.ant.Project;
+${definition}"
+      associated_classes
+	class_ref 156034 // Zip
+      end
+    end
+
+    artifact 146184 "BZip2"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.File;
+import org.apache.tools.ant.Project;
+${definition}"
+      associated_classes
+	class_ref 157704 // BZip2
+      end
+      comment " BEEN: Benchmarking Environment
+ ==============================
+
+ File author: Jaroslav Urban
+
+ GNU Lesser General Public License Version 2.1
+ ---------------------------------------------
+ Copyright (C) 2004-2006 Distributed Systems Research Group,
+ Faculty of Mathematics and Physics, Charles University in Prague
+
+ This library is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public
+ License version 2.1, as published by the Free Software Foundation.
+
+ This library is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this library; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+ MA  02111-1307  USA"
+    end
+
+    artifact 190984 "CvsClientTest"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import org.junit.Test;
+${definition}"
+      associated_classes
+	class_ref 203016 // CvsClientTest
+      end
+      comment " BEEN: Benchmarking Environment
+ ==============================
+
+ File author: Jan Tattermusch
+
+ GNU Lesser General Public License Version 2.1
+ ---------------------------------------------
+ Copyright (C) 2004-2006 Distributed Systems Research Group,
+ Faculty of Mathematics and Physics, Charles University in Prague
+
+ This library is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public
+ License version 2.1, as published by the Free Software Foundation.
+
+ This library is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this library; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+ MA  02111-1307  USA"
+    end
+  end
+end

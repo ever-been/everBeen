@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sect1
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>Using Results Repository</title>
+	
+	
+	<sect2>
+	<title>Storing Data in Results Repository</title>
+		<para>
+		Main <glossterm>Results Repository</glossterm>'s functionality is to persist tasks' 
+		result data. Data are saved in table-like structures 
+		called <glossterm>datasets</glossterm>. <glossterm>Results Repository</glossterm> itself does not understand  the structure 
+		of data saved in it, it just allows user to create <glossterm>datasets</glossterm> 
+		with custom schema and then allows him to access data in these <glossterm>datasets</glossterm>. 
+		</para>
+		
+		<sect3>
+		<title>Storing Benchmark Results</title>
+		<para>	
+		Aside of use <glossterm>RR</glossterm>'s data storage for custom purposes (which
+		is possible and encouraged), presumed usage pattern 
+		of <glossterm>Results Repository</glossterm> is that each benchmarking <glossterm>task</glossterm> that is run produces 
+		a single unit of data, usually a binary file 
+		(that can be very large). This data is persisted along with description 
+		of context in which data was gathered (e.g. version of software that was 
+		benchmarked, number of run...). The description is saved in fields called 
+		<glossterm>tags</glossterm>. Since each kind of <glossterm>task</glossterm> has a specific set of <glossterm>tags</glossterm> describing its 
+		context, data produced by one kind of <glossterm>task</glossterm> are saved to a storage space 
+		called <glossterm>dataset</glossterm>.
+		</para>
+		</sect3>
+		
+		<sect3>
+		<title>Datasets</title>
+		<para>
+		<glossterm>Datasets</glossterm> are named table-like structures that consist of set of typed fields 
+		called <glossterm>tags</glossterm>. Every <glossterm>tag</glossterm> has its name and a type (<glossterm>tags</glossterm> can be thinked of 
+		as columns in database tables. In fact, <glossterm>datasets</glossterm> are implemented as 
+		database tables, but <glossterm>RR</glossterm> interface hides this information. 
+		Set of dataset's <glossterm>tags</glossterm> along with their types defines a schema of a <glossterm>dataset</glossterm>.
+		<glossterm>Datasets</glossterm> are identified by <code>(analysisName, datasetName)</code> tuple. 
+		<code>analysisName</code> is name of analysis the <glossterm>dataset</glossterm> belongs to 
+		(most real-life <glossterm>datasets</glossterm> in <glossterm>RR</glossterm> will be created automatically by a benchmark). 
+		<code>datasetName</code> is just a name that is unique within an <glossterm>analysis</glossterm>.
+		Once a <glossterm>dataset</glossterm> is created using <glossterm>Results Repository</glossterm>'s management interface,
+		 data interface can be used to store records. Stored data can be retrieved 
+		 from a <glossterm>dataset</glossterm> based on given condition (criteria that have to be met).
+		 </para>
+		</sect3>
+	
+		<sect3>
+		<title>Data types</title>	 
+		<para>
+		As every database-like persistent storage, <glossterm>Results Repository</glossterm> has a set 
+		of predefined data types that users can use to represent their data.
+		</para> 
+		
+		<para>
+		<glossterm>Results Repository</glossterm> supports these <glossterm>tag</glossterm> data types (see <classname>DataHandle.DataType</classname>
+		JavaDoc for details):
+		</para> 
+		<variablelist>
+			<varlistentry>
+				<term><code>INT</code></term>
+				<listitem><para>integer data type corresponding to Java <code>int</code></para></listitem>
+			</varlistentry>
+		
+			<varlistentry>
+				<term><code>LONG</code></term>
+				<listitem><para>long integer data type corresponding to Java <code>long</code></para></listitem>
+			</varlistentry>
+			
+			<varlistentry>
+				<term><code>FLOAT</code></term>
+				<listitem><para>single precision floating point type corresponding to Java <code>float</code></para></listitem>
+			</varlistentry>
+			
+			<varlistentry>
+				<term><code>DOUBLE</code></term>
+				<listitem><para>double precision floating point type corresponding to Java <code>double</code></para></listitem>
+			</varlistentry>
+			
+			<varlistentry>
+				<term><code>STRING</code></term>
+				<listitem><para>string data type corresponding to <code>java.lang.String</code></para></listitem>
+			</varlistentry>
+			
+			<varlistentry>
+				<term><code>UUID</code></term>
+				<listitem><para>universally unique identifier type corresponding to <code>java.util.UUID</code></para></listitem>
+			</varlistentry>
+			
+			<varlistentry>
+				<term><code>SMALL_BINARY</code></term>
+				<listitem><para>container for small binary data (for large data use <glossterm>Results Repository</glossterm>'s <glossterm>File Store</glossterm>)</para></listitem>
+			</varlistentry>
+			
+			<varlistentry>
+				<term><code>FILE</code></term>
+				<listitem><para>reference to a file stored in <glossterm>Results Repository</glossterm>'s <glossterm>File Store</glossterm></para></listitem>
+			</varlistentry>
+			
+			<varlistentry>
+				<term><code>SERIALIZABLE</code></term>
+				<listitem><para>whatever serializable Java object</para></listitem>
+			</varlistentry>
+		</variablelist>
+		 
+		 <para>
+		 All data types except <code>SMALL_BINARY</code> and <code>SERIALIZABLE</code> can be used as a constraint
+		 when retrieving data and can be also used as a <glossterm>key tag</glossterm> (set of all <glossterm>key tags</glossterm> of a <glossterm>dataset</glossterm>
+		 constitutes its primary key).
+		 </para>
+		 
+		 <note>
+		 <para>
+		 Even though the set of supported data types seems to be complete, new datatypes can 
+		 be added to <glossterm>Results Repository</glossterm> without an effort.
+		 </para>
+		 </note>
+		</sect3>
+	</sect2>
+	
+	<sect2>
+		<title>Results Repository Triggers</title>
+		<para>
+		<glossterm>Results Repository</glossterm> is not responsible for doing evaluation (e.g. statistical) 
+		on data stored in it (unlike legacy RR from earlier versions of BEEN). Instead, it allows <glossterm>Benchmark Manager</glossterm> to register so-called 
+		<glossterm>triggers</glossterm> on datasets. Then, after new data arrives to certain <glossterm>dataset</glossterm>, it gets 
+		tested against <glossterm>trigger</glossterm>'s condition. If condition matches the new data an event 
+		is queued by <glossterm>Results Repository</glossterm> and in suitable moment an <glossterm>evaluation task</glossterm> 
+		associated with the <glossterm>trigger</glossterm> is run by <glossterm>Task Manager</glossterm>.
+		</para>
+		<para>
+		In next sections, we will describe how <glossterm>Results Repository</glossterm> trigger mechanism 
+		works and what are the consequences of that. 
+		</para>
+		
+		 <note>
+		 <para>
+		 Since trigger mechanisms are not compatible with transaction handling,
+		 <glossterm>datasets</glossterm> can either support former or latter. You can
+		 decide what will be supported by setting <glossterm>dataset</glossterm> type when creating a <glossterm>dataset</glossterm>.
+		 </para>
+		 </note>
+		
+		 <sect3>
+		 <title>Record Serial Numbers</title>
+		 <para>
+		 The key to efficient implementation of firing <glossterm>triggers</glossterm> are record <glossterm>serial numbers</glossterm>. 
+		 Every time a record is saved into <glossterm>Results Repository</glossterm>, it obtains a <glossterm>serial number</glossterm> 
+		 (generated by <glossterm>Results Repository</glossterm>). This <glossterm>serial number</glossterm> is stored along with 
+		 the record. Generated <glossterm>serial numbers</glossterm> are guaranteed to form a growing sequence 
+		 in time (all records inserted into <glossterm>Results Repository</glossterm> after an arbitrary record 
+		 will have bigger <glossterm>serial number</glossterm>). <glossterm>Serial numbers</glossterm> help <glossterm>Results Repository</glossterm> to state 
+		 which data haven't yet fired the trigger or haven't been processed by triggered 
+		 <glossterm>evaluator task</glossterm> yet.
+		 </para>
+		 </sect3>
+		
+		<sect3>
+		<title>Firing Triggers</title>
+		<para>
+		To prevent overhead associated with launching <glossterm>evaluator task</glossterm> over and over 
+		and to guarantee that maximum one <glossterm>evaluator task</glossterm> for given trigger is running 
+		at a time, <glossterm>trigger</glossterm> events are processed in batches. Here comes the <glossterm>trigger</glossterm> 
+		lifecycle:
+		</para>
+		<orderedlist>
+		<listitem><para><glossterm>Trigger</glossterm> is fired (after data have been inserted in a <glossterm>dataset</glossterm>) 
+		and <glossterm>evaluator task</glossterm> is scheduled by <glossterm>Task Manager</glossterm>. After this, <glossterm>Results Repository</glossterm> 
+		sets a disabled flag on given <glossterm>trigger</glossterm>. Disabled triggers don't run <glossterm>evaluator tasks</glossterm>, 
+		and they just collect trigger events (so that the events don't get lost).
+		</para></listitem>
+		<listitem><para><glossterm>Evaluator task</glossterm> is executed by <glossterm>Task Manager</glossterm>. As a parameter, 
+		it obtains the last <glossterm>serial number</glossterm> of a record that have already been processed. 
+		<glossterm>Evaluator</glossterm> then request data from appropriate <glossterm>dataset</glossterm> that have 
+		bigger <glossterm>serial number</glossterm> than the last <glossterm>serial number</glossterm> processed. It "evaluates" the data 
+		(this is the workhorse of every evaluation process and is benchmark specific) and by calling <methodname>notifyDataProcessed</methodname> method or <glossterm>RR</glossterm>, 
+		it notifies that evaluation process has ended. In this call <glossterm>evaluator task</glossterm> also 
+		passes <glossterm>serial number</glossterm> of last record that has been processed by run that just finished.
+		</para></listitem>
+		<listitem><para>
+		<glossterm>Results Repository</glossterm> receives <glossterm>evaluator task</glossterm> notification, re-enables <glossterm>trigger</glossterm> that have 
+		been disabled before and if there are some queued trigger events, it schedules the <glossterm>evaluator 
+		task</glossterm> again. 
+		</para></listitem>
+		</orderedlist>		
+		<para>
+		These rules guarantee that there is only one <glossterm>evaluator task</glossterm> running at a 
+		time for a certain trigger and no data insertion event is processed twice.
+		</para>
+		<sect4 xml:id="been.devel.rrng.usage.triggers.fire">
+		<title>Wildchars when firing triggers</title>
+		<para>
+		Every trigger created in <glossterm>Results Repository</glossterm> contains a <glossterm>task descriptor</glossterm>, 
+		that should be run when trigger is fired. Because task identifier
+		is part of <glossterm>task descriptor</glossterm>, all tasks launched by the same trigger would 
+		have the same task identifier, which is not convenient.
+		</para>
+		<para>
+		As a solution, <code>taskId</code> and <code>treeAddress</code> in <glossterm>trigger</glossterm>'s task descriptor are considered 
+		to be a template. Such a task identifier (or tree address) can contain wild characters that get replaced
+		by a value when task is triggered to create a meaningful unique task identifier (or tree address).
+		Here is list of supported task identifier and tree address wild characters: 
+		<variablelist>
+			<varlistentry>
+			<term>%s</term>
+			<listitem><para>gets replaced by a current record <glossterm>serial number</glossterm> (this is recommended wilchar to use)</para></listitem>
+			</varlistentry>
+			
+			<varlistentry>
+			<term>%u</term>
+			<listitem><para>gets replaced by a random UUID.</para></listitem>
+			</varlistentry>
+		</variablelist>
+		 
+		</para>
+		</sect4>	
+		
+		</sect3>
+	</sect2>
+	
+	
+	<sect2>
+		<title>Storing Large Files in Results Repository</title>
+		<para>
+		Because storing large files directly into <glossterm>datasets</glossterm> 
+		would be too costly and slow, <glossterm>Results Repository</glossterm> offers a subservice 
+		called <glossterm>File Store</glossterm>. This service can be used to upload files to a central 
+		storage and then download them back. All the files uploaded to <glossterm>Results 
+		Repository</glossterm>'s <glossterm>File Store</glossterm> get an UUID to be referenced with.  
+		</para>
+		<para>
+		To get better support from <glossterm>Results Repository</glossterm> when working with large files,
+		<glossterm>datasets</glossterm> can contain a <glossterm>tag</glossterm> of type <code>FILE</code>. This allows you to easily 
+		reference files in <glossterm>File Store</glossterm> from your <glossterm>dataset</glossterm>. The expected scenario
+		looks like this:    
+		</para>
+		<orderedlist>
+		<listitem><para>Upload a file to RR using File Store API and obtain it's UUID</para></listitem>
+		<listitem><para>Insert a new record into certain <glossterm>dataset</glossterm> that contains <glossterm>tag</glossterm> of type <code>FILE</code>, in which you
+		store the file's UUID.</para></listitem>
+		<listitem><para>Once you need to work with file's data, simply retrieve the 
+		record by its key, get file's UUID and download given file using File Store API.</para></listitem>
+		</orderedlist>		
+		<para>
+		For more information on how to use <glossterm>File Store</glossterm>, see 
+		<xref linkend="been.devel.rrng.api"/>.
+		</para>
+	</sect2>
+	
+	<sect2>
+		<title>Results Repository Transactions</title>
+		<para>
+		For most datasets <glossterm>Results Repository</glossterm> would only insert new records
+		and fire triggers on them. Although for this scenario we we don't need
+		transaction support at all, sometimes it would be meaningful to use
+		datasets to store data that is accessed concurrently and this access can require
+		to be transactional. For this case, RR Transaction API is available. 
+		</para> 
+		
+		<sect3>
+		<title>How To Use Results Repository Transactions</title>
+		<para>
+		The usage scenario for <glossterm>RR transactions</glossterm> is very simple. Everytime you
+		want to access a <glossterm>dataset</glossterm> transactionally, you request a transaction 
+		client instance from <glossterm>Results Repository</glossterm>. Using obtained client object
+		you access dataset's data as usual. When you're done with your work,
+		you simply tell the client object to commit your changes. For more information 
+		on how to work with <glossterm>RR transactions</glossterm>, see
+		<xref linkend="been.devel.rrng.api"/>.
+		</para>
+		</sect3>
+		
+		<sect3>
+		<title>Isolation level</title>
+		<para>
+		Isolation level of all <glossterm>RR transactions</glossterm> is by default set to <code>SERIALIZABLE</code>.
+		</para>
+		
+		
+		 <note>
+		 <para>
+		 Since trigger mechanisms implemented in RR are not compatible with transaction handling,
+		 every <glossterm>dataset</glossterm> can either support former or latter. You can
+		 decide what will be supported by setting dataset type when creating a <glossterm>dataset</glossterm>.
+		 </para>
+		 </note>
+	
+		<note>
+		<para>
+		Because Derby DB transaction support is somehow disappointing (
+		and it's hard to figure that out without trying first) and uses
+		locks instead of MVCC, there could sometimes appear some lock related
+		issues (deadlock, lock timeouts) when using RR transactions in
+		heavy concurrency environment. Please note that this is not fault of 
+		BEEN, but property of Derby transaction implementation. A solution
+		for this problem is proposed in Conclusion section. 
+		</para>
+		</note>
+		</sect3>
+		
+	</sect2>
+	
+</sect1>

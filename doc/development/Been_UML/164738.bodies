@@ -1,0 +1,13 @@
+class IllegalOperationException
+!!!310914.java!!!	IllegalOperationException()
+		
+		super();
+!!!311042.java!!!	IllegalOperationException(inout cause : Throwable)
+	
+		super(cause);
+!!!311170.java!!!	IllegalOperationException(in message : String)
+		
+		super(message);
+!!!311298.java!!!	IllegalOperationException(in message : String, inout cause : Throwable)
+		
+		super(message, cause);

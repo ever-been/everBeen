@@ -1,0 +1,52 @@
+class Version
+!!!254594.java!!!	Version()
+		super();
+!!!254722.java!!!	Version(in s : String)
+		super();
+		valueOf(s);
+!!!254850.java!!!	partCount() : int
+		return parts.length;
+!!!254978.java!!!	getPart(in index : int) : String
+		return parts[index];
+!!!255106.java!!!	compareTo(inout o : Object) : int
+		
+		return compareTo((Version) o);
+!!!255234.java!!!	compareTo(inout anotherVersion : Version) : int
+		int maxPartCount = Math.max(parts.length, anotherVersion.parts.length);
+		for (int i = 0; i < maxPartCount; i++) {
+			int result = getPartOrZero(i).compareTo(anotherVersion.getPartOrZero(i));
+			if (result != 0) {
+				return result;
+			}
+		}
+		return 0;
+!!!255362.java!!!	equals(inout o : Object) : boolean
+		return o instanceof Version && compareTo(o) == 0;
+!!!255490.java!!!	hashCode() : int
+		int result = 0;
+		int i = parts.length - 1;
+		while (parts[i].equals(ZERO_PART)) {
+			i--;
+		}
+		while (i >= 0) {
+			result ^= parts[i].hashCode();
+			i--;
+		}
+		return result;
+!!!255618.java!!!	valueOf(in s : String) : void
+		parts = s.split(PART_SEPARATOR_REGEX);
+!!!255746.java!!!	toString() : String
+		String result = "";
+		for (int i = 0; i < parts.length; i++) {
+			if (i != 0) {
+				result += PART_SEPARATOR;
+			}
+			result += parts[i];
+		}
+		return result;
+!!!255874.java!!!	getPartOrZero(in index : int) : String
+		if (index < parts.length) {
+			return parts[index];
+		} else {
+			return ZERO_PART;
+		}

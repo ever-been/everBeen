@@ -1,0 +1,7 @@
+class RegexpVariableNameSyntaxChecker
+!!!252162.java!!!	RegexpVariableNameSyntaxChecker(in regexp : String)
+			
+			pattern = Pattern.compile(regexp);
+!!!252290.java!!!	checkName(in name : String) : boolean
+			
+			return pattern.matcher(name).matches();

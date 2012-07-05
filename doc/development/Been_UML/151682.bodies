@@ -1,0 +1,7 @@
+class Token
+!!!247810.java!!!	Token(in position : int)
+			
+			this.position = position;
+!!!248066.java!!!	getPosition() : int
+			
+			return position;

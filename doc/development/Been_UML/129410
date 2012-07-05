@@ -1,0 +1,2760 @@
+format 70
+"logging" // been::src::cz::cuni::mff::been::logging
+  revision 2
+  modified_by 8 "BoRiS"
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+  show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+  show_infonote default drawing_language default show_stereotype_properties default
+  
+  java_dir "cz/cuni/mff/been/logging"
+  java_package "cz.cuni.mff.been.logging"
+  classview 128642 "logging"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+    //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+    show_infonote default drawing_language default show_stereotype_properties default
+    class 129666 "LogLevel"
+      visibility public stereotype "enum"
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}enum ${name}${implements} {
+${items};
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Class representing logging level of a log message or a logger. The log levels are ordered in this order:
+OFF, TRACE, DEBUG, INFO, WARN, ERROR, FATAL, ALL. Every logger (like ConsoleLogger) will only log messages
+with higher or equal log level than the log level of the logger.
+
+The list of levels must be in sync with list in the
+\"logViewLogLevelComparator\" function in file /webinterface/scripts/scripts.js.
+
+@author Jaroslav Urban
+"
+      classrelation 217602 // <realization>
+	relation 217602 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 217602 // <realization>
+	  b parent class_ref 148226 // Serializable
+      end
+
+      classrelation 217730 // levels (<unidirectional association>)
+	relation 217730 --->
+	  stereotype "HashMap"
+	  a role_name "levels" init_value "=  new HashMap<Level, LogLevel>()" class_relation const_relation private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<Level, ${type}> ${name}${value};
+"
+	    classrelation_ref 217730 // levels (<unidirectional association>)
+	  b parent class_ref 129666 // LogLevel
+      end
+
+      classrelation 217858 // ALL (<unidirectional association>)
+	relation 217858 --->
+	  a role_name "ALL" init_value "=  new LogLevel(Level.ALL)" class_relation const_relation public
+	    comment " Logs all log messages. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 217858 // ALL (<unidirectional association>)
+	  b parent class_ref 129666 // LogLevel
+      end
+
+      classrelation 217986 // DEBUG (<unidirectional association>)
+	relation 217986 --->
+	  a role_name "DEBUG" init_value "=  new LogLevel(Level.DEBUG)" class_relation const_relation public
+	    comment " Logs from debug log messages upwards 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 217986 // DEBUG (<unidirectional association>)
+	  b parent class_ref 129666 // LogLevel
+      end
+
+      classrelation 218114 // ERROR (<unidirectional association>)
+	relation 218114 --->
+	  a role_name "ERROR" init_value "=  new LogLevel(Level.ERROR)" class_relation const_relation public
+	    comment " Logs from error log messages upwards 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 218114 // ERROR (<unidirectional association>)
+	  b parent class_ref 129666 // LogLevel
+      end
+
+      classrelation 218242 // FATAL (<unidirectional association>)
+	relation 218242 --->
+	  a role_name "FATAL" init_value "=  new LogLevel(Level.FATAL)" class_relation const_relation public
+	    comment " Logs from fatal log messages upwards 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 218242 // FATAL (<unidirectional association>)
+	  b parent class_ref 129666 // LogLevel
+      end
+
+      classrelation 218370 // INFO (<unidirectional association>)
+	relation 218370 --->
+	  a role_name "INFO" init_value "=  new LogLevel(Level.INFO)" class_relation const_relation public
+	    comment " Logs from info log messages upwards 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 218370 // INFO (<unidirectional association>)
+	  b parent class_ref 129666 // LogLevel
+      end
+
+      classrelation 218498 // OFF (<unidirectional association>)
+	relation 218498 --->
+	  a role_name "OFF" init_value "=  new LogLevel(Level.OFF)" class_relation const_relation public
+	    comment " Logs nothing. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 218498 // OFF (<unidirectional association>)
+	  b parent class_ref 129666 // LogLevel
+      end
+
+      classrelation 218626 // TRACE (<unidirectional association>)
+	relation 218626 --->
+	  a role_name "TRACE" init_value "=  new LogLevel(Level.TRACE)" class_relation const_relation public
+	    comment " Logs from trace log messages upwards 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 218626 // TRACE (<unidirectional association>)
+	  b parent class_ref 129666 // LogLevel
+      end
+
+      classrelation 218754 // WARN (<unidirectional association>)
+	relation 218754 --->
+	  a role_name "WARN" init_value "=  new LogLevel(Level.WARN)" class_relation const_relation public
+	    comment " Logs from warning log messages upwards 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 218754 // WARN (<unidirectional association>)
+	  b parent class_ref 129666 // LogLevel
+      end
+
+      attribute 241410 "log4jLevel"
+	private explicit_type "Level"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      operation 505858 "LogLevel"
+	private explicit_return_type ""
+	nparams 1
+	  param inout name "level" explicit_type "Level"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 505986 "getInstance"
+	class_operation public return_type class_ref 129666 // LogLevel
+	nparams 1
+	  param inout name "level" explicit_type "Level"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Converts a log4j level to BEEN's log level
+
+@param level log4j log  level
+@return BEEN's debug level
+"
+      end
+
+      operation 506114 "toLog4jLevel"
+	public explicit_return_type "Level"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns the value of this log level as log4j's level
+@return log4j's level
+"
+      end
+
+      operation 506242 "toString"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+      end
+
+      operation 506370 "valueOf"
+	class_operation public return_type class_ref 129666 // LogLevel
+	nparams 1
+	  param in name "name" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "IllegalArgumentException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+
+@param name name of the log level.
+@return LogLevel with the given name.
+@throws IllegalArgumentException if name is not a valid log level. 
+"
+      end
+
+      operation 506498 "isGreaterOrEqual"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "level" type class_ref 129666 // LogLevel
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@param level
+@return true if this log level has a higher or equal level than the 
+level passed as argument, false otherwise.
+"
+      end
+    end
+
+    class 184194 "LogRecord"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Contains a log message and other associated information. The log
+message was produced by a task.
+
+@author Jaroslav Urban
+"
+      classrelation 218882 // <realization>
+	relation 218882 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 218882 // <realization>
+	  b parent class_ref 148226 // Serializable
+      end
+
+      class 185858 "Fields"
+	visibility public stereotype "enum"
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}${final}${abstract}enum ${name}${implements} {
+${items};
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	attribute 241538 "CONTEXT"
+	  public type class_ref 185858 // Fields
+	  cpp_decl ""
+	  java_decl "  ${@}${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	attribute 241666 "TASK_ID"
+	  public type class_ref 185858 // Fields
+	  cpp_decl ""
+	  java_decl "  ${@}${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	attribute 241794 "HOSTNAME"
+	  public type class_ref 185858 // Fields
+	  cpp_decl ""
+	  java_decl "  ${@}${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	attribute 241922 "TIMESTAMP"
+	  public type class_ref 185858 // Fields
+	  cpp_decl ""
+	  java_decl "  ${@}${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	attribute 242050 "LEVEL"
+	  public type class_ref 185858 // Fields
+	  cpp_decl ""
+	  java_decl "  ${@}${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	attribute 242178 "MESSAGE"
+	  public type class_ref 185858 // Fields
+	  cpp_decl ""
+	  java_decl "  ${@}${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+      end
+
+      attribute 242306 "context"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Context of the task 
+"
+      end
+
+      attribute 242434 "taskID"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " ID of the task
+"
+      end
+
+      attribute 242562 "hostname"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Hostname where the task was running. 
+"
+      end
+
+      attribute 242690 "timestamp"
+	private explicit_type "Date"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Time when was the message logged. 
+"
+      end
+
+      classrelation 219010 // level (<unidirectional association>)
+	relation 219010 --->
+	  a role_name "level" private
+	    comment " Log level of the message. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 219010 // level (<unidirectional association>)
+	  b parent class_ref 129666 // LogLevel
+      end
+
+      attribute 242818 "message"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " The log message. 
+"
+      end
+
+      operation 506626 "LogRecord"
+	public explicit_return_type ""
+	nparams 6
+	  param in name "context" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	  param in name "hostname" explicit_type "String"
+	  param inout name "timestamp" explicit_type "Date"
+	  param inout name "level" type class_ref 129666 // LogLevel
+	  param in name "message" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}, ${t5} ${p5}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+
+Allocates a new <code>LogRecord</code> object.
+
+@param context context of the task.
+@param taskID task's ID.
+@param hostname host where the task was running. 
+@param timestamp time when the message was logged.
+@param level log level of the message.
+@param message logged message.
+"
+      end
+
+      operation 506754 "getContext"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return the context
+"
+      end
+
+      operation 506882 "getHostname"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return the hostname
+"
+      end
+
+      operation 507010 "getLevel"
+	public return_type class_ref 129666 // LogLevel
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return the level
+"
+      end
+
+      operation 507138 "getMessage"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return the message
+"
+      end
+
+      operation 507266 "getTaskID"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return the taskID
+"
+      end
+
+      operation 507394 "getTimestamp"
+	public explicit_return_type "Date"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return the timestamp
+"
+      end
+    end
+
+    class 184322 "LogStorageException"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+It's thrown when some unexcepted method occured during some log storage
+operation, e.g. disk is full etc.
+
+@author Jaroslav Urban
+"
+      classrelation 219138 // <generalisation>
+	relation 219138 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 219138 // <generalisation>
+	  b parent class_ref 128130 // BeenException
+      end
+
+      operation 507522 "LogStorageException"
+	public explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>LogStorageException</code> object.
+"
+      end
+
+      operation 507650 "LogStorageException"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "message" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>LogStorageException</code> object
+with specified message.
+
+@param message exception message
+"
+      end
+
+      operation 507778 "LogStorageException"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "cause" explicit_type "Throwable"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>LogStorageException</code> object
+with specified cause.
+
+@param cause exception cause
+"
+      end
+
+      operation 507906 "LogStorageException"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "message" explicit_type "String"
+	  param inout name "cause" explicit_type "Throwable"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>LogStorageException</code> object
+with specified message and cause.
+
+@param message exception message
+@param cause exception cause
+"
+      end
+    end
+
+    class 184450 "OutputHandle"
+      visibility public stereotype "interface"
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}interface ${name}${extends} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+A handle for reading standard or error output of some task. The output is 
+stored in a log storage.
+
+@author Jaroslav Urban
+"
+      classrelation 217090 // <generalisation>
+	relation 217090 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 217090 // <generalisation>
+	  b parent class_ref 130818 // Remote
+      end
+
+      operation 501378 "getNextLines"
+	public explicit_return_type "String"
+	nparams 1
+	  param in name "count" explicit_type "int"
+	nexceptions 2
+	  explicit_exception "RemoteException"
+	  explicit_exception "IOException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+
+@param count number of lines that should be read.
+@return the next lines of the task's output.
+@throws RemoteException
+@throws IOException if an I/O error occured during the reading of the output.
+"
+      end
+
+      operation 501506 "skipLines"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "count" explicit_type "long"
+	nexceptions 2
+	  explicit_exception "RemoteException"
+	  explicit_exception "IOException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Skips a number of lines in the output.
+
+@param count number of lines that will be skipped.
+@throws RemoteException
+@throws IOException if an I/O error occured during the reading of the output.
+"
+      end
+
+      operation 501634 "getLineCount"
+	public explicit_return_type "long"
+	nparams 0
+	nexceptions 2
+	  explicit_exception "RemoteException"
+	  explicit_exception "IOException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+
+@return number of lines in the output.
+@throws RemoteException
+@throws IOException
+"
+      end
+    end
+
+    class 184834 "BeenLogger"
+      abstract visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Abstract logging class. Performs initialization of log4j.
+
+@author Jaroslav Urban
+"
+      extra_member 128514 "initialization"
+	
+	cpp "" ""
+	java "  {
+		Logger rootLogger = Logger.getRootLogger();
+		rootLogger.addAppender(new ConsoleAppender(new PatternLayout(Task.STDOUT_LOG_FORMAT) ));
+	}"
+	php ""
+	python ""
+	idl ""
+      end
+
+      operation 497282 "setLevel"
+	abstract public explicit_return_type "void"
+	nparams 1
+	  param inout name "level" type class_ref 129666 // LogLevel
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the log level
+@param level
+"
+      end
+
+      operation 497410 "getLevel"
+	abstract public return_type class_ref 129666 // LogLevel
+	nparams 0
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns the log level of this logger
+@return log level
+"
+      end
+
+      operation 497538 "logDebug"
+	abstract public explicit_return_type "void"
+	nparams 1
+	  param in name "message" explicit_type "String"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Logs a message with the DEBUG log level
+@param message
+"
+      end
+
+      operation 497666 "logError"
+	abstract public explicit_return_type "void"
+	nparams 1
+	  param in name "message" explicit_type "String"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Logs a message with the ERROR log level
+@param message
+"
+      end
+
+      operation 497794 "logFatal"
+	abstract public explicit_return_type "void"
+	nparams 1
+	  param in name "message" explicit_type "String"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Logs a message with the FATAL log level
+@param message
+"
+      end
+
+      operation 497922 "logInfo"
+	abstract public explicit_return_type "void"
+	nparams 1
+	  param in name "message" explicit_type "String"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Logs a message with the INFO log level
+@param message
+"
+      end
+
+      operation 498050 "logTrace"
+	abstract public explicit_return_type "void"
+	nparams 1
+	  param in name "message" explicit_type "String"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Logs a message with the TRACE log level
+@param message
+"
+      end
+
+      operation 498178 "logWarn"
+	abstract public explicit_return_type "void"
+	nparams 1
+	  param in name "message" explicit_type "String"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Logs a message with the WARN log level
+@param message
+"
+      end
+    end
+
+    class 184962 "ConsoleLogger"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+A logger that logs all log messages on stdout.
+
+@author Jaroslav Urban
+"
+      classrelation 216706 // <generalisation>
+	relation 216706 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 216706 // <generalisation>
+	  b parent class_ref 184834 // BeenLogger
+      end
+
+      attribute 239746 "logger"
+	package explicit_type "Logger"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+log4j's logger
+
+"
+      end
+
+      operation 498306 "ConsoleLogger"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "name" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new ConsoleLogger object, with the given name
+
+@param name
+"
+      end
+
+      operation 498434 "ConsoleLogger"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "obj" explicit_type "Object"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new ConsoleLogger object, and determines it's name from the given reference
+
+@param obj
+"
+      end
+
+      operation 498562 "setLevel"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "level" type class_ref 129666 // LogLevel
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment " (non-Javadoc)
+@see cz.cuni.mff.been.common.BeenLogger#setLevel(cz.cuni.mff.been.common.LogLevel)
+"
+      end
+
+      operation 498690 "getLevel"
+	public return_type class_ref 129666 // LogLevel
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment " (non-Javadoc)
+@see cz.cuni.mff.been.common.BeenLogger#getLevel()
+"
+      end
+
+      operation 498818 "logDebug"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "message" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment " (non-Javadoc)
+@see cz.cuni.mff.been.common.BeenLogger#logDebug(java.lang.String)
+"
+      end
+
+      operation 498946 "logError"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "message" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment " (non-Javadoc)
+@see cz.cuni.mff.been.common.BeenLogger#logError(java.lang.String)
+"
+      end
+
+      operation 499074 "logFatal"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "message" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment " (non-Javadoc)
+@see cz.cuni.mff.been.common.BeenLogger#logFatal(java.lang.String)
+"
+      end
+
+      operation 499202 "logInfo"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "message" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment " (non-Javadoc)
+@see cz.cuni.mff.been.common.BeenLogger#logInfo(java.lang.String)
+"
+      end
+
+      operation 499330 "logTrace"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "message" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment " (non-Javadoc)
+@see cz.cuni.mff.been.common.BeenLogger#logTrace(java.lang.String)
+"
+      end
+
+      operation 499458 "logWarn"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "message" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment " (non-Javadoc)
+@see cz.cuni.mff.been.common.BeenLogger#logWarn(java.lang.String)
+"
+      end
+    end
+
+    class 185090 "FilesystemLogStorage"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Log storage which stores the logs in files in a directory structure.
+
+@author Jaroslav Urban
+"
+      classrelation 216834 // <realization>
+	relation 216834 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 216834 // <realization>
+	  b parent class_ref 185218 // LogStorage
+      end
+
+      attribute 240002 "LOG_FILE"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"task.log\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Name of the file with task's log messages 
+"
+      end
+
+      attribute 240130 "HOSTNAME_FILE"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"hostname.txt\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Name of the file with task's host name 
+"
+      end
+
+      attribute 240258 "STDOUT_FILE"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"stdout.txt\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Name of the file with task's standard output 
+"
+      end
+
+      attribute 240386 "STDERR_FILE"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"stderr.txt\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Name of the file with task's error output 
+"
+      end
+
+      attribute 240514 "ALL_MESSAGES"
+	class_attribute const_attribute private explicit_type "long"
+	init_value "=  -1"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " 
+If used in the log message interval specification, all messages will
+be returned.
+
+"
+      end
+
+      attribute 240642 "basedir"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " The root directory for the log storage's data 
+"
+      end
+
+      class 185346 "FileOutputHandle"
+	visibility private 
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	classrelation 216962 // <generalisation>
+	  relation 216962 ---|>
+	    a public
+	      java "${type}"
+	      classrelation_ref 216962 // <generalisation>
+	    b parent class_ref 130178 // UnicastRemoteObject
+	end
+
+	classrelation 217218 // <realization>
+	  relation 217218 -_-|>
+	    a public
+	      java "${type}"
+	      classrelation_ref 217218 // <realization>
+	    b parent class_ref 184450 // OutputHandle
+	end
+
+	attribute 240770 "reader"
+	  private explicit_type "BufferedReader"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	attribute 240898 "file"
+	  private explicit_type "String"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	operation 501762 "FileOutputHandle"
+	  protected explicit_return_type ""
+	  nparams 1
+	    param in name "file" explicit_type "String"
+	  nexceptions 2
+	    explicit_exception "RemoteException"
+	    explicit_exception "FileNotFoundException"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+
+Allocates a new <code>FileOutputHandle</code> object.
+
+@param file path to a file with the standard output or error output.
+@throws RemoteException
+@throws FileNotFoundException
+"
+	end
+
+	operation 501890 "getNextLines"
+	  public explicit_return_type "String"
+	  nparams 1
+	    param in name "count" explicit_type "int"
+	  nexceptions 2
+	    explicit_exception "RemoteException"
+	    explicit_exception "IOException"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+(non-Javadoc)
+@see cz.cuni.mff.been.logging.OutputHandle#getNextLines(int)
+"
+	end
+
+	operation 502018 "skipLines"
+	  public explicit_return_type "void"
+	  nparams 1
+	    param in name "count" explicit_type "long"
+	  nexceptions 2
+	    explicit_exception "RemoteException"
+	    explicit_exception "IOException"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment " (non-Javadoc)
+@see cz.cuni.mff.been.logging.OutputHandle#skipLines(int)
+"
+	end
+
+	operation 502146 "getLineCount"
+	  public explicit_return_type "long"
+	  nparams 0
+	  nexceptions 2
+	    explicit_exception "RemoteException"
+	    explicit_exception "IOException"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment " (non-Javadoc)
+@see cz.cuni.mff.been.logging.OutputHandle#getLineCount()
+"
+	end
+      end
+
+      class 185474 "LogMessagePart"
+	visibility private 
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	attribute 241026 "timestamp"
+	  private explicit_type "String"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	attribute 241154 "level"
+	  private explicit_type "String"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	attribute 241282 "message"
+	  private explicit_type "String"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	operation 502274 "LogMessagePart"
+	  public explicit_return_type ""
+	  nparams 3
+	    param in name "timestamp" explicit_type "String"
+	    param in name "level" explicit_type "String"
+	    param in name "message" explicit_type "String"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+
+Allocates a new <code>LogMessagePart</code> object.
+
+@param timestamp
+@param level
+@param message
+"
+	end
+
+	operation 502402 "getLevel"
+	  public explicit_return_type "String"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+@return the level
+"
+	end
+
+	operation 502530 "getMessage"
+	  public explicit_return_type "String"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+@return the message
+"
+	end
+
+	operation 502658 "getTimestamp"
+	  public explicit_return_type "String"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+@return the timestamp
+"
+	end
+      end
+
+      operation 502786 "FilesystemLogStorage"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "basedir" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 184322 // LogStorageException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+
+Allocates a new <code>FilesystemLogStorage</code> object. 
+
+@param basedir base directory for storing the logs; it will be created by
+this object automacically. If the directory already exists, it will be reused.
+@throws LogStorageException if an old existing base directory wasn't found and
+a new one couldn't be created.
+"
+      end
+
+      operation 502914 "addContext"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "name" explicit_type "String"
+	nexceptions 3
+	  exception class_ref 184322 // LogStorageException
+	  explicit_exception "IllegalArgumentException"
+	  explicit_exception "NullPointerException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+(non-Javadoc)
+@see cz.cuni.mff.been.logging.LogStorage#addContext(java.lang.String)
+"
+      end
+
+      operation 503042 "addTask"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "context" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	nexceptions 3
+	  exception class_ref 184322 // LogStorageException
+	  explicit_exception "IllegalArgumentException"
+	  explicit_exception "NullPointerException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+(non-Javadoc)
+@see cz.cuni.mff.been.logging.LogStorage#addTask(java.lang.String, java.lang.String)
+"
+      end
+
+      operation 503170 "createLogFile"
+	private explicit_return_type "void"
+	nparams 2
+	  param inout name "directory" explicit_type "File"
+	  param in name "filename" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 184322 // LogStorageException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Creates an empty log file.
+
+@param directory directory where the file will be created.
+@param filename filename of the log file.
+@throws LogStorageException if the file coudln't be created.
+"
+      end
+
+      operation 503298 "getLogsForTask"
+	public return_type class_ref 184194 // LogRecord
+	nparams 2
+	  param in name "context" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	nexceptions 3
+	  exception class_ref 184322 // LogStorageException
+	  explicit_exception "IllegalArgumentException"
+	  explicit_exception "NullPointerException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+(non-Javadoc)
+@see cz.cuni.mff.been.logging.LogStorage#getLogsForTask(java.lang.String, java.lang.String)
+"
+      end
+
+      operation 503426 "log"
+	public explicit_return_type "void"
+	nparams 5
+	  param in name "context" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	  param inout name "timestamp" explicit_type "Date"
+	  param inout name "level" type class_ref 129666 // LogLevel
+	  param in name "message" explicit_type "String"
+	nexceptions 3
+	  exception class_ref 184322 // LogStorageException
+	  explicit_exception "IllegalArgumentException"
+	  explicit_exception "NullPointerException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+(non-Javadoc)
+@see cz.cuni.mff.been.logging.LogStorage#log(java.lang.String, java.lang.String, java.util.Date, cz.cuni.mff.been.logging.LogLevel, java.lang.String)
+"
+      end
+
+      operation 503554 "removeContext"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "name" explicit_type "String"
+	nexceptions 3
+	  exception class_ref 184322 // LogStorageException
+	  explicit_exception "IllegalArgumentException"
+	  explicit_exception "NullPointerException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+(non-Javadoc)
+@see cz.cuni.mff.been.logging.LogStorage#removeContext(java.lang.String)
+"
+      end
+
+      operation 503682 "setTaskHostname"
+	public explicit_return_type "void"
+	nparams 3
+	  param in name "context" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	  param in name "hostname" explicit_type "String"
+	nexceptions 3
+	  exception class_ref 184322 // LogStorageException
+	  explicit_exception "IllegalArgumentException"
+	  explicit_exception "NullPointerException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+(non-Javadoc)
+@see cz.cuni.mff.been.logging.LogStorage#setTaskHostname(java.lang.String, java.lang.String, java.lang.String)
+"
+      end
+
+      operation 503810 "isContextRegistered"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param in name "name" explicit_type "String"
+	nexceptions 3
+	  exception class_ref 184322 // LogStorageException
+	  explicit_exception "IllegalArgumentException"
+	  explicit_exception "NullPointerException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+(non-Javadoc)
+@see cz.cuni.mff.been.logging.LogStorage#isContextRegistered(java.lang.String)
+"
+      end
+
+      operation 503938 "isTaskRegistered"
+	public explicit_return_type "boolean"
+	nparams 2
+	  param in name "context" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	nexceptions 3
+	  exception class_ref 184322 // LogStorageException
+	  explicit_exception "IllegalArgumentException"
+	  explicit_exception "NullPointerException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+(non-Javadoc)
+@see cz.cuni.mff.been.logging.LogStorage#isTaskRegistered(java.lang.String, java.lang.String)
+"
+      end
+
+      operation 504066 "addErrorOutput"
+	public explicit_return_type "void"
+	nparams 3
+	  param in name "context" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	  param in name "output" explicit_type "String"
+	nexceptions 3
+	  exception class_ref 184322 // LogStorageException
+	  explicit_exception "IllegalArgumentException"
+	  explicit_exception "NullPointerException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+(non-Javadoc)
+@see cz.cuni.mff.been.logging.LogStorage#addErrorOutput(java.lang.String, java.lang.String, java.lang.String)
+"
+      end
+
+      operation 504194 "addStandardOutput"
+	public explicit_return_type "void"
+	nparams 3
+	  param in name "context" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	  param in name "output" explicit_type "String"
+	nexceptions 3
+	  exception class_ref 184322 // LogStorageException
+	  explicit_exception "IllegalArgumentException"
+	  explicit_exception "NullPointerException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+(non-Javadoc)
+@see cz.cuni.mff.been.logging.LogStorage#addStandardOutput(java.lang.String, java.lang.String, java.lang.String)
+"
+      end
+
+      operation 504322 "getStandardOutput"
+	public return_type class_ref 184450 // OutputHandle
+	nparams 2
+	  param in name "context" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	nexceptions 3
+	  exception class_ref 184322 // LogStorageException
+	  explicit_exception "IllegalArgumentException"
+	  explicit_exception "NullPointerException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+(non-Javadoc)
+@see cz.cuni.mff.been.logging.LogStorage#getStandardOutput(java.lang.String, java.lang.String)
+"
+      end
+
+      operation 504450 "getErrorOutput"
+	public return_type class_ref 184450 // OutputHandle
+	nparams 2
+	  param in name "context" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	nexceptions 3
+	  exception class_ref 184322 // LogStorageException
+	  explicit_exception "IllegalArgumentException"
+	  explicit_exception "NullPointerException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+(non-Javadoc)
+@see cz.cuni.mff.been.logging.LogStorage#getErrorOutput(java.lang.String, java.lang.String)
+"
+      end
+
+      operation 504578 "getLogCountForTask"
+	public explicit_return_type "long"
+	nparams 2
+	  param in name "context" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	nexceptions 3
+	  exception class_ref 184322 // LogStorageException
+	  explicit_exception "IllegalArgumentException"
+	  explicit_exception "NullPointerException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " (non-Javadoc)
+@see cz.cuni.mff.been.logging.LogStorage#getLogCountForTask(java.lang.String, java.lang.String)
+"
+      end
+
+      operation 504706 "getLogsForTask"
+	public return_type class_ref 184194 // LogRecord
+	nparams 4
+	  param in name "context" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	  param in name "first" explicit_type "long"
+	  param in name "last" explicit_type "long"
+	nexceptions 3
+	  exception class_ref 184322 // LogStorageException
+	  explicit_exception "IllegalArgumentException"
+	  explicit_exception "NullPointerException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " (non-Javadoc)
+@see cz.cuni.mff.been.logging.LogStorage#getLogsForTask(java.lang.String, java.lang.String, long, long)
+"
+      end
+
+      operation 504834 "parseLogMessage"
+	private return_type class_ref 185474 // LogMessagePart
+	nparams 2
+	  param in name "firstLine" explicit_type "String"
+	  param inout name "reader" explicit_type "BufferedReader"
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Parses one log message from the log file.
+
+@param firstLine first line of the log message.
+@param reader reader of the log file.
+@return the log message.
+@throws IOException
+"
+      end
+
+      operation 504962 "createLogRecord"
+	private return_type class_ref 184194 // LogRecord
+	nparams 4
+	  param inout name "logPart" type class_ref 185474 // LogMessagePart
+	  param in name "context" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	  param in name "hostname" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 184322 // LogStorageException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Creates a log record. 
+@param logPart unparsed log message.
+@param context context ID of the task.
+@param taskID task ID of the task.
+@param hostname host name of the task.
+@throws LogStorageException
+"
+      end
+
+      operation 505090 "getHostname"
+	private explicit_return_type "String"
+	nparams 1
+	  param inout name "taskDir" explicit_type "File"
+	nexceptions 1
+	  exception class_ref 184322 // LogStorageException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Gets the host name of a task.
+@param taskDir directory with task's logs.
+@return host name of the task.
+@throws LogStorageException
+"
+      end
+
+      operation 505218 "checkTaskAndContextId"
+	private explicit_return_type "void"
+	nparams 2
+	  param in name "context" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Checks validity of the context ID and task ID.
+@param context
+@param taskID
+"
+      end
+    end
+
+    class 185218 "LogStorage"
+      visibility public stereotype "interface"
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}interface ${name}${extends} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment " 
+Interface for a log storage facility. The logs are produced by tasks.
+
+@author Jaroslav Urban
+"
+      attribute 239874 "OUTPUT_TRANSFER_LINECOUNT"
+	class_attribute const_attribute public explicit_type "int"
+	init_value "=  100"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " 
+The recommended number of lines that should be sent to the log storage
+or retrieved from it at once.
+
+"
+      end
+
+      operation 499586 "addContext"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "name" explicit_type "String"
+	nexceptions 3
+	  exception class_ref 184322 // LogStorageException
+	  explicit_exception "IllegalArgumentException"
+	  explicit_exception "NullPointerException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Registers a context so that log messages of it's tasks can be stored. Must
+be called before the tasks of this context are registered by 
+<code>addTask()</code>. The same context can be registered repeatadly, in
+that case the old content of the context must be preserved.
+
+@param name name of the context; cannot be null or an empty string.
+@throws LogStorageException if an error occured while registering the context.
+@throws IllegalArgumentException if the name of the context name is empty
+@throws NullPointerException  if the name of the context is <tt>null</tt>.
+@see #addTask(String, String)
+"
+      end
+
+      operation 499714 "removeContext"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "name" explicit_type "String"
+	nexceptions 3
+	  exception class_ref 184322 // LogStorageException
+	  explicit_exception "IllegalArgumentException"
+	  explicit_exception "NullPointerException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " 
+Removes the context and it's logs from the storage, no newer messages 
+can be logged in this context. The context must've been registered in the 
+log storage with <code>addContext()</code> before.
+
+@param name name of the context; cannot be null or an empty string.
+@throws LogStorageException if an error occured while removing the context.
+@throws IllegalArgumentException if the name of the context is empty,
+or if the context wasn't registered yet.
+@throws NullPointerException  if the name of the context is <tt>null</tt>.
+@see #addContext(String)
+"
+      end
+
+      operation 499842 "isContextRegistered"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param in name "name" explicit_type "String"
+	nexceptions 3
+	  exception class_ref 184322 // LogStorageException
+	  explicit_exception "IllegalArgumentException"
+	  explicit_exception "NullPointerException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Checks whether the context was already registered in the log storage.
+
+@param name context name; cannot be null or an empty string.
+@throws LogStorageException if an error occured while checking the registration.
+@throws IllegalArgumentException if the name of the context is empty.
+@throws NullPointerException  if the name of the context is <tt>null</tt>.
+@return true if the context was already registered, false otherwise.
+"
+      end
+
+      operation 499970 "addTask"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "context" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	nexceptions 3
+	  exception class_ref 184322 // LogStorageException
+	  explicit_exception "IllegalArgumentException"
+	  explicit_exception "NullPointerException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " 
+Registers a task so that it's log messages can be stored. Must
+be called before the first message of this task is logged. The context
+of the task must be registerd by <code>addContext()</code> before callind
+this method. A task can be registered repeatadly, in that case old logs
+of the task and other stored info must be preserved.
+
+@param context context of the task; cannot be null or an empty string.
+@param taskID task's ID; cannot be null or an empty string.
+@throws LogStorageException if an error occured while registering the task.
+@throws IllegalArgumentException if the name of the context or the task's ID
+are empty or if the context wasn't registered yet.
+@throws NullPointerException  if the name of the context or the task's ID 
+is <tt>null</tt>.
+@see #addContext(String)
+"
+      end
+
+      operation 500098 "isTaskRegistered"
+	public explicit_return_type "boolean"
+	nparams 2
+	  param in name "context" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	nexceptions 3
+	  exception class_ref 184322 // LogStorageException
+	  explicit_exception "IllegalArgumentException"
+	  explicit_exception "NullPointerException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Checks whether the task was already registered in the log storage.
+
+@param context context of the task; cannot be null or an empty string.
+@param taskID task's ID; cannot be null or an empty string.
+@return true if the task was already registered, false otherwise.
+@throws LogStorageException if an error occured checking the registration.
+@throws IllegalArgumentException if the name of the context or the task's ID
+are empty or if the context wasn't registered yet.
+@throws NullPointerException if the name of the context or the task's ID 
+is <tt>null</tt>.
+@see #addContext(String)
+"
+      end
+
+      operation 500226 "setTaskHostname"
+	public explicit_return_type "void"
+	nparams 3
+	  param in name "context" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	  param in name "hostname" explicit_type "String"
+	nexceptions 3
+	  exception class_ref 184322 // LogStorageException
+	  explicit_exception "IllegalArgumentException"
+	  explicit_exception "NullPointerException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the hostname where a task is running. The task must be registered in 
+the log storage with <code>addTask()</code> before calling this method.
+
+@param context context of the taskl; cannot be null or an empty string.
+@param taskID task's ID; cannot be null or an empty string.
+@param hostname hostname where is the task running; cannot be null or an empty
+string.
+@throws LogStorageException if an error occured while storing the hostname
+of the task.
+@throws IllegalArgumentException if any argument is an empty string or if 
+the task wasn't registered in the log storage with <code>addTask</code> yet.
+@throws NullPointerException if any argument is an empty string.
+@see #addTask(String, String)
+"
+      end
+
+      operation 500354 "log"
+	public explicit_return_type "void"
+	nparams 5
+	  param in name "context" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	  param inout name "timestamp" explicit_type "Date"
+	  param inout name "level" type class_ref 129666 // LogLevel
+	  param in name "message" explicit_type "String"
+	nexceptions 3
+	  exception class_ref 184322 // LogStorageException
+	  explicit_exception "IllegalArgumentException"
+	  explicit_exception "NullPointerException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Stores a log message for a task. The task and it's context must be registered
+by <code>addTask()</code> and <code>addContext</code> before the first call 
+of this method.
+
+@param context task's context; cannot be null or an empty string.
+@param taskID task's ID; cannot be null or an empty string.
+@param timestamp timestamp of the log event; cannot be null.
+@param level log level of the message; cannot be null.
+@param message the log message; can be multiline; cannot be null or contain
+\"\\t\\t\\t\".
+@throws LogStorageException if an error occured while storing the log
+message.
+@throws IllegalArgumentException if context name or task's ID are empty or
+if the task wasn't registered in the log storage yet.
+@throws NullPointerException if any argument is <tt>null</tt>.
+@see #addTask(String, String)
+@see #addContext(String) 
+"
+      end
+
+      operation 500482 "getLogsForTask"
+	public return_type class_ref 184194 // LogRecord
+	nparams 2
+	  param in name "context" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	nexceptions 3
+	  exception class_ref 184322 // LogStorageException
+	  explicit_exception "IllegalArgumentException"
+	  explicit_exception "NullPointerException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Gets all log messages produced by a task. The task must've been registered
+in the log storage with <code>addTask</code> before.
+
+@param context task's context; cannot be null or an empty string.
+@param taskID task's ID; cannot be null or an empty string.
+@return logs of the task.
+@throws LogStorageException if an error occured while retrieving the logs.
+@throws IllegalArgumentException if the the context name or task's ID are empty 
+strings or if the task wasn't registered by <code>addTask()</code> yet.
+@throws NullPointerException if any argument is <tt>null</tt>.
+@see #addTask(String, String)
+"
+      end
+
+      operation 500610 "getLogsForTask"
+	public return_type class_ref 184194 // LogRecord
+	nparams 4
+	  param in name "context" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	  param in name "first" explicit_type "long"
+	  param in name "last" explicit_type "long"
+	nexceptions 3
+	  exception class_ref 184322 // LogStorageException
+	  explicit_exception "IllegalArgumentException"
+	  explicit_exception "NullPointerException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Gets task's log messages which belong to an interval. The interval is
+specified by log message indexes. To get the total number of log messages
+of a task, use <code>getLogCountForTask</code>.
+The task must've been registered in the log storage with 
+<code>addTask</code> before.
+
+@param context task's context; cannot be null or an empty string.
+@param taskID task's ID; cannot be null or an empty string.
+@param first the index of the first log message; it specifies the 
+beginning of the interval of log messages that will be returned. The
+index begins from 0.
+@param last the index of the last log message; it specifies the 
+end of the interval of log messages that will be returned. The
+index begins from 0.
+@return logs of the task.
+@throws LogStorageException if an error occured while retrieving the logs.
+@throws IllegalArgumentException if the the context name or task's ID are empty 
+strings or if the task wasn't registered by <code>addTask()</code> yet.
+@throws NullPointerException if any argument is <tt>null</tt>.
+@see #addTask(String, String)
+@see #getLogCountForTask(String, String)
+"
+      end
+
+      operation 500738 "getLogCountForTask"
+	public explicit_return_type "long"
+	nparams 2
+	  param in name "context" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	nexceptions 3
+	  exception class_ref 184322 // LogStorageException
+	  explicit_exception "IllegalArgumentException"
+	  explicit_exception "NullPointerException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns the number of log messages stored for a task. The task must've 
+been registered in the log storage with <code>addTask</code> before.
+
+@param context task's context; cannot be null or an empty string.
+@param taskID task's ID; cannot be null or an empty string.
+@return number of log messages.
+@throws LogStorageException if an error occured while counting the log
+messages.
+@throws IllegalArgumentException if the the context name or task's ID are empty 
+strings or if the task wasn't registered by <code>addTask()</code> yet.
+@throws NullPointerException if any argument is <tt>null</tt>.
+@see #addTask(String, String)
+"
+      end
+
+      operation 500866 "addStandardOutput"
+	public explicit_return_type "void"
+	nparams 3
+	  param in name "context" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	  param in name "output" explicit_type "String"
+	nexceptions 3
+	  exception class_ref 184322 // LogStorageException
+	  explicit_exception "IllegalArgumentException"
+	  explicit_exception "NullPointerException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Stores additional standard output of the task in the log storage. This 
+method can be called many times to store the output of the task in smaller
+batches. The task must've been registered
+in the log storage with <code>addTask</code> before.
+
+@param context task's context; cannot be null or an empty string.
+@param taskID task's ID; cannot be null or an empty string.
+@param output part of the task's standard output; cannot be null.
+@throws LogStorageException if an error occured while storing the output.
+@throws IllegalArgumentException if the the context name or task's ID are empty 
+strings or if the task wasn't registered by <code>addTask()</code> yet.
+@throws NullPointerException if any argument is <tt>null</tt>.
+@see #addTask(String, String)
+"
+      end
+
+      operation 500994 "addErrorOutput"
+	public explicit_return_type "void"
+	nparams 3
+	  param in name "context" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	  param in name "output" explicit_type "String"
+	nexceptions 3
+	  exception class_ref 184322 // LogStorageException
+	  explicit_exception "IllegalArgumentException"
+	  explicit_exception "NullPointerException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Stores additional error output of the task in the log storage. This 
+method can be called many times to store the output of the task in smaller
+batches. The task must've been registered
+in the log storage with <code>addTask</code> before.
+
+@param context task's context; cannot be null or an empty string.
+@param taskID task's ID; cannot be null or an empty string.
+@param output part of the task's error output; cannot be null.
+@throws LogStorageException if an error occured while storing the output.
+@throws IllegalArgumentException if the the context name or task's ID are empty 
+strings or if the task wasn't registered by <code>addTask()</code> yet.
+@throws NullPointerException if any argument is <tt>null</tt>.
+@see #addTask(String, String)
+"
+      end
+
+      operation 501122 "getStandardOutput"
+	public return_type class_ref 184450 // OutputHandle
+	nparams 2
+	  param in name "context" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	nexceptions 3
+	  exception class_ref 184322 // LogStorageException
+	  explicit_exception "IllegalArgumentException"
+	  explicit_exception "NullPointerException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Creates a handle for receiving the standard output of a task. 
+The task must've been registered
+in the log storage with <code>addTask</code> before.
+
+@param context task's context; cannot be null or an empty string.
+@param taskID task's ID; cannot be null or an empty string.
+@return handle for retrievind the standard output.
+@throws LogStorageException if an error occured while creating the handle.
+@throws IllegalArgumentException if the the context name or task's ID are empty 
+strings or if the task wasn't registered by <code>addTask()</code> yet.
+@throws NullPointerException if any argument is <tt>null</tt>.
+@see #addTask(String, String)
+"
+      end
+
+      operation 501250 "getErrorOutput"
+	public return_type class_ref 184450 // OutputHandle
+	nparams 2
+	  param in name "context" explicit_type "String"
+	  param in name "taskID" explicit_type "String"
+	nexceptions 3
+	  exception class_ref 184322 // LogStorageException
+	  explicit_exception "IllegalArgumentException"
+	  explicit_exception "NullPointerException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Creates a handle for receiving the error output of a task. 
+The task must've been registered
+in the log storage with <code>addTask</code> before.
+
+@param context task's context; cannot be null or an empty string.
+@param taskID task's ID; cannot be null or an empty string.
+@return handle for retrievind the error output.
+@throws LogStorageException if an error occured while creating the handle.
+@throws IllegalArgumentException if the the context name or task's ID are empty 
+strings or if the task wasn't registered by <code>addTask()</code> yet.
+@throws NullPointerException if any argument is <tt>null</tt>.
+@see #addTask(String, String)
+"
+      end
+    end
+
+    class 185602 "HostRuntimeAppender"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Appender sends log events to Host Runtime.
+@author Jaroslav Urban
+"
+      classrelation 217346 // <generalisation>
+	relation 217346 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 217346 // <generalisation>
+	  b parent class_ref 185730 // AppenderSkeleton
+      end
+
+      classrelation 217474 // tasksPort (<unidirectional association>)
+	relation 217474 --->
+	  a role_name "tasksPort" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 217474 // tasksPort (<unidirectional association>)
+	  b parent class_ref 137090 // TasksPortInterface
+      end
+
+      operation 505346 "HostRuntimeAppender"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "task" type class_ref 136578 // Task
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+
+Allocates a new <code>HostRuntimeAppender</code> object.
+
+@param task
+"
+      end
+
+      operation 505474 "append"
+	protected explicit_return_type "void"
+	nparams 1
+	  param inout name "event" explicit_type "LoggingEvent"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+      end
+
+      operation 505602 "close"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+      end
+
+      operation 505730 "requiresLayout"
+	public explicit_return_type "boolean"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+      end
+    end
+
+    class 185986 "LogStorageTest"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Does some simple tests on the log storage.
+
+@author Jaroslav Urban
+"
+      attribute 242946 "GET_LOGS"
+	class_attribute const_attribute private explicit_type "boolean"
+	init_value "=  true"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 243074 "GET_OUTPUT"
+	class_attribute const_attribute private explicit_type "boolean"
+	init_value "=  true"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 243202 "TASK_ID"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"task-2\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 243330 "CONTEXT"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  TaskManagerInterface.SYSTEM_CONTEXT_ID"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      operation 508034 "main"
+	class_operation public explicit_return_type "void"
+	nparams 1
+	  param in name "args" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0}[] ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@param args
+"
+      end
+    end
+  end
+
+  deploymentview 130946 "logging"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+    artifact 164866 "BeenLogger"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
+import cz.cuni.mff.been.task.Task;
+${definition}"
+      associated_classes
+	class_ref 184834 // BeenLogger
+      end
+    end
+
+    artifact 164994 "ConsoleLogger"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+${definition}"
+      associated_classes
+	class_ref 184962 // ConsoleLogger
+      end
+    end
+
+    artifact 165122 "LogStorage"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.util.Date;
+${definition}"
+      associated_classes
+	class_ref 185218 // LogStorage
+      end
+    end
+
+    artifact 165250 "OutputHandle"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.IOException;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+${definition}"
+      associated_classes
+	class_ref 184450 // OutputHandle
+      end
+    end
+
+    artifact 165378 "FilesystemLogStorage"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import cz.cuni.mff.been.common.anttasks.AntTaskException;
+import cz.cuni.mff.been.common.anttasks.Delete;
+${definition}"
+      associated_classes
+	class_ref 185090 // FilesystemLogStorage
+      end
+    end
+
+    artifact 165506 "HostRuntimeAppender"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.rmi.RemoteException;
+import java.util.Date;
+import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.spi.LoggingEvent;
+import cz.cuni.mff.been.hostruntime.TasksPortInterface;
+import cz.cuni.mff.been.task.Task;
+${definition}"
+      associated_classes
+	class_ref 185602 // HostRuntimeAppender
+      end
+    end
+
+    artifact 165634 "LogLevel"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.Serializable;
+import java.util.HashMap;
+import org.apache.log4j.Level;
+${definition}"
+      associated_classes
+	class_ref 129666 // LogLevel
+      end
+    end
+
+    artifact 165762 "LogRecord"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.Serializable;
+import java.util.Date;
+${definition}"
+      associated_classes
+	class_ref 184194 // LogRecord
+      end
+    end
+
+    artifact 165890 "LogStorageException"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import cz.cuni.mff.been.common.BeenException;
+${definition}"
+      associated_classes
+	class_ref 184322 // LogStorageException
+      end
+    end
+
+    artifact 166018 "LogStorageTest"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.rmi.Naming;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import cz.cuni.mff.been.taskmanager.TaskManagerInterface;
+${definition}"
+      associated_classes
+	class_ref 185986 // LogStorageTest
+      end
+    end
+  end
+end

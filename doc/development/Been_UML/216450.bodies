@@ -1,0 +1,55 @@
+class EqualsConditionTest
+!!!808194.java!!!	testLongWithUnitParse() : void
+		assertEquals(
+			new EqualsCondition<LongWithUnit>("a", new LongWithUnit(42, 'k', "Hz")),
+			ParserWrapper.parseString("a == 42kHz")
+		);
+!!!808322.java!!!	testLongWithUnitTrue() : void
+		assertTrue(Utils.eval("longProperty == 42", context));
+!!!808450.java!!!	testLongWithUnitFalse() : void
+		assertFalse(Utils.eval("longProperty == 43", context));
+!!!808578.java!!!	testStringParse() : void
+		assertEquals(
+			new EqualsCondition<String>("a", "42"),
+			ParserWrapper.parseString("a == \"42\"")
+		);
+!!!808706.java!!!	testStringTrue() : void
+		assertTrue(Utils.eval("stringProperty == \"42\"", context));
+!!!808834.java!!!	testStringFalse() : void
+		assertFalse(Utils.eval("stringProperty == \"43\"", context));
+!!!808962.java!!!	testVersionParse() : void
+		assertEquals(
+			new EqualsCondition<Version>("a", new Version("42")),
+			ParserWrapper.parseString("a == 42.0")
+		);
+!!!809090.java!!!	testVersionTrue() : void
+		assertTrue(Utils.eval("versionProperty == 42.0", context));
+!!!809218.java!!!	testVersionFalse() : void
+		assertFalse(Utils.eval("versionProperty == 43.0", context));
+!!!809346.java!!!	testDateParse() : void
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeZone(TimeZone.getTimeZone("GMT"));
+		calendar.set(2006, 4, 17, 23, 30, 42);
+		calendar.setTimeInMillis((calendar.getTimeInMillis() / 1000) * 1000);
+		assertEquals(
+			new EqualsCondition<Date>("dateProperty", calendar.getTime()),
+			ParserWrapper.parseString("dateProperty == 2006-05-17T23:30:42Z")
+		);
+!!!809474.java!!!	testDateTrue() : void
+		assertTrue(Utils.eval("dateProperty == 2006-05-17T23:30:42Z", context));
+!!!809602.java!!!	testDateFalse() : void
+		assertFalse(Utils.eval("dateProperty == 2006-05-17T23:30:43Z", context));
+!!!809730.java!!!	testPackageTypeParse() : void
+		assertEquals(
+			new EqualsCondition<PackageType>("a", PackageType.realValueOf("source")),
+			ParserWrapper.parseString("a == source")
+		);
+!!!809858.java!!!	testPackageTypeTrue() : void
+		assertTrue(Utils.eval("packageTypeProperty == source", context));
+!!!809986.java!!!	testPackageTypeFalse() : void
+		assertFalse(Utils.eval("packageTypeProperty == binary", context));
+!!!810114.java!!!	testToString() : void
+		assertEquals(
+			"a == 42",
+			ParserWrapper.parseString("a == 42").toString()
+		);

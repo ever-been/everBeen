@@ -1,0 +1,74 @@
+class TestAliasDefinitions
+!!!855170.java!!!	wasExceptionOnCreate(in aliasName : String, in resultName : String, in resultVendor : String, in resultVersion : String) : boolean
+		
+		try {
+			@SuppressWarnings("unused")
+			SoftwareAliasDefinition definition = 
+				new SoftwareAliasDefinition(aliasName, 
+				                            resultName, 
+				                            resultVendor, 
+				                            resultVersion,
+				                            new RSLRestriction("family == \"Windows\""), 
+				                            new RSLRestriction("name =~ //"));
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			return true;
+		}
+		
+		return false;
+!!!855298.java!!!	testValidAlias() : void
+	
+		assertFalse(wasExceptionOnCreate("${name} and ${version} and ${vendor} \\$\\{not.variable\\}", 
+		                                 "${name} and ${version} and ${vendor}", 
+		                                 "${name} and ${version} and ${vendor}", 
+		                                 "${name} and ${version} and ${vendor}"));
+		
+		System.out.println("OK");
+!!!855426.java!!!	testInvalidAliasNameUnknownVariable() : void
+		
+		assertTrue(wasExceptionOnCreate("this is ok: ${version}, this is not: ${unknown_variable}", 
+		                                "${name} and ${version} and ${vendor}", 
+		                                "${name} and ${version} and ${vendor}", 
+		                                "${name} and ${version} and ${vendor}"));
+!!!855554.java!!!	testInvalidAliasNameInvalidVariableName() : void
+		
+		assertTrue(wasExceptionOnCreate("ohlala: ${invalid.variable.name} and more text", 
+		                                "${name} and ${version} and ${vendor}", 
+		                                "${name} and ${version} and ${vendor}", 
+		                                "${name} and ${version} and ${vendor}"));
+!!!855682.java!!!	testInvalidAliasNameMissingClosingBrace() : void
+		
+		assertTrue(wasExceptionOnCreate("${name", 
+		                                "${name} and ${version} and ${vendor}", 
+		                                "${name} and ${version} and ${vendor}", 
+		                                "${name} and ${version} and ${vendor}"));
+!!!855810.java!!!	testInvalidAliasNameUnexpectedToken() : void
+		
+		assertTrue(wasExceptionOnCreate("wow $} this is sooo cool", 
+		                                "${name} and ${version} and ${vendor}", 
+		                                "${name} and ${version} and ${vendor}", 
+		                                "${name} and ${version} and ${vendor}"));
+!!!855938.java!!!	testInvalidAliasNameEmptyVariableName() : void
+		
+		assertTrue(wasExceptionOnCreate("${name} next variable is empty${}", 
+		                                "${name} and ${version} and ${vendor}", 
+		                                "${name} and ${version} and ${vendor}", 
+		                                "${name} and ${version} and ${vendor}"));
+!!!856066.java!!!	testInvalidResultName() : void
+		
+		assertTrue(wasExceptionOnCreate("${name} and ${version} and ${vendor}", 
+		                                "woohoo ${name", 
+		                                "${name} and ${version} and ${vendor}", 
+		                                "${name} and ${version} and ${vendor}"));
+!!!856194.java!!!	testInvalidResultVendor() : void
+		
+		assertTrue(wasExceptionOnCreate("${name} and ${version} and ${vendor}", 
+		                                "${name} and ${version} and ${vendor}", 
+		                                "vendor iz ${name", 
+		                                "${name} and ${version} and ${vendor}"));
+!!!856322.java!!!	testInvalidResultVersion() : void
+		
+		assertTrue(wasExceptionOnCreate("${name} and ${version} and ${vendor}", 
+		                                "${name} and ${version} and ${vendor}", 
+		                                "${name} and ${version} and ${vendor}", 
+		                                "we are soo screwed ${version"));

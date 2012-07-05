@@ -1,0 +1,35 @@
+class HostRuntimeEntry
+!!!716930.java!!!	HostRuntimeEntry()
+		this.currentTimeMillis = System.currentTimeMillis();
+		
+//		this.hostName = "";
+!!!717058.java!!!	HostRuntimeEntry(in hostName : String)
+		this.currentTimeMillis = System.currentTimeMillis();
+		
+		/* Inicialization of variables with public write access. */
+		this.setHostName(hostName);
+!!!717186.java!!!	setHostName(in hostName : String) : void
+		if (Pattern.matches(REGEXP_HOST_NAME, hostName)) {
+			this.hostName = hostName;
+		} else {
+			throw new IllegalArgumentException("hostName is not valid");
+		}
+!!!717314.java!!!	setReservation(in reservation : String) : void
+		if ((reservation == null) || (reservation.equals(""))
+				|| (Pattern.matches(
+						ContextEntry.REGEXP_CONTEXT_ID, reservation))) {
+			this.reservation = reservation;
+		}
+!!!717442.java!!!	getCurentTime() : long
+		return this.currentTimeMillis;
+!!!717570.java!!!	getHostName() : String
+		return this.hostName;
+!!!717698.java!!!	getReservation() : String
+		return this.reservation;
+!!!717826.java!!!	clone() : HostRuntimeEntry
+		HostRuntimeEntry hostRuntimeEntry = (HostRuntimeEntry) super.clone();
+		
+		/* Set current time. */
+		hostRuntimeEntry.currentTimeMillis = System.currentTimeMillis();
+		
+		return hostRuntimeEntry;

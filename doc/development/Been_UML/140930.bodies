@@ -1,0 +1,16 @@
+class ConfiguratorWork
+!!!180866.java!!!	ConfiguratorWork(inout brid : BRID, inout processed : Screen, inout type : NavigationDirection, inout config : Configurator)
+			this.brid = brid;
+			this.processedScreen = processed;
+			this.type = type;
+			this.configurator = config;
+!!!180994.java!!!	setNewScreen(inout newScreen : Screen) : void
+			this.newScreen = newScreen;
+!!!181122.java!!!	getNewScreen() : Screen
+			return newScreen;
+!!!181250.java!!!	getException() : BenchmarkManagerException
+			return exception;
+!!!181378.java!!!	setException(inout exception : BenchmarkManagerException) : void
+			this.exception = exception;
+!!!181506.java!!!	isValid() : boolean
+			return exception == null;

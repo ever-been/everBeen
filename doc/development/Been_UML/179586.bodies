@@ -1,0 +1,29 @@
+class TimeUtils
+!!!445698.java!!!	convertUnixTimeToWindowsTime(in unixTime : long) : long
+		
+		return (unixTime + SECONDS_BETWEEN_EPOCHS) * SECONDS_TO_100NS;
+!!!445826.java!!!	convertWindowsTimeToUnixTime(in winTime : long) : long
+		
+		return winTime / SECONDS_TO_100NS - SECONDS_BETWEEN_EPOCHS;
+!!!445954.java!!!	convertUnixTimeToJavaDate(in time : long) : Date
+		
+		return new Date(time * 1000);
+!!!446082.java!!!	convertJavaDateToUnixTime(inout time : Date) : long
+		
+		return time.getTime() / 1000;
+!!!446210.java!!!	convertJavaDateToWindowsTime(inout time : Date) : long
+		
+		long t = time.getTime();
+		
+		return (t + MILLISECONDS_BETWEEN_EPOCHS + timeZone.getOffset(t)) * MILLISECONDS_TO_100NS;
+!!!446338.java!!!	convertWindowsTimeToJavaDate(in time : long) : Date
+		
+		long t = time / MILLISECONDS_TO_100NS;
+		
+		return new Date(t - MILLISECONDS_BETWEEN_EPOCHS - timeZone.getOffset(t));
+!!!446466.java!!!	nowFormated() : String
+		
+		return DATE_FORMAT.format(new Date());
+!!!446594.java!!!	now() : long
+		
+		return convertJavaDateToWindowsTime(new Date());

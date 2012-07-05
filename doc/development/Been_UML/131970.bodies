@@ -1,0 +1,3 @@
+class EntityStatus
+!!!170754.java!!!	toString() : String
+		return STRINGS[ordinal()];

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sect1
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>Possible extensions</title>
+	
+	<para>This section describes recommended practices when extending the Benchmark Manager.</para>
+	
+	<sect2>
+		<title>Generator Pluggable Module</title>
+		<para>
+		Generators are core of any benchmark. New pluggable module should be created by extending <classname>GeneratorPluggableModule</classname>. You need to pack this class as a separate pluggable module package. That means creating new <filename>build.xml</filename> for that package and new resources directory with the package meta data files (<filename>config.xml</filename> and <filename>metadata.xml</filename>). The file <filename>metadata.xml</filename> has to contain provided interfaces section.
+		</para>
+
+		<para></para>
+		<example>
+		    <title>provided interfaces syntax</title>
+		    <screen><![CDATA[<providedInterfaces>
+	<providedInterface>cz.]]><emphasis>[...]</emphasis><![CDATA[.module.ModuleInterface</providedInterface>
+	<providedInterface>cz.]]><emphasis>[...]</emphasis><![CDATA[.module.GeneratorInterface</providedInterface>
+</providedInterfaces>]]></screen>
+		</example>
+
+		<para>
+		If your <glossterm>generator</glossterm> needs any configuration then you need to have one more file (<filename>module-config.xml</filename>) in the resources directory which contains the module configuration description. See <filename>examples/BenchmarkManagerng/module-config.xml</filename> for extensive syntax example.
+		</para>
+
+		<sect3>
+			<title>Recommended Properties of Generated <classname>TaskDescriptor</classname></title>
+
+			<para>
+			Most of the recommended values of task descriptors are automatically filled in by the helper functions. This chapter is to state the defaults and the logic behind the default value decisions.
+			</para>
+
+			<itemizedlist>
+				<listitem>
+					<para>
+					Task (package) name, task host RSL &amp; task tree address suffix. These three parameters are configurable using the helper method parameters. It's obvious that guessing universal values isn't possible here.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+					Task ID - An unique id is requested from the Task Manager service. The task identifier rarely matters to user. User can orient easier using task (package) name or by its tree address.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+					Context ID - The context should always be the same as generator and the other tasks. Tasks can't have dependencies to tasks from other contexts and the context-monitor task stops working properly when there are analysis tasks in other contexts. If you really must use multiple contexts you need to sort out these problems first.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+					Tree address - The tree address is constructed to have some standard format. The default address has following format: <code>/analysis/[analysis name]/[context id]/[tree suffix]</code>. The tree suffix should state the function of the task.
+					</para>
+				</listitem>
+			</itemizedlist>
+		</sect3>
+	</sect2>
+	
+	<sect2>
+		<title>Evaluator Pluggable Module</title>
+		<para>
+		Creating the package works almost the same as in the generator pluggable module. Difference is in using <interfacename>EvaluatorInterface</interfacename> in both the defined class and the pluggable module meta data file. Base class to extend is <classname>EvaluatorPluggableModule</classname>. If you create  a new evaluator then you most likely also need new <glossterm>evaluator task</glossterm>.
+		</para>
+
+		<sect3>
+			<title>Recommended Properties of Generated <classname>Trigger</classname></title>
+
+			<para>
+			<classname>EvaluatorPluggaleModule</classname> doesn't have one single helper function to create the whole <classname>Trigger</classname> because it is too complex and variability is required.
+			</para>
+
+			<itemizedlist>
+				<listitem>
+					<para>
+					<classname>TaskDescriptor</classname> creation is specific for <classname>Trigger</classname>. <classname>TaskDescriptor</classname> fields support some wildchars which are replaced by the Results Repository. See the section related to RR Trigger wildchars for details (<xref linkend="been.devel.rrng.usage.triggers.fire" />). <classname>TaskDescriptor</classname> can be created and updated through the <classname>TaskDescriptorHelper</classname> class.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+					<classname>TaskDescriptor</classname> context should be set to analysis evaluator context. Use the <classname>Analysis</classname> getter for that. Host RSL is task specific but you should use analysis settings for generator when in doubt or when your evaluator doesn't care. Use <methodname>getGeneratorHostRSL</methodname> method to read that field. Task tree address should start with <methodname>getTaskTreePrefix</methodname>.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+					If your evaluator task extends the <classname>EvaluatorTask</classname> class (recomended) then it will definitelly need parameters listed in the <classname>CommonEvaluatorProperties</classname> class. Use <classname>TaskDescriptorHelper</classname> to add task properties in the task descriptor.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+					The trigger restriction filters the data that fire the trigger. If you want the trigger to fire every time then use the <classname>Restrictions</classname>.<methodname>alwaysTrue()</methodname> restriction.
+					</para>
+				</listitem>
+			</itemizedlist>
+		</sect3>
+	</sect2>
+
+	<sect2>
+		<title>Evaluator Task</title>
+
+		<para>
+		Evaluator tasks are bound to evaluator pluggable modules. New task should be created by extending <classname>EvaluatorTask</classname> from the <package>cz.cuni.mff.been.task.benchmarkmanagerng.evaluator</package> package. You need to pack this class as a separate task package. That means creating new <filename>build.xml</filename> for that package and new resources directory with the package meta data files (<filename>config.xml</filename> and <filename>metadata.xml</filename>).
+		</para>
+
+		<para>
+		<classname>EvaluatorTask</classname> expects some properties which are summarized in <classname>ComonEvaluatorProperties</classname>. The extra class serves only to ease the includes. Packages would be virtually useless if the whole class was included everywhere only for its constants. For that purpose it is recommended to use the same approach for your task's property names.
+		</para>
+
+	</sect2>
+
+</sect1>

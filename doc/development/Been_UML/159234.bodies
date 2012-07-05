@@ -1,0 +1,67 @@
+class LongWithUnit
+!!!278018.java!!!	getValue() : long
+		return value;
+!!!278146.java!!!	getValueWithAppliedPrefix() : long
+		return value << (UNIT_PREFIX_CHARS.indexOf(unitPrefix) * 10);
+!!!278274.java!!!	getUnitPrefix() : char
+		return unitPrefix;
+!!!278402.java!!!	getUnitName() : String
+		return unitName;
+!!!278530.java!!!	LongWithUnit(in value : long, in unitPrefix : char, in unitName : String)
+		if (!isUnitPrefix(unitPrefix)) {
+			throw new IllegalArgumentException("Invalid unit prefix.");
+		}
+		
+		this.value = value;
+		this.unitPrefix = unitPrefix;
+		this.unitName = unitName;
+!!!278658.java!!!	LongWithUnit(in s : String)
+		if (s == null) {
+			throw new NullPointerException("Parameter \"s\" cannot be null.");
+		}
+		
+		if (s.matches("^[0-9]+$")) { /* Only number, no unit. */
+			value = Long.valueOf(s);
+			unitPrefix = NO_UNIT_PREFIX;
+			unitName = null;
+		} else {
+			Matcher matcher = Pattern.compile("^([0-9]+)([kMGTP]?)([a-zA-Z]*)$").matcher(s);
+			if (!matcher.matches()) {
+				throw new IllegalArgumentException("Parameter \"s\" has invalid format.");
+			}
+			
+			assert matcher.groupCount() == 3: "Malformed regexp.";
+			assert matcher.group(2).length() == 1 || matcher.group(2).length() == 0:
+				"Malformed regexp.";
+			
+			value = Long.valueOf(matcher.group(1));
+			unitPrefix = matcher.group(2).length() > 0
+				? matcher.group(2).charAt(0)
+				: NO_UNIT_PREFIX; 
+			unitName = matcher.group(3).length() > 0
+				? matcher.group(3)
+				: null;
+		}
+!!!278786.java!!!	isUnitPrefix(in ch : char) : boolean
+		return UNIT_PREFIX_CHARS.indexOf(ch) != -1;
+!!!278914.java!!!	isComparableWith(inout o : LongWithUnit) : boolean
+		return unitName == null
+			|| o.unitName == null
+			|| unitName.equals(o.unitName);
+!!!279042.java!!!	compareTo(inout o : LongWithUnit) : int
+		if (!isComparableWith(o)) {
+			throw new IllegalArgumentException("The compared object has "
+				+ "incompatible unit name.");
+		}
+		return Long.valueOf(getValueWithAppliedPrefix())
+			.compareTo(o.getValueWithAppliedPrefix());
+!!!279170.java!!!	hashCode() : int
+		return Long.valueOf(value).hashCode() ^ unitPrefix ^ unitName.hashCode();
+!!!279298.java!!!	equals(inout o : Object) : boolean
+		return o instanceof LongWithUnit
+			&& isComparableWith((LongWithUnit) o)
+			&& compareTo((LongWithUnit) o) == 0;
+!!!279426.java!!!	toString() : String
+		return Long.valueOf(value).toString()
+			+ (unitPrefix != NO_UNIT_PREFIX ? unitPrefix : "")
+			+ (unitName != null ? unitName : "");

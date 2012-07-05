@@ -1,0 +1,11 @@
+class BinaryMetadata
+!!!169986.java!!!	BinaryMetadata(inout experiment : ExperimentMetadata, inout id : BID)
+			this.experiment = experiment;
+!!!170114.java!!!	getID() : BID
+			return this.id;
+!!!170242.java!!!	addPackage(in name : String, in metadataFlag : String) : void
+			experiment.addPackage(this,name,metadataFlag);
+!!!170370.java!!!	getPackage(in name : String) : String
+			return experiment.getPackage(this,name);
+!!!170498.java!!!	getNewRunCount() : int
+			return newRunCount;

@@ -1,0 +1,771 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sect2
+	xml:id="been.user.cli.reference.hosts"
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>Hosts Module</title>
+	
+	<subtitle>Hardware, Software, Groups and Properties</subtitle>
+	
+	<para>The Hosts Module queries and controls the <glossterm>Host Manager</glossterm> and its
+	subcomponent, the <glossterm>Load Server</glossterm>. Information
+	about hosts can be retrieved and modified.
+	<glossterm baseform="software alias">Software aliases</glossterm>,
+	<glossterm baseform="host property">host properties</glossterm> and
+	<glossterm baseform="host group">host groups</glossterm> can be edited.</para>
+
+	<para>Module identifier: <command>hosts</command></para>
+	
+	<table xml:id="been.user.cli.reference.hosts.table" tocentry="1" frame="none">
+		<title>Actions of the Hosts Module</title>
+
+		<tgroup cols="3" align="left" colsep="0" rowsep="0">
+			<colspec colnum="1" colname="action" colwidth="3*"/>
+			<colspec colnum="2" colname="option" colwidth="3*"/>
+			<colspec colnum="3" colname="desc" colwidth="9*"/>
+			
+			<tbody valign="top">
+			
+				<!-- list -->
+				<row>
+					<entry morerows="2">
+						<command>list</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Lists hosts known to the <glossterm>Host Manager</glossterm>.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>pattern</option></emphasis><footnote
+						xml:id="been.user.cli.reference.hosts.regexp">
+						<para>Expressions recognized by
+						<classname>java.util.regex.Pattern</classname> are accepted.
+						When unspecified, no filtering will take place.</para></footnote>
+					</entry>
+					<entry>
+						A regular expression to filter task or host names. 
+					</entry>
+				</row>
+				<row>
+					<entry><emphasis role="strong"><option>STDOUT</option></emphasis></entry>
+					<entry>
+						<code>[name] [check_time] [os_name] [os_family] [os_arch]
+						[cpus]</code><footnote
+							xml:id="been.user.cli.reference.hosts.count">
+							<para>Count or quantity, integral value.</para></footnote><code>
+						[ram]</code><footnoteref linkend="been.user.cli.reference.hosts.count"/><code>
+						[swap]</code><footnoteref linkend="been.user.cli.reference.hosts.count"/><code>
+						[drives]</code><footnoteref linkend="been.user.cli.reference.hosts.count"/><code>
+						[networks]</code><footnoteref linkend="been.user.cli.reference.hosts.count"/>
+					</entry>
+				</row>
+				
+				<!-- sample -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="2">
+						<command>sample</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Retrieves a <glossterm>load sample</glossterm> from the
+						<glossterm>Load Server</glossterm>.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>host</option></emphasis><footnote
+							xml:id="been.user.cli.reference.hosts.mandatory">
+							<para>This parameter is mandatory.</para>
+						</footnote>
+					</entry>
+					<entry>
+						Name of a host known to the <glossterm>Host Manager</glossterm>.
+					</entry>
+				</row>
+				<row>
+					<entry><emphasis role="strong"><option>STDOUT</option></emphasis></entry>
+					<entry>
+						<code>[host] [timestamp] [status] [[cpu_usage],...] [free_memory]
+						[process_count] [process_queue] [[read]/[write],...]</code><footnote>
+							<para>Load of disk drives (byte per second).</para></footnote><code>
+						[[receive]/[send],...]</code><footnote>
+							<para>Load of network interfaces (bytes per second).</para></footnote>
+					</entry>
+				</row>
+				
+				<!-- config -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="12">
+						<command>config</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Retrieves the hardware configuration of a host.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>host</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.hosts.mandatory"/>
+					</entry>
+					<entry>
+						Identifier of the context to delete.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>date</option></emphasis><footnote>
+							<para>When unspecified, data from the latest hardware detector
+							probe will be used. A list of applicable timestamps can be obtained
+							using the <option>history</option> flag.</para>
+						</footnote>
+					</entry>
+					<entry>
+						Timestamp of the hardware detector run.
+					</entry>
+				</row>
+				<row>
+					<entry><option>system</option></entry>
+					<entry>
+						Output operating system information.
+					</entry>
+				</row>
+				<row>
+					<entry><option>cpu</option></entry>
+					<entry>
+						Output processor type information.
+					</entry>
+				</row>
+				<row>
+					<entry><option>storage</option></entry>
+					<entry>
+						Output information on storage devices.
+					</entry>
+				</row>
+				<row>
+					<entry><option>network</option></entry>
+					<entry>
+						Output information on network devices.
+					</entry>
+				</row>
+				<row>
+					<entry><option>history</option></entry>
+					<entry>
+						Outupt a list of hardware configuration history dates.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>STDOUT</option></emphasis><footnote>
+						<para>These lines appear when the <option>system</option> flag is
+						present.</para></footnote>
+					</entry>
+					<entry>
+						<code>[name] [family] [arch] [vendor]</code>
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>STDOUT</option></emphasis><footnote>
+						<para>These lines appear when the <option>cpu</option> flag is
+						present.</para></footnote>
+					</entry>
+					<entry>
+						<code>[vendor] [model] [speed] [cache]</code>
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>STDOUT</option></emphasis><footnote>
+						<para>These lines appear when the <option>storage</option> flag is
+						present.</para></footnote>
+					</entry>
+					<entry>
+						<code>[dev] [type] [model] [size]
+						[[part_dev] [label] [fs] [free] [part_size],...]</code>
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>STDOUT</option></emphasis><footnote>
+						<para>These lines appear when the <option>network</option> flag is
+						present.</para></footnote>
+					</entry>
+					<entry>
+						<code>[name] [type] [vendor] [address]</code>
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>STDOUT</option></emphasis><footnote>
+						<para>These lines appear when the <option>history</option> flag is
+						present.</para></footnote>
+					</entry>
+					<entry>
+						<code>[timestamp]</code>
+					</entry>
+				</row>
+				
+				<!-- refresh -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="2">
+						<command>refresh</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Instructs the <glossterm>Host Manager</glossterm> to rerun a hardware
+						detector task on a host.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>host</option></emphasis><footnote
+						xml:id="been.user.cli.reference.hosts.hostall">
+						<para>Either the <option>host</option> parameter must be specified or
+						the <option>all</option> flag must be present.</para></footnote>
+					</entry>
+					<entry>
+						Name of the host.
+					</entry>
+				</row>
+					<row>
+					<entry>
+						<option>all</option><footnoteref
+						linkend="been.user.cli.reference.hosts.hostall"/>
+					</entry>
+					<entry>
+						Reruns a hardware detector on all known hosts.
+					</entry>
+				</row>
+				
+				<!-- tasks -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="4">
+						<command>tasks</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Retrieves a list of <glossterm baseform="task">tasks</glossterm> running
+						on a host.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>host</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.hosts.mandatory"/>
+					</entry>
+					<entry>
+						Name of a host known to the <glossterm>Host Manager</glossterm>.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>pattern</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.hosts.regexp"/>
+					</entry>
+					<entry>
+						A regular expression to filter task identifiers. 
+					</entry>
+				</row>
+				<row>
+					<entry><option>desc</option></entry>
+					<entry>
+						Show task description strings.
+					</entry>
+				</row>
+				<row>
+					<entry><emphasis role="strong"><option>STDOUT</option></emphasis></entry>
+					<entry>
+						<code>[name] [id] [state] [host]
+						[flag]</code><footnote>
+							<para><constant>JOB</constant> or <constant>SERVICE</constant>,
+							depending on the type of task.</para></footnote><code>
+						[path] [ctx_id] [package] [exclusivity]
+						[submitted]</code><footnote
+							xml:id="been.user.cli.reference.hosts.timestamp">
+							<para>This is a timestamp.</para>
+							</footnote><code>
+						[scheduled]</code><footnoteref
+							linkend="been.user.cli.reference.hosts.timestamp"/><code>
+						[started]</code><footnoteref
+							linkend="been.user.cli.reference.hosts.timestamp"/><code>
+						[finished]</code><footnoteref
+							linkend="been.user.cli.reference.hosts.timestamp"/><code>
+						[description]</code><footnote
+							xml:id="been.user.cli.reference.hosts.desc">
+							<para>The description is only shown when the <option>desc</option> flag
+							is present.</para></footnote>
+					</entry>
+				</row>
+				
+				<!-- logs -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="3">
+						<command>logs</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Retrieves log records produced by
+						<glossterm baseform="task">tasks</glossterm> running on a host.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>host</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.hosts.mandatory"/>
+					</entry>
+					<entry>
+						Name of the host.
+					</entry>
+				</row>
+				<row>
+					<entry><option>numbers</option></entry>
+					<entry>
+						Output line numbers.
+					</entry>
+				</row>
+				<row>
+					<entry><emphasis role="strong"><option>STDOUT</option></emphasis></entry>
+					<entry>
+						<code>[number]</code><footnote>
+							<para>This field only appears when the <option>numbers</option> flag
+							is present.</para>
+						</footnote><code> [timestamp] [host] [context] [task] [level] [message]</code>
+					</entry>
+				</row>
+				
+				<!-- alias-list -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="3">
+						<command>alias-list</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Retrieves a list of <glossterm baseform="software alias">software
+						aliases</glossterm> known to the <glossterm>Host Manager</glossterm>.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>pattern</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.hosts.regexp"/>
+					</entry>
+					<entry>
+						A regular expression to filter software alias names. 
+					</entry>
+				</row>
+				<row>
+					<entry><option>restrict</option></entry>
+					<entry>
+						Output <glossterm>RSL</glossterm> restriction strings after
+						each alias definition.
+					</entry>
+				</row>
+				<row>
+					<entry><emphasis role="strong"><option>STDOUT</option></emphasis></entry>
+					<entry>
+						<code>[name] [app_name] [app_vendor] [app_version]
+						[app_restriction]</code><footnote
+							xml:id="been.user.cli.reference.hosts.rsl">
+							<para>The <glossterm>RSL</glossterm> string can span multiple lines and
+							only appears when the <option>restrict</option> flag is present.</para>
+							</footnote><code> 
+						[os_restriction]</code><footnoteref
+							linkend="been.user.cli.reference.hosts.rsl"/>
+					</entry>
+				</row>
+				
+				<!-- alias-dump -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="2">
+						<command>alias-dump</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Dumps a <glossterm>software alias</glossterm> definition as XML.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>name</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.hosts.mandatory"/>
+					</entry>
+					<entry>
+						Name of the <glossterm>software alias</glossterm>.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>STDOUT</option></emphasis>
+					</entry>
+					<entry>
+						<code>"http://been.mff.cuni.cz/hostmanager/properties":alias</code>
+					</entry>
+				</row>
+
+				<!-- alias-put -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="2">
+						<command>alias-put</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Adds or edits a <glossterm>software alias</glossterm> definition.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>STDIN</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.hosts.changed"/>
+					</entry>
+					<entry>
+						<code>"http://been.mff.cuni.cz/hostmanager/properties":alias</code>
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>edit</option></emphasis><footnote
+							xml:id="been.user.cli.reference.hosts.edit">
+							<para>When unspecified, a new instance will be created instead of
+							editing.</para>
+						</footnote>
+					</entry>
+					<entry>
+						Name of the <glossterm>software alias</glossterm> definition to edit.
+					</entry>
+				</row>
+				
+				<!-- alias-del -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="1">
+						<command>alias-del</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Deletes a <glossterm>software alias</glossterm> definition.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>name</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.hosts.mandatory"/>
+					</entry>
+					<entry>
+						Name of the <glossterm>software alias</glossterm>.
+					</entry>
+				</row>
+				
+				<!-- group-list -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="4">
+						<command>group-list</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Retrieves a list of <glossterm baseform="host group">host
+						groups</glossterm> known to the <glossterm>Host Manager</glossterm>.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>pattern</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.hosts.regexp"/>
+					</entry>
+					<entry>
+						A regular expression to filter host group names. 
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>host</option></emphasis><footnote>
+						<para>When unspecified, no filtering will take place.</para></footnote>
+					</entry>
+					<entry>
+						A host name to filter host groups.
+					</entry>
+				</row>
+				<row>
+					<entry><option>desc</option></entry>
+					<entry>
+						Output the description string and the metadata string.
+					</entry>
+				</row>
+				<row>
+					<entry><emphasis role="strong"><option>STDOUT</option></emphasis></entry>
+					<entry>
+						<code>[name] [[host],...]
+						[description]</code><footnoteref
+							linkend="been.user.cli.reference.hosts.desc"/><code>
+						[metadata]</code><footnoteref
+							linkend="been.user.cli.reference.hosts.desc"/>
+					</entry>
+				</row>
+				
+				<!-- group-dump -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="2">
+						<command>group-dump</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Dumps a <glossterm>host group</glossterm> definition as XML.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>name</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.hosts.mandatory"/>
+					</entry>
+					<entry>
+						Name of the <glossterm>host group</glossterm>.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>STDOUT</option></emphasis>
+					</entry>
+					<entry>
+						<code>"http://been.mff.cuni.cz/hostmanager/group":group</code>
+					</entry>
+				</row>
+
+				<!-- group-put -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="2">
+						<command>group-put</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Adds or edits a <glossterm>host group</glossterm> definition.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>STDIN</option></emphasis><footnote
+							xml:id="been.user.cli.reference.hosts.changed">
+							<para>You can indicate which elements to skip and leave
+							unmodified by setting their <varname>changed</varname> attribute
+							to <literal>false</literal>. By default, <varname>changed</varname>
+							is set to <literal>true</literal>.</para>
+						</footnote>
+					</entry>
+					<entry>
+						<code>"http://been.mff.cuni.cz/hostmanager/group":group</code>
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>edit</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.hosts.edit"/>
+					</entry>
+					<entry>
+						Name of the <glossterm>host group</glossterm> definition to edit.
+					</entry>
+				</row>
+				
+				<!-- group-del -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="1">
+						<command>group-del</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Deletes a <glossterm>host group</glossterm> definition.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>name</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.hosts.mandatory"/>
+					</entry>
+					<entry>
+						Name of the <glossterm>host group</glossterm>.
+					</entry>
+				</row>
+				
+				<!-- property-list -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="5">
+						<command>property-list</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Retrieves <glossterm baseform="host property">host properties</glossterm>
+						assigned to a host.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>host</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.hosts.mandatory"/>
+					</entry>
+					<entry>
+						Name of the host.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>pattern</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.hosts.regexp"/><footnote>
+						<para>Filtering applies to all property tree levels and hides whole
+						subtrees when their names don't match.</para></footnote>
+					</entry>
+					<entry>
+						A regular expression to filter <glossterm>host property</glossterm> names. 
+					</entry>
+				</row>
+				<row>
+					<entry><option>desc</option></entry>
+					<entry>
+						Look up and display descriptions strings.
+					</entry>
+				</row>
+				<row>
+					<entry><option>user</option></entry>
+					<entry>
+						List user-defined properties only.
+					</entry>
+				</row>
+				<row>
+					<entry><emphasis role="strong"><option>STDOUT</option></emphasis></entry>
+					<entry>
+						<code>[depth]</code><footnote><para>Represented by the number of tab
+							(<constant>\t</constant>) characters.</para></footnote><code>
+						[name] [value]</code><footnote
+							xml:id="been.user.cli.reference.hosts.flat">
+							<para>Only displayed for flat (leaf) properties.</para>
+							</footnote><code>
+						[class]</code><footnoteref
+							linkend="been.user.cli.reference.hosts.flat"/><code>
+						[unit]</code><footnoteref
+							linkend="been.user.cli.reference.hosts.flat"/><footnote>
+							<para>Units are not always available and/or applicable.</para>
+							</footnote><footnote
+							xml:id="been.user.cli.reference.hosts.desc2">
+							<para>Only displayed when a description string is available for the
+							property and the <option>desc</option> flag is present.</para>
+							</footnote><code>
+						[description]</code><footnoteref
+							linkend="been.user.cli.reference.hosts.desc2"/><code>
+						[type]</code><footnoteref
+							linkend="been.user.cli.reference.hosts.desc2"/><footnoteref
+							linkend="been.user.cli.reference.hosts.flat"/>
+					</entry>
+				</row>
+				
+				<!-- property-dump -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="3">
+						<command>property-dump</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Dumps all <glossterm baseform="host property">host properties</glossterm> as XML.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>host</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.hosts.mandatory"/>
+					</entry>
+					<entry>
+						Name of the host.
+					</entry>
+				</row>
+				<row>
+					<entry><option>user</option></entry>
+					<entry>
+						Dump the subtree of user-defined properties only.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>STDOUT</option></emphasis>
+					</entry>
+					<entry>
+						<code>"http://been.mff.cuni.cz/hostmanager/properties":properties</code>
+					</entry>
+				</row>
+
+				<!-- property-put -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="2">
+						<command>property-put</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Adds or edits <glossterm>host properties</glossterm> assigned to a host.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>STDIN</option></emphasis><footnote>
+							<para>The XML representation has special semantics here. Properties
+							listed using the <tag>&lt;remove&gt;</tag> elements will be deleted.
+							Other listed properties will be modified recursively. If other properties
+							(not listed in the input) exist, they won't be modified in any way.</para>
+						</footnote>
+					</entry>
+					<entry>
+						<code>"http://been.mff.cuni.cz/hostmanager/properties":properties</code>
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>host</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.hosts.mandatory"/>
+					</entry>
+					<entry>
+						Name of the host.
+					</entry>
+				</row>
+				
+				<!-- property-del -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="3">
+						<command>property-del</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Deletes a <glossterm>host property</glossterm>.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>host</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.hosts.mandatory"/>
+					</entry>
+					<entry>
+						Name of the host.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>name</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.hosts.mandatory"/>
+					</entry>
+					<entry>
+						Name of the <glossterm>host property</glossterm>.
+					</entry>
+				</row>
+				<row>
+					<entry><option>tree</option></entry>
+					<entry>
+						Search among tree-like properties instead of flat properties.
+					</entry>
+				</row>
+				
+				<row><entry namest="action" nameend="desc"/></row>
+			</tbody>
+		</tgroup>
+	</table>
+
+	<xi:include href="../examples/hosts.xml"/>
+</sect2>

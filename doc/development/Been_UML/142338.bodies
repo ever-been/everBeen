@@ -1,0 +1,1099 @@
+class RubisTaskGenerator
+!!!203394.java!!!	registerResults(inout roles : StandardRole) : void
+		for (StandardRole role : roles) {
+			if (CLIENT_ROLE.equals(role.getName())) {
+				BenchmarkRole client = (BenchmarkRole) role;
+				for (int i = 0; i < role.getCount(); i++) {
+					addResultsMapping("Client " + i, client.getUserHosts()[i]);
+				}
+			} 
+		}
+!!!203522.java!!!	generate() : void
+		clientHosts = getExperiment().getRole(CLIENT_ROLE).getCount();
+		
+		if (getExperiment().getProperty(EJB_SERVER).equals("JBoss")) {
+			ejbServer = EJBServer.JBoss;
+			jbossVersion = getExperiment().getProperty(EJB_SERVER_VERSION);
+		} else if (getExperiment().getProperty(EJB_SERVER).equals("Jonas")) {
+			ejbServer = EJBServer.Jonas;
+			jonasVersion = getExperiment().getProperty(EJB_SERVER_VERSION);
+		} else {
+			throw new GeneratorException("Unsupported EJB server: " 
+					+ getExperiment().getProperty(EJB_SERVER));
+		}
+
+		if (getExperiment().getProperty(EJB_SERVER_PLATFORM).equals("linux")) {
+			ejbPlatform = SoftwarePlatform.Linux;
+		} else if (getExperiment().getProperty(EJB_SERVER_PLATFORM).equals("windows")) {
+			ejbPlatform = SoftwarePlatform.Win32;
+		} else {
+			throw new GeneratorException("Unsupported EJB server platform: " 
+					+ getExperiment().getProperty(EJB_SERVER_PLATFORM));
+		}
+		
+		if (getExperiment().getProperty(MYSQL_PLATFORM).equals("linux")) {
+			mysqlPlatform = SoftwarePlatform.Linux;
+		} else if (getExperiment().getProperty(MYSQL_PLATFORM).equals("windows")) {
+			mysqlPlatform = SoftwarePlatform.Win32;
+		} else {
+			throw new GeneratorException("Unsupported MySQL platform: " 
+					+ getExperiment().getProperty(MYSQL_PLATFORM));
+		}
+		
+		if (getExperiment().getProperty(DUMP_TYPE).equals(DUMP_TYPE_BINARY)) {
+			useBinaryDump = true;
+		} else if (getExperiment().getProperty(DUMP_TYPE).equals(DUMP_TYPE_TEXT)) {
+			useBinaryDump = false;
+		} else {
+			throw new GeneratorException("Unsupported dump type: " + getExperiment().getProperty(DUMP_TYPE));
+		}
+		
+		try {
+			binary = createNewBinary();
+			generateCompile();
+			generateMysqlInitialization();
+			generateDeploy();
+			generateRun();
+			generateShutdown();
+	//		generateResultsCollection();
+			closeBinary();
+		} catch (TaskDescriptorException e) {
+			throw new GeneratorException("Cannot create task descriptor: " + e.getMessage(), e);
+		}
+!!!203650.java!!!	generateCompile() : void
+		if (ejbServer == EJBServer.JBoss 
+				&& (!isJBossBinaryInSWRepo() || isRegression())) {
+			setActiveRole(EJB_SERVER_COMPILE_ROLE);
+
+			// JBoss source download
+			TaskDescriptor jbossSourceDownload = null;
+			
+			if (!isRegression()) {
+				jbossSourceDownload = createTaskDescriptor("local-download");
+
+				Condition[] conditions = new Condition[]{
+						new EqualsCondition<String>("name", "jboss"),
+						new EqualsCondition<PackageType>("type", PackageType.SOURCE),
+						new EqualsCondition<Version>("version", new Version(jbossVersion)),
+				};
+				AndCondition condition = new AndCondition(conditions);
+
+				jbossSourceDownload.addTaskPropertyObject("rsl", condition);
+				addTask(jbossSourceDownload);
+			} else {
+				jbossSourceDownload = createTaskDescriptor("svn-checkout");
+				jbossSourceDownload .addTaskProperties("url", JBOSS_SVN_URL);
+				jbossSourceDownload .addTaskProperties("revision.time", jbossVersion);
+				addTask(jbossSourceDownload);
+				
+				// create metadata
+				TaskDescriptor metadataTask = createTaskDescriptor("create-package-metadata");
+				metadataTask.addTaskProperties("package-name", "jboss");
+				metadataTask.addTaskProperties("package-human-name", "JBoss application server");
+				metadataTask.addTaskProperties("version", jbossVersion);
+				metadataTask.addTaskProperties("hardware-platforms", "i386");
+				metadataTask.addTaskProperties("software-platforms", "linux win32");
+				metadataTask.addTaskProperties("type", "source");
+				addTask(metadataTask);
+				
+				// upload the JBoss source
+				TaskDescriptor jbossSourceUpload = createTaskDescriptor("localupload");
+				jbossSourceUpload.setHostRuntimesAsTask(jbossSourceDownload.getTaskTid());
+				// dependency: jboss compile
+				jbossSourceUpload.addDependencyCheckPoint(
+						success(jbossSourceDownload.getTaskTid()));
+				// dependency: jboss package metadata creation
+				jbossSourceUpload.addDependencyCheckPoint(
+						success(metadataTask.getTaskTid()));
+				jbossSourceUpload.addTaskProperties("dir",  
+						"${" + jbossSourceDownload.getTaskTid() + ":workingDirectory}");
+				jbossSourceUpload.addTaskProperties("metadata.file",
+						"${" + metadataTask.getTaskTid() + ":workingDirectory}" 
+						+ "/metadata.xml");
+
+				addTask(jbossSourceUpload);
+			}
+
+			// JBoss compile
+			TaskDescriptor jbossCompile = createTaskDescriptor("jboss-build");
+			jbossCompile.setHostRuntimesAsTask(jbossSourceDownload.getTaskTid());
+			// dependency: JBoss source download
+			jbossCompile.addDependencyCheckPoint(
+					success(jbossSourceDownload.getTaskTid()));
+
+			jbossCompile.addTaskProperties("jboss.dir", 
+					"${" + jbossSourceDownload.getTaskTid() + ":workingDirectory}");
+
+			addTask(jbossCompile);
+
+			// create metadata
+			TaskDescriptor metadataTask = createTaskDescriptor("create-package-metadata");
+			metadataTask.setHostRuntimesAsTask(jbossCompile.getTaskTid());
+			metadataTask.addTaskProperties("package-name", "jboss");
+			metadataTask.addTaskProperties("package-human-name", "JBoss application server");
+			metadataTask.addTaskProperties("version", jbossVersion);
+			metadataTask.addTaskProperties("hardware-platforms", "i386");
+			metadataTask.addTaskProperties("software-platforms", "linux win32");
+			metadataTask.addTaskProperties("type", "binary");
+			addTask(metadataTask);
+
+			// upload JBoss binaries to Software Repository
+
+			TaskDescriptor jbossBinaryUpload = createTaskDescriptor("localupload");
+			jbossBinaryUpload.setHostRuntimesAsTask(jbossCompile.getTaskTid());
+			jbossBinaryUpload.addDependencyCheckPoint(
+					success(jbossCompile.getTaskTid()));
+			jbossBinaryUpload.addDependencyCheckPoint(
+					success(metadataTask.getTaskTid()));
+
+			jbossBinaryUpload.addTaskProperties("dir",  
+					"${" + jbossSourceDownload.getTaskTid() + ":workingDirectory}" 
+					+ "/build/output/jboss");
+			jbossBinaryUpload.addTaskProperties("metadata.file",
+					"${" + metadataTask.getTaskTid() + ":workingDirectory}" 
+					+ "/metadata.xml");
+
+			addTask(jbossBinaryUpload);
+			binaryUpload = jbossBinaryUpload;
+		}
+		
+		if (ejbServer == EJBServer.Jonas 
+				&& (!isJonasBinaryInSWRepo() || isRegression())) {
+			setActiveRole(EJB_SERVER_COMPILE_ROLE);
+			
+			TaskDescriptor jonasSourceDownload = null;
+			if (!isRegression()) {
+				// Jonas source download
+				 
+				jonasSourceDownload = createTaskDescriptor("local-download");
+
+				Condition[] conditions = new Condition[]{
+						new EqualsCondition<String>("name", "jonas"),
+						new EqualsCondition<PackageType>("type", PackageType.SOURCE),
+						new EqualsCondition<Version>("version", new Version(jonasVersion))
+				};
+				AndCondition condition = new AndCondition(conditions);
+
+				jonasSourceDownload.addTaskPropertyObject("rsl", condition);
+				addTask(jonasSourceDownload);
+			} else {
+				jonasSourceDownload = createTaskDescriptor("svn-checkout");
+				
+				jonasSourceDownload .addTaskProperties("url", JONAS_SVN_URL);
+				jonasSourceDownload .addTaskProperties("revision.time", jonasVersion);
+				addTask(jonasSourceDownload);
+				
+				// create metadata
+				TaskDescriptor metadataTask = createTaskDescriptor("create-package-metadata");
+				metadataTask.setHostRuntimesAsTask(jonasSourceDownload.getTaskTid());
+				metadataTask.addTaskProperties("package-name", "jonas");
+				metadataTask.addTaskProperties("package-human-name", "Jonas application server");
+				metadataTask.addTaskProperties("version", jonasVersion);
+				metadataTask.addTaskProperties("hardware-platforms", "i386");
+				metadataTask.addTaskProperties("software-platforms", "linux win32");
+				metadataTask.addTaskProperties("type", "source");
+				addTask(metadataTask);
+				
+				// upload the Jonas source
+				TaskDescriptor jonasSourceUpload = createTaskDescriptor("localupload");
+				jonasSourceUpload.setHostRuntimesAsTask(jonasSourceDownload.getTaskTid());
+				jonasSourceUpload.addDependencyCheckPoint(
+						success(jonasSourceDownload.getTaskTid()));
+				jonasSourceUpload.addDependencyCheckPoint(
+						success(metadataTask.getTaskTid()));
+				jonasSourceUpload.addTaskProperties("dir",  
+						"${" + jonasSourceDownload.getTaskTid() + ":workingDirectory}");
+				jonasSourceUpload.addTaskProperties("metadata.file",
+						"${" + metadataTask.getTaskTid() + ":workingDirectory}" 
+						+ "/metadata.xml");
+
+				addTask(jonasSourceUpload);
+			}
+
+
+			// Tomcat binary download
+			TaskDescriptor tomcatDownload = 
+				createTaskDescriptor("local-download");
+			tomcatDownload.setHostRuntimesAsTask(jonasSourceDownload.getTaskTid());
+
+			Condition[] conditions = new Condition[]{
+					new EqualsCondition<String>("name", "tomcat"),
+					new ContainsCondition<String>("softwarePlatforms", "linux"),
+					new EqualsCondition<Version>("version", new Version(TOMCAT_VERSION)),
+					new EqualsCondition<PackageType>("type", PackageType.BINARY)
+			};
+			AndCondition condition = new AndCondition(conditions);
+			tomcatDownload.addTaskPropertyObject("rsl", condition);
+			addTask(tomcatDownload);
+
+			// Jonas compile
+
+			TaskDescriptor jonasCompile = createTaskDescriptor("jonas-build");
+			jonasCompile.setHostRuntimesAsTask(jonasSourceDownload.getTaskTid());
+			// dependency: Jonas source download
+			jonasCompile.addDependencyCheckPoint(
+					success(jonasSourceDownload.getTaskTid()));
+			// dependency: Tomcat binary download
+			jonasCompile.addDependencyCheckPoint(
+					success(tomcatDownload.getTaskTid()));
+
+			jonasCompile.addTaskProperties("jonas.dir", 
+					"${" + jonasSourceDownload.getTaskTid() + ":workingDirectory}");
+			jonasCompile.addTaskProperties("tomcat.dir", 
+					"${" + tomcatDownload.getTaskTid() + ":workingDirectory}");
+
+			addTask(jonasCompile);
+
+			// create metadata
+			TaskDescriptor metadataTask = createTaskDescriptor("create-package-metadata");
+			metadataTask.setHostRuntimesAsTask(jonasSourceDownload.getTaskTid());
+			metadataTask.addTaskProperties("package-name", "jonas");
+			metadataTask.addTaskProperties("package-human-name", "Jonas application server");
+			metadataTask.addTaskProperties("version", jonasVersion);
+			metadataTask.addTaskProperties("hardware-platforms", "i386");
+			metadataTask.addTaskProperties("software-platforms", "linux win32");
+			metadataTask.addTaskProperties("type", "binary");
+			addTask(metadataTask);
+
+			// upload Jonas binaries to Software Repository
+
+			TaskDescriptor jonasBinaryUpload = createTaskDescriptor("localupload");
+			jonasBinaryUpload.setHostRuntimesAsTask(jonasSourceDownload.getTaskTid());
+			// dependency: jonas compile
+			jonasBinaryUpload.addDependencyCheckPoint(
+					success(jonasCompile.getTaskTid()));
+			// dependency: jonas package metadata creation
+			jonasBinaryUpload.addDependencyCheckPoint(
+					success(metadataTask.getTaskTid()));
+
+			jonasBinaryUpload.addTaskProperties("dir" ,
+					"${" + jonasSourceDownload.getTaskTid() + ":workingDirectory}"
+					+ "/output/jonas");
+			jonasBinaryUpload.addTaskProperties("metadata.file",
+					"${" + metadataTask.getTaskTid() + ":workingDirectory}"
+					+ "/metadata.xml");
+
+			addTask(jonasBinaryUpload);
+			binaryUpload = jonasBinaryUpload;
+		}
+!!!203778.java!!!	isJonasBinaryInSWRepo() : boolean
+		Condition[] conditions = new Condition[]{
+				new EqualsCondition<String>("name", "jonas"),
+				new EqualsCondition<Version>("version", new Version(jonasVersion)),
+				new ContainsCondition<String>("softwarePlatforms", "linux"),
+				new EqualsCondition<PackageType>("type", PackageType.BINARY)
+		};
+		AndCondition condition = new AndCondition(conditions);
+		
+		return isPackageAvailable(condition);
+!!!203906.java!!!	isJBossBinaryInSWRepo() : boolean
+		Condition[] conditions = new Condition[]{
+				new EqualsCondition<String>("name", "jboss"),
+				new EqualsCondition<Version>("version", new Version(jbossVersion)),
+				new ContainsCondition<String>("softwarePlatforms", "linux"),
+				new EqualsCondition<PackageType>("type", PackageType.BINARY)
+		};
+		AndCondition condition = new AndCondition(conditions);
+
+		return isPackageAvailable(condition);
+!!!204034.java!!!	generateMysqlInitialization() : void
+		setActiveRole(DATABASE_ROLE);
+		
+		// MySQL binary download
+		TaskDescriptor mysqlDownload = 
+			createTaskDescriptor("local-download");
+
+		// Dependency : binary upload of any compile task
+		if ((serialize) && (binaryUpload != null)) {
+			mysqlDownload.addDependencyCheckPoint(
+					success(binaryUpload.getTaskTid()));
+		}
+
+		Condition[] conditions = new Condition[]{
+				new EqualsCondition<String>("name", "mysql"),
+				new ContainsCondition<String>("softwarePlatforms", mysqlPlatform.toString()),
+				new EqualsCondition<PackageType>("type", PackageType.BINARY)
+		};
+		AndCondition condition = new AndCondition(conditions);
+
+		mysqlDownload.addTaskPropertyObject("rsl", condition);
+		addTask(mysqlDownload);
+		mysqlBinaryDownload = mysqlDownload;
+
+		// MySQL initialisation
+		TaskDescriptor mysqlInitialize = 
+			createTaskDescriptor("mysql-initialize");
+
+		mysqlInitialize.addDependencyCheckPoint(
+				success(mysqlDownload.getTaskTid()));
+
+		mysqlInitialize.addTaskProperties("mysql.root", 
+				"${" + mysqlDownload.getTaskTid() + ":workingDirectory}");
+		addTask(mysqlInitialize);
+
+		TaskDescriptor mysqlRestore = null;
+		if (useBinaryDump) {
+			// MySQL binary dump for Rubis download
+			TaskDescriptor mysqlDumpDownload = 
+				createTaskDescriptor("local-download");
+
+			mysqlDumpDownload.addDependencyCheckPoint(
+					success(mysqlInitialize.getTaskTid()));
+
+			conditions = new Condition[]{
+					new EqualsCondition<String>("name", "rubis-mysql-dump-binary"),
+					new EqualsCondition<PackageType>("type", PackageType.DATA)
+			};
+			condition = new AndCondition(conditions);
+
+			mysqlDumpDownload.addTaskPropertyObject("rsl", condition);
+			addTask(mysqlDumpDownload);
+			mysqlRubisBackup = mysqlDumpDownload;
+			
+			// restore the database to initial state
+			mysqlRestore = createTaskDescriptor("rubis-mysql-restore");
+			mysqlRestore.addDependencyCheckPoint(
+					success(mysqlDumpDownload.getTaskTid()));
+
+			mysqlRestore.addTaskProperties("mysql.root", 
+					"${" + mysqlBinaryDownload.getTaskTid() + ":workingDirectory}");
+			mysqlRestore.addTaskProperties("backup.path", 
+					"${" + mysqlDumpDownload.getTaskTid() + ":workingDirectory}");
+			addTask(mysqlRestore);
+		}
+
+		// MySQL start
+		TaskDescriptor mysqlRun = createTaskDescriptor("mysql-run");
+		mysqlRun.setTaskExclusive(TaskExclusivity.CONTEXT_EXCLUSIVE);
+
+		if (!useBinaryDump) {
+			mysqlRun.addDependencyCheckPoint(
+					success(mysqlInitialize.getTaskTid()));
+		} else {
+			mysqlRun.addDependencyCheckPoint(
+					success(mysqlRestore.getTaskTid()));
+		}
+
+		mysqlRun.addTaskProperties("mysql.root", 
+				"${" + mysqlDownload.getTaskTid() + ":workingDirectory}");
+		mysqlRun.addTaskProperties("connections.max", MYSQL_MAX_CONNECTIONS);
+		addTask(mysqlRun);
+		mysqlFirstRun = mysqlRun;
+
+		if (!useBinaryDump) {
+			// MySQL textual dump for Rubis download
+			TaskDescriptor mysqlDumpDownload = 
+				createTaskDescriptor("local-download");
+
+			mysqlDumpDownload.addDependencyCheckPoint(
+					new Dependency(mysqlFirstRun.getTaskTid(), "running"));
+
+
+			conditions = new Condition[]{
+					new EqualsCondition<String>("name", "rubis-mysql-dump"),
+					new EqualsCondition<PackageType>("type", PackageType.DATA)
+			};
+			condition = new AndCondition(conditions);
+
+			mysqlDumpDownload.addTaskPropertyObject("rsl", condition);
+			addTask(mysqlDumpDownload);
+
+			// MySQL initialisation for Rubis
+			TaskDescriptor rubisMysqlInitialize = 
+				createTaskDescriptor("rubis-mysql-initialize");
+
+			rubisMysqlInitialize.addDependencyCheckPoint(
+					success(mysqlDumpDownload.getTaskTid()));
+
+			rubisMysqlInitialize.addTaskProperties("mysql.root", 
+					"${" + mysqlDownload.getTaskTid() + ":workingDirectory}");
+			rubisMysqlInitialize.addTaskProperties("dump.root", 
+					"${" + mysqlDumpDownload.getTaskTid() + ":workingDirectory}");
+			addTask(rubisMysqlInitialize);
+
+			// MySQL shutdown
+			TaskDescriptor mysqlShutdown = createTaskDescriptor("mysql-shutdown");
+
+			mysqlShutdown.addDependencyCheckPoint(
+					success(rubisMysqlInitialize.getTaskTid()));
+
+			mysqlShutdown.addTaskProperties("mysql.root", 
+					"${" + mysqlBinaryDownload.getTaskTid() + ":workingDirectory}");
+			addTask(mysqlShutdown);
+
+
+			TaskDescriptor mysqlBackup = createTaskDescriptor("rubis-mysql-backup");
+			mysqlBackup.addDependencyCheckPoint(
+					success(mysqlShutdown.getTaskTid()));
+
+			mysqlBackup.addTaskProperties("mysql.root", 
+					"${" + mysqlDownload.getTaskTid() + ":workingDirectory}");
+
+			addTask(mysqlBackup);
+			mysqlRubisBackup = mysqlBackup;
+
+			TaskDescriptor mysqlRestart = createTaskDescriptor("mysql-run");
+			mysqlRestart.setTaskExclusive(TaskExclusivity.CONTEXT_EXCLUSIVE);
+
+			mysqlRestart.addDependencyCheckPoint(
+					success(mysqlBackup.getTaskTid()));
+
+			mysqlRestart.addTaskProperties("mysql.root", 
+					"${" + mysqlDownload.getTaskTid() + ":workingDirectory}");
+			mysqlRestart.addTaskProperties("connections.max", MYSQL_MAX_CONNECTIONS);
+			addTask(mysqlRestart);
+			mysqlFirstRun = mysqlRestart;
+		}
+
+		TaskDescriptor mysqlAddJdbcUser = createTaskDescriptor("mysql-runcommand");
+
+		mysqlAddJdbcUser.addDependencyCheckPoint(
+				new Dependency(mysqlFirstRun.getTaskTid(), "running"));
+
+		mysqlAddJdbcUser.addTaskProperties("mysql.root", 
+				"${" + mysqlBinaryDownload.getTaskTid() + ":workingDirectory}");
+		mysqlAddJdbcUser.addTaskProperties("user.name", "root");
+		mysqlAddJdbcUser.addTaskProperties("command", "GRANT ALL PRIVILEGES ON *.* TO JDBC@'%'");
+		addTask(mysqlAddJdbcUser);
+		
+		TaskDescriptor mysqlAddRootUser = createTaskDescriptor("mysql-runcommand");
+
+		mysqlAddRootUser.addDependencyCheckPoint(
+				success(mysqlAddJdbcUser.getTaskTid()));
+
+		mysqlAddRootUser.addTaskProperties("mysql.root", 
+				"${" + mysqlBinaryDownload.getTaskTid() + ":workingDirectory}");
+		mysqlAddRootUser.addTaskProperties("user.name", "root");
+		mysqlAddRootUser.addTaskProperties("command", "GRANT ALL PRIVILEGES ON *.* TO root@'%'");
+		addTask(mysqlAddRootUser);
+
+		mysqlInitialization = mysqlAddRootUser;
+!!!204162.java!!!	updateTimestamps(inout task : TaskDescriptor, in checkpointName : String) : TaskDescriptor
+		setActiveRole(DATABASE_ROLE);
+		TaskDescriptor mysqlUpdateTimestamps = createTaskDescriptor("mysql-runcommand");
+		Dependency dep = null;
+		if (checkpointName != null) {
+			dep = new Dependency(task.getTaskTid(), checkpointName);
+		} else {
+			dep = success(task.getTaskTid());
+		}
+		mysqlUpdateTimestamps.addDependencyCheckPoint(dep);
+
+		mysqlUpdateTimestamps.addTaskProperties("mysql.root", 
+				"${" + mysqlBinaryDownload.getTaskTid() + ":workingDirectory}");
+		mysqlUpdateTimestamps.addTaskProperties("user.name", "root");
+		mysqlUpdateTimestamps.addTaskProperties("database.name", "rubis");
+		mysqlUpdateTimestamps.addTaskProperties("command", 
+				"UPDATE items SET start_date=NOW(), " 
+				+ "end_date=DATE_ADD(NOW(), INTERVAL 7 DAY)");
+		
+		return mysqlUpdateTimestamps;
+!!!204290.java!!!	generateDeploy() : void
+		if (ejbServer == EJBServer.JBoss) {
+			setActiveRole(EJB_SERVER_ROLE);
+
+			// Rubis source download
+			TaskDescriptor rubisSourceDownload = 
+				createTaskDescriptor("local-download");
+
+			Condition[] conditions = new Condition[]{
+					new EqualsCondition<String>("name", "rubis"),
+					new EqualsCondition<Version>("version", new Version(RUBIS_VERSION)),
+					new EqualsCondition<PackageType>("type", PackageType.SOURCE)
+			};
+			AndCondition condition = new AndCondition(conditions);
+			rubisSourceDownload.addTaskPropertyObject("rsl", condition);
+			addTask(rubisSourceDownload);
+
+			// J2EE binary download
+			TaskDescriptor j2eeDownload = 
+				createTaskDescriptor("local-download");
+
+			conditions = new Condition[]{
+					new EqualsCondition<String>("name", "j2ee-api"),
+					new ContainsCondition<String>("softwarePlatforms", ejbPlatform.toString()),
+					new EqualsCondition<PackageType>("type", PackageType.BINARY)
+			};
+			condition = new AndCondition(conditions);
+
+			j2eeDownload.addTaskPropertyObject("rsl", condition);
+			addTask(j2eeDownload);
+
+			// prepare the Rubis source code for compilation
+			TaskDescriptor rubisBuildPrepare = createTaskDescriptor("rubis-build-prepare");
+			// dependency: Rubis source download
+			rubisBuildPrepare.addDependencyCheckPoint(
+					success(rubisSourceDownload.getTaskTid()));
+			// dependency: J2EE download
+			rubisBuildPrepare.addDependencyCheckPoint(
+					success(j2eeDownload.getTaskTid()));
+
+			rubisBuildPrepare.addTaskProperties("rubis.root", 
+					"${" + rubisSourceDownload.getTaskTid() + ":workingDirectory}");
+			rubisBuildPrepare.addTaskProperties("j2ee",
+					"${" + j2eeDownload.getTaskTid() + ":workingDirectory}");
+			rubisBuildPrepare.addTaskProperties("ejb.server", 
+					ejbServer.toString().toLowerCase());
+
+			addTask(rubisBuildPrepare);
+
+			// Rubis compile
+			TaskDescriptor rubisCompile = createTaskDescriptor("ant-build");
+			// dependency: JBoss source download
+			rubisCompile.addDependencyCheckPoint(
+					success(rubisBuildPrepare.getTaskTid()));
+
+			String target = null;
+			String rubisSuite = getExperiment().getProperty(RUBIS_SUITE);
+			if (rubisSuite.equals(RUBIS_SUITE_EJB_CMP2)) {
+				target = "cmp2";
+			}
+			if (rubisSuite.equals(RUBIS_SUITE_EJB_ENTITYBEAN_ID)) {
+				target = "eb_cmp";
+			}
+			if (rubisSuite.equals(RUBIS_SUITE_EJB_ENTITYBEAN_ID_BMP)) {
+				target = "eb_bmp";
+			}
+			if (rubisSuite.equals(RUBIS_SUITE_EJB_LOCAL_REMOTE)) {
+				target = "sf_local";
+			}
+			if (rubisSuite.equals(RUBIS_SUITE_MDB)) {
+				target = "mdb";
+			}
+			if (rubisSuite.equals(RUBIS_SUITE_EJB_SESSION_FACADE)) {
+				target = "session_facade";
+			}
+			if (rubisSuite.equals(RUBIS_SUITE_EJB_SESSIONBEAN)) {
+				target = "sb";
+			}
+
+			rubisCompile.addTaskProperties("directory", 
+					"${" + rubisSourceDownload.getTaskTid() + ":workingDirectory}");
+			rubisCompile.addTaskProperties("target", target);
+
+			addTask(rubisCompile);
+
+			// JBoss binary download
+			TaskDescriptor jbossDownload = 
+				createTaskDescriptor("local-download");
+
+			// Dependency : mysql initialisation
+			if (serialize) {
+				jbossDownload.addDependencyCheckPoint(
+						success(mysqlInitialization.getTaskTid()));
+			}
+			if (binaryUpload != null) {
+				jbossDownload.addDependencyCheckPoint(
+						success(binaryUpload.getTaskTid()));
+			}
+
+			conditions = new Condition[]{
+					new EqualsCondition<String>("name", "jboss"),
+					new EqualsCondition<Version>("version", new Version(jbossVersion)),
+					new EqualsCondition<PackageType>("type", PackageType.BINARY)
+			};
+			condition = new AndCondition(conditions);
+			jbossDownload.addTaskPropertyObject("rsl", condition);
+			addTask(jbossDownload);
+			jbossBinaryDownload = jbossDownload;
+
+			TaskDescriptor jbossConf = createTaskDescriptor("jboss-configure");
+			jbossConf.addDependencyCheckPoint(
+					success(jbossDownload.getTaskTid()));
+
+			jbossConf.addTaskProperties("jboss.root", 
+					"${" + jbossDownload.getTaskTid() + ":workingDirectory}");
+			jbossConf.addTaskProperties("jboss.jnp.port", "1097");
+			jbossConf.addTaskProperties("jboss.webservice.port", "8084");
+			jbossConf.addTaskProperties("naming.call-by-value", "true");
+			jbossConf.addTaskProperties("use.jboss.web.loader", "true");
+
+			addTask(jbossConf);
+
+			TaskDescriptor deployer = createTaskDescriptor("rubis-deployer");
+
+			// dependency : JBoss download
+			deployer.addDependencyCheckPoint(
+					success(jbossDownload.getTaskTid()));
+
+			// dependency : Rubis build
+			deployer.addDependencyCheckPoint(
+					success(rubisCompile.getTaskTid()));
+
+			deployer.addTaskProperties("rubis.root", 
+					"${" + rubisSourceDownload.getTaskTid() + ":workingDirectory}");
+			deployer.addTaskProperties("rubis.benchmark", 
+					getExperiment().getProperty(RUBIS_SUITE));
+			deployer.addTaskProperties("ejb.server", "jboss");
+			deployer.addTaskProperties("database.hostname", 
+					getExperiment().getRole(DATABASE_ROLE).getHostNames()[0]);
+			deployer.addTaskProperties("jboss.root", 
+					"${" + jbossDownload.getTaskTid() + ":workingDirectory}");
+			addTask(deployer);
+			rubisDeploy = deployer;
+		}
+		if (ejbServer == EJBServer.Jonas) {
+			setActiveRole(EJB_SERVER_ROLE);
+			
+			// Jonas binary download
+			TaskDescriptor jonasDownload = 
+				createTaskDescriptor("local-download");
+			
+			// Dependency : mysql initialisation
+			if (serialize) {
+				jonasDownload.addDependencyCheckPoint(
+						success(mysqlInitialization.getTaskTid()));
+			}
+			if (binaryUpload != null) {
+				jonasDownload.addDependencyCheckPoint(
+						success(binaryUpload.getTaskTid()));
+			}
+
+			Condition[] conditions = new Condition[]{
+					new EqualsCondition<String>("name", "jonas"),
+					new EqualsCondition<Version>("version", new Version(jonasVersion)),
+					new EqualsCondition<PackageType>("type", PackageType.BINARY)
+			};
+			AndCondition condition = new AndCondition(conditions);
+
+			jonasDownload.addTaskPropertyObject("rsl", condition);
+			addTask(jonasDownload);
+			jonasBinaryDownload = jonasDownload;
+
+			// Tomcat binary download
+			TaskDescriptor tomcatDownload = 
+				createTaskDescriptor("local-download");
+			conditions = new Condition[]{
+					new EqualsCondition<String>("name", "tomcat"),
+					new EqualsCondition<PackageType>("type", PackageType.BINARY),
+					new EqualsCondition<Version>("version", new Version(TOMCAT_VERSION)),
+
+			};
+			condition = new AndCondition(conditions);
+
+			tomcatDownload.addTaskPropertyObject("rsl", condition);
+			addTask(tomcatDownload);
+			tomcatBinaryDownload = tomcatDownload;
+
+			// Rubis source download
+			TaskDescriptor rubisSourceDownload = 
+				createTaskDescriptor("local-download");
+
+			conditions = new Condition[]{
+					new EqualsCondition<String>("name", "rubis"),
+					new EqualsCondition<Version>("version", new Version(RUBIS_VERSION)),
+					new EqualsCondition<PackageType>("type", PackageType.SOURCE)
+			};
+			condition = new AndCondition(conditions);
+
+			rubisSourceDownload.addTaskPropertyObject("rsl", condition);
+			addTask(rubisSourceDownload);				
+
+			TaskDescriptor j2eeDownload = 
+				createTaskDescriptor("local-download");
+
+			conditions = new Condition[]{
+					new EqualsCondition<String>("name", "j2ee-api"),
+					new ContainsCondition<String>("softwarePlatforms", ejbPlatform.toString()),
+					new EqualsCondition<PackageType>("type", PackageType.BINARY)
+			};
+			condition = new AndCondition(conditions);
+
+			j2eeDownload.addTaskPropertyObject("rsl", condition);
+			addTask(j2eeDownload);
+
+			// prepare the Rubis source code for compilation
+			TaskDescriptor rubisBuildPrepare = createTaskDescriptor("rubis-build-prepare");
+			// dependency: Rubis source download
+			rubisBuildPrepare.addDependencyCheckPoint(
+					success(rubisSourceDownload.getTaskTid()));
+			// dependency: J2EE download
+			rubisBuildPrepare.addDependencyCheckPoint(
+					success(j2eeDownload.getTaskTid()));
+
+			rubisBuildPrepare.addTaskProperties("rubis.root", 
+					"${" + rubisSourceDownload.getTaskTid() + ":workingDirectory}");
+			rubisBuildPrepare.addTaskProperties("j2ee",
+					"${" + j2eeDownload.getTaskTid() + ":workingDirectory}");
+			rubisBuildPrepare.addTaskProperties("ejb.server", 
+					ejbServer.toString().toLowerCase());
+
+			addTask(rubisBuildPrepare);
+
+			// Rubis compile
+			TaskDescriptor rubisCompile = createTaskDescriptor("ant-build");
+			// dependency: JBoss source download
+			rubisCompile.addDependencyCheckPoint(
+					success(rubisBuildPrepare.getTaskTid()));
+
+			rubisCompile.addDependencyCheckPoint(
+					success(jonasDownload.getTaskTid()));
+
+			String target = null;
+			String rubisSuite = getExperiment().getProperty(RUBIS_SUITE);
+			if (rubisSuite.equals(RUBIS_SUITE_EJB_CMP2)) {
+				target = "cmp2";
+			}
+			if (rubisSuite.equals(RUBIS_SUITE_EJB_ENTITYBEAN_ID)) {
+				target = "eb_cmp";
+			}
+			if (rubisSuite.equals(RUBIS_SUITE_EJB_ENTITYBEAN_ID_BMP)) {
+				target = "eb_bmp";
+			}
+			if (rubisSuite.equals(RUBIS_SUITE_EJB_LOCAL_REMOTE)) {
+				target = "sf_local";
+			}
+			if (rubisSuite.equals(RUBIS_SUITE_MDB)) {
+				target = "mdb";
+			}
+			if (rubisSuite.equals(RUBIS_SUITE_EJB_SESSION_FACADE)) {
+				target = "session_facade";
+			}
+			if (rubisSuite.equals(RUBIS_SUITE_EJB_SESSIONBEAN)) {
+				target = "sb";
+			}
+
+			rubisCompile.addTaskProperties("directory", 
+					"${" + rubisSourceDownload.getTaskTid() + ":workingDirectory}");
+			rubisCompile.addTaskProperties("target", target);
+			rubisCompile.addTaskProperties("parameters", "-Djonas.root=" 
+					+ "${" + jonasDownload.getTaskTid() + ":workingDirectory}");
+
+			addTask(rubisCompile);
+
+			// configure Jonas
+
+			TaskDescriptor jonasConfiguration =
+				createTaskDescriptor("jonas-configure");
+
+			// dependency : Jonas download
+			jonasConfiguration.addDependencyCheckPoint(
+					success(jonasDownload.getTaskTid()));
+
+			jonasConfiguration.addTaskProperties("jonas.root", 
+					"${" + jonasDownload.getTaskTid() + ":workingDirectory}");
+			jonasConfiguration.addTaskProperties("mysql.datasource.name", "mysql");
+			jonasConfiguration.addTaskProperties("mysql.datasource.url", 
+					"jdbc:mysql://" 
+					+ getExperiment().getRole(DATABASE_ROLE).getHostNames()[0] 
+					                                                        + "/rubis");
+			jonasConfiguration.addTaskProperties("mysql.datasource.user", "root");
+			jonasConfiguration.addTaskProperties("jrmp.port", "1097");
+			jonasConfiguration.addTaskProperties("http.port", "8080");
+			jonasConfiguration.addTaskProperties("mysql.maxconnpool", MYSQL_MAX_CONNECTIONS);
+			addTask(jonasConfiguration);
+
+			TaskDescriptor deployer = createTaskDescriptor("rubis-deployer");
+
+			// dependency : Rubis compile
+			deployer.addDependencyCheckPoint(
+					success(rubisCompile.getTaskTid()));
+
+			deployer.addTaskProperties("rubis.root", 
+					"${" + rubisSourceDownload.getTaskTid() + ":workingDirectory}");
+			deployer.addTaskProperties("rubis.benchmark", 
+					getExperiment().getProperty(RUBIS_SUITE));
+			deployer.addTaskProperties("ejb.server", "jonas");
+			deployer.addTaskProperties("jonas.root", 
+					"${" + jonasDownload.getTaskTid() + ":workingDirectory}");
+			addTask(deployer);
+			rubisDeploy = deployer;
+		}
+!!!204418.java!!!	generateRun() : void
+		// run the EJB server
+		setActiveRole(CLIENT_ROLE);
+
+		TaskDescriptor[] rubisBuilds = new TaskDescriptor[clientHosts];
+		rubisDownloads = new TaskDescriptor[clientHosts];
+
+		for (int i = 0; i < clientHosts; i++) {
+			// Rubis source download
+			TaskDescriptor rubisSourceDownload = 
+				createTaskDescriptor("local-download", i);
+
+			Condition[] conditions = new Condition[]{
+					new EqualsCondition<String>("name", "rubis"),
+					new EqualsCondition<Version>("version", new Version(RUBIS_VERSION)),
+					new EqualsCondition<PackageType>("type", PackageType.SOURCE)
+			};
+			AndCondition condition = new AndCondition(conditions);
+
+			rubisSourceDownload.addTaskPropertyObject("rsl", condition);
+			addTask(rubisSourceDownload);
+			rubisDownloads[i] = rubisSourceDownload;
+
+			// Rubis compile
+			TaskDescriptor rubisCompile = createTaskDescriptor("ant-build", i);
+
+			rubisCompile.addDependencyCheckPoint(
+					success(rubisSourceDownload.getTaskTid()));
+
+			rubisCompile.addTaskProperties("directory", 
+					"${" + rubisSourceDownload.getTaskTid() + ":workingDirectory}");
+			rubisCompile.addTaskProperties("target", "client");
+
+			addTask(rubisCompile);
+			rubisBuilds[i] = rubisCompile;
+		}
+
+		int runCount = Integer.valueOf(getExperiment().getRunCount());
+
+		for (int i = 0; i < runCount; i++) {
+			createNewRun();
+			// restore the database to it's initial state
+			TaskDescriptor timestampUpdate = null;
+
+			if (i > 0) { // only if it's not the first run
+				setActiveRole(DATABASE_ROLE);
+
+				// MySQL shutdown
+				TaskDescriptor mysqlShutdown = createTaskDescriptor("mysql-shutdown");
+
+				mysqlShutdown.addDependencyCheckPoint(
+						finish(ejbServerRun.getTaskTid()));
+
+				mysqlShutdown.addTaskProperties("mysql.root", 
+						"${" + mysqlBinaryDownload.getTaskTid() + ":workingDirectory}");
+				addTask(mysqlShutdown);
+
+				// restore the database to initial state
+				TaskDescriptor mysqlRestore = createTaskDescriptor("rubis-mysql-restore");
+				mysqlRestore.addDependencyCheckPoint(
+						finish(mysqlShutdown.getTaskTid()));
+
+				mysqlRestore.addTaskProperties("mysql.root", 
+						"${" + mysqlBinaryDownload.getTaskTid() + ":workingDirectory}");
+				mysqlRestore.addTaskProperties("backup.path", 
+						"${" + mysqlRubisBackup.getTaskTid() + ":workingDirectory}");
+				addTask(mysqlRestore);
+
+				// start MySQL again
+				TaskDescriptor mysqlRun = createTaskDescriptor("mysql-run");
+				mysqlRun.setTaskExclusive(TaskExclusivity.CONTEXT_EXCLUSIVE);
+
+				mysqlRun.addDependencyCheckPoint(
+						success(mysqlRestore.getTaskTid()));
+
+				mysqlRun.addTaskProperties("mysql.root", 
+						"${" + mysqlBinaryDownload.getTaskTid() + ":workingDirectory}");
+				mysqlRun.addTaskProperties("connections.max", MYSQL_MAX_CONNECTIONS);
+				addTask(mysqlRun);
+
+				timestampUpdate = updateTimestamps(mysqlRun, "running"); 
+				addTask(timestampUpdate);
+			} else {
+				timestampUpdate = updateTimestamps(mysqlInitialization, null); 
+				addTask(timestampUpdate);
+			}
+
+			setActiveRole(EJB_SERVER_ROLE);
+			if (ejbServer == EJBServer.JBoss) {
+				// JBoss start
+				TaskDescriptor jbossRun = createTaskDescriptor("jboss-run");
+				jbossRun.setTaskExclusive(TaskExclusivity.CONTEXT_EXCLUSIVE);
+
+				jbossRun.addDependencyCheckPoint(
+						success(rubisDeploy.getTaskTid()));
+
+				jbossRun.addDependencyCheckPoint(
+						success(timestampUpdate.getTaskTid()));
+
+				jbossRun.addTaskProperties("jboss.dir", 
+						"${" + jbossBinaryDownload.getTaskTid() + ":workingDirectory}");
+				addTask(jbossRun);
+				ejbServerRun = jbossRun;
+			}
+			if (ejbServer == EJBServer.Jonas) {
+				// Jonas start
+				TaskDescriptor jonasRun = createTaskDescriptor("jonas-run");
+				jonasRun.setTaskExclusive(TaskExclusivity.CONTEXT_EXCLUSIVE);
+
+				jonasRun.addDependencyCheckPoint(
+						success(rubisDeploy.getTaskTid()));
+				jonasRun.addDependencyCheckPoint(
+						success(timestampUpdate.getTaskTid()));
+				jonasRun.addDependencyCheckPoint(
+						success(tomcatBinaryDownload.getTaskTid()));
+				jonasRun.addDependencyCheckPoint(
+						success(jonasBinaryDownload.getTaskTid()));
+
+				jonasRun.addTaskProperties("jonas.dir", 
+						"${" + jonasBinaryDownload.getTaskTid() + ":workingDirectory}");
+				jonasRun.addTaskProperties("tomcat.dir", 
+						"${" + tomcatBinaryDownload.getTaskTid() + ":workingDirectory}");
+				addTask(jonasRun);
+				ejbServerRun = jonasRun;
+			}
+
+
+			setActiveRole(CLIENT_ROLE);
+			
+			slaveClients = new TaskDescriptor[clientHosts - 1];
+			
+			for (int j = 0; j < clientHosts; j++) {
+				// Rubis start
+				TaskDescriptor rubisStart = createTaskDescriptor("rubis-run", j);
+				rubisStart.setTaskExclusive(TaskExclusivity.CONTEXT_EXCLUSIVE);
+				if (j == 0) {
+					mainClient = rubisStart;
+				} else {
+					slaveClients[j - 1] = rubisStart;
+					rubisStart.addTaskProperties("main.client", mainClient.getTaskTid());
+				}
+
+				rubisStart.addDependencyCheckPoint(
+						new Dependency(ejbServerRun.getTaskTid(), "running"));
+				rubisStart.addDependencyCheckPoint(
+						success(rubisBuilds[j].getTaskTid()));
+
+				rubisStart.addTaskProperties("run.index", String.valueOf(i));
+				rubisStart.addTaskProperties(
+						"ejb.hostname", 
+						getExperiment().getRole(EJB_SERVER_ROLE).getHostNames()[0]);
+				rubisStart.addTaskProperties(
+						"database.hostname",
+						getExperiment().getRole(DATABASE_ROLE).getHostNames()[0]);
+				rubisStart.addTaskProperties("rubis.root", 
+						"${" + rubisDownloads[j].getTaskTid() + ":workingDirectory}");
+				rubisStart.addTaskProperties("transition.table", 
+						getExperiment().getProperty(TRANSITION_TABLE));
+				rubisStart.addTaskProperties("transitions.max", 
+						getExperiment().getProperty(TRANSITIONS_MAX));
+
+				// rubis-run task requires times in milliseconds, convert from seconds
+				int uprampTime = Integer.valueOf(getExperiment().getProperty(UP_RAMP_TIME))
+					* 60000;
+				int sessionTime = Integer.valueOf(getExperiment().getProperty(SESSION_TIME))
+					* 60000;
+				int downrampTime = Integer.valueOf(getExperiment().getProperty(DOWN_RAMP_TIME))
+					* 60000;
+				
+				rubisStart.addTaskProperties("upramp.time", 
+						String.valueOf(uprampTime));
+				rubisStart.addTaskProperties("upramp.slowdown.factor", 
+						getExperiment().getProperty(UP_RAMP_SLOWDOWN_FACTOR));
+				rubisStart.addTaskProperties("session.time", 
+						String.valueOf(sessionTime));
+				rubisStart.addTaskProperties("downramp.time", 
+						String.valueOf(downrampTime));
+				rubisStart.addTaskProperties("downramp.slowdown.factor", 
+						getExperiment().getProperty(DOWN_RAMP_SLOWDOWN_FACTOR));
+				rubisStart.addTaskProperties("client.count", 
+						getExperiment().getProperty(CLIENT_COUNT));
+				rubisStart.addTaskProperties("debug.level", 
+						getExperiment().getProperty(DEBUG_LEVEL));
+
+				rubisStart.setDetailedLoad(true);
+				rubisStart.setDetailedLoadInterval(DETAILED_LOAD_INTERVAL);
+				
+				addTask(rubisStart);
+			}
+			
+			// give the main client task IDs of the slave clients
+			String[] slaveClientsIds = new String[clientHosts - 1];
+			for (int j = 0; j < clientHosts - 1; j++) {
+				slaveClientsIds[j] = slaveClients[j].getTaskTid();
+			}
+			mainClient.addTaskPropertyObject("clients", slaveClientsIds);						
+
+			setActiveRole(EJB_SERVER_ROLE);
+			if (ejbServer == EJBServer.JBoss) {
+				// JBoss shutdown
+				TaskDescriptor jbossShutdown = createTaskDescriptor("jboss-shutdown");
+
+				jbossShutdown.addDependencyCheckPoint(
+						finish(mainClient.getTaskTid()));
+				for (int j = 0; j < clientHosts - 1; j++) {
+					jbossShutdown.addDependencyCheckPoint(
+							finish(slaveClients[j].getTaskTid()));
+				}
+
+				jbossShutdown.addTaskProperties("jboss.dir", 
+						"${" + jbossBinaryDownload.getTaskTid() + ":workingDirectory}");
+				addTask(jbossShutdown);
+			}
+			if (ejbServer == EJBServer.Jonas) {
+				// JBoss shutdown
+				TaskDescriptor jonasShutdown = createTaskDescriptor("jonas-shutdown");
+
+				jonasShutdown.addDependencyCheckPoint(
+						finish(mainClient.getTaskTid()));
+				for (int j = 0; j < clientHosts - 1; j++) {
+					jonasShutdown.addDependencyCheckPoint(
+							finish(slaveClients[j].getTaskTid()));
+				}
+
+				jonasShutdown.addTaskProperties("jonas.dir", 
+						"${" + jonasBinaryDownload.getTaskTid() + ":workingDirectory}");
+				addTask(jonasShutdown);
+			}
+			
+			generateResultsCollection(i);
+
+			closeRun();
+		}
+!!!204546.java!!!	generateShutdown() : void
+		// run the EJB server
+		setActiveRole(DATABASE_ROLE);
+
+		// MySQL shutdown
+		TaskDescriptor mysqlShutdown = createTaskDescriptor("mysql-shutdown");
+
+		mysqlShutdown.addDependencyCheckPoint(
+				success(ejbServerRun.getTaskTid()));
+
+		mysqlShutdown.addTaskProperties("mysql.root", 
+				"${" + mysqlBinaryDownload.getTaskTid() + ":workingDirectory}");
+		addTask(mysqlShutdown);
+!!!204674.java!!!	generateResultsCollection(in runIndex : int) : void
+		
+		setActiveRole(CLIENT_ROLE);
+		
+		TaskDescriptor[] resultsCheckAndConvertTasks = new TaskDescriptor[clientHosts];
+		TaskDescriptor[] uploadTasks = new TaskDescriptor[clientHosts];
+		
+		for (int i = 0; i < clientHosts; i++) {
+			resultsCheckAndConvertTasks[i] = 
+				createTaskDescriptor("check-and-convert-rubis", i);
+			
+			resultsCheckAndConvertTasks[i].addDependencyCheckPoint(
+					success(mainClient.getTaskTid()));
+			for (int j = 0; j < clientHosts - 1; j++) {
+				resultsCheckAndConvertTasks[i].addDependencyCheckPoint(
+						success(slaveClients[j].getTaskTid()));
+			}
+			
+			
+			String rubisClientPath = pathBuilder.addWorking(rubisDownloads[i].getTaskTid()).clean();
+			String resultsPathsProperty = getOpenBinary().toString()+ ASCII_TAB + getOpenRun().toString() + ASCII_TAB 
+						+ rubisClientPath + "/bench/" + runIndex + "/session" + ASCII_NEWLINE;
+			
+			resultsCheckAndConvertTasks[i].addTaskProperties("results.paths", resultsPathsProperty);
+			resultsCheckAndConvertTasks[i].addTaskProperties("results.role", "Client " + i);
+			resultsCheckAndConvertTasks[i].addTaskProperties("suite", 
+					getExperiment().getProperty(RUBIS_SUITE));
+
+			addTask(resultsCheckAndConvertTasks[i]);
+
+		}
+		
+		for (int i = 0; i < clientHosts; i++) {
+			
+			uploadTasks[i] = createTaskDescriptor("results-collect", i);
+			for (int j = 0; j < clientHosts; j++) {
+				uploadTasks[i].addDependencyCheckPoint(
+					success(resultsCheckAndConvertTasks[j].getTaskTid()));
+			}
+
+			String resultsPathsProperty = 
+				pathBuilder.addWorking(resultsCheckAndConvertTasks[i].getTaskTid()).clean();
+
+			uploadTasks[i].addTaskProperties("analysis.id", getExperiment().getAnalysis().toString());
+			uploadTasks[i].addTaskProperties("experiment.id", getExperiment().getID().toString());
+
+			uploadTasks[i].addTaskProperties("results.paths", resultsPathsProperty);
+
+			addTask(uploadTasks[i]);
+
+		}
+		

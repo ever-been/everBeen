@@ -1,0 +1,5 @@
+class EntityFactory
+!!!170626.java!!!	createEntity(inout metadata : AnalysisMetadata) : AnalysisEntity
+		return metadata.isRegression() ? 
+				new RegressionAnalysisEntity((RegressionAnalysisMetadata)metadata) :
+				new AnalysisEntity(metadata);

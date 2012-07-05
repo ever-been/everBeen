@@ -1,0 +1,35 @@
+class Condition
+!!!789890.java!!!	getAttributeName() : String
+		return attributeName;
+!!!790018.java!!!	getAttributeInfo() : AttributeInfo
+		return attributeInfo;
+!!!790146.java!!!	getOperator() : Operator
+		return operator;
+!!!790274.java!!!	getValue() : Object
+		return value;
+!!!790402.java!!!	Condition(in attributeName : String, inout operator : Operator, inout value : Object)
+		super();
+		this.attributeName = attributeName;
+		this.operator = operator;
+		this.value = value;
+!!!790530.java!!!	prepare() : void
+		for (int i = 0; i < PackageMetadata.ATTRIBUTE_INFO.length; i++) {
+			if (PackageMetadata.ATTRIBUTE_INFO[i].getName().equals(attributeName)) {
+				attributeInfo = PackageMetadata.ATTRIBUTE_INFO[i];
+				return;
+			}
+		}
+		assert false: "Metadata attribute \"" + attributeName + "\" not found.";
+!!!790658.java!!!	execute(inout metadata : PackageMetadata) : boolean
+		boolean result = false;
+		try {
+			result = operator.apply(attributeInfo.getGetter().invoke(metadata, (Object[]) null),
+					value);
+		} catch (IllegalArgumentException e) {
+			assert false: "Should not happen";
+		} catch (IllegalAccessException e) {
+			assert false: "Should not happen";
+		} catch (InvocationTargetException e) {
+			assert false: "Should not happen";
+		}
+		return result;

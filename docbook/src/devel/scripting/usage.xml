@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sect1
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>Using Scripting in BEEN</title>
+	
+	<para>
+	This section describes how to use <glossterm>scripting</glossterm> features offered 
+	by BEEN. As mentioned before, BEEN supports Jython and Shell
+	scripting. Since these scripting approaches are quite different,
+	we'll describe them separatedly.
+	</para>
+	
+	<sect2>
+	<title>Using Jython Scripting</title>
+		
+		<para>
+		BEEN offers two ways how to launch Jython scripts.
+		Running inline Jython script is very fast and can be used
+		to run simple and short code snippets. Running packaged
+		scripts is much more extendable and can be used for 
+		implementing complex things in Jython.
+		</para>
+		
+		<sect3>
+		<title>Running Inline Jython Script</title>
+		<para>
+		The easiest way how to run Jython script is to 
+		use provided task <code>jython-script</code>. This task accepts 
+		script to run as its task property (property is 
+		called <code>script</code>). So you only have to create a 
+		<glossterm>task descriptor</glossterm> containing inline Jython script
+		and you tell <glossterm>Task Manager</glossterm> to run it (can be done 
+		very easily with CLI). 
+		</para>
+		<para>
+		An example how of a task descriptor for running 
+		inline Jython script looks like can be found 
+		in file <filename>resources/task-descriptors/jython-script.td</filename>
+		in BEEN's distribution root.
+		</para>
+		
+		</sect3>
+		
+		<sect3>
+		<title>Running Packaged Jython Script</title>
+		<para>
+		Whenever you want to implement some more complex task
+		in Jython and you want to reuse this task, it's probably
+		better to create a <glossterm>package</glossterm> out of this script.
+		The resulting task package can be then uploaded to 
+		<glossterm>Software Repository</glossterm> and can be used just as any 
+		other <glossterm>task</glossterm>.
+		</para>
+		<para>
+		Creating your own Jython script <glossterm>task</glossterm> is very easy and 
+		intuitive. Just as for every other task package,
+		you need to create <glossterm>metadata</glossterm> and <glossterm>configuration</glossterm> file
+		for the new package and include a file with the script.
+		</para>
+		
+		<para>
+		Metadata file of Jython script <glossterm>task</glossterm> has exactly the same format and content.
+		What differs is format of <filename>configuration.xml</filename> file. The 
+		usual <code>java</code> tag (that defines which class to run) is replaced 
+		by a <code>jython</code> tag defining location of Jython script to run
+		and script's class path. This is how such a configuration file
+		can look like:
+		</para>
+
+<programlisting language="xml"><![CDATA[<packageConfiguration>
+    <jython classPath="." scriptFile="example.py"/>
+</packageConfiguration>]]></programlisting>
+		
+		<para>
+		An example of ready-to-use packaged Jython script
+		is task called <code>jythontaskdemo</code> and is provided
+		in BEEN's main distribution (including build files 
+		to create it). 
+		</para>
+		
+		</sect3>
+		
+		<sect3>
+		<title>Interfacing BEEN Environment from Jython Script</title>
+		<para>
+		Running Jython script can interact with other parts of BEEN environment
+		using a variable injected in its global variable namespace.
+		Before a Jython script is launched, BEEN adds variable called
+		<code>TASK</code> to its global variable space. This variable is instance of <classname>JythonTaskContext</classname>
+		class, which is an adapter that exposes many useful methods
+		to interact with BEEN environment (Using this interface,
+		Jython script can do virtually the same things as regular 
+		Java task). See <classname>JythonTaskContext</classname>'s JavaDoc to get more information.
+		</para>
+		</sect3>
+	
+	</sect2>
+	
+	<sect2>
+	<title>Using Shell Scripting</title>
+	
+		<para>
+		As well as for Jython scripts, two ways of launching shell scripts are supported 
+		by BEEN.
+		</para>
+	
+		<sect3>
+		<title>Running Inline Shell Script</title>
+		<para>
+		Inline shell script can be passed to <code>shell-script</code> task
+		using task property called <code>script</code>. In example <glossterm>task
+		descriptor</glossterm> located in file 	
+		<filename>resources/task-descriptors/shell-script.td</filename>
+		(in BEEN's distribution root) you can see how to do that.
+		Script run by this <glossterm>task descriptor</glossterm> also shows how to use script environment variables
+		set by BEEN (will be described later).
+		</para>
+		</sect3>
+		
+		
+		
+		<sect3>
+		<title>Running Packaged Shell Script</title>
+		<para>
+		For running shell script from a package, you have to 
+		create that package first. The way you do it is almost
+		the same as for Jython script package. The only 
+		difference is the configuration file you include in the new 
+		package. Instead of <code>jython</code> tag, you should use tag
+		<code>shell</code> referencing to script file you want to run.
+		Here is an example of such <filename>configuration.xml</filename> file:
+		</para>
+
+<programlisting language="xml"><![CDATA[<packageConfiguration>
+    <shell scriptFile="example.sh"/>
+</packageConfiguration>]]></programlisting>
+		
+		<para>
+		An example of ready-to-use packaged shell script
+		for Windows and Linux platform are tasks called 
+		<code>shelltaskdemo-windows</code> and <code>shelltaskdemo-linux</code> provided
+		in BEEN's main distribution (including build files 
+		to create them). 
+		</para>
+		
+		</sect3>
+		
+		<sect3>
+		<title>Interfacing BEEN Environment from Shell Script</title>
+		<para>
+		Means how to interact with BEEN environment from a shell 
+		script are not as rich as for Jython scripts (that have similar
+		strength as regular Java tasks), but still shell scripts can 
+		achieve a lot by using two techniques.
+		</para>
+		<para>
+		First of all, BEEN environment can pass parameters by using 
+		environment variables. By default, three environment variables
+		are set for every script:  Working
+		directory of a script (<code>WORKING_DIR</code>), temporary directory (<code>TEMP_DIR</code>),
+		and task directory (<code>TASK_DIR</code>). In addition to that, all the 
+		task properties passed to the <code>shell-script</code> <glossterm>task</glossterm> are translated into
+		environment variables by adding name prefix <code>TASKPROP_</code> So 
+		task property called <code>TEST</code> in <glossterm>task descriptor</glossterm> will become 
+		environment variable <code>TASKPROP_TEST</code> visible from inside of 
+		the script.    
+		</para>
+		<para>
+		If you want to interact actively with BEEN environment from
+		a shell script, the best way to do that is using <glossterm>Command Line
+		Interface</glossterm>.
+		</para>
+		</sect3>	
+	
+	</sect2>	
+	
+	
+</sect1>

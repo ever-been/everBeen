@@ -1,0 +1,8 @@
+class Value
+!!!733186.java!!!	getId() : ID
+			return id;
+!!!733314.java!!!	getName() : String
+			return name;
+!!!733442.java!!!	Value(inout id : ID, in name : String)
+			this.id = id;
+			this.name = name;

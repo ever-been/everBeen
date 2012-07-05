@@ -1,0 +1,44 @@
+class Chmod
+!!!256770.java!!!	Chmod()
+		// dummy ant project
+		Project antProject = new Project();
+		antProject.init();
+		setProject(antProject);
+		// dummy ant task name
+		setTaskName("chmod");
+		setTaskType("chmod");
+		// dummy ant target
+		setOwningTarget(null);
+		
+		setMaxParallel(MAX_PARALLEL);
+!!!256898.java!!!	recursiveDirectoryChmod(in directory : String, in perms : String) : void
+		
+		Chmod ch = new Chmod();
+		
+		File srcDir = new File(directory);
+		if (!srcDir.isDirectory()) {
+			throw new AntTaskException("Not a directory: " + directory);
+		}
+
+		ch.setDir(srcDir);
+		ch.setIncludes("**");
+		ch.setPerm(perms);
+		try {
+			ch.execute();
+		} catch (Exception e) {
+			throw new AntTaskException(e);
+		}
+
+!!!257026.java!!!	chmod(in fileName : String, in perms : String) : void
+		
+		Chmod ch = new Chmod();
+		
+		File targetFile = new File(fileName);
+		
+		ch.setFile(targetFile);
+		ch.setPerm(perms);
+		try {
+			ch.execute();
+		} catch (Exception e) {
+			throw new AntTaskException(e);
+		}

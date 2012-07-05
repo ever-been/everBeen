@@ -1,0 +1,12 @@
+class GraphInfo
+!!!601602.java!!!	getWidth() : int
+		return width;
+!!!601730.java!!!	getHeight() : int
+		return height;
+!!!601858.java!!!	getTitle() : String
+		return title;
+!!!601986.java!!!	GraphInfo(in width : int, in height : int, in title : String)
+		super();
+		this.width = width;
+		this.height = height;
+		this.title = title;

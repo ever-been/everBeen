@@ -1,0 +1,338 @@
+format 70
+"service1" // been::src::cz::cuni::mff::been::task::example::service1
+  revision 2
+  modified_by 8 "BoRiS"
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+  show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+  show_infonote default drawing_language default show_stereotype_properties default
+  
+  java_dir "cz/cuni/mff/been/task/example/service1"
+  java_package "cz.cuni.mff.been.task.example.service1"
+  classview 132994 "service1"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+    //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+    show_infonote default drawing_language default show_stereotype_properties default
+    class 198658 "ExampleRemoteInterface"
+      visibility public stereotype "interface"
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}interface ${name}${extends} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Example interface for some service task
+
+@author Jaroslav Urban
+"
+      classrelation 255874 // <generalisation>
+	relation 255874 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 255874 // <generalisation>
+	  b parent class_ref 130818 // Remote
+      end
+
+      operation 632962 "foo"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Example remote method.
+
+@throws RemoteException
+"
+      end
+    end
+
+    class 198786 "ExampleRemoteInterfaceImplementation"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Implementation of an example remote interface for a service
+
+@author Jaroslav Urban
+"
+      classrelation 256002 // <generalisation>
+	relation 256002 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 256002 // <generalisation>
+	  b parent class_ref 130178 // UnicastRemoteObject
+      end
+
+      classrelation 256130 // <realization>
+	relation 256130 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 256130 // <realization>
+	  b parent class_ref 198658 // ExampleRemoteInterface
+      end
+
+      operation 633090 "ExampleRemoteInterfaceImplementation"
+	public explicit_return_type ""
+	nparams 0
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new ExampleRemoteInterfaceImplementation object. 
+@throws RemoteException
+"
+      end
+
+      operation 633218 "foo"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+    end
+
+    class 198914 "ExampleService1"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+An example service task.
+
+@author Jaroslav Urban
+"
+      classrelation 256258 // <generalisation>
+	relation 256258 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 256258 // <generalisation>
+	  b parent class_ref 136962 // Service
+      end
+
+      attribute 277634 "REMOTE_INTERFACE_1"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"iface1\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " 
+the last part of the RMI URL to the one implemented 
+remote interface
+
+"
+      end
+
+      classrelation 256386 // impl (<unidirectional association>)
+	relation 256386 --->
+	  a role_name "impl" private
+	    comment " the implementation of a remote interface *
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 256386 // impl (<unidirectional association>)
+	  b parent class_ref 198786 // ExampleRemoteInterfaceImplementation
+      end
+
+      attribute 277762 "SERVICE_NAME"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"example-service1\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " name of the service *
+"
+      end
+
+      operation 633346 "ExampleService1"
+	public explicit_return_type ""
+	nparams 0
+	nexceptions 1
+	  exception class_ref 137218 // TaskInitializationException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+
+Allocates a new <code>ExampleService1</code> object.
+
+@throws TaskInitializationException
+"
+      end
+
+      operation 633474 "getName"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.task.Service#getName()
+"
+      end
+
+      operation 633602 "start"
+	protected explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.task.Service#start()
+"
+      end
+
+      operation 633730 "stop"
+	protected explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.task.Service#stop()
+"
+      end
+    end
+  end
+
+  deploymentview 132098 "service1"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+    artifact 178946 "ExampleRemoteInterface"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+${definition}"
+      associated_classes
+	class_ref 198658 // ExampleRemoteInterface
+      end
+    end
+
+    artifact 179074 "ExampleRemoteInterfaceImplementation"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import cz.cuni.mff.been.task.Task;
+${definition}"
+      associated_classes
+	class_ref 198786 // ExampleRemoteInterfaceImplementation
+      end
+    end
+
+    artifact 179202 "ExampleService1"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.rmi.RemoteException;
+import cz.cuni.mff.been.task.Service;
+import cz.cuni.mff.been.task.TaskInitializationException;
+${definition}"
+      associated_classes
+	class_ref 198914 // ExampleService1
+      end
+    end
+  end
+end

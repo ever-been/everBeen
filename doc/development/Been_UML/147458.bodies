@@ -1,0 +1,10 @@
+class RSLInput
+!!!226306.java!!!	getValue() : String
+		return value;
+!!!226434.java!!!	setValue(in value : String) : void
+		this.value = value;
+!!!226562.java!!!	RSLInput(in label : String, in value : String)
+		super(label);
+		this.value = value;
+!!!226690.java!!!	toString() : String
+		return "RSLInput(name=" + getLabel() + ", value='" + value + "')";

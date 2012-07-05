@@ -1,0 +1,54 @@
+class ServiceInfo
+!!!794370.java!!!	getName() : String
+		return name;
+!!!794498.java!!!	getHumanName() : String
+		return humanName;
+!!!794626.java!!!	getTid() : String
+		return tid;
+!!!794754.java!!!	getHost() : String
+		return host;
+!!!794882.java!!!	getStatus() : Status
+		return status;
+!!!795010.java!!!	ServiceInfo(in name : String, in humanName : String)
+		super();
+		this.name = name;
+		this.humanName = humanName;
+		this.tid = name + TID_SUFFIX;
+!!!795138.java!!!	fillHostAndStatus(inout taskManager : TaskManagerInterface) : void
+		/* Initialize filled attributes to values indicating failure. */
+		host = "";
+		status = null;
+
+		/* Try to get the service host using the Naming Service. */
+		URI uri;
+		try {
+			uri = taskManager.serviceFindURI(name, Service.RMI_CONTROL_IFACE);
+		} catch (RemoteException e) {
+			return;
+		}
+		
+		if (uri != null) {
+			host = uri.getHost();
+		} else {
+			return;
+		}
+				
+		/* Try to connect to service's control interface. If we can do this,
+		 * try to determine the service state using checkpoints registered by the
+		 * Task Manager. */
+		try {
+			ServiceControlInterface controlInterface
+				= (ServiceControlInterface) taskManager.serviceFind(name, Service.RMI_CONTROL_IFACE);
+			if (controlInterface != null) {
+				status = Status.fromString((String) taskManager.checkPointLook(
+					Service.STATUS_CHECKPOINT,
+					tid,
+					TaskManagerInterface.SYSTEM_CONTEXT_ID,
+					0
+				));
+			}
+		} catch (RemoteException e) {
+			/* Do nothing, status is set to null allready. */
+		} catch (TaskManagerException e) {
+			/* Do nothing, status is set to null allready. */
+		}

@@ -1,0 +1,9 @@
+class TaskDescriptorException
+!!!682498.java!!!	TaskDescriptorException()
+		super();
+!!!682626.java!!!	TaskDescriptorException(in message : String)
+		super(message);
+!!!682754.java!!!	TaskDescriptorException(in message : String, inout cause : Throwable)
+		super(message, cause);
+!!!682882.java!!!	TaskDescriptorException(inout cause : Throwable)
+		super(cause);

@@ -1,0 +1,42 @@
+class CloneSerializable
+!!!704258.java!!!	CloneSerializable()
+		// Do nothing... (overwrites default constructor...)
+!!!704386.java!!!	cloneSerializable(inout object : Serializable) : Serializable
+		Serializable clonedObject = null;
+		
+		try {
+			/* Prepare ObjectOutputStream. */
+			ByteArrayOutputStream byteArrayOutputStream
+				= new ByteArrayOutputStream();
+			ObjectOutputStream objectOutputStream
+				= new ObjectOutputStream(byteArrayOutputStream);
+			
+			/* Write object. */
+			objectOutputStream.writeObject(object);
+			
+			/* Get buffer. */
+			byte[] buffer = byteArrayOutputStream.toByteArray();
+			
+			/* Close all output streams. */
+			objectOutputStream.close();
+			byteArrayOutputStream.close();
+			
+			/* Prepare ObjectInputStream. */
+			ByteArrayInputStream byteArrayInputStream
+				= new ByteArrayInputStream(buffer);
+			ObjectInputStream objectInputStream
+				= new ObjectInputStream(byteArrayInputStream);
+			
+			/* Read object */
+			clonedObject = (Serializable) objectInputStream.readObject();
+			
+			/* Close all input streams. */
+			objectInputStream.close();
+			byteArrayInputStream.close();
+		} catch (IOException e) {
+			throw new RuntimeException("Could not clone");
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException("Deserialization failed");
+		}
+		
+		return clonedObject;

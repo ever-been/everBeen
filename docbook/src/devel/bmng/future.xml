@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sect1
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>Future Plans</title>
+	
+	<sect2>
+		<title>Recommended Extensions</title>
+		<para>
+		It is highly recommended to implement new BMmodules. In the default distribution, BEEN can perform only Xampler benchmark for omniORB. Each benchmark is specific for the user and needs at least a new generator.
+		</para>
+	</sect2>
+	
+	<sect2>
+		<title>Recommended Changes</title>
+
+		<para>
+		It might be useful to implement analysis state as a remote class to get actual results instead of cached ones.
+		</para>
+
+		<para>
+		<classname>Scheduler</classname> is now implemented in a rather ineffective way. It polls the list of analyses every minute and checks it. We don't expect many analyses so it is not an performance issue but an event driven model might be more appropriate.
+		</para>
+
+		<para>
+		The context-monior task also polls the list of tasks. Event driven model might be possible here but the current implementation of the Task Manager doesn't support it.
+		</para>
+	</sect2>
+</sect1>

@@ -1,0 +1,105 @@
+About:		How RMI registries are used in BEEN
+Author:		Andrej Podzimek
+
+09/07/15	First version, valid for repository version 166
+
+----------------------------------------------------------------------------
+
+    1) The host runtime creates its own Registry. No need to keep it's
+       reference, Naming will find it.
+
+        HostRuntimeRunner.java (70):
+            LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
+
+    2) The host runtime binds its own interface to the new *local* registry
+       it created ...
+
+        HostRuntimeImplementation (218):
+            Naming.rebind("rmi://localhost:1099" + HostRuntimeInterface.URL, this);
+    
+    3) ... and a Task Manager reference is looked up in the *central*
+       registry using the host name:
+
+        HostRuntimeImplementation (222):
+            hostRuntimesPort = (HostRuntimesPortInterface) Naming.lookup(
+                "//" + taskManagerHostname + TaskManagerInterface.URL
+            );
+    
+    4) Obviously, the central and local registry are the same object if TM
+       and HR share the same host.
+
+    5) When the TM wants to look up the HR of a given host, it uses the
+       host's *local* registry.
+
+        TaskManagerImplementation.java (2247):
+            hostRuntimeUri = new URI("rmi", null, hostName,
+                Registry.REGISTRY_PORT,
+                HostRuntimeInterface.URL, null, null);
+        TaskManagerImplementation.java (2258):
+            hostRuntimeInterface = (HostRuntimeInterface)
+                Naming.lookup(hostRuntimeUri.toString());
+
+    6) Taken the other way round, there is a RMI call hierarchy like this:
+
+        The root: Task Manager and its central registry.
+        Middle level: Host Runtimes and their local registries.
+        Leaf level: Tasks.
+
+    7) Names of the BEEN Services are bound to the corresponding *local*
+       registries.
+
+        Service.java (369):
+            Naming.rebind(key, rmiInterfaces.get(key));
+        Some more notes:
+            * There is a BEEN-wide hosts and services database that doesn't
+            * use RMI.
+            * A service can run on multiple hosts, each instance accessed
+            * separately.
+            * The Task Manager hides this possibility. See the serviceFind()
+            * method for details.
+        TaskManagerImplementation.java (1598):
+            return matchingEntries[0].getRemoteInterface();
+
+        That's somewhat stupid. The first entry is returned. There's no way
+        to choose a host. The RMI address pattern matching could be helpful.
+        Unfortunately, it's hidden in private methods.
+
+    8) When a Task is launched, it gets the host runtime's TaskPortInterface
+       from the *local* registry:
+
+        Task.java (113):
+            tasksPort = (TasksPortInterface) Naming.lookup(System.getProperty("hostruntime.tasksport.uri"));
+
+       The task's JVM gets the taskport's URI as a JVM parameter.
+
+        TaskImplementation.java (822):
+            result.add("-Dhostruntime.tasksport.uri=" + tasksPortUrl);
+
+    9) A Host Runtime has *multiple* TaskPortImplementation instances, one
+       per task.
+
+        TaskImplemetation.java (882):
+            String tasksPortUrl = "rmi://localhost/been/hostruntime/tasksport/"
+                + taskDescriptor.getTaskTid();
+
+       All of them are bound to the *local* RMI registry.
+
+        TaskImplementation.java (696):
+            TasksPortImplementation tasksPort = new TasksPortImplementation(this);
+            try {
+                Naming.rebind(tasksPortUrl, tasksPort);
+            ...
+
+To sum up, it seems to me that the central RMI registry is used quite
+rarely, just to bootstrap host runtimes. Most of the communication is
+carried out using local RMI registries. When a service is looked up using
+the Task Manager, the RMI mechanism is not used. Instead, Remote references
+stored at service registration time are used. (In fact the Task Manager
+re-implements a registry.)
+
+Some more elaborate remote references (especially those related to the web
+interface) are designed to cope with temporary network problems. They can
+re-lookup() their internal Remote reference if necessary. However, there
+seems to be no such mechanism in the Task Manager's database. Old and
+invalid service entries can be stored for a long time. Is there a cleanup
+mechanism that would ping the services regularly? Well, I don't think so.

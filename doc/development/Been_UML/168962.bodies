@@ -1,0 +1,13 @@
+class HostGroupIterator
+!!!351106.java!!!	HostGroupIterator()
+			
+			it = hostList.iterator();
+!!!351234.java!!!	hasNext() : boolean
+			
+			return it.hasNext();
+!!!351362.java!!!	next() : String
+
+			return it.next();
+!!!351490.java!!!	remove() : void
+			
+			throw new UnsupportedOperationException("HostGroup iterators are read-only.");

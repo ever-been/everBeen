@@ -1,0 +1,40 @@
+class DetectorTask
+!!!627714.java!!!	run() : void
+		
+		detector = new NativeDetector();
+
+		if (!detector.execute()) {
+			logError("Error detecting host features.");
+		} else {
+			String key = getTaskProperty(PROPERTY_HOST_KEY);
+
+			DatabaseManagerInterface databaseManager = null;
+			try {
+				databaseManager = 
+					(DatabaseManagerInterface) getTasksPort().serviceFind("hostmanager", "database");
+			} catch (RemoteException e) {
+				throw new TaskException("Unable to find Host Database Manager.", e);
+			}
+				
+			String hostName = null;
+			
+			try {
+				hostName = InetAddress.getLocalHost().getCanonicalHostName();
+			} catch (Exception e) {
+				throw new TaskException("Unable to retrieve canonical name for localhost", e);
+			}
+			
+			try {
+				databaseManager.uploadHostData(hostName, 
+				                               key, 
+				                               detector.getDataString(), 
+				                               detector.getEncoding());
+			} catch (Exception e) {
+				throw new TaskException("Unable to upload data to the Host Manager.", e);
+			}
+			
+			logDebug("Data uploaded successfully.");
+		}
+!!!627842.java!!!	checkRequiredProperties() : void
+		
+		checkRequiredProperties(new String[] {PROPERTY_HOST_KEY});

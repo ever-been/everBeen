@@ -1,0 +1,130 @@
+class Scheduler
+!!!232962.java!!!	Scheduler()
+		this(true);
+!!!233090.java!!!	Scheduler(inout isDaemon : boolean)
+		super();
+		this.queue = new SchedulerQueue();
+		setDaemon(isDaemon);
+		start();
+!!!233218.java!!!	addEntry(inout entry : SchedulerEntry) : void
+		queue.add(entry);
+!!!233346.java!!!	removeEntry(inout entry : SchedulerEntry) : void
+		queue.remove(entry);
+!!!233474.java!!!	getAllEntries() : SchedulerEntry
+		return queue.getAllEntries();
+!!!233602.java!!!	run() : void
+		while (true) {
+			if (queue.isEmpty()) {
+				// nothing to do - sleep until new entry added
+				try {
+					queue.waitOnMe();
+				} catch (InterruptedException e) {
+					// interrupted
+					return;
+				}
+			} else {
+				long currentTime = System.currentTimeMillis();
+				
+				try {
+					queue.waitOnMe(queue.first().alarmTime - currentTime);
+				} catch (InterruptedException e) {
+					// interrupted
+					return;
+				} catch (Exception e) {
+					// someone notified() and removed the last entry
+					continue;
+				}
+				
+				synchronized (queue) {
+					while (!queue.isEmpty()) {
+						currentTime = System.currentTimeMillis();
+						
+						// check whether first entry is ready to run
+						if (queue.first().alarmTime - currentTime > 99) {
+							break;
+						}
+						
+						/*
+						 * Remove first entry, update its time, start new thread
+						 * for its listener.
+						 * Add this entry to correct place in case it is repeating
+						 */
+						SchedulerEntry entry = queue.removeFirst();
+						entry.updateAlarmTime();
+						new EntryThread(entry);
+						if (entry.isRepeating()) {
+							queue.add(entry);
+						}
+						
+					}
+				}
+			}
+		}
+!!!233730.java!!!	main(in args : String) : void
+		Scheduler s = new Scheduler(false);
+		
+		long current = System.currentTimeMillis();
+	    System.out.println("Current date is " + new Date(current));
+
+		SchedulerEntry entry1 = new SchedulerEntry(
+    			"Fist",
+	    		new int[]{51},
+	    		new int[]{-1}, 
+	    		new int[]{-1}, 
+	    		new int[]{-1}, 
+	    		new int[]{-1}, 
+	    		-1, 
+	    		new ScheduledJobListener() {
+		      public void runJob(SchedulerEntry entry) {
+		        System.out.println(entry.getData() + " (" + new Date() + ")");
+		      }
+	    });
+		
+		s.addEntry(entry1);
+		
+		SchedulerEntry entry2 = new SchedulerEntry(
+    			"Fist",
+	    		new int[]{52},
+	    		new int[]{-1}, 
+	    		new int[]{-1}, 
+	    		new int[]{-1}, 
+	    		new int[]{-1}, 
+	    		-1, 
+	    		new ScheduledJobListener() {
+		      public void runJob(SchedulerEntry entry) {
+		        System.out.println(entry.getData() + " (" + new Date() + ")");
+		      }
+	    });
+		
+		s.addEntry(entry2);
+	    
+		
+//	    for (int i=0; i<5; i++) {
+//	    	String name = "ComplexCron" + i;
+//	    	SchedulerEntry entry = new SchedulerEntry(
+//	    			name,
+//		    		new int[]{28+i,33+i},
+//		    		new int[]{-1}, 
+//		    		new int[]{-1}, 
+//		    		new int[]{-1}, 
+//		    		new int[]{-1}, 
+//		    		-1, 
+//		    		new AlarmListener() {
+//		      public void handleAlarm(SchedulerEntry entry) {
+//		        System.out.println(entry.getName() + " (" + new Date() + ")");
+//		      }
+//		    });
+//	    	
+//	    	s.addEntry(entry);
+//	    }
+
+	    System.out.println("Here are the registered alarms: ");
+	    System.out.println("----------------------------");
+	    for(SchedulerEntry x: s.getAllEntries()) {
+	      System.out.println("- " + x);
+	    }
+	    System.out.println("----------------------------");
+	    
+	    Thread.sleep(10000);
+		System.out.println("Removing entry");
+		s.removeEntry(entry1);

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<chapter
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>Host Runtime</title>
+	<para>See the original BEEN project documentation for a detailed description of the Host
+	Runtime <biblioref linkend="BUD1" units="page" begin="16"/>.</para>
+	
+	<sect1>
+	<title>Summary of Changes</title>
+	<para>
+	Here is a list of changes made to Host Runtime component:
+	<itemizedlist>
+		<listitem><para>Two new task lauchers have been added to allow <glossterm>Host Runtime</glossterm>
+		to run tasks implemented in Python and platform-dependent Shell.
+		Also, to allow packaging of script tasks, the <filename>config.xml</filename>
+		task configuration file's schema was enriched by two elements.
+		 More about this can be found in  
+		<xref linkend="been.devel.scripting"/>.
+		</para>  </listitem>
+		<listitem><para>
+		Support code to free resources (disk space and memory) after tasks'
+		context gets deleted have been added. <glossterm>Task Manager</glossterm> and <glossterm>Host Runtime</glossterm> 
+		now cooperate in a way, that all resources associated with a task are made free
+		after context containing this task is deleted (will happen shortly after 
+		the context gets closed by <glossterm>Benchmark Manager</glossterm>).
+		</para></listitem>
+	</itemizedlist>
+	</para>
+	</sect1>
+	
+	
+<!--<xi:include href="purpose.xml"/>
+	<xi:include href="components.xml"/>
+	<xi:include href="data.xml"/>
+	<xi:include href="api.xml"/>
+	<xi:include href="extension.xml"/>
+	<xi:include href="future.xml"/>-->
+</chapter>

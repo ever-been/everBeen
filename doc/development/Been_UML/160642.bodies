@@ -1,0 +1,837 @@
+class HostManagerImplementation
+!!!292226.java!!!	HostManagerImplementation(inout appData : HostManagerApplicationData, inout task : Task)
+		
+		super();
+	
+		taskIDNum = 0;
+		
+		this.appData = appData;
+		this.task = task;
+		this.logger = appData.getLogger();
+		this.configuration = appData.getConfiguration();
+		this.database = appData.getDatabase();
+	
+		logger.logInfo("Starting Host Manager.");
+		
+		dataPath = appData.getWorkingDirectory();
+		
+		if (!dataPath.endsWith(File.separator)) {
+			dataPath += File.separator;
+		}
+		
+		listeners = new ConcurrentHashMap< OID, HostManagerEventListener >();
+		
+		try {
+			appData.getConfiguration().registerValueChangeListener(this);
+		} catch (IllegalArgumentException e) {
+			throw new HostManagerException("Unable to register configuration listener.", e);
+		}
+		
+		initialize();
+		logger.logInfo("Host Manager started successfully.");
+!!!292354.java!!!	initialize() : void
+	
+		logger.logInfo("Loading property description file.");
+		try {
+			descriptions = new PropertyDescriptionTable(dataPath + PROPERTY_DESCRIPTION_FILE_NAME);
+		} catch (Exception e) {
+			logger.logFatal("Error loading property descriptions.", e);
+			throw new HostManagerException(e);
+		}
+		logger.logInfo("Property descriptions loaded successfully.");
+		
+		hostsPending = new ConcurrentHashMap< String, PendingHostInfo >();
+		operationCache = new ConcurrentHashMap< OperationHandle, HostOperationStatus >();
+		currentHandle = new OperationHandle();
+
+		try {
+			pendingHostsCheckPeriod = configuration.getPendingRefreshInterval();
+			hostDetectionTimeout = configuration.getHostDetectionTimeout();
+		} catch (RemoteException e) {
+			throw new HostManagerException(e);
+		}
+
+		restartWatchDog();
+		
+		try {
+			task.getTasksPort().registerEventListener(this);
+		} catch (RemoteException e) {
+			throw new HostManagerException("Unable to register event listener on the TM.", e);
+		}
+!!!292482.java!!!	terminate() : void
+
+		logger.logInfo("Host Manager is shutting down.");
+
+		try {
+			task.getTasksPort().unregisterEventListener(this);
+		} catch (RemoteException e) {
+			logger.logError("Unable to unregister event listener on the TM.", e);
+		}
+		
+		timer.cancel();
+		database.terminate();
+
+		try {
+			appData.getConfiguration().unregisterValueChangeListener(this);
+		} catch (IllegalArgumentException e) {
+			logger.logError("HM1: Unable to unregister configuration listener.", e);
+		} catch (RemoteException e) {
+			logger.logError("HM2: Unable to unregister configuration listener.", e);
+		}
+!!!292610.java!!!	addHost(in hostName : String) : OperationHandle
+	
+		logger.logDebug("Adding host \"" + hostName + "\" to the database.");
+		
+		String canonicalName = MiscUtils.getCanonicalHostName(hostName);
+		OperationHandle handle = getNextOperationHandle();
+
+		operationCache.put(handle, buildUnknownStatus(canonicalName));
+		
+		String key = handle.toString();
+
+		// Is host already in db?
+		if (isHostInDatabase(canonicalName)) {
+			
+			logger.logError("Host \"" + canonicalName + "\" is already in database.");
+			String message = "Unable to add host. Host is already in the database.";
+			operationCache.put(handle, buildFailedStatus(message, canonicalName));
+			
+			postEvent(new HostManagerEvent(HostManagerEvent.EventType.HOST_ADD,
+			                               HostManagerEvent.Status.FAILED,
+			                               canonicalName,
+			                               message));
+			
+			return handle;
+		}
+
+		boolean scheduleResult = false;
+
+		try {
+			scheduleResult = runDetectorOnHost(canonicalName, key);
+		} catch (Exception e) {
+			String message = "Unable to schedule detector on host, reason: \"" + e.getMessage() + "\".";
+			
+			logger.logError("Unable to schedule detector on \"" + canonicalName + "\".", e);
+			
+			operationCache.put(handle, buildFailedStatus(message, canonicalName));
+			
+			postEvent(new HostManagerEvent(HostManagerEvent.EventType.HOST_ADD,
+			                               HostManagerEvent.Status.FAILED,
+			                               canonicalName,
+			                               message));
+			
+			return handle;
+		}
+		
+		// schedule detector task on the host
+		if (scheduleResult) {
+			hostsPending.put(key, new PendingHostInfo(canonicalName, key, new Date(), false, handle));
+			String message = "Detector has been successfully scheduled. Waiting for data.";
+			operationCache.put(handle, buildPendingStatus(message, canonicalName));
+			
+			return handle;
+		} else {
+			String message = "Unable to schedule detector on the host.";
+            operationCache.put(handle, buildFailedStatus(message, canonicalName));
+            
+            logger.logError("Unable to schedule detector on \"" + canonicalName + "\".");
+            
+            postEvent(new HostManagerEvent(HostManagerEvent.EventType.HOST_ADD,
+                                           HostManagerEvent.Status.FAILED,
+                                           canonicalName,
+                                           message));
+            
+            return handle;
+		}
+!!!292738.java!!!	uploadHostData(in hostName : String, in hostKey : String, in data : String, in outEncoding : String) : void
+ 
+		
+		synchronized (hostsPending) {
+			
+			if (!hostsPending.containsKey(hostKey)) {
+				String message = "Attempted to upload data for non-scheduled host \""
+					+ hostName + "\".";
+	
+				logger.logWarning(message);
+	
+				throw new HostManagerException("Unable to upload data for non-scheduled host."
+						+ " Host name :\"" + hostName + "\".");
+			}
+			
+			PendingHostInfo pendingData = hostsPending.get(hostKey); 
+			
+			hostsPending.remove(hostKey);
+			
+			if (!pendingData.isRefresh()) {
+				// we are adding new host
+				try {
+					database.addHost(hostName, data, outEncoding);
+				} catch (Exception e) {
+					logger.logError("Error adding host \"" + hostName + "\" to the database.");
+					String message = "Host was not added, reason: \"" + e.getMessage() + "\".";
+					
+					operationCache.put(pendingData.getHandle(), buildFailedStatus(message, hostName));
+					
+					postEvent(new HostManagerEvent(HostManagerEvent.EventType.HOST_ADD,
+					                               HostManagerEvent.Status.FAILED,
+					                               hostName,
+					                               message));
+					
+					throw new HostManagerException("Error adding host \"" + hostName
+							+ "\" to the database.", e);
+				}
+				
+				logger.logInfo("Host \"" + hostName + "\" successfully added to the database.");
+				
+				String message = "Host was successfully added to the database.";
+				
+				operationCache.put(pendingData.getHandle(), buildSuccessfulStatus(message, hostName));
+				
+				postEvent(new HostManagerEvent(HostManagerEvent.EventType.HOST_ADD,
+				                               HostManagerEvent.Status.SUCCEEDED,
+				                               hostName,
+				                               message));
+			} else {
+				PropertyTreeInterface userProperties = 
+					database.findHost(hostName).getUserPropertiesObject();
+				
+				// this is refresh
+				try {
+					database.refreshHost(hostName, data, outEncoding);
+				} catch (Exception e) {
+					logger.logError("Error adding data for host \"" + hostName
+							+ "\" to the database.", e);
+					
+					String message = "Refresh failed, reason \"" + e.getMessage() + "\".";
+					
+					operationCache.put(pendingData.getHandle(), buildFailedStatus(message, hostName));
+					
+					postEvent(new HostManagerEvent(HostManagerEvent.EventType.HOST_REFRESH,
+					                               HostManagerEvent.Status.FAILED,
+					                               hostName,
+					                               message));
+					
+					throw new HostManagerException("Error adding data for host \""
+							+ hostName + "\" to the database.", e);
+				}
+				
+				logger.logInfo("Refresh of the host \"" + hostName + "\" successful.");
+				
+				String message = "Refresh successful.";
+				
+				operationCache.put(pendingData.getHandle(), buildSuccessfulStatus(message, hostName));
+	
+				postEvent(new HostManagerEvent(HostManagerEvent.EventType.HOST_REFRESH,
+				                               HostManagerEvent.Status.SUCCEEDED,
+				                               hostName,
+				                               message));
+				
+				try {
+					database.updateUserProperties(hostName, userProperties);
+				} catch (InvalidArgumentException e) {
+					assert false : "What? Host has disappeared on us boys...";
+				} catch (HostDatabaseException e) {
+					throw new HostDatabaseException("Error updating user properties.", e);
+				}
+			}
+		}
+!!!292866.java!!!	removeHost(in hostName : String) : void
+		
+		logger.logDebug("Removing host \"" + hostName + "\" from the database.");
+		
+		database.removeHost(hostName);
+		
+		logger.logInfo("Host \"" + hostName + "\" has been successfully removed from the database.");
+		
+		postEvent(new HostManagerEvent(HostManagerEvent.EventType.HOST_REMOVE,
+		                               HostManagerEvent.Status.SUCCEEDED,
+		                               hostName));
+!!!292994.java!!!	refreshHost(in hostName : String) : OperationHandle
+		
+		logger.logDebug("Refreshing host \"" + hostName + "\".");
+		
+		String canonicalName = hostName;
+		
+		try {
+			canonicalName = MiscUtils.getCanonicalHostName(hostName);
+		} catch (UnknownHostException e) {
+			if (!database.isHost(hostName)) {
+				logger.logError("RefreshHost: host \"" + hostName + "\" is not in database.");
+				
+				throw new ValueNotFoundException("Host \"" + hostName + "\" is not in database.");
+			} else {
+				
+				logger.logError("RefreshHost: unable to resolve host \"" + hostName + "\".");
+				
+				throw e;
+			}
+		}
+		
+		OperationHandle handle = getNextOperationHandle();
+		
+		operationCache.put(handle, buildUnknownStatus(canonicalName));
+		
+		String key = handle.toString();
+		
+		// test if host is in database, if not, it can't be refreshed
+		if (!isHostInDatabase(canonicalName)) {
+			String message = "Host is not in database and can't be refreshed.";
+			operationCache.put(handle, buildFailedStatus(message, canonicalName));
+			
+			postEvent(new HostManagerEvent(HostManagerEvent.EventType.HOST_REFRESH,
+			                               HostManagerEvent.Status.FAILED,
+			                               canonicalName,
+			                               message));
+			
+			return handle;
+		} else {			
+			boolean scheduleResult = false;
+			
+			try {
+				// schedule detector task on host
+				scheduleResult = runDetectorOnHost(canonicalName, key);
+			} catch (Exception e) {
+				String message = "Unable to schedule detector on host, reason: \""
+					+ e.getMessage() + "\".";
+				
+				operationCache.put(handle, buildFailedStatus(message, canonicalName));
+				
+				logger.logError("Unable to schedule detector on \"" + canonicalName + "\".", e);
+				
+				postEvent(new HostManagerEvent(HostManagerEvent.EventType.HOST_REFRESH,
+				                               HostManagerEvent.Status.FAILED,
+				                               canonicalName,
+				                               message));
+				
+				return handle;
+			}
+			
+			
+			if (scheduleResult) {
+				String message = "Detector has been successfully scheduled on the host.";
+				
+				hostsPending.put(key, new PendingHostInfo(canonicalName, key, new Date(), true, handle));
+				operationCache.put(handle, buildPendingStatus(message, canonicalName));
+				
+				return handle;
+			} else {
+				String message = "Unable to schedule detector on host.";
+				
+				logger.logError("Unable to schedule detector on \"" + canonicalName + "\".");
+				
+				operationCache.put(handle, buildFailedStatus(message, canonicalName));
+				
+				postEvent(new HostManagerEvent(HostManagerEvent.EventType.HOST_REFRESH,
+				                               HostManagerEvent.Status.FAILED,
+				                               canonicalName,
+				                               message));
+				
+				return handle;
+			}
+		}
+!!!293122.java!!!	refreshAll() : OperationHandle
+		
+		HashMap< String, OperationHandle > result = new HashMap< String, OperationHandle >();
+		String []hostNames = database.getHostNames();
+		
+		for (String currentHost: hostNames) {
+			OperationHandle handle = null;
+			try {
+				handle = refreshHost(currentHost);
+			} catch (Exception e) {
+				handle = getNextOperationHandle();
+				String message = "Unable to refresh host, reason: \"" + e.getMessage() + "\".";
+				operationCache.put(handle, buildFailedStatus(message, currentHost));
+			}
+			
+			result.put(currentHost, handle);
+		}
+		
+		return result;
+!!!293250.java!!!	isHostInDatabase(in hostName : String) : boolean
+		
+		String canonicalName = MiscUtils.getCanonicalHostName(hostName);
+		return database.isHost(canonicalName);
+!!!293378.java!!!	getHostInfo(in hostName : String) : HostInfoInterface
+		
+		return database.findHost(hostName);
+!!!293506.java!!!	getSimpleHostInfo(in name : String) : SimpleHostInfo
+		
+		return new SimpleHostInfo(database.findHost(name));
+!!!293634.java!!!	getHostCount() : int
+		
+		return database.getHostCount();
+!!!293762.java!!!	getHostHistoryDates(in hostName : String) : Date
+		
+		Date []result = database.getHostHistoryDates(hostName).toArray(new Date[0]); 
+		
+		return result;
+!!!293890.java!!!	getHostHistoryEntry(in hostName : String, inout date : Date) : HostInfoInterface
+		
+		return database.getHostHistoryEntry(hostName, date);
+!!!294018.java!!!	removeHostHistoryEntry(in hostName : String, inout date : Date) : void
+		
+		database.removeHostHistoryEntry(hostName, date);
+!!!294146.java!!!	getGroupCount() : int
+		
+		return database.getGroupCount();
+!!!294274.java!!!	getGroup(in name : String) : HostGroup
+		
+		return database.findGroup(name);
+!!!294402.java!!!	addGroup(inout group : HostGroup) : void
+		
+		try {
+			database.addGroup(group);
+		} catch (InvalidArgumentException e) {
+			postEvent(new HostManagerEvent(HostManagerEvent.EventType.GROUP_CREATE,
+			                               HostManagerEvent.Status.FAILED,
+			                               group.getName(),
+			                               e.getMessage()));
+			
+			throw e;
+		} catch (HostDatabaseException e) {
+			postEvent(new HostManagerEvent(HostManagerEvent.EventType.GROUP_CREATE,
+			                               HostManagerEvent.Status.FAILED,
+			                               group.getName(),
+			                               e.getMessage()));
+			
+			throw e;
+		}
+		
+		postEvent(new HostManagerEvent(HostManagerEvent.EventType.GROUP_CREATE,
+		                               HostManagerEvent.Status.SUCCEEDED,
+		                               group.getName()));
+!!!294530.java!!!	isGroup(in name : String) : boolean
+		
+		return database.isGroup(name);
+!!!294658.java!!!	createGroup(inout conditions : RestrictionInterface, in groupName : String) : HostGroup
+		
+		HostGroup result = new HostGroup(groupName);
+		
+		result.addHosts(database.queryHosts(conditions));
+		
+		return result; 
+!!!294786.java!!!	createGroup(inout query : HostQueryCallbackInterface, in name : String) : HostGroup
+		
+		HostGroup result = new HostGroup(name);
+		
+		result.addHosts(database.queryHosts(query));
+		
+		return result; 
+!!!294914.java!!!	removeGroup(in name : String) : void
+		
+		try {
+			database.removeGroup(name);
+		} catch (ValueNotFoundException e) {
+			postEvent(new HostManagerEvent(HostManagerEvent.EventType.GROUP_REMOVE,
+			                               HostManagerEvent.Status.FAILED,
+			                               name,
+			                               e.getMessage()));
+			
+			throw e;
+		} catch (HostDatabaseException e) {
+			postEvent(new HostManagerEvent(HostManagerEvent.EventType.GROUP_REMOVE,
+			                               HostManagerEvent.Status.FAILED,
+			                               name,
+			                               e.getMessage()));
+			
+			throw e;
+		}
+		
+		postEvent(new HostManagerEvent(HostManagerEvent.EventType.GROUP_REMOVE,
+		                               HostManagerEvent.Status.SUCCEEDED,
+		                               name));
+!!!295042.java!!!	updateGroup(inout group : HostGroup) : void
+	
+		try {
+			database.updateGroup(group);
+		} catch (InvalidArgumentException e) {
+			postEvent(new HostManagerEvent(HostManagerEvent.EventType.GROUP_CHANGE,
+			                               HostManagerEvent.Status.FAILED,
+			                               group.getName(),
+			                               e.getMessage()));
+			
+			throw e;
+		} catch (ValueNotFoundException e) {
+			postEvent(new HostManagerEvent(HostManagerEvent.EventType.GROUP_CHANGE,
+			                               HostManagerEvent.Status.FAILED,
+			                               group.getName(),
+			                               e.getMessage()));
+			
+			throw e;
+		} catch (HostManagerException e) {
+			postEvent(new HostManagerEvent(HostManagerEvent.EventType.GROUP_CHANGE,
+			                               HostManagerEvent.Status.FAILED,
+			                               group.getName(),
+			                               e.getMessage()));
+			
+			throw e;
+		}
+		
+		postEvent(new HostManagerEvent(HostManagerEvent.EventType.GROUP_CHANGE,
+		                               HostManagerEvent.Status.SUCCEEDED,
+		                               group.getName()));
+!!!295170.java!!!	renameGroup(in oldName : String, in newName : String) : void
+
+		try {
+			database.renameGroup(oldName, newName);
+		} catch (InvalidArgumentException e) {
+			postEvent(new HostManagerEvent(HostManagerEvent.EventType.GROUP_CHANGE,
+			                               HostManagerEvent.Status.FAILED,
+			                               oldName,
+			                               e.getMessage()));
+			
+			throw e;
+		} catch (ValueNotFoundException e) {
+			postEvent(new HostManagerEvent(HostManagerEvent.EventType.GROUP_CHANGE,
+			                               HostManagerEvent.Status.FAILED,
+			                               oldName,
+			                               e.getMessage()));
+			
+			throw e;
+		} catch (HostDatabaseException e) {
+			postEvent(new HostManagerEvent(HostManagerEvent.EventType.GROUP_CHANGE,
+			                               HostManagerEvent.Status.FAILED,
+			                               oldName,
+			                               e.getMessage()));
+			
+			throw e;
+		}
+		
+		postEvent(new HostManagerEvent(HostManagerEvent.EventType.GROUP_CHANGE,
+		                               HostManagerEvent.Status.SUCCEEDED,
+		                               "\"" + oldName + "\" renamed to \"" + newName + "\"."));
+!!!295298.java!!!	queryHosts(inout hq : HostQueryCallbackInterface) : HostInfoInterface
+		
+		ArrayList< String > matchingHosts = database.queryHosts(hq);
+		
+		HostInfoInterface []result = new HostInfoInterface[matchingHosts.size()];
+		
+		int i = 0;
+		for (String hName: matchingHosts) {
+			
+			result[i] = database.findHost(hName);
+		}
+		
+		return result;
+!!!295426.java!!!	queryHosts(inout restrictions : RestrictionInterface) : HostInfoInterface
+		
+		ArrayList< String > matchingHosts = database.queryHosts(restrictions);
+		
+		HostInfoInterface []result = new HostInfoInterface[matchingHosts.size()];
+		
+		for (int i = 0; i < matchingHosts.size(); i++) {
+			result[i] = database.findHost(matchingHosts.get(i));
+		}
+		
+		return result;
+!!!295554.java!!!	getPropertyDescriptionsList() : PropertyDescription
+		
+		return descriptions.getAllDescriptions();
+!!!295682.java!!!	getPropertyDescription(in path : String) : PropertyDescription
+		
+		return descriptions.getDescription(path);
+!!!295810.java!!!	getPropertyDescriptionTable() : PropertyDescriptionTable
+		
+		return descriptions;
+!!!295938.java!!!	updateUserProperties(inout host : HostInfoInterface) : void
+		
+		String name = host.getHostName();
+
+		database.updateUserProperties(name, host.getUserPropertiesObject());
+!!!296066.java!!!	getHostNames() : String
+
+		return database.getHostNames();
+!!!296194.java!!!	getGroupNames() : String
+		
+		return database.getGroupNames();
+!!!296322.java!!!	getOperationStatus(inout handle : OperationHandle) : HostOperationStatus
+		
+		HostOperationStatus status = operationCache.get(handle);
+		
+		if (status == null) {
+			throw new IllegalArgumentException("Requested operation handle was not found in cache.");
+		} else {
+			return status;
+		}
+!!!296450.java!!!	removeOperationStatus(inout handle : OperationHandle) : HostOperationStatus
+		
+		HostOperationStatus status = operationCache.remove(handle);
+		
+		if (status == null) {
+			throw new IllegalArgumentException("Requested operation handle was not found in cache.");
+		} else {
+			return status;
+		}		
+!!!296578.java!!!	addAliasDefinition(inout alias : SoftwareAliasDefinition) : int
+		
+		return database.addAliasDefinition(alias);
+!!!296706.java!!!	addAliasDefinitionList(inout aliases : Iterable< SoftwareAliasDefinition >) : void
+		
+		database.addAliasDefinitionList(aliases);
+!!!296834.java!!!	getAliasDefinition(in i : int) : SoftwareAliasDefinition
+		
+		return database.getAliasDefinitition(i);
+!!!296962.java!!!	getAliasDefinitionCount() : int
+		
+		return database.getAliasDefinitionCount();
+!!!297090.java!!!	rebuildAliasTableForAllHosts() : void
+		
+		try {
+			database.rebuildAliasTableForAllHosts();
+		} catch (HostDatabaseException e) {
+			postEvent(new HostManagerEvent(HostManagerEvent.EventType.DATABASE_REBUILDING,
+			                               HostManagerEvent.Status.FAILED,
+			                               "database",
+			                               e.getMessage()));
+			
+			throw e;
+		}
+		
+		postEvent(new HostManagerEvent(HostManagerEvent.EventType.DATABASE_REBUILDING,
+		                               HostManagerEvent.Status.SUCCEEDED,
+		                               "database"));
+!!!297218.java!!!	removeAliasDefinition(in i : int) : void
+		
+		database.removeAliasDefinition(i);
+!!!297346.java!!!	removeAllAliasDefinitions() : void
+		
+		database.removeAllAliasDefinitions();
+!!!297474.java!!!	getDatabaseEngine() : HostDatabaseEngine
+		
+		return database;
+!!!297602.java!!!	getConfiguration() : HostManagerOptionsInterface
+		
+		return appData.getConfiguration();
+!!!297730.java!!!	valueChanged(inout option : Option, in newValue : long) : void
+		
+		switch (option) {
+			
+			case HOST_DETECTION_TIMEOUT:
+				logger.logInfo("Value of HOST_DETECTION_TIMEOUT changed to " + newValue);
+				hostDetectionTimeout = newValue;
+				break;
+				
+			case PENDING_HOSTS_REFRESH_INTERVAL:
+				logger.logInfo("Value of PENDING_HOST_REFRESH_INTERVAL changed to " + newValue);
+				pendingHostsCheckPeriod = newValue;
+				restartWatchDog();
+				break;
+				
+			default:
+				// Ignore other options (they are not for HM).
+		}
+!!!297858.java!!!	restartWatchDog() : void
+
+		if (timer != null) {
+			timer.cancel();
+		}
+		
+		try {
+			timer = new Timer(true);
+			timer.schedule(new WatchDog(), 0, pendingHostsCheckPeriod);
+		} catch (Exception e) {
+			throw new HostManagerException("Unable to start new Watch Dog thread.", e);
+		}
+!!!297986.java!!!	newHostConnected(in hostName : String) : OperationHandle
+
+		String canonicalName = MiscUtils.getCanonicalHostName(hostName);
+
+		logger.logInfo("New host connected: \"" + canonicalName + "\".");
+		
+		OperationHandle newHostOpHandle = getNextOperationHandle();
+		OperationHandle addHandle = null;
+		
+		operationCache.put(newHostOpHandle, buildPendingStatus("Connecting to the host.", canonicalName));
+		
+		synchronized (database) {
+			if (database.isHost(canonicalName)) {
+				// Host is already in db -> we need to refresh its config
+				logger.logDebug("Host \"" + canonicalName + "\" is already in database"
+						+ " - refreshing configuration.");
+
+				try {
+					addHandle = refreshHost(canonicalName);
+				} catch (ValueNotFoundException e) {
+					logger.logError("Host \"" + canonicalName + "\" has been removed from database.");
+					
+					operationCache.put(newHostOpHandle, 
+							buildFailedStatus("Host has been removed from database.", canonicalName));
+					
+					operationCache.remove(addHandle);
+					
+					return newHostOpHandle;
+				}
+			} else {
+				// Host is not yet in db -> scan
+				logger.logDebug("Host \"" + canonicalName + "\" is not in database - scanning.");
+				
+				addHandle = addHost(canonicalName);
+			}
+			
+			synchronized (operationCache) {
+				
+				HostOperationStatus hose = operationCache.get(addHandle);
+				
+				if (hose.getStatus().equals(HostOperationStatus.Status.FAILED)) {
+					operationCache.put(newHostOpHandle, buildFailedStatus(hose.getMessage(), canonicalName));
+					operationCache.remove(addHandle);
+					
+					return newHostOpHandle;
+				}
+				
+				try {
+					registerEventListener(new NewHostEventListener(canonicalName, addHandle, newHostOpHandle));
+				} catch (RemoteException e) {
+					logger.logError("Unable to register listener.", e);
+					
+					operationCache.remove(addHandle);
+					operationCache.put(newHostOpHandle, 
+							buildFailedStatus("Unable to register listener.", canonicalName));
+					
+					return newHostOpHandle;
+				}
+				
+				operationCache.put(newHostOpHandle, buildPendingStatus("Attempting to schedule detector"
+						+ " on the host.", canonicalName));
+			}
+		}
+		
+		return newHostOpHandle;
+!!!298114.java!!!	hostRuntimeRegistered(in hostname : String) : void
+		
+		try {
+			newHostConnected(hostname);
+		} catch (UnknownHostException e) {
+			// This should not happen, since host connected to the TM, but bad things (tm) happen...
+			logger.logError("Unable to connected to the \"" + hostname + "\".");
+		}
+!!!298242.java!!!	hostRuntimeUnregistered(in hostname : String) : void
+		
+		appData.getLSI().hostDisconnected(hostname);
+!!!298370.java!!!	registerEventListener(inout listener : HostManagerEventListener) : OID
+		
+		MiscUtils.verifyParameterIsNotNull(listener, "listener");
+
+		OID id = appData.getNextID(OID.class);
+		
+		listeners.put(id, listener);
+		
+		return id;
+!!!298498.java!!!	unregisterEventListener(inout listenerId : OID) : void
+
+		MiscUtils.verifyParameterIsNotNull(listenerId, "listenerId");
+		
+		synchronized (listeners) {
+			
+			if (!listeners.contains(listenerId)) {
+				throw new ValueNotFoundException("Unable to find listener for id \""
+						+ listenerId + "\".");
+			}
+			
+			listeners.remove(listenerId);
+		}
+!!!298626.java!!!	getLoadServer() : LoadServerInterface
+
+		return appData.getLSI();
+!!!298754.java!!!	initializeHostRuntimes() : void
+		
+		logger.logInfo("Initializing Host Runtimes registered on the Task Manager.");
+		
+		String []knownHosts = null;
+		try {
+			knownHosts = task.getTasksPort().getRegisteredHostRuntimes();
+		} catch (RemoteException e) {
+			logger.logError("Unable to retrieve known hosts from the Task Manager.", e);
+			return;
+		}
+		
+		for (String host: knownHosts) {
+			logger.logDebug("Registering host \"" + host + "\".");
+			try {
+				hostRuntimeRegistered(host);
+			} catch (RemoteException e) {
+				logger.logError("Error registering \"" + host + "\".");
+			}
+		}
+!!!298882.java!!!	postEvent(in event : HostManagerEvent) : void
+		
+		Thread thread = new Thread() {
+		
+			/*
+			 * @see java.lang.Thread#run()
+			 */
+			@Override
+			public void run() {
+
+				/*
+				 * Visit all listeners and process current event.
+				 */
+				synchronized (listeners) {
+					
+					for (Map.Entry< OID, HostManagerEventListener > listenerEntry: listeners.entrySet()) {
+						
+						listenerEntry.getValue().processEvent(event);
+						
+						if (listenerEntry.getValue().remove()) {
+							listeners.remove(listenerEntry);
+						}
+					}
+				}
+			}
+		};
+		
+		thread.start();
+!!!299010.java!!!	runDetectorOnHost(in canonicalName : String, in key : String) : boolean
+		
+		taskIDNum += 1;
+		TaskDescriptor taskDesc = TaskDescriptor.createDetector("detectortask-" + taskIDNum + "-" + System.currentTimeMillis(),
+			                              canonicalName);
+
+		taskDesc.addTaskProperties("key", key);
+		taskDesc.addDependencyCheckPoint(new Dependency("hostmanager-tid", Service.STATUS_CHECKPOINT, Service.STATUS_RUNNING));
+
+		try {
+			task.getTasksPort().runTask(taskDesc);
+		} catch (RemoteException e) {
+			throw new HostManagerException("Unable to start detector on \"" + canonicalName + "\".", e);
+		}
+
+		return true;
+!!!299394.java!!!	newHostSuccess(in hostName : String, inout newHostOpHandle : OperationHandle) : void
+		
+		try {
+			appData.getLSI().newHostConnected(hostName);
+		} catch (Exception e) {
+			logger.logError("Unable to initialize Load Monitor on \"" + hostName + "\".", e);
+			operationCache.put(newHostOpHandle, buildFailedStatus("Unable to initialize Load Monitor.",
+					hostName));
+			
+			return;
+		}
+		
+		operationCache.put(newHostOpHandle, buildSuccessfulStatus("Host connected successfully.",
+				hostName));
+!!!299522.java!!!	newHostFailure(in hostName : String, inout addHandle : OperationHandle, inout newHostOpHandle : OperationHandle) : void
+		
+		HostOperationStatus status = operationCache.get(addHandle);
+		
+		operationCache.put(newHostOpHandle, buildFailedStatus("Error acquiring data: "
+				+ status.getMessage(), hostName));
+		operationCache.remove(addHandle);
+!!!300802.java!!!	getNextOperationHandle() : OperationHandle
+		
+		currentHandle = currentHandle.getNext();
+		return currentHandle;
+!!!300930.java!!!	buildFailedStatus(in message : String, in host : String) : HostOperationStatus
+		
+		return new HostOperationStatus(HostOperationStatus.Status.FAILED, message, host);
+!!!301058.java!!!	buildUnknownStatus(in host : String) : HostOperationStatus
+		
+		return new HostOperationStatus(HostOperationStatus.Status.UNKNOWN, "", host);
+!!!301186.java!!!	buildSuccessfulStatus(in message : String, in host : String) : HostOperationStatus
+		
+		return new HostOperationStatus(HostOperationStatus.Status.SUCCESS, message, host);
+!!!301314.java!!!	buildPendingStatus(in message : String, in host : String) : HostOperationStatus
+		
+		return new HostOperationStatus(HostOperationStatus.Status.PENDING, message, host);

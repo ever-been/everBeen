@@ -1,0 +1,18 @@
+class LoggingCVSListener
+!!!631810.java!!!	LoggingCVSListener(inout owningTask : Task)
+		this.owningTask = owningTask;
+!!!631938.java!!!	messageSent(inout msgEvent : MessageEvent) : void
+		String line = msgEvent.getMessage();
+
+		if (msgEvent.isTagged()) {
+			String message = MessageEvent.parseTaggedMessage(
+					new StringBuffer(), msgEvent.getMessage());
+			// if we get back a non-null line, we have something
+			// to output. Otherwise, there is more to come and we
+			// should do nothing yet.
+			if (!StringUtils.isEmpty(message)) {
+				owningTask.logInfo(message);
+			}
+		} else {
+			owningTask.logInfo(line);
+		}

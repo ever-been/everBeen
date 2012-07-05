@@ -1,0 +1,10 @@
+class GroupNameIterator
+!!!347778.java!!!	GroupNameIterator()
+			
+			it = groupData.keySet().iterator();
+!!!347906.java!!!	next() : String
+			
+			return it.next();
+!!!348034.java!!!	hasNext() : boolean
+			
+			return it.hasNext();

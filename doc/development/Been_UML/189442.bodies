@@ -1,0 +1,100 @@
+class LogCollector
+!!!549762.java!!!	getInstance() : LogCollector
+		if (logCollectorInstance == null) {
+			return new LogCollector();
+		} else {
+			return logCollectorInstance;
+		}
+!!!549890.java!!!	initialize(inout database : Database, inout experimentEntityManager : ExperimentEntityManager) : void
+		LogCollector.database = database;
+!!!550018.java!!!	performLogUpload(inout aid : AID, inout eid : EID, in contextName : String, in taskName : String) : void
+
+	    TaskListManager taskListManager;
+	    taskListManager = TaskListManager.getInstance();
+		
+	    TasksPortInterface tasksPort = Task.getTaskHandle().getTasksPort();
+		
+		FilesystemLogStorage logStorage;
+		
+		logStorage = database.getLogStorage();
+		try {
+			if (!logStorage.isTaskRegistered(contextName, taskName)) {
+				logStorage.addTask(contextName, taskName);			
+			} else {
+			    // Logs are already uploaded 
+			    return;
+			}
+			logStorage.setTaskHostname(contextName, taskName, 
+				InetAddress.getLocalHost().getCanonicalHostName());
+		} catch (LogStorageException e) {
+			throw new ResultsRepositoryException("Error getting hostname when trying to upload logs.", e);
+		} catch (UnknownHostException e) {
+			throw new ResultsRepositoryException("Error getting hostname when trying to upload logs.", e);
+		}
+
+		try {
+			LogRecord[] logRecords = tasksPort.getLogsForTask(contextName, taskName);
+			for (LogRecord logRecord : logRecords) {
+				logStorage.log(logRecord.getContext(),
+					logRecord.getTaskID(),
+					logRecord.getTimestamp(),
+					logRecord.getLevel(), 
+					logRecord.getMessage());
+			}
+		} catch (LogStorageException e) {
+			throw new ResultsRepositoryException("Error uploading logs.", e);
+		} catch (RemoteException e) {
+			throw new ResultsRepositoryException("RMI error contacting task manager when uploading logs.", e);
+		}
+		
+		synchronized (LockManager.taskListLock) {
+			
+			taskListManager.loadExperimentTaskList(aid, eid);
+			taskListManager.setExperimentTaskUploadedFlag(taskName);
+			taskListManager.storeExperimentTaskList(aid, eid);
+			
+		}
+		
+!!!550146.java!!!	getExperimentContext(inout aid : AID, inout eid : EID) : String
+		
+		MetadataRef experimentMetadata = new MetadataRef(new Metadata());
+		
+		if (!ExperimentEntityManager.ensureSuccessLoadExperimentMetadata(experimentMetadata, 
+			    aid, eid)) {
+			Logger.logError("Error reading metadata - \"context name \" not found for " +
+					Database.getExperimentReferenceString(aid, eid));
+		}
+		    
+		String metaItem;
+		    
+		Database.ensureMetadataNotNull(metaItem = experimentMetadata.metadata.getItemByKey(
+				"context name"), "context name", Database.getExperimentReferenceString(aid, eid));
+		
+		return metaItem;
+!!!550274.java!!!	finishLogUpload(inout analysisId : AID, inout experimentId : EID) : void
+		
+		Logger.logInfo("Collecting logs at finish of experiment");
+		String contextName = getExperimentContext(analysisId, experimentId);
+	    
+		TaskListManager taskListManager = TaskListManager.getInstance();
+		
+		String[] tasks; 
+		
+		synchronized (taskListManager) {
+			tasks = taskListManager.getExperimentUnuploadedTaskList();
+		}
+	    
+	    for (String taskId  : tasks) {
+	    		    	
+	    	performLogUpload(analysisId, experimentId, contextName, taskId);
+	    	
+	    }
+!!!550402.java!!!	registerContextForLogging(in contextName : String) : void
+		try {
+			if (!Database.getInstance().getLogStorage().isContextRegistered(contextName)) {
+				Database.getInstance().getLogStorage().addContext(contextName);
+			}
+		} catch (LogStorageException e) {
+			throw new ResultsRepositoryException(e);
+		}
+		

@@ -1,0 +1,3 @@
+class PackageListComparator
+!!!776066.java!!!	compare(inout o1 : PackageMetadata, inout o2 : PackageMetadata) : int
+			return o1.getName().compareToIgnoreCase(o2.getName());

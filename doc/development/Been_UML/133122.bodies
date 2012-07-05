@@ -1,0 +1,14 @@
+class WorkQueue
+!!!256002.java!!!	getWork() : T
+		while (queue.isEmpty()) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				// ignored
+			}
+		}
+		
+		return queue.removeFirst();
+!!!256130.java!!!	addWork(inout work : T) : void
+		queue.addLast(work);
+		notify();

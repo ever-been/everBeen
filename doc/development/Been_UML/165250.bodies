@@ -1,0 +1,199 @@
+class ObjectRestriction
+!!!374786.java!!!	ObjectRestriction(in objPath : String, in propertyName : String, inout propertyValue : ValueCommonInterface)
+		
+		if ((objPath == null) || (propertyName == null) || (propertyValue == null)) {
+			throw new IllegalArgumentException("null parameters are not allowed for ObjectRestriction.");
+		}
+
+		objectPath = objPath;
+		properties = new NameValuePair[1];
+		properties[0] = new NameValuePair(propertyName, propertyValue);
+!!!374914.java!!!	ObjectRestriction(in objPath : String, inout nvp : NameValuePair)
+
+		if (objPath == null) {
+			throw new IllegalArgumentException("Invalid object path (null).");
+		}
+		
+		if (nvp == null) {
+			throw new IllegalArgumentException("Invalid NameValuePair (null).");
+		}
+
+		objectPath = objPath;
+		properties = new NameValuePair[1];
+		properties[0] = nvp;
+!!!375042.java!!!	ObjectRestriction(in objPath : String, inout nvp1 : NameValuePair, inout nvp2 : NameValuePair)
+		
+		if (objPath == null) {
+			throw new IllegalArgumentException("Invalid object path (null).");
+		}
+
+		if (nvp1 == null) {
+			throw new IllegalArgumentException("Invalid argument 2 ( null NameValuePair).");
+		}
+
+		if (nvp2 == null) {
+			throw new IllegalArgumentException("Invalid argument 3 ( null NameValuePair).");
+		}
+		
+		objectPath = objPath;
+		properties = new NameValuePair[2];
+		properties[0] = nvp1;
+		properties[1] = nvp2;
+!!!375170.java!!!	ObjectRestriction(in objPath : String, inout nvp1 : NameValuePair, inout nvp2 : NameValuePair, inout nvp3 : NameValuePair)
+	
+		if (objPath == null) {
+			throw new IllegalArgumentException("Invalid object path (null).");
+		}
+	
+		if (nvp1 == null) {
+			throw new IllegalArgumentException("Invalid argument 2 ( null NameValuePair).");
+		}
+	
+		if (nvp2 == null) {
+			throw new IllegalArgumentException("Invalid argument 3 ( null NameValuePair).");
+		}
+	
+		if (nvp3 == null) {
+			throw new IllegalArgumentException("Invalid argument 4 ( null NameValuePair).");
+		}
+		
+		objectPath = objPath;
+		properties = new NameValuePair[3];
+		properties[0] = nvp1;
+		properties[1] = nvp2;
+		properties[2] = nvp3;
+!!!375298.java!!!	ObjectRestriction(in objPath : String, inout props : NameValuePair)
+		
+		if ((objPath == null) || (props == null)) {
+			throw new IllegalArgumentException("null parameters are not allowed for ObjectRestriction.");
+		}
+		
+		if (props.length == 0) {
+			throw new IllegalArgumentException("Property array is empty.");
+		}
+		
+		objectPath = objPath;
+		properties = props;
+!!!375426.java!!!	ObjectRestriction(inout node : Node)
+		
+		parseXMLNode(node);
+!!!375554.java!!!	getObjectPath() : String
+		
+		return objectPath;
+!!!375682.java!!!	getProperties() : NameValuePair
+		
+		return properties;
+!!!375810.java!!!	toString() : String
+		
+		String result = "Restriction {\n\t" + objectPath + "\n";
+		
+		for (int i = 0; i < properties.length; ++i) {
+			result += "\t  ." + properties[i].toString() + "\n";
+		}
+		
+		result += "}";
+		
+		return result;
+!!!375938.java!!!	parseXMLNode(inout node : Node) : void
+
+		if (!node.getNodeName().equals(getXMLNodeName())) {
+			throw new InputParseException("Node does not contain restriction data. Node name is \""
+					+ node.getNodeName() + "\".");
+		}
+
+		objectPath = XMLHelper.getAttributeValueByName("object", node);
+		
+		ArrayList< Node > nvpNodes = XMLHelper.getChildNodesByName(new NameValuePair().getXMLNodeName(), node);
+		
+		properties = new NameValuePair[nvpNodes.size()];
+		
+		int i = 0;
+		for (Node current: nvpNodes) {
+			properties[i] = new NameValuePair(current);
+			i += 1;
+		}
+!!!376066.java!!!	exportAsElement(inout doc : Document) : Element
+		
+		/* Resulting node looks like this:
+		 * 
+		 * <restriction object="<object-name>">
+		 *    <namevalue #1/>
+		 *    <namevalue #2/>
+		 *          .
+		 *          .
+		 *          .
+		 *    <namevalue #n/>
+		 * </restriction>
+		 * 
+		 * where <object-name> is name of the object in restriction and each of the <namevalue #i>
+		 * is serialised NameValuePair containing property name and value.
+		 */
+		
+		Element element = doc.createElement(getXMLNodeName());
+		
+		element.setAttribute("object", objectPath);
+		
+		for (NameValuePair current: properties) {
+			element.appendChild(current.exportAsElement(doc));
+		}
+		
+		return element;
+!!!376194.java!!!	getXMLNodeName() : String
+		
+		return XML_NODE_NAME;
+!!!376322.java!!!	hashCode() : int
+		
+		int result = objectPath.hashCode();
+		
+		for (NameValuePair nvp: properties) {
+			result += nvp.hashCode();
+		}
+		
+		return result;
+!!!376450.java!!!	equals(inout o : Object) : boolean
+		
+		if (o instanceof ObjectRestriction) {
+			return equals((ObjectRestriction) o);
+		} else {
+			return false;
+		}
+!!!376578.java!!!	equals(inout o : ObjectRestriction) : boolean
+		
+		if (properties.length != o.properties.length) {
+			return false;
+		}
+		
+		if (!objectPath.equals(o.objectPath)) {
+			return false;
+		}
+		
+		/*HashSet< NameValuePair > right = new HashSet< NameValuePair >();
+		HashSet< NameValuePair > left = new HashSet< NameValuePair >();
+		
+		for (int i = 0; i < properties.length; ++i) {
+			right.add(o.properties[i]);
+			left.add(properties[i]);
+		}
+		
+		return result = left.containsAll(right);*/
+
+
+		/* Well, this surely is not the best algorithm out there (it is O(n^2)) but at least it works
+		 * (which is quite an improvement considering commented one).
+		 */
+		for (NameValuePair current: properties) {
+			if (!isInArray(current, o.properties)) {
+				return false;
+			}
+		}
+		
+		return true;
+!!!376706.java!!!	isInArray(inout what : T, inout where : T) : boolean
+		
+		for (T current: where) {
+			if (current.equals(what)) {
+				return true;
+			}
+		}
+		
+		return false;

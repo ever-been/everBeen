@@ -1,0 +1,203 @@
+class TaskListManager
+!!!595970.java!!!	initialize(inout database : Database) : void
+		TaskListManager.database = database;
+!!!596098.java!!!	getInstance() : TaskListManager
+	    
+		if (taskListManagerInstance == null) {
+			return new TaskListManager();
+		} else {
+			return taskListManagerInstance;
+		}
+!!!596226.java!!!	loadExperimentTaskList(inout aid : AID, inout eid : EID) : void
+	
+	    try {
+	    	experimentTaskList = new NumberedTable(database.getFileInDatabase(aid, eid, TASK_LIST_FILENAME));
+	    } catch (IOException e) {
+	    	e.printStackTrace();
+	    	Logger.logError(NumberedTable.IO_ERROR_LIST_READING_MESSAGE 
+			+ Database.getExperimentReferenceString(aid, eid));
+		
+	    	experimentTaskList = new NumberedTable();
+	    	return;	
+	    } 
+!!!596354.java!!!	storeExperimentTaskList(inout aid : AID, inout eid : EID) : void
+	    try {
+	        	experimentTaskList.store(database.getFileInDatabase(aid, eid, TASK_LIST_FILENAME));
+            } catch (IOException e) {	 
+            	e.printStackTrace();
+            	Logger.logError(NumberedTable.IO_ERROR_LIST_STORING_MESSAGE 
+            			+ Database.getExperimentReferenceString(aid, eid));	        
+            }
+!!!596482.java!!!	addNewExperimentTasks(in taskIds : String) : void
+	    for (String taskId : taskIds ) {
+	    	if (experimentTaskList.getItemByKey(Integer.valueOf(taskId)) == null)
+	    		experimentTaskList.addItem(Integer.valueOf(taskId), "0");
+	    }
+!!!596610.java!!!	setExperimentTaskUploadedFlag(in taskId : String) : void
+		Logger.logDebug("taskId to store logs for = " + taskId);
+	    if (!experimentTaskList.setItemByKey(Long.valueOf(taskId), "1")) {
+	    	Logger.logError("Error setting 'logs uploaded' flag for task " + taskId);
+	    }
+!!!596738.java!!!	getExperimentUnuploadedTaskList() : String
+	    ArrayList<String> unuploaded = new ArrayList<String> ();
+	    
+	    for (NumberedItem numberedItem : experimentTaskList.getNumberedTable() ) {
+		if (numberedItem.getValue().equals("0")) {
+		    unuploaded.add(Long.toString(numberedItem.getKey()));
+		}
+	    }	
+	    
+	    return unuploaded.toArray(new String[] {});
+!!!596866.java!!!	getExperimentTaskList() : String
+	    ArrayList<String> taskArrayList = new ArrayList<String> ();
+	    
+	    for (NumberedItem numberedItem : experimentTaskList.getNumberedTable() ) {
+	    	taskArrayList.add(Long.toString(numberedItem.getKey()));	    	
+	    }	
+	    
+	    return taskArrayList.toArray(new String[] {});
+!!!596994.java!!!	loadBinaryTaskList(inout aid : AID, inout eid : EID, inout bid : BID) : void
+		String[] lineTokens;
+		String line;
+		BufferedReader inputReader;
+		
+		try {
+			inputReader = new BufferedReader(new FileReader(
+					database.getFileInDatabase(aid, eid, bid, TASK_LIST_FILENAME)));
+		} catch (FileNotFoundException e) {			
+			binaryTaskList = new ArrayList<String>();
+			return;
+		}
+				
+		binaryTaskList = new ArrayList<String>();
+		
+		try {
+			/* Read only first line, others are invalid */
+			if ((line = inputReader.readLine()) != null) {								
+				lineTokens = line.split(ASCII_TAB);
+				try {
+					for (String lineToken : lineTokens) {
+						binaryTaskList.add(lineToken);
+					}
+				} catch (IndexOutOfBoundsException e) {
+					throw new IOException("Invalid format in task list, file " + 
+							database.getFileInDatabase(aid, eid, bid, TASK_LIST_FILENAME) + ".");
+				}
+			}
+	    } catch (IOException e) {
+	    	e.printStackTrace();
+	    	Logger.logError(NumberedTable.IO_ERROR_LIST_READING_MESSAGE 
+	    			+ Database.getExperimentReferenceString(aid, eid));
+		
+	    	experimentTaskList = new NumberedTable();
+	    	return;	
+	    } finally { 
+	    	try {
+	    		inputReader.close();
+	    	} catch (IOException e) {
+	    		e.printStackTrace();
+	    		Logger.logError("Error closing the file " +
+	    				database.getFileInDatabase(aid, eid, bid, TASK_LIST_FILENAME));
+	    	}	    	
+	    }
+		
+!!!597122.java!!!	storeBinaryTaskList(inout aid : AID, inout eid : EID, inout bid : BID) : void
+			
+		int i;		
+		PrintWriter outputWriter = null;
+		
+		try {
+			outputWriter = new PrintWriter(new BufferedWriter(new FileWriter(
+					database.getFileInDatabase(aid, eid, bid, TASK_LIST_FILENAME))));			
+			
+			if (binaryTaskList.size() > 0) {
+				outputWriter.print(binaryTaskList.get(0));
+				for (i = 1; i < binaryTaskList.size(); i++) {
+					outputWriter.print( ASCII_TAB + binaryTaskList.get(i));		
+				}
+			}
+			
+			outputWriter.println();
+		} catch (IOException e) {
+	    	e.printStackTrace();
+	    	Logger.logError(NumberedTable.IO_ERROR_LIST_STORING_MESSAGE 
+	    			+ Database.getBinaryReferenceString(aid, eid, bid));
+		
+	    	return;	
+		} finally {
+			outputWriter.close();
+		}
+		
+!!!597250.java!!!	addNewBinaryTasks(in taskIds : String) : void
+	    for (String taskId : taskIds ) {
+	    	if (!binaryTaskList.contains(taskId)) {
+	    		binaryTaskList.add(taskId);
+	    	}
+	    }
+!!!597378.java!!!	getBinaryTaskList() : String
+		return binaryTaskList.toArray(new String[] {});
+!!!597506.java!!!	loadRunsTaskList(inout aid : AID, inout eid : EID, inout bid : BID) : void
+	    try {
+	    	runsTaskList = new NumberedTable(
+	    			database.getFileInDatabase(aid, eid, bid, RUNSTASK_LIST_FILENAME));
+	    } catch (IOException e) {
+	    	e.printStackTrace();
+	    	Logger.logError(NumberedTable.IO_ERROR_LIST_READING_MESSAGE 
+			+ Database.getExperimentReferenceString(aid, eid));
+		
+	    	runsTaskList = new NumberedTable();
+	    	return;	
+	    } 
+!!!597634.java!!!	addNewRunsTasks(inout rid : RID, in taskIds : String) : void
+		
+		String toStore;
+		String taskList;
+		
+		taskList = runsTaskList.getItemByKey(rid.hashCode());
+		
+		if (taskList != null &&	!taskList.equals("")) {
+			return;			
+		}
+		
+		Logger.logTrace("Task count for run " + rid + " is " + taskIds.length);
+		Logger.logTrace("Task list : " + taskIds);
+		
+		if (taskIds.length > 0) {
+			
+			toStore = taskIds[0];
+			
+			for (int i = 1; i < taskIds.length; i++) {
+				toStore += ASCII_TAB + taskIds[i];
+			}  		
+			
+		} else {
+			toStore = "";
+		}
+		
+		runsTaskList.addItem((Long) rid.value(), toStore);
+		
+!!!597762.java!!!	storeRunsTaskList(inout aid : AID, inout eid : EID, inout bid : BID) : void
+		
+		try {
+        	runsTaskList.store(
+        			database.getFileInDatabase(aid, eid, bid, RUNSTASK_LIST_FILENAME));
+        } catch (IOException e) {	 
+        	e.printStackTrace();
+        	Logger.logError(NumberedTable.IO_ERROR_LIST_STORING_MESSAGE 
+        			+ Database.getExperimentReferenceString(aid, eid));
+        	
+        }
+!!!597890.java!!!	getRunTaskList(inout rid : RID) : String
+
+		String toParse = runsTaskList.getItemByKey((Long) rid.value());
+		if (toParse == null) {
+			return new String[] {};
+		}
+		
+		String[] returnValue = toParse.split(ASCII_TAB);
+				
+		if ((returnValue.length == 1) && returnValue[0].equals("")) {
+			return new String[] {};
+		} else {
+			return returnValue;
+		}

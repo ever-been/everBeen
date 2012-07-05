@@ -1,0 +1,2511 @@
+format 59
+"common" // been::src::cz::cuni::mff::been::apps::common
+  revision 1
+  modified_by 2 "Administrator"
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default show_stereotype_properties default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+  show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+  show_infonote default drawing_language default show_stereotype_properties default
+  
+  java_dir "cz/cuni/mff/been/apps/common"
+  java_package "cz.cuni.mff.been.apps.common"
+  classview 128514 "common"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default show_stereotype_properties default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+    //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+    show_infonote default drawing_language default show_stereotype_properties default
+    class 129282 "Configurator"
+      abstract visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Creates the user interface used to configure benchmark experiments.
+
+@author Michal Tomcanyi
+"
+      classrelation 146690 // benchmarkExperiment (<unidirectional association>)
+	relation 146690 --->
+	  a role_name "benchmarkExperiment" private
+	    comment " Benchmark experiment that is configured by this configurator 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 146690 // benchmarkExperiment (<unidirectional association>)
+	  b parent class_ref 132738 // ExperimentMetadata
+      end
+
+      attribute 141058 "isRegression"
+	private explicit_type "boolean"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Flag indicating whether the configurator is running for regression model experiment 
+"
+      end
+
+      operation 193154 "getBenchmarkExperiment"
+	public return_type class_ref 132738 // ExperimentMetadata
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return the benchmark experiment
+"
+      end
+
+      operation 193282 "setBenchmarkExperiment"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "benchmarkExperiment" type class_ref 132738 // ExperimentMetadata
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@param benchmarkExperiment the benchmark experiment
+"
+      end
+
+      operation 193410 "setRegression"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "isRegression" explicit_type "boolean"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets regression flag
+@param isRegression
+"
+      end
+
+      operation 193538 "isRegression"
+	public explicit_return_type "boolean"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return <code>true</code> when configurator is running for regression model experiment
+"
+      end
+
+      operation 193666 "getFirstScreen"
+	abstract public return_type class_ref 134274 // Screen
+	nparams 0
+	nexceptions 1
+	  exception class_ref 142082 // ConfiguratorException
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return the first screen.
+@throws ConfiguratorException if some error occurred during creating this screen.
+"
+      end
+
+      operation 193794 "getNextScreen"
+	abstract public return_type class_ref 134274 // Screen
+	nparams 1
+	  param inout name "processedScreen" type class_ref 134274 // Screen
+	nexceptions 2
+	  exception class_ref 134530 // IllegalScreenSequenceException
+	  exception class_ref 142082 // ConfiguratorException
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+
+@param processedScreen previous screen
+@return the next screen or <code>null</code>if no more screens should follow
+@throws IllegalScreenSequenceException
+@throws ConfiguratorException if some error occurred during creating this screen.
+"
+      end
+
+      operation 193922 "getPreviousScreen"
+	abstract public return_type class_ref 134274 // Screen
+	nparams 1
+	  param inout name "processedScreen" type class_ref 134274 // Screen
+	nexceptions 2
+	  exception class_ref 134530 // IllegalScreenSequenceException
+	  exception class_ref 142082 // ConfiguratorException
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@param processedScreen previous screen
+@return the next screen
+@throws IllegalScreenSequenceException
+@throws ConfiguratorException if some error occurred during creating this screen.
+"
+      end
+
+      operation 194050 "getDefaultRScripts"
+	abstract public return_type class_ref 135554 // CallbackRScripts
+	nparams 0
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return default values for R scripts invoked on analysis
+"
+      end
+    end
+
+    class 129410 "TaskGenerator"
+      abstract visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 147458 // <realization>
+	relation 147458 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 147458 // <realization>
+	  b parent class_ref 142466 // TaskGeneratorInterface
+      end
+
+      classrelation 147586 // bm (<unidirectional association>)
+	relation 147586 --->
+	  a role_name "bm" private
+	    comment " Benchmark manager reference
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 147586 // bm (<unidirectional association>)
+	  b parent class_ref 132994 // BenchmarkManager
+      end
+
+      classrelation 147714 // experiment (<unidirectional association>)
+	relation 147714 --->
+	  a role_name "experiment" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 147714 // experiment (<unidirectional association>)
+	  b parent class_ref 132738 // ExperimentMetadata
+      end
+
+      classrelation 147842 // lastAdded (<unidirectional association>)
+	relation 147842 --->
+	  a role_name "lastAdded" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 147842 // lastAdded (<unidirectional association>)
+	  b parent class_ref 131074 // TaskDescriptor
+      end
+
+      attribute 146306 "isRegression"
+	private explicit_type "boolean"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Indication whether generator is running for regression experiment 
+"
+      end
+
+      attribute 146434 "activeRole"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Active role
+"
+      end
+
+      operation 196610 "TaskGenerator"
+	public explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates new generator
+No-arg constructor must exist so that generator can be created without
+using Reflections
+"
+      end
+
+      operation 196738 "startGenerator"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  exception class_ref 140418 // GeneratorException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 196866 "setBenchmarkManager"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "bm" type class_ref 132994 // BenchmarkManager
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " -------------------- API to BenchmarkManager ----------------------
+
+Sets benchmark manager instance which the generator may use
+e.g. logging, service detection
+"
+      end
+
+      operation 196994 "setExperiment"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "experiment" type class_ref 132738 // ExperimentMetadata
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets experiment metadata holding description of experiment
+"
+      end
+
+      operation 197122 "getExperiment"
+	public return_type class_ref 132738 // ExperimentMetadata
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return	experiment updated with generator run
+"
+      end
+
+      operation 197250 "setRegression"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "isRegression" explicit_type "boolean"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets regression flag
+@param isRegression
+"
+      end
+
+      operation 197378 "generate"
+	abstract protected explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  exception class_ref 140418 // GeneratorException
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " ----------------------- Main method ----------------------------
+
+Performs real generation work. Will be called in separate thread.
+Child should update its status correctly if it wants to inform user about its progress
+Children must override.
+
+@see #startGenerator()
+@throws GeneratorException when generation was unsuccessful for any reason
+		(incorrect parameters, BEEN component error)
+"
+      end
+
+      operation 197506 "registerResults"
+	abstract protected explicit_return_type "void"
+	nparams 1
+	  param inout name "roles" type class_ref 136706 // StandardRole
+	nexceptions 1
+	  exception class_ref 140418 // GeneratorException
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0}[] ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 197634 "isRegression"
+	public explicit_return_type "boolean"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " ---------------------- Utility methods ---------------------
+
+@return indication whether generator is running for regression run
+"
+      end
+
+      operation 197762 "setActiveRole"
+	protected explicit_return_type "void"
+	nparams 1
+	  param in name "activeRole" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " 
+Activates role for host lookups when creating task descriptors
+@param activeRole	role to activate
+"
+      end
+
+      operation 197890 "createTaskDescriptor"
+	protected return_type class_ref 131074 // TaskDescriptor
+	nparams 2
+	  param in name "taskName" explicit_type "String"
+	  param in name "indexOfHost" explicit_type "int"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Utility function which creates new task descriptor which starts task
+identified by <code>taskName</code>. Host runtimes are pre-filled in the descriptor
+will be determined according to active role.
+@see #setActiveRole(String)
+
+@param taskName name of task to start with task descriptor
+@return task descriptor for given task
+"
+      end
+
+      operation 198018 "createTaskDescriptor"
+	protected return_type class_ref 131074 // TaskDescriptor
+	nparams 1
+	  param in name "taskName" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Utility method to create task descriptor for a standard role.
+This method is equal to calling <code>createTaskDescriptor(taskName,0)</code>.
+@see #createTaskDescriptor(String, int)
+
+@param taskName	name of task to start with task descriptor
+@return task descriptor for given task
+"
+      end
+
+      operation 198146 "getSoftwareRepository"
+	protected return_type class_ref 142594 // SoftwareRepositoryInterface
+	nparams 0
+	nexceptions 1
+	  exception class_ref 140418 // GeneratorException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return SoftwareRepository remote interface
+"
+      end
+
+      operation 198274 "getHostManager"
+	protected return_type class_ref 138498 // HostManagerInterface
+	nparams 0
+	nexceptions 1
+	  exception class_ref 140418 // GeneratorException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return	HostManager remote interface
+@throws GeneratorException 
+"
+      end
+
+      operation 198402 "getResultsRepository"
+	protected return_type class_ref 142722 // ResultsRepositoryInterface
+	nparams 0
+	nexceptions 1
+	  exception class_ref 140418 // GeneratorException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return	ResultsRepository remote interface
+@throws GeneratorException 
+"
+      end
+
+      operation 198530 "logDebug"
+	protected explicit_return_type "void"
+	nparams 1
+	  param in name "errorMessage" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 198658 "logError"
+	protected explicit_return_type "void"
+	nparams 1
+	  param in name "errorMessage" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 198786 "logFatal"
+	protected explicit_return_type "void"
+	nparams 1
+	  param in name "errorMessage" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 198914 "logInfo"
+	protected explicit_return_type "void"
+	nparams 1
+	  param in name "infoMessage" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 199042 "logTrace"
+	protected explicit_return_type "void"
+	nparams 1
+	  param in name "infoMessage" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 199170 "logWarning"
+	protected explicit_return_type "void"
+	nparams 1
+	  param in name "warningMessage" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 199298 "isRerun"
+	protected explicit_return_type "boolean"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return true if this is reprise run, false otherwise
+"
+      end
+
+      operation 199426 "getNewBinaryCount"
+	protected explicit_return_type "int"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return number of binaries to create in current run
+"
+      end
+
+      operation 199554 "getDefaultRunCount"
+	protected explicit_return_type "int"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return default number of runs to create in new binary
+"
+      end
+
+      operation 199682 "createNewBinaries"
+	protected explicit_return_type "boolean"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return true if (at least one) new binary should be created in generator run
+"
+      end
+
+      operation 199810 "createNewRuns"
+	protected explicit_return_type "boolean"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return true when new runs should be created for any existing binary, false otherwise
+"
+      end
+
+      operation 199938 "isPackageAvailable"
+	protected explicit_return_type "boolean"
+	nparams 1
+	  param inout name "condition" type class_ref 138242 // Condition
+	nexceptions 1
+	  exception class_ref 140418 // GeneratorException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Tests package availability in software repository
+@param condition	RSL condition for package
+@return	<code>true</code> if package is available
+			<code>false</code> otherwise
+@throws GeneratorException when an error in communication with SoftwareRepositry occurs
+"
+      end
+
+      operation 200066 "availablePackages"
+	protected return_type class_ref 142850 // PackageMetadata
+	nparams 1
+	  param inout name "condition" type class_ref 138242 // Condition
+	nexceptions 1
+	  exception class_ref 140418 // GeneratorException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@param condition	RSL condition for package
+@return	packages available in SoftwareRepository matching given condition
+@throws GeneratorException when an error in communication with SoftwareRepositry occurs
+"
+      end
+
+      operation 200194 "getNextBinaryID"
+	protected return_type class_ref 138754 // BID
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return BEEN-wide unique binary identifier represented by BID object
+"
+      end
+
+      operation 200322 "getNextRunID"
+	protected return_type class_ref 140290 // RID
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return BEEN-wide unique run identifier represented by RID object
+"
+      end
+
+      operation 200450 "findUnusedBinaries"
+	protected return_type class_ref 142850 // PackageMetadata
+	nparams 2
+	  param inout name "query" type class_ref 138242 // Condition
+	  param in name "packageName" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 140418 // GeneratorException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Searches for unused binary packages fitting provided <code>query</code>.
+Used packages are determined according to the metadata flag stored
+in binary metadata under <code>packageName</code> key.
+
+The binary is <b>NOT</b> used when its metadata flag is not found among flags
+from used binaries. 
+
+<code>null</code> value can't be used as metadata flag and used binaries with
+such flag are skipped.
+
+@param query 	RSL query to use with SoftwareRepository to find all available packages
+@param packageName	name of key to binary metadata under which metadata flag is found
+@return	array of unused binary packages 
+@throws GeneratorException when SoftwareRepository is not available
+"
+      end
+
+      operation 200578 "createNewBinary"
+	protected return_type class_ref 138754 // BID
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Creates and opens new binary.
+@return ID of newly created binary
+"
+      end
+
+      operation 200706 "getOpenBinary"
+	protected return_type class_ref 138754 // BID
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IllegalStateException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see TaskSequence#getOpenBinary()
+"
+      end
+
+      operation 200834 "closeBinary"
+	protected explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Closes last open binary (as well as run if any open)
+"
+      end
+
+      operation 200962 "createNewRun"
+	protected return_type class_ref 140290 // RID
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Creates and opens new run within currently open binary
+@return ID of newly created run
+"
+      end
+
+      operation 201090 "getOpenRun"
+	protected return_type class_ref 140290 // RID
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IllegalStateException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see TaskSequence#getOpenRun()
+"
+      end
+
+      operation 201218 "closeRun"
+	protected explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Closes last open run (leaves open last binary)
+"
+      end
+
+      operation 201346 "addWithDependency"
+	protected explicit_return_type "void"
+	nparams 3
+	  param inout name "task" type class_ref 131074 // TaskDescriptor
+	  param in name "dependency" explicit_type "String"
+	  param in name "checkPoint" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Utility method which adds task to the sequence with dependency on
+specific <code>checkPoint</code> of given <code>dependency</code> task
+
+Task descriptor will be modified in the manner that new dependency will
+be added via addDependency() method
+
+@param task	task descriptor to add
+@param dependency	unique TID of dependency
+@param checkPoint	name of checkpoint to wait for
+"
+      end
+
+      operation 201474 "addTask"
+	protected explicit_return_type "void"
+	nparams 1
+	  param inout name "task" type class_ref 131074 // TaskDescriptor
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Adds task to last open hierarchy level in the experiment's sequence
+@param task	task to add
+"
+      end
+
+      operation 201602 "addAfterLast"
+	protected explicit_return_type "void"
+	nparams 1
+	  param inout name "task" type class_ref 131074 // TaskDescriptor
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Adds task to last open hierarchy level in sequence with success dependency
+on the last task added to the sequence
+
+Call to this method is equivalent to
+
+@param task	task to add
+@throws NullPointerException when no task was added to the sequence
+"
+      end
+
+      operation 201730 "addResultsMapping"
+	protected explicit_return_type "void"
+	nparams 2
+	  param in name "role" explicit_type "String"
+	  param in name "host" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Adds new results record to experiment metadata.
+Results repository will be informed about results and will check
+their arrival.
+
+@param role	client-defined name of role
+@param host	host from which results will arrive
+"
+      end
+
+      operation 201858 "getLastAdded"
+	public return_type class_ref 131074 // TaskDescriptor
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return last task added to the sequence by any of <code>add*</code>
+			methods or <code>null</code> when no task was added yet
+"
+      end
+
+      operation 201986 "lookupBeenService"
+	private explicit_return_type "Remote"
+	nparams 1
+	  param in name "serviceName" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 140418 // GeneratorException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Performs lookup of (main) remote interface of a BEEN service
+@param serviceName name of service to look-up
+@return	main remote service interface or <code>null</code> if service could not be found
+"
+      end
+
+      operation 202114 "setupResults"
+	private explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  exception class_ref 140418 // GeneratorException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 202242 "checkRemoteReferences"
+	private explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  exception class_ref 140418 // GeneratorException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Checks whether BEEN components are available
+"
+      end
+
+      operation 202370 "getNextTID"
+	private return_type class_ref 142978 // TID
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return BEEN-unique task identifier represented by TID object
+"
+      end
+
+      operation 202498 "getActiveRole"
+	private explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return active role which will be used for creating task descriptors
+"
+      end
+
+      operation 202626 "success"
+	class_operation protected return_type class_ref 143106 // Dependency
+	nparams 1
+	  param in name "taskId" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+
+@param taskId task ID of the task which is the dependency.
+@return a dependency on a successful finish of a task.
+"
+      end
+
+      operation 202754 "error"
+	class_operation protected return_type class_ref 143106 // Dependency
+	nparams 1
+	  param in name "taskId" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+
+@param taskId task ID of the task which is the dependency.
+@return a dependency on an unsuccessful finish of a task.
+"
+      end
+
+      operation 202882 "finish"
+	class_operation protected return_type class_ref 143106 // Dependency
+	nparams 1
+	  param in name "taskId" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+
+@param taskId task ID of the task which is the dependency. 
+@return a dependency on a successful or unsuccessful finish of a task.
+"
+      end
+
+      operation 203010 "generateLogCollection"
+	private explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Generates log collection task and make dependency on finish of all previous tasks,
+which will tell Results Repository to collect all the rest of the logs   
+"
+      end
+
+      operation 203138 "dumpProperties"
+	private explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+    end
+
+    class 129538 "VersionProvider"
+      abstract visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 152450 "FIRST_RUN"
+	class_attribute const_attribute public explicit_type "long"
+	init_value "=  -1"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Constant to indicate that version provider is running for the first run 
+"
+      end
+
+      attribute 152578 "NO_END"
+	class_attribute const_attribute public explicit_type "long"
+	init_value "=  -1"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Constant to indicate that user did not specified any upper boundary value 
+"
+      end
+
+      attribute 152706 "NO_START"
+	class_attribute const_attribute public explicit_type "long"
+	init_value "=  -1"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Constant to indicate that user did not specified any lower boundary value 
+"
+      end
+
+      classrelation 150402 // model (<unidirectional association>)
+	relation 150402 --->
+	  a role_name "model" protected
+	    comment " Experiment model from which subsequent experiments are derived by version provider run 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 150402 // model (<unidirectional association>)
+	  b parent class_ref 132738 // ExperimentMetadata
+      end
+
+      classrelation 150530 // processedVersions (<unidirectional association>)
+	relation 150530 --->
+	  a role_name "processedVersions" multiplicity "[]" protected
+	    comment " List of processed versions 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	    classrelation_ref 150530 // processedVersions (<unidirectional association>)
+	  b parent class_ref 141442 // Version
+      end
+
+      attribute 152834 "lastRun"
+	protected explicit_type "long"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Time stamp of last <b>valid</b> run
+@see #getVersions()
+
+"
+      end
+
+      classrelation 150658 // schedule (<unidirectional association>)
+	relation 150658 --->
+	  a role_name "schedule" protected
+	    comment " Scheduling information 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 150658 // schedule (<unidirectional association>)
+	  b parent class_ref 131458 // SchedulerInfo
+      end
+
+      attribute 152962 "historicalStart"
+	protected explicit_type "long"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Time interval in which the version provider should detect versions. (Versions out of this interval should be detected) 
+ milliseconds"
+      end
+
+      attribute 153090 "historicalEnd"
+	protected explicit_type "long"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " milliseconds"
+      end
+
+      classrelation 150786 // benchmarkManager (<unidirectional association>)
+	relation 150786 --->
+	  a role_name "benchmarkManager" protected
+	    comment " BenchmarkManager instance mainly for logging purposes 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 150786 // benchmarkManager (<unidirectional association>)
+	  b parent class_ref 135682 // BenchmarkManagerLocalInterface
+      end
+
+      operation 204802 "VersionProvider"
+	public explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 204930 "getVersions"
+	abstract public return_type class_ref 132738 // ExperimentMetadata
+	nparams 0
+	nexceptions 1
+	  explicit_exception "Exception"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Queries version provider for list of versions.
+
+Expected functionality:
+<p> 
+return list of (experiments for) versions that
+were added to the repository since the last run
+</p>
+
+Experiments created by the version provider will be
+derived from the model experiment, the version provider
+is expected to perform plugin-dependent modification of
+the basic configuration. It also may use some properties
+created by plugin configurator for its own use.
+
+<code>historicalStart</code> designates a point in history
+before which versions from repository should be not detected 
+(i.e. ignored) by the version provider
+
+<p>
+To assure consistency (i.e. no version is skipped), when version provider
+is not able to provide all versions from repository (e.g. network error),
+it should throw an exception. In such case BenchmarkManager will
+restart the version provider according to schedule, but will not update
+the historical start, so that version provider has a chance to detect
+previously missed versions of software.
+</p>
+
+<code>processedVersions</code> parameter is read-write list of versions that
+version provider already detected. During its execution, it should add
+newly detected versions to the list.
+
+<code>lastRun</code> argument is the time stamp of the last execution of
+version provider. When it is running for the first time, the argument is
+set to {@link #FIRST_RUN} constant.
+
+The list of experiments should be ordered by software version
+ascending (e.g. 1.4, 1.5)
+
+
+
+@return list of unprocessed versions, sorted by version
+@throws Exception	exception indicating that version provider could not fetch
+						all available versions
+"
+      end
+
+      operation 205058 "setLocalManager"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "bm" type class_ref 128898 // PluginManagerLocalInterface
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 205186 "getProcessedVersions"
+	abstract public return_type class_ref 141442 // Version
+	nparams 0
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return list of versions processed in this run
+"
+      end
+
+      operation 205314 "duplicateModel"
+	protected return_type class_ref 132738 // ExperimentMetadata
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 205442 "setHistoricalStart"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "historicalStart" explicit_type "long"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 205570 "setHistoricalEnd"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "historicalEnd" explicit_type "long"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 205698 "setLastRun"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "lastRun" explicit_type "long"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " ------------------- SETTERS AS WE DON'T WANT TO USE PARAMETRIC CONSTRUCTOR-----------------------"
+      end
+
+      operation 205826 "setModel"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "model" type class_ref 132738 // ExperimentMetadata
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 205954 "setProcessedVersions"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "processedVersions" type class_ref 141442 // Version
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0}[] ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets version that were successfully processed by the provider in all its previous runs
+Will be set to an empty array, in the first run (no versions were processed)
+
+@param processedVersions	list of processed versions or <code>Version[0]</code> in the first run
+"
+      end
+
+      operation 206082 "setSchedule"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "schedule" type class_ref 131458 // SchedulerInfo
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 206210 "logDebug"
+	protected explicit_return_type "void"
+	nparams 1
+	  param in name "debugMessage" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " ---------------- LOGGING METHODS ------------------"
+      end
+
+      operation 206338 "logError"
+	protected explicit_return_type "void"
+	nparams 1
+	  param in name "errorMessage" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 206466 "logInfo"
+	protected explicit_return_type "void"
+	nparams 1
+	  param in name "infoMessage" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 206594 "logWarning"
+	protected explicit_return_type "void"
+	nparams 1
+	  param in name "warningMessage" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+    end
+
+    class 142082 "ConfiguratorException"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Thrown when some error occured in the configurator, which creates
+the GUI for configuring the experiment.
+
+@author Jaroslav Urban
+"
+      classrelation 153090 // <generalisation>
+	relation 153090 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 153090 // <generalisation>
+	  b parent class_ref 130946 // BenchmarkManagerException
+      end
+
+      operation 218498 "ConfiguratorException"
+	public explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>ConfiguratorException</code> object.
+"
+      end
+
+      operation 218626 "ConfiguratorException"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "message" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>ConfiguratorException</code> object
+with specified message.
+
+@param message exception message
+"
+      end
+
+      operation 218754 "ConfiguratorException"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "cause" explicit_type "Throwable"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>ConfiguratorException</code> object
+with specified cause.
+
+@param cause exception cause
+"
+      end
+
+      operation 218882 "ConfiguratorException"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "message" explicit_type "String"
+	  param inout name "cause" explicit_type "Throwable"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>ConfiguratorException</code> object
+with specified message and cause.
+
+@param message exception message
+@param cause exception cause
+"
+      end
+    end
+
+    class 142466 "TaskGeneratorInterface"
+      visibility public stereotype "interface"
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}interface ${name}${extends} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Interface to task generators. Implementations should not use this class, instead
+they should extend {@link TaskGenerator} class.
+
+@author Michal Tomcanyi
+
+"
+      operation 196226 "startGenerator"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  exception class_ref 140418 // GeneratorException
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Starts the generating procedure
+
+The method initialises generator and executes <code>generate()</code>
+method
+
+@throws GeneratorException when generation was unsuccessful for any reason
+		(incorrect or missing parameter, BEEN component error )
+"
+      end
+
+      operation 196354 "setExperiment"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "experiment" type class_ref 132738 // ExperimentMetadata
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets experiment metadata
+
+@param experiment Experiment metadata
+"
+      end
+
+      operation 196482 "getExperiment"
+	public return_type class_ref 132738 // ExperimentMetadata
+	nparams 0
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return experiment's metadata
+"
+      end
+    end
+
+    class 143874 "TimestampBasedVersionProvider"
+      abstract visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 150914 // <generalisation>
+	relation 150914 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 150914 // <generalisation>
+	  b parent class_ref 129538 // VersionProvider
+      end
+
+      classrelation 151042 // newVersions (<unidirectional association>)
+	relation 151042 --->
+	  stereotype "LinkedList"
+	  a role_name "newVersions" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<${type}> ${name}${value};
+"
+	    classrelation_ref 151042 // newVersions (<unidirectional association>)
+	  b parent class_ref 141442 // Version
+      end
+
+      operation 206722 "getVersions"
+	public return_type class_ref 132738 // ExperimentMetadata
+	nparams 0
+	nexceptions 1
+	  explicit_exception "Exception"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+      end
+
+      operation 206850 "convertVersionsToTimestamps"
+	private explicit_return_type "HashSet<Long>"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 206978 "handleTimestamp"
+	abstract public return_type class_ref 132738 // ExperimentMetadata
+	nparams 1
+	  param in name "timestamp" explicit_type "long"
+	nexceptions 1
+	  explicit_exception "Exception"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Called with every new time stamp. Descendant should modify the model experiment and return
+the updated instance. 
+
+<p>
+Note: Method should never return <code>null</code>
+</p>
+
+@param timestamp		new generated time stamp according to schedule
+@return modified model experiment reflecting detected version time stamp
+@throws Exception	thrown to indicate that an error occurred, will be propagated to {@link #getVersions()}
+
+@see VersionProvider#duplicateModel()
+"
+      end
+
+      operation 207106 "getProcessedVersions"
+	public return_type class_ref 141442 // Version
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+      end
+
+      operation 207234 "createSchedulerEntry"
+	private return_type class_ref 132226 // SchedulerEntry
+	nparams 1
+	  param inout name "newSchedule" type class_ref 131458 // SchedulerInfo
+	nexceptions 1
+	  exception class_ref 144002 // PastDateException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+    end
+
+    class 145794 "ConfigParserAdapter"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+SAX parser adapter which extracts basic information about benchmark plug-in
+from its XML configuration
+"
+      classrelation 152834 // <generalisation>
+	relation 152834 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 152834 // <generalisation>
+	  b parent class_ref 145922 // DefaultHandler
+      end
+
+      attribute 162690 "ELEMENT_BENCHMARK"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"benchmark\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " elements 
+"
+      end
+
+      attribute 162818 "ELEMENT_DESCRIPTION"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"description\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 162946 "BENCHMARK_NAME"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"name\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " attributes 
+"
+      end
+
+      attribute 163074 "BENCHMARK_VERSION"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"version\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 163202 "descActive"
+	private explicit_type "boolean"
+	init_value "=  false"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " flag indicating whether we are parsing inside
+ Benchmark.XML_DESCIRPTION_ELEM
+"
+      end
+
+      attribute 163330 "benchmarkName"
+	private explicit_type "StringBuffer"
+	init_value "=  new StringBuffer()"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " fields will be filled from XML
+"
+      end
+
+      attribute 163458 "benchmarkVersion"
+	private explicit_type "StringBuffer"
+	init_value "=  new StringBuffer()"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 163586 "benchmarkDescription"
+	private explicit_type "StringBuffer"
+	init_value "=  new StringBuffer()"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 152962 // resolver (<unidirectional association>)
+	relation 152962 --->
+	  a role_name "resolver" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 152962 // resolver (<unidirectional association>)
+	  b parent class_ref 146050 // PluginEntityResolver
+      end
+
+      operation 217090 "ConfigParserAdapter"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "baseURI" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 217218 "startElement"
+	public explicit_return_type "void"
+	nparams 4
+	  param in name "uri" explicit_type "String"
+	  param in name "localName" explicit_type "String"
+	  param in name "qName" explicit_type "String"
+	  param inout name "atts" explicit_type "Attributes"
+	nexceptions 1
+	  explicit_exception "SAXException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+Method processes benchmark and description elements, all the others are
+ignored.
+"
+      end
+
+      operation 217346 "characters"
+	public explicit_return_type "void"
+	nparams 3
+	  param in name "ch" explicit_type "char"
+	  param in name "start" explicit_type "int"
+	  param in name "length" explicit_type "int"
+	nexceptions 1
+	  explicit_exception "SAXException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0}[] ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+      end
+
+      operation 217474 "reset"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 217602 "endElement"
+	public explicit_return_type "void"
+	nparams 3
+	  param in name "uri" explicit_type "String"
+	  param in name "localName" explicit_type "String"
+	  param in name "qName" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "SAXException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+@see org.xml.sax.ContentHandler#endElement(java.lang.String, java.lang.String, java.lang.String)
+"
+      end
+
+      operation 217730 "resolveEntity"
+	public explicit_return_type "InputSource"
+	nparams 2
+	  param in name "publicId" explicit_type "String"
+	  param in name "systemId" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "SAXException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+      end
+
+      operation 217858 "getBenchmarkName"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 217986 "getBenchmarkVersion"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 218114 "getBenchmarkDescription"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 218242 "unparsedEntityDecl"
+	public explicit_return_type "void"
+	nparams 4
+	  param in name "name" explicit_type "String"
+	  param in name "publicId" explicit_type "String"
+	  param in name "systemId" explicit_type "String"
+	  param in name "notationName" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "SAXException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+      end
+
+      operation 218370 "skippedEntity"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "name" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "SAXException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+      end
+    end
+
+    class 146050 "PluginEntityResolver"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 153218 // <realization>
+	relation 153218 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 153218 // <realization>
+	  b parent class_ref 146178 // EntityResolver
+      end
+
+      attribute 163714 "PLUGIN_DTD"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"been-plugin.dtd\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 163842 "SYMBOLIC_NAMES_DTD"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"symbolic-names.dtd\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 163970 "baseURI"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      operation 219010 "PluginEntityResolver"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "baseURI" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 219138 "resolveEntity"
+	public explicit_return_type "InputSource"
+	nparams 2
+	  param in name "publicId" explicit_type "String"
+	  param in name "systemId" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "SAXException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+    end
+
+    class 146306 "TaskGeneratorException"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Thrown when an error has occured during task generation.
+
+@author Jaroslav Urban
+"
+      classrelation 153346 // <generalisation>
+	relation 153346 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 153346 // <generalisation>
+	  b parent class_ref 128130 // BeenException
+      end
+
+      operation 219266 "TaskGeneratorException"
+	public explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>TaskGeneratorException</code> object.
+"
+      end
+
+      operation 219394 "TaskGeneratorException"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "message" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>TaskGeneratorException</code> object
+with specified message.
+
+@param message exception message
+"
+      end
+
+      operation 219522 "TaskGeneratorException"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "cause" explicit_type "Throwable"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>TaskGeneratorException</code> object
+with specified cause.
+
+@param cause exception cause
+"
+      end
+
+      operation 219650 "TaskGeneratorException"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "message" explicit_type "String"
+	  param inout name "cause" explicit_type "Throwable"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>TaskGeneratorException</code> object
+with specified message and cause.
+
+@param message exception message
+@param cause exception cause
+"
+      end
+    end
+  end
+
+  deploymentview 128898 "common"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+    artifact 134018 "Configurator"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import cz.cuni.mff.been.apps.benchmarkmanager.ExperimentMetadata;
+import cz.cuni.mff.been.apps.gui.IllegalScreenSequenceException;
+import cz.cuni.mff.been.apps.gui.Screen;
+import cz.cuni.mff.been.resultsrepository.gui.CallbackRScripts;
+${definition}"
+      associated_classes
+	class_ref 129282 // Configurator
+      end
+    end
+
+    artifact 134274 "TaskGeneratorInterface"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import cz.cuni.mff.been.apps.benchmarkmanager.ExperimentMetadata;
+import cz.cuni.mff.been.apps.benchmarkmanager.GeneratorException;
+${definition}"
+      associated_classes
+	class_ref 142466 // TaskGeneratorInterface
+      end
+    end
+
+    artifact 134402 "TaskGenerator"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.rmi.Remote;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import cz.cuni.mff.been.apps.benchmarkmanager.BenchmarkManager;
+import cz.cuni.mff.been.apps.benchmarkmanager.BenchmarkManagerException;
+import cz.cuni.mff.been.apps.benchmarkmanager.BinaryMetadata;
+import cz.cuni.mff.been.apps.benchmarkmanager.ExperimentMetadata;
+import cz.cuni.mff.been.apps.benchmarkmanager.GeneratorException;
+import cz.cuni.mff.been.apps.benchmarkmanager.StandardRole;
+import cz.cuni.mff.been.apps.benchmarkmanager.TaskSequence;
+import cz.cuni.mff.been.common.id.BID;
+import cz.cuni.mff.been.common.id.RID;
+import cz.cuni.mff.been.common.id.TID;
+import cz.cuni.mff.been.common.rsl.Condition;
+import cz.cuni.mff.been.hostmanager.HostManagerInterface;
+import cz.cuni.mff.been.hostmanager.HostManagerService;
+import cz.cuni.mff.been.resultsrepository.ResultsRepositoryInterface;
+import cz.cuni.mff.been.resultsrepository.ResultsRepositoryService;
+import cz.cuni.mff.been.softwarerepository.PackageMetadata;
+import cz.cuni.mff.been.softwarerepository.RSLPackageQueryCallback;
+import cz.cuni.mff.been.softwarerepository.SoftwareRepositoryInterface;
+import cz.cuni.mff.been.softwarerepository.SoftwareRepositoryService;
+import cz.cuni.mff.been.task.Task;
+import cz.cuni.mff.been.taskmanager.Dependency;
+import cz.cuni.mff.been.taskmanager.TaskDescriptor;
+${definition}"
+      associated_classes
+	class_ref 129410 // TaskGenerator
+      end
+    end
+
+    artifact 134658 "VersionProvider"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import cz.cuni.mff.been.apps.PluginManagerLocalInterface;
+import cz.cuni.mff.been.apps.benchmarkmanager.BenchmarkManagerLocalInterface;
+import cz.cuni.mff.been.apps.benchmarkmanager.ExperimentMetadata;
+import cz.cuni.mff.been.apps.gui.SchedulerInfo;
+import cz.cuni.mff.been.common.Version;
+import cz.cuni.mff.been.common.id.EID;
+${definition}"
+      associated_classes
+	class_ref 129538 // VersionProvider
+      end
+    end
+
+    artifact 134786 "TimestampBasedVersionProvider"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.util.HashSet;
+import java.util.LinkedList;
+import cz.cuni.mff.been.apps.benchmarkmanager.ExperimentMetadata;
+import cz.cuni.mff.been.apps.gui.SchedulerInfo;
+import cz.cuni.mff.been.apps.scheduler.PastDateException;
+import cz.cuni.mff.been.apps.scheduler.SchedulerEntry;
+import cz.cuni.mff.been.common.Version;
+${definition}"
+      associated_classes
+	class_ref 143874 // TimestampBasedVersionProvider
+      end
+    end
+
+    artifact 135810 "ConfigParserAdapter"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
+${definition}"
+      associated_classes
+	class_ref 145794 // ConfigParserAdapter
+      end
+    end
+
+    artifact 135938 "ConfiguratorException"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import cz.cuni.mff.been.apps.benchmarkmanager.BenchmarkManagerException;
+${definition}"
+      associated_classes
+	class_ref 142082 // ConfiguratorException
+      end
+    end
+
+    artifact 136066 "PluginEntityResolver"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+${definition}"
+      associated_classes
+	class_ref 146050 // PluginEntityResolver
+      end
+    end
+
+    artifact 136194 "TaskGeneratorException"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import cz.cuni.mff.been.common.BeenException;
+${definition}"
+      associated_classes
+	class_ref 146306 // TaskGeneratorException
+      end
+    end
+  end
+end

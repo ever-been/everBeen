@@ -1,0 +1,1853 @@
+format 70
+"id" // been::src::cz::cuni::mff::been::common::id
+  revision 2
+  modified_by 8 "BoRiS"
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+  show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+  show_infonote default drawing_language default show_stereotype_properties default
+  
+  java_dir "cz/cuni/mff/been/common/id"
+  java_package "cz.cuni.mff.been.common.id"
+  classview 128386 "id"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+    //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+    show_infonote default drawing_language default show_stereotype_properties default
+    class 128642 "PEID"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Class representing the plugin entry identifier.
+
+@author Michal Tomcanyi
+@author David Majda
+"
+      classrelation 165762 // <generalisation>
+	relation 165762 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 165762 // <generalisation>
+	  b parent class_ref 130690 // ID
+      end
+
+      classrelation 165890 // INVALID (<unidirectional association>)
+	relation 165890 --->
+	  a role_name "INVALID" init_value "=  new PEID(\"\")" class_relation const_relation public
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 165890 // INVALID (<unidirectional association>)
+	  b parent class_ref 128642 // PEID
+      end
+
+      attribute 177538 "pluginID"
+	const_attribute private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      operation 265986 "PEID"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "pluginID" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>PEID</code> object, representing an 
+unique plugin identifier given in the <code>pluginID</code> parameter.
+
+@param pluginID experiment identifier to represent
+"
+      end
+
+      operation 266114 "valueOf"
+	class_operation public return_type class_ref 128642 // PEID
+	nparams 1
+	  param in name "s" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns an <code>PEID</code> object holding the value of the specified
+<code>String</code>.
+
+@param s the string to be parsed
+@return an <code>PEID</code> object holding the value represented by the
+         string argument
+@throws NumberFormatException if the <code>String</code> does not contain
+         a parsable <code>PEID</code>
+"
+      end
+
+      operation 266242 "value"
+	public explicit_return_type "Object"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see ID#value()
+"
+      end
+
+      operation 266370 "compareTo"
+	public explicit_return_type "int"
+	nparams 1
+	  param inout name "o" explicit_type "Object"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Compares this <code>PEID</code> to another <code>Object</code>. If the
+<code>Object</code> is an <code>PEID</code>, this function behaves like
+<code>compareTo(PEID)</code>. Otherwise, it throws a
+<code>ClassCastException</code> (as <code>PEID</code>s are comparable only
+to other <code>PEID</code>s).
+      
+@param o the <code>Object</code> to be compared.
+@return the value <code>0</code> if the argument is an PEID equal
+         to this PEID; a value less than <code>0</code>
+         if the argument is an PEID greater than this PEID;
+         and a value greater than <code>0</code> if the argument 
+         is an PEID less than this PEID.
+@throws ClassCastException if the argument is not an <code>PEID</code>.
+
+@see java.lang.Comparable#compareTo(java.lang.Object)
+"
+      end
+
+      operation 266498 "compareTo"
+	public explicit_return_type "int"
+	nparams 1
+	  param inout name "p" type class_ref 128642 // PEID
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Compares two <code>PEID</code>s. Comparison algorithm simply compares 
+plugin IDs as Strings  
+      
+@param p the <code>PEID</code> to be compared.
+@return the value <code>0</code> if the argument is an PEID equal
+         to this PEID; a value less than <code>0</code>
+         if the argument is an PEID greater than this PEID;
+         and a value greater than <code>0</code> if the argument 
+         is an PEID less than this PEID.
+"
+      end
+
+      operation 266626 "equals"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "o" explicit_type "Object"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " 
+Compares this <code>PEID</code> to the specified object. The result is
+<code>true</code> if and only if the argument is not <code>null</code> and
+is an <code>PEID</code> object that represents the same version as this
+object.
+
+@throws ClassCastException if the argument is not an <code>PEID</code>.
+
+@see java.lang.Object#equals(java.lang.Object)
+"
+      end
+
+      operation 266754 "hashCode"
+	public explicit_return_type "int"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see ID#hashCode()
+"
+      end
+
+      operation 266882 "toString"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see ID#toString()
+"
+      end
+    end
+
+    class 130434 "AID"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Class representing the analysis identifier.
+
+@author David Majda
+"
+      classrelation 164866 // <generalisation>
+	relation 164866 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 164866 // <generalisation>
+	  b parent class_ref 139010 // OID
+      end
+
+      operation 263682 "AID"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "value" explicit_type "long"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>AID</code> object, representing an analysis
+identifier given in the <code>value</code> parameter.
+
+@param value analysis identifier to represent
+"
+      end
+
+      operation 263810 "AID"
+	package explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>AID</code> object. Used by the
+<code>IDManager</code>. 
+"
+      end
+
+      operation 263938 "valueOf"
+	class_operation public return_type class_ref 130434 // AID
+	nparams 1
+	  param in name "s" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns an <code>AID</code> object holding the value of the specified
+<code>String</code>.
+
+@param s the string to be parsed
+@return an <code>AID</code> object holding the value represented by the
+         string argument
+@throws NumberFormatException if the <code>String</code> does not contain
+         a parsable <code>AID</code>
+"
+      end
+
+      operation 264066 "toNamedString"
+	class_operation public explicit_return_type "String"
+	nparams 1
+	  param inout name "id" type class_ref 130434 // AID
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@param id identifier of analysis
+@return	string AID(id)
+"
+      end
+    end
+
+    class 130690 "ID"
+      abstract visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+General abstract class representing unique identifier of some entity.
+The value of the identifier can be of any type and is returned by the
+<code>value</code> method.
+
+Every unique identifier represented by some subclass of this class is
+expected to be serializable to <code>String</code> via standard methods
+<code>toString</code> and <code>valueOf</code>. This requirement is to
+allow the web interface to put these identifiers to the HTML forms.
+
+@author Michal Tomcanyi
+@author David Majda
+"
+      classrelation 164354 // <realization>
+	relation 164354 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 164354 // <realization>
+	  b parent class_ref 148226 // Serializable
+      end
+
+      classrelation 164482 // <realization>
+	relation 164482 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 164482 // <realization>
+	  b parent class_ref 148098 // Comparable
+      end
+
+      operation 261634 "value"
+	abstract public explicit_return_type "Object"
+	nparams 0
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns the value of the unique identifier. Because the value can be
+implemented as any type, method returns general class <code>Object</code>. 
+
+@return returns value of the unique identifier
+"
+      end
+
+      operation 261762 "compareTo"
+	abstract public explicit_return_type "int"
+	nparams 1
+	  param inout name "o" explicit_type "Object"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Compares this ID with the specified object for order. Returns a negative 
+integer, zero, or a positive integer as this object is less than, equal
+to, or greater than the specified ID.
+      
+@param o the <code>Object</code> to be compared
+@return a negative integer, zero, or a positive integer as this ID is less
+         than, equal to, or greater than the specified object
+@throws ClassCastException if the argument is not an ID representing the
+         same type of entity
+
+@see java.lang.Comparable#compareTo(java.lang.Object)
+"
+      end
+
+      operation 261890 "equals"
+	abstract public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "o" explicit_type "Object"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " 
+Compares this ID to the specified object. The result is <code>true</code>
+if and only if the argument is not <code>null</code> and is an <code>ID</code>
+object that represents the same entity as this object.
+
+@throws ClassCastException if the argument is not an ID representing the
+         same type of entity
+
+@see java.lang.Object#equals(java.lang.Object)
+"
+      end
+
+      operation 262018 "hashCode"
+	abstract public explicit_return_type "int"
+	nparams 0
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns a hash code value for this object.
+
+@return a hash code value for this object
+
+@see java.lang.Object#hashCode()
+"
+      end
+
+      operation 262146 "toString"
+	abstract public explicit_return_type "String"
+	nparams 0
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " 
+Returns a string representation of the identifier.
+ 
+@return string representation of the identifier
+
+@see java.lang.Object#toString()
+"
+      end
+
+      operation 262274 "valueOf"
+	class_operation public return_type class_ref 130690 // ID
+	nparams 1
+	  param in name "s" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns an <code>ID</code> object holding the value of the specified
+<code>String</code>.
+
+@param s the string to be parsed
+@return an <code>ID</code> object holding the value represented by the
+         string argument
+"
+      end
+    end
+
+    class 133378 "EID"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Class representing the experiment identifier.
+
+@author David Majda
+"
+      classrelation 165250 // <generalisation>
+	relation 165250 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 165250 // <generalisation>
+	  b parent class_ref 139010 // OID
+      end
+
+      operation 264962 "EID"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "value" explicit_type "long"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>EID</code> object, representing an experiment
+identifier given in the <code>value</code> parameter.
+
+@param value experiment identifier to represent
+"
+      end
+
+      operation 265090 "EID"
+	package explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>EID</code> object. Used by the
+<code>IDManager</code>. 
+"
+      end
+
+      operation 265218 "valueOf"
+	class_operation public return_type class_ref 133378 // EID
+	nparams 1
+	  param in name "s" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns an <code>EID</code> object holding the value of the specified
+<code>String</code>.
+
+@param s the string to be parsed
+@return an <code>EID</code> object holding the value represented by the
+         string argument
+@throws NumberFormatException if the <code>String</code> does not contain
+         a parsable <code>EID</code>
+"
+      end
+
+      operation 265346 "toNamedString"
+	class_operation public explicit_return_type "String"
+	nparams 1
+	  param inout name "id" type class_ref 133378 // EID
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@param id identifier of experiment
+@return	string EID(id)
+"
+      end
+    end
+
+    class 133762 "Identifiable"
+      visibility public stereotype "interface"
+      nformals 2
+      formal name "T" type "" explicit_default_value ""
+        explicit_extends ""
+      formal name "T" type "" explicit_default_value ""
+        explicit_extends ""
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}interface ${name}${extends} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      operation 144642 "getID"
+	public explicit_return_type "T"
+	nparams 0
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+    end
+
+    class 134402 "BRID"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Class representing the benchmark run identifier. In the web interfeace, user
+can run more benchmarks in one session (e.g. open more web browser windows,
+and click through the wizards in both of them). This means that we need more
+instances of objects capturing the state (<code>BenchmarkRunState</code>)
+and they must be identified - and this is accomplished by this identifier.
+
+@author David Majda
+"
+      classrelation 165122 // <generalisation>
+	relation 165122 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 165122 // <generalisation>
+	  b parent class_ref 139010 // OID
+      end
+
+      operation 264578 "BRID"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "value" explicit_type "long"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>BRID</code> object, representing an benchmark run
+identifier given in the <code>value</code> parameter.
+
+@param value analysis identifier to represent
+"
+      end
+
+      operation 264706 "BRID"
+	package explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>BRID</code> object. Used by the
+<code>IDManager</code>. 
+"
+      end
+
+      operation 264834 "valueOf"
+	class_operation public return_type class_ref 134402 // BRID
+	nparams 1
+	  param in name "s" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns an <code>BRID</code> object holding the value of the specified
+<code>String</code>.
+
+@param s the string to be parsed
+@return an <code>BRID</code> object holding the value represented by the
+         string argument
+@throws NumberFormatException if the <code>String</code> does not contain
+         a parsable <code>BRID</code>
+"
+      end
+    end
+
+    class 135810 "IDManagerInterface"
+      abstract visibility public stereotype "interface"
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}interface ${name}${extends} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      operation 265474 "getNext"
+	abstract public explicit_return_type "T"
+	nparams 1
+	  param inout name "clazz" explicit_type "Class<T>"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}<T extends OID> ${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+    end
+
+    class 138754 "BID"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Class representing the binary identifier.
+
+@author David Majda
+"
+      classrelation 164994 // <generalisation>
+	relation 164994 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 164994 // <generalisation>
+	  b parent class_ref 139010 // OID
+      end
+
+      operation 264194 "BID"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "value" explicit_type "long"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>BID</code> object, representing an binary
+identifier given in the <code>value</code> parameter.
+
+@param value binary identifier to represent
+"
+      end
+
+      operation 264322 "BID"
+	package explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>BID</code> object. Used by the
+<code>IDManager</code>. 
+"
+      end
+
+      operation 264450 "valueOf"
+	class_operation public return_type class_ref 138754 // BID
+	nparams 1
+	  param in name "s" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns an <code>BID</code> object holding the value of the specified
+<code>String</code>.
+
+@param s the string to be parsed
+@return an <code>BID</code> object holding the value represented by the
+         string argument
+@throws NumberFormatException if the <code>String</code> does not contain
+         a parsable <code>BID</code>
+"
+      end
+    end
+
+    class 139010 "OID"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Class representing unique identifier of some entity. This identifier has
+type long.
+
+@author Michal Tomcanyi
+@author David Majda
+"
+      classrelation 164610 // <generalisation>
+	relation 164610 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 164610 // <generalisation>
+	  b parent class_ref 130690 // ID
+      end
+
+      classrelation 164738 // INVALID (<unidirectional association>)
+	relation 164738 --->
+	  a role_name "INVALID" init_value "=  new OID(-1)" class_relation const_relation public
+	    comment " Invalid OID. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 164738 // INVALID (<unidirectional association>)
+	  b parent class_ref 139010 // OID
+      end
+
+      attribute 177282 "value"
+	private explicit_type "long"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Value of the unique identifier. 
+"
+      end
+
+      operation 262402 "OID"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "value" explicit_type "long"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>OID</code> object, representing an ID given in the 
+<code>value</code> parameter.
+
+@param value unique ID to represent
+"
+      end
+
+      operation 262530 "OID"
+	package explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>OID</code> object. Used by the
+<code>IDManager</code>. 
+"
+      end
+
+      operation 262658 "setValue"
+	package explicit_return_type "void"
+	nparams 1
+	  param in name "value" explicit_type "long"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the value of the unique identifier.
+
+@param value value of the unique identifier to set
+"
+      end
+
+      operation 262786 "value"
+	public explicit_return_type "Object"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns the value of te unique identifier.
+
+@return value of te unique identifier
+"
+      end
+
+      operation 262914 "compareTo"
+	public explicit_return_type "int"
+	nparams 1
+	  param inout name "o" explicit_type "Object"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Compares this <code>OID</code> to another <code>Object</code>. If the
+<code>Object</code> is an <code>OID</code>, this function behaves like
+<code>compareTo(OID)</code>. Otherwise, it throws a
+<code>ClassCastException</code> (as <code>OID</code>s are comparable only
+to other <code>OID</code>s).
+      
+@param o the <code>Object</code> to be compared.
+@return the value <code>0</code> if the argument is an OID equal
+         to this OID; a value less than <code>0</code>
+         if the argument is an OID greater than this OID;
+         and a value greater than <code>0</code> if the argument 
+         is an OID less than this OID.
+@throws ClassCastException if the argument is not an <code>OID</code>.
+
+@see java.lang.Comparable#compareTo(java.lang.Object)
+"
+      end
+
+      operation 263042 "compareTo"
+	public explicit_return_type "int"
+	nparams 1
+	  param inout name "anotherOID" type class_ref 139010 // OID
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Compares two <code>OID</code>s. Comparison algorithm simply compares the
+values numerically.      
+      
+@param anotherOID the <code>OID</code> to be compared.
+@return the value <code>0</code> if the argument is an OID equal
+         to this OID; a value less than <code>0</code>
+         if the argument is an OID greater than this OID;
+         and a value greater than <code>0</code> if the argument 
+         is an OID less than this OID.
+"
+      end
+
+      operation 263170 "equals"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "o" explicit_type "Object"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " 
+Compares this <code>OID</code> to the specified object. The result is
+<code>true</code> if and only if the argument is not <code>null</code>,
+is the same type as <code>this</code> and carries the same numeric value
+as <code>this</code> object.
+
+@see java.lang.Object#equals(java.lang.Object)
+"
+      end
+
+      operation 263298 "hashCode"
+	public explicit_return_type "int"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns a hash code value for this object. We simply compute the hash code
+of the represented value.
+
+@return a hash code value for this object
+
+@see java.lang.Object#hashCode()
+"
+      end
+
+      operation 263426 "toString"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " 
+Returns a string representation of the identifier.
+ 
+@return string representation of the identifier
+
+@see java.lang.Object#toString()
+"
+      end
+
+      operation 263554 "valueOf"
+	class_operation public return_type class_ref 139010 // OID
+	nparams 1
+	  param in name "s" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns an <code>OID</code> object holding the value of the specified
+<code>String</code>.
+
+@param s the string to be parsed
+@return an <code>OID</code> object holding the value represented by the
+         string argument
+@throws NumberFormatException if the <code>String</code> does not contain a parsable <code>OID</code>
+"
+      end
+    end
+
+    class 140290 "RID"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Class representing the analysis identifier.
+
+@author David Majda
+"
+      classrelation 166146 // <generalisation>
+	relation 166146 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 166146 // <generalisation>
+	  b parent class_ref 139010 // OID
+      end
+
+      operation 268034 "RID"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "value" explicit_type "long"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>RID</code> object, representing an analysis
+identifier given in the <code>value</code> parameter.
+
+@param value analysis identifier to represent
+"
+      end
+
+      operation 268162 "RID"
+	package explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>RID</code> object. Used by the
+<code>IDManager</code>. 
+"
+      end
+
+      operation 268290 "valueOf"
+	class_operation public return_type class_ref 140290 // RID
+	nparams 1
+	  param in name "s" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns an <code>RID</code> object holding the value of the specified
+<code>String</code>.
+
+@param s the string to be parsed
+@return an <code>RID</code> object holding the value represented by the
+         string argument
+@throws NumberFormatException if the <code>String</code> does not contain
+         a parsable <code>RID</code>
+"
+      end
+    end
+
+    class 142978 "TID"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Class representing the task identifier.
+
+TOOD Tomcanyi: more comments about purpose of this class.
+
+@author Michal Tomcanyi
+@author David Majda
+"
+      classrelation 166402 // <generalisation>
+	relation 166402 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 166402 // <generalisation>
+	  b parent class_ref 139010 // OID
+      end
+
+      operation 268802 "TID"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "value" explicit_type "long"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>TID</code> object, representing task
+identifier given in the <code>value</code> parameter.
+
+@param value analysis identifier to represent
+"
+      end
+
+      operation 268930 "TID"
+	package explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>TID</code> object. Used by the
+<code>IDManager</code>. 
+"
+      end
+
+      operation 269058 "valueOf"
+	class_operation public return_type class_ref 142978 // TID
+	nparams 1
+	  param in name "s" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns an <code>TID</code> object holding the value of the specified
+<code>String</code>.
+
+@param s the string to be parsed
+@return an <code>AID</code> object holding the value represented by the
+         string argument
+@throws NumberFormatException if the <code>String</code> does not contain
+         a parsable <code>TID</code>
+"
+      end
+    end
+
+    class 145026 "SID"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Class representing the screen in the benchmark plugin configuration UI.
+
+@author David Majda
+"
+      classrelation 166274 // <generalisation>
+	relation 166274 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 166274 // <generalisation>
+	  b parent class_ref 139010 // OID
+      end
+
+      operation 268418 "SID"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "value" explicit_type "long"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>SID</code> object, representing an analysis
+identifier given in the <code>value</code> parameter.
+
+@param value analysis identifier to represent
+"
+      end
+
+      operation 268546 "SID"
+	package explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>SID</code> object. Used by the
+<code>IDManager</code>. 
+"
+      end
+
+      operation 268674 "valueOf"
+	class_operation public return_type class_ref 145026 // SID
+	nparams 1
+	  param in name "s" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns an <code>SID</code> object holding the value of the specified
+<code>String</code>.
+
+@param s the string to be parsed
+@return an <code>SID</code> object holding the value represented by the
+         string argument
+@throws NumberFormatException if the <code>String</code> does not contain
+         a parsable <code>AID</code>
+"
+      end
+    end
+
+    class 148994 "PersistentIDManager"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 166018 // <realization>
+	relation 166018 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 166018 // <realization>
+	  b parent class_ref 135810 // IDManagerInterface
+      end
+
+      attribute 177666 "RESTORE_SUBDIRECTORY"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"idmanager\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      class 156546 "Counter"
+	visibility private 
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	attribute 177794 "count"
+	  private explicit_type "long"
+	  init_value "=  0"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	operation 267010 "Counter"
+	  public explicit_return_type ""
+	  nparams 1
+	    param in name "value" explicit_type "long"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 267138 "getNext"
+	  public explicit_return_type "long"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 267266 "getCount"
+	  public explicit_return_type "long"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 267394 "toString"
+	  public explicit_return_type "String"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  java_annotation "@Override
+"
+	  
+	  
+	  
+	end
+      end
+
+      attribute 177922 "idSet"
+	const_attribute private explicit_type "Class, Object[]"
+	init_value "=  new HashMap<Class, Object[]>()"
+	stereotype "HashMap"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<${type}> ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Object[] stores pair (Counter,ObjectOutputStream)
+
+ Object[] = {Counter,FileChannel} "
+      end
+
+      attribute 178050 "dataDirectory"
+	const_attribute private explicit_type "File"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 178178 "buf"
+	const_attribute private explicit_type "ByteBuffer"
+	init_value "=  ByteBuffer.allocate(8)"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Byte buffer to be used for writing last getNext() long value 
+"
+      end
+
+      operation 267522 "PersistentIDManager"
+	private explicit_return_type ""
+	nparams 1
+	  param inout name "dataDirectory" explicit_type "File"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 267650 "createInstance"
+	class_operation public return_type class_ref 148994 // PersistentIDManager
+	nparams 1
+	  param inout name "dataDirectory" explicit_type "File"
+	nexceptions 3
+	  explicit_exception "FileNotFoundException"
+	  explicit_exception "ClassNotFoundException"
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Creates new instance of manager. When log is found in <code>dataDirectory</code>
+the instance restores its state according to the log
+
+@param dataDirectory	root directory under which the manager creates its log directory
+						for storing its state
+@return	new or restored instance of manager
+
+@throws FileNotFoundException	when log can't be found
+@throws ClassNotFoundException	when new instance of class stored under manager can't be created
+@throws IOException				when read operation from log fails
+"
+      end
+
+      operation 267778 "getNext"
+	public explicit_return_type "T"
+	nparams 1
+	  param inout name "clazz" explicit_type "Class<T>"
+	nexceptions 1
+	  explicit_exception "IllegalStateException"
+	
+	preserve_java_body_indent synchronized java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}<T extends OID> ${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Obtains next unique <code>long</code> value for given class.
+Before updating is status, the manager stores next value on disk.
+Such behaviour guerantees we never generate the same value after restore.
+
+@param clazz	class for which to create next unique identifier
+@return	next unique identifier for given class
+@throws IllegalStateException when the next value can't be written on disk
+"
+      end
+
+      operation 267906 "restore"
+	class_operation private explicit_return_type "void"
+	nparams 1
+	  param inout name "instance" type class_ref 148994 // PersistentIDManager
+	nexceptions 3
+	  explicit_exception "ClassNotFoundException"
+	  explicit_exception "FileNotFoundException"
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+<class,value> -> file with the name of the class holds the long value of last ID
+"
+      end
+    end
+
+    class 156290 "IDManager"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 165378 // <realization>
+	relation 165378 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 165378 // <realization>
+	  b parent class_ref 135810 // IDManagerInterface
+      end
+
+      class 156418 "Counter"
+	visibility private 
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	attribute 177410 "count"
+	  private explicit_type "long"
+	  init_value "=  0"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	operation 265602 "getNext"
+	  public explicit_return_type "long"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+      end
+
+      classrelation 165506 // MGR (<unidirectional association>)
+	relation 165506 --->
+	  a role_name "MGR" init_value "=  new IDManager()" class_relation const_relation private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 165506 // MGR (<unidirectional association>)
+	  b parent class_ref 156290 // IDManager
+      end
+
+      classrelation 165634 // idSet (<unidirectional association>)
+	relation 165634 --->
+	  stereotype "HashMap"
+	  a role_name "idSet" init_value "=  new HashMap<Class, Counter>()" const_relation private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<Class, ${type}> ${name}${value};
+"
+	    classrelation_ref 165634 // idSet (<unidirectional association>)
+	  b parent class_ref 156418 // Counter
+      end
+
+      operation 265730 "getInstance"
+	class_operation public return_type class_ref 156290 // IDManager
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 265858 "getNext"
+	public explicit_return_type "T"
+	nparams 1
+	  param inout name "clazz" explicit_type "Class<T>"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}<T extends OID> ${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+    end
+  end
+
+  deploymentview 128514 "id"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+    artifact 129666 "Identifiable"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+${definition}"
+      associated_classes
+	class_ref 133762 // Identifiable
+      end
+    end
+
+    artifact 144258 "ID"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.Serializable;
+${definition}"
+      associated_classes
+	class_ref 130690 // ID
+      end
+    end
+
+    artifact 144386 "OID"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+${definition}"
+      associated_classes
+	class_ref 139010 // OID
+      end
+    end
+
+    artifact 144514 "AID"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+${definition}"
+      associated_classes
+	class_ref 130434 // AID
+      end
+    end
+
+    artifact 144642 "BID"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+${definition}"
+      associated_classes
+	class_ref 138754 // BID
+      end
+    end
+
+    artifact 144770 "BRID"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+${definition}"
+      associated_classes
+	class_ref 134402 // BRID
+      end
+    end
+
+    artifact 144898 "EID"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+${definition}"
+      associated_classes
+	class_ref 133378 // EID
+      end
+    end
+
+    artifact 145026 "IDManagerInterface"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+${definition}"
+      associated_classes
+	class_ref 135810 // IDManagerInterface
+      end
+    end
+
+    artifact 145154 "IDManager"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.util.HashMap;
+${definition}"
+      associated_classes
+	class_ref 156290 // IDManager
+      end
+    end
+
+    artifact 145282 "PEID"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+${definition}"
+      associated_classes
+	class_ref 128642 // PEID
+      end
+    end
+
+    artifact 145410 "PersistentIDManager"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+import java.util.HashMap;
+${definition}"
+      associated_classes
+	class_ref 148994 // PersistentIDManager
+      end
+    end
+
+    artifact 145538 "RID"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+${definition}"
+      associated_classes
+	class_ref 140290 // RID
+      end
+    end
+
+    artifact 145666 "SID"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+${definition}"
+      associated_classes
+	class_ref 145026 // SID
+      end
+    end
+
+    artifact 145794 "TID"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+${definition}"
+      associated_classes
+	class_ref 142978 // TID
+      end
+    end
+  end
+end

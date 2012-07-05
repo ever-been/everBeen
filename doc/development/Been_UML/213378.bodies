@@ -1,0 +1,40 @@
+class ServiceReference
+!!!793090.java!!!	getTaskManagerReference() : TaskManagerReference
+		return taskManagerReference;
+!!!793218.java!!!	getServiceName() : String
+		return serviceName;
+!!!793346.java!!!	getServiceInterface() : String
+		return serviceInterface;
+!!!793474.java!!!	getServiceHumanName() : String
+		return serviceHumanName;
+!!!793602.java!!!	acquire() : T
+		T result;
+		try {
+			result = (T) taskManagerReference.get().serviceFind(
+				serviceName, serviceInterface);
+			if (result == null) {
+				throw new ComponentInitializationException(
+					"<strong>Task Manager can't find a running instance of the "
+					+ serviceHumanName 
+					+ ".</strong><br /><br />"
+					+ "Go to the <a href=\"../../services/\">Services</a> tab and make "
+					+ "sure the " + serviceHumanName + " is running."
+				);
+			}
+			return result;
+		} catch (RemoteException e) {
+			throw new ComponentInitializationException(
+				"<strong>Can't connect to the RMI registry on host \""
+					+ Config.getInstance().getTaskManagerHostname()
+					+ "\".</strong><br /><br />"
+					+ "Make sure the RMI registry is running, is correctly "
+					+ "configured, and there is no firewall in the way, which is "
+					+ "blocking the connection.",
+				e
+			);
+		}
+!!!793730.java!!!	ServiceReference(inout taskManagerReference : TaskManagerReference, in serviceName : String, in serviceInterface : String, in serviceHumanName : String)
+		this.serviceName = serviceName;
+		this.serviceInterface = serviceInterface;
+		this.serviceHumanName = serviceHumanName;
+		this.taskManagerReference = taskManagerReference;

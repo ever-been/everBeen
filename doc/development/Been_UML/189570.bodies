@@ -1,0 +1,52 @@
+class RolesManager
+!!!577666.java!!!	RolesManager()
+	
+!!!577794.java!!!	getInstance() : RolesManager
+		if (rMInstance == null) {
+			return new RolesManager();
+		} else {
+			return rMInstance;
+		}
+!!!577922.java!!!	initialize(inout database : Database) : void
+		RolesManager.database = database;
+!!!578050.java!!!	loadRoleList(inout aid : AID, inout eid : EID) : void
+		try {
+	    	rolesTable = new RoleList(database.getFileInDatabase(aid, eid, ROLES_LIST_FILENAME));
+	    } catch (IOException e) {
+	    	e.printStackTrace();
+	    	Logger.logError(NumberedTable.IO_ERROR_LIST_READING_MESSAGE 
+			+ Database.getExperimentReferenceString(aid, eid));
+		
+	    	rolesTable = new RoleList();
+	    	return;	
+	    }	
+!!!578178.java!!!	storeRoleList(inout aid : AID, inout eid : EID) : void
+	    try {
+	        	rolesTable.store(database.getFileInDatabase(aid, eid, ROLES_LIST_FILENAME));
+            } catch (IOException e) {
+            	e.printStackTrace();
+            	Logger.logError(NumberedTable.IO_ERROR_LIST_STORING_MESSAGE
+            			+ Database.getExperimentReferenceString(aid, eid));
+            }
+!!!578306.java!!!	makeExperimentTable(inout aid : AID, inout eid : EID, inout roleItems : RoleItem) : void
+		 
+		rolesTable = new RoleList();
+		
+		for (RoleItem roleItem : roleItems) {
+			rolesTable.addItem(roleItem);
+		}
+		
+		storeRoleList(aid, eid);
+		
+!!!578434.java!!!	getKeyOfHostname(in hostname : String) : long
+	
+		
+		int itemIndex = rolesTable.getItemIndexByHostname(hostname);
+		return (itemIndex > 0) ? rolesTable.getItemKey(itemIndex) : itemIndex;
+		
+!!!578562.java!!!	getRoleItem(in index : int) : RoleItem
+		return rolesTable.getItem(index);
+!!!578690.java!!!	getItemIndex(in key : long) : int
+		return rolesTable.getItemIndex(key);
+!!!578818.java!!!	getRoleCount() : int
+		return rolesTable.getItemCount();

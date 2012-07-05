@@ -1,0 +1,3 @@
+class ScreenID
+!!!209666.java!!!	getSID() : SID
+				return new SID(ordinal());

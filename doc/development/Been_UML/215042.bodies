@@ -1,0 +1,1247 @@
+class ResultsModule
+!!!779010.java!!!	ResultsModule()
+		super();
+		
+		/* Initialize general module info... */
+		id = "results";
+		name = "Results";
+		defaultAction = "analysis-list";
+		
+		menu = new MenuItem[] {
+				new MenuItem("analysis-list", "Analyses"), 
+				new MenuItem("package-list", "R script packages"), 
+				new MenuItem("package-upload", "Upload R script package"), 
+		};
+	
+		eventManager.registerEventListener(this);
+!!!779138.java!!!	getInstance() : ResultsModule
+		if (instance == null) {
+			 instance = new ResultsModule();
+		}
+		return instance;
+!!!779266.java!!!	receiveEvent(inout event : Event) : void
+		taskManager.drop();
+		resultsRepository.drop();
+!!!779394.java!!!	invokeMethodForAction(inout request : HttpServletRequest, inout response : HttpServletResponse, in action : String) : void
+		try {
+			super.invokeMethodForAction(request, response, action);
+		} catch (InvocationTargetException e) {
+			if (e.getCause() instanceof ConnectException) {
+				throw new InvocationTargetException(
+					new ConnectException(
+						"<strong>Can't execute remote call to the Results Repository."
+						+ "</strong><br /><br />"
+						+ "Try to reload the page. If the error persists after multiple reloads, "
+						+ "go to the <a href=\"../../services/>Services</a> tab and make "
+						+ "sure the Results Repository is running.<br /><br/>"
+						+ "Most probale causes of this error are network-related problems or "
+						+ "crash of the service."
+					),
+					e.getMessage()
+				);
+			} else {
+				throw e;
+			}
+		}
+!!!779522.java!!!	ensureAndGetAid(inout request : HttpServletRequest, inout analysisInterface : EntityInterface) : AID
+		AID aid = null; // to shut up the compiler
+		try {
+			aid = AID.valueOf(request.getParameter("aid"));
+		} catch (NumberFormatException e) {
+			params.ensureCondition("aid", false);
+		}
+		return aid;
+!!!779650.java!!!	ensureAndGetEid(inout request : HttpServletRequest, inout experimentInterface : EntityInterface) : EID
+		EID eid = null; // to shut up the compiler
+		try {
+			eid = EID.valueOf(request.getParameter("eid"));
+		} catch (NumberFormatException e) {
+			params.ensureCondition("eid", false);
+		}
+		return eid;
+!!!779778.java!!!	ensureAndGetBid(inout request : HttpServletRequest, inout binaryInterface : EntityInterface) : BID
+		BID bid = null; // to shut up the compiler
+		try {
+			bid = BID.valueOf(request.getParameter("bid"));
+		} catch (NumberFormatException e) {
+			params.ensureCondition("bid", false);
+		}
+		return bid;
+!!!779906.java!!!	ensureAndGetRid(inout request : HttpServletRequest, inout runInterface : EntityInterface) : RID
+		RID rid = null; // to shut up the compiler
+		try {
+			rid = RID.valueOf(request.getParameter("rid"));
+		} catch (NumberFormatException e) {
+			params.ensureCondition("rid", false);
+		}
+		return rid;
+!!!780034.java!!!	ensureAndGetIndex(inout request : HttpServletRequest) : int
+		int result = 0; // to shut up the compiler
+		try {
+			result = Integer.valueOf(request.getParameter("index"));
+		} catch (NumberFormatException e) {
+			params.ensureCondition("index", false);
+		}
+		return result;
+!!!780162.java!!!	getExperimentInterface(inout analysisInterface : EntityInterface, inout aid : AID) : EntityInterface
+		try {
+			return analysisInterface.getSubentityInterface(aid);
+		} catch (IllegalArgumentException e) {
+			params.ensureCondition("aid", false);
+			return null;
+		}
+!!!780290.java!!!	getBinaryInterface(inout experimentInterface : EntityInterface, inout eid : EID) : EntityInterface
+		try {
+			return experimentInterface.getSubentityInterface(eid);
+		} catch (IllegalArgumentException e) {
+			params.ensureCondition("eid", false);
+			return null;
+		}
+!!!780418.java!!!	getRunInterface(inout binaryInterface : EntityInterface, inout bid : BID) : EntityInterface
+		try {
+			return binaryInterface.getSubentityInterface(bid);
+		} catch (IllegalArgumentException e) {
+			params.ensureCondition("bid", false);
+			return null;
+		}
+!!!780546.java!!!	getAnalysis(inout analysisInterface : EntityInterface, inout aid : AID) : Entity
+		try {
+			return analysisInterface.getEntity(aid);
+		} catch (IllegalArgumentException e) {
+			params.ensureCondition("aid", false);
+			return null;
+		}
+!!!780674.java!!!	getRun(inout runInterface : EntityInterface, inout rid : RID) : Entity
+		try {
+			return runInterface.getEntity(rid);
+		} catch (IllegalArgumentException e) {
+			params.ensureCondition("rid", false);
+			return null;
+		}
+!!!780802.java!!!	getBinary(inout binaryInterface : EntityInterface, inout bid : BID) : Entity
+		try {
+			return binaryInterface.getEntity(bid);
+		} catch (IllegalArgumentException e) {
+			params.ensureCondition("bid", false);
+			return null;
+		}
+!!!780930.java!!!	getExperiment(inout experimentInterface : EntityInterface, inout eid : EID) : Entity
+		try {
+			return experimentInterface.getEntity(eid);
+		} catch (IllegalArgumentException e) {
+			params.ensureCondition("eid", false);
+			return null;
+		}
+!!!781058.java!!!	downloadGraph(inout type : GraphType, inout entityInterface : EntityInterface, inout id : ID, in index : int, inout response : HttpServletResponse) : void
+		ServerSocket serverSocket = new ServerSocket(0); // 0 = use any port
+		DownloadHandle handle = null; 
+		handle = entityInterface.beginGraphDownload(
+			type, 
+			id,
+			InetAddress.getLocalHost(),
+			serverSocket.getLocalPort(),
+			index
+		);
+		byte[] buffer = new byte[ResultsRepositoryInterface.GRAPH_BUFFER_SIZE];
+		int bytesRead;
+		Socket socket = serverSocket.accept();
+		try {
+			InputStream inputStream = new BufferedInputStream(
+				socket.getInputStream(),
+				ResultsRepositoryInterface.GRAPH_BUFFER_SIZE
+			);
+			OutputStream outputStream = new BufferedOutputStream(
+				response.getOutputStream(),
+				ResultsRepositoryInterface.GRAPH_BUFFER_SIZE
+			);
+			try {
+				while ((bytesRead = inputStream.read(buffer)) != -1) {
+					outputStream.write(buffer, 0, bytesRead);     
+				}
+			}	finally {
+				inputStream.close();
+				outputStream.close();
+			}
+		} finally {
+			socket.close();
+			serverSocket.close();
+			entityInterface.endGraphDownload(handle);
+		}
+!!!781186.java!!!	sendGraphOrBusyOrErrorImage(inout type : GraphType, inout entityInterface : EntityInterface, inout id : ID, in index : int, inout response : HttpServletResponse) : void
+		response.setContentType(ResultsRepositoryInterface.GRAPH_MIME_TYPE);
+		try {
+			downloadGraph(type, entityInterface, id, index, response);
+		} catch (ResultsRepositoryBusyException e) {
+			response.sendRedirect(page.getRootPath() + RESULTS_REPOSITORY_BUSY_IMAGE);
+		} catch (ResultsRepositoryException e) {
+			response.sendRedirect(page.getRootPath() + RESULTS_REPOSITORY_ERROR_IMAGE);
+		}
+!!!781314.java!!!	getGraphInfos(inout type : GraphType, inout entityInterface : EntityInterface, inout id : ID) : GraphInfo
+		try {
+			GraphInfo[] result = new GraphInfo[entityInterface.graphCount(type, id)];
+			for (int i = 0; i < result.length; i++) {
+				result[i] = entityInterface.getGraphInfo(type, id, i);
+			}
+			return result;
+		} catch (ResultsRepositoryException e) {
+			/* In case of exception we are silent and just don't send info about any
+			 * graphs.
+			 */
+			return new GraphInfo[0];
+		}
+!!!781442.java!!!	downloadRawData(inout entityInterface : EntityInterface, inout id : ID, in filename : String, inout response : HttpServletResponse) : void
+		ServerSocket serverSocket = new ServerSocket(0); // 0 = use any port
+		DownloadHandle handle = null;
+		handle = entityInterface.beginRawDataDownload(
+			id,
+			InetAddress.getLocalHost(),
+			serverSocket.getLocalPort()
+		);
+		byte[] buffer = new byte[ResultsRepositoryInterface.RAW_DATA_BUFFER_SIZE];
+		int bytesRead;
+		Socket socket = serverSocket.accept();
+		try {
+			response.setContentType(ResultsRepositoryInterface.RAW_DATA_MIME_TYPE);
+			response.setHeader("Content-Disposition", "attachment; filename=\""
+				+ filename + "\"");
+			InputStream inputStream = new BufferedInputStream(
+				socket.getInputStream(),
+				ResultsRepositoryInterface.RAW_DATA_BUFFER_SIZE
+			);
+			OutputStream outputStream = new BufferedOutputStream(
+				response.getOutputStream(),
+				ResultsRepositoryInterface.RAW_DATA_BUFFER_SIZE
+			);
+			try {
+				while ((bytesRead = inputStream.read(buffer)) != -1) {
+					outputStream.write(buffer, 0, bytesRead);     
+				}
+			}	finally {
+				inputStream.close();
+				outputStream.close();
+			}
+		} finally {
+			socket.close();
+			serverSocket.close();
+			entityInterface.endRawDataDownload(handle);
+		}
+!!!781570.java!!!	getLogRecordsForTasksFromEntity(inout entityInterface : EntityInterface, inout id : ID) : LogRecord
+		String[] tids = entityInterface.getTasks(id);
+		
+		List<LogRecord[]> logRecordsList = new LinkedList<LogRecord[]>();
+		for (String tid: tids) {
+			logRecordsList.add(entityInterface.getLogsForTask(id, tid));
+		}
+		
+		return LogUtils.aggregateLogs(logRecordsList);
+!!!781698.java!!!	getLogRecordsForTasksFromEntities(inout entityInterface : EntityInterface) : LogRecord
+		List<LogRecord[]> logRecordsList = new LinkedList<LogRecord[]>();
+		List<Entity<ID>> entities = entityInterface.getEntities();
+		for (Entity<ID> entity: entities) {
+			String[] tids = entityInterface.getTasks(entity.getId());
+
+			for (String tid: tids) {
+				logRecordsList.add(entityInterface.getLogsForTask(entity.getId(), tid));
+			}
+		}
+		return LogUtils.aggregateLogs(logRecordsList);
+!!!781826.java!!!	buildEntityColumn(in title : String, in urlTemplate : String, inout entityInterface : EntityInterface) : LogEntityColumn
+		LogEntityColumn<ID> result = new LogEntityColumn<ID>(title, urlTemplate);
+		List<Entity<ID>> entities = entityInterface.getEntities();
+		
+		for (Entity<ID> entity: entities) {
+			ID id = entity.getId();
+			String name = entity.getName();
+			/* Note: Runs have null name, so we pass the stringified ID as the name
+			 * in that case.
+			 */ 
+			LogEntityColumn.Value<ID> value = new LogEntityColumn.Value<ID>(
+				id,
+				name != null ? name: id.toString()
+			);
+			String contextID = entityInterface.getContext(id);
+			for (String taskID: entityInterface.getTasks(id)) {
+				result.addValue(contextID, taskID, value);
+			}
+		}
+		
+		return result;
+!!!781954.java!!!	testRScriptingEnabled() : void
+		if (!resultsRepository.get().rScriptingEnabled()) {
+			page.getWarningMessages().addHTMLMessage("R scripting is not enabled in"
+				+ " the Results Repository - statistic computations will not be "
+				+ "performed. See <a href=\"../../services/logs/?service=resultsrepository\">"
+				+ "service logs</a> for the reason.");
+		}
+!!!782082.java!!!	handleDeleteLockedException() : void
+		errorMessages.addTextMessage("Unable to delete entity at the moment, it is "
+			+	"being processed. Retry deleting later.");
+		
+		page.setTitle("Error deleting entity");
+		page.writeHeader();
+		page.writeErrorMessages();
+		page.writeFooter();
+		return;
+!!!782210.java!!!	analysisList(inout request : HttpServletRequest, inout response : HttpServletResponse) : void
+		testRScriptingEnabled();
+
+		if (params.exists("action")) {
+			String action = request.getParameter("action");
+			if (action.equals("deleted")) {
+				infoMessages.addTextMessage("Analysis deleted successfully.");
+			} else {
+				throw new InvalidParamValueException("Parameter \"action\" has invalid value.");
+			}
+		}
+		
+		EntityInterface<AID> analysisInterface = resultsRepository.get()
+			.getAnalysisInterface();
+					
+		HashMap<String, Object> data = new HashMap<String, Object>();
+		data.put("analyses", analysisInterface.getEntities());
+		data.put("file", "");
+		data.put("importFormats", analysisInterface.getImportFormats());
+		data.put("exportFormats", analysisInterface.getExportFormats());
+				
+		page.setShowTitle(false);
+		page.setTitle("Analyses");
+		page.writeHeader();
+		page.writeTemplate("results-analysis-list", data);
+		page.writeFooter();
+!!!782338.java!!!	analysisDetails(inout request : HttpServletRequest, inout response : HttpServletResponse) : void
+		testRScriptingEnabled();
+
+		String activeSheet = "statistics-sheet";
+		if (params.exists("action")) {
+			String action = request.getParameter("action");
+			if (action.equals("changed-comment")) {
+				infoMessages.addTextMessage("Comment changed successfully.");
+				activeSheet = "metadata-sheet";
+			} else if (action.equals("deleted")) {
+				infoMessages.addTextMessage("Experiment deleted successfully.");
+			} else {
+				throw new InvalidParamValueException("Parameter \"action\" has invalid value.");
+			}
+		}
+
+		params.ensureExists("aid");
+
+		EntityInterface<AID> analysisInterface = resultsRepository.get()
+			.getAnalysisInterface();
+		AID aid = ensureAndGetAid(request, analysisInterface);
+		Entity<AID> analysis = getAnalysis(analysisInterface, aid);
+		
+		EntityInterface<EID> experimentInterface = getExperimentInterface(analysisInterface, aid); 
+		
+		if (params.exists("change-comment")) {
+			params.ensureExists("comment");
+
+			analysisInterface.setEntityComment(
+				aid,
+				request.getParameter("comment")
+			);
+			
+			if (errorMessages.isEmpty()) {
+				HashMap<String, String> actionParams = new HashMap<String, String>();
+				actionParams.put("aid", aid.toString());
+				actionParams.put("action", "changed-comment");
+				page.redirectToAction("analysis-details", actionParams);
+				return;
+			}
+		}
+
+		LogRecord[] logRecords = null;
+		try {
+			logRecords = getLogRecordsForTasksFromEntities(experimentInterface);
+		} catch (LogStorageException e) {
+			errorMessages.addTextMessage("Error retrieving logs: " + e.getMessage());
+		}
+		
+		LogEntityColumn<EID> experimentColumn = buildEntityColumn(
+			"Experiment",
+			"../experiment-details/?aid=" + aid.toString() + "&eid=%s",
+			experimentInterface
+		);
+
+		HashMap<String, Object> data = new HashMap<String, Object>();
+		data.put("analysis", analysis);
+		data.put("experiments", experimentInterface.getEntities());
+		data.put("graphInfos", getGraphInfos(GraphType.RESULTS, analysisInterface, aid));
+		data.put("logRecords", logRecords);
+		data.put("logFields", EnumSet.of(
+			LogRecord.Fields.CONTEXT,
+			LogRecord.Fields.TASK_ID,
+			LogRecord.Fields.HOSTNAME,
+			LogRecord.Fields.TIMESTAMP,
+			LogRecord.Fields.LEVEL,
+			LogRecord.Fields.MESSAGE
+		));
+		data.put("logEntityColumns", new LogEntityColumn[] { experimentColumn });
+		data.put("file", "");
+		data.put("importFormats", analysisInterface.getImportFormats());
+		data.put("exportFormats", analysisInterface.getExportFormats());
+		data.put("activeSheet", activeSheet);
+					
+		page.setShowTitle(false);
+		page.setTitle("Analysis details: " + analysis.getName());
+		page.writeHeader();
+		page.writeTemplate("results-analysis-details", data);
+		page.writeFooter();
+!!!782466.java!!!	analysisResultsGraph(inout request : HttpServletRequest, inout response : HttpServletResponse) : void
+		testRScriptingEnabled();
+
+		params.ensureExist("aid", "index");
+
+		EntityInterface<AID> analysisInterface = resultsRepository.get()
+			.getAnalysisInterface();
+		AID aid = ensureAndGetAid(request, analysisInterface);
+		int index = ensureAndGetIndex(request);
+
+		try {
+			sendGraphOrBusyOrErrorImage(GraphType.RESULTS, analysisInterface, aid, index, response);
+		} catch (IllegalArgumentException e) {
+			params.ensureCondition("aid or index", false);
+		}
+!!!782594.java!!!	ensureFormat(inout request : HttpServletRequest, inout formats : DataFormat) : void
+		String format = request.getParameter("format");
+		for (DataFormat f: formats) {
+			if (f.getId().equals(format)) {
+				return;
+			}
+		}
+		params.ensureCondition("format", false);
+!!!782722.java!!!	writeExportHeaders(in filenameBase : String, inout ids : T, in formatId : String, inout response : HttpServletResponse) : void
+		response.setContentType(formatId);
+		response.setHeader("Content-Disposition", "attachment; filename=\""
+				+ filenameBase + "-" + Routines.join(",", ids) + "\"");
+!!!782850.java!!!	doEntityExport(inout response : HttpServletResponse, inout serverSocket : ServerSocket, inout handle : DownloadHandle) : void
+		byte[] buffer = new byte[ResultsRepositoryInterface.EXPORT_BUFFER_SIZE];
+		int bytesRead;
+		Socket socket = serverSocket.accept();
+		try {
+			InputStream inputStream = new BufferedInputStream(
+				socket.getInputStream(),
+				ResultsRepositoryInterface.EXPORT_BUFFER_SIZE
+  		);
+			OutputStream outputStream = new BufferedOutputStream(
+				response.getOutputStream(),
+				ResultsRepositoryInterface.EXPORT_BUFFER_SIZE
+			);
+			try {
+				while ((bytesRead = inputStream.read(buffer)) != -1) {
+					outputStream.write(buffer, 0, bytesRead);     
+				}
+			}	finally {
+				inputStream.close();
+				outputStream.close();
+			}
+		} finally {
+			socket.close();
+			serverSocket.close();
+		}
+!!!782978.java!!!	exportAnalyses(inout analysisInterface : EntityInterface, inout aids : AID, in formatId : String, inout response : HttpServletResponse) : void
+		ServerSocket serverSocket = new ServerSocket(0); // 0 = use any port
+		DownloadHandle handle = analysisInterface.beginExport(
+			aids,
+			formatId,
+			InetAddress.getLocalHost(),
+			serverSocket.getLocalPort()
+		);
+		try {
+			writeExportHeaders("analyses", aids, formatId, response);
+			doEntityExport(response, serverSocket, handle);
+		} finally {
+			analysisInterface.endExport(handle);
+		}
+!!!783106.java!!!	analysisExport(inout request : HttpServletRequest, inout response : HttpServletResponse) : void
+		testRScriptingEnabled();
+
+		params.ensureExist("aids", "format");
+		
+		EntityInterface<AID> analysisInterface = resultsRepository.get()
+			.getAnalysisInterface();
+		ensureFormat(request, analysisInterface.getExportFormats());
+		
+		String[] aidStrings = Routines.split2(",", request.getParameter("aids"));
+		AID[] aids = new AID[aidStrings.length];
+		for (int i = 0; i < aidStrings.length; i++) {
+			try {
+				aids[i] = AID.valueOf(aidStrings[i]);
+			} catch (NumberFormatException e) {
+				params.ensureCondition("aids", false);
+			}
+		}
+		
+		try {
+			exportAnalyses(analysisInterface, aids, request.getParameter("format"),
+				response);
+		} catch (IllegalArgumentException e) {
+			params.ensureCondition("aids", false);
+		} catch (ResultsRepositoryBusyException e) {
+			errorMessages.addTextMessage("Results Repository is currently busy and "
+				+ "can't export selected entities. Try waiting for a while and reload "
+				+ "the page. If the problem persists, see the logs for explanation.");
+		}
+!!!783234.java!!!	analysisDelete(inout request : HttpServletRequest, inout response : HttpServletResponse) : void
+		testRScriptingEnabled();
+
+		params.ensureExists("aid");
+		
+		EntityInterface<AID> analysisInterface = resultsRepository.get()
+			.getAnalysisInterface();
+		AID aid = ensureAndGetAid(request, analysisInterface);
+
+		try {
+			analysisInterface.deleteEntity(aid);
+		} catch (IllegalArgumentException e) {
+			params.ensureCondition("aid", false);
+		} catch (DeleteLockedException e) {
+			handleDeleteLockedException();
+			return;
+		}
+		
+		HashMap<String, String> actionParams = new HashMap<String, String>();
+		actionParams.put("action", "deleted");
+		page.redirectToAction("analysis-list", actionParams);
+!!!783362.java!!!	experimentDetails(inout request : HttpServletRequest, inout response : HttpServletResponse) : void
+		testRScriptingEnabled();
+
+		String activeSheet = "statistics-sheet";
+		if (params.exists("action")) {
+			String action = request.getParameter("action");
+			if (action.equals("changed-comment")) {
+				infoMessages.addTextMessage("Comment changed successfully.");
+				activeSheet = "metadata-sheet";
+			} else if (action.equals("deleted")) {
+				infoMessages.addTextMessage("Binary deleted successfully.");
+			} else {
+				throw new InvalidParamValueException("Parameter \"action\" has invalid value.");
+			}
+		}
+
+		params.ensureExist("aid", "eid");
+
+		EntityInterface<AID> analysisInterface = resultsRepository.get()
+			.getAnalysisInterface();
+		AID aid = ensureAndGetAid(request, analysisInterface);
+		Entity<AID> analysis = getAnalysis(analysisInterface, aid);
+		
+		EntityInterface<EID> experimentInterface = getExperimentInterface(analysisInterface, aid);
+		EID eid = ensureAndGetEid(request, experimentInterface);
+		Entity<EID> experiment = getExperiment(experimentInterface, eid);
+		
+		EntityInterface<BID> binaryInterface = getBinaryInterface(experimentInterface, eid);
+		
+		if (params.exists("change-comment")) {
+			params.ensureExists("comment");
+				
+			experimentInterface.setEntityComment(
+				eid,
+				request.getParameter("comment")
+			);
+			
+			if (errorMessages.isEmpty()) {
+				HashMap<String, String> actionParams = new HashMap<String, String>();
+				actionParams.put("aid", aid.toString());
+				actionParams.put("eid", eid.toString());
+				actionParams.put("action", "changed-comment");
+				page.redirectToAction("experiment-details", actionParams);
+				return;
+			}
+		}
+		
+		LogRecord[] logRecords = null;
+		try {
+			logRecords = getLogRecordsForTasksFromEntity(experimentInterface, eid);
+		} catch (LogStorageException e) {
+			errorMessages.addTextMessage("Error retrieving logs: " + e.getMessage());
+		}
+
+		LogEntityColumn<BID> binaryColumn = buildEntityColumn(
+			"Binary",
+			"../binary-details/?aid=" + aid.toString() + "&eid=" + eid.toString()
+				+ "&bid=%s",
+			binaryInterface
+		);
+
+		HashMap<String, Object> data = new HashMap<String, Object>();
+		data.put("analysis", analysis);
+		data.put("experiment", experiment);
+		data.put("binaries", binaryInterface.getEntities());
+		data.put("graphInfos", getGraphInfos(GraphType.RESULTS, experimentInterface, eid));
+		data.put("logRecords", logRecords);
+		data.put("logFields", EnumSet.of(
+			LogRecord.Fields.CONTEXT,
+			LogRecord.Fields.TASK_ID,
+			LogRecord.Fields.HOSTNAME,
+			LogRecord.Fields.TIMESTAMP,
+			LogRecord.Fields.LEVEL,
+			LogRecord.Fields.MESSAGE
+		));
+		data.put("logEntityColumns", new LogEntityColumn[] { binaryColumn });
+		data.put("file", "");
+		data.put("importFormats", experimentInterface.getImportFormats());
+		data.put("exportFormats", experimentInterface.getExportFormats());
+		data.put("activeSheet", activeSheet);
+			
+		page.setShowTitle(false);
+		page.setTitle("Experiment details: " + experiment.getName());
+		page.writeHeader();
+		page.writeTemplate("results-experiment-details", data);
+		page.writeFooter();
+!!!783490.java!!!	experimentResultsGraph(inout request : HttpServletRequest, inout response : HttpServletResponse) : void
+		testRScriptingEnabled();
+
+		params.ensureExist("aid", "eid", "index");
+
+		EntityInterface<AID> analysisInterface = resultsRepository.get()
+			.getAnalysisInterface();
+		AID aid = ensureAndGetAid(request, analysisInterface);
+		EntityInterface<EID> experimentInterface = getExperimentInterface(analysisInterface, aid);
+		EID eid = ensureAndGetEid(request, experimentInterface);
+		int index = ensureAndGetIndex(request);
+
+		try {
+			sendGraphOrBusyOrErrorImage(GraphType.RESULTS, experimentInterface, eid, index, response);
+		} catch (IllegalArgumentException e) {
+			params.ensureCondition("aid or eid or index", false);
+		}
+!!!783618.java!!!	exportExperiments(inout experimentInterface : EntityInterface, inout aid : AID, inout eids : EID, in formatId : String, inout response : HttpServletResponse) : void
+		ServerSocket serverSocket = new ServerSocket(0); // 0 = use any port
+		DownloadHandle handle = experimentInterface.beginExport(
+			eids, formatId,
+			InetAddress.getLocalHost(),
+			serverSocket.getLocalPort()
+		);
+		try {
+			writeExportHeaders("experiments", eids, formatId, response);
+			doEntityExport(response, serverSocket, handle);
+		} finally {
+			experimentInterface.endExport(handle);
+		}
+!!!783746.java!!!	experimentExport(inout request : HttpServletRequest, inout response : HttpServletResponse) : void
+		testRScriptingEnabled();
+
+		params.ensureExist("aid", "eids", "format");
+		
+		EntityInterface<AID> analysisInterface = resultsRepository.get()
+			.getAnalysisInterface();
+		AID aid = ensureAndGetAid(request, analysisInterface);
+		EntityInterface<EID> experimentInterface = getExperimentInterface(analysisInterface, aid);
+		ensureFormat(request, experimentInterface.getExportFormats());
+		
+		String[] eidStrings = Routines.split2(",", request.getParameter("eids"));
+		EID[] eids = new EID[eidStrings.length];
+		for (int i = 0; i < eidStrings.length; i++) {
+			try {
+				eids[i] = EID.valueOf(eidStrings[i]);
+			} catch (NumberFormatException e) {
+				params.ensureCondition("eids", false);
+			}
+		}
+		
+		try {
+			exportExperiments(experimentInterface, aid, eids,
+				request.getParameter("format"), response);
+		} catch (IllegalArgumentException e) {
+			params.ensureCondition("aid or eids", false);
+		} catch (ResultsRepositoryBusyException e) {
+			errorMessages.addTextMessage("Results Repository is currently busy and "
+				+ "can't export selected entities. Try waiting for a while and reload "
+				+ "the page. If the problem persists, see the logs for explanation.");
+		}
+!!!783874.java!!!	experimentDelete(inout request : HttpServletRequest, inout response : HttpServletResponse) : void
+		testRScriptingEnabled();
+
+		params.ensureExist("aid", "eid");
+
+		EntityInterface<AID> analysisInterface = resultsRepository.get()
+			.getAnalysisInterface();
+		AID aid = ensureAndGetAid(request, analysisInterface);
+		EntityInterface<EID> experimentInterface = getExperimentInterface(analysisInterface, aid);
+		EID eid = ensureAndGetEid(request, experimentInterface);
+		
+		try {
+			experimentInterface.deleteEntity(eid);
+		} catch (IllegalArgumentException e) {
+			params.ensureCondition("aid or eid", false);
+		} catch (DeleteLockedException e) {
+			handleDeleteLockedException();
+			return;
+		}
+		
+		HashMap<String, String> actionParams = new HashMap<String, String>();
+		actionParams.put("aid", aid.toString());
+		actionParams.put("action", "deleted");
+		page.redirectToAction("analysis-details", actionParams);
+!!!784002.java!!!	binaryDetails(inout request : HttpServletRequest, inout response : HttpServletResponse) : void
+		testRScriptingEnabled();
+
+		String activeSheet = "statistics-sheet";
+		if (params.exists("action")) {
+			String action = request.getParameter("action");
+			if (action.equals("changed-comment")) {
+				infoMessages.addTextMessage("Comment changed successfully.");
+				activeSheet = "metadata-sheet";
+			} else if (action.equals("deleted")) {
+				infoMessages.addTextMessage("Run deleted successfully.");
+			} else {
+				throw new InvalidParamValueException("Parameter \"action\" has invalid value.");
+			}
+		}
+
+		params.ensureExist("aid", "eid", "bid");
+
+		EntityInterface<AID> analysisInterface = resultsRepository.get()
+			.getAnalysisInterface();
+		AID aid = ensureAndGetAid(request, analysisInterface);
+		Entity<AID> analysis = getAnalysis(analysisInterface, aid);
+		
+		EntityInterface<EID> experimentInterface = getExperimentInterface(analysisInterface, aid);
+		EID eid = ensureAndGetEid(request, experimentInterface);
+		Entity<EID> experiment = getExperiment(experimentInterface, eid);
+		
+		EntityInterface<BID> binaryInterface = getBinaryInterface(experimentInterface, eid);
+		BID bid = ensureAndGetBid(request, binaryInterface);
+		Entity<BID> binary = getBinary(binaryInterface, bid);
+		EntityInterface<RID> runInterface = getRunInterface(binaryInterface, bid);
+	
+		if (params.exists("change-comment")) {
+			params.ensureExists("comment");
+				
+			binaryInterface.setEntityComment(
+				bid,
+				request.getParameter("comment")
+			);
+			
+			if (errorMessages.isEmpty()) {
+				HashMap<String, String> actionParams = new HashMap<String, String>();
+				actionParams.put("aid", aid.toString());
+				actionParams.put("eid", eid.toString());
+				actionParams.put("bid", bid.toString());
+				actionParams.put("action", "changed-comment");
+				page.redirectToAction("binary-details", actionParams);
+				return;
+			}
+		}
+
+		LogRecord[] logRecords = null;
+		try {
+			logRecords = getLogRecordsForTasksFromEntity(binaryInterface, bid);
+		} catch (LogStorageException e) {
+			errorMessages.addTextMessage("Error retrieving logs: " + e.getMessage());
+		}
+
+		LogEntityColumn<RID> runColumn = buildEntityColumn(
+			"Run",
+			"../run-details/?aid=" + aid.toString() + "&eid=" + eid.toString()
+				+ "&bid=" + bid.toString() + "&rid=%s",
+			runInterface
+		);
+
+		HashMap<String, Object> data = new HashMap<String, Object>();
+		data.put("analysis", analysis);
+		data.put("experiment", experiment);
+		data.put("binary", binary);
+		data.put("runs", runInterface.getEntities());
+		data.put("logRecords", logRecords);
+		data.put("logFields", EnumSet.of(
+			LogRecord.Fields.CONTEXT,
+			LogRecord.Fields.TASK_ID,
+			LogRecord.Fields.HOSTNAME,
+			LogRecord.Fields.TIMESTAMP,
+			LogRecord.Fields.LEVEL,
+			LogRecord.Fields.MESSAGE
+		));
+		data.put("logEntityColumns", new LogEntityColumn[] { runColumn });
+		data.put("file", "");
+		data.put("importFormats", binaryInterface.getImportFormats());
+		data.put("exportFormats", binaryInterface.getExportFormats());
+		data.put("activeSheet", activeSheet);
+			
+		page.setShowTitle(false);
+		page.setTitle("Binary details: " + binary.getName());
+		page.writeHeader();
+		page.writeTemplate("results-binary-details", data);
+		page.writeFooter();
+!!!784130.java!!!	exportBinaries(inout binaryInterface : EntityInterface, inout aid : AID, inout eid : EID, inout bids : BID, in formatId : String, inout response : HttpServletResponse) : void
+		ServerSocket serverSocket = new ServerSocket(0); // 0 = use any port
+		DownloadHandle handle = binaryInterface.beginExport(
+			bids, formatId,
+			InetAddress.getLocalHost(),
+			serverSocket.getLocalPort()
+		);
+		try {
+			writeExportHeaders("binaries", bids, formatId, response);
+			doEntityExport(response, serverSocket, handle);
+		} finally {
+			binaryInterface.endExport(handle);
+		}
+!!!784258.java!!!	binaryExport(inout request : HttpServletRequest, inout response : HttpServletResponse) : void
+		testRScriptingEnabled();
+
+		params.ensureExist("aid", "eid", "bids", "format");
+		
+		EntityInterface<AID> analysisInterface = resultsRepository.get()
+			.getAnalysisInterface();
+		AID aid = ensureAndGetAid(request, analysisInterface);
+		EntityInterface<EID> experimentInterface = getExperimentInterface(analysisInterface, aid);
+		EID eid = ensureAndGetEid(request, experimentInterface);
+		EntityInterface<BID> binaryInterface = getBinaryInterface(experimentInterface, eid);
+		ensureFormat(request, binaryInterface.getExportFormats());
+
+		String[] bidStrings = Routines.split2(",", request.getParameter("bids"));
+		BID[] bids = new BID[bidStrings.length];
+		for (int i = 0; i < bidStrings.length; i++) {
+			try {
+				bids[i] = BID.valueOf(bidStrings[i]);
+			} catch (NumberFormatException e) {
+				params.ensureCondition("bids", false);
+			}
+		}
+		
+		try {
+			exportBinaries(binaryInterface, aid, eid, bids,
+				request.getParameter("format"), response);
+		} catch (IllegalArgumentException e) {
+			params.ensureCondition("aid or eid or bids", false);
+		} catch (ResultsRepositoryBusyException e) {
+			errorMessages.addTextMessage("Results Repository is currently busy and "
+				+ "can't export selected entities. Try waiting for a while and reload "
+				+ "the page. If the problem persists, see the logs for explanation.");
+		}
+!!!784386.java!!!	binaryDelete(inout request : HttpServletRequest, inout response : HttpServletResponse) : void
+		testRScriptingEnabled();
+
+		params.ensureExist("aid", "eid", "bid");
+	
+		EntityInterface<AID> analysisInterface = resultsRepository.get()
+			.getAnalysisInterface();
+		AID aid = ensureAndGetAid(request, analysisInterface);
+		EntityInterface<EID> experimentInterface = getExperimentInterface(analysisInterface, aid);
+		EID eid = ensureAndGetEid(request, experimentInterface);
+		EntityInterface<BID> binaryInterface = getBinaryInterface(experimentInterface, eid);
+		BID bid = ensureAndGetBid(request, binaryInterface);
+
+		try {
+			binaryInterface.deleteEntity(bid);
+		} catch (IllegalArgumentException e) {
+			params.ensureCondition("aid or eid or bid", false);
+		} catch (DeleteLockedException e) {
+			handleDeleteLockedException();
+			return;
+		}
+		
+		HashMap<String, String> actionParams = new HashMap<String, String>();
+		actionParams.put("aid", aid.toString());
+		actionParams.put("eid", eid.toString());
+		actionParams.put("action", "deleted");
+		page.redirectToAction("experiment-details", actionParams);
+!!!784514.java!!!	runDetails(inout request : HttpServletRequest, inout response : HttpServletResponse) : void
+		testRScriptingEnabled();
+
+		String activeSheet = null;
+		if (params.exists("action")) {
+			String action = request.getParameter("action");
+			if (action.equals("changed-comment")) {
+				infoMessages.addTextMessage("Comment changed successfully.");
+				activeSheet = "metadata-sheet";
+			} else {
+				throw new InvalidParamValueException("Parameter \"action\" has invalid value.");
+			}
+		}
+
+		params.ensureExist("aid", "eid", "bid", "rid");
+
+		EntityInterface<AID> analysisInterface = resultsRepository.get()
+			.getAnalysisInterface();
+		AID aid = ensureAndGetAid(request, analysisInterface);
+		Entity<AID> analysis = getAnalysis(analysisInterface, aid);
+		
+		EntityInterface<EID> experimentInterface = getExperimentInterface(analysisInterface, aid);
+		EID eid = ensureAndGetEid(request, experimentInterface);
+		Entity<EID> experiment = getExperiment(experimentInterface, eid);
+		
+		EntityInterface<BID> binaryInterface = getBinaryInterface(experimentInterface, eid);
+		BID bid = ensureAndGetBid(request, binaryInterface);
+		Entity<BID> binary = getBinary(binaryInterface, bid);
+		
+		EntityInterface<RID> runInterface = getRunInterface(binaryInterface, bid);
+		RID rid = ensureAndGetRid(request, runInterface);
+		Entity<RID> run = getRun(runInterface, rid);
+
+		if (params.exists("change-comment")) {
+			params.ensureExists("comment");
+				
+			runInterface.setEntityComment(
+				rid,
+				request.getParameter("comment")
+			);
+			
+			if (errorMessages.isEmpty()) {
+				HashMap<String, String> actionParams = new HashMap<String, String>();
+				actionParams.put("aid", aid.toString());
+				actionParams.put("eid", eid.toString());
+				actionParams.put("bid", bid.toString());
+				actionParams.put("rid", rid.toString());
+				actionParams.put("action", "changed-comment");
+				page.redirectToAction("run-details", actionParams);
+				return;
+			}
+		}
+
+		LogRecord[] logRecords = null;
+		try {
+			logRecords = getLogRecordsForTasksFromEntity(runInterface, rid);
+		} catch (LogStorageException e) {
+			errorMessages.addTextMessage("Error retrieving logs: " + e.getMessage());
+		}
+
+		if (activeSheet == null) {
+			activeSheet = run.isValid() ? "statistics-sheet" : "raw-data-sheet";
+		}
+		
+		HashMap<String, Object> data = new HashMap<String, Object>();
+		data.put("analysis", analysis);
+		data.put("experiment", experiment);
+		data.put("binary", binary);
+		data.put("run", run);
+		data.put("graphInfos", getGraphInfos(GraphType.LOAD, runInterface, rid));
+		data.put("logRecords", logRecords);
+		data.put("logFields", EnumSet.of(
+			LogRecord.Fields.CONTEXT,
+			LogRecord.Fields.TASK_ID,
+			LogRecord.Fields.HOSTNAME,
+			LogRecord.Fields.TIMESTAMP,
+			LogRecord.Fields.LEVEL,
+			LogRecord.Fields.MESSAGE
+		));
+		data.put("logEntityColumns", new LogEntityColumn[] {});
+		data.put("activeSheet", activeSheet);
+
+		page.setShowTitle(false);
+		page.setTitle("Run details: " + run.getId().toString());
+		page.writeHeader();
+		page.writeTemplate("results-run-details", data);
+		page.writeFooter();
+!!!784642.java!!!	runLoadGraph(inout request : HttpServletRequest, inout response : HttpServletResponse) : void
+		testRScriptingEnabled();
+
+		params.ensureExist("aid", "eid", "bid", "rid", "index");
+
+		EntityInterface<AID> analysisInterface = resultsRepository.get()
+			.getAnalysisInterface();
+		AID aid = ensureAndGetAid(request, analysisInterface);
+		EntityInterface<EID> experimentInterface = getExperimentInterface(analysisInterface, aid);
+		EID eid = ensureAndGetEid(request, experimentInterface);
+		EntityInterface<BID> binaryInterface = getBinaryInterface(experimentInterface, eid);
+		BID bid = ensureAndGetBid(request, binaryInterface);
+		EntityInterface<RID> runInterface = getRunInterface(binaryInterface, bid);
+		RID rid = ensureAndGetRid(request, runInterface);
+		int index = ensureAndGetIndex(request);
+
+		try {
+			sendGraphOrBusyOrErrorImage(GraphType.LOAD, runInterface, rid, index, response);
+		} catch (IllegalArgumentException e) {
+			params.ensureCondition("aid or eid or bid or rid or index", false);
+		}
+!!!784770.java!!!	runRawData(inout request : HttpServletRequest, inout response : HttpServletResponse) : void
+		testRScriptingEnabled();
+
+		params.ensureExist("aid", "eid", "bid", "rid");
+
+		EntityInterface<AID> analysisInterface = resultsRepository.get()
+			.getAnalysisInterface();
+		AID aid = ensureAndGetAid(request, analysisInterface);
+		EntityInterface<EID> experimentInterface = getExperimentInterface(analysisInterface, aid);
+		EID eid = ensureAndGetEid(request, experimentInterface);
+		EntityInterface<BID> binaryInterface = getBinaryInterface(experimentInterface, eid);
+		BID bid = ensureAndGetBid(request, binaryInterface);
+		EntityInterface<RID> runInterface = getRunInterface(binaryInterface, bid);
+		RID rid = ensureAndGetRid(request, runInterface);
+
+		try {
+			downloadRawData(
+				runInterface,
+				rid,
+				"raw-run-data-"
+					+ Routines.join(
+						"-",
+						new cz.cuni.mff.been.common.id.ID[] { aid, eid, bid, rid}
+					)
+					+ ".zip",
+				response);
+		} catch (IllegalArgumentException e) {
+			params.ensureCondition("aid or eid or bid or rid", false);
+		} catch (ResultsRepositoryBusyException e) {
+			errorMessages.addTextMessage("Results Repository is currently busy and "
+				+ "can't send raw entity data. Try waiting for a while and reload "
+				+ "the page. If the problem persists, see the logs for explanation.");
+		} catch (ResultsRepositoryException e) {
+			errorMessages.addTextMessage("Can't retrieve graph from the Results "
+				+ "Repository. Try waiting for a while and reload the page. If the "
+				+ "problem persists, see the logs for explanation.");
+		}
+!!!784898.java!!!	exportRuns(inout runInterface : EntityInterface, inout aid : AID, inout eid : EID, inout bid : BID, inout rids : RID, in formatId : String, inout response : HttpServletResponse) : void
+		ServerSocket serverSocket = new ServerSocket(0); // 0 = use any port
+		DownloadHandle handle = runInterface.beginExport(
+			rids, formatId,
+			InetAddress.getLocalHost(),
+			serverSocket.getLocalPort()
+		);
+		try {
+			writeExportHeaders("runs", rids, formatId, response);
+			doEntityExport(response, serverSocket, handle);
+		} finally {
+			runInterface.endExport(handle);
+		}
+!!!785026.java!!!	runExport(inout request : HttpServletRequest, inout response : HttpServletResponse) : void
+		testRScriptingEnabled();
+
+		params.ensureExist("aid", "eid", "bid", "rids", "format");
+		
+		EntityInterface<AID> analysisInterface = resultsRepository.get()
+			.getAnalysisInterface();
+		AID aid = ensureAndGetAid(request, analysisInterface);
+		EntityInterface<EID> experimentInterface = getExperimentInterface(analysisInterface, aid);
+		EID eid = ensureAndGetEid(request, experimentInterface);
+		EntityInterface<BID> binaryInterface = getBinaryInterface(experimentInterface, eid);
+		BID bid = ensureAndGetBid(request, binaryInterface);
+		EntityInterface<RID> runInterface = getRunInterface(binaryInterface, bid);
+		ensureFormat(request, runInterface.getExportFormats());
+
+		String[] ridStrings = Routines.split2(",", request.getParameter("rids"));
+		RID[] rids = new RID[ridStrings.length];
+		for (int i = 0; i < ridStrings.length; i++) {
+			try {
+				rids[i] = RID.valueOf(ridStrings[i]);
+			} catch (NumberFormatException e) {
+				params.ensureCondition("rids", false);
+			}
+		}
+		
+		try {
+			exportRuns(runInterface, aid, eid, bid, rids,
+				request.getParameter("format"), response);
+		} catch (IllegalArgumentException e) {
+			params.ensureCondition("aid or eid or bid or rids", false);
+		} catch (ResultsRepositoryBusyException e) {
+			errorMessages.addTextMessage("Results Repository is currently busy and "
+				+ "can't export selected entities. Try waiting for a while and reload "
+				+ "the page. If the problem persists, see the logs for explanation.");
+		}
+!!!785154.java!!!	runDelete(inout request : HttpServletRequest, inout response : HttpServletResponse) : void
+		testRScriptingEnabled();
+
+		params.ensureExist("aid", "eid", "bid", "rid");
+	
+		EntityInterface<AID> analysisInterface = resultsRepository.get()
+			.getAnalysisInterface();
+		AID aid = ensureAndGetAid(request, analysisInterface);
+		EntityInterface<EID> experimentInterface = getExperimentInterface(analysisInterface, aid);
+		EID eid = ensureAndGetEid(request, experimentInterface);
+		EntityInterface<BID> binaryInterface = getBinaryInterface(experimentInterface, eid);
+		BID bid = ensureAndGetBid(request, binaryInterface);
+		EntityInterface<RID> runInterface = getRunInterface(binaryInterface, bid);
+		RID rid = ensureAndGetRid(request, runInterface);
+		
+		try {
+			runInterface.deleteEntity(rid);
+		} catch (IllegalArgumentException e) {
+			params.ensureCondition("aid or eid or bid or rid", false);
+		} catch (DeleteLockedException e) {
+			handleDeleteLockedException();
+			return;
+		}
+		
+		HashMap<String, String> actionParams = new HashMap<String, String>();
+		actionParams.put("aid", aid.toString());
+		actionParams.put("eid", eid.toString());
+		actionParams.put("bid", bid.toString());
+		actionParams.put("action", "deleted");
+		page.redirectToAction("binary-details", actionParams);
+!!!785282.java!!!	packageList(inout request : HttpServletRequest, inout response : HttpServletResponse) : void
+		testRScriptingEnabled();
+
+		if (params.exists("action")) {
+			String action = request.getParameter("action");
+			if (action.equals("deleted")) {
+				infoMessages.addTextMessage("R script package deleted successfully.");
+			} else {
+				throw new InvalidParamValueException("Parameter \"action\" has invalid value.");
+			}
+		}
+
+		RScriptPackage[] packages = resultsRepository.get().getRScriptPackages();
+		
+		HashMap<String, Object> data = new HashMap<String, Object>();
+		data.put("packages", packages);
+
+		page.setTitle("R script packages");
+		page.writeHeader();
+		page.writeTemplate("results-package-list", data);
+		page.writeFooter();
+!!!785410.java!!!	uploadPackage(in name : String, inout inputStream : InputStream) : UploadResult
+		UploadStatus status = UploadStatus.ACCEPTED;
+		String[] errorMessages = new String[0];
+	    
+		ServerSocket serverSocket = new ServerSocket(0); // 0 = use any port
+		UploadHandle handle = resultsRepository.get().beginRScriptPackageUpload(
+			name,
+			InetAddress.getLocalHost(), 
+			serverSocket.getLocalPort()
+		);
+		byte[] buffer = new byte[ResultsRepositoryInterface.UPLOAD_BUFFER_SIZE];
+		int bytesRead;
+		Socket socket = serverSocket.accept();
+		try {
+			OutputStream outputStream = new BufferedOutputStream(
+				socket.getOutputStream(),
+				ResultsRepositoryInterface.UPLOAD_BUFFER_SIZE
+			);
+			InputStream bufferedInputStream = new BufferedInputStream(
+				inputStream,
+				ResultsRepositoryInterface.UPLOAD_BUFFER_SIZE
+			);
+			try {
+				while ((bytesRead = bufferedInputStream.read(buffer)) != -1) {
+					outputStream.write(buffer, 0, bytesRead);
+				}
+			} finally {
+				outputStream.close();
+				bufferedInputStream.close();
+			}
+		} finally {
+			socket.close();
+			serverSocket.close();
+	
+			/* Wait until the Results Repository finishes its processing and sets some
+			 * meaningful state. Finish the upload then.
+			 */
+			do {
+				status = resultsRepository.get().getRScriptPackageUploadStatus(handle);
+			} while (status == UploadStatus.UPLOADING || status == UploadStatus.INITIALIZING);
+			if (status == UploadStatus.REJECTED) {
+				errorMessages = resultsRepository.get().getRejectedRScriptPackageUploadErrorMessages(handle);
+			}
+			resultsRepository.get().endRScriptPackageUpload(handle);
+		}
+		return new UploadResult(status, errorMessages);
+!!!785538.java!!!	packageUpload(inout request : HttpServletRequest, inout response : HttpServletResponse) : void
+	
+		testRScriptingEnabled();
+
+		HashMap<String, Object> data = new HashMap<String, Object>();
+	
+		if (params.exists("action")) {
+			String action = request.getParameter("action");
+			if (action.equals("uploaded")) {
+				infoMessages.addTextMessage("R script package uploaded successfully.");
+			} else {
+				throw new InvalidParamValueException("Parameter \"action\" has invalid value.");
+			}
+		}
+	
+		/* Ideally, the presence of the query parameter "upload" should be checked
+		 * here - for consistency with other forms. Unfortunately, when the form
+		 * data is sent as "multipart/form-data" (necessary to upload files), Tomcat
+		 * doesnt' understand it and leaves the request unparsed => we can't
+		 * directly access the query parameters.
+		 * 
+		 * Workaround is to check the request type - if POSTing, we're uploading,
+		 * if GETting, we're only viewing the form.
+		 */ 
+		if (params.requestMethodIsPost()) {
+			DiskFileUpload upload = new DiskFileUpload();
+			
+			List fileItems = null;
+			try {
+				fileItems = upload.parseRequest(request);
+			} catch (FileUploadException e) {
+				errorMessages.addTextMessage("Error uploading R script package:" + e.getMessage());
+			}
+			
+			FileItem fileItem = null;
+			if (errorMessages.isEmpty()) {
+				/* Index "0" is the index of the field in the upload form. Needs to be
+				 * synchronized with /webinterface/templates/results-package-upload.jsp.
+				 */
+				fileItem = (FileItem) fileItems.get(0);
+				params.checkCondition(!fileItem.getName().equals(""), "Enter the package file.");
+			}
+
+			if (errorMessages.isEmpty()) {
+				InputStream inputStream = fileItem.getInputStream();
+				try {
+					try {
+						UploadResult result = uploadPackage(fileItem.getName(), inputStream);
+						switch (result.getStatus()) {
+							case REJECTED:
+								String message = "<strong>R script package was "
+									+ "rejected by the Results Repository. Reported errors:</strong><br /><br />";
+								message += "<ul>";
+								for (String errorMessage: result.getErrorMessages()) {
+									message += "<li>";
+									message += Routines.htmlspecialchars(errorMessage);
+									message += "</li>";
+								}
+								message += "</ul>";
+								errorMessages.addHTMLMessage(message);
+								break;
+							case ERROR:
+								errorMessages.addTextMessage("Error uploading R script package: Results Repository reports error.");
+								break;
+							default:
+								/* Just pass... */
+						}
+					} finally {
+						inputStream.close();
+					}
+				} catch (IllegalArgumentException e) {
+					/* Most probably the package does already exist. */
+					errorMessages.addTextMessage(e.getMessage());
+				} catch (IOException e) {
+					errorMessages.addTextMessage("Error uploading R script package:" + e.getMessage());
+				}
+			}
+	
+			if (errorMessages.isEmpty()) {
+				HashMap<String, String> actionParams = new HashMap<String, String>();
+				actionParams.put("action", "uploaded");
+				page.redirectToAction("package-upload", actionParams);
+				return;
+			} else {
+				data.put("file", fileItem.getName());
+			}
+		} else {
+			data.put("file", "");
+		}
+		
+		page.setTitle("Upload R script package");
+		page.setFocusedElement(0, "file");
+		page.writeHeader();
+		page.writeTemplate("results-package-upload", data);
+		page.writeFooter();
+!!!785666.java!!!	packageDelete(inout request : HttpServletRequest, inout response : HttpServletResponse) : void
+		testRScriptingEnabled();
+
+		params.ensureExists("package");
+		
+		resultsRepository.get().deleteRScriptPackage(request.getParameter("package"));
+		
+		HashMap<String, String> actionParams = new HashMap<String, String>();
+		actionParams.put("action", "deleted");
+		page.redirectToAction("package-list", actionParams);
+!!!785794.java!!!	rFunctionsHelp(inout request : HttpServletRequest, inout response : HttpServletResponse) : void
+		testRScriptingEnabled();
+
+		RFunctionHelp[] helpItems = resultsRepository.get().getRFunctionsHelp();
+		
+		HashMap<String, Object> data = new HashMap<String, Object>();
+		data.put("helpItems", helpItems);
+
+		page.setTitle("R functions help");
+		page.setLayoutType(LayoutType.SIMPLE);
+		page.writeHeader();
+		page.writeTemplate("results-r-functions-help", data);
+		page.writeFooter();

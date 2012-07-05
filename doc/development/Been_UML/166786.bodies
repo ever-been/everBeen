@@ -1,0 +1,236 @@
+class DatabaseIndex
+!!!333570.java!!!	DatabaseIndex(in fileName : String, inout logger : HostManagerLogger)
+		
+		hosts = new HashMap< String, HostIndexEntry >();
+				
+		groups = new HashMap< String, String >();
+		
+		this.logger = logger;
+
+		File input = new File(fileName);
+
+		this.logger.logDebug("Index file: \"" + fileName + "\".");
+
+		if (!input.exists()) {
+			this.logger.logWarning("Index does not exist. Creating empty one.");
+			
+			modified = true;
+			
+			indexFile = fileName;
+			
+			try {
+				save();
+			} catch (HostDatabaseException e) {
+				throw new HostDatabaseException("Unable to create new index.", e);
+			}
+		}
+		this.logger.logInfo("Loading database index, file: \"" + fileName + "\".");
+				
+		DocumentBuilder builder = null;
+
+		try {
+			builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+		} catch (ParserConfigurationException e) {
+			throw new InputParseException(e.getMessage());
+		}
+		
+		Document document = null;
+		
+		try {
+			document = builder.parse(input);
+		} catch (Exception e) {
+			throw new InputParseException(e.getMessage());
+		}
+		
+		Node indexNode = XMLHelper.getSubNodeByName("index", document);
+		
+		ArrayList< Node > hostNodes = 
+			XMLHelper.getChildNodesByName("host", XMLHelper.getSubNodeByName("hosts", indexNode));
+
+		// load entries for hosts
+		for (Iterator< Node > it = hostNodes.iterator(); it.hasNext(); ) {
+			
+			HostIndexEntry hie = new HostIndexEntry(it.next());
+			
+			hosts.put(hie.getHostName(), hie);
+		}
+		
+		ArrayList< Node > groupNodes = 
+			XMLHelper.getChildNodesByName("group", XMLHelper.getSubNodeByName("groups", indexNode));
+		
+		// load entries for groups
+		for (Iterator< Node > it = groupNodes.iterator(); it.hasNext(); ) {
+			
+			GroupIndexEntry gie = new GroupIndexEntry(it.next());
+			
+			groups.put(gie.getGroupName(), gie.getDataFileName());
+		}
+		
+		this.logger.logInfo("Index file loaded successfuly. Hosts: " + hosts.size() + ", "
+				+ "groups: " + groups.size() + ".");
+		
+		indexFile = fileName;
+!!!333698.java!!!	parseXMLNode(inout node : Node) : void
+		
+		throw new UnsupportedOperationException("Index cannot be create from XML node."
+				+ " Use constructor instead.");
+!!!333826.java!!!	isModified() : boolean
+		
+		if (!modified) {
+			// if the index itself is not modified look whether some of the child nodes are modified
+			for (HostIndexEntry hostEntry: hosts.values()) {
+				if (hostEntry.isModified()) {
+					return true;
+				}
+			}
+		}
+
+		return modified;
+!!!333954.java!!!	isModified(inout reset : boolean) : boolean
+		
+		boolean result = isModified();
+		
+		if (result && reset) {
+			for (HostIndexEntry hostEntry: hosts.values()) {
+				hostEntry.saved();
+			}
+		}
+		
+		return result;
+!!!334082.java!!!	getIndexFile() : String
+		
+		return indexFile;
+!!!334210.java!!!	finalize() : void
+		
+		try {
+			if (indexFile != null) {
+				modified = true;
+				save();
+			}
+		} finally {
+			super.finalize();
+		}
+!!!334338.java!!!	save() : void
+
+		if (!isModified()) {
+			return;
+		}
+		
+		if (indexFile == null) {
+			logger.logFatal("Name of index file is null!");
+			throw new NullPointerException("Name of index file is null!");
+		}
+
+		try {
+			XMLHelper.saveXMLSerializable(this, indexFile, true, "UTF-16");
+		} catch (Exception e) {
+			logger.logError("Unable to save index file.", e);
+			throw new HostDatabaseException("Unable to save index file.", e);
+		}
+		
+		modified = false;
+!!!334466.java!!!	exportAsElement(inout document : Document) : Element
+		
+		Element indexElement = document.createElement("index");
+		
+		Element hostsElement = document.createElement("hosts");
+		Element groupsElement = document.createElement("groups");
+		
+		indexElement.appendChild(hostsElement);
+		indexElement.appendChild(groupsElement);
+		
+		for (HostIndexEntry hostEntry: hosts.values()) {
+			hostsElement.appendChild(hostEntry.exportAsElement(document));
+		}
+		
+		for (Map.Entry< String, String > groupEntry: groups.entrySet()) {
+			GroupIndexEntry gie = new GroupIndexEntry(groupEntry.getKey(), groupEntry.getValue());
+			groupsElement.appendChild(gie.exportAsElement(document));
+		}
+		
+		return indexElement;
+!!!334594.java!!!	hasHostEntry(in hostName : String) : boolean
+		
+		return (hosts.get(hostName) != null); 
+!!!334722.java!!!	getHostEntry(in hostName : String) : HostIndexEntry
+		
+		HostIndexEntry result = hosts.get(hostName);
+		
+		if (result != null) {
+			return result;
+		} else {
+			throw new ValueNotFoundException("Unable to find host \"" + hostName + "\" in index.");
+		}
+!!!334850.java!!!	removeHostEntry(in hostName : String) : void
+		
+		if (hosts.containsKey(hostName)) {
+			hosts.remove(hostName);
+			
+			modified = true;
+		} else {
+			throw new ValueNotFoundException("Unable to remove entry for \""
+					+ hostName + "\" from index.");
+		}
+!!!334978.java!!!	getHostEntryList() : HostIndexEntry
+				
+		return hosts.values().toArray(new HostIndexEntry[0]);
+!!!335106.java!!!	addHostEntry(in hostName : String, in dataFile : String, in loadFile : String, in loadMapFile : String, inout date : Date) : void
+
+		if (hosts.containsKey(hostName)) {
+			throw new InvalidArgumentException("Unable to add \"" + hostName + "\" to the index. "
+					+ "Host is already in the index.");
+		}
+		
+		HostIndexEntry ie = new HostIndexEntry(hostName, dataFile, loadFile, loadMapFile, date);
+		
+		hosts.put(hostName, ie);
+		
+		modified = true;
+!!!335234.java!!!	hasGroupEntry(in groupName : String) : boolean
+		
+		return (groups.get(groupName) != null);
+!!!335362.java!!!	getGroupEntry(in groupName : String) : GroupIndexEntry
+
+		String f = groups.get(groupName);
+		
+		if (f != null) {
+			return new GroupIndexEntry(groupName, f);
+		} else {
+			throw new ValueNotFoundException("Group \"" + groupName + "\" was not found in index.");
+		}
+!!!335490.java!!!	addGroupEntry(in groupName : String, in groupFile : String) : void
+		
+		if (groups.containsKey(groupName)) {
+			throw new InvalidArgumentException("Group \"" + groupName + "\" is already in the index.");
+		} else {
+			groups.put(groupName, groupFile);
+			modified = true;
+		}
+!!!335618.java!!!	getGroupEntryList() : GroupIndexEntry
+		
+		GroupIndexEntry[] grp = new GroupIndexEntry[groups.size()];
+		Set< Map.Entry< String, String> > entries = groups.entrySet();
+		
+		int i = 0;
+		for (Iterator< Map.Entry< String, String > > it = entries.iterator(); it.hasNext(); ++i) {
+			
+			Map.Entry< String, String > current = it.next();
+			
+			grp[i] = new GroupIndexEntry(current.getKey(), current.getValue());
+		}
+		
+		return grp;
+!!!335746.java!!!	removeGroupEntry(in groupName : String) : void
+		
+		if (groups.containsKey(groupName)) {
+			
+			groups.remove(groupName);
+			
+			modified = true;
+		} else {
+			throw new ValueNotFoundException("Unable to remove non-existant group entry for \""
+					+ groupName + "\" from index.");
+		}
+!!!335874.java!!!	getXMLNodeName() : String
+		
+		return XML_NODE_NAME;

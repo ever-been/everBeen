@@ -1,0 +1,26 @@
+class OperationHandle
+!!!312450.java!!!	OperationHandle()
+		
+		handle = 0;
+!!!312578.java!!!	OperationHandle(in handle : long)
+		
+		this.handle = handle;
+!!!312706.java!!!	getNext() : OperationHandle
+		
+		return new OperationHandle(handle + 1);
+!!!312834.java!!!	equals(inout other : Object) : boolean
+		
+		if (other instanceof OperationHandle) {
+			return handle == ((OperationHandle) other).handle;
+		} else {
+			return false;
+		}
+!!!312962.java!!!	hashCode() : int
+		
+		return (int) (handle ^ (handle >>> 32));
+!!!313090.java!!!	toString() : String
+
+		return Long.toString(handle);
+!!!313218.java!!!	valueOf(in s : String) : OperationHandle
+
+		return new OperationHandle(Long.valueOf(s));

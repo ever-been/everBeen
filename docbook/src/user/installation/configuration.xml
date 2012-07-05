@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sect1
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>Configuration</title>
+
+	<sect2>
+		<title>Startup Configuration</title>
+
+		<sect3>
+			<title>RMI Registry Port and Tomcat Directory</title>
+			
+			<para>There can be multiple instances of BEEN running in parallel on a group of hosts.
+			This makes benchmarking results useless, but it is very useful for debugging, especially
+			when multiple users share a group of hosts.</para>
+			
+			<para>The environment variable <constant>BEEN_RMI_PORT</constant> sets the port number
+			to user for RMI. When unspecified, the default value of 1099 will be used. Each concurrent BEEN
+			installation must use a distinct RMI port.</para>
+			
+			<para>The environment variable <constant>BEEN_TOMCAT_DIR</constant> causes the Ant
+			build process to deploy the web interface to the directory specified by the variable.
+			This facilitates coexistence of multiple Tomcat instances. Presumably, you need to
+			either configure a distinct HTTP port for each of them or run each of them on a different
+			host.</para>
+			
+			<para>Analogically, the Command Line Interface honors the <constant>BEEN_PORT</constant> variable. When
+			not set, the default value of 2336 will be used. When running BEEN installations
+			in parallel, you can either run CLI on a different host for each of them or set the
+			<constant>BEEN_PORT</constant> variable to an unused port. The command line client
+			(<command>bcmd</command>) reads this variable as well.</para>
+			
+			<para>Using <constant>BEEN_PORT</constant>, <constant>BEEN_RMI_PORT</constant> and <constant>BEEN_TOMCAT_DIR</constant>,
+			you can share a group of hosts among multiple full-featured BEEN installations.</para>
+		</sect3>
+	</sect2>
+
+	<sect2>
+		<title>Runtime Configuration</title>
+
+		<para>Through the web interface you can configure every part of the BEEN framework. Most of
+		the configuration is set in the <guimenuitem>Configuration</guimenuitem> tab but some parts
+		are done on the other tabs.</para>
+
+		<sect3>
+			<title>The Task Manager Host Name</title>
+
+			<para>Much like Host Runtimes, the web interface connects to the Task Manager to get
+			references to the other parts of BEEN. By default it expects the Task Manager to run on
+			the same host. You will see something like <guilabel>Can't connect to the RMI registry
+			on host "localhost"</guilabel> on every tab if the Task Manger is not running on the
+			specified host.</para>
+
+			<para>To change the Task Manager host name go to the
+			<guimenuitem>Configuration</guimenuitem> tab and set the appropiate field.</para>
+		</sect3>
+
+		<sect3>
+			<title>Kept Closed Contexts</title>
+
+			<para>As BEEN is running, the contexts that finish properly are closed and deleted.
+			Contextst that do not finish proeprly are not closed and must be deleted by the
+			administrator. To allow the administrator to inspect the logs of tasks in properly
+			closed contexts there is a option to keep some of them. The task Manager will delete
+			only the contexts that excede this settings.</para>
+
+			<para>To change the number of closed contexts kept go to the
+			<guimenuitem>Configuration</guimenuitem> tab and set the appropiate field.</para>
+		</sect3>
+
+		<sect3>
+			<title>Host Runtime Settings</title>
+
+			<para>Each Host Runtime has package cache to avoid unneccessary network trafic. This
+			limit helps the BEEN administrator manage the size of this cache.</para>
+
+			<para>To change the package cache size limit go to the
+			<guimenuitem>Configuration</guimenuitem> tab and set the appropiate field.</para>
+		</sect3>
+
+		<sect3>
+			<title>Host Manager and Load Server Settings</title>
+
+			<para>The Load Server is a component of the Host Manager which gathers information
+			about the load of hosts over time. The load information is recorded as a sequence of load samples. A load
+			sample is a structure containing data about the load on processors,
+			hard drives and network adapters.</para>
+
+			<para>The frequency of sampling can be configured using the Web Interface. The standard
+			and detailed sampling frequencies can be modified. Detailed sampling can be switched
+			on on a per task basis.</para>
+			
+			<para>Host Runtimes always send samples to the Host Manager at the standard sampling
+			rate, even when detailed sampling is on. Detailed sampling causes all the load
+			samples to be recorded and stored by the Host Runtime. This avoids excessive network traffic
+			during benchmarks. The samples are transferred to the Host Manager upon task
+			completion.</para>
+		</sect3>
+
+		<sect3 xml:id="been.user.install.config.limitation">
+			<title>Load Limitation</title>
+
+			<para>The Task Manager could theoretically cause a thrashing collapse on some hosts
+			due to a huge number of non-exclusive tasks started at once. Concurrent disk operations
+			are known to be very inefficient on most hardware configurations. A load
+			limitation mechanism had to be introduced.</para>
+			
+			<para>Each task and each host has a parameter called <option>loadUnits</option>. There
+			are 128 load units per task by default. You can specify a different number in the
+			Task Descriptor. Useful examples of Task Descriptors are in <xref linkend="been.user.cli.reference.tasks"/>.
+			For a host with known RAM size, the default number of load units is one unit per megabyte of RAM. When the RAM
+			size is unknown, 1024 load units will be set by default. You can change this
+			by setting a user-defined host property called <option>loadUnits</option> to the desired integer
+			value.</para>
+			
+			<para>The Task Manager guarantees that the sum of load units of running tasks on a host
+			will never exceed the number of load units assigned to the host.</para>
+			
+			<para>Details on the Host Manager's data structures can be found in
+			<biblioref linkend="BUD2" units="page" begin="24" end="28"/>. These values can be set
+			using both the Web Inerface and the Command Line Interface
+			(<xref linkend="been.user.cli.reference.hosts"/>).</para>
+		</sect3>
+		
+		<sect3>
+			<title>Configuring the Command Line Interface</title>
+			
+			<para>The Command Line Interface has runtime parameters that can be tweaked using
+			the <command>meta</command> module (<xref linkend="been.user.cli.reference.meta"/>).
+			Environment variables and other input data used by the CLI is described in
+			<xref linkend="been.user.cli"/> and in Development Documentation,
+			<xref linkend="been.devel.cli"/>.</para>
+		</sect3>		
+	</sect2>
+</sect1>

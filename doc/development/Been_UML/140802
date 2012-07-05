@@ -1,0 +1,566 @@
+format 59
+"localupload" // been::src::cz::cuni::mff::been::task::upload::localupload
+  revision 1
+  modified_by 2 "Administrator"
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default show_stereotype_properties default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+  show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+  show_infonote default drawing_language default show_stereotype_properties default
+  
+  java_dir "cz/cuni/mff/been/task/upload/localupload"
+  java_package "cz.cuni.mff.been.task.upload.localupload"
+  classview 137474 "localupload"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default show_stereotype_properties default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+    //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+    show_infonote default drawing_language default show_stereotype_properties default
+    class 205186 "LocalUpload"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+<p>Creates a BEEN package from a directory, and uploads it to the Software
+Repository.</p>
+
+<b>Task properties:</b><br>
+<ul>
+<li>{@value #DIRECTORY}: <br>
+		- path to the directory whose contents will be packed in a BEEN
+		package <br>
+		- mandatory <br>
+<li>{@value #METADATA_FILE}: <br>
+		- path to the metadata file describing the BEEN package <br>
+		- mandatory <br>
+<li>{@value #USE_CONFIG}: <br>
+		- if set to \"true\" or \"yes\", a \"config.xml\" file describing a BEEN task
+		will be a part of the BEEN package. The path to the \"config.xml\" file
+		must be set in the {@value #CONFIG_FILE} task property. <br>
+<li>{@value #CONFIG_FILE}: <br>
+		- path to the \"config.xml\" file for a task package <br>
+		- mandatory if {@value #USE_CONFIG} is \"true\" or \"yes\" <br>
+</ul>
+
+@author Jaroslav Urban
+"
+      classrelation 263682 // <generalisation>
+	relation 263682 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 263682 // <generalisation>
+	  b parent class_ref 197250 // Job
+      end
+
+      attribute 322818 "DIRECTORY"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"dir\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Task property name for the directory that will be packaged *
+"
+      end
+
+      attribute 322946 "METADATA_FILE"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"metadata.file\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " 
+Task property name for the location of the metadata.xml file that will be
+put into the package. Don't set this parameter
+if you want to get the location from some task's
+checkpoint.
+
+"
+      end
+
+      attribute 323074 "USE_CONFIG"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"use.config\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Task property name, set to \"yes\" of you want to package config.xml
+in the package
+
+"
+      end
+
+      attribute 323202 "CONFIG_FILE"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"config.file\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Task property name for the location of the config.xml file that will be
+put into the package. Don't set this parameter
+if you want to get the location from some task's
+checkpoint.
+
+"
+      end
+
+      attribute 323330 "PKG_DIR"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"package\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Name of the temporary directory with the package contents 
+"
+      end
+
+      attribute 323458 "PKG_FILE"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"package.bpk\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Name of the temporary file which will be the uploaded package 
+"
+      end
+
+      attribute 323586 "UPLOAD_THREAD_INIT_TIME"
+	class_attribute const_attribute private explicit_type "long"
+	init_value "=  3000"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Time in milliseconds given to the upload thread to initialize 
+"
+      end
+
+      attribute 323714 "UPLOAD_WAIT_TIME"
+	class_attribute const_attribute private explicit_type "long"
+	init_value "=  5000"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Interval in milliseconds for checking if the upload is finished 
+"
+      end
+
+      attribute 323842 "UPLOAD_THREAD_FINISH_TIME"
+	class_attribute const_attribute private explicit_type "long"
+	init_value "=  20000"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " 
+Time in milliseconds given to the upload thread to finish 
+after the package was succesfully uploaded 
+
+"
+      end
+
+      attribute 323970 "packageDirectory"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " directory to package *
+"
+      end
+
+      attribute 324098 "metadataPath"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " location of the metadata file *
+"
+      end
+
+      attribute 324226 "useConfig"
+	private explicit_type "boolean"
+	init_value "=  false"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " true when config.xml should be put into the package *
+"
+      end
+
+      attribute 324354 "configPath"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " location of the config.xml file *
+"
+      end
+
+      classrelation 263810 // swRepo (<unidirectional association>)
+	relation 263810 --->
+	  a role_name "swRepo" private
+	    comment " reference to the Software Repository *
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 263810 // swRepo (<unidirectional association>)
+	  b parent class_ref 142594 // SoftwareRepositoryInterface
+      end
+
+      operation 664706 "LocalUpload"
+	public explicit_return_type ""
+	nparams 0
+	nexceptions 1
+	  exception class_ref 137218 // TaskInitializationException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>LocalUpload</code> object.
+
+@throws TaskInitializationException
+"
+      end
+
+      operation 664834 "init"
+	private explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  exception class_ref 137346 // TaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 664962 "run"
+	protected explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  exception class_ref 137346 // TaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+      end
+
+      operation 665090 "createPackage"
+	private explicit_return_type "String"
+	nparams 0
+	nexceptions 1
+	  exception class_ref 137346 // TaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Creates the package file
+
+"
+      end
+
+      operation 665218 "uploadPackage"
+	private explicit_return_type "void"
+	nparams 1
+	  param in name "path" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 137346 // TaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 665346 "endUpload"
+	private explicit_return_type "void"
+	nparams 2
+	  param inout name "handle" type class_ref 134658 // UploadHandle
+	  param inout name "serverSocketChan" explicit_type "ServerSocketChannel"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Cleans up after uploading 
+@param serverSocketChan channel used to communicate with Software Repository
+"
+      end
+
+      operation 665474 "checkRequiredProperties"
+	protected explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  exception class_ref 137346 // TaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+      end
+    end
+
+    class 205314 "UploadThread"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Thread that uploads data from an input channel to a socket channel
+@author Jaroslav Urban
+"
+      classrelation 263938 // <generalisation>
+	relation 263938 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 263938 // <generalisation>
+	  b parent class_ref 151042 // Thread
+      end
+
+      classrelation 264066 // <realization>
+	relation 264066 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 264066 // <realization>
+	  b parent class_ref 148226 // Serializable
+      end
+
+      attribute 324482 "socketChan"
+	private explicit_type "ServerSocketChannel"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 324610 "inputChan"
+	private explicit_type "ReadableByteChannel"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 324738 "storedException"
+	private explicit_type "Exception"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      operation 665602 "UploadThread"
+	public explicit_return_type ""
+	nparams 2
+	  param inout name "socketChan" explicit_type "ServerSocketChannel"
+	  param inout name "inputChan" explicit_type "ReadableByteChannel"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new UploadThread
+
+@param socketChan channel for uploading
+@param inputChan input channel
+"
+      end
+
+      operation 665730 "run"
+	public explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+Runs the thread.
+"
+      end
+
+      operation 665858 "getStoredException"
+	public explicit_return_type "Exception"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return Returns the storedException.
+"
+      end
+    end
+  end
+
+  deploymentview 136578 "localupload"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+    artifact 184962 "LocalUpload"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.nio.channels.FileChannel;
+import java.nio.channels.ServerSocketChannel;
+import java.rmi.RemoteException;
+import cz.cuni.mff.been.common.UploadHandle;
+import cz.cuni.mff.been.common.UploadStatus;
+import cz.cuni.mff.been.common.anttasks.AntTaskException;
+import cz.cuni.mff.been.common.anttasks.Copy;
+import cz.cuni.mff.been.common.anttasks.Zip;
+import cz.cuni.mff.been.softwarerepository.SoftwareRepositoryInterface;
+import cz.cuni.mff.been.softwarerepository.SoftwareRepositoryService;
+import cz.cuni.mff.been.task.Job;
+import cz.cuni.mff.been.task.Service;
+import cz.cuni.mff.been.task.TaskException;
+import cz.cuni.mff.been.task.TaskInitializationException;
+${definition}"
+      associated_classes
+	class_ref 205186 // LocalUpload
+      end
+    end
+
+    artifact 185090 "UploadThread"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.Serializable;
+import java.nio.ByteBuffer;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
+${definition}"
+      associated_classes
+	class_ref 205314 // UploadThread
+      end
+    end
+  end
+end

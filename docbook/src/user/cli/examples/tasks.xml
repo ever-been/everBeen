@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sect3
+	xml:id="been.user.cli.reference.tasks.examples"
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>Tasks Module Examples</title>
+	
+	<para>XML Schema files related to this module: <filename>td.xsd</filename></para>
+	
+	<para>This module manipulates tasks directly. Output data format is described in
+	<xref linkend="been.user.cli.reference.tasks"/> for actions that produce plain text output.
+	Actions that work with task descriptors take XML input (<command>run</command>) and produce
+	XML output (<command>dump</command>).</para>
+	
+	<para>The current version of BEEN supports two concepts of task identification: The Task Tree
+	address and the (context, id) pair. All actions that manipulate tasks support both types of
+	idenfitifaction data. Contexts are deprecated and the Task Tree will make them obsolete sooner
+	or later. It is therefore advisable to base your scripts on the Task Tree address.</para>
+	
+	<para>Listing the root node of the Task Tree:</para>
+	<screen>$ <emphasis role="strong">./bcmd tasks tree-list</emphasis></screen>	
+	<screen>$ <emphasis role="strong">./bcmd tasks tree-list path='""'</emphasis></screen>	
+	
+	<para>Listing the Task Tree recursively, optionally including all the Task Tree flags for each
+	leaf and node:</para>
+	<screen>$ <emphasis role="strong">./bcmd tasks tree-list recursive</emphasis></screen>	
+	<screen>$ <emphasis role="strong">./bcmd tasks tree-list path=/some/path recursive</emphasis></screen>	
+	<screen>$ <emphasis role="strong">./bcmd tasks tree-list flags recursive</emphasis></screen>	
+	
+	<para>Listing all contexts with optional regular expression filtering and/or human-readable
+	description:</para>
+	<screen>$ <emphasis role="strong">./bcmd tasks context-list</emphasis></screen>	
+	<screen>$ <emphasis role="strong">./bcmd tasks context-list desc</emphasis></screen>
+	<screen>$ <emphasis role="strong">./bcmd tasks context-list pattern='.*Xampler'</emphasis></screen>	
+	
+	<para>Listing tasks in a context with optional filtering and human-readable description:</para>
+	<screen>$ <emphasis role="strong">./bcmd tasks context-list id=system</emphasis></screen>	
+	<screen>$ <emphasis role="strong">./bcmd tasks context-list desc id=bench_0_0</emphasis></screen>
+	<screen>$ <emphasis role="strong">./bcmd tasks context-list id=bench_0_0 pattern='.*load.*'</emphasis></screen>	
+	
+	<para>Creating a context:</para>
+	<screen>$ <emphasis role="strong">./bcmd tasks context-new name=myContext</emphasis></screen>	
+	<screen>$ <emphasis role="strong">./bcmd tasks context-new name=myContext id=xfz07</emphasis></screen>
+	<screen>$ <emphasis role="strong">./bcmd tasks context-new desc="a b c" name=myContext id=xfz07</emphasis></screen>	
+	
+	<para>Deleting a context:</para>
+	<screen>$ <emphasis role="strong">./bcmd tasks context-delete id=myContext</emphasis></screen>	
+	
+	<para>Requesting detailed task information, possibly with a human-readable description:</para>
+	<screen>$ <emphasis role="strong">./bcmd tasks info path=/legacy/softwarerepository</emphasis></screen>	
+	<screen>$ <emphasis role="strong">./bcmd tasks info path=/legacy/softwarerepository desc</emphasis></screen>	
+	<screen>$ <emphasis role="strong">./bcmd tasks info id=clinterface-tid context=system</emphasis></screen>	
+	<screen>$ <emphasis role="strong">./bcmd tasks info desc id=clinterface-tid context=system</emphasis></screen>	
+
+	<para>Obtaining standard and error output and log messages using the same set of parameters as
+	described in <xref linkend="been.user.cli.reference.csvcs.examples"/>:</para>
+	<screen>$ <emphasis role="strong">./bcmd tasks stderr path=/legacy/clinterface</emphasis></screen>	
+	<screen>$ <emphasis role="strong">./bcmd tasks stdout path=/legacy/softwarerepository numbers</emphasis></screen>	
+	<screen>$ <emphasis role="strong">./bcmd tasks stdout path=/legacy/clinterface from=4 numbers to=10</emphasis></screen>	
+	<screen>$ <emphasis role="strong">./bcmd tasks logs id=clinterface-tid context=system</emphasis></screen>	
+	<screen>$ <emphasis role="strong">./bcmd tasks stdout numbers id=hostmanager-tid context=system</emphasis></screen>	
+	
+	<para>Killing a task:</para>
+	<screen>$ <emphasis role="strong">./bcmd tasks kill path=/path/to/a/leaf</emphasis></screen>	
+	<screen>$ <emphasis role="strong">./bcmd tasks kill id=taskId context=contextId</emphasis></screen>	
+	
+	<para>Killing all tasks in a context:</para>
+	<screen>$ <emphasis role="strong">./bcmd tasks kill recursive context=contextId</emphasis></screen>	
+	
+	<para>Killing all tasks in a subtree of the Task Tree:</para>
+	<screen>$ <emphasis role="strong">./bcmd tasks kill path=/path/to/a/node recursive</emphasis></screen>	
+	
+	<para>Optionally, contexts and Task Tree items can be deleted after killing all the tasks.</para>
+	<screen>$ <emphasis role="strong">./bcmd tasks kill recursive context=contextId delete</emphasis></screen>	
+	<screen>$ <emphasis role="strong">./bcmd tasks kill delete path=/path/to/a/node recursive</emphasis></screen>	
+	
+	<para>Running a task based on an XML task descriptor:</para>
+	<screen>$ <emphasis role="strong">./bcmd -b- tasks run</emphasis></screen>	
+	<screen>$ <emphasis role="strong">./bcmd -b task.xml tasks run</emphasis></screen>	
+	
+	<para>Obtaining the original XML task descriptor of a runnig task:</para>
+	<screen>$ <emphasis role="strong">./bcmd tasks dump path=/path/to/a/leaf</emphasis></screen>
+	<screen>$ <emphasis role="strong">./bcmd tasks dump id=taskId context=contextId</emphasis></screen>	
+	
+	<para>The mopdified (preprocessed) task descriptor (with canonical host names and resolved RSL
+	expressions) can be obtained as well.</para>
+	<screen>$ <emphasis role="strong">./bcmd tasks dump path=/path/to/a/leaf resolved</emphasis></screen>
+	<screen>$ <emphasis role="strong">./bcmd tasks dump id=taskId context=contextId resolved</emphasis></screen>	
+	
+	<para>Possible format of the XML task descriptor:</para>
+	<screen><![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<taskDescriptor
+    xmlns="http://been.mff.cuni.cz/taskmanager/td"
+    taskId="12201012395652"
+    contextId="MyXampler-0-0"
+    treeAddress="/analysis/MyXampler/]]><emphasis>[...]</emphasis><![CDATA[/12201012395652"
+    name="willbeen-xampler-build-linux"
+    description="This is valid when the description element is absent."
+    exclusive="context-exclusive"
+>
+    <description>A long task description. This will be preferred
+    over the description attribute above.</description>
+    <arguments>
+        <argument>--switch</argument>
+        <argument>Z</argument>
+    </arguments>
+    <java>
+        <javaOptions>
+            <javaOption>-Xms256m</javaOption>
+            <javaOption>-D]]><emphasis>[...]</emphasis><![CDATA[</javaOption>
+        </javaOptions>
+    </java>
+    <taskProperties>
+        <taskProperty key="rr.src.analysis" value="MyXampler"/>
+        <taskProperty key="build.number" value="1"/>
+        <taskProperty key="my.long.property">
+            This is a long property value.
+        </taskProperty>
+    </taskProperties>
+    <taskPropertyObjects>
+        <taskPropertyObject key="thisIsNull"/>
+        <taskPropertyObject key="myString">
+            <strval class="java.lang.String">Hello!</strval>
+        </taskPropertyObject>
+        <taskPropertyObject key="something">
+            <binval>]]><emphasis>[...]</emphasis><![CDATA[</binval>
+        </taskPropertyObject>
+    </taskPropertyObjects>
+    <package>
+        <rsl>(type == task) &amp;&amp; (name == ]]><emphasis>[...]</emphasis><![CDATA[)</rsl>
+        <!-- <name>package-name.bpk</name> -->
+        <!-- Name can be specified instead of the constraint.
+             It is also set automatically when RSL is resolved. -->
+    </package>
+    <hostRuntimes>
+        <!-- <asTask>the-task-id</asTask> -->
+        <!-- Select the same host some other task runs on.
+             Preferred over both <rsl> and <name> -->
+        <rsl>name =~ /.*/</rsl>
+        <!-- <name>firsthost</name><name>nexthost</name> -->
+        <!-- Names can be set directly.
+             They are set automatically when RSL is resolved. -->
+    </hostRuntimes>
+    <dependencies>
+        <dependencyCheckPoint taskId="xyz" type="task finished">
+            <binval>rO0ABX]]><emphasis>[...]</emphasis><![CDATA[AAAAAA</binval>
+        </dependencyCheckPoint>
+        <dependencyCheckPoint taskId="other-task" type="server started"/>
+        <!-- The above matches any value. -->
+        <dependencyCheckPoint taskId="zyx" type="ready" value="string value"/>
+        <dependencyCheckPoint taskId="the-last-one" type="finished">
+            <strval class="java.lang.Integer">15</strval>
+        </dependencyCheckPoint>
+    </dependencies>
+    <failurePolicy restartMax="10" timeoutRun="5000"/>
+    <loadMonitoring detailedLoad="true" loadInterval="20" loadUnits="512"/>
+</taskDescriptor>]]></screen>	
+
+	<para>Note that most attributes and elements are optional. You can get a basic task descriptor
+	by dumping out one of the core BEEN services. This is how the Command Line Service is
+	described:</para>
+	
+<screen><![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<taskDescriptor
+    xmlns="http://been.mff.cuni.cz/taskmanager/td"
+    taskId="clinterface-tid"
+    contextId="system"
+    treeAddress="/legacy/clinterface"
+    name="clinterface"
+>
+    <package>
+        <name>clinterface-1.0.bpk</name>
+    </package>
+    <hostRuntimes>
+        <name>starling</name>
+    </hostRuntimes>
+</taskDescriptor>]]></screen>
+</sect3>

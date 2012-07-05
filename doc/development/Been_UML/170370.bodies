@@ -1,0 +1,94 @@
+class JavaInfo
+!!!368002.java!!!	JavaInfo(in javaVersion : String, in javaVendor : String, in runtimeName : String, in runtimeVersion : String, in vmVersion : String, in vmVendor : String, in specification : String)
+		
+		super(HostInfoInterface.Objects.JAVA, null);
+
+		this.javaVersion = javaVersion;
+		this.javaVendor = javaVendor;
+		this.runtimeName = runtimeName;
+		this.runtimeVersion = runtimeVersion;
+		this.vmVersion = vmVersion;
+		this.vmVendor = vmVendor;
+		this.specification = specification;
+		
+		try {
+			putProperty(Properties.JAVA_VERSION, new ValueVersion(this.javaVersion));
+			putProperty(Properties.JAVA_VENDOR, new ValueString(this.javaVendor));
+			putProperty(Properties.RUNTIME_NAME, new ValueString(this.runtimeName));
+			putProperty(Properties.RUNTIME_VERSION, new ValueVersion(this.runtimeVersion));
+			putProperty(Properties.VM_VERSION, new ValueVersion(this.vmVersion));
+			putProperty(Properties.VM_VENDOR, new ValueString(this.vmVendor));
+			putProperty(Properties.SPECIFICATION_VERSION, new ValueVersion(this.specification));
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+			assert false : "Unable to add basic properties to JavaInfo."; 
+		}
+!!!368130.java!!!	JavaInfo(inout javaNode : Node)
+		
+		super(HostInfoInterface.Objects.JAVA, null);
+
+		parseXMLNode(javaNode);
+!!!368258.java!!!	parseXMLNode(inout node : Node) : void
+
+		javaVersion = XMLHelper.getSubNodeValueByName("version", node);
+		javaVendor = XMLHelper.getSubNodeValueByName("vendor", node);
+		runtimeName = XMLHelper.getSubNodeValueByName("runtimeName", node);
+		runtimeVersion = XMLHelper.getSubNodeValueByName("runtimeVersion", node);
+		vmVersion = XMLHelper.getSubNodeValueByName("vmVersion", node);
+		vmVendor = XMLHelper.getSubNodeValueByName("vmVendor", node);
+		specification = XMLHelper.getSubNodeValueByName("specification", node);
+
+		try {
+			putProperty(Properties.JAVA_VERSION, new ValueVersion(javaVersion));
+			putProperty(Properties.JAVA_VENDOR, new ValueString(javaVendor));
+			putProperty(Properties.RUNTIME_NAME, new ValueString(runtimeName));
+			putProperty(Properties.RUNTIME_VERSION, new ValueVersion(runtimeVersion));
+			putProperty(Properties.VM_VERSION, new ValueVersion(vmVersion));
+			putProperty(Properties.VM_VENDOR, new ValueString(vmVendor));
+			putProperty(Properties.SPECIFICATION_VERSION, new ValueVersion(specification));
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+			assert false : "Unable to add basic properties to JavaInfo."; 
+		}
+!!!368386.java!!!	exportAsElement(inout document : Document) : Element
+		
+		Element javaElement = document.createElement("javaInfo");
+		
+		javaElement.appendChild(XMLHelper.writeValueToElement(document, javaVersion, "version"));
+		javaElement.appendChild(XMLHelper.writeValueToElement(document, javaVendor, "vendor"));
+		javaElement.appendChild(XMLHelper.writeValueToElement(document, runtimeName, "runtimeName"));
+		javaElement.appendChild(XMLHelper.writeValueToElement(document, vmVersion, "vmVersion"));
+		javaElement.appendChild(XMLHelper.writeValueToElement(document, vmVendor, "vmVendor"));
+		javaElement.appendChild(XMLHelper.writeValueToElement(document, runtimeVersion, "runtimeVersion"));
+		javaElement.appendChild(XMLHelper.writeValueToElement(document, specification, "specification"));
+		
+		return javaElement;
+!!!368514.java!!!	getRuntimeName() : String
+		
+		return runtimeName;
+!!!368642.java!!!	getRuntimeVersion() : String
+		
+		return runtimeVersion;
+!!!368770.java!!!	getVMVersion() : String
+		
+		return vmVersion;
+!!!368898.java!!!	getVMVendor() : String
+		
+		return vmVendor;
+!!!369026.java!!!	getJavaVersion() : String
+		
+		return javaVersion;
+!!!369154.java!!!	getJavaVendor() : String
+		
+		return javaVendor;
+!!!369282.java!!!	getSpecificationVersion() : String
+		
+		return specification;
+!!!369410.java!!!	toString() : String
+		
+		return "Java{" + javaVersion + "}";
+!!!369538.java!!!	getXMLNodeName() : String
+		
+		return "javaInfo";

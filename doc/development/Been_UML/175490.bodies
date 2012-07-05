@@ -1,0 +1,48 @@
+class ActivityMonitorThread
+!!!396418.java!!!	run() : void
+			
+			synchronized (cache) {
+				
+				long currentTime = System.currentTimeMillis();
+				
+				for (Iterator< String > it = cache.getHostNameIterator(); it.hasNext(); ) {
+					
+					String name = it.next();
+					
+					ActivityMonitorCache.CacheElement elem = cache.getCacheElement(name);
+
+					if (elem == null) {
+						continue;
+					}
+					
+					long changeTime = 0;
+					changeTime = elem.getLastChangeTime();
+					
+					switch (elem.getStatus()) {
+						case ONLINE:
+						case UNKNOWN:
+							if (currentTime - changeTime > deadHostDelta) {
+								// No data received from host for time longer than dead host timeout.
+								// Host will be marked as crashed.
+								appData.getLogger().logWarning("Host \"" + name
+										+ "\" has been marked as CRASHED.");
+								elem.setStatus(HostStatus.CRASHED);
+							}
+							break;
+							
+						case CRASHED:
+							if (currentTime - changeTime <= deadHostDelta) {
+								// Host came back online.
+								appData.getLogger().logWarning("Host \"" + name
+										+ "\" has come back ONLINE.");
+								elem.setStatus(HostStatus.ONLINE);
+							}
+							break;
+						
+						default:
+						case OFFLINE:
+							// Nothing to do
+							break;
+					}
+				}
+			}

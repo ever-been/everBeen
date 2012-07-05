@@ -1,0 +1,426 @@
+class StatisticsManager
+!!!594690.java!!!	getInstance() : StatisticsManager
+		if (sMInstance == null) {
+			sMInstance = new StatisticsManager();
+		}
+		return sMInstance;
+!!!594818.java!!!	initialize(inout database : Database) : void
+		StatisticsManager.database = database;
+!!!594946.java!!!	getParsedLine(inout inputReader : BufferedReader, in filename : String) : String
+		
+		String line;
+		try {
+			line = inputReader.readLine();
+			if (line == null) {
+				return null;
+			}
+		} catch (IOException e) {
+			Logger.logError("I/O error reading statistics from " + filename + ".");
+			return null;
+		}
+		
+		return line.split(ASCII_TAB);				
+!!!595074.java!!!	loadStatisticsTable(in tableName : String) : Statistics
+		BufferedReader inputReader;
+		int rows;
+		int columns;
+		String label;
+		String[] rowNames;
+		String[] columnNames;
+		Double[][] valuesTable;
+		boolean[] columnHighlights;
+		String filename;
+		
+		String[] lineTokens;
+		
+		Logger.logTrace("Reading statistics from " + tableName  + ".");
+		
+		/* ************************/
+		/* First, read dimensions */		
+		filename = tableName + STATISTICS_DIM_FILE;
+		// Note: dimensions file is determinative for existence of statistics
+		
+		try {
+			inputReader = new BufferedReader(new FileReader(filename));
+		} catch (FileNotFoundException e) {					
+			Logger.logTrace("No statistics (.dim file not present): " + filename + ".");
+			return null;
+		}
+		
+		lineTokens = getParsedLine(inputReader, filename);
+		
+		if (lineTokens.length < 2) {
+			Logger.logError("Invalid statistics format - file: " 
+					+ filename + ", line 1.");
+			return null;
+		}	
+				
+		try {
+			rows = new Integer(lineTokens[0]);
+			columns = new Integer(lineTokens[1]);
+		} catch (NumberFormatException e) {
+			Logger.logError("Invalid statistics format - file: " + filename  + ".");
+			return null;
+		}
+		
+		try {
+			inputReader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			Logger.logError("Error closing statistics file " + filename  + ".");
+			return null;
+		}
+		
+		/* **************************/
+		/* Now, read label of table */		
+		filename = tableName + STATISTICS_LABEL_FILE;
+		
+		try {
+			inputReader = new BufferedReader(new FileReader(filename));
+		} catch (FileNotFoundException e) {					
+			Logger.logError("Missing statistics table label file: " + filename  + ".");
+			return null;
+		}
+		
+		lineTokens = getParsedLine(inputReader, filename);
+		label = lineTokens[0];
+		
+		try {
+			inputReader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			Logger.logError("Error closing statistics file " + filename  + ".");
+			return null;
+		}
+		
+		
+		/* *******************/
+		/* Read column names */		
+		
+		filename = tableName + STATISTICS_COLUMNS_FILE;
+		
+		try {
+			inputReader = new BufferedReader(new FileReader(filename));
+		} catch (FileNotFoundException e) {					
+			Logger.logError("Missing column names statistics file: " + filename + ".");
+			return null;
+		}
+		
+		columnNames = getParsedLine(inputReader, filename);
+		
+		if (columnNames.length != columns) {
+			Logger.logError("Invalid statistics format, column names count doesn't " 
+					+ "fit - file: " + filename  + ".");
+			return null;
+		}
+		
+		columnHighlights = new boolean[columns];
+		for (int i = 0; i < columns; i++) {
+			columnHighlights[i] = false;
+		}
+		
+		try {
+			inputReader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			Logger.logError("Error closing statistics file " + filename  + ".");
+			return null;
+		}
+		
+		
+		/* ****************/
+		/* Read row names */		
+		
+		filename = tableName + STATISTICS_ROWS_FILE;
+		
+		try {
+			inputReader = new BufferedReader(new FileReader(filename));
+		} catch (FileNotFoundException e) {					
+			Logger.logError("Missing row names statistics file: " + filename  + ".");
+			return null;
+		}						
+		
+		rowNames = getParsedLine(inputReader, filename);
+		
+		if (rowNames.length != rows) {
+			Logger.logError("Invalid statistics format, row names count doesn't " 
+					+ "fit - file: " + filename  + ".");
+			return null;
+		}
+		
+		try {
+			inputReader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			Logger.logError("Error closing statistics file " + filename  + ".");
+			return null;
+		}
+		
+		
+		/* *******************/
+		/* Read values table */		
+		
+		filename = tableName + STATISTICS_VALUE_FILE;
+		
+		try {
+			inputReader = new BufferedReader(new FileReader(filename));
+		} catch (FileNotFoundException e) {					
+			Logger.logError("Missing file with statistics values: " + filename  + ".");
+			return null;
+		}
+		
+		valuesTable = new Double[rows][];
+		
+		for (int row = 0; row < rows; row++) {
+			
+			valuesTable[row] = new Double[columns];
+	
+			lineTokens = getParsedLine(inputReader, filename);
+			
+			if (lineTokens.length != columns) {
+				Logger.logError("Error reading statistics table, row " + row 
+						+ " - column count doesn't fit."  + ".");
+				return null;
+			}
+					
+			for (int col = 0; col < columns; col++) {
+				try {			
+					valuesTable[row][col] = new Double(lineTokens[col]);			
+				} catch (NumberFormatException e) {
+					valuesTable[row][col] = null;					
+				} catch (Exception e) {
+					Logger.logError("Error reading statistics table, row " + row 
+							+ " exception: " + e.getMessage()  + ".");
+					return null;			
+				}
+			}							
+		}
+		
+
+		try {
+			inputReader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			Logger.logError("Error closing statistics file " + filename  + ".");
+			return null;
+		}
+
+		Logger.logTrace("Statistics successfully read.");
+		
+		return new Statistics(label, columnNames, columnHighlights, rowNames, valuesTable);
+		
+!!!595202.java!!!	loadStatistics(in entityDirectory : String) : Statistics
+		
+		Statistics[] returnValue;
+		NumberedTable table;		
+	
+		try {
+			table = new NumberedTable(entityDirectory + File.separator + STATISTICS_TABLE_FILE);
+		} catch (IOException e) {
+			e.printStackTrace();
+			Logger.logError(NumberedTable.IO_ERROR_LIST_READING_MESSAGE 
+					+ entityDirectory);			
+			return new Statistics[] { null };
+		}
+		
+		returnValue = new Statistics[table.getItemCount()];
+		
+		for (int i = 0; i < table.getItemCount(); i++) {
+			returnValue[i] = loadStatisticsTable(entityDirectory + File.separator + table.getItemValue(i));
+		}
+		
+		return returnValue;		
+!!!595330.java!!!	loadAnalysisStatistics(inout aid : AID) : Statistics
+		return loadStatistics(database.getDirectoryInDatabase(aid));
+!!!595458.java!!!	loadExperimentStatistics(inout aid : AID, inout eid : EID) : Statistics
+		return loadStatistics(database.getDirectoryInDatabase(aid, eid));
+!!!595586.java!!!	loadBinaryStatistics(inout aid : AID, inout eid : EID, inout bid : BID) : Statistics
+		return loadStatistics(database.getDirectoryInDatabase(aid, eid, bid));
+!!!595714.java!!!	loadRunStatistics(inout aid : AID, inout eid : EID, inout bid : BID, inout rid : RID) : Statistics
+	
+		Statistics returnValue;
+		BufferedReader inputReader;
+		int rows;
+		int columns;
+		String label;
+		String[] rowNames;
+		String[] columnNames;
+		Double[][] valuesTable;
+		boolean[] columnHighlights;
+
+		String[] lineTokens;
+		String tableName;
+		String filename;
+					
+		tableName = database.getDirectoryInDatabase(aid, eid, bid) + File.separator 
+			+ STATISTICS_RUN_HEADER_FILE;
+
+		
+		/* ************************/
+		/* First, read dimensions */		
+		filename = tableName + STATISTICS_DIM_FILE;
+		
+		try {
+			inputReader = new BufferedReader(new FileReader(filename));
+		} catch (FileNotFoundException e) {					
+			Logger.logTrace("No statistics (.dim file not present): " + filename + ".");
+			return new Statistics[] { null }; 
+		}
+			
+		lineTokens = getParsedLine(inputReader, filename);
+			
+		if (lineTokens.length < 2) {
+			Logger.logError("Invalid statistics format - file: " 
+					+ filename + ", line 1.");
+			return new Statistics[] { null };
+		}
+			
+		try {
+			rows = new Integer(lineTokens[0]);
+			columns = new Integer(lineTokens[1]);
+		} catch (NumberFormatException e) {
+			Logger.logError("Invalid statistics format - file: " + filename  + ".");
+			return new Statistics[] { null };
+		}
+		
+		try {
+			inputReader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			Logger.logError("Error closing statistics file " + filename + ".");
+			return null;
+		}
+		
+		/* **************************/
+		/* Now, read label of table */		
+		filename = tableName + STATISTICS_LABEL_FILE;
+		
+		try {
+			inputReader = new BufferedReader(new FileReader(filename));
+		} catch (FileNotFoundException e) {					
+			Logger.logError("Missing statistics table label file: " + filename + ".");
+			return new Statistics[] { null }; 
+		}		
+
+		lineTokens = getParsedLine(inputReader, filename);
+		label = lineTokens[0];
+
+		try {
+			inputReader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			Logger.logError("Error closing statistics file " + filename + ".");
+			return null;
+		}
+
+
+		/* *******************/
+		/* Read column names */		
+
+		filename = tableName + STATISTICS_COLUMNS_FILE;
+		
+		try {
+			inputReader = new BufferedReader(new FileReader(filename));
+		} catch (FileNotFoundException e) {					
+			Logger.logError("Missing column names statistics file: " + filename + ".");
+			return null; 
+		}
+
+		columnNames = getParsedLine(inputReader, filename);
+
+		if (columnNames.length != columns) {
+			Logger.logError("Invalid statistics format, column names count doesn't " 
+					+ "fit - file: " + filename + ".");
+			return new Statistics[] { null };
+		}
+
+		columnHighlights = new boolean[columns];
+		for (int i = 0; i < columns; i++) {
+			columnHighlights[i] = false;
+		}
+		
+
+		try {
+			inputReader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			Logger.logError("Error closing statistics file " + filename + ".");
+			return null;
+		}
+		
+		
+		/* ****************/
+		/* Read row names */		
+		
+		filename = tableName + STATISTICS_ROWS_FILE;
+		
+		try {
+			inputReader = new BufferedReader(new FileReader(filename));
+		} catch (FileNotFoundException e) {					
+			Logger.logError("Missing row names statistics file: " + filename + ".");
+			return null; 
+		}
+		
+		rowNames = getParsedLine(inputReader, filename);
+		
+		if (rowNames.length != rows) {
+			Logger.logError("Invalid statistics format, row names count doesn't " 
+					+ "fit - file: " + filename + ".");
+			return new Statistics[] { null };
+		}
+
+		try {
+			inputReader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			Logger.logError("Error closing statistics run header file " + filename + ".");
+			return new Statistics[] { null };
+		}
+				
+		valuesTable = new Double[rows][];
+		
+		filename = database.getFileInDatabase(aid, eid, bid, 
+				RunValidityMapsManager.getInstance().getRunStatisticsPath(aid, eid, bid, rid));
+		
+		try {
+			inputReader = new BufferedReader(new FileReader(filename));
+		} catch (FileNotFoundException e) {								
+			Logger.logError("File with run's statistics not found:" + filename);
+			return new Statistics[] { null };
+		}		
+		
+		for (int row = 0; row < rows; row++) {
+			
+			valuesTable[row] = new Double[columns];			
+			
+			lineTokens = getParsedLine(inputReader, filename);
+			
+			if (lineTokens.length != columns) {
+				Logger.logError("Error reading statistics table, run " + rid 
+						+ ",row " + row	+ " - column count doesn't fit.");
+				return new Statistics[] { null };
+			}
+					
+			for (int col = 0; col < columns; col++) {
+				try {			
+					valuesTable[row][col] = new Double(lineTokens[col]);			
+				} catch (Exception e) {
+					Logger.logError("Error reading statistics rable, run " + rid
+							+ ", row " + row +	" exception: " + e.getMessage()  + ".");
+					return new Statistics[] { null };			
+				}
+			}							
+		}
+
+		try {
+			inputReader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			Logger.logError("Missing file with statistics values: " + filename + ".");
+			return new Statistics[] { null };
+		}
+
+		returnValue = new Statistics(label, columnNames, columnHighlights, 
+				rowNames, valuesTable);
+
+		return new Statistics[] { returnValue };

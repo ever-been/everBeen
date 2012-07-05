@@ -1,0 +1,8 @@
+class ListProperties
+!!!244866.java!!!	main(in args : String) : void
+		Properties sysprops = System .getProperties();
+		for (Enumeration e = sysprops.propertyNames(); e.hasMoreElements(); ) {
+			String key = (String) e.nextElement();
+			String value = sysprops.getProperty(key);
+			System.out.println(key + "=" + value);
+		}

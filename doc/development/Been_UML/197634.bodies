@@ -1,0 +1,215 @@
+class NativeDetector
+!!!628738.java!!!	NativeDetector()
+
+		task = Task.getTaskHandle();
+		
+		data = new String("");
+		messages = new String("");
+
+		// Which OS are we running on?
+		String sysname = System.getProperty("os.name").toLowerCase();
+		
+		// Find out where we are running.
+		String libraryPath = System.getProperty("user.dir") + File.separatorChar;
+		task.logTrace("Library path: " + libraryPath);
+
+		try {
+			// now we try to load native libraries
+			
+			if (sysname.indexOf("windows") != -1) {
+				// we are running on Windows.
+				task.logDebug("Attempting to load Windows native detector library.");
+				
+				System.load(libraryPath + "HWDet3.wnd");
+				
+				task.logDebug("Link successful.");
+				usingNative = true;
+			} else if (sysname.indexOf("linux") != -1) {
+				// we are running on Linux.
+				task.logDebug("Attempting to load Linux native detector library.");
+				
+				System.load(libraryPath + "HWDet3.lnd");
+				
+				task.logDebug("Link successful.");
+				usingNative = true;
+			} else if (sysname.indexOf("solaris") != -1) {
+				// we are running on Solaris.
+				task.logDebug("Attempting to load Solaris native detector library.");
+				
+				System.load(libraryPath	+ "HWDet3.snd");
+				
+				task.logDebug("Link successful.");
+				usingNative = true;
+			} else {
+				// We are running on OS which does not have native datector.
+				usingNative = false;
+			}
+		} catch (Exception e) {
+			usingNative = false;
+			task.logError("Unable to load native detector library, message: \"" + e.getMessage() + "\".");
+		} catch (Error e) {
+			usingNative = false;
+			task.logError("Unable to load native detector library, message: \"" + e.getMessage() + "\".");
+		}
+!!!628866.java!!!	execute() : boolean
+
+		String nativeData;
+
+		if (usingNative) {
+			// we are using native libs so initialize them...
+			
+			task.logDebug("Initializing native detector.");
+			
+			boolean init = nativeInitialize();
+			
+			if (init) {
+				task.logDebug("Native initialization successful.");
+			} else {
+				task.logError("Unable to initialize native library.");
+				messages = nativeGetMessages();
+				nativeDestroy();
+				return false;
+			}
+						
+			task.logDebug("Executing native detector.");
+			
+			// ...detect all we can... 
+			boolean exec = nativeExecute();
+			
+			if (exec) {
+				task.logDebug("Native detector finished successfully.");
+			} else {
+				task.logError("Unable to collect data from the library.");
+				messages = nativeGetMessages();
+				nativeDestroy();
+				return false;
+			}
+			
+			// ...retrieve data collected...
+			nativeData = nativeGetData();
+			
+			// ...and finally get any error reports we may have generated in native code.
+			messages = nativeGetMessages();
+			
+			// get encoding in the native lib
+			encoding = nativeGetEncoding();
+			
+			// Now free the resources.
+			nativeDestroy();
+
+			success = true;
+		} else {
+			// No native lib for current os, we will use Java to get very limited data.
+
+			encoding = "UTF-16";
+			
+			Date date = new Date();
+			nativeData = new String();
+
+			nativeData = "<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n"
+			           + "<hostInfo>\n"
+			           + makeXMLElement("hostName", MiscUtils.getCanonicalLocalhostName(), 1)
+			           + makeXMLElement("lastCheckDate", formatDate(date, "yyyy/MM/dd"), 1)
+			           + makeXMLElement("lastCheckTime", formatDate(date, "HH:mm.ss"),	1)
+			           + makeXMLElement("detector", HostInfoInterface.Detectors.GENERIC, 1)
+			           + "\t<operatingSystem>\n"
+			           + "\t\t<basicInfo>\n" 
+			           + makeXMLElement("name", System.getProperty("os.name"), 3) 
+			           + makeXMLElement("vendor", "unknown", 3) 
+			           + makeXMLElement("arch", System.getProperty("os.arch"), 3) 
+			           + "\t\t</basicInfo>\n" 
+			           + "\t\t<advancedInfo>\n" 
+			           + makeXMLElement("version", System.getProperty("os.version"), 3) 
+			           + "\t\t</advancedInfo>\n" 
+			           + "\t</operatingSystem>\n" 
+			           + "\t<network>\n" 
+			           + "\t</network>\n" 
+			           + "\t<memory>\n" 
+			           + "\t\t<physicalMemorySize>0</physicalMemorySize>\n" 
+			           + "\t\t<virtualMemorySize>0</virtualMemorySize>\n" 
+			           + "\t\t<swapSize>0</swapSize>\n" 
+			           + "\t\t<pagingFileSize>0</pagingFileSize>\n"
+			           + "\t</memory>\n" 
+			           + "\t<processors>\n" 
+			           + "\t</processors>\n" 
+			           + "\t<installedProducts>\n"
+			           + "\t</installedProducts>\n" 
+			           + "\t<diskDrives>\n" 
+			           + "\t</diskDrives>\n" 
+			           + "\t<beenDisk>\n" 
+			           + makeXMLElement("path", System.getenv("BEEN_HOME"), 2) 
+			           + makeXMLElement("size", "-1", 2) 
+			           + makeXMLElement("freeSpace", "-1", 2) 
+			           + "\t</beenDisk>\n";
+
+			success = true;
+		}
+
+		// detect java info
+		String javaVersion = System.getProperty("java.version");
+		String javaVendor = System.getProperty("java.vendor");
+		String javaRuntimeName = System.getProperty("java.runtime.name");
+		String javaVMVersion = System.getProperty("java.vm.version");
+		String javaVMVendor = System.getProperty("java.vm.vendor");
+		String javaRuntimeVersion = System.getProperty("java.runtime.version");
+		String javaSpecificationVersion = System.getProperty("java.specification.version");
+
+		String javaInfo = "\t<javaInfo>\n"
+		                + makeXMLElement("version", javaVersion, 2)
+		                + makeXMLElement("vendor", javaVendor, 2)
+		                + makeXMLElement("runtimeName", javaRuntimeName, 2)
+		                + makeXMLElement("vmVersion", javaVMVersion, 2)
+		                + makeXMLElement("vmVendor", javaVMVendor, 2) 
+		                + makeXMLElement("runtimeVersion", javaRuntimeVersion, 2) 
+		                + makeXMLElement("specification", javaSpecificationVersion, 2) 
+		                + "\t</javaInfo>\n";
+
+		if (usingNative) {
+			// If using native libs, insert JavaInfo before the closing tag. 
+			int pos = nativeData.indexOf("</hostInfo>");
+
+			data = nativeData.substring(0, pos) + javaInfo	+ nativeData.substring(pos);
+			
+			/* This is not very nice, since we replace data from native detector with the data
+			 * detected by Java, but it is needed for consistency.
+			 */
+			int hnPos1 = data.indexOf("<hostName>");
+			int hnPos2 = data.indexOf("</hostName>");
+			
+			try {
+				data = data.substring(0, hnPos1)
+				     + "<hostName>"
+				     + InetAddress.getLocalHost().getCanonicalHostName()
+				     + data.substring(hnPos2);
+			} catch (UnknownHostException e) {
+				task.logError("Unknown host in HAX!");
+			}
+		} else {
+			// Append JavaInfo and closing tag.
+			data = nativeData + javaInfo + "</hostInfo>";
+		}
+		
+		return success;
+!!!628994.java!!!	getMessageString() : String
+
+		return messages;
+!!!629122.java!!!	getDataString() : String
+
+		return data;
+!!!629250.java!!!	getEncoding() : String
+		
+		return encoding;
+!!!629378.java!!!	makeXMLElement(in name : String, in value : String, in pos : int) : String
+
+		String s = new String();
+
+		for (int i = 0; i < pos; ++i) {
+			s += "\t";
+		}
+
+		return new String(s + "<" + name + ">" + value + "</" + name + ">\n");
+!!!629506.java!!!	formatDate(inout date : Date, in format : String) : String
+
+		SimpleDateFormat formatter = new SimpleDateFormat(format);
+
+		return formatter.format(date);

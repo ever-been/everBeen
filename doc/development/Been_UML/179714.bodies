@@ -1,0 +1,140 @@
+class XMLHelper
+!!!446850.java!!!	createDocument() : Document
+		
+		return DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+!!!446978.java!!!	saveDocument(inout doc : Document, in fileName : String, inout indent : boolean, in encoding : String) : void
+		
+		TransformerFactory factory = TransformerFactory.newInstance();
+		Transformer transformer = factory.newTransformer();
+		
+		transformer.setOutputProperty(OutputKeys.INDENT, indent ? "yes" : "no");
+		
+		if (encoding != null) {
+			transformer.setOutputProperty(OutputKeys.ENCODING, encoding);
+		}
+		
+		transformer.transform(new DOMSource(doc), new StreamResult(new File(fileName)));
+!!!447106.java!!!	saveDocument(inout doc : Document, in fileName : String) : void
+		
+		saveDocument(doc, fileName, true, "UTF-16");
+!!!447234.java!!!	saveXMLSerializable(inout data : XMLSerializableInterface, in fileName : String, inout indent : boolean, in encoding : String) : void
+		
+		Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+		
+		document.appendChild(data.exportAsElement(document));
+		
+		saveDocument(document, fileName, indent, encoding);
+!!!447362.java!!!	getChildNodesByName(in name : String, inout node : Node) : ArrayList< Node >
+	
+		ArrayList< Node > res = new ArrayList< Node >();
+		NodeList nl = node.getChildNodes();
+		
+		for (int i = 0; i < nl.getLength(); ++i) {
+			
+			if (nl.item(i).getNodeName().equals(name)) {
+				res.add(nl.item(i));
+			}
+		}
+		
+		return res;
+!!!447490.java!!!	getNodeValue(inout node : Node) : String
+		
+		if (node == null) {
+			return "";
+		}
+		
+		switch (node.getNodeType()) {
+			case Node.CDATA_SECTION_NODE:
+			case Node.TEXT_NODE:
+				return node.getNodeValue();
+			
+			case Node.ELEMENT_NODE:
+				if (node.getChildNodes().getLength() != 0) {
+					return node.getFirstChild().getNodeValue();
+				} else {
+					return "";
+				}
+			
+			case Node.ATTRIBUTE_NODE:
+				return node.getNodeValue();
+				
+			default:
+				throw new InputParseException("Unsupported node type (node \"" + node.getNodeName() + "\").");
+		}
+!!!447618.java!!!	getSubNodeByName(in name : String, inout node : Node) : Node
+		
+		NodeList nl = node.getChildNodes();
+		
+		for (int i = 0; i < nl.getLength(); ++i) {
+			if (nl.item(i).getNodeName().equals(name)) {
+				return nl.item(i);
+			}
+		}
+		
+		throw new InputParseException("Node \"" + name + "\" is not sub-node of \"" + node.getNodeName() + "\".");
+!!!447746.java!!!	getSubNodeByName(in name : String, inout doc : Document) : Node
+		
+		NodeList nl = doc.getChildNodes();
+		
+		for (int i = 0; i < nl.getLength(); ++i) {
+			if (nl.item(i).getNodeName().equals(name)) {
+				return nl.item(i);
+			}
+		}
+		
+		throw new InputParseException("Node \"" + name + "\" is not sub-node of document.");
+!!!447874.java!!!	getSubNodeValueByName(in name : String, inout node : Node) : String
+		
+		NodeList nl = node.getChildNodes();
+		
+		for (int i = 0; i < nl.getLength(); ++i) {
+			
+			if (nl.item(i).getNodeName().equals(name)) {
+				return getNodeValue(nl.item(i));
+			}
+		}
+		
+		throw new InputParseException("Node \"" + name + "\" is not sub-node of \"" + node.getNodeName() + "\".");
+!!!448002.java!!!	hasSubNode(in name : String, inout node : Node) : boolean
+	
+		NodeList subs = node.getChildNodes();
+		
+		for (int i = 0; i < subs.getLength(); ++i) {
+			if (subs.item(i).getNodeName().equals(name)) {
+				return true;
+			}
+		}
+		
+		return false;
+!!!448130.java!!!	getAttributeValueByName(in attrName : String, inout node : Node) : String
+		
+		Node item = node.getAttributes().getNamedItem(attrName);
+		
+		if (item == null) {
+			throw new InputParseException("Attribute \"" + attrName + "\" not found.");
+		} else {
+			return item.getNodeValue();
+		}
+!!!448258.java!!!	hasAttribute(in attributeName : String, inout node : Node) : boolean
+		
+		Node item = node.getAttributes().getNamedItem(attributeName);
+		
+		return (item != null);
+!!!448386.java!!!	xMLize(in s : String) : String
+		
+		String result = s;
+		
+		result.replaceAll("&", "&amp;");
+		result.replaceAll("\'", "&apos;");
+		result.replaceAll("\"", "&quot;");
+		result.replaceAll("<", "&lt;");
+		result.replaceAll(">", "&gt;");
+
+		return result;
+!!!448514.java!!!	writeValueToElement(inout doc : Document, inout value : T, in name : String) : Element
+		
+		Element elem = doc.createElement(name);
+		
+		elem.appendChild(doc.createTextNode(String.valueOf(value)));
+		
+		return elem;		

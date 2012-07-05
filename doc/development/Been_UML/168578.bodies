@@ -1,0 +1,10 @@
+class HostNameIterator
+!!!347394.java!!!	HostNameIterator()
+			
+			it = hostData.keySet().iterator();
+!!!347522.java!!!	next() : String
+			
+			return it.next();
+!!!347650.java!!!	hasNext() : boolean
+			
+			return it.hasNext();

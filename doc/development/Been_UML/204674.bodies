@@ -1,0 +1,15 @@
+class SofaPS
+!!!662146.java!!!	SofaPS()
+
+		
+		super();
+!!!662274.java!!!	checkRequiredProperties() : void
+
+		
+		checkRequiredProperties(new String[] {
+				SofaCommon.PROPERTY_BEEN_SOFA_HOME,
+			});
+!!!662402.java!!!	run() : void
+
+
+		// TODO do something here

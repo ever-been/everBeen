@@ -1,0 +1,3 @@
+Dummy file to allow committing of the parent directory to CVS in Eclipse and view it in the tree.
+
+If someone knows cleaner way, how to solve this, feel free to do it.

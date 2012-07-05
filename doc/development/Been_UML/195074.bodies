@@ -1,0 +1,63 @@
+class ArrayListAttributeHelper
+!!!606722.java!!!	ArrayListAttributeHelper()
+		super();
+!!!606850.java!!!	validateInXML(inout element : Element) : String
+		/* Verify element name. */
+		String elementName = element.getNodeName();
+		if (elementName.charAt(elementName.length() - 1) != 's') {
+			return "Invalid element name: <" + elementName + ">.";
+		}
+		
+		/* Go through the list of children. */
+		NodeList children = element.getChildNodes();
+		String childName = elementName.substring(0, elementName.length() - 1);
+		for (int i = 0; i < children.getLength(); i++) {
+			if (children.item(i).getNodeType() == Node.ELEMENT_NODE) {
+				
+				/* If the child is element, verify its name and content. */
+				Element childElement = (Element) children.item(i);
+				if (!childElement.getNodeName().equals(childName)) {
+					return "Invalid element name: <" + childElement.getNodeName() + ">.";
+				}
+				if (extractTextValueFromElement(childElement) == null) {
+					return "Invalid value of element <" + elementName + ">.";
+				}
+			}
+		}
+		
+		/* If all tests passed OK, return true. */
+		return null;
+!!!606978.java!!!	readValueFromElement(inout element : Element) : ArrayList
+		ArrayList<String> result = new ArrayList<String>();
+		
+		/* Go through the list of children and extract textual information
+		 * from the subelements. 
+		 */
+		NodeList children = element.getChildNodes();
+		for (int i = 0; i < children.getLength(); i++) {
+			if (children.item(i).getNodeType() == Node.ELEMENT_NODE) {
+				result.add(extractTextValueFromElement((Element) children.item(i)));
+			}
+		}
+		
+		return result;
+!!!607106.java!!!	writeValueToElement(inout document : Document, in tagName : String, inout value : ArrayList) : Element
+		assert tagName.charAt(tagName.length()) == 's': "Element name is not in plural";
+		
+		if (value != null) {
+			Element result = document.createElement(tagName);
+			String innerTagName = tagName.substring(0, tagName.length() - 1);
+			for (Object item: value) {
+				Element innerElement = document.createElement(innerTagName);
+			  innerElement.appendChild(document.createTextNode(item.toString()));
+			  result.appendChild(innerElement);
+			}
+			return result; 
+		} else {
+			return null;
+		}
+!!!607234.java!!!	getInstance() : ArrayListAttributeHelper
+		if (instance == null) {
+			 instance = new ArrayListAttributeHelper();
+		}
+		return instance;

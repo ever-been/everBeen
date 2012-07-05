@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<chapter
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>Task Manager</title>
+	
+	<para>The WillBeen project did not reimplement the <glossterm>Task Manager</glossterm>. Most facts described in
+	the original documentation (<biblioref linkend="BUD1" units="page" begin="19" end="20"/>)
+	apply to the WillBeen project as well. This chapter focuses on changes made to the
+	Task Manager, not on the component as a whole.</para>
+
+	<sect1 xml:id="been.devel.tm.limitation">
+		<title>Load Limitation</title>
+		
+		<para>A large number of non-exclusive tasks can cause a thrashing collapse when dispatched
+		to the same host. Even if there
+		are no problems related to RAM, the secondary storage subsystem is much less efficient
+		under heavy concurrency.</para>
+		
+		<para>A load limitation mechanism was introduced to eliminate these problems. A parameter
+		called <option>loadUnits</option> can be used to specify the load capacity of hosts and
+		load requirements of tasks.</para>
+		
+		<para>Host capacity is stored in <glossterm>Host Manager</glossterm>'s data structures. Requirements of tasks
+		can be specified in their task descriptors. See User Documentation,
+		<xref linkend="been.user.install.config.limitation"/> for detailed notes on the
+		load parameters, their meanings and default values. See User Documentation,
+		<xref linkend="been.user.cli.reference.tasks"/> for information on task descriptors and
+		their XML representation.</para>
+		
+		<para>As far as the implementation is concerned, it is a straightforward modification of the host selection
+		algorithm. This modification guarantees that hosts will not be overloaded. The sum of
+		load requirements of all the running tasks on a host will never exceed its load capacity.</para>
+	</sect1>
+
+	<sect1>
+		<title>Host Selection Algorithm</title>
+		
+		<para>The host selection algorithm contained serious bugs that often caused benchmarks
+		to stop without an obvious reason. Moreover, host selection and allocation sometimes failed
+		to use all the available resources, leaving some hosts idle.</para>
+		
+		<para>Some host selection methods have been rewritten and the most serious bugs have been
+		fixed. The Task Manager is usable now. However, the WillBeen team recommends that the
+		Task Manager be completely rewritten with better coding style. Efficient algorithms
+		would be useful as well. The current <emphasis>O(N)</emphasis> approach to all the
+		operations on tasks (including task lookup) is not acceptable, since large
+		benchmarks can accumulate hundreds of thousands of tasks.</para>
+	</sect1>
+	
+	<sect1>
+		<title>API Extensions</title>
+		
+		<para>The Task Manager's interface was refactored and extended. Some methods became slightly
+		more RMI-friendly. Numerous new methods were added to support the new Task Tree structure,
+		described in <xref linkend="been.devel.tasktree"/>.</para>
+	</sect1>
+	
+<!--<xi:include href="purpose.xml"/>
+	<xi:include href="components.xml"/>
+	<xi:include href="data.xml"/>
+	<xi:include href="api.xml"/>
+	<xi:include href="extension.xml"/>
+	<xi:include href="future.xml"/>-->
+</chapter>

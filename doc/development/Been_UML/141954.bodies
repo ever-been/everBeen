@@ -1,0 +1,456 @@
+class RubisConfigurator
+!!!194178.java!!!	getFirstScreen() : Screen
+		return createSoftwareSelectionScreen();
+!!!194306.java!!!	getNextScreen(inout processedScreen : Screen) : Screen
+		// get the values enter by user in the previous screen
+		getUserInput(processedScreen);
+		// get the Screen ID of the previous screen
+		int id = ((Long) processedScreen.getSid().value()).intValue();
+		
+		// check if user didn't go forward more than 1 screen
+		if (!(id <= lastScreen)) {
+			throw new IllegalScreenSequenceException(
+					"You jumped more than 1 screen forward");
+		}
+		ScreenID screenID = ScreenID.values()[id];
+		
+		// determine which screen is next
+		switch(screenID) {
+			case SW_SELECTION :
+				return createRubisSuiteScreen();
+			case RUBIS_SUITE :
+				if (ejbServer.equals("JBoss")) {
+					return createCompileRolesScreen("JBoss");
+				} else if (ejbServer.equals("Jonas")) {
+					return createCompileRolesScreen("Jonas");
+				} else {
+					throw new ConfiguratorException("Invalid EJB server selected: " + ejbServer);
+				}
+			case COMPILE :
+				return createBenchmarkRolesScreen();
+			case BENCHMARK :
+				return createPropertiesScreen();
+			case PROPERTIES :
+				createExperiment();
+				return null;
+			default :
+				throw new ConfiguratorException("Illegal screen: " + processedScreen.getSid());
+		}
+!!!194434.java!!!	getDefaultRScripts() : CallbackRScripts
+		if (isRegression()) {
+			return new CallbackRScripts("", 
+					"rubis.generateRunsStatistics()\nrubis.generateBinaryStatistics()\nrubis.registerInvalidateScripts()\n", 
+					"rubis.generateExperimentStatistics()\nrubis.generateExperimentGraph()\nrubis.generateRegressionAnalysisGraph()\n", 
+					"", "");
+		} else {
+			return new CallbackRScripts("", 
+					"rubis.generateRunsStatistics()\nrubis.generateBinaryStatistics()\nrubis.registerInvalidateScripts()\n", 
+					"rubis.generateExperimentStatistics()\nrubis.generateExperimentGraph()\n", 
+					"", "");
+		}
+!!!194562.java!!!	getPreviousScreen(inout processedScreen : Screen) : Screen
+		int id = ((Long) processedScreen.getSid().value()).intValue();
+		ScreenID screenID = ScreenID.values()[id];
+		
+		switch(screenID) {
+			case SW_SELECTION :
+				return null;
+			case COMPILE :
+				return createRubisSuiteScreen();
+			case BENCHMARK :
+				if (ejbServer.equals("JBoss")) {
+					return createCompileRolesScreen("JBoss");
+				} else if (ejbServer.equals("Jonas")) {
+					return createCompileRolesScreen("Jonas");
+				} else {
+					throw new ConfiguratorException("Invalid EJB server selected: " + ejbServer);
+				}
+			case RUBIS_SUITE :
+				return createSoftwareSelectionScreen();
+			case PROPERTIES :
+				return createBenchmarkRolesScreen();
+			default :
+				throw new ConfiguratorException("Illegal screen: " + processedScreen.getSid());
+		}
+!!!194690.java!!!	createExperiment() : void
+		ExperimentMetadata experiment = getBenchmarkExperiment();
+		
+		// set host name properties
+		experiment.addBenchmarkingRole(RubisTaskGenerator.CLIENT_ROLE, 
+				rslClient, clientHosts);
+		experiment.addBenchmarkingRole(RubisTaskGenerator.DATABASE_ROLE, 
+				rslDatabaseServer, 1);
+		experiment.addRole(RubisTaskGenerator.EJB_SERVER_COMPILE_ROLE, 
+					rslEJBServerCompile, 1);
+		
+		experiment.addBenchmarkingRole(RubisTaskGenerator.EJB_SERVER_ROLE, 
+				rslEJBServer, 1);
+
+		// set software properties
+		experiment.setProperty(RubisTaskGenerator.EJB_SERVER, ejbServer);
+		if (!isRegression()) {
+			experiment.setProperty(RubisTaskGenerator.EJB_SERVER_VERSION,
+					ejbServerVersion);
+		}
+		experiment.setProperty(RubisTaskGenerator.EJB_SERVER_PLATFORM,
+				ejbServerPlatform);
+		experiment.setProperty(RubisTaskGenerator.MYSQL_VERSION, mysqlVersion);
+		experiment.setProperty(RubisTaskGenerator.MYSQL_PLATFORM, mysqlPlatform);
+
+		// rubis properties
+		experiment.setProperty(RubisTaskGenerator.RUBIS_SUITE, rubisSuite);
+		experiment.setProperty(RubisTaskGenerator.DUMP_TYPE, dumpType);
+		experiment.setProperty(RubisTaskGenerator.CLIENT_COUNT, 
+				String.valueOf(clientCount));
+		experiment.setProperty(RubisTaskGenerator.DEBUG_LEVEL, 
+				String.valueOf(debugLevel));
+		experiment.setProperty(RubisTaskGenerator.UP_RAMP_TIME, 
+				String.valueOf(upRampTime));
+		experiment.setProperty(RubisTaskGenerator.UP_RAMP_SLOWDOWN_FACTOR, 
+				String.valueOf(upRampSlowdownFactor));
+		experiment.setProperty(RubisTaskGenerator.DOWN_RAMP_TIME, 
+				String.valueOf(downRampTime));
+		experiment.setProperty(RubisTaskGenerator.DOWN_RAMP_SLOWDOWN_FACTOR, 
+				String.valueOf(downRampSlowdownFactor));
+		experiment.setProperty(RubisTaskGenerator.SESSION_TIME, 
+				String.valueOf(sessionTime));
+		experiment.setProperty(RubisTaskGenerator.TRANSITION_TABLE, transitionTable);
+		experiment.setProperty(RubisTaskGenerator.TRANSITIONS_MAX, 
+				String.valueOf(maxTransitions));
+
+		// misc properties
+		experiment.setRunCount(runCount);
+		
+		System.out.println("Run count: " + runCount);
+		
+		System.out.println("EJB server: " + ejbServer);
+		System.out.println("EJB server version: " + ejbServerVersion);
+		System.out.println("EJB server platform: " + ejbServerPlatform);
+		System.out.println("MySQL version: " + mysqlVersion);
+		
+		System.out.println("EJB server compile hostname: " + rslEJBServerCompile);
+		System.out.println("Client hostname: " + rslClient);
+		System.out.println("Database server hostname: " + rslDatabaseServer);
+		System.out.println("EJB server hostname: " + rslEJBServer);
+		
+		System.out.println("Rubis up ramp time: " + upRampTime);
+		System.out.println("Rubis up ramp slowdown factor: " + upRampSlowdownFactor);
+		System.out.println("Rubis session time: " + sessionTime);
+		System.out.println("Rubis down ramp time: " + downRampTime);
+		System.out.println("Rubis down ramp slowdown factor: " + downRampSlowdownFactor);
+		System.out.println("Rubis max transitions: " + maxTransitions);
+		System.out.println("Rubis transition table: " + transitionTable);
+!!!194818.java!!!	getUserInput(inout screen : Screen) : void
+		int id = ((Long) screen.getSid().value()).intValue();
+		ScreenID screenID = ScreenID.values()[id];
+		switch (screenID) {
+			case SW_SELECTION :
+				processSWSelectionScreen(screen);
+				break;
+			case RUBIS_SUITE :
+				processRubisSuiteScreen(screen);
+				break;
+			case COMPILE :
+				processCompileRolesScreen(screen);
+				break;
+			case BENCHMARK :
+				processBenchmarkRolesScreen(screen);
+				break;
+			case PROPERTIES :
+				processPropertiesScreen(screen);
+				break;
+			default :
+				throw new ConfiguratorException("Illegal screen: " + screen.getSid());
+		}
+!!!194946.java!!!	processSWSelectionScreen(inout screen : Screen) : void
+		Section[] sections = screen.getSections();
+		
+		for (Section section : sections) {
+			if (section.getTitle().equals("MySQL")) {
+				Input input = (Input) section.getItems()[0];
+				mysqlVersion = input.getValue().trim();
+				Select platformSelect = (Select) section.getItems()[1];
+				mysqlPlatform = platformSelect.getSelectedId();
+			} else if (section.getTitle().equals("EJB server")) {
+				RadiosWithSections radios = (RadiosWithSections) section.getItems()[0];
+				ejbServer = radios.getSelectedId();
+				RadioWithSectionItem selectedItem = radios.getItems()[radios.getSelectedIndex()];
+				Section selectedSection = selectedItem.getSection();
+				
+				int i = 0;
+				if (!isRegression()) {
+					Input ejbVersionInput = (Input) selectedSection.getItems()[0];
+					ejbServerVersion = ejbVersionInput.getValue().trim();
+					i++;
+				}
+				
+				Select platformSelect = (Select) selectedSection.getItems()[i];
+				ejbServerPlatform = platformSelect.getSelectedId();
+			}
+		}
+!!!195074.java!!!	processPropertiesScreen(inout screen : Screen) : void
+		Section section = screen.getSections()[0];
+		Input input = (Input) section.getItems()[0];
+		runCount = Integer.valueOf(input.getValue().trim());
+		input = (Input) section.getItems()[1];
+		clientHosts = Integer.valueOf(input.getValue().trim());
+		
+		section = screen.getSections()[1];
+		input = (Input) section.getItems()[0];
+		clientCount = Integer.valueOf(input.getValue().trim());
+		input = (Input) section.getItems()[1];
+		upRampTime = Integer.valueOf(input.getValue().trim());
+		input = (Input) section.getItems()[2];
+		upRampSlowdownFactor = Integer.valueOf(input.getValue().trim());
+		input = (Input) section.getItems()[3];
+		sessionTime = Integer.valueOf(input.getValue().trim());
+		input = (Input) section.getItems()[4];
+		downRampTime = Integer.valueOf(input.getValue().trim());
+		input = (Input) section.getItems()[5];
+		downRampSlowdownFactor = Integer.valueOf(input.getValue().trim());
+		input = (Input) section.getItems()[6];
+		maxTransitions = Integer.valueOf(input.getValue().trim());
+		Select debugLevelSelect = (Select) section.getItems()[7];
+		debugLevel = Integer.valueOf(debugLevelSelect.getSelectedId());
+		Select dumpTypeSelect = (Select) section.getItems()[8];
+		dumpType = dumpTypeSelect.getSelectedId();
+		Select transitionSelect = (Select) section.getItems()[9];
+		transitionTable = transitionSelect.getSelectedId();
+!!!195202.java!!!	processCompileRolesScreen(inout screen : Screen) : void
+		Section[] sections = screen.getSections();
+		RSLInput rsl = (RSLInput) sections[0].getItems()[0];
+		try {
+			rslEJBServerCompile =  ParserWrapper.parseString(rsl.getValue());
+		} catch (ParseException e) {
+			// we never get exception here, because RSLInput is validating
+			assert false: "RSL from RSLInput is invalid";
+		}
+!!!195330.java!!!	processBenchmarkRolesScreen(inout screen : Screen) : void
+		Section[] sections = screen.getSections();
+		RSLInput rslClients = (RSLInput) sections[0].getItems()[0];
+		RSLInput rslServer = (RSLInput) sections[0].getItems()[1];
+		RSLInput rslDatabase = (RSLInput) sections[0].getItems()[2];
+		try {
+			rslClient =  ParserWrapper.parseString(rslClients.getValue());
+			rslEJBServer =  ParserWrapper.parseString(rslServer.getValue());
+			rslDatabaseServer =  ParserWrapper.parseString(rslDatabase.getValue());
+		} catch (ParseException e) {
+			// we never get exception here, because RSLInput is validating
+			assert false: "RSL from RSLInput is invalid";
+		}
+!!!195458.java!!!	processRubisSuiteScreen(inout screen : Screen) : void
+		Section[] sections = screen.getSections();
+		Select select = (Select) sections[0].getItems()[0];
+		rubisSuite =  select.getSelectedId();
+!!!195586.java!!!	createCompileRolesScreen(in ejbServerName : String) : Screen
+		lastScreen = ScreenID.COMPILE.ordinal();
+		
+		Condition condition = null;
+		try {
+			condition = new EqualsCondition<String>("name", InetAddress.getLocalHost().getCanonicalHostName());
+		} catch (Exception e) {
+			condition = new EqualsCondition<String>("name", "some.cool.host.com");
+		}
+		
+		RSLInput rsl = new RSLInput(ejbServerName, condition.toString());
+
+		Section section = new Section(new Item[] {rsl}, 
+				"Compilation roles", 
+				null);
+		return new Screen(new SID(ScreenID.COMPILE.ordinal()), new Section[] {section});
+!!!195714.java!!!	createBenchmarkRolesScreen() : Screen
+		lastScreen = ScreenID.BENCHMARK.ordinal();
+		
+		Condition condition = null;
+		try {
+			condition = new EqualsCondition<String>("name", InetAddress.getLocalHost().getCanonicalHostName());
+		} catch (Exception e) {
+			condition = new EqualsCondition<String>("name", "some.cool.host.com");
+		}
+		
+		RSLInput rslClients = new RSLInput("Clients", condition.toString());
+		RSLInput rslServer = new RSLInput("EJB Server", condition.toString());
+		RSLInput rslDatabase = new RSLInput("Database", condition.toString());
+
+		Section section = new Section(
+				new Item[] {
+						rslClients, 
+						rslServer,
+						rslDatabase}, 
+				"Benchmarking roles", 
+				null);
+		return new Screen(new SID(ScreenID.BENCHMARK.ordinal()), new Section[] {section});
+!!!195842.java!!!	createPropertiesScreen() : Screen
+		lastScreen = ScreenID.PROPERTIES.ordinal();
+
+		IntegerIntervalInputValidator possitiveValidator = 
+			new IntegerIntervalInputValidator(1, 1000000);
+		
+		Input runs = new Input("Run count",
+				String.valueOf(DEFAULT_RUN_COUNT),
+				Input.Size.SMALL,
+				possitiveValidator);
+
+		Input clientHostsInput = new Input("Client emulator count",
+				String.valueOf(1),
+				Input.Size.SMALL,
+				possitiveValidator);
+
+		Section benchmarkSection = new Section(
+				new Item[] {runs, clientHostsInput},
+				"Benchmark properties",
+				null);
+
+		Input clientCountInput = new Input("Emulated clients per host", 
+				String.valueOf(DEFAULT_CLIENT_COUNT), 
+				Input.Size.SMALL, 
+				possitiveValidator);
+		Input sessionTimeInput = new Input("Session time (in minutes)", 
+				String.valueOf(DEFAULT_SESSION_TIME), 
+				Input.Size.SMALL, 
+				possitiveValidator);
+		Input upRampTimeInput = new Input("Up Ramp time (in minutes)", 
+				String.valueOf(DEFAULT_UPRAMP_TIME), 
+				Input.Size.SMALL, 
+				possitiveValidator);
+		Input upRampSlowdownInput = new Input("Up Ramp slowdown factor", 
+				String.valueOf(DEFAULT_UPRAMP_SLOWDOWN_FACTOR), 
+				Input.Size.SMALL, 
+				possitiveValidator);
+		Input downRampTimeInput = new Input("Down Ramp time (in minutes)", 
+				String.valueOf(DEFAULT_DOWNRAMP_TIME), 
+				Input.Size.SMALL, 
+				possitiveValidator);
+		Input downRampSlowdownInput = new Input("Down Ramp slowdown factor", 
+				String.valueOf(DEFAULT_DOWNRAMP_SLOWDOWN_FACTOR), 
+				Input.Size.SMALL, 
+				possitiveValidator);
+		Input maxTransitionsInput = new Input("Maximum transitions per client session", 
+				String.valueOf(DEFAULT_MAX_TRANSITIONS), 
+				Input.Size.SMALL, 
+				possitiveValidator);
+
+		Option[] debugLevels = new Option[] {
+				new Option("0", "0 - No debug messages"), 
+				new Option("1", "1 - Error messages"),
+				new Option("2", "2 - Error messages and HTML"),
+				new Option("3", "3 - Everything"),
+			};
+		Select debugLevelSelect = new Select("Debug level", 
+				debugLevels, DEFAULT_DEBUG_LEVEL);
+		
+		Option[] dumpTypes = new Option[] {
+				new Option(RubisTaskGenerator.DUMP_TYPE_BINARY, 
+						RubisTaskGenerator.DUMP_TYPE_BINARY),
+				new Option(RubisTaskGenerator.DUMP_TYPE_TEXT,
+						RubisTaskGenerator.DUMP_TYPE_TEXT)
+			};
+		Select dumpTypeSelect = new Select("Database dump type", 
+				dumpTypes, DEFAULT_DUMP_TYPE);
+
+		
+		Option[] transitionTables = new Option[] {
+			new Option("default_transitions.txt", "Bidding"),
+			new Option("browse_only_transitions.txt", "Browsing"),
+		};
+		Select transitionTableSelect = new Select("Transition table", 
+				transitionTables, DEFAULT_TRANSITION_TABLE);
+		
+		Section rubisSection = new Section(new Item[] {
+				clientCountInput,
+				upRampTimeInput,
+				upRampSlowdownInput,
+				sessionTimeInput,
+				downRampTimeInput,
+				downRampSlowdownInput,
+				maxTransitionsInput,
+				debugLevelSelect,
+				dumpTypeSelect,
+				transitionTableSelect
+				},
+				"Rubis properties",
+				"Configure Rubis' runtime properties.");
+		return new Screen(new SID(ScreenID.PROPERTIES.ordinal()), 
+				new Section[] {benchmarkSection, rubisSection});
+!!!195970.java!!!	createSoftwareSelectionScreen() : Screen
+		lastScreen = ScreenID.SW_SELECTION.ordinal();
+		ArrayList<Item> mysqlItems = new ArrayList<Item>();
+		mysqlItems.add(new Input("Version", "5.0.21", Input.Size.SMALL, null));
+		mysqlItems.add(new Select(
+				"Platform", 
+				new Option[] {
+						new Option("linux", "linux"),
+						new Option("windows", "windows")
+				},
+				DEFAULT_MYSQL_PLATFORM));
+		
+		Section mysqlSection = new Section(mysqlItems.toArray(new Item[mysqlItems.size()]), "MySQL", "");
+		
+		ArrayList<Item> jbossItems = new ArrayList<Item>();
+		if (!isRegression()) {
+			jbossItems.add(new Input("Version", "4.0.4", Size.SMALL, null));
+		}
+		jbossItems.add(new Select(
+				"Platform", 
+				new Option[] {
+						new Option("linux", "linux"),
+						new Option("windows", "windows")
+				},
+				DEFAULT_JBOSS_PLATFORM));
+
+		ArrayList<Item> jonasItems = new ArrayList<Item>();
+		if (!isRegression()) {
+			jonasItems.add(new Input("Version", "4.8.3", Size.SMALL, null));
+		}
+		jonasItems.add(new Select(
+				"Platform", 
+				new Option[] {
+						new Option("linux", "linux"),
+						new Option("windows", "windows")
+				},
+				DEFAULT_JONAS_PLATFORM));
+
+		Section ejbSection = new Section(new Item[] {
+				new RadiosWithSections(new RadioWithSectionItem[] {
+						new RadioWithSectionItem(
+								new Option("JBoss", "JBoss"),
+								new Section(jbossItems.toArray(new Item[jbossItems.size()]), "", "")
+								),
+						new RadioWithSectionItem(
+								new Option("Jonas", "Jonas"),
+								new Section(jonasItems.toArray(new Item[jonasItems.size()]), "", "")
+										),
+				}, DEFAULT_EJB_SERVER),
+		},
+		"EJB server", "");
+
+		return new Screen(new SID(ScreenID.SW_SELECTION.ordinal()), 
+				new Section[] {ejbSection, mysqlSection});
+!!!196098.java!!!	createRubisSuiteScreen() : Screen
+		lastScreen = ScreenID.RUBIS_SUITE.ordinal();
+		
+		Select suiteSelect = new Select("Implementation",
+				new Option[] {
+					new Option(RubisTaskGenerator.RUBIS_SUITE_EJB_CMP2, 
+							"EJB CMP2"),
+					new Option(RubisTaskGenerator.RUBIS_SUITE_EJB_ENTITYBEAN_ID, 
+							"Entity Beans CMP"),
+					new Option(RubisTaskGenerator.RUBIS_SUITE_EJB_ENTITYBEAN_ID_BMP, 
+							"Entity Beans BMP"),
+					new Option(RubisTaskGenerator.RUBIS_SUITE_EJB_LOCAL_REMOTE, 
+							"Session facade with local interfaces"),
+					new Option(RubisTaskGenerator.RUBIS_SUITE_MDB, 
+							"MDB"),
+					new Option(RubisTaskGenerator.RUBIS_SUITE_EJB_SESSION_FACADE, 
+							"Session facade"),
+					new Option(RubisTaskGenerator.RUBIS_SUITE_EJB_SESSIONBEAN, 
+							"Session Beans"),
+				},
+				0);
+		
+		Section rubisSection = new Section(new Item[] {	suiteSelect	},
+				"Rubis benchmark",
+				"Select the EJB implementation.");
+		
+		return new Screen(new SID(ScreenID.RUBIS_SUITE.ordinal()),
+				new Section[] {rubisSection});

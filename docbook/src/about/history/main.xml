@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<chapter
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>Project Summary</title>
+	
+	<sect1 xml:id="been.about.summary.authors">
+		<title>The WillBeen Team</title>
+		
+		<para>This section lists developers who worked on the WillBeen project and contributed
+		to the design and development effort.</para>
+		
+		<sect2>
+			<title>Jiří Täuber</title>
+			<para>Jiří is a student of Computer Science at Charles University in Prague, Faculty of Mathematics
+			and Physics. He is interested in human-like and animal-like agents and robots.</para>
+
+			<variablelist>
+				<varlistentry>
+					<term>E-mail</term>
+					<listitem><para><address><email>tauber.jiri@seznam.cz</email></address></para></listitem>
+				</varlistentry>
+			</variablelist>
+		</sect2>
+		<sect2>
+			<title>Jan Tattermusch</title>
+			<para>Jan is a student of Computer Science at Charles University in Prague, Faculty of Mathematics
+			and Physics. He is interested in database technologies and bioinformatics.  
+			
+			<variablelist>
+				<varlistentry>
+					<term>E-mail</term>
+					<listitem><para><address><email>jan.tattermusch@gmail.com</email></address></para></listitem>
+				</varlistentry>
+			</variablelist>
+			</para>
+		</sect2>
+		<sect2>
+			<title>Andrej Podzimek</title>
+			
+			<para>Andrej is a student of Computer Science at Charles University in Prague, Faculty of Mathematics
+			and Physics. He is mainly interested in UNIX-like operating systems and kernel development.
+			Andrej lives in Zlín, Czech Republic.</para>
+			
+			<variablelist>
+				<varlistentry>
+					<term>E-mail</term>
+					<listitem><para><address><email>andrej@podzimek.org</email></address></para></listitem>
+				</varlistentry>
+				<varlistentry>
+					<term>Home Page</term>
+					<listitem><para><address><uri>http://andrej.podzimek.org/</uri></address></para></listitem>
+				</varlistentry>
+				<varlistentry>
+					<term>CV</term>
+					<listitem><para><address><uri>https://andrej.podzimek.org/cv.pdf</uri></address></para></listitem>
+				</varlistentry>
+			</variablelist>
+		</sect2>
+	</sect1>	
+
+	<sect1>
+		<title>Authors and Contributions</title>
+		
+		<para>The project was supervised by <emphasis role="strong">Doc. Petr Tůma</emphasis>.</para>
+		
+		<para><emphasis role="strong">Jiří Täuber</emphasis> implemented the new
+		<glossterm>Benchmark Manager</glossterm> component. The original Benchmark Manager was
+		completely replaced by the new implementation. The design changes were so big that no
+		source code from the original implementation could be reused. Jiří also worked on the
+		Web Interface, adding support for the new implementations of
+		Benchmark Manager and <glossterm>Results Repository</glossterm> and for the new
+		<glossterm>Task Tree</glossterm> component of the <glossterm>Task Manager</glossterm>.
+		His work on the Benchmark Manager also involved implementing the support for a Xampler
+		benchmark. He was responsible for UML modeling and graphic overviews in the early
+		phase of the project.</para>
+		
+		<para><emphasis role="strong">Jan Tattermusch</emphasis> designed and implemented the new
+		<glossterm>Results Repository</glossterm> component. The original Results Repsitory was
+		completely replaced by the new implementation. The Derby database was integrated, together
+		with many other technologies (e.g. Hibernate and OW2 ASM bytecode assembling framework).
+		After completing the new
+		Results Repository, Jan cooperated with Jiří on the Xampler benchmark implementation.		
+		Jan also designed the mechanism of <glossterm baseform="pluggable module">pluggable modules</glossterm>,
+		which enables the BEEN framework to load external libraries on demand. Next, his work includes
+		support for new types of <glossterm baseform="task">tasks</glossterm> coded in Jython or in
+		the platform-dependent shell language. He did a lot of code cleanup and refactoring, improved the
+		build system and did most of the improvements connected to <glossterm>Debug Assistant</glossterm>. </para>
+		
+		<para><emphasis role="strong">Andrej Podzimek</emphasis> mainly worked on the Command Line
+		Interface. He designed and implemented this component from the groud up, including the
+		client program written in C. He also added the <glossterm>Task Tree</glossterm>, a new
+		component of the <glossterm>Task Manager</glossterm> that provides hierarchical grouping of
+		<glossterm baseform="task">tasks</glossterm> and status overview for groups of tasks.
+		Andrej refactored the Task Manager code and added a load limitation mechanism and
+		integration with the new task identifiers he introduced. He also added many data
+		structures based on the JAXB technology and implemented utility classes for XML access.
+		He did a lot of code refactoring throughout the whole code base. He also read the whole
+		source code and provided a graphic summary of the components in the early phase of the
+		project. Administration of the testing virtual machines was Andrej's long-term task.</para>
+		
+		<para><emphasis role="strong">Jiří Svoboda</emphasis> joined the WillBeen project,
+		but he never took part in the development. He is no longer a member of the team.</para>
+	</sect1>
+	
+	<sect1>
+		<title>Project Timeline</title>
+		
+		<variablelist>
+			<varlistentry>
+				<term>2008</term>
+				<listitem><para>First experiments with the framework</para></listitem>
+			</varlistentry>
+			<varlistentry>
+				<term>late 2008</term>
+				<listitem><para>Tasks planning, virtual machine farm installation</para></listitem>
+			</varlistentry>
+			<varlistentry>
+				<term>December 2008</term>
+				<listitem><para>Source code overview, UML diagrams, tasks planning</para></listitem>
+			</varlistentry>
+			<varlistentry>
+				<term>January 2009</term>
+				<listitem><para>Initial implementation of the Command Line Interface</para></listitem>
+			</varlistentry>
+			<varlistentry>
+				<term>February&#8212;April 2009</term>
+				<listitem><para>Design of the new Benchmark Manager and Results Repository</para></listitem>
+			</varlistentry>
+			<varlistentry>
+				<term>March 2009</term>
+				<listitem><para>Pluggable modules frawork implemented and ready for use</para></listitem>
+			</varlistentry>
+			<varlistentry>
+				<term>April 2009</term>
+				<listitem><para>Implementation of Task Manager's Task Tree component</para></listitem>
+			</varlistentry>
+			<varlistentry>
+				<term>May&#8212;June 2009</term>
+				<listitem><para>The Command Line Interface extended to support all unchanged components</para></listitem>
+			</varlistentry>
+			<varlistentry>
+				<term>July 2009</term>
+				<listitem><para>Public presentation (webinar) of the BEEN framework</para></listitem>
+			</varlistentry>
+			<varlistentry>
+				<term>August 2009</term>
+				<listitem><para>Initial implementations of the redesigned components finished</para></listitem>
+			</varlistentry>
+			<varlistentry>
+				<term>September 2009</term>
+				<listitem><para>The Web Interface extended to support both redesigned components</para></listitem>
+			</varlistentry>
+			<varlistentry>
+				<term>October&#8212;December 2009</term>
+				<listitem><para>Work on the reimplementation of Xampler benchmarking modules</para></listitem>
+			</varlistentry>
+			<varlistentry>
+				<term>November 2009</term>
+				<listitem><para>First working Xampler benchmarks ready for testing</para></listitem>
+			</varlistentry>
+			<varlistentry>
+				<term>December 2009</term>
+				<listitem><para>The Command Line Interface extended to support both redesigned components</para></listitem>
+			</varlistentry>
+			<varlistentry>
+				<term>January 2010</term>
+				<listitem><para>Refactoring and fine-tuning of the Task Manager with feature enhancements</para></listitem>
+			</varlistentry>
+			<varlistentry>
+				<term>February 2010</term>
+				<listitem><para>Testing on the virtual machine farm, new debugging features, bug squashing</para></listitem>
+			</varlistentry>
+		</variablelist>
+	</sect1>
+	
+	<sect1 xml:id="been.about.history.statistics">
+		<title>Coding Statistics</title>
+	
+		<para>The Subversion repository was used to generate coding statistics. Full output from the
+		StatSVN tool can be found in the documentation directory
+		of the BEEN DVD.</para>
+		
+		<para>The <command>cloc</command> utility was used to generate a detailed overview of
+		programming languages and lines of code. The overview includes both the original code
+		and new code contributed by the WillBeen project. Mamy old components were reimplemented
+		and removed completely. Consequently, it would not make sense to compare the number of lines
+		of code in the original project and the new one. Only the data from StatSVN can provide a
+		sensible overview of code contributions over time.</para>
+		
+		<para>A considerable amount of work was spent refactoring and bug fixing. This is not
+		surprising, especially considering the size of the project.</para>
+		
+		<figure>
+			<title>LoC Graph from StatSVN</title>
+			<mediaobject>
+				<imageobject>
+					<imagedata fileref="../../../img/svn/loc.png" align="center" width="100%" scalefit="1"/>
+				</imageobject>
+			</mediaobject>
+		</figure>
+
+		<figure>
+			<title>Contributed LoC Graph from StatSVN</title>
+			<mediaobject>
+				<imageobject>
+					<imagedata fileref="../../../img/svn/loc_per_author.png" align="center" width="100%" scalefit="1"/>
+				</imageobject>
+			</mediaobject>
+		</figure>
+		
+		<table tocentry="1">
+			<title>Contributed LoC Table from StatSVN</title>
+			<tgroup cols="4">
+				<thead>
+					<row><entry>Author</entry><entry>Changes</entry><entry>Lines of Code</entry><entry>Lines per Change</entry></row>
+				</thead>
+				<tfoot>
+					<row><entry>Theodore o'Sum</entry><entry>3849 (100.0%)</entry><entry>129341 (100.0%)</entry><entry>33.6</entry></row>
+				</tfoot>
+				<tbody>
+					<row><entry>Andrej Podzimek</entry><entry>1627 (42.3%)</entry><entry>59732 (46.2%)</entry><entry>36.7</entry></row>
+					<row><entry>Jan Tattermusch</entry><entry>1393 (36.2%)</entry><entry>42176 (32.6%)</entry><entry>30.2</entry></row>
+					<row><entry>Jiří Täuber</entry><entry>746 (19.4%)</entry><entry>23728 (18.3%)</entry><entry>31.8</entry></row>
+					<row><entry>Petr Tůma</entry><entry>83 (2.2%)</entry><entry>3705 (2.9%)</entry><entry>44.6</entry></row>
+				</tbody>
+			</tgroup>
+		</table>
+		
+		<figure>
+			<title>Output from <command>cloc</command></title>
+			<screen>----------------------------------------------------------------
+Language     files   blank comment    code   scale         equiv
+----------------------------------------------------------------
+Java           799   22291   66450   83898 x  1.36 =   114101.28
+XML            270    3422    4383   12995 x  1.90 =    24690.50
+C++             33    1453    2402    5026 x  1.51 =     7589.26
+JSP             56     545    1105    4634 x  1.48 =     6858.32
+C/C++ Header    49    1131    3329    2465 x  1.00 =     2465.00
+XSD             13     217      38    1812 x  1.90 =     3442.80
+C                1     114     140     725 x  0.77 =      558.25
+DOS Batch        7     107      94     262 x  0.63 =      165.06
+DTD              6     129     310     217 x  1.90 =      412.30
+Bourne Shell     8      64     108     138 x  3.81 =      525.78
+make             3      60      74     121 x  2.50 =      302.50
+HTML             2      16      40      40 x  1.90 =       76.00
+Python           1       7       1       3 x  4.20 =       12.60
+----------------------------------------------------------------
+SUM:          1248   29556   78474  112336 x  1.43 =   161199.65
+----------------------------------------------------------------</screen>
+		</figure>
+	</sect1>
+	
+	<sect1>
+		<title>Original Authors</title>
+		
+		<para>The original BEEN project was superviesd by <emphasis role="strong">Tomáš Kalibera, Ph. D.</emphasis>.</para>
+		
+		<para>The following authors designed and implemented the original BEEN framework in
+		2004&#8211;2006. (They did not participate in the WillBeen project.)</para>
+	
+		<itemizedlist>
+			<listitem><para>Jakub Lehotský</para></listitem>
+			<listitem><para>David Majda</para></listitem>
+			<listitem><para>Branislav Repček</para></listitem>
+			<listitem><para>Michal Tomčányi</para></listitem>
+			<listitem><para>Antonín Tomeček</para></listitem>
+			<listitem><para>Jaroslav Urban</para></listitem>
+		</itemizedlist>
+	</sect1>
+</chapter>

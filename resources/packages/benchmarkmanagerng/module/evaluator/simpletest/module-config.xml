@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config
+	xmlns="http://been.mff.cuni.cz/benchmarkmanagerng/config"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+>
+	<group id="extended" desc="Results Repository Setup">
+		<item id="datasetName" type="text" desc="Name of the dataset" constraint="NotEmpty" default="SomeDataset"/>
+	</group>
+</config>

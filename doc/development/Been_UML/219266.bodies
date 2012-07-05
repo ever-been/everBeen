@@ -1,0 +1,148 @@
+class RSLRestrictionTest
+!!!850690.java!!!	setUp() : void
+		if ((beenHome = System.getenv("BEEN_HOME")) == null) {
+			throw new Exception("BEEN_HOME environment variable not defined.");
+		}
+
+		hostInfo = HostInfoBuilder.readFromFile(beenHome + File.separator + "resources"
+			+ File.separator + "tests" + File.separator + "hostmanager"
+			+ File.separator + "test.host");
+!!!850818.java!!!	assertTestReturnsTrue(in rsl : String) : void
+		assertTrue(new RSLRestriction(rsl).test(hostInfo, false));
+!!!850946.java!!!	assertTestReturnsFalse(in rsl : String) : void
+		assertFalse(new RSLRestriction(rsl).test(hostInfo, false));
+!!!851074.java!!!	assertTestThrows(in rsl : String, inout exceptionClass : Class, in exceptionMessage : String) : void
+		try {
+			new RSLRestriction(rsl).test(hostInfo, false);
+		} catch (Throwable t) {
+			assertEquals(exceptionClass, t.getClass());
+			assertEquals(exceptionMessage, t.getMessage());
+		}
+!!!851202.java!!!	testSimpleTrue() : void
+		assertTestReturnsTrue("detector == \"hwdet3_windows\"");
+!!!851330.java!!!	testSimpleFalse() : void
+		assertTestReturnsFalse("detector != \"hwdet3_windows\"");
+!!!851458.java!!!	testSimpleUnknownProperty() : void
+		assertTestThrows("unknownProperty == 42", ValueNotFoundException.class,
+			"Property \"unknownProperty\" doesn't exist.");
+!!!851586.java!!!	testSimpleInvalidProperty() : void
+		/* "unknownProperty2" is legal property name in RSL but not in the Host
+		 * Manager. 
+		 */
+		assertTestThrows("unknownProperty2 == 42", ValueNotFoundException.class,
+			"Property \"unknownProperty2\" doesn't exist.");
+!!!851714.java!!!	testContainerTrue() : void
+		assertTestReturnsTrue("application.name == \"Cool Game\"");
+!!!851842.java!!!	testContainerFalse() : void
+		assertTestReturnsFalse("application.name == \"Bad Game\"");
+!!!851970.java!!!	testContainerUnknownProperty() : void
+		assertTestThrows("application.unknownProperty == 42", ValueNotFoundException.class,
+			"Property \"application.unknownProperty\" doesn't exist.");
+!!!852098.java!!!	testCompareValueIntegerToLongWithUnit() : void
+		assertTestReturnsTrue("adapters == 1");
+!!!852226.java!!!	testCompareValueIntegerToVersion() : void
+		assertTestThrows("adapters == 4.2", ValueTypeIncorrectException.class,
+			"Invalid value type specified: Property \"adapters\" is "
+			+ "\"cz.cuni.mff.been.common.rsl.LongWithUnit\", but the value is "
+			+ "\"cz.cuni.mff.been.common.Version\".");
+!!!852354.java!!!	testCompareValueIntegerToDate() : void
+		assertTestThrows("adapters == 2006-05-17", ValueTypeIncorrectException.class,
+			"Invalid value type specified: Property \"adapters\" is "
+			+ "\"cz.cuni.mff.been.common.rsl.LongWithUnit\", but the value is "
+			+ "\"java.util.Date\".");
+!!!852482.java!!!	testCompareValueIntegerToString() : void
+		assertTestThrows("adapters == \"Lorem ipsum\"", ValueTypeIncorrectException.class,
+			"Invalid value type specified: Property \"adapters\" is "
+			+ "\"cz.cuni.mff.been.common.rsl.LongWithUnit\", but the value is "
+			+ "\"java.lang.String\".");
+!!!852610.java!!!	testCompareValueIntegerToPackageType() : void
+		assertTestThrows("adapters == source", ValueTypeIncorrectException.class,
+			"Invalid value type specified: Property \"adapters\" is "
+			+ "\"cz.cuni.mff.been.common.rsl.LongWithUnit\", but the value is "
+			+ "\"cz.cuni.mff.been.softwarerepository.PackageType\".");
+!!!852738.java!!!	testCompareValueIntegerToList() : void
+		assertTestThrows("adapters contains \"Lorem ipsum\"", ValueTypeIncorrectException.class,
+			"Invalid operator applied to property \"adapters\" as it's class "
+			+ "\"cz.cuni.mff.been.common.rsl.LongWithUnit\" doesn't implement interface "
+			+ "\"java.util.List\".");
+!!!852866.java!!!	testCompareValueStringToLongWithUnit() : void
+		assertTestThrows("detector == 42", ValueTypeIncorrectException.class,
+			"Invalid value type specified: Property \"detector\" is "
+			+ "\"java.lang.String\", but the value is "
+			+ "\"cz.cuni.mff.been.common.rsl.LongWithUnit\".");
+!!!852994.java!!!	testCompareValueStringToVersion() : void
+		assertTestThrows("detector == 4.2", ValueTypeIncorrectException.class,
+			"Invalid value type specified: Property \"detector\" is "
+			+ "\"java.lang.String\", but the value is "
+			+ "\"cz.cuni.mff.been.common.Version\".");
+!!!853122.java!!!	testCompareValueStringToDate() : void
+		assertTestThrows("detector == 2006-05-17", ValueTypeIncorrectException.class,
+			"Invalid value type specified: Property \"detector\" is "
+			+ "\"java.lang.String\", but the value is "
+			+ "\"java.util.Date\".");
+!!!853250.java!!!	testCompareValueStringToString() : void
+		assertTestReturnsTrue("detector == \"hwdet3_windows\"");
+!!!853378.java!!!	testCompareValueStringToPackageType() : void
+		assertTestThrows("detector == source", ValueTypeIncorrectException.class,
+			"Invalid value type specified: Property \"detector\" is "
+			+ "\"java.lang.String\", but the value is "
+			+ "\"cz.cuni.mff.been.softwarerepository.PackageType\".");
+!!!853506.java!!!	testCompareValueStringToList() : void
+		assertTestThrows("detector contains \"Lorem ipsum\"", ValueTypeIncorrectException.class,
+			"Invalid operator applied to property \"detector\" as it's class "
+			+ "\"java.lang.String\" doesn't implement interface "
+			+ "\"java.util.List\".");
+!!!853634.java!!!	testCompareValueVersionToLongWithUnit() : void
+		assertTestThrows("java.version == 42", ValueTypeIncorrectException.class,
+			"Invalid value type specified: Property \"java.version\" is "
+			+ "\"cz.cuni.mff.been.common.Version\", but the value is "
+			+ "\"cz.cuni.mff.been.common.rsl.LongWithUnit\".");
+!!!853762.java!!!	testCompareValueVersionToVersion() : void
+		assertTestReturnsTrue("java.version == 1.5.0_05");
+!!!853890.java!!!	testCompareValueVersionToDate() : void
+		assertTestThrows("java.version == 2006-05-17", ValueTypeIncorrectException.class,
+			"Invalid value type specified: Property \"java.version\" is "
+			+ "\"cz.cuni.mff.been.common.Version\", but the value is "
+			+ "\"java.util.Date\".");
+!!!854018.java!!!	testCompareValueVersionToString() : void
+		assertTestThrows("java.version == \"Lorem ipsum\"", ValueTypeIncorrectException.class,
+			"Invalid value type specified: Property \"java.version\" is "
+			+ "\"cz.cuni.mff.been.common.Version\", but the value is "
+			+ "\"java.lang.String\".");
+!!!854146.java!!!	testCompareValueVersionToPackageType() : void
+		assertTestThrows("java.version == source", ValueTypeIncorrectException.class,
+			"Invalid value type specified: Property \"java.version\" is "
+			+ "\"cz.cuni.mff.been.common.Version\", but the value is "
+			+ "\"cz.cuni.mff.been.softwarerepository.PackageType\".");
+!!!854274.java!!!	testCompareValueVersionToList() : void
+		assertTestThrows("java.version contains \"Lorem ipsum\"", ValueTypeIncorrectException.class,
+			"Invalid operator applied to property \"java.version\" as it's class "
+			+ "\"cz.cuni.mff.been.common.Version\" doesn't implement interface "
+			+ "\"java.util.List\".");
+!!!854402.java!!!	testCompareValueListToLongWithUnit() : void
+		assertTestThrows("memberof == 42", ValueTypeIncorrectException.class,
+			"Invalid operator applied to property \"memberof\" as it's class "
+			+ "\"java.util.List\" implements interface "
+			+ "\"java.util.List\".");
+!!!854530.java!!!	testCompareValueListToVersion() : void
+		assertTestThrows("memberof == 4.2", ValueTypeIncorrectException.class,
+			"Invalid operator applied to property \"memberof\" as it's class "
+			+ "\"java.util.List\" implements interface "
+			+ "\"java.util.List\".");
+!!!854658.java!!!	testCompareValueListToDate() : void
+		assertTestThrows("memberof == 2006-05-17", ValueTypeIncorrectException.class,
+			"Invalid operator applied to property \"memberof\" as it's class "
+			+ "\"java.util.List\" implements interface "
+			+ "\"java.util.List\".");
+!!!854786.java!!!	testCompareValueListToString() : void
+		assertTestThrows("memberof == \"Lorem ipsum\"", ValueTypeIncorrectException.class,
+			"Invalid operator applied to property \"memberof\" as it's class "
+			+ "\"java.util.List\" implements interface "
+			+ "\"java.util.List\".");
+!!!854914.java!!!	testCompareValueListToPackageType() : void
+		assertTestThrows("memberof == source", ValueTypeIncorrectException.class,
+			"Invalid operator applied to property \"memberof\" as it's class "
+			+ "\"java.util.List\" implements interface "
+			+ "\"java.util.List\".");
+!!!855042.java!!!	testCompareValueListToList() : void
+		assertTestReturnsTrue("memberof contains \"All hosts\"");

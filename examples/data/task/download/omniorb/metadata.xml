@@ -1,0 +1,18 @@
+
+<package>
+	<name>omniorb</name>
+	<version>4.1.4</version>
+	<hardwarePlatforms>
+		<hardwarePlatform>i386</hardwarePlatform>
+		<hardwarePlatform>x86_64</hardwarePlatform>
+	</hardwarePlatforms>
+	<softwarePlatforms>
+		<softwarePlatform>linux</softwarePlatform>
+		<softwarePlatform>win32</softwarePlatform>
+	</softwarePlatforms>
+	<type>source</type>
+	<humanName>omniORB: High performance linux ORB</humanName>
+	<targetCompilerTaskName>gcc-compile</targetCompilerTaskName>
+	<targetCompilerTaskOptions></targetCompilerTaskOptions>
+</package>
+

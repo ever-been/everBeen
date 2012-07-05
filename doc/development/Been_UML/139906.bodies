@@ -1,0 +1,31 @@
+class ExperimentAdapter
+!!!171394.java!!!	ExperimentAdapter(inout analysis : AnalysisMetadata)
+		super(null);
+		this.analysis = analysis;
+!!!171522.java!!!	getEntity(inout id : EID) : ExperimentEntity
+		return new ExperimentEntity(findExperiment(id));
+!!!171650.java!!!	getEntities() : ExperimentEntity
+		ExperimentMetadata[] experiments = analysis.getExperiments();
+		ExperimentEntity[] result = new ExperimentEntity[experiments.length];
+		int i=0;
+		for (ExperimentMetadata experiment : experiments) {
+			result[i++] = new ExperimentEntity(experiment);
+		}
+		return result;
+!!!171778.java!!!	getSubentityInterface(inout id : EID) : BinaryAdapter
+		return new BinaryAdapter(findExperiment(id));
+!!!171906.java!!!	deleteEntity(inout id : EID) : void
+		// TODO Auto-generated method stub
+!!!172034.java!!!	getContext(inout id : EID) : String
+		return findExperiment(id).getContextID();
+!!!172162.java!!!	getTasks(inout id : EID) : TaskDescriptor
+		return BeenUtils.sortTasks(findExperiment(id).getTasks());
+!!!172290.java!!!	getAllTasks(inout id : EID) : TaskDescriptor
+		return BeenUtils.sortTasks(findExperiment(id).getAllTasks());
+!!!172418.java!!!	findExperiment(inout id : EID) : ExperimentMetadata
+		ExperimentMetadata exp = analysis.getExperiment(id);
+		if (exp == null) {
+			throw new IllegalArgumentException("Experiment EID(" + 
+					id + ") does not exist");
+		}
+		return exp;

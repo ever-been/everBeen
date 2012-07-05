@@ -1,0 +1,343 @@
+class LoadServerImplementation
+!!!440194.java!!!	LoadServerImplementation(inout appData : HostManagerApplicationData)
+		
+		super();
+		
+		this.appData = appData;
+		this.logger = appData.getLogger();
+		this.configuration = appData.getConfiguration();
+		
+		this.logger.logInfo("Initializing Load Server.");
+		this.database = appData.getDatabase();
+
+		try {
+			this.globalBriefModeInterval = configuration.getBriefModeInterval();
+			this.globalDetailedModeInterval = configuration.getDefaultDetailedModeInterval();
+		} catch (RemoteException e) {
+			throw new LoadMonitorException("Unable to query LS settings.");
+		}
+		
+		try {
+			this.configuration.registerValueChangeListener(this);
+		} catch (IllegalArgumentException e) {
+			throw new LoadMonitorException("Unable to register configuration listener.", e);
+		}
+		
+		listeners = new ConcurrentHashMap< OID, LoadMonitorEventListener >();
+		eventQueue = new EventQueue();
+		eventReceiver = new EventReceiver(eventQueue, listeners, logger);
+		
+		logger.logInfo("Creating Cache Manager.");
+		cache = new ActivityMonitorCache();
+		logger.logInfo("Cache Manager created successfully.");
+		
+		logger.logInfo("Creating ActivityMonitor.");
+		try {
+			activityMonitor = new ActivityMonitor(this, appData, cache);
+		} catch (LoadMonitorException e) {
+			throw new LoadMonitorException("Unable to initialize Activity Monitor.", e);
+		}
+		logger.logInfo("ActivityMonitor created successfully.");
+		
+		logger.logInfo("Creating EventStorageListener.");
+		eventStorageListener = new EventStorageListener(appData);
+		
+		try {
+			registerEventListener(eventStorageListener);
+		} catch (RemoteException e) {
+			logger.logFatal("Unable to register EventStorageListener.", e);
+			throw new LoadMonitorException("Unable to register EventStorageListener.", e);
+		} catch (InvalidArgumentException e) {
+			assert false : "EventStorageListener is null.";
+		}
+		
+		logger.logInfo("EventStorageListener registered successfully.");
+!!!440322.java!!!	terminate() : void
+
+		logger.logInfo("Load Server is shutting down.");
+
+		try {
+			appData.getConfiguration().unregisterValueChangeListener(this);
+		} catch (IllegalArgumentException e) {
+			logger.logError("HM1: Unable to unregister configuration listener.", e);
+		} catch (RemoteException e) {
+			logger.logError("HM2: Unable to unregister configuration listener.", e);
+		}
+		
+		eventReceiver.stop();
+!!!440450.java!!!	clearHostLoadData(in hostName : String) : void
+
+		database.deleteLoadFiles(hostName);
+!!!440578.java!!!	getLastSample(in hostName : String) : LoadSample
+		
+		synchronized (database) {
+			if (!database.isHost(hostName)) {
+				throw new ValueNotFoundException("Host \"" + hostName + "\" is not in database.");
+			}
+			
+			ActivityMonitorCache.CacheElement elem = cache.getCacheElement(hostName);
+			
+			if (elem == null) {
+				return null;
+			} else {
+				return elem.getLastSample();
+			}
+		}
+!!!440706.java!!!	getLastHardwareDescription(in hostName : String) : HardwareDescription
+
+		synchronized (database) {
+			if (!database.isHost(hostName)) {
+				throw new ValueNotFoundException("Host \"" + hostName + "\" is not in database.");
+			}
+			
+			ActivityMonitorCache.CacheElement elem = cache.getCacheElement(hostName);
+			
+			if (elem == null) {
+				return null;
+			} else {
+				return elem.getLastDescription();
+			}
+		}
+!!!440834.java!!!	isHostOnline(in hostName : String) : boolean
+		
+		String canonicalName;
+		
+		try {
+			canonicalName = MiscUtils.getCanonicalHostName(hostName);
+		} catch (UnknownHostException e) {
+			if (!database.isHost(hostName)) {
+				throw e;
+			} else {
+				// host is in database, but its name cannot be resolved -> it is offline
+				return false;
+			}
+		}
+		
+		if (!database.isHost(canonicalName)) {
+			throw new ValueNotFoundException("Host \"" + canonicalName + "\" is not in database.");
+		}
+
+		LoadMonitorInterface loadMonitor = null;
+		
+		try {
+			loadMonitor = (LoadMonitorInterface) Naming.lookup("//" + hostName + "/"
+					+ LoadMonitorInterface.RMI_NAME);
+		} catch (Exception e) {
+			// Unable to connect to the Load Monitor -> host is offline or crashed
+			return false;
+		}
+		
+		try {
+			loadMonitor.ping();
+		} catch (Exception e) {
+			return false;
+		}
+		
+		return true;
+!!!440962.java!!!	getHostStatus(in hostName : String) : HostStatus
+		
+		synchronized (database) {
+			if (!database.isHost(hostName)) {
+				throw new ValueNotFoundException("Host \"" + hostName + "\" is not in database.");
+			}
+			
+			ActivityMonitorCache.CacheElement elem = cache.getCacheElement(hostName);
+			
+			if (elem == null) {
+				return HostStatus.OFFLINE;
+			} else {
+				return elem.getStatus();
+			}
+		}
+!!!441090.java!!!	getHostStatusMap() : HostStatus
+
+		HashMap< String, HostStatus > result = new HashMap< String, HostStatus >();
+		
+		synchronized (database) {
+
+			for (Iterator< String > it = database.getHostNamesIterator(); it.hasNext(); ) {
+				String hostName = it.next();
+				
+				ActivityMonitorCache.CacheElement elem = cache.getCacheElement(hostName);
+				
+				if (elem == null) {
+					result.put(hostName, HostStatus.OFFLINE);
+				} else {
+					result.put(hostName, elem.getStatus());
+				}
+			}
+		}
+		
+		return result;
+!!!441218.java!!!	reportEvent(inout event : LoadMonitorEvent) : void
+		
+		logger.logTrace("Event: [" + MiscUtils.formatDate(event.getTime()) + "] " + event.getHostName());
+		eventQueue.add(event);
+!!!441346.java!!!	reportEvents(inout events : LoadMonitorEvent) : void
+		
+		eventQueue.addAll(events);
+!!!441474.java!!!	reportEvents(inout events : Collection< LoadMonitorEvent >) : void
+		
+		eventQueue.addAll(events);
+!!!441602.java!!!	registerEventListener(inout listener : LoadMonitorEventListener) : OID
+
+		MiscUtils.verifyParameterIsNotNull(listener, "listener");
+
+		OID newID = appData.getNextID(OID.class);
+		
+		listeners.put(newID, listener);
+		
+		return newID;
+!!!441730.java!!!	unregisterEventListener(inout listenerID : OID) : void
+
+		MiscUtils.verifyParameterIsNotNull(listenerID, "listenerID");
+		
+		if (listeners.containsKey(listenerID)) {
+			listeners.remove(listenerID);
+		} else {
+			throw new ValueNotFoundException("Listener with given ID is not registered.");
+		}
+!!!441858.java!!!	getEventListener(inout listenerID : OID) : LoadMonitorEventListener
+		
+		MiscUtils.verifyParameterIsNotNull(listenerID, "listenerID");
+		
+		if (listeners.containsKey(listenerID)) {
+			return listeners.get(listenerID);
+		} else {
+			throw new ValueNotFoundException("Unable to find listener with given ID.");
+		}
+!!!441986.java!!!	newHostConnected(in hostName : String) : void
+
+		LoadMonitorInterface result = null;
+
+		String canonicalName = hostName;
+		
+		try {
+			canonicalName = MiscUtils.getCanonicalHostName(hostName);
+		} catch (UnknownHostException e) {
+			logger.logError("Unable to resolve host \"" + hostName + "\".", e);
+			throw new LoadMonitorException("Unable to resolve host.", e);
+		}
+		
+		try {
+			result = (LoadMonitorInterface) Naming.lookup("//" + hostName + "/"
+					+ LoadMonitorInterface.RMI_NAME);
+		} catch (NotBoundException e) {
+			logger.logError("Load Monitor not bound on host \"" + hostName + "\".");
+			throw new LoadMonitorException(e);
+		} catch (Exception e) {
+			logger.logError("Unable to connect to the Load Monitor on \"" + hostName + "\".");
+			throw new LoadMonitorException(e);
+		}
+		
+		try {
+			cache.addCacheElement(canonicalName, result);
+		} catch (InvalidArgumentException e) {
+			logger.logError("Unable to add \"" + canonicalName + "\" to the cache.", e);
+			throw new LoadMonitorException("Unable to add \"" + canonicalName + "\" to the cache.", e);
+		}
+		
+		try {
+			result.initialize(hostName, 
+			                  this, 
+			                  configuration.getDefaultDetailedModeInterval(),
+			                  configuration.getBriefModeInterval());
+		} catch (LoadMonitorException e) {
+			logger.logError("Unable to initialize Load Monitor on \"" + hostName + "\".", e);
+			cache.removeCacheElement(canonicalName);
+			throw new LoadMonitorException(e);
+		} catch (RemoteException e) {
+			logger.logError("Error initializing Load Monitor on \"" + hostName + "\".", e);
+			cache.removeCacheElement(canonicalName);
+			throw new LoadMonitorException(e);
+		}
+		
+		activityMonitor.newHostConnected(canonicalName);
+!!!442114.java!!!	hostDisconnected(in hostName : String) : void
+		
+		// empty space provided by the CocaCola company.
+!!!442242.java!!!	getConfiguration() : HostManagerOptionsInterface
+		
+		return appData.getConfiguration();
+!!!442370.java!!!	valueChanged(inout option : Option, in newValue : long) : void
+		
+		switch (option) {
+			
+			case ACTIVITY_MONITOR_INTERVAL:
+				logger.logInfo("Value of ACTIVITY_MONITOR_INTERVAL changed to " + newValue);
+				
+				activityMonitor.reloadOptions();
+				break;
+				
+			case BRIEF_MODE_INTERVAL:
+				logger.logInfo("Value of BRIEF_MODE_INTERVAL changed to " + newValue);
+				globalBriefModeInterval = newValue;
+				try {
+					Map< String, HostStatus > statuses = getHostStatusMap();
+					
+					for (Map.Entry< String, HostStatus > entry: statuses.entrySet()) {
+						String name = entry.getKey();
+						
+						
+						ActivityMonitorCache.CacheElement elem = cache.getCacheElement(name);
+						
+						if (elem != null) {
+							if (elem.getStatus() == HostStatus.ONLINE) {
+								logger.logTrace("Setting brief interval on: " + name);
+
+								LoadMonitorInterface lm = elem.getLoadMonitor();
+								lm.setBriefInterval(globalBriefModeInterval);
+							}
+						}
+					}
+				} catch (Exception e) {
+					throw new HostManagerException("Unable to set global brief mode interval.");
+				}
+				break;
+				
+			case DEFAULT_DETAILED_MODE_INTERVAL:
+				logger.logInfo("Value of DEFAULT_DETAILED_MODE_INTERVAL changed to " + newValue);
+				globalDetailedModeInterval = newValue;
+				try {
+					Map< String, HostStatus > statuses = getHostStatusMap();
+					
+					for (Map.Entry< String, HostStatus > entry: statuses.entrySet()) {
+						String name = entry.getKey();
+						
+						ActivityMonitorCache.CacheElement elem = cache.getCacheElement(name);
+						
+						if (elem != null) {
+							if (elem.getStatus() == HostStatus.ONLINE) {
+								logger.logTrace("Setting default detailed mode interval on: " + name);
+
+								LoadMonitorInterface lm = elem.getLoadMonitor();
+								lm.setDefaultDetailedInterval(globalDetailedModeInterval);
+							}
+						}
+					}
+				} catch (Exception e) {
+					throw new HostManagerException("Unable to set global detailed mode interval.");
+				}
+				break;
+				
+			case DEAD_HOST_TIMEOUT:
+				logger.logInfo("Value of DEAD_HOST_TIMEOUT changed to " + newValue);
+				activityMonitor.reloadOptions();
+				break;
+				
+			default:
+				// Other options are HM only...
+		}
+!!!442498.java!!!	getStatsProvider(in hostName : String) : HostDataStatistician
+
+		if (database.isHost(hostName)) {
+			String mapFile = database.getLoadMapFilePath(hostName);
+			String loadFile = database.getLoadFilePath(hostName);
+			try {
+				return new HostDataStatistician(mapFile, loadFile);
+			} catch (IOException e) {
+				throw new LoadMonitorException("Unable to create data provider.", e);
+			}
+		} else {
+			throw new ValueNotFoundException("Host \"" + hostName + "\" is not in database.");
+		}

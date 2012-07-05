@@ -1,0 +1,27 @@
+class RubisMySQLBackup
+!!!652546.java!!!	RubisMySQLBackup()
+		super();
+!!!652674.java!!!	run() : void
+		if ((mysqlRoot = getTaskProperty(MYSQL_ROOT)) == null) {
+			throw new TaskException(MYSQL_ROOT + " task property not set");
+		}
+		
+		logInfo("MySQL installation root directory: " + mysqlRoot);
+
+		try {
+			Copy.directoryCopy(
+					mysqlRoot + File.separator + "data" + File.separator + "rubis",
+					getWorkingDirectory() + File.separator + "rubis");
+			Copy.copyToDir(mysqlRoot + File.separator + "data" + File.separator + "ib_logfile0", 
+					getWorkingDirectory());
+			Copy.copyToDir(mysqlRoot + File.separator + "data" + File.separator + "ib_logfile1", 
+					getWorkingDirectory());
+			Copy.copyToDir(mysqlRoot + File.separator + "data" + File.separator + "ibdata1", 
+					getWorkingDirectory());
+		} catch (AntTaskException e) {
+			throw new TaskException("Cannot copy the Rubis' database to my working directory", e); 
+		}
+
+		logInfo("Rubis database backup successfull");
+!!!652802.java!!!	checkRequiredProperties() : void
+		checkRequiredProperty(MYSQL_ROOT);

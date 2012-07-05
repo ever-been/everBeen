@@ -1,0 +1,19 @@
+class RCallbackEntity
+!!!557570.java!!!	RCallbackEntity()
+	    	
+!!!557698.java!!!	toString() : String
+	    	
+	    	switch (this) {
+	    		case RUN:
+	    			return new String("run");
+	    		case BINARY:
+	    			return new String("binary");	    			
+	    		case EXPERIMENT:
+	    			return new String("experiment");
+	    		case ANALYSIS:
+	    			return new String("analysis");
+	    		default:
+	    			return new String("invalid entity");
+	    	}
+	    	
+	    	

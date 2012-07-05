@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sect1
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>The Task Tree API</title>
+	
+	<para>The Task Tree exposes two main interfaces, <interfacename>TaskTreeInput</interfacename> and
+	<interfacename>TaskTreeQuery</interfacename>. The <interfacename>TaskTreeFlag</interfacename>
+	can be used to implement new flags. The <interfacename>TreeFlagInheritance</interfacename>
+	is implemented inside the Task Tree and used by implementations of
+	<glossterm baseform="inheritance rule">inheritance rules</glossterm> to access
+	<glossterm baseform="task tree flag">flag</glossterm> information
+	while perfectly isolated from the physical structure of the tree. Last but not least, the
+	<classname>TaskTreeRecord</classname> class is also a part of the public API. So is the
+	<classname>TaskTreeAddress</classname> class, which is so simple that it will not be documented
+	in this section.</para>
+	
+	<para>All the classes and interfaces used internally are documented in JavaDoc.</para>
+	
+	<sect2>
+		<title>The <interfacename>TaskTreeQuery</interfacename> Interface</title>
+		
+		<figure>
+			<title><interfacename>TaskTreeQuery</interfacename></title>
+			<programlisting language="java"><![CDATA[TaskTreeAddress ]]><emphasis role="strong">addressFromPath</emphasis><![CDATA[( String path )
+throws MalformedAddressException, RemoteException;
+
+TaskTreeAddress ]]><emphasis role="strong">addressFromPath</emphasis><![CDATA[( String ... path )
+throws MalformedAddressException, RemoteException;
+
+Type ]]><emphasis role="strong">getTypeAt</emphasis><![CDATA[( TaskTreeAddress address )
+throws IllegalAddressException, RemoteException;
+
+TaskEntry ]]><emphasis role="strong">getTaskAt</emphasis><![CDATA[( TaskTreeAddress address )
+throws IllegalAddressException, RemoteException;
+
+String[] ]]><emphasis role="strong">getPathAt</emphasis><![CDATA[( TaskTreeAddress address )
+throws RemoteException;
+
+TaskTreeAddress[] ]]><emphasis role="strong">getChildrenAt</emphasis><![CDATA[( TaskTreeAddress address )
+throws IllegalAddressException, RemoteException;
+
+TaskTreeFlag[] ]]><emphasis role="strong">getFlagsAt</emphasis><![CDATA[( TaskTreeAddress address )
+throws IllegalAddressException, RemoteException;
+
+TreeFlagValue ]]><emphasis role="strong">getFlagValueAt</emphasis><![CDATA[( TaskTreeAddress address, TaskTreeFlag flag )
+throws IllegalAddressException, RemoteException;
+
+TaskTreeRecord ]]><emphasis role="strong">getRecordAt</emphasis><![CDATA[(
+    TaskTreeAddress address,
+    boolean path,
+    boolean data,
+    boolean flags
+) throws IllegalAddressException, RemoteException;]]></programlisting>
+		</figure>
+		
+		<para>Most of the methods names are self-explanatory. The <methodname>getRecordAt()</methodname>
+		method is intended for RMI calls, whereas the other methods are suitable for local calls
+		inside the Task Manager. The <classname>boolean</classname> parameters of
+		<methodname>getRecordAt()</methodname> specify what data should be included in the response.
+		This can save time and network bandwidth. <option>path</option> stands for path segments.
+		<option>data</option> adds item type information and a list of addresses of children (for nodes) or a
+		<classname>TaskEntry</classname> of the represented task (for leaves). <option>flags</option>
+		stands for tree flags and their values, as the name suggests.</para>
+	</sect2>
+	
+	<sect2>
+		<title>The <interfacename>TaskTreeInput</interfacename> Interface</title>
+
+		<figure>
+			<title><interfacename>TaskTreeInput</interfacename></title>
+			<programlisting language="java"><![CDATA[void ]]><emphasis role="strong">addNode</emphasis><![CDATA[( TaskTreeAddress address )
+throws IllegalAddressException, RemoteException;
+
+void ]]><emphasis role="strong">addLeaf</emphasis><![CDATA[( TaskTreeAddress address, TaskEntry entry )
+throws IllegalAddressException, RemoteException;
+
+void ]]><emphasis role="strong">clearInclusive</emphasis><![CDATA[( TaskTreeAddress address )
+throws IllegalAddressException, RemoteException;
+
+void ]]><emphasis role="strong">clearSubtrees</emphasis><![CDATA[( TaskTreeAddress address )
+throws IllegalAddressException, RemoteException;
+
+void ]]><emphasis role="strong">setFlag</emphasis><![CDATA[( TaskTreeAddress address, TaskTreeFlag flag, Enum< ? > ordinal )
+throws TreeFlagException, IllegalAddressException, RemoteException;
+
+void ]]><emphasis role="strong">setFlag</emphasis><![CDATA[(
+    TaskTreeAddress address,
+    TaskTreeFlag flag,
+    Enum< ? > ordinal,
+    Serializable message
+) throws TreeFlagException, IllegalAddressException, RemoteException;
+
+void clear</emphasis><![CDATA[() throws RemoteException;]]></programlisting>
+		</figure>
+		
+		<para>Most of these methods have self-explanatory names and all of them are documented
+		in JavaDoc. Note that there is never a reason to use the <methodname>addNode()</methodname> method.
+		It exists for testing and debugging purposes only. When tasks are added with
+		<methodname>addLeaf()</methodname>, all the nodes on the path to the root node
+		are created automatically when they do not exist.</para>
+	</sect2>
+	
+	<sect2 xml:id="been.devel.tasktree.api.ttf">
+		<title>The <interfacename>TaskTreeFlag</interfacename> Interface</title>
+		
+		<figure>
+			<title><interfacename>TaskTreeFlag</interfacename></title>
+			<programlisting language="java"><![CDATA[String ]]><emphasis role="strong">toString</emphasis><![CDATA[();
+
+void ]]><emphasis role="strong">validate</emphasis><![CDATA[( Enum< ? > ordinal ) throws TreeFlagException;
+
+TreeFlagValue ]]><emphasis role="strong">getDefaultValue</emphasis><![CDATA[();
+
+boolean ]]><emphasis role="strong">inherit</emphasis><![CDATA[(
+    TreeFlagValue oldValue,
+    TreeFlagValue newValue,
+    TreeFlagInheritance inheritance
+) throws TreeFlagException;]]></programlisting>
+		</figure>
+		
+		<para>The value returned by the <methodname>toString()</methodname> method is used as flag
+		identifier in the data structures. Different instances of the same flag class can return
+		different strings, thus assigning different flags. Different implementations of this
+		interface must return distinct strings. Otherwise the results of flag operations are
+		undefined.</para>
+		
+		<para>The <methodname>inherit()</methodname> method is a cornerstone of the flag
+		implementation. The third parameter gives access to values of the same flag assigned
+		to children of the current node. It can be used to modify the value as well, as described
+		in the following section. When the <methodname>inherit()</methodname> method returns
+		<constant>true</constant>,
+		the inheritance algorithm will continue to update the parent node. A value of
+		<constant>false</constant> can be used to indicate that it is not necessary to update
+		the parent node and the inheritance handler can exit. For example, when the value of the
+		node has not been changed, there is no need to notify the parent node.</para>
+		
+		<para>The <methodname>verify()</methodname> method checks whether the supplied enum member
+		is acceptable as a value of the current flag. Values can be limited to members of a specific
+		enumeration, for example.</para>
+		
+		<para>The <methodname>getDefaultValue()</methodname> method is used whenever a flag value is
+		requested, but has never been set before. For example, when a flag is updated for the first
+		time in a tree node, the <parameter>oldValue</parameter> parameter of the
+		<methodname>inherit()</methodname> method will be set to
+		<methodname>getDefaultValue()</methodname>. There is no way to distinguished between
+		implicit and explicit default values.</para>
+	</sect2>
+	
+	<sect2>
+		<title>The <interfacename>TreeFlagInheritance</interfacename> Interface</title>
+		
+		<figure>
+			<title><interfacename>TreeFlagInheritance</interfacename></title>
+			
+			<programlisting language="java"><![CDATA[void ]]><emphasis role="strong">setFlag</emphasis><![CDATA[( Enum< ? > value, Serializable message )
+throws TreeFlagException;
+
+int ]]><emphasis role="strong">getTotalCounter</emphasis><![CDATA[();
+
+int ]]><emphasis role="strong">getValueCounter</emphasis><![CDATA[( Enum< ? > value );
+
+Iterable< TreeFlagValue > ]]><emphasis role="strong">getChildrenFlags</emphasis><![CDATA[();]]></programlisting>
+		</figure>
+	
+		<para>The <methodname>setFlag()</methodname> method modifies the flag value. Most
+		inheritance algorithms will just use the <methodname>get*Counter()</methodname> methods
+		to obtain input data and then set the new flag value when necessary.
+		However, iteration through the flag values of child nodes is also available when needed. (For example,
+		working with the value strings might require this.)</para>
+		
+		<para>Note that this interface isolates the implementors of the
+		<methodname>inherit()</methodname> method mentioned above from both the structure of the
+		tree and values of other flags. Only values assigned to one flag can be inspected. Only the
+		flag value of one tree node can be set.</para>
+	</sect2>
+	
+	<sect2>
+		<title>The <classname>TaskTreeRecord</classname> Class</title>
+	
+		<figure>
+			<title><classname>TaskTreeRecord</classname></title>
+			
+			<programlisting language="java"><![CDATA[public String[] ]]><emphasis role="strong">getPathSegments</emphasis><![CDATA[();
+
+public Type ]]><emphasis role="strong">getType</emphasis><![CDATA[();
+
+public TaskEntry ]]><emphasis role="strong">getTask</emphasis><![CDATA[();
+
+public TaskTreeAddress[] ]]><emphasis role="strong">getChildren</emphasis><![CDATA[();	
+
+public Pair< TaskTreeFlag, TreeFlagValue >[] ]]><emphasis role="strong">getFlags</emphasis><![CDATA[();	
+
+public String ]]><emphasis role="strong">getPathString</emphasis><![CDATA[();]]></programlisting>
+		</figure>
+		
+		<para>Some of these methods may return <constant>null</constant>. This depends on whether
+		the record stores data about a node or a leaf. For example, <constant>getTask()</constant>
+		would return <constant>null</constant> for a node. When the <methodname>getRecordAt()</methodname>
+		method of <interfacename>TaskTreeQuery</interfacename> is not instructed to include path information,
+		<methodname>getPathString()</methodname> will return <constant>null</constant> as well.</para>
+	</sect2>
+</sect1>

@@ -1,0 +1,9 @@
+class MessagesIterator
+!!!734978.java!!!	hasNext() : boolean
+			return listIterator.hasNext();
+!!!735106.java!!!	next() : Message
+			return listIterator.next();
+!!!735234.java!!!	remove() : void
+			throw new UnsupportedOperationException("Messages can't be removed.");
+!!!735362.java!!!	MessagesIterator(inout listIterator : Iterator<Message>)
+			this.listIterator = listIterator;

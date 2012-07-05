@@ -1,0 +1,27 @@
+class ConfiguratorSweeper
+!!!181890.java!!!	ConfiguratorSweeper()
+			setDaemon(true);
+			start();
+!!!182018.java!!!	run() : void
+			while (true) {
+				long currentTime = System.currentTimeMillis();
+				idsToRemove.clear();
+				for (Entry<BRID,ConfiguratorEntry> entry : configurators.entrySet()) {
+					ConfiguratorEntry conf = entry.getValue();
+					if (currentTime - conf.getTimestamp() > CONFIGURATOR_TIMEOUT) {
+						idsToRemove.add(entry.getKey());
+					}
+				}
+				
+				for (BRID key : idsToRemove) {
+					bm.logDebug("Removing configurator BRID(" + key + ")");
+					removeConfigurator(key);
+				}
+				
+				try {
+					sleep(CONFIGURATOR_TIMEOUT);
+				} catch (InterruptedException e) {
+					// ignored
+				}
+			}
+

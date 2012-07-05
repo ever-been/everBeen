@@ -1,0 +1,1713 @@
+format 59
+"apps" // been::src::cz::cuni::mff::been::apps
+  revision 1
+  modified_by 2 "Administrator"
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default show_stereotype_properties default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+  show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+  show_infonote default drawing_language default show_stereotype_properties default
+  
+  java_dir "cz/cuni/mff/been/apps"
+  java_package "cz.cuni.mff.been.apps"
+  classview 128002 "apps"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default show_stereotype_properties default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+    //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+    show_infonote default drawing_language default show_stereotype_properties default
+    class 128002 "ApplicationException"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Base class for all exceptions thrown by applications or plugin framework.
+
+@author Branislav Repcek
+"
+      classrelation 128130 // <generalisation>
+	relation 128130 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 128130 // <generalisation>
+	  b parent class_ref 128130 // BeenException
+      end
+
+      operation 128514 "ApplicationException"
+	public explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>BenchmarkManagerException</code> object.
+"
+      end
+
+      operation 128642 "ApplicationException"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "message" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>ApplicationException</code> object
+with specified message.
+
+@param message exception message
+"
+      end
+
+      operation 128770 "ApplicationException"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "cause" explicit_type "Throwable"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>ApplicationException</code> object
+with specified cause.
+
+@param cause exception cause
+"
+      end
+
+      operation 128898 "ApplicationException"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "message" explicit_type "String"
+	  param inout name "cause" explicit_type "Throwable"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>ApplicationException</code> object
+with specified message and cause.
+
+@param message exception message
+@param cause exception cause
+"
+      end
+    end
+
+    class 128386 "BeenPluginDescriptor"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Class is container for basic BEEN plugin information for GUI
+
+@author Michal Tomcanyi
+"
+      classrelation 128258 // <realization>
+	relation 128258 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 128258 // <realization>
+	  b parent class_ref 128514 // Serializable
+      end
+
+      classrelation 128386 // id (<unidirectional association>)
+	relation 128386 --->
+	  a role_name "id" private
+	    comment " 
+Internal identifier
+
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 128386 // id (<unidirectional association>)
+	  b parent class_ref 128642 // PEID
+      end
+
+      attribute 128002 "version"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Plugin version
+
+"
+      end
+
+      attribute 128130 "name"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Human readable name
+
+"
+      end
+
+      attribute 128258 "description"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Plugin (HTML) description
+
+"
+      end
+
+      operation 129026 "BeenPluginDescriptor"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "id" type class_ref 128642 // PEID
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 129154 "getDescription"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return plugin (HTML) description
+"
+      end
+
+      operation 129282 "getID"
+	public return_type class_ref 128642 // PEID
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return plugin identifier (system-wide unique)
+"
+      end
+
+      operation 129410 "getName"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return plugin human name
+"
+      end
+
+      operation 129538 "toString"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+      end
+
+      operation 129666 "getVersion"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return plugin version
+"
+      end
+
+      operation 129794 "setVersion"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "version" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@param version of the plugin
+"
+      end
+
+      operation 129922 "setDescription"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "description" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@param description (HTML) description of the plugin
+"
+      end
+
+      operation 130050 "setName"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "name" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@param name of the plugin
+"
+      end
+    end
+
+    class 128770 "JPFPluginManager"
+      abstract visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+This class takes care of plug-in management and provides simple interface which can be used to write specific
+plug-in managers for components that require plug-ins. JPF library is used to load plug-ins.
+
+@author Michal Tomcanyi
+@author Branislav Repcek
+"
+      attribute 128386 "REJECTED_PLUGINS_FILE_NAME"
+	class_attribute const_attribute protected explicit_type "String"
+	init_value "=  \"rejected.dat\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Name of the file which lists rejected plug-ins.
+
+"
+      end
+
+      attribute 128514 "PLUGIN_REPOSITORY_ROOT"
+	class_attribute const_attribute protected explicit_type "String"
+	init_value "=  \"plugins\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " 
+Name of plug-ins repository root
+
+"
+      end
+
+      attribute 128642 "RESTORE_SUBDIRECTORY"
+	class_attribute const_attribute protected explicit_type "String"
+	init_value "=  \"pluginmanager\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Directory with restore data.
+
+"
+      end
+
+      attribute 128770 "bootProperties"
+	const_attribute private explicit_type "ExtendedProperties"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 128514 // localManager (<unidirectional association>)
+	relation 128514 --->
+	  a role_name "localManager" init_value "=  null" private
+	    comment "
+Local interface used mainly for logging etc.
+
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 128514 // localManager (<unidirectional association>)
+	  b parent class_ref 128898 // PluginManagerLocalInterface
+      end
+
+      attribute 128898 "pluginManager"
+	private explicit_type "PluginManager"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+ JPF Plug-in manager instance.
+
+"
+      end
+
+      attribute 129026 "rejectedPlugins"
+	const_attribute private explicit_type " URL "
+	init_value "=  new HashSet< URL >()"
+	stereotype "HashSet"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<${type}> ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 128642 // integrityReport (<unidirectional association>)
+	relation 128642 --->
+	  a role_name "integrityReport" private
+	    comment "
+Holds latest report of integrity. Modified on every refresh of registry
+@see #refreshRegistry()
+
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 128642 // integrityReport (<unidirectional association>)
+	  b parent class_ref 129026 // PluginsIntegrityReport
+      end
+
+      attribute 129154 "pluginsRepository"
+	private explicit_type "File"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Directory where all plug-ins are stored
+
+"
+      end
+
+      attribute 129282 "defaultPluginsDirectory"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 129410 "workingDirectory"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 129538 "restoreRootDir"
+	private explicit_type "File"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      operation 130178 "JPFPluginManager"
+	protected explicit_return_type ""
+	nparams 5
+	  param inout name "manager" type class_ref 128898 // PluginManagerLocalInterface
+	  param inout name "bootProperties" explicit_type "ExtendedProperties"
+	  param in name "defaultPluginsDirectory" explicit_type "String"
+	  param in name "workingDirectory" explicit_type "String"
+	  param inout name "restoreRootDirectory" explicit_type "File"
+	nexceptions 1
+	  exception class_ref 129154 // ComponentInitializationException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Create and initialise JPFPluginManager.
+
+This constructor will create all directories that are necessary for correct function of the plug-in manager. In
+case a restore point is found, it is used to restore state of the manager.
+All plug-ins are automatically loaded and validated.
+
+@param manager remote interface which provides logging facilities etc (this should be instance of the BEEN service
+		  which is using this plug-in manager).
+@param bootProperties boot options.
+@param defaultPluginsDirectory path to directory with default plug-ins.
+@param workingDirectory path to the working directory.
+@param restoreRootDirectory directory which will be used to store restore data in case of crash.
+
+@throws ComponentInitializationException if an error occurred during initialisation.
+"
+      end
+
+      operation 130306 "getBootProperties"
+	protected explicit_return_type "ExtendedProperties"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return boot properties.
+"
+      end
+
+      operation 130434 "getCorePluginName"
+	abstract public explicit_return_type "String"
+	nparams 0
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Get name of the core plug-in of this component.
+
+@return full name of the core plug-in.
+"
+      end
+
+      operation 130562 "getCorePluginFileName"
+	abstract public explicit_return_type "String"
+	nparams 0
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Get name of the JAR file with the core plug-in.
+
+@return name of the JAR file (no path, but including extension) in which the core plug-in is located.
+"
+      end
+
+      operation 130690 "getExtensionPointID"
+	abstract public explicit_return_type "String"
+	nparams 0
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Get name of the extension point used in plug-ins for this component.
+
+@return plug-in extension point name.
+"
+      end
+
+      operation 130818 "getAvailablePlugins"
+	public return_type class_ref 128386 // BeenPluginDescriptor
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@SuppressWarnings(\"unchecked\")
+"
+	
+	
+	
+	comment "
+@return list of plug-ins available to the loader.
+"
+      end
+
+      operation 130946 "getPluginName"
+	public explicit_return_type "String"
+	nparams 1
+	  param inout name "pluginID" type class_ref 128642 // PEID
+	nexceptions 1
+	  exception class_ref 128002 // ApplicationException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@param pluginID	identifier of plug-in to search for
+@return name of given plug-in
+"
+      end
+
+      operation 131074 "getPluginsRepository"
+	public explicit_return_type "File"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return directory where plug-ins are stored
+"
+      end
+
+      operation 131202 "getDefaultPluginsDirectory"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return path to default plug-ins directory 
+"
+      end
+
+      operation 131330 "getWorkingDirectory"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return working directory path
+"
+      end
+
+      operation 131458 "getLocalManager"
+	protected return_type class_ref 128898 // PluginManagerLocalInterface
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return reference to local manager which can be used for logging etc.
+"
+      end
+
+      operation 131586 "createConfigurator"
+	public return_type class_ref 129282 // Configurator
+	nparams 1
+	  param inout name "pluginID" type class_ref 128642 // PEID
+	nexceptions 1
+	  exception class_ref 128002 // ApplicationException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Create instance of the Configurator class for the plug-in.
+
+@param pluginID plug-in id for which the configurator should be created
+@return new configurator instance for given plug-in. Note that this method never returns <code>null</code>.
+
+@throws ApplicationException when configurator instance can't be created
+"
+      end
+
+      operation 131714 "createGenerator"
+	public return_type class_ref 129410 // TaskGenerator
+	nparams 1
+	  param inout name "pluginID" type class_ref 128642 // PEID
+	nexceptions 1
+	  exception class_ref 128002 // ApplicationException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Create instance of the Generator class for the plug-in.
+
+@param pluginID plug-in id for which the generator should be created
+@return new generator instance for given plug-in. Note that this method never returns <code>null</code>.
+
+@throws ApplicationException when generator instance can't be created
+"
+      end
+
+      operation 131842 "createVersionProvider"
+	public return_type class_ref 129538 // VersionProvider
+	nparams 1
+	  param inout name "pluginID" type class_ref 128642 // PEID
+	nexceptions 1
+	  exception class_ref 128002 // ApplicationException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Create instance of the VersionProvider class for the plug-in.
+
+@param pluginID plug-in id for which the version provider should be created
+@return new version provider instance for given plug-in. Note that this method never returns <code>null</code>.
+
+@throws ApplicationException when version provider instance can't be created
+"
+      end
+
+      operation 131970 "loadClassForPlugin"
+	protected explicit_return_type "Object"
+	nparams 2
+	  param in name "pluginID" explicit_type "String"
+	  param in name "paramName" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 128002 // ApplicationException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@SuppressWarnings(\"unchecked\")
+"
+	
+	
+	
+	comment "
+Load class from plug-in.
+
+@param pluginID ID of the plug-in.
+@param paramName name of the parameter from plug-in's configuration file with full name of the class to load.
+
+@return requested class loaded from plug-in.
+
+@throws ApplicationException if any error occurred when loading the requested class.
+"
+      end
+
+      operation 132098 "updateRejectionList"
+	private explicit_return_type "void"
+	nparams 1
+	  param inout name "rejected" explicit_type "List< String >"
+	nexceptions 1
+	  exception class_ref 129154 // ComponentInitializationException
+	
+	preserve_java_body_indent synchronized java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 132226 "validatePlugin"
+	abstract public explicit_return_type "String"
+	nparams 1
+	  param inout name "extension" explicit_type "Extension"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Validate plug-in from the viewpoint of the component - that is, test if required classes/files are present etc.
+
+@param extension Extension to validate
+@return <code>null</code> if plug-in is OK, error message (non-empty string) when plug-in is invalid. 
+"
+      end
+
+      operation 132354 "validatePlugins"
+	private explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  exception class_ref 129154 // ComponentInitializationException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@SuppressWarnings(\"unchecked\")
+"
+	
+	
+	
+	comment "
+Validates plug-ins detected in repository. Uses standard JPF validation, then checks required classes needed by BM.
+Creates new integrity reports and uses it to store the validation result.
+
+Invalid plug-ins will be disabled in JPF.
+
+@throws ComponentInitializationException When core plug-in is invalid (no other plug-ins can be activated then).
+
+@see cz.cuni.mff.been.apps.JPFPluginManager#getIntegrityReport
+"
+      end
+
+      operation 132482 "refreshRegistry"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "firstTime" explicit_type "boolean"
+	nexceptions 1
+	  exception class_ref 129154 // ComponentInitializationException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@SuppressWarnings(\"unchecked\")
+"
+	
+	
+	
+	comment "
+Refresh plug-in registry.
+
+@param firstTime if set to true, core plug-in will be initialised too. Otherwise core plug-in is left alone.
+
+@throws ComponentInitializationException if an error occurred during initialisation of new plug-ins.
+"
+      end
+
+      operation 132610 "registerPlugin"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "sourceFile" explicit_type "File"
+	nexceptions 2
+	  explicit_exception "IOException"
+	  exception class_ref 128130 // BeenException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@SuppressWarnings(\"unchecked\")
+"
+	
+	
+	
+	comment "
+Register new plug-in with the plug-in manager.
+
+@param sourceFile plug-in file.
+
+@throws IOException if an IO error occurred while working with the file.
+@throws BeenException if an error occurred during plug-in deployment (missing files, invalid file format, ...)
+"
+      end
+
+      operation 132738 "createPluginsRepository"
+	package explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  exception class_ref 129154 // ComponentInitializationException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Prepares directory where plug-ins will be stored. Copies default plug-ins distributed with the package to the 
+repository.
+
+@throws IOException if an IO error occurred when working with the files 
+"
+      end
+
+      operation 132866 "deployCorePlugin"
+	package explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  exception class_ref 129154 // ComponentInitializationException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Copy core plug-in to the repository.
+
+@throws ComponentInitializationException if an error occurred during deployment of the plug-in
+"
+      end
+
+      operation 132994 "deployDefaultPlugins"
+	package explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Copy default plug-ins (plug-ins in the default directory) to the repository.
+"
+      end
+
+      operation 133122 "createPluginManager"
+	package explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Create plug-in manager.
+"
+      end
+
+      operation 133250 "isRejected"
+	package explicit_return_type "boolean"
+	nparams 1
+	  param inout name "pluginFile" explicit_type "File"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Test if given file belongs to a rejected plug-in.
+
+@param pluginFile file to test
+
+@return true if plug-in is rejected, false otherwise.
+"
+      end
+
+      operation 133378 "addIntegrityEntry"
+	private explicit_return_type "void"
+	nparams 2
+	  param in name "pluginID" explicit_type "String"
+	  param in name "errorMessage" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Creates new integrity entry in current error report. If errorMessage is <code>null</code>, creates entry with OK 
+severity, otherwise with ERROR severity.
+
+@param pluginID plug-in ID to which the integrity entry is related	
+@param errorMessage error message or <code>null</code> if plug-in is OK
+"
+      end
+
+      operation 133506 "getIntegrityReport"
+	public return_type class_ref 129026 // PluginsIntegrityReport
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return Integrity report of plug-ins registered with this manager instance.
+"
+      end
+
+      operation 133634 "deleteRejectedURL"
+	class_operation private explicit_return_type "boolean"
+	nparams 1
+	  param inout name "location" explicit_type "URL"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Delete file.
+
+@param location file to delete.
+
+@return true if the file has been successfully deleted, false otherwise.
+"
+      end
+
+      operation 133762 "saveRejectionList"
+	private explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " --------------------------- Persistency related methods -------------------"
+      end
+
+      operation 133890 "restore"
+	class_operation private explicit_return_type "void"
+	nparams 1
+	  param inout name "instance" type class_ref 128770 // JPFPluginManager
+	nexceptions 1
+	  exception class_ref 129154 // ComponentInitializationException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Restore list of rejected plug-ins and delete their files.
+
+@param instance instance of the plug-in manager which will be restored.
+
+@throws ComponentInitializationException if an error occurred during restoration
+"
+      end
+
+      operation 134018 "internalGetManager"
+	package explicit_return_type "PluginManager"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " ----------------------------- TEST METHODS --------------------------------
+
+These methods are needed for JUnit testing. Don't use them for other reasons
+"
+      end
+    end
+
+    class 128898 "PluginManagerLocalInterface"
+      visibility public stereotype "interface"
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}interface ${name}${extends} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Local interface for plugin manager. This interface provides mainly logging functions. 
+
+@author Branislav Repcek
+"
+      operation 134146 "logError"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "errorMessage" explicit_type "String"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Write error message to the log.
+
+@param errorMessage message to write to the log.
+"
+      end
+
+      operation 134274 "logWarning"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "warningMessage" explicit_type "String"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Write warning message to the log.
+
+@param warningMessage message to write to the log.
+"
+      end
+
+      operation 134402 "logInfo"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "infoMessage" explicit_type "String"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Write info message to the log.
+
+@param infoMessage message to write to the log.
+"
+      end
+
+      operation 134530 "logDebug"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "debugMessage" explicit_type "String"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Write debug message to the log.
+
+@param debugMessage message to write to the log.
+"
+      end
+
+      operation 134658 "logTrace"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "errorMessage" explicit_type "String"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Write trace message to the log.
+
+@param errorMessage message to write to the log.
+"
+      end
+
+      operation 134786 "logFatal"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "errorMessage" explicit_type "String"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Write fatal error message to the log.
+
+@param errorMessage message to write to the log.
+"
+      end
+
+      operation 134914 "getLogLevel"
+	public return_type class_ref 129666 // LogLevel
+	nparams 0
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return current log level.
+"
+      end
+    end
+
+    class 129026 "PluginsIntegrityReport"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Class represents report of validity for plugins detected by BenchmarkManager.
+
+@author Michal Tomcanyi
+"
+      classrelation 128770 // <realization>
+	relation 128770 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 128770 // <realization>
+	  b parent class_ref 128514 // Serializable
+      end
+
+      class 129794 "IntegrityErrorSeverity"
+	visibility public stereotype "enum"
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}${final}${abstract}enum ${name}${implements} {
+${items};
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	attribute 129666 "OK"
+	  public type class_ref 129794 // IntegrityErrorSeverity
+	  cpp_decl ""
+	  java_decl "  ${@}${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " plugin ok"
+	end
+
+	attribute 129794 "ERROR"
+	  public type class_ref 129794 // IntegrityErrorSeverity
+	  cpp_decl ""
+	  java_decl "  ${@}${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	operation 135042 "toString"
+	  public explicit_return_type "String"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  java_annotation "@Override
+"
+	  
+	  
+	  
+	  comment " plugin is not available"
+	end
+      end
+
+      class 129922 "IntegrityEntry"
+	visibility public 
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	classrelation 128898 // <realization>
+	  relation 128898 -_-|>
+	    a public
+	      java "${type}"
+	      classrelation_ref 128898 // <realization>
+	    b parent class_ref 128514 // Serializable
+	end
+
+	attribute 129922 "pluginName"
+	  private explicit_type "String"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	attribute 130050 "errorMessage"
+	  private explicit_type "String"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	classrelation 129026 // severity (<unidirectional association>)
+	  relation 129026 --->
+	    a role_name "severity" private
+	      java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	      classrelation_ref 129026 // severity (<unidirectional association>)
+	    b parent class_ref 129794 // IntegrityErrorSeverity
+	end
+
+	operation 135170 "IntegrityEntry"
+	  public explicit_return_type ""
+	  nparams 3
+	    param in name "pluginName" explicit_type "String"
+	    param in name "errorMessage" explicit_type "String"
+	    param inout name "severity" type class_ref 129794 // IntegrityErrorSeverity
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Allocates entry for invalid  plugin
+@param pluginName	Name of plugin
+@param errorMessage	Error message or <code>null</code> if none
+"
+	end
+
+	operation 135298 "IntegrityEntry"
+	  public explicit_return_type ""
+	  nparams 1
+	    param in name "pluginName" explicit_type "String"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Allocates entry for valid plugin
+@param pluginName
+"
+	end
+
+	operation 135426 "getSeverity"
+	  public return_type class_ref 129794 // IntegrityErrorSeverity
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 135554 "getErrorMessage"
+	  public explicit_return_type "String"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 135682 "getPluginName"
+	  public explicit_return_type "String"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 135810 "toString"
+	  public explicit_return_type "String"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  java_annotation "@Override
+"
+	  
+	  
+	  
+	end
+
+	operation 135938 "equals"
+	  public explicit_return_type "boolean"
+	  nparams 1
+	    param inout name "obj" explicit_type "Object"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  java_annotation "@Override
+"
+	  
+	  
+	  
+	  comment "
+Entries are equal if denote same plugin with the same error and
+error message
+"
+	end
+
+	operation 136066 "hashCode"
+	  public explicit_return_type "int"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  java_annotation "@Override
+"
+	  
+	  
+	  
+	end
+      end
+
+      classrelation 129154 // entries (<unidirectional association>)
+	relation 129154 --->
+	  stereotype "List"
+	  a role_name "entries" init_value "=  new ArrayList<IntegrityEntry>()" const_relation private
+	    comment "
+Report entries
+
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<${type}> ${name}${value};
+"
+	    classrelation_ref 129154 // entries (<unidirectional association>)
+	  b parent class_ref 129922 // IntegrityEntry
+      end
+
+      operation 136194 "PluginsIntegrityReport"
+	public explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 136322 "getEntries"
+	public return_type class_ref 129922 // IntegrityEntry
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 136450 "addErrorEntry"
+	package explicit_return_type "void"
+	nparams 3
+	  param in name "pluginName" explicit_type "String"
+	  param in name "errorMessage" explicit_type "String"
+	  param inout name "severity" type class_ref 129794 // IntegrityErrorSeverity
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 136578 "addOKEntry"
+	package explicit_return_type "void"
+	nparams 1
+	  param in name "pluginName" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 136706 "toString"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+      end
+    end
+  end
+
+  deploymentview 128130 "apps"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+    artifact 128130 "ApplicationException"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import cz.cuni.mff.been.common.BeenException;
+${definition}"
+      associated_classes
+	class_ref 128002 // ApplicationException
+      end
+    end
+
+    artifact 128258 "BeenPluginDescriptor"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.Serializable;
+import cz.cuni.mff.been.common.id.PEID;
+${definition}"
+      associated_classes
+	class_ref 128386 // BeenPluginDescriptor
+      end
+    end
+
+    artifact 128386 "JPFPluginManager"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import org.java.plugin.JpfException;
+import org.java.plugin.ObjectFactory;
+import org.java.plugin.PluginClassLoader;
+import org.java.plugin.PluginLifecycleException;
+import org.java.plugin.PluginManager;
+import org.java.plugin.PluginManager.PluginLocation;
+import org.java.plugin.boot.DefaultPluginsCollector;
+import org.java.plugin.registry.Extension;
+import org.java.plugin.registry.IntegrityCheckReport;
+import org.java.plugin.registry.ManifestProcessingException;
+import org.java.plugin.registry.PluginAttribute;
+import org.java.plugin.registry.PluginDescriptor;
+import org.java.plugin.registry.PluginRegistry;
+import org.java.plugin.registry.IntegrityCheckReport.ReportItem;
+import org.java.plugin.util.ExtendedProperties;
+import org.java.plugin.util.IoUtil;
+import cz.cuni.mff.been.apps.PluginsIntegrityReport.IntegrityErrorSeverity;
+import cz.cuni.mff.been.apps.benchmarkmanager.BenchmarkManagerException;
+import cz.cuni.mff.been.apps.common.Configurator;
+import cz.cuni.mff.been.apps.common.TaskGenerator;
+import cz.cuni.mff.been.apps.common.VersionProvider;
+import cz.cuni.mff.been.common.BeenException;
+import cz.cuni.mff.been.common.ComponentInitializationException;
+import cz.cuni.mff.been.common.StringUtils;
+import cz.cuni.mff.been.common.anttasks.AntTaskException;
+import cz.cuni.mff.been.common.anttasks.Copy;
+import cz.cuni.mff.been.common.id.PEID;
+${definition}"
+      associated_classes
+	class_ref 128770 // JPFPluginManager
+      end
+    end
+
+    artifact 128514 "PluginManagerLocalInterface"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import cz.cuni.mff.been.logging.LogLevel;
+${definition}"
+      associated_classes
+	class_ref 128898 // PluginManagerLocalInterface
+      end
+    end
+
+    artifact 128642 "PluginsIntegrityReport"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+${definition}"
+      associated_classes
+	class_ref 129026 // PluginsIntegrityReport
+      end
+    end
+  end
+
+  package_ref 129282 // common
+
+  package_ref 129538 // benchmarkmanager
+
+  package_ref 129794 // gui
+
+  package_ref 129922 // scheduler
+
+  package_ref 132354 // testmanager
+end

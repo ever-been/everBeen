@@ -1,0 +1,13 @@
+class OutputWriteException
+!!!313346.java!!!	OutputWriteException()
+		
+		super();
+!!!313474.java!!!	OutputWriteException(inout cause : Throwable)
+	
+		super(cause);
+!!!313602.java!!!	OutputWriteException(in message : String)
+		
+		super(message);
+!!!313730.java!!!	OutputWriteException(in message : String, inout cause : Throwable)
+		
+		super(message, cause);

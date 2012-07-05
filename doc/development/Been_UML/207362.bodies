@@ -1,0 +1,32 @@
+class CheckPointNode
+!!!703618.java!!!	CheckPointNode(inout checkPointEntry : CheckPointEntry, inout task : TaskNode, inout context : ContextNode, inout hostRuntime : HostRuntimeNode)
+		/* Check input parameters. */
+		if (checkPointEntry == null) {
+			throw new NullPointerException("Parameter checkPointEntry is "
+					+ "null.");
+		}
+		if (task == null) {
+			throw new NullPointerException("Parameter task is null.");
+		}
+		if (context == null) {
+			throw new NullPointerException("Parameter context is null.");
+		}
+//		if (hostRuntime == null) {
+//			throw new NullPointerException("Parameter hostRuntime is null");
+//		}
+		
+		/* Store checkPointEntry. */
+			this.checkPointEntry = checkPointEntry;
+		
+		/* Link with task, context and hostRuntime. */
+		this.task = task;
+		this.context = context;
+		this.hostRuntime = hostRuntime;
+!!!703746.java!!!	getCheckPointEntry() : CheckPointEntry
+		return this.checkPointEntry;
+!!!703874.java!!!	getTask() : TaskNode
+		return this.task;
+!!!704002.java!!!	getContext() : ContextNode
+		return this.context;
+!!!704130.java!!!	getHostRuntime() : HostRuntimeNode
+		return this.hostRuntime;

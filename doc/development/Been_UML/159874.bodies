@@ -1,0 +1,48 @@
+class QualifiedCondition
+!!!281474.java!!!	QualifiedCondition(in qualifier : String, inout subCondition : Condition)
+		super();
+		this.qualifier = qualifier;
+		this.subCondition = subCondition;
+!!!281602.java!!!	getQualifier() : String
+		return qualifier;
+!!!281730.java!!!	getSubCondition() : Condition
+		return subCondition;
+!!!281858.java!!!	toString() : String
+		return qualifier + " { " + subCondition.toString() + " }";
+!!!281986.java!!!	equals(inout o : Object) : boolean
+		if (!(o instanceof QualifiedCondition)) {
+			return false;
+		}
+		QualifiedCondition otherCondition = (QualifiedCondition) o;
+		
+		return qualifier.equals(otherCondition.qualifier)
+			&& subCondition.equals(otherCondition.subCondition);
+!!!282114.java!!!	hashCode() : int
+		return qualifier.hashCode() ^ subCondition.hashCode();
+!!!282242.java!!!	check(inout context : ContainerProperty) : void
+		if (!context.hasProperty(qualifier)) {
+			throw new InvalidPropertyException("Property \"" + qualifier
+				+ "\" doesn't exist.");
+		}
+		
+		Property property = context.getProperty(qualifier);
+		if (!(property instanceof ContainerProperty)
+				&& !(property instanceof ArrayProperty)) {
+			throw new InvalidPropertyException("Property \"" + qualifier
+				+ "\" is not container or array property.");
+		}
+!!!282370.java!!!	evaluate(inout context : ContainerProperty) : boolean
+		Property property = context.getProperty(qualifier);
+		if (property instanceof ContainerProperty) {
+			return subCondition.evaluate((ContainerProperty) property);
+		} else if (property instanceof ArrayProperty) {
+			for (ContainerProperty p: ((ArrayProperty) property).getItems()) {
+				if (subCondition.evaluate(p)) {
+					return true;
+				}
+			}
+			return false;
+		} else {
+			assert false: "Qualifier must be ContainerProperty or ArrayProperty";
+			return false;
+		}

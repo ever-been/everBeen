@@ -1,0 +1,105 @@
+class Enumerate
+!!!391042.java!!!	main(in args : String) : void
+	
+		String managerURL = MANAGER_URL_DEFAULT;
+		
+		/* set path to the manager from the commandline.
+		 */
+		if (args.length > 0) {
+			managerURL = args[0];
+		}
+		
+		/* Connect to the Host Manager
+		 */
+		HostManagerInterface manager = null;
+		
+		try {
+			manager = (HostManagerInterface) Naming.lookup("rmi://" + managerURL + INTERFACE_URL);
+		} catch (Exception e) {
+			System.err.println("Error connecting to the Host Manager.");
+			System.err.println("Error message: " + e.getMessage());
+			return;
+		}
+
+		System.out.println("**** Hosts ****");
+		System.out.println(makeTable3("Host name", "Date & Time", "History entries", 30, 30));
+		
+		String []hosts = manager.getHostNames();
+		
+		for (String host: hosts) {
+			HostInfoInterface hi = null;
+			Date[]   history = null;
+			
+			try {
+				hi = manager.getHostInfo(host);
+				history = manager.getHostHistoryDates(host);
+			} catch (Exception e) {
+				System.err.println("Unable to query history data.");
+				System.err.println("Error message: " + e.getMessage());
+				continue;
+			}
+			
+			if (history.length > 0) {
+				SimpleDateFormat formater = new SimpleDateFormat("yyyy/MM/dd HH:mm.ss");
+				
+				boolean first = true;
+				for (Date d: history) {
+					System.out.println(makeTable3(first ? hi.getHostName() : "", 
+					                              first ? hi.getCheckDate() + " " + hi.getCheckTime() : "",
+					                              formater.format(d),
+					                              30,
+					                              30));
+					first = false;
+				}
+			} else {
+				System.out.println(makeTable3(hi.getHostName(),
+				                              hi.getCheckDate() + " " + hi.getCheckTime(),
+				                              "(none)",
+				                              30,
+				                              30));
+			}
+		}
+		
+		System.out.println();
+		System.out.println("**** Groups ****");
+		System.out.println(makeTable2("Group name", "Hosts", 30));
+
+		String []groups = manager.getGroupNames();
+		
+		for (String group: groups) {
+			
+			HostGroup grp = null;
+			
+			try {
+				grp = manager.getGroup(group);
+			} catch (Exception e) {
+				System.err.println("Unable to query group.");
+				System.err.println("Error message: " + e.getMessage());
+				continue;
+			}
+
+			boolean first = true;
+			for (String host: grp) {
+				
+				System.out.println(makeTable2(first ? grp.getName() : "", host, 30));
+				first = false;
+			}
+		}
+!!!391170.java!!!	fillStr(in s : String, in reps : int) : String
+		
+		String res = new String();
+		
+		for (int i = 0; i < reps; ++i) {
+			
+			res += s;
+		}
+		
+		return res;
+!!!391298.java!!!	makeTable2(in col1 : String, in col2 : String, in c1width : int) : String
+		
+		return col1 + fillStr(" ", c1width - col1.length()) + col2;
+!!!391426.java!!!	makeTable3(in col1 : String, in col2 : String, in col3 : String, in c1width : int, in c2width : int) : String
+		
+		return col1 + fillStr(" ", c1width - col1.length())
+		       + col2 + fillStr(" ", c2width - col2.length())
+		       + col3;

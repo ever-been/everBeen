@@ -1,0 +1,280 @@
+class AnalysisEntityManager
+!!!508162.java!!!	AnalysisEntityManager()
+    	database = Database.getInstance();
+!!!508290.java!!!	getInstance() : AnalysisEntityManager
+    	if (analysisEntityManager == null) {
+    		return new AnalysisEntityManager();
+    	} else {
+    		return analysisEntityManager;
+    	}
+!!!508418.java!!!	initialize(inout database : Database, inout metaManager : MetadataManager, inout statisticsManager : StatisticsManager, inout graphManager : GraphManager, inout scriptsRunner : RScriptsRunner) : void
+    	
+    	this.database = database;
+    	AnalysisEntityManager.metaManager = metaManager;
+    	this.statisticsManager = statisticsManager;
+    	this.graphManager = graphManager;
+    	this.rScriptsRunner = scriptsRunner;
+!!!508546.java!!!	addAnalysis(inout description : AnalysisEntity) : void
+    
+    	createAnalysis(description.getId());
+    	
+    	MetadataRef analysisMetadata = new MetadataRef(new Metadata());
+    	
+    	analysisMetadata.metadata.addItem("name", description.getName());
+    	analysisMetadata.metadata.addItem("type", AnalysisType
+    			.toString(description.isRegression() ? AnalysisType.REGRESSION
+    					: AnalysisType.COMPARISON));
+    	analysisMetadata.metadata.addItem("comment", description
+    			.getDescription());
+    	analysisMetadata.metadata.addItem("created on", new Date().toString());
+    	analysisMetadata.metadata.addItem("experiments", "0");
+    	analysisMetadata.metadata.addItem("valid experiments", "0");
+    	analysisMetadata.metadata.addItem("complete experiments", "0");
+    	analysisMetadata.metadata.addItem("valid", "true");
+    	
+    	ensureSuccessStoreAnalysisMetadata(analysisMetadata.metadata,
+    			description.getId());
+!!!508674.java!!!	addAnalysisMetadata(inout analysisId : AID, in key : String, in value : String) : void
+    	
+    	ensureValidAid(analysisId);
+    	MetadataRef analysisMetadata = new MetadataRef(new Metadata());
+    	ensureSuccessLoadAnalysisMetadata(analysisMetadata, analysisId);
+    	
+    	if (analysisMetadata.metadata.getItemByKey(key) != null) {
+    		throw new ResultsRepositoryException(
+    				"Trying to overwrite analysis metadata - "
+    						+ Database.getAnalysisReferenceString(analysisId) + ".");
+    	}
+    	
+    	analysisMetadata.metadata.addItem(key, value);
+    	ensureSuccessStoreAnalysisMetadata(analysisMetadata.metadata,
+    			analysisId);
+    	
+!!!508802.java!!!	createAnalysis(inout aid : AID) : void
+    
+    	File analysisDirectory = new File(database.getDirectoryInDatabase(aid));
+    	if (analysisDirectory.exists() || isValidAid(aid)) {
+    		throw new ResultsRepositoryException(new IllegalArgumentException(
+    				Database.getAnalysisReferenceString(aid) + " already exists."));
+    	}
+    	
+    	if (!analysisDirectory.mkdir()) {
+    		throw new ResultsRepositoryException(
+    				"Error creating analysis directory.");
+    	}
+    	
+    	File analysisScriptsDirectory = new File(database.getRScriptsDirectory(aid));
+    	if (!analysisScriptsDirectory.mkdir()) {
+    		throw new ResultsRepositoryException(
+    				"Error creating analysis scritps directory.");
+    
+    	}
+    	
+    	File analysisInvalidateScriptsDirectory = new File(database.getInvalidateScriptsDirectory(aid));
+    	if (!analysisInvalidateScriptsDirectory.mkdir()) {
+    		throw new ResultsRepositoryException(
+    				"Error creating analysis invalidate scripts directory.");
+    
+    	}
+    	
+!!!508930.java!!!	analysisFinished(inout aid : AID) : boolean
+		
+		EntityStatus analysisStatus = null;
+		
+		try {
+			
+		    BenchmarkManagerGUIInterface bmInstance = database.getBenchmarkManagerInstance();
+		    if (bmInstance != null) {
+		    	analysisStatus = bmInstance.getAnalysisInterface()
+		    		.getEntity(aid).getStatus();
+		    	Logger.logDebug(Database.getAnalysisReferenceString(aid) + " status is " + analysisStatus);
+		    } else {
+		    	Logger.logError(BM_CONTACT_DELETE_PERMIT_ERROR);
+		    	return false;
+		    }
+		    
+		} catch (RemoteException e) {
+			
+		    Logger.logError(BM_CONTACT_DELETE_PERMIT_ERROR);
+		    return false;
+		    
+		} catch (IllegalArgumentException e) {
+			
+			Logger.logInfo("Test \"analysis finished\": analysis no longer exists in Benchmark Manager.");
+			return true;
+		}
+		
+		if (analysisStatus == null) {
+			
+			Logger.logError(BM_CONTACT_DELETE_PERMIT_ERROR);
+			return false;
+			
+		}
+		
+		return analysisStatus.equals(EntityStatus.FINISHED); 
+!!!509058.java!!!	getAnalyses() : Entity
+    
+    	File[] directoryList;
+    	ArrayList<Entity<AID>> result = new ArrayList<Entity<AID>>();
+    
+    	File path = new File(database.getDatabasePath());
+    
+    	directoryList = path.listFiles();
+    
+    	MetadataRef metadataFile = new MetadataRef(new Metadata());
+    
+    	for (int i = 0; i < directoryList.length; i++) {
+    		if (directoryList[i].isDirectory()) {
+
+    			String analDir = directoryList[i].getName();
+    
+    			AID aid;
+    
+    			try {
+    				aid = new AID(new Long(analDir).longValue());
+    			} catch (NumberFormatException e) {
+    				Logger.logTrace(
+    						"Encountered non-AID item in analyses: " + analDir + ".");
+    				continue;
+    			}
+    
+    			ensureSuccessLoadAnalysisMetadata(metadataFile, aid);
+    			
+    			result.add(new Entity<AID>(aid, metadataFile.metadata.getMetadata(),
+    							new Statistics[] { new Statistics(
+    									"No all-analyses statistics",
+    									new String[] {}, new boolean[] {},
+    									new String[] {}, new Double[][] {}) }, 
+    									rScriptsRunner.isDeleteAnalysisAllowed(aid) &&
+    									analysisFinished(aid)));
+    		}
+    	}
+    
+    	Collections.sort((List<Entity<AID>>) result);
+    
+    	return result;
+!!!509186.java!!!	isValidAid(inout aid : AID) : boolean
+    	File analysisDir = new File(database.getDirectoryInDatabase(aid));
+    
+    	return analysisDir.exists() && analysisDir.isDirectory()
+    			&& analysisDir.canRead();
+!!!509314.java!!!	ensureValidAid(inout aid : AID) : void
+    	if (!isValidAid(aid)) {
+    		throw new IllegalArgumentException(Database.getAnalysisReferenceString(aid)
+    				+ " doesn't exist.");
+    	}
+!!!509442.java!!!	getAnalysis(inout aid : AID) : Entity
+    
+    	File analysisDir;
+    
+    	ensureValidAid(aid);
+    
+    	analysisDir = new File(database.getDirectoryInDatabase(aid));
+    
+    	MetadataRef metadataFile = new MetadataRef(new Metadata());
+    	ensureSuccessLoadAnalysisMetadata(metadataFile, aid);
+    
+    	Statistics[] stat = statisticsManager.loadAnalysisStatistics(aid);
+    
+    	Entity<AID> result = new Entity<AID>(new AID(new Long(analysisDir
+    			.getName()).longValue()), metadataFile.metadata.getMetadata(),
+    			stat, rScriptsRunner.isDeleteAnalysisAllowed(aid) && analysisFinished(aid));
+    
+    	return result;
+!!!509570.java!!!	ensureSuccessLoadAnalysisMetadata(inout analysisMetadata : MetadataRef, inout aid : AID) : boolean
+    	try {
+    		analysisMetadata.metadata = metaManager.loadAnalysisMetadata(aid);
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    		Logger.logError(Metadata.IO_ERROR_METADATA_READING_MESSAGE
+    						+ Database.getAnalysisReferenceString(aid));
+    		return false;
+    	}
+    	return true;
+!!!509698.java!!!	ensureSuccessStoreAnalysisMetadata(inout analysisMetadata : Metadata, inout aid : AID) : boolean
+    	try {
+    		metaManager.storeAnalysisMetadata(aid, analysisMetadata);
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    		Logger.logError(Metadata.IO_ERROR_METADATA_STORING_MESSAGE
+    						+ Database.getAnalysisReferenceString(aid));
+    		return false;
+    	}
+    	return true;
+!!!509826.java!!!	setAnalysisComment(inout aid : AID, in comment : String) : void
+    
+    	ensureValidAid(aid);
+    	metaManager.setAnalysisMetadataItem(aid, "comment", comment);
+!!!509954.java!!!	eraseAnalysis(inout aid : AID) : boolean
+    
+    	ensureValidAid(aid);
+    	
+    	synchronized (LockManager.eraseLock) {
+    	
+    		if (!rScriptsRunner.isDeleteAnalysisAllowed(aid) || !analysisFinished(aid)) {
+    			Logger.logWarning("Tried to delete locked " 
+    					+ Database.getAnalysisReferenceString(aid) + ".");				
+    			throw new DeleteLockedException("Analysis is being processed, unable to delete.");
+    		}
+
+    		try {
+    				
+			    BenchmarkManagerGUIInterface bmInstance = database.getBenchmarkManagerInstance();
+			    
+			    
+			    if (bmInstance != null) {
+			    	bmInstance.getAnalysisInterface().deleteEntity(aid);
+			    } else {
+			    	Logger.logError(BM_CONTACT_DELETE_PERMIT_ERROR);
+			    	return false;
+			    }
+			    
+			} catch (RemoteException e) {
+				
+			    Logger.logError(BM_CONTACT_DELETE_PERMIT_ERROR);
+			    return false;
+			    
+			} catch (BenchmarkManagerException e) {
+				
+				Logger.logError("Benchmark Manager couldn't delete analysis : " + e.getMessage());
+				throw new DeleteLockedException("Analysis has active experiments.");
+				
+			} catch (IllegalArgumentException e) {
+				
+				// analysis is no more in Benchmark Manager, we can delete it
+				Logger.logInfo("Analysis to delete no longer exists in Benchmark Manager.");
+				
+			}    		
+    		
+    		File file = new File(database.getDirectoryInDatabase(aid));
+    		return Database.eraseDirectoryRecursively(file);
+    		
+    	}
+    	
+!!!510082.java!!!	uploadAnalysisFile(inout aid : AID, in name : String, in host : String, in port : int, inout blocking : boolean) : UploadHandle
+    
+    	ensureValidAid(aid);
+    
+    	return database.uploadFile(database.getFileInDatabase(aid, name), host, port,
+    			blocking, false, null, null);
+!!!510210.java!!!	downloadAnalysisFile(inout aid : AID, in name : String, in host : String, in port : int, inout blocking : boolean) : DownloadHandle
+    
+    	ensureValidAid(aid);
+    
+    	return database.downloadFile(database.getFileInDatabase(aid, name), host, port,
+    			blocking);
+!!!510338.java!!!	getAnalysisGraphCount(inout graphType : GraphType, inout aid : AID) : int
+    	ensureValidAid(aid);
+    	return graphManager.getAnalysisGraphCount(graphType, aid);
+!!!510466.java!!!	getAnalysisGraphInfo(inout graphType : GraphType, inout aid : AID, in index : int) : GraphInfo
+    	ensureValidAid(aid);
+    	if (!graphManager.validAnalysisGraph(graphType, aid, index)) {
+    		throw new IllegalArgumentException(GraphManager.GRAPH_DOESNT_EXIST_MESSAGE);
+    	}
+    	return graphManager.getAnalysisGraphInfo(graphType, aid, index);
+!!!510594.java!!!	getAnalysisGraphPath(inout graphType : GraphType, inout aid : AID, in index : int) : String
+    	ensureValidAid(aid);
+    	if (!graphManager.validAnalysisGraph(graphType, aid, index)) {
+    		throw new IllegalArgumentException(GraphManager.GRAPH_DOESNT_EXIST_MESSAGE);
+    	}
+    	return graphManager.getAnalysisGraphPath(graphType, aid, index);

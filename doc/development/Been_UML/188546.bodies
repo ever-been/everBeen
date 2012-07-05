@@ -1,0 +1,66 @@
+class Importer
+!!!544770.java!!!	Importer()
+		
+!!!544898.java!!!	getInstance() : Importer
+		if (importerInstance == null) {
+			importerInstance = new Importer();
+		}
+		return importerInstance;
+!!!545026.java!!!	initialize(inout database : Database) : void
+		Importer.database = database;
+!!!545154.java!!!	getImportFormats() : DataFormat
+		return importFormats;
+!!!545282.java!!!	getImportInterface(in formatId : String) : ImportInterface
+			
+		if (formatId.compareTo(importFormats[0].getId()) == 0) {
+			return new ImportDumb();
+		}
+			
+		throw new IllegalArgumentException("Uknown import format " + formatId + ".");		
+!!!545410.java!!!	getAnalysisImportFormats() : DataFormat
+ 
+		return getImportFormats();
+!!!545538.java!!!	beginAnalysesImport(in formatId : String, inout ip : InetAddress, in port : int) : UploadHandle
+		
+		ImportInterface importInterface; 
+		
+		importInterface = getImportInterface(formatId);
+				
+		importInterface.setDatabase(database);
+		return importInterface.beginAnalysesImport(ip, port);				
+!!!545666.java!!!	getExperimentImportFormats() : DataFormat
+		// Return hardcoded list
+		return getImportFormats();
+!!!545794.java!!!	beginExperimentsImport(in formatId : String, inout ip : InetAddress, in port : int) : UploadHandle
+		
+		ImportInterface importInterface; 		
+		
+		importInterface = getImportInterface(formatId);
+				
+		importInterface.setDatabase(database);
+		return importInterface.beginExperimentsImport(ip, port);				
+!!!545922.java!!!	getBinaryImportFormats() : DataFormat
+		// Return hardcoded list
+		return getImportFormats();
+!!!546050.java!!!	beginBinariesImport(in formatId : String, inout ip : InetAddress, in port : int) : UploadHandle
+		
+		ImportInterface importInterface; 		
+		
+		importInterface = getImportInterface(formatId);
+		
+		importInterface.setDatabase(database);
+		return importInterface.beginBinariesImport(ip, port);
+!!!546178.java!!!	getRunImportFormats() : DataFormat
+		// Return hardcoded list
+		return getImportFormats();
+!!!546306.java!!!	beginRunsImport(in formatId : String, inout ip : InetAddress, in port : int) : UploadHandle
+		ImportInterface importInterface; 		
+		
+		importInterface = getImportInterface(formatId);
+		
+		importInterface.setDatabase(database);
+		return importInterface.beginRunsImport(ip, port);
+!!!546434.java!!!	getImportStatus(inout handle : UploadHandle) : UploadStatus
+		return database.getFileUploadStatus(handle);
+!!!546562.java!!!	endImport(inout handle : UploadHandle) : void
+		database.endFileUpload(handle);

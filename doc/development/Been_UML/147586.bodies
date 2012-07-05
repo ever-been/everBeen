@@ -1,0 +1,40 @@
+class Select
+!!!230274.java!!!	getOptions() : Option
+		return options;
+!!!230402.java!!!	getSelectedIndex() : int
+		return selectedIndex;
+!!!230530.java!!!	setSelectedIndex(in selectedIndex : int) : void
+		if (selectedIndex < 0 || options.length <= selectedIndex) { 
+			throw new IllegalArgumentException(
+				"Invalid selectedIndex (" + selectedIndex + ")."
+			);
+		}
+		
+		this.selectedIndex = selectedIndex;
+!!!230658.java!!!	getSelectedId() : String
+		return options[selectedIndex].getId();
+!!!230786.java!!!	setSelectedId(in selectedId : String) : void
+		for (int i = 0; i < options.length; i++) {
+			if (options[i].getId().equals(selectedId)) {
+				selectedIndex = i;
+				return;
+			}
+		}
+		
+		throw new IllegalArgumentException(
+			"Invalid selectedId (\"" + selectedId + "\")."
+		);
+!!!230914.java!!!	Select(in label : String, inout options : Option, in selectedIndex : int)
+		super(label);
+
+		if (selectedIndex < 0 || options.length <= selectedIndex) { 
+			throw new IllegalArgumentException(
+				"Invalid selectedIndex (" + selectedIndex + ")."
+			);
+		}
+		
+		this.options = options;
+		this.selectedIndex = selectedIndex;
+!!!231042.java!!!	toString() : String
+		return "Select(name=" + getLabel() + ", options="
+			+ Arrays.toString(options) + ")";

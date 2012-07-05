@@ -1,0 +1,31 @@
+class TaskManagerReference
+!!!793858.java!!!	acquire() : TaskManagerInterface
+		String taskManagerHostname = Config.getInstance().getTaskManagerHostname();
+		try {
+			return (TaskManagerInterface) Naming.lookup(
+					"//" + taskManagerHostname + TaskManagerInterface.URL
+			);
+		} catch (MalformedURLException e) {
+			throw new ComponentInitializationException(e);
+		} catch (RemoteException e) {
+			throw new ComponentInitializationException(
+				"<strong>Can't connect to the RMI registry on host \""
+					+ taskManagerHostname
+					+ "\".</strong><br /><br />"
+					+ "Make sure the RMI registry is running, is correctly "
+					+ "configured, and there is no firewall in the way, which is "
+					+ "blocking the connection.",
+				e
+			);
+		} catch (NotBoundException e) {
+			throw new ComponentInitializationException(
+				"<strong>Can't connect to the Task Manager on host \""
+					+ taskManagerHostname
+					+ "\".</strong><br /><br />"
+					+ "Make sure the Task Manager is running on host \""
+					+ taskManagerHostname
+					+ "\", or correct the host in the <a href=\"../../configuration/\">"
+					+ "Configuration</a> tab.",
+				e
+			);
+		}

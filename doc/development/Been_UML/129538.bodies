@@ -1,0 +1,28 @@
+class VersionProvider
+!!!204802.java!!!	VersionProvider()
+		// hidden
+!!!205058.java!!!	setLocalManager(inout bm : PluginManagerLocalInterface) : void
+		
+		this.benchmarkManager = (BenchmarkManagerLocalInterface) bm;
+!!!205314.java!!!	duplicateModel() : ExperimentMetadata
+		return new ExperimentMetadata(benchmarkManager.getIDManager().getNext(EID.class),model);
+!!!205442.java!!!	setHistoricalStart(in historicalStart : long) : void
+		this.historicalStart = historicalStart;
+!!!205570.java!!!	setHistoricalEnd(in historicalEnd : long) : void
+		this.historicalEnd = historicalEnd;
+!!!205698.java!!!	setLastRun(in lastRun : long) : void
+		this.lastRun = lastRun;
+!!!205826.java!!!	setModel(inout model : ExperimentMetadata) : void
+		this.model = model;
+!!!205954.java!!!	setProcessedVersions(inout processedVersions : Version) : void
+		this.processedVersions = processedVersions;
+!!!206082.java!!!	setSchedule(inout schedule : SchedulerInfo) : void
+		this.schedule = schedule;
+!!!206210.java!!!	logDebug(in debugMessage : String) : void
+		benchmarkManager.logDebug(debugMessage);
+!!!206338.java!!!	logError(in errorMessage : String) : void
+		benchmarkManager.logError(errorMessage);
+!!!206466.java!!!	logInfo(in infoMessage : String) : void
+		benchmarkManager.logInfo(infoMessage);
+!!!206594.java!!!	logWarning(in warningMessage : String) : void
+		benchmarkManager.logWarning(warningMessage);

@@ -1,0 +1,8 @@
+class XamplerSuite
+!!!650754.java!!!	XamplerSuite(in suiteName : String, in columnNames : String)
+			this.name = suiteName;
+			this.columnNames = columnNames;
+!!!650882.java!!!	getName() : String
+			return name;
+!!!651010.java!!!	getColumnNames() : String
+			return columnNames;

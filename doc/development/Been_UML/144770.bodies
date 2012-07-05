@@ -1,0 +1,399 @@
+class XamplerConfigurator
+!!!210946.java!!!	getFirstScreen() : Screen
+		return cvsRepositoryDialog();
+!!!211074.java!!!	getDefaultRScripts() : CallbackRScripts
+		if (isRegression()) {
+			return new CallbackRScripts("", 
+					"xampler.generateRunsStatistics()\nxampler.generateBinaryStatistics()\nxampler.registerInvalidateScripts()\n", 
+					"xampler.generateExperimentStatistics()\nxampler.generateExperimentGraph()\nxampler.generateRegressionAnalysisGraph()\n", 
+					"", "");
+		} else {
+			return new CallbackRScripts("", 
+					"xampler.generateRunsStatistics()\nxampler.generateBinaryStatistics()\nxampler.registerInvalidateScripts()\n", 
+					"xampler.generateExperimentStatistics()\nxampler.generateExperimentGraph()\n", 
+					"", "");
+		}
+!!!211202.java!!!	getNextScreen(inout processedScreen : Screen) : Screen
+		int id = ((Long) processedScreen.getSid().value()).intValue();
+		ScreenID currentID = ScreenID.values()[id];
+		storeParameters(currentID, processedScreen);
+		ScreenID nextID = getTransition(currentID, NEXT);
+		return getScreen(nextID, processedScreen);
+!!!211330.java!!!	getPreviousScreen(inout processedScreen : Screen) : Screen
+		int id = ((Long) processedScreen.getSid().value()).intValue();
+		ScreenID currentID = ScreenID.values()[id];
+		storeParameters(currentID, processedScreen);
+		ScreenID nextID = getTransition(currentID, PREV);
+		return getScreen(nextID, processedScreen);
+!!!211458.java!!!	cvsRepositoryDialog() : Screen
+		// CVS server location
+		Item host = new Input("Host","omniorb.cvs.sourceforge.net", Size.BIG, new NotEmptyInputValidator());
+		Item path = new Input("Repository path", "/cvsroot/omniorb", Size.BIG, new NotEmptyInputValidator());
+		Section location = new Section(new Item[]{host,path},"Location", "CVS repository location.");
+
+		// Authentication
+		Item user = new Input("User","anonymous", Size.BIG, new NotEmptyInputValidator());
+		Item pass= new Input("Password", "none", Size.BIG, null);
+		Section authentication = new Section(new Item[]{user,pass},"Authentication", "CVS access account");
+		
+		// Branch
+		Item branchItem =  new Input("Branch", "omni4_0_develop",Size.BIG,new NotEmptyInputValidator());
+		Section branch = new Section(new Item[]{branchItem},"Development branch",
+				"OmniORB development branch. See details at http://omniorb.sourceforge.net");
+		
+		return new Screen(ScreenID.CVS_REPOSITORY.getSID(),new Section[]{location,authentication,branch});
+!!!211586.java!!!	softwareSelection() : Screen
+		Item xamplerVersion = new Input("Xampler version", "1.11",
+				Size.SMALL, new NotEmptyInputValidator());
+		
+		Item omniorbVersion = new Input("omniORB version", "4.0.5",
+				Size.SMALL, new NotEmptyInputValidator());
+		
+		Item omniorbBranch = new Input("omniORB branch", "4.0",
+				Size.SMALL, new NotEmptyInputValidator());
+		
+		Section swSelection = new Section(
+				new Item[]{xamplerVersion,omniorbVersion, omniorbBranch},
+				"Software selection",
+				"Select software to perform measurements on.");
+		
+		Item runCount = new Input("Number of runs", "1", Size.SMALL,
+				new IntegerIntervalInputValidator(1,Integer.MAX_VALUE));
+		
+		Item binariesCount = new Input("Software binaries", "1", Size.SMALL,
+				new IntegerIntervalInputValidator(1,Integer.MAX_VALUE));
+		
+		Section runSection = new Section(
+			new Item[]{runCount, binariesCount},
+				"Runs and binaries",
+				"Number of runs to perform and software binaries to create."
+				);
+		return new Screen(ScreenID.SW_SELECTION.getSID(),
+				new Section[]{swSelection, runSection});
+!!!211714.java!!!	getTransition(inout current : ScreenID, in direction : int) : ScreenID
+		
+		// forward transitions 
+		if (direction == NEXT) {
+			switch (current) {
+				case NONE:
+					return ScreenID.NONE;
+				case CVS_REPOSITORY:
+					return ScreenID.SW_SELECTION;
+				case SW_SELECTION:
+					return ScreenID.SUITE_SELECTION;
+				case SUITE_SELECTION:
+					return doSubselection() ? ScreenID.SUITE_SUBSELECTION : ScreenID.TEST_CONSTANTS;
+				case SUITE_SUBSELECTION:
+					return ScreenID.TEST_CONSTANTS;
+				case TEST_CONSTANTS:
+					return ScreenID.CLIENT_ROLE;
+				case CLIENT_ROLE:
+					return ScreenID.SERVER_ROLE;
+				case SERVER_ROLE:
+					return ScreenID.COMPILE_ROLE;
+				case COMPILE_ROLE:
+					return ScreenID.FINISH;
+				case FINISH:
+					throw new IllegalScreenSequenceException("There is no following screen after current");
+			}
+		}
+		
+		// backward transitions
+		if (direction == PREV) {
+			switch (current) {
+				case NONE:
+					throw new IllegalScreenSequenceException("There is no previous screen before current");
+				case CVS_REPOSITORY:
+					return ScreenID.NONE;
+				case SW_SELECTION:
+					return ScreenID.CVS_REPOSITORY;
+				case SUITE_SELECTION:
+					return ScreenID.SW_SELECTION;
+				case SUITE_SUBSELECTION:
+					return ScreenID.SUITE_SELECTION;
+				case TEST_CONSTANTS:
+					return ScreenID.SUITE_SELECTION;
+				case CLIENT_ROLE:
+					return ScreenID.TEST_CONSTANTS;
+				case SERVER_ROLE:
+					return ScreenID.CLIENT_ROLE;
+				case COMPILE_ROLE:
+					return ScreenID.SERVER_ROLE;
+				case FINISH:
+					return ScreenID.COMPILE_ROLE;
+			}
+		}
+		
+		throw new IllegalArgumentException("Invalid navigation direction value");
+!!!211842.java!!!	getScreen(inout id : ScreenID, inout processedScreen : Screen) : Screen
+		switch (id) {
+			case NONE:
+					return null;
+			case CVS_REPOSITORY:
+					return cvsRepositoryDialog();
+			case SW_SELECTION:
+					return softwareSelection();
+			case TEST_CONSTANTS:
+					return testConstants();
+			case SUITE_SELECTION:
+					return suiteSelection();
+			case SUITE_SUBSELECTION:
+					return suiteSubSelection();
+			case CLIENT_ROLE:
+					return clientRole();
+			case SERVER_ROLE:
+					return serverRole();
+			case COMPILE_ROLE:
+					return serverCompile(processedScreen);
+			case FINISH:
+					return null;
+			default:
+					throw new IllegalScreenSequenceException("No screen defined for state: " + id);
+		}
+!!!211970.java!!!	serverCompile(inout processedScreen : Screen) : Screen
+		Screen screen = new Screen(ScreenID.COMPILE_ROLE.getSID(), createCompileScreen());
+		return screen;
+!!!212098.java!!!	clientRole() : Screen
+		Condition condition = new EqualsCondition<String>("os.family","Linux");
+		RSLInput rsl = new RSLInput("Host restrictions", condition.toString());
+
+		Section section = new Section(
+					new Item[]{rsl},
+					"Client host specification", 
+					"Specify restrictions for the role. Platform will be added to restrictions automatically."
+					);
+		
+		return new Screen(ScreenID.CLIENT_ROLE.getSID(), new Section[]{section});
+!!!212226.java!!!	serverRole() : Screen
+		Condition condition = new EqualsCondition<String>("os.family","Linux");
+		RSLInput rsl = new RSLInput("Host restrictions", condition.toString());
+		
+		Section section = new Section(
+				new Item[]{rsl},
+				"Server host specification", 
+				"Specify restrictions for the role. Platform will be added to restrictions automatically."
+				);
+		
+		return new Screen(ScreenID.SERVER_ROLE.getSID(),new Section[]{section});
+!!!212354.java!!!	createCompileScreen() : Section
+		Condition condition = new EqualsCondition<String>("os.family","Linux");
+		RSLInput rsl = new RSLInput("Host restrictions", condition.toString());
+		
+		Section section = new Section(
+				new Item[]{rsl},
+				"Compilation host",
+				"Host that will run checkouts and compilations."
+				);
+		return new Section[]{section};	
+!!!212482.java!!!	suiteSelection() : Screen
+		Option[] suites = new Option[XamplerSuite.values().length];
+		suites[0] = new Option(XamplerSuite.Ping.getName(), XamplerSuite.Ping.getName());
+		int i = 1;
+		for (XamplerSuite suite : XamplerSuite.values()) {
+			if (! XamplerSuite.Ping.getName().equals(suite.getName())) {	
+				suites[i++] = new Option(suite.getName(), suite.getName());
+			}
+		}
+		
+		
+		Select suitesSelect = new Select("Benchmarking suite", suites, 0);
+		
+		Screen s = new Screen(ScreenID.SUITE_SELECTION.getSID(),
+				new Section[] { new Section(new Item[] { suitesSelect },
+						"Xampler suite",
+						"Select suite that will be used for the benchmark.") });
+		return s;
+!!!212610.java!!!	suiteSubSelection() : Screen
+		String suiteName = getBenchmarkExperiment().getProperty("xampler.suite");
+		
+		XamplerSuite subMenuSuite = null;
+		for (XamplerSuite candidate : XamplerSuite.values()) {
+			if (candidate.getName().equalsIgnoreCase(suiteName)) {
+				subMenuSuite = candidate;
+				break;
+			}
+		}
+		
+		Option[] suites = new Option[subMenuSuite.getSubMenu().length];
+		int i = 0;
+		for (String menuEntry : subMenuSuite.getSubMenu()) {
+				suites[i++] = new Option(menuEntry, menuEntry);
+		}
+		Select suitesSelect = new Select("Suite subtype", suites, 0);
+		
+		Screen s = new Screen(ScreenID.SUITE_SUBSELECTION.getSID(), new Section[] {
+				new Section(new Item[]{suitesSelect},
+						suiteName + " subtype",
+						"Select subtype for " + suiteName)
+				});
+		return s;
+!!!212738.java!!!	testConstants() : Screen
+		
+		List<Section> sections = new ArrayList<Section>();
+		
+		Input[] constantsInput = new Input[XamplerSuite.getCommonConstants().length];
+		int i = 0;
+		for (String[] item : XamplerSuite.getCommonConstants()) {
+			constantsInput[i++] = new Input(item[0], item[1], Size.SMALL, new IntegerInputValidator()); 
+		}
+		
+		Section commonSection = new Section(constantsInput,
+				"General settings" ,
+				"Common benchmark settings."
+				);
+		
+		sections.add(commonSection);
+
+		String suiteName = getBenchmarkExperiment().getProperty("xampler.suite");
+		
+		XamplerSuite suite  = XamplerSuite.getByName(suiteName);
+		if (suite.hasExecArgs()) {
+			
+			constantsInput = new Input[suite.getExecArgs().length];
+			i = 0;
+			for (String arg : suite.getExecArgs()) {
+				constantsInput[i++] = new Input(arg, XamplerSuite.getDefaultValue(arg), Size.SMALL, new IntegerInputValidator());
+			}
+		
+			Section runtimeSection = new Section(constantsInput,  null, null);
+
+			RadioWithSectionItem[] radioItems = new RadioWithSectionItem[]{
+					new RadioWithSectionItem(new Option("no", "No"), null),
+					new RadioWithSectionItem(new Option("yes", "Yes"), runtimeSection)
+			};
+			
+			int selectIndex = 0;
+			if (XamplerSuite.Concurrency_Client_Connections.getName().equals(getBenchmarkExperiment().getProperty("xampler.suite"))) {
+				selectIndex = 1;
+			}
+			Item radiosSection = new RadiosWithSections(radioItems, selectIndex);
+			
+			sections.add(
+					new Section(new Item[]{radiosSection}, "Runtime settings",
+					"Override compiled setttings in runtime?")
+			);
+			
+		}
+		
+		return new Screen(ScreenID.TEST_CONSTANTS.getSID(), sections.toArray(new Section[sections.size()]));
+!!!212866.java!!!	doSubselection() : boolean
+		String suiteName = getBenchmarkExperiment().getProperty("xampler.suite");
+		
+		for (XamplerSuite candidate : XamplerSuite.values()) {
+			if (candidate.getName().equalsIgnoreCase(suiteName)) {
+				return candidate.hasSubMenu();
+			}
+		}
+		
+		return false;
+!!!212994.java!!!	storeParameters(inout processedID : ScreenID, inout processed : Screen) : void
+		RSLInput hostRSL = null;
+		switch (processedID) {
+			case CVS_REPOSITORY:
+				StringBuilder repository = new StringBuilder(":pserver:");
+				// user
+				repository.append(((Input)processed.getSections()[1].getItems()[0]).getValue());
+				repository.append("@");
+				// host
+				repository.append(((Input)processed.getSections()[0].getItems()[0]).getValue());
+				repository.append(":");
+				// path
+				repository.append(((Input)processed.getSections()[0].getItems()[1]).getValue());
+				
+				String password = ((Input)processed.getSections()[1].getItems()[1]).getValue();
+				String branch = ((Input)processed.getSections()[2].getItems()[0]).getValue();
+				
+				getBenchmarkExperiment().setProperty("cvs.repository",repository.toString());
+				getBenchmarkExperiment().setProperty("cvs.password",password);
+				getBenchmarkExperiment().setProperty("cvs.branch",branch);
+				break;
+			case SW_SELECTION:
+				Input xamplerVersion = (Input) processed.getSections()[0].getItems()[0];
+				Input softwareVersion = (Input) processed.getSections()[0].getItems()[1];
+				Input omniorbBranch= (Input) processed.getSections()[0].getItems()[2];
+				getBenchmarkExperiment().setProperty("xampler.version", xamplerVersion.getValue());
+				getBenchmarkExperiment().setProperty("software.version", softwareVersion.getValue());
+				getBenchmarkExperiment().setProperty("software.branch", omniorbBranch.getValue());
+				
+				Input runCount = (Input) processed.getSections()[1].getItems()[0];
+				Input binCount = (Input) processed.getSections()[1].getItems()[1];
+				
+				getBenchmarkExperiment().setRunCount(Integer.parseInt(runCount.getValue().trim()));
+				getBenchmarkExperiment().setBinaryCount(Integer.parseInt(binCount.getValue().trim()));
+				break;
+			case SUITE_SELECTION:
+				Select suite = (Select) processed.getSections()[0].getItems()[0];
+				getBenchmarkExperiment().setProperty("xampler.suite", suite.getSelectedId());
+				break;
+			case TEST_CONSTANTS:
+				for (Item item : processed.getSections()[0].getItems()) {
+					Input input = (Input) item;
+					getBenchmarkExperiment().setProperty(input.getLabel(), input.getValue());
+				}
+				
+				// set number of samples
+				int samTestSamples = Integer.parseInt(
+						getBenchmarkExperiment().getProperty("SAM_TestSamples", XamplerSuite.getCommonConstants()[0][1]).trim());
+				int meaRawCycles = Integer.parseInt(
+						getBenchmarkExperiment().getProperty("MEA_RawCycles", XamplerSuite.getCommonConstants()[7][1]).trim());
+				getBenchmarkExperiment().setSamplesCount(samTestSamples * meaRawCycles);
+				
+				if (processed.getSections().length > 1) {
+					Section runtimeSection = processed.getSections()[1];
+					RadiosWithSections radios = (RadiosWithSections) runtimeSection.getItems()[0];
+					
+					if (radios.getSelectedId().equals("no")) {
+						// do not override runtime parameters
+						break;
+					}
+					RadioWithSectionItem selectedSection = radios.getItems()[radios.getSelectedIndex()];
+					StringBuilder buf = new StringBuilder();
+					for (Item item : selectedSection.getSection().getItems()) {
+						Input input = (Input) item;
+						buf.append(input.getValue()).append(" ");
+					}
+					
+					if (XamplerSuite.Concurrency_Client_Connections.getName().equals(getBenchmarkExperiment().getProperty("xampler.suite"))) {
+						getBenchmarkExperiment().setProperty("xampler.server.params", buf.toString());
+					} else {
+						getBenchmarkExperiment().setProperty("xampler.client.params", buf.toString());
+					}
+					
+					
+				}
+				
+				
+				
+				break;
+			case SUITE_SUBSELECTION:
+				Select subMenu = (Select) processed.getSections()[0].getItems()[0];
+				getBenchmarkExperiment().setProperty("xampler.subsuite", subMenu.getSelectedId());
+				break;
+			case CLIENT_ROLE:
+				hostRSL = (RSLInput)processed.getSections()[0].getItems()[0];
+				int count = 1;
+				if (XamplerSuite.Concurrency_Client_Connections.getName().equals(getBenchmarkExperiment().getProperty("xampler.suite"))) {
+					count = Integer.parseInt(getBenchmarkExperiment().getProperty("xampler.server.params","1").trim());
+				}
+				// by default 1 client
+				getBenchmarkExperiment().addBenchmarkingRole(XamplerTaskGenerator.XAMPLER_CLIENT, stringToRSL(hostRSL.getValue()),count);
+				break;
+			case SERVER_ROLE:
+				hostRSL = (RSLInput)processed.getSections()[0].getItems()[0];
+				getBenchmarkExperiment().addBenchmarkingRole(XamplerTaskGenerator.XAMPLER_SERVER,stringToRSL(hostRSL.getValue()),1);
+				break;
+			case COMPILE_ROLE:
+				hostRSL = (RSLInput)processed.getSections()[0].getItems()[0];
+				getBenchmarkExperiment().addRole(
+				XamplerTaskGenerator.SERVER_COMPILE,stringToRSL(hostRSL.getValue()),1);
+				break;
+		}
+		
+!!!213122.java!!!	stringToRSL(in rslString : String) : Condition
+		try {
+			return ParserWrapper.parseString(rslString);
+		} catch (ParseException e) {
+			// we never get here as RSLInput is validating
+			assert false : "RSL from RSLInput is invalid";
+			return null;
+		}

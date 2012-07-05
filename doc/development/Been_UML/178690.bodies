@@ -1,0 +1,34 @@
+class LoadFileWritable
+!!!417538.java!!!	LoadFileWritable(in contextId : String, in taskId : String, in fullPath : String)
+		
+		super(contextId, taskId, fullPath);
+!!!417666.java!!!	createSampleWriter(in fileName : String) : LoadFileParser
+
+		LoadFileParser< LoadSample > parser = 
+			new LoadFileParser< LoadSample >(fileName, true, LoadSample.class);
+
+		return parser;
+!!!417794.java!!!	createSampleWriter(inout loadFile : LoadFile) : LoadFileParser
+	
+		String currentHost = MiscUtils.getCanonicalLocalhostName();
+		
+		if (!currentHost.equals(loadFile.hostName)) {
+			throw new InvalidArgumentException("Load file comes from different host.");
+		}
+		
+		return createSampleWriter(loadFile.fullPath);
+!!!417922.java!!!	createEventWriter(inout loadFile : LoadFile) : LoadFileParser
+		
+		String currentHost = MiscUtils.getCanonicalLocalhostName();
+		
+		if (!currentHost.equals(loadFile.hostName)) {
+			throw new InvalidArgumentException("Load file comes from different host.");
+		}
+		
+		return createEventWriter(loadFile.fullPath);
+!!!418050.java!!!	createEventWriter(in fileName : String) : LoadFileParser
+
+		LoadFileParser< LoadMonitorEvent > parser = 
+			new LoadFileParser< LoadMonitorEvent >(fileName, true, LoadMonitorEvent.class);
+
+		return parser;

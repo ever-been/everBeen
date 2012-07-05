@@ -1,0 +1,30 @@
+class Java
+!!!259074.java!!!	Java()
+		// dummy ant project
+		Project antProject = new Project();
+		antProject.init();
+		setProject(antProject);
+		// dummy ant task name
+		setTaskName("java");
+		setTaskType("java");
+		// dummy ant target
+		setOwningTarget(null);
+!!!259202.java!!!	runJava(in classname : String, in classpath : String, in directory : String) : void
+		
+		Java j = new Java();
+		j.setFailonerror(true);
+		
+		Path p = new Path(j.getProject());
+		p.setPath(classpath);
+		j.setClasspath(p);
+		
+		j.setClassname(classname);
+		j.setFork(true);
+		File dir = new File(directory);
+		j.setDir(dir);
+		
+		try {
+			j.execute();
+		} catch (Exception e) {
+			throw new AntTaskException(e);
+		}

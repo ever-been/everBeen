@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sect1
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>Scripting Basics</title>
+	
+	<para>
+	Scripting a powerful tool that allows BEEN to be extended more easily by
+	allowing user to use code written not only in Java, but also in languages
+	that are believed to make development more effective for some types of tasks. 
+	Currently BEEN supports scripts in two languages: Python and Shell scripts.
+	Both of these languages have some advantages and disadvantages and will
+	take a closer look on them later in this chapter.  
+	</para>
+	
+	
+	<sect2>
+	<title>Scripting Languages</title>
+
+		<sect3>
+		<title>Jython Scripting</title>
+		<para>
+			Jython is pure Java scripting language fully compatible 
+			with Python. In addition to Python compatibility, Jython
+			is also Java compatible (Jython script can import java classes
+			and call java methods as if they were written in Python). 			
+			As a result, you can write Python scripts
+			that will be executed as BEEN <glossterm>tasks</glossterm> and from these script
+			you can still easily interact with BEEN environment
+			just as from regular BEEN task written in Java.
+		</para>
+		</sect3>
+	
+		<sect3>
+		<title>Shell Scripting</title>	
+		<para>
+			Another scripting language supported by BEEN is
+			platform dependent shell. BEEN's ability to 
+			execute <glossterm>shell scripts can</glossterm> be very useful for example
+			when you have a lot of build scripts you want to 
+			use in your benchmarks. 
+		</para>
+		<para>
+			From their nature, <glossterm>shell scripts</glossterm> are platform dependent.
+			This means, whenever you're running a shell script as
+			a <glossterm>task</glossterm>, you should be aware which platform
+			is that script running on and supply a script
+			that is compatible with that platform (so you
+			supply a Bash script for Linux host or Windows script
+			for host running of Windows).
+		</para>
+		</sect3>
+	</sect2>
+	
+	
+</sect1>

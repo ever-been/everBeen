@@ -1,0 +1,469 @@
+class AnalysisManager
+!!!141570.java!!!	AnalysisManager(inout bm : BenchmarkManager, inout restoreRootDir : File)
+		this.bm = bm;
+		this.restoreRootDir = restoreRootDir;
+!!!141698.java!!!	createInstance(inout benchmarkManager : BenchmarkManager, inout restoreRootDir : File) : AnalysisManager
+		File restoreDir = new File(restoreRootDir,RESTORE_SUBDIRECTORY);
+		AnalysisManager instance = new AnalysisManager(benchmarkManager,restoreDir);
+		if (restoreDir.exists()) {
+			restore(instance);
+		} else {
+			instance.bm.logDebug("Restore directory not found... creating");
+			if (!restoreDir.mkdirs()) {
+				throw new IOException("Unable to create restore directory");
+			}
+		}
+		
+		// create worker threads for instance once the restore is finished
+		instance.new GeneratorThread();
+		instance.new DispatcherThread();
+		instance.new MonitorThread();
+		
+		return instance;
+!!!141826.java!!!	createAnalysis(in name : String, in description : String, inout isRegression : boolean) : AnalysisEntity
+		ResultsRepositoryInterface resultsRepository = (ResultsRepositoryInterface)bm.lookup(ResultsRepositoryService.SERVICE_NAME);
+		
+		final AnalysisMetadata metadata = 
+				isRegression ? 
+				new RegressionAnalysisMetadata(getNextAID()) : 
+				new AnalysisMetadata(getNextAID());
+		metadata.setName(name);
+		metadata.setDescription(description);
+
+		// create lightweight transport object
+		AnalysisEntity entity = EntityFactory.createEntity(metadata);
+		try {
+			/*
+			 * Act as in transaction:
+			 * 1. update our local log to avoid contaminating RR in case of disk-write failure
+			 * 2. add analysis to live
+			 * 3. report RR the analysis
+			 * 
+			 * In case of failure in 1. the RR is not contaminated, when 3. fails, we delete the analysis
+			 * from live data and delete its record from log
+			 */
+			storeAnalysis(metadata);
+			analyses.put(metadata.getID(), metadata);
+			resultsRepository.addAnalysis(entity);
+		} catch (ResultsRepositoryException e) {
+			// failed reporting analysis to RR -> delete from local log
+			deleteAnalysis(metadata.getID());
+			throw new BenchmarkManagerException(e);
+		} catch (RemoteException e) {
+			// failed reporting analysis to RR -> delete from local log
+			deleteAnalysis(metadata.getID());
+			throw new BenchmarkManagerException(e);
+		} catch (IOException e) {
+			throw new BenchmarkManagerException(e);
+		}
+
+		
+		return entity;
+!!!141954.java!!!	deleteAnalysis(inout id : AID) : void
+		try {
+			/*
+			 * 1. Check experiments - if any of them is active, we can't delete
+			 * 2. Delete restore log
+			 * 3. Unschedule regression analysis
+			 * 4. Remove analysis manager entry 
+			 */
+			AnalysisMetadata analysis = getAnalysis(id);
+			
+			for (ExperimentMetadata experiment : analysis.getExperiments()) {
+				if (experiment.getStatus() != EntityStatus.FINISHED){
+					throw new BenchmarkManagerException("Analysis has active experiment!");
+				}
+			}
+			
+			deleteAnalysisRecord(id);
+
+			// remove (possibly) scheduled regression analysis
+			if (analysis.isRegression()) {
+				RegressionAnalysisMetadata reg = (RegressionAnalysisMetadata)analysis;
+				if (reg.getSchedule() != null && ! reg.getSchedule().isPaused()) {
+					scheduler.removeEntry(createSchedulerEntry(id,reg.getSchedule()));
+				}
+			}
+			
+			analyses.remove(id);
+			
+		} catch (AntTaskException e) {
+			e.printStackTrace();
+			throw new BenchmarkManagerException(e);
+		}
+		
+!!!142082.java!!!	listAnalyses() : AnalysisMetadata
+		Collection<AnalysisMetadata> values = analyses.values();
+		return (AnalysisMetadata[]) values.toArray(new AnalysisMetadata[values.size()]);
+!!!142210.java!!!	addExperiment(inout experiment : ExperimentMetadata) : void
+		AnalysisMetadata ad = analyses.get(experiment.getAnalysis());
+		if (ad == null) {
+			throw new BenchmarkManagerException("Analysis AID(" +
+					experiment.getAnalysis() + ") does not exist");
+		}
+		
+		try {
+			storeExperiment(experiment);
+			ad.addExperiment(experiment);
+		} catch (IOException e) {
+			throw new BenchmarkManagerException("Can't register experiment",e);
+		} 
+!!!142338.java!!!	registerModelExperiment(inout experiment : ExperimentMetadata, inout schedule : SchedulerInfo) : void
+		RegressionAnalysisMetadata ad = (RegressionAnalysisMetadata)getAnalysis(experiment.getAnalysis());
+		try {
+			ad.setModelExperiment(experiment);
+			ad.setSchedule(schedule);
+			storeAnalysis(ad);
+			scheduleExperiment(ad);
+		} catch (IOException e) {
+			throw new BenchmarkManagerException("Can't schedule experiment",e);
+		}
+!!!142466.java!!!	getAnalysis(inout analysis : AID) : AnalysisMetadata
+		AnalysisMetadata ad = analyses.get(analysis);
+		if (ad == null) {
+			throw new IllegalArgumentException("Analysis AID(" + analysis + ") does not exist");
+		}
+		return ad;
+!!!142594.java!!!	createExperiment(inout analysis : AID, in name : String, in description : String, inout pluginID : PEID) : ExperimentMetadata
+		
+		String pluginName;
+		
+		try {
+			pluginName = getPluginLoader().getPluginName(pluginID);
+		} catch (ApplicationException e) {
+			throw new BenchmarkManagerException(e);
+		}
+		
+		ExperimentMetadata exp = new ExperimentMetadata(analysis, getNextEID(), name, description, pluginID, pluginName);
+		return exp;
+!!!142722.java!!!	startGenerator(inout experiment : ExperimentMetadata) : void
+		
+		TaskGenerator generator = null;
+		
+		try {
+			generator = bm.getPluginLoader().createGenerator(experiment.getPlugin());
+		} catch (ApplicationException e) {
+			throw new BenchmarkManagerException(e);
+		}
+		
+		generator.setBenchmarkManager(bm);
+		final HostManagerInterface hostManager = (HostManagerInterface) bm.lookup(HostManagerService.SERVICE_NAME);
+		try {
+			// expand RSL to hosts
+			for (StandardRole role : experiment.getRoles()) {
+				role.expand(hostManager);
+			}
+		} catch (Exception e) {
+			throw new BenchmarkManagerException("Unable to expand RSL into host info", e);
+		}
+		
+		generator.setExperiment(experiment);
+		generator.setRegression(getAnalysis(experiment.getAnalysis()).isRegression());
+		generator.startGenerator();
+!!!142850.java!!!	reschedule(inout analysis : AID, inout newSchedule : SchedulerInfo) : void
+
+		RegressionAnalysisMetadata metadata = (RegressionAnalysisMetadata)getAnalysis(analysis);
+		assert metadata.isRegression() : "Analysis is not a regression analysis";
+
+		SchedulerInfo oldSchedule  = metadata.getSchedule();
+		
+		if (oldSchedule.equals(newSchedule)) {
+			// nothing to do, everything is the same, see SchedulerInfo.equals
+			return;
+		}
+
+		// the infos have something different - we won't investigate what just reschedule and check for a pause
+
+		// try to remove old entry (may not be present if it was paused before
+		SchedulerEntry oldEntry = createSchedulerEntry(analysis, oldSchedule);
+		scheduler.removeEntry(oldEntry);
+		
+		try {
+			/*
+			 * 1. try to create new entry to see if it is valid
+			 * 2. change metadata 
+			 * 3. check for pause and pause/unpause
+			 */
+			SchedulerEntry newEntry = createSchedulerEntry(analysis, newSchedule);
+			metadata.setSchedule(newSchedule);
+			storeAnalysis(metadata);
+			if (! newSchedule.isPaused()) {
+				scheduler.addEntry(newEntry);
+				metadata.setNextRunDate(newEntry.getAlarmTime());
+			} else {
+				metadata.setNextRunDate(VersionProvider.FIRST_RUN);
+			}
+		} catch (IOException e) {
+			metadata.setSchedule(oldSchedule);
+			throw new BenchmarkManagerException("Can't reschedule analysis",e);
+		}
+!!!142978.java!!!	runJob(inout entry : SchedulerEntry) : void
+		RegressionAnalysisMetadata analysis = (RegressionAnalysisMetadata)getAnalysis((AID)entry.getData());
+		bm.logInfo("Starting version provider for '" + analysis.getName() + "'");
+		PEID plugin = analysis.getModelExperiment().getPlugin();
+		VersionProvider provider;
+		try {
+			provider = getPluginLoader().createVersionProvider(plugin);
+		} catch (ApplicationException e) {
+			bm.logError("Unable to create version provider instance for experiment:");
+			bm.logError("Analysis: " + analysis.getName());
+			bm.logError("Plugin: " + analysis.getModelExperiment().getPluginName());
+			bm.logError("Error: " + e.getMessage());
+			// we can't do anything more here
+			return;
+		}
+		ExperimentMetadata[] experiments = null;
+		long currentTime = System.currentTimeMillis();
+		provider.setModel(analysis.getModelExperiment());
+		provider.setLastRun(analysis.getLastRunDate());
+		provider.setProcessedVersions(analysis.getProcessedVersions());
+		provider.setHistoricalStart(analysis.getHistoricalStart());
+		provider.setHistoricalEnd(analysis.getHistoricalEnd());
+		provider.setLocalManager(bm);
+		provider.setSchedule(analysis.getSchedule());
+		try {
+			experiments = provider.getVersions();
+		} catch (Exception e) {
+			bm.logWarning("Version provider encountered error during scheduled execution");
+			bm.logWarning("No experiments will be created for this run");
+			bm.logWarning("Analysis: " + analysis.getName());
+			return;
+		}
+		
+		bm.logInfo("Version provider '" + analysis.getName() + "' created " + experiments.length + " experiments");
+
+		/*
+		 * Experiments returned by the version provider are returned in ascending order
+		 * From oldest to newest. But we want execute measurements in reverse order 
+		 */
+		ArrayUtils.reverse(experiments);
+		
+		/*
+		 * register newly created experiments under the analysis
+		 * add experiments to the queue to have generator started on them
+		 */ 
+		for (ExperimentMetadata exp : experiments) {
+			try {
+				exp.setStatus(EntityStatus.CONFIGURED);
+				addExperiment(exp);
+				scheduledExperiments.addWork(exp);
+			} catch (BenchmarkManagerException e) {
+				/* XXX: need to make somehow consistency with ResultsRepository	 */
+				bm.logError("Unable to report metadata to ResultsRepository - experiment skipped: " + e.getMessage());
+			}
+		}
+		
+		/*
+		 * All experiments were successfully reported and scheduled, now we can update
+		 * time based metadata. If anything goes wrong 
+		 */
+		analysis.setLastRunDate(currentTime);
+		analysis.setNextRunDate(entry.getAlarmTime());
+		analysis.addProcessedVersions(provider.getProcessedVersions());
+		try {
+			storeAnalysis(analysis);
+		} catch (IOException e) {
+			// XXX: we are seriously doomed here, correct behaviour would require transactions
+			bm.logError("Unable to report metadata to ResultsRepository - experiment skipped: " + e.getMessage());
+		}
+!!!143106.java!!!	reportResultsMetadata(inout experiment : ExperimentMetadata) : void
+
+			ResultsRepositoryInterface resultsRepository = (ResultsRepositoryInterface)bm.lookup(ResultsRepositoryService.SERVICE_NAME);
+			try {
+				// register basic metadata
+				resultsRepository.addExperiment(new ExperimentEntity(experiment));
+				for (BID bid : experiment.getBinaryIds()) {
+					resultsRepository.addBinary(new BinaryEntity(experiment,bid));
+				}
+				// register callback scripts
+				resultsRepository.setExperimentCallbackRScripts(
+						experiment.getAnalysis(),
+						experiment.getID(),
+						experiment.getScripts());
+			} catch (Exception e) {
+				bm.logError("Unable to report experiment metadata to results repository for experiment" + 
+						EID.toNamedString(experiment.getID()));
+				throw new BenchmarkManagerException(e);
+			}
+!!!143234.java!!!	getPluginLoader() : JPFPluginManager
+		return bm.getPluginLoader();
+!!!143362.java!!!	getNextEID() : EID
+		return bm.getIDManager().getNext(EID.class);
+!!!143490.java!!!	getNextAID() : AID
+		return bm.getIDManager().getNext(AID.class);
+!!!143618.java!!!	scheduleExperiment(inout analysis : RegressionAnalysisMetadata) : SchedulerEntry
+		SchedulerInfo schedule = analysis.getSchedule();
+		SchedulerEntry entry = createSchedulerEntry(analysis.getID(), schedule);
+		scheduler.addEntry(entry);
+		analysis.setNextRunDate(entry.getAlarmTime());
+		return entry;
+!!!143746.java!!!	dispatchExperiment(inout experiment : ExperimentMetadata) : void
+		// experiment is dispatched
+		try {
+			bm.logInfo("Experiment " + EID.toNamedString(experiment.getID()) + " dispatched - waiting for execution");
+			experiment.setStatus(EntityStatus.DISPATCHED);
+			storeExperiment(experiment);
+			synchronized (analysisQueues) {
+				List<ExperimentMetadata> queue = getOrCreateDispatchQueue(experiment.getAnalysis());
+				queue.add(experiment);
+			}
+		} catch (IOException e) {
+			bm.logDebug("Can't dispatch experiment: " + e.getMessage());
+			e.printStackTrace();
+			throw new BenchmarkManagerException("Can't dispatch experiment",e);
+		}
+!!!143874.java!!!	getOrCreateDispatchQueue(inout analysis : AID) : ExperimentMetadata
+		List<ExperimentMetadata> queue = analysisQueues.get(analysis);
+		if (queue == null) {
+			/*
+			 * must be synchronised, because experiments will be added on 
+			 * scheduler events/user requests and other thread will be managing
+			 * experiment execution 
+			 */ 
+			queue = Collections.synchronizedList(new ArrayList<ExperimentMetadata>());
+			analysisQueues.put(analysis,queue);
+		}
+		
+		return queue;
+!!!144002.java!!!	createSchedulerEntry(inout analysis : AID, inout schedule : SchedulerInfo) : SchedulerEntry
+		SchedulerEntry entry;
+		try {
+			entry = new SchedulerEntry(
+					analysis,
+					schedule.getMinutes(),
+					schedule.getHours(),
+					schedule.getDaysOfMonth(),
+					schedule.getMonths(),
+					schedule.getDaysOfWeek(),
+					schedule.getYear(),
+					this
+					);
+			return entry;
+		} catch (PastDateException e) {
+			assert false : "This can't happen: PastDateException " + e.getMessage();
+			return null;
+		}
+!!!144130.java!!!	storeAnalysis(inout metadata : AnalysisMetadata) : void
+		bm.logTrace("Writing restore file for analysis " + AID.toNamedString(metadata.getID()));
+		// use the id as root for storing metadata
+		File analysisDir = new File(restoreRootDir,metadata.getID().toString());
+		if (!analysisDir.exists() && !analysisDir.mkdirs()) {
+			bm.logError("Unable to create restore directory for analysis " + AID.toNamedString(metadata.getID()));
+			throw new IOException("Unable to create root directory for analysis " + analysisDir.getPath());
+		}
+		
+		File metadataFile = new File(analysisDir,"metadata.dat");
+		ObjectOutputStream oos = null;
+		try {
+			oos = new ObjectOutputStream(new FileOutputStream(metadataFile));
+		oos.writeObject(metadata);
+		oos.flush();
+		} catch (IOException e ) {
+			bm.logError("Unable to write analysis restore file " + AID.toNamedString(metadata.getID()));
+		} finally {
+			if (oos != null) {
+				oos.close();
+			}
+		}
+		
+		bm.logTrace("Analysis restore file written");
+!!!144258.java!!!	deleteAnalysisRecord(inout analysisID : AID) : void
+		bm.logTrace("Deleting restore file for analysis " + AID.toNamedString(analysisID));
+		try {
+			Delete.deleteDirectory(new File(restoreRootDir,analysisID.toString()).getAbsolutePath());
+		} catch (AntTaskException e) {
+			bm.logFatal("Unable to delete analysis restore directory : " + AID.toNamedString(analysisID));
+			bm.logFatal("Stop benchmark manager and remove directory manually before starting again," +
+					" otherwise phantom analysis will be created");
+			throw e;
+		}
+!!!144386.java!!!	storeExperiment(inout metadata : ExperimentMetadata) : void
+		bm.logTrace("Writing restore file for experiment " + EID.toNamedString(metadata.getID()));
+		File analysisDir = new File(restoreRootDir,metadata.getAnalysis().toString());
+		if (! analysisDir.exists()) {
+			bm.logError("Restore directory for analysis " + AID.toNamedString(metadata.getAnalysis()) + " does not exist!");
+			throw new FileNotFoundException("Restore directory for analysis " + analysisDir.getPath() + " does not exist!");
+		}
+
+		ObjectOutputStream oos = null;
+		try {
+			File experimentFile = new File(analysisDir,metadata.getID().toString());
+			oos = new ObjectOutputStream(new FileOutputStream(experimentFile));
+			oos.writeObject(metadata);
+			oos.flush();
+		} catch (IOException e ) {
+			bm.logError("Unable to write experiment restore file " + EID.toNamedString(metadata.getID()));
+			throw e;
+		} finally {
+			if (oos != null) {
+				oos.close();
+			}
+		}
+		
+		bm.logTrace("Experiment file written");
+!!!144514.java!!!	restore(inout instance : AnalysisManager) : void
+		for (File analysisDir : instance.restoreRootDir.listFiles()) {
+			if (!analysisDir.isDirectory()) {
+				// skip garbage
+				continue;
+			}
+			
+			instance.bm.logDebug("Restoring analysis " + analysisDir.getName());
+			/*
+			 * 1. Restore basic metadata of analysis
+			 * 2. Restore experiments under analysis:
+			 * 		a. Add experiment to list of analysis experiments
+			 * 		b. Put experiment to corresponding queue according to its status
+			 */
+			instance.bm.logTrace("Reading analysis metadata");
+			File metadataFile = new File(analysisDir,"metadata.dat");
+			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(metadataFile));
+			AnalysisMetadata analysis = (AnalysisMetadata)ois.readObject();
+			ois.close();
+			instance.analyses.put(analysis.getID(),analysis);
+			instance.bm.logDebug("Metadata file read successfully");
+			
+			if (analysis.isRegression()) {
+				instance.bm.logDebug("Scheduling regression analysis");
+				RegressionAnalysisMetadata regression = (RegressionAnalysisMetadata)analysis;
+				if (regression.getSchedule() != null) {
+					// analysis has schedule and model experiment -> schedule it
+					try {
+						instance.scheduleExperiment(regression);
+					} catch (BenchmarkManagerException e) {
+						instance.bm.logWarning("Analysis " + AID.toNamedString(regression.getID()) + 
+								" has overdue scheduling time and can't be scheduled again");
+					}
+				} else {
+					instance.bm.logDebug("No schedule found for analysis, scheduling skipped");
+				}
+			}
+			
+			for (File experimentFile : analysisDir.listFiles()) {
+				if ("metadata.dat".equals(experimentFile.getName())) {
+					// skip metadata file of analysis
+					continue;
+				}
+				
+				instance.bm.logDebug("Restoring experiment " + experimentFile.getName());
+				ois = new ObjectInputStream(new FileInputStream(experimentFile));
+				ExperimentMetadata experiment = (ExperimentMetadata)ois.readObject();
+				ois.close();
+				analysis.addExperiment(experiment);
+				switch (experiment.getStatus()) {
+					case CONFIGURED:
+						instance.bm.logInfo("Adding experiment " + experiment.getID() + " to configured queue");
+						instance.scheduledExperiments.addWork(experiment);
+						break;
+					case DISPATCHED:
+						instance.bm.logInfo("Adding experiment " + experiment.getID() + " to dispatcher queue");
+						List<ExperimentMetadata> queue = instance.getOrCreateDispatchQueue(experiment.getAnalysis());
+						queue.add(experiment);
+						break;
+					case SUBMITTED:
+						instance.bm.logInfo("Adding experiment " + experiment.getID() + " to monitor queue");
+						instance.monitorQueue.add(experiment);
+						break;
+				}
+			}
+		}

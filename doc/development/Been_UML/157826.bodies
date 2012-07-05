@@ -1,0 +1,8 @@
+class CompareCondition
+!!!271874.java!!!	CompareCondition(in propertyPath : String, inout value : T)
+		super(propertyPath, value);
+!!!272002.java!!!	check(inout context : ContainerProperty) : void
+		super.check(context);
+		
+		/* Check if evaluated property implements interface Comparable. */
+		checkIsOrImplementsInterface(context, Comparable.class, true);

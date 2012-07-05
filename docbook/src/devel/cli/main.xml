@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<chapter
+	xml:id="been.devel.cli"
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>Command Line Interface</title>
+	
+	<para>The Command Line Interface is a lightweight, yet powerful alternative to the Web
+	Interface. The design and implementation is inspired by both the Web Interface itself and the
+	nature of the HTTP protocol. CLI is designed to control the BEEN framework from shell scripts.
+	Details on how CLI can be controlled are described in the user documentation,
+	<xref linkend="been.user.cli"/></para>
+	
+	<xi:include href="purpose.xml"/>
+	<xi:include href="components.xml"/>
+	<xi:include href="data.xml"/>
+	<xi:include href="api.xml"/>
+	<xi:include href="extension.xml"/>
+	<xi:include href="future.xml"/>
+</chapter>

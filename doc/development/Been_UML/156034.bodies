@@ -1,0 +1,31 @@
+class Zip
+!!!261378.java!!!	Zip()
+		// dummy ant project
+		Project antProject = new Project();
+		antProject.init();
+		setProject(antProject);
+		// dummy ant task name
+		setTaskName("zip");
+		setTaskType("zip");
+		// dummy ant target
+		setOwningTarget(null);
+!!!261506.java!!!	zipDirectory(in directory : String, in archive : String) : void
+		Zip z = new Zip();
+		
+		File srcDir = new File(directory);
+		if (!srcDir.isDirectory()) {
+			throw new AntTaskException("Not a directory: " + directory);
+		}
+		if (!srcDir.canRead()) {
+			throw new AntTaskException("Cannot read directory: " + directory);
+		}
+		
+		File destFile = new File(archive);
+		
+		z.setDestFile(destFile);
+		z.setBasedir(srcDir);
+		try {
+			z.execute();
+		} catch (Exception e) {
+			throw new AntTaskException(e);
+		}

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sect1
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>Tasks</title>
+		
+	<para>This section has been (mostly) copied from <biblioref linkend="BUD2" units="page" begin="13"/>.</para>
+		
+	<para>The purpose of tasks is similar to ordinary program or process, i.e. they perform the low level
+	functionality used by benchmarks, e.g. compilation of software source code.</para>
+		
+	<para>Each task is either a job or a service. A job is a batch task created for a particular action &#8212; it
+	finishes as soon as the action it was created for was performed. A service is a long-running task
+	which waits for requests from other tasks and performs actions upon those requests. It can be
+	compared to Unix daemon. Most of BEEN components are implemented as services.</para>
+		
+	<para>Task's code, data and additional information required by BEEN are stored in the Software
+	Repository in task packages. The tasks are managed by the Task Manager, which decides when
+	and where to run a task. When a task is about to be started, its package is transported over the
+	network to a Host Runtime on the target host. The Host Runtime creates a new Java Virtual
+	Machine for the task (so that crashing task does not crash the Host Runtime) and manages the
+	task execution.</para>
+
+	<sect2>
+		<title>Task States</title>
+		
+		<para>Each task goes through several states during its life cycle. Following task states are defined:</para>
+		
+		<variablelist>
+			<varlistentry>
+				<term>Submitted</term>
+				<listitem><para>The task has been submitted to the Task Manager. It is not running yet.</para></listitem>
+			</varlistentry>
+			<varlistentry>
+				<term>Scheduled</term>
+				<listitem><para>The task has been submitted to the Task Manager. Its dependencies are
+satisfied and it can be started now.</para></listitem>
+			</varlistentry>
+			<varlistentry>
+				<term>Running</term>
+				<listitem><para>The task is running on a host.</para></listitem>
+			</varlistentry>
+			<varlistentry>
+				<term>Finished</term>
+				<listitem><para>The task has terminated. Both successful and unsuccessful termination are represented
+				by this state.</para></listitem>
+			</varlistentry>
+			<varlistentry>
+				<term>Aborted</term>
+				<listitem><para>The task has been killed either by the user from the web interface or by some BEEN
+				component.</para></listitem>
+			</varlistentry>
+		</variablelist>
+	</sect2>
+
+	<sect2>
+		<title>Contexts</title>
+		
+		<para>Each group of cooperating tasks is enclosed in a single context. Tasks and contexts are
+		identified by a textual ID &#8212; context ID is globally unique, task ID is unique within a context.
+		Special context &#8212; system context &#8212; in which all BEEN services are running is created
+		automatically by the Task Manager. The system context is never deleted.</para>
+
+		<para>After submitting a task, the Task Manager checks if the task
+		dependencies are satisfied (i.e. required checkpoints are set). When the task is
+		exclusive or context-exclusive, the Task Manager will also ensure the exclusivity
+		limitations are satisfied. If the task cannot be run immediately, the Task Manager will
+		store task descriptor and attempt execution of the task when conditions in the
+		environment change (e.g. new checkpoint is reached or another task finished).</para>
+	</sect2>
+	
+	<sect2>
+		<title>Communication and Synchronization</title>
+		
+		<para>Synchronization and communication between tasks is handled via checkpoints which are
+		managed centrally by the Task Manager. Each checkpoint has a textual name and optionally a
+		value which can be any Java object capable of transferring over the network (Serializable
+		object). A task can set a checkpoint by registering it in the Task Manager. Another task can
+		then query for checkpoints and their values.</para>
+
+		<para>A checkpoint can be used by a task to indicate a state. For example, a task can set a checkpoint
+		with the name database running to indicate that a database has been successfully started.
+		The value of the checkpoint can be used to send information to other tasks, for example it
+		could be a CORBA IOR reference.</para>
+
+		<para>To get the value of a checkpoint, a task has to specify a task ID of the task that set the
+		checkpoint and the name of the checkpoint. A task can also wait for a checkpoint to be set by
+		a specific task. Each task can only synchronize with the task from the same context or from the
+		system context.</para>
+	</sect2>
+	
+	<sect2>
+		<title>Task Descriptor</title>
+		
+		<para>The Task Descriptor has a format similar to the one described in
+		<biblioref linkend="BUD2" units="page" begin="13" end="14"/>. However, the internal
+		structure has been completely rewritten by the WillBeen project..</para>
+		
+		<para>There are also some new attributes and elements, such as the
+		<option>&lt;taskPropertyObjects&gt;</option> element and the <option>loadUnits</option>
+		attribute of the <option>&lt;loadMonitoring&gt; element.</option></para>
+		
+		<para>All data structures based on XML now use XML Schema instead of DTD and most
+		constraints have been relaxed. The JAXB technology has been integrated.</para>
+	</sect2>
+	
+	<sect2 xml:id="been.user.execution.tasks.tree">
+		<title>Tree of Tasks</title>
+
+		<para>This feature has been contributed by the WillBeen project.</para>
+
+		<para>A context may contain thousands of tasks
+		and each task may serve a different purpose. Lists of these tasks are difficult to work
+		with, especially when debugging or monitoring the progress of analyses.</para>
+		
+		<para>To make task listing easier, the Task Tree structure has been implemented and
+		integrated with the Task Manager.</para>
+		
+		<para>Unlike contexts, the Task Tree can have an unlimited number of levels. It is similar
+		to a directory tree. Leaves of the tree represent tasks. Internal nodes are similar
+		to directories. They can contain other nodes or leaves.</para>
+		
+		<para>Internal nodes can do much more than just listing. When a task changes state
+		and reports the change to the Task Manager<footnote><para>Unfortunately, the current
+		implementation of tasks does not report the task status to the Task Tree. This feature is
+		relatively easy to implement, but there is a considerable amount of related refactoring work that
+		would have to be done first. The WillBeen team did not have enough time and human resources
+		for that.</para></footnote>, a <glossterm baseform="task tree flag">flag</glossterm> can be assigned
+		to the corresponding Task Tree leaf. The Task Tree is extensible and provides the possibility
+		to implement flags and <glossterm baseform="inheritance rule">inheritance rules</glossterm>
+		rules. These rules are aggregate functions that compute the values of flags for
+		each internal node (including the root) based on the values of its child nodes.</para>
+		
+		<para>The mechanism mentioned above exists in many integrated development
+		environments to report the status of source code files and propagate important pieces of
+		information (such as compilation errors) up the directory structure. Task Tree flags can
+		be useful when the administrator needs to get a quick overview of the status and progress
+		of analyses, without traversing the whole Task Tree or looking at all the tasks in a context.</para>
+		
+		<para>The Task Tree cooperates closely with both the Web Interface
+		(<xref linkend="been.user.gui.analyses.tasks.tree"/>) and the Command Line
+		Interface (<xref linkend="been.user.cli.reference.tasks"/>).</para>
+		
+		<para>When a task is created, it obtains a <glossterm baseform="task tree path">tree path</glossterm> automatically
+		from the generator module. The path identifies the tree leaf that will represent the
+		task. It is also a unique task identifier that can be used in the Command Line Interface. The syntax
+		of tree paths is similar to UNIX path names. There is one significant difference: The number
+		of slashes is always exactly equal to the number of path segments. This implies that double
+		slashes are illegal, paths never end with a slash and (the most importantly)
+		<emphasis role="strong">the path to the root node is an empty string</emphasis>.</para>
+		
+		<para>For example, <code>/this/is/a/path</code> is a tree path string with four path
+		segments. It can identify either an internal node or a leaf called <code>path</code>. There
+		are four levels of ancestors &#8212; <code>a</code>, <code>is</code>, <code>this</code> and
+		the root node.</para>
+	</sect2>
+
+</sect1>

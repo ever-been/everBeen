@@ -1,0 +1,75 @@
+class LogStorageTest
+!!!508034.java!!!	main(in args : String) : void
+		try {
+			TaskManagerInterface taskManager = 
+				(TaskManagerInterface) Naming.lookup("rmi://localhost/been/taskmanager");
+			
+			if (GET_LOGS) {
+				// get the logs of some task
+
+				System.out.println("LOGS: ");
+				System.out.println();
+				
+				long count = taskManager.getLogCountForTask(CONTEXT, TASK_ID);
+				System.out.println("LOG MESSAGE COUNT: " + count);
+
+				LogRecord[] logRecords = taskManager.getLogsForTask(CONTEXT, 
+						TASK_ID,
+						40000,
+						42000);
+				
+				for (LogRecord logRecord : logRecords) {
+					System.out.println();
+					System.out.println("Context: " + logRecord.getContext());
+					System.out.println("Task ID: " + logRecord.getTaskID());
+					System.out.println("Hostname: " + logRecord.getHostname());
+
+					SimpleDateFormat format = (SimpleDateFormat) DateFormat.getDateTimeInstance();
+					format.applyPattern("dd.MM.yyyy HH:mm:ss.SSS");
+					System.out.println("Timestamp: " + format.format(logRecord.getTimestamp()));
+
+					System.out.println("Log level: " + logRecord.getLevel());
+					System.out.println("Message: " + logRecord.getMessage());
+				}
+				
+				System.out.println("LENGTH: " + logRecords.length);
+				
+//
+//				// check registration of some tasks and contexts
+//
+//				System.out.println();
+//				System.out.println("\"log-tester-1\" task registered: " 
+//						+ taskManager.isTaskRegistered(CONTEXT, TASK_ID));
+//				System.out.println("\"funky-task\" task registered: " 
+//						+ taskManager.isTaskRegistered(CONTEXT, "funky-task"));
+//				System.out.println("\"system\" context registered: " 
+//						+ taskManager.isContextRegistered(CONTEXT));
+//				System.out.println("\"funky\" context registered: " 
+//						+ taskManager.isContextRegistered("funky"));
+//				
+//				System.out.println();
+			}
+			if (GET_OUTPUT) {
+				System.out.println("STDOUT: ");
+				System.out.println();
+				
+				OutputHandle handle = taskManager.getStandardOutput(CONTEXT, TASK_ID);
+				System.out.println("STDOUT LENGTH: " + handle.getLineCount());
+				
+				
+//				System.out.println();
+//
+//				System.out.println("STDERR: ");
+//				System.out.println();
+//
+//				handle = taskManager.getErrorOutput(CONTEXT, TASK_ID);
+//				while ((output = handle.getNextLines(LogStorage.OUTPUT_TRANSFER_LINECOUNT))
+//						!= null) {
+//					System.out.print(output);
+//				}
+				
+				System.out.println();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}

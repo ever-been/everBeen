@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<!--
+
+  BEEN: Benchmarking Environment
+  ==============================
+
+  File author: David Majda
+
+  GNU Lesser General Public License Version 2.1
+  - - - - - - - - - - - - - - - - - - - - - - -
+  Copyright (C) 2004-2006 Distributed Systems Research Group,
+  Faculty of Mathematics and Physics, Charles University in Prague
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License version 2.1, as published by the Free Software Foundation.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+  MA  02111-1307  USA
+
+-->
+
+<!--
+	This is the DTD for the metadata.xml file in BEEN packages files (.bpk)
+	stored in the Software Repository.
+	
+	Note this DTD doesn't express many additional constraints on the
+	metadata.xml's structure and contents of elements/attributes. See the
+	documentation for exact specification of the format.
+-->
+
+<!-- Root element of the document. -->
+<!ELEMENT package (
+	name,
+	version,
+	hardwarePlatforms?,
+	softwarePlatforms?,
+	type,
+	humanName,
+	downloadURL?,
+	downloadDate?,
+	sourcePackageFilename?,
+	binaryIdentifier?,
+	buildConfiguration?,
+	providedInterfaces?
+)>
+
+<!-- Canonical name of the package. -->
+<!ELEMENT name (#PCDATA)>
+
+<!-- Package version. -->
+<!ELEMENT version (#PCDATA)>
+
+<!-- Hardware platforms. -->
+<!ELEMENT hardwarePlatforms (
+	hardwarePlatform*
+)>
+<!ELEMENT hardwarePlatform (#PCDATA)>
+
+<!-- Software platforms. -->
+<!ELEMENT softwarePlatforms (
+	softwarePlatform*
+)>
+<!ELEMENT softwarePlatform (#PCDATA)>
+
+<!-- Determines whether package type -->
+<!ELEMENT type (#PCDATA)>
+
+<!-- Human-readable package name. -->
+<!ELEMENT humanName (#PCDATA)>
+
+<!-- Source of this package, if downloaded from some external site. -->
+<!ELEMENT downloadURL (#PCDATA)>
+
+<!-- Download date and time, if downloaded from some external site. -->
+<!ELEMENT downloadDate (#PCDATA)>
+
+<!-- Filename of the source package in the Software Repository. -->
+<!ELEMENT sourcePackageFilename (#PCDATA)>
+
+<!-- BID of the binary in experiment, which this package is used in. -->
+<!ELEMENT binaryIdentifier (#PCDATA)>
+
+<!-- Name of the build configuration, in which this package was built. -->
+<!ELEMENT buildConfiguration (#PCDATA)>
+
+<!-- Provided interfaces. -->
+<!ELEMENT providedInterfaces (
+	providedInterface*
+)>
+<!ELEMENT providedInterface (#PCDATA)>
+

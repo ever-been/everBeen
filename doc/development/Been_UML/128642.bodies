@@ -1,0 +1,18 @@
+class PEID
+!!!265986.java!!!	PEID(in pluginID : String)
+		this.pluginID = pluginID;
+!!!266114.java!!!	valueOf(in s : String) : PEID
+		return new PEID(s);
+!!!266242.java!!!	value() : Object
+		return this.pluginID;
+!!!266370.java!!!	compareTo(inout o : Object) : int
+		return compareTo((PEID) o);
+!!!266498.java!!!	compareTo(inout p : PEID) : int
+		String otherValue = (String) p.value();
+		return this.pluginID.compareTo(otherValue);
+!!!266626.java!!!	equals(inout o : Object) : boolean
+		return o instanceof PEID && compareTo(o) == 0;
+!!!266754.java!!!	hashCode() : int
+		return pluginID.hashCode();
+!!!266882.java!!!	toString() : String
+		return pluginID;

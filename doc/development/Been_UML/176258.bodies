@@ -1,0 +1,25 @@
+class LoadMonitorEventListener
+!!!399362.java!!!	LoadMonitorEventListener()
+		
+		filter = new LoadMonitorEventFilter();
+!!!399490.java!!!	LoadMonitorEventListener(inout filter : LoadMonitorEventFilter)
+		
+		if (filter == null) {
+			throw new InvalidArgumentException("null filter for event listener.");
+		}
+		
+		this.filter = filter;
+!!!399618.java!!!	handleEvent(inout event : LoadMonitorEvent) : void
+		
+		if (filter.match(event)) {
+			// filter has accepted event
+			onAccept(event);
+			accepted = true;
+		} else {
+			// event has been rejected
+			onReject(event);
+			accepted = false;
+		}
+!!!399746.java!!!	isAccepted() : boolean
+		
+		return accepted;

@@ -1,0 +1,115 @@
+class Task
+!!!157826.java!!!	Task()
+		taskHandle = this;
+	
+		// obtain monitor for the task
+		try {
+			tasksPort = (TasksPortInterface) Naming.lookup(System.getProperty("hostruntime.tasksport.uri"));
+			taskProperties = tasksPort.getTaskProperties();
+			taskPropertyObjects = tasksPort.getTaskPropertyObjects();
+			taskDescriptor = tasksPort.getTaskDescriptor();
+		} catch (Exception e) {
+			throw new TaskInitializationException(e);
+		}
+			
+		// check if directories were correctly set
+		if (tempDirectory == null) {
+			throw new TaskInitializationException("Temporary directory not set (check property " + Task.PROP_DIR_TEMP + ")");
+		}
+
+		if (workingDirectory == null) {
+			throw new TaskInitializationException("Working directory not set (check property " + Task.PROP_DIR_WORK + ")");
+		}
+		if (taskDirectory == null) {
+			throw new TaskInitializationException("Task directory not set (check property " + Task.PROP_DIR_TASK + ")");
+		}
+		
+		// set-up logging
+		Logger taskRootLogger = Logger.getLogger("task");
+		// set additivity to false, we don't want to log to stdout (the root logger has an appender
+		// logging to stdout, which was assigned to it by the BeenLogger class)
+		taskRootLogger.setAdditivity(false);
+		taskRootLogger.addAppender(new HostRuntimeAppender(this));
+		setLogLevel(DEFAULT_LOG_LEVEL);
+		
+		for (Object key : taskProperties.keySet()) {
+			logDebug("Task property " + (String) key + "=" + taskProperties.getProperty((String) key)); 
+		}
+!!!157954.java!!!	getTaskHandle() : Task
+		return taskHandle;
+!!!158082.java!!!	getTasksPort() : TasksPortInterface
+		return tasksPort;
+!!!158210.java!!!	getWorkingDirectory() : String
+		return workingDirectory;
+!!!158338.java!!!	getTempDirectory() : String
+		return tempDirectory;
+!!!158466.java!!!	getTaskDirectory() : String
+		return taskDirectory;
+!!!158594.java!!!	setLogLevel(inout level : LogLevel) : void
+		logger.setLevel(level.toLog4jLevel());
+!!!158722.java!!!	getLogLevel() : LogLevel
+		return LogLevel.getInstance(logger.getLevel());
+!!!158850.java!!!	logDebug(in message : String) : void
+		logger.debug(message);
+!!!158978.java!!!	logError(in message : String) : void
+		logger.error(message);
+!!!159106.java!!!	logFatal(in message : String) : void
+		logger.fatal(message);
+!!!159234.java!!!	logInfo(in message : String) : void
+		logger.info(message);
+!!!159362.java!!!	logTrace(in message : String) : void
+		logger.trace(message);
+!!!159490.java!!!	logWarning(in message : String) : void
+		logger.warn(message);
+!!!159618.java!!!	getLogger() : Logger
+		
+		return logger;
+!!!159746.java!!!	checkPointReached(in name : String, inout value : Serializable) : void
+		try {
+			tasksPort.checkPointReached(name, value);
+		} catch (RemoteException e) {
+			throw new TaskException(e);
+		}
+!!!159874.java!!!	checkPointWait(in contextID : String, in taskID : String, in name : String, in timeout : long) : Serializable
+		try {
+			return tasksPort.checkPointWait(contextID, taskID, name, timeout);
+		} catch (RemoteException e) {
+			throw new TaskException(e);
+		}
+!!!160002.java!!!	isPropertyNull(in name : String) : boolean
+		
+		return taskProperties.getProperty(name) == null;
+!!!160130.java!!!	getTaskProperties() : Properties
+		
+		return taskProperties;
+!!!160258.java!!!	getTaskProperty(in name : String) : String
+		return taskProperties.getProperty(name);
+!!!160386.java!!!	getTaskProperty(in name : String, in defaultValue : String) : String
+		
+		String value = getTaskProperty(name);
+		
+		if (value == null) {
+			value = defaultValue;
+		}
+		
+		return value;
+!!!160514.java!!!	getBooleanTaskProperty(in name : String) : boolean
+		String value = getTaskProperty(name);
+		return (!(value == null) 
+				&& (
+						(value.equals("yes"))
+						|| (value.equals("true"))
+					)
+				);
+!!!160642.java!!!	getTaskPropertyObject(in name : String) : Serializable
+		return taskPropertyObjects.get(name);
+!!!160770.java!!!	exitSuccess() : void
+		System.exit(EXIT_CODE_SUCCESS);
+!!!160898.java!!!	exitError() : void
+		System.exit(EXIT_CODE_ERROR);
+!!!161026.java!!!	getTaskDescriptor() : TaskDescriptor
+		return this.taskDescriptor;
+!!!161154.java!!!	isRunningInWindows() : boolean
+		return System.getProperty("os.name").toLowerCase().indexOf("windows") != -1;
+!!!161282.java!!!	isRunningInLinux() : boolean
+		return System.getProperty("os.name").toLowerCase().indexOf("linux") != -1;

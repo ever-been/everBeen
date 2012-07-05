@@ -1,0 +1,132 @@
+class NumberedTable
+!!!555650.java!!!	NumberedTable()
+		numberedTable = new ArrayList<NumberedItem>();
+		this.lastItem = 0;
+!!!555778.java!!!	getNumberedTable() : NumberedItem
+		return numberedTable.toArray(new NumberedItem[] {});
+!!!555906.java!!!	NumberedTable(in filename : String)
+				
+		String[] lineTokens;
+		String line;
+		BufferedReader inputReader;
+		
+		try {
+			inputReader = new BufferedReader(new FileReader(filename));
+		} catch (FileNotFoundException e) {			
+			numberedTable = new ArrayList<NumberedItem>();
+			Logger.logDebug("File not found - " + filename + ", creating void table");
+			return;
+		}
+				
+		numberedTable = new ArrayList<NumberedItem>();
+		
+		while ((line = inputReader.readLine()) != null) {								
+			lineTokens = line.split(ASCII_TAB);
+			try {
+				if (lineTokens.length == 1) { 
+					addItem(new Integer(lineTokens[0]), "");
+				} else {
+					String finalLine = "";
+					/* Following code here is to support multiple column tables - secondary
+					 * parsing is upon user */
+					for (int i = 1; i < lineTokens.length; i++) {
+						finalLine += lineTokens[i];
+						if (i < lineTokens.length - 1) {
+							finalLine += ASCII_TAB;
+						}
+					}
+					addItem(new Integer(lineTokens[0]), finalLine);
+				}
+			} catch (IndexOutOfBoundsException e) {
+				throw new IOException("Invalid format in table, file " + filename + ".");
+			}
+		}
+				
+		inputReader.close();
+!!!556034.java!!!	store(in filename : String) : void
+		
+		int i;		
+		PrintWriter outputWriter;
+		
+		outputWriter = new PrintWriter(new BufferedWriter(new FileWriter(filename)));
+		
+		for (i = 0; i < numberedTable.size(); i++) {
+			outputWriter.println(getItemKey(i) + ASCII_TAB + getItemValue(i));		
+		}
+		
+		outputWriter.close();
+!!!556162.java!!!	getItemCount() : int
+		return numberedTable.size();
+!!!556290.java!!!	addItem(in key : long, in value : String) : void
+		
+		numberedTable.add(new NumberedItem(key, value));
+		lastItem++;
+!!!556418.java!!!	deleteItemByKey(in key : long) : void
+		
+		int i = 0;		
+		try {		
+			while (getItemKey(i) != key) {
+				i++;
+				if (i == lastItem) {
+					return; // not found
+				}
+			}
+		} catch (IndexOutOfBoundsException e) {
+			return; //not found
+		}
+		
+		numberedTable.remove(i);
+!!!556546.java!!!	getItemKey(in index : int) : long
+		
+		if (numberedTable.get(index) == null) {
+			Logger.logWarning("Tried to get a key of non-existing item - " + index);
+			return -1;
+		}
+		return numberedTable.get(index).getKey();
+!!!556674.java!!!	getItemValue(in index : int) : String
+		return numberedTable.get(index).getValue();
+!!!556802.java!!!	getItemByKey(in key : long) : String
+		
+		if (numberedTable == null) {
+			Logger.logError("While trying to read long " + key + ", encountered " 
+					+ "null!");
+			assert false : "Table unitialized!";
+			return null; 			
+		}
+		
+		int i = 0;
+		
+		try {		
+			while (getItemKey(i) != key) {
+				i++;
+				if (i == lastItem) {
+					return null;
+				}
+			}
+		} catch (IndexOutOfBoundsException e) {
+			return null;
+		}
+		return getItemValue(i);
+!!!556930.java!!!	setItemByKey(in key : long, in value : String) : boolean
+		
+		if (key == -1) {
+			return false;
+		}
+		
+		int i = 0;
+		
+		try {
+			
+			while (getItemKey(i) != key) {
+				i++;
+				if (i == lastItem) {
+					return false; 
+				}
+			}		
+		
+			numberedTable.set(i, new NumberedItem(key, value));
+		} catch (IndexOutOfBoundsException e) {
+			return false;
+		}
+				
+		return true; 		

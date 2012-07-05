@@ -1,0 +1,9 @@
+class DeleteLockedException
+!!!531330.java!!!	DeleteLockedException()
+		super();
+!!!531458.java!!!	DeleteLockedException(in message : String)
+		super(message);
+!!!531586.java!!!	DeleteLockedException(inout cause : Throwable)
+		super(cause);
+!!!531714.java!!!	DeleteLockedException(in message : String, inout cause : Throwable)
+		super(message, cause);

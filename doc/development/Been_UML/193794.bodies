@@ -1,0 +1,218 @@
+class RRIDTable
+!!!581250.java!!!	RRIDTable()
+		rridTable = new ArrayList<RRIDItem>();
+		this.lastItem = 0;
+!!!581378.java!!!	getRridTable() : RRIDItem
+		return rridTable.toArray(new RRIDItem[] {});
+!!!581506.java!!!	RRIDTable(in filename : String)
+
+		String[] lineTokens;
+		String line;
+		BufferedReader inputReader;
+
+		try {
+			inputReader = new BufferedReader(new FileReader(filename));
+		} catch (FileNotFoundException e) {			
+			rridTable = new ArrayList<RRIDItem>();
+			return;
+		}
+
+		rridTable = new ArrayList<RRIDItem>();
+		
+		while ((line = inputReader.readLine()) != null) {								
+			lineTokens = line.split(ASCII_TAB);
+			try {
+			    	RRIDItem item = new RRIDItem(new RID(Integer.valueOf(lineTokens[0])), 
+			    		Boolean.valueOf(lineTokens[1]),  
+			    		lineTokens[2], Integer.valueOf(lineTokens[3]));			    	
+			    	
+			    	addItem(item);
+			} catch (IndexOutOfBoundsException e) {
+				throw new IOException("Invalid format in validity maps file " + filename + ".");
+			}
+		}
+				
+		inputReader.close();
+!!!581634.java!!!	store(in filename : String) : void
+		
+		int i;		
+		PrintWriter outputWriter;
+		
+		outputWriter = new PrintWriter(new BufferedWriter(new FileWriter(filename)));
+		
+		for (i = 0; i < rridTable.size(); i++) {
+		    String lineBuffer;
+		    lineBuffer = getItemKey(i) + ASCII_TAB + getItemValidity(i) 
+		    	+ ASCII_TAB + rridTable.get(i).getTableName() 
+		    	+ ASCII_TAB + rridTable.get(i).getHostIndex();
+		    outputWriter.println(lineBuffer);		
+		}
+		
+		outputWriter.close();
+!!!581762.java!!!	getItemCount() : int
+		return rridTable.size();
+!!!581890.java!!!	addItem(inout anItem : RRIDItem) : void
+		
+		rridTable.add(anItem);
+		lastItem++;
+!!!582018.java!!!	deleteItemByKey(inout key : RID) : void
+		
+		int i = 0;		
+		try {		
+			while (getItemKey(i).compareTo(key) != 0) {
+				i++;
+				if (i == lastItem) {
+					return; // not found
+				}
+			}
+		} catch (ArrayIndexOutOfBoundsException e) {
+			return; //not found
+		}		
+		
+		rridTable.remove(i);
+!!!582146.java!!!	getItemKey(in index : int) : RID
+		return rridTable.get(index).getKey();
+!!!582274.java!!!	getItemValidity(in index : int) : boolean
+		return rridTable.get(index).getValid();
+!!!582402.java!!!	getItemByKey(inout key : RID) : RRIDItem
+		
+		if (rridTable == null) {
+			Logger.logError("While trying to read RID " + key + ", encountered " 
+					+ "null validity map.");
+			assert false : "Validity map table unitialized!";
+			return null; 
+		}
+		
+		int i = 0;
+		
+		try {		
+			while (getItemKey(i).compareTo(key) != 0) {
+				i++;
+				if (i == lastItem) {
+					return null;
+				}
+			}
+		} catch (IndexOutOfBoundsException e) { 
+			return null;
+		}
+		return rridTable.get(i);		
+!!!582530.java!!!	getItemIndexByKey(inout key : RID) : int
+		
+		if (rridTable == null) {
+			Logger.logError("While trying to read RID " + key + ", encountered " 
+					+ "null validity map.");
+			assert false : "Validity map table unitialized!";
+			return -1; 
+		}
+		
+		int i = 0;
+		
+		try {		
+			while (getItemKey(i).compareTo(key) != 0) {
+				i++;
+				if (i == lastItem) {
+					return -1;
+				}
+			}
+		} catch (IndexOutOfBoundsException e) { 
+			return -1;
+		}
+		return i;		
+!!!582658.java!!!	isValueInTable(in value : String) : boolean
+		
+		if (rridTable == null) {
+			Logger.logError("While checking duplicities of " + value + ", encountered " 
+					+ "null validity map.");
+			assert false : "Validity map table unitialized!";
+			return false; 
+		}
+		
+		try {		
+		    for (RRIDItem rridItem : rridTable) {
+	    		if (rridItem.getTableName().compareTo(value) == 0) {
+	    			return true;
+	    		}		    	
+		    }
+		} catch (IndexOutOfBoundsException e) { 
+			return false;
+		}
+		return false;
+!!!582786.java!!!	getValidityByKey(inout key : RID) : boolean
+		
+		if (rridTable == null) {
+			Logger.logError("While trying to read RID " + key + ", encountered " 
+					+ "null validity map.");
+			assert false : "Validity map table unitialized!";
+			return false; 
+		}
+		
+		int i = 0;
+		
+		try {		
+			while (getItemKey(i).compareTo(key) != 0) {
+				i++;
+				if (i == lastItem) {
+					return false;
+				}
+			}
+		} catch (IndexOutOfBoundsException e) {
+			return false;
+		}
+		return getItemValidity(i);		
+!!!582914.java!!!	getItemTablename(in index : int) : String
+		return rridTable.get(index).getTableName();
+!!!583042.java!!!	splitFirstNumber(in input : String) : String
+		
+		int firstMinus = input.indexOf("-");
+		int firstDot = input.indexOf(".");
+		int catValue;
+		
+		if (firstMinus == -1 && firstDot == -1) {
+			return new String[] { "", input };
+		}
+		
+		if (firstMinus == -1) {
+			catValue = firstDot; 
+		} else if (firstDot == -1) {
+			catValue = firstMinus;
+		} else {
+			catValue = Math.min(firstDot, firstMinus);
+		}		
+		
+		return new String[] { input.substring(0, catValue), input.substring(catValue) };
+!!!583170.java!!!	getAllIndexesEqualTo(in key : long) : Integer
+		
+		ArrayList<Integer> returnValue = new ArrayList<Integer>() {};
+		
+		for (int i = 0; i < rridTable.size(); i++) {
+			RRIDItem rridItem = rridTable.get(i);
+			String indexStr = splitFirstNumber(rridItem.getTableName())[0];
+			if (Integer.valueOf(indexStr) == key) {
+				returnValue.add(i);
+			}
+		}
+		
+		return returnValue.toArray(new Integer[] {});
+!!!583298.java!!!	getRealRunIndex(in index : int) : long
+		
+		RRIDItem rridItem = rridTable.get(index);
+		
+		String[] parsed = splitFirstNumber(rridItem.getTableName());
+		
+		try {
+			return Long.valueOf(parsed[0]);
+		} catch (NumberFormatException e) {
+			return -1;
+		}
+		
+!!!583426.java!!!	decreaseIndexByOne(in index : int) : void
+		
+		RRIDItem rridItem = rridTable.get(index);
+		
+		String[] parsed = splitFirstNumber(rridItem.getTableName());
+		rridItem.setTableName(String.valueOf(Long.valueOf(parsed[0]) - 1) + parsed[1]);
+		
+!!!583554.java!!!	getItemDecreasedTablename(in index : int) : String
+		
+		String[] parsed = splitFirstNumber(rridTable.get(index).getTableName());		
+		return String.valueOf(Long.valueOf(parsed[0]) - 1) + parsed[1];

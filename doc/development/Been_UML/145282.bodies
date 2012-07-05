@@ -1,0 +1,32 @@
+class Section
+!!!228994.java!!!	getItems() : Item
+		return items;
+!!!229122.java!!!	getTitle() : String
+		return title;
+!!!229250.java!!!	getDescription() : String
+		return description;
+!!!229378.java!!!	getParent() : Item
+		return parent;
+!!!229506.java!!!	setParent(inout parent : Item) : void
+		this.parent = parent;
+!!!229634.java!!!	getIndex() : int
+		return index;
+!!!229762.java!!!	setIndex(in index : int) : void
+		this.index = index;
+!!!229890.java!!!	Section(inout items : Item, in title : String, in description : String)
+		this.items = items;
+		this.title = title;
+		this.description = description;
+		
+		for (int i = 0; i < this.items.length; i++) {
+			this.items[i].setParent(this);
+			this.items[i].setIndex(i);
+		}
+!!!230018.java!!!	formElementNamePrefix() : String
+		return (parent != null ? parent.formElementNameBase() + "-" : "")
+			+ Integer.toString(index);
+!!!230146.java!!!	toString() : String
+		return "Section("
+			+ (title == null ? title : "(no title)") + ","
+			+ (description == null ? title : "(no description)")
+			+ ","	+ Arrays.toString(items) + ")";

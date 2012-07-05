@@ -1,0 +1,74 @@
+class ContextEntry
+!!!704514.java!!!	ContextEntry()
+		this.currentTimeMillis = System.currentTimeMillis();
+		
+//		this.contextId = "";
+//		this.contextName = "";
+//		this.contextDescription = "";
+//		this.open = true;
+//		this.magicObject = null;
+!!!704642.java!!!	ContextEntry(in contextId : String, in contextName : String, in contextDescription : String, inout magicObject : Serializable)
+		this.currentTimeMillis = System.currentTimeMillis();
+		
+		this.setContextId(contextId);
+		if (contextName != null) {
+			this.setContextName(contextName);
+		}
+		if (contextDescription != null) {
+			this.setContextDescription(contextDescription);
+		}
+//		this.open = true;
+		if (magicObject != null) {
+			this.setMagicObject(magicObject);
+		}
+!!!704770.java!!!	setContextId(in contextId : String) : void
+		if (Pattern.matches(REGEXP_CONTEXT_ID, contextId)) {
+			this.contextId = contextId;
+		} else {
+			throw new IllegalArgumentException("contextId is not valid");
+		}
+!!!704898.java!!!	setContextName(in contextName : String) : void
+//		if (Pattern.matches(REGEXP_CONTEXT_NAME, contextName)) {
+		if (contextName != null) {
+			this.contextName = contextName;
+		} else {
+			throw new IllegalArgumentException("contextName is not valid");
+		}
+!!!705026.java!!!	setContextDescription(in contextDescription : String) : void
+//		if (Pattern.matches(REGEXP_CONTEXT_DESCRIPTION, contextDescription)) {
+		if (contextDescription != null) {
+			this.contextDescription = contextDescription;
+		} else {
+			throw new IllegalArgumentException("contextDescription is not "
+					+ "valid");
+		}
+!!!705154.java!!!	setMagicObject(inout magicObject : Serializable) : void
+		this.magicObject = magicObject;
+!!!705282.java!!!	close() : void
+		if (!this.open) {
+			throw new IllegalStateException("Context is already closed");
+		}
+		this.open = false;
+!!!705410.java!!!	getCurentTime() : long
+		return this.currentTimeMillis;
+!!!705538.java!!!	getContextId() : String
+		return this.contextId;
+!!!705666.java!!!	getContextName() : String
+		return this.contextName;
+!!!705794.java!!!	getContextDescription() : String
+		return this.contextDescription;
+!!!705922.java!!!	getMagicObject() : Serializable
+		return this.magicObject;
+!!!706050.java!!!	isOpen() : boolean
+		return this.open;
+!!!706178.java!!!	clone() : ContextEntry
+		ContextEntry contextEntry = (ContextEntry) super.clone();
+		
+		/* Set current time. */
+		contextEntry.currentTimeMillis = System.currentTimeMillis();
+		
+		/* Clone magicObject. */
+		contextEntry.setMagicObject(
+				CloneSerializable.cloneSerializable(this.magicObject));
+		
+		return contextEntry;

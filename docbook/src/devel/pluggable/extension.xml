@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sect1
+	xml:id="been.devel.pluggable.extension"
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>Extensions</title>
+	
+	<para>This section describes how to create you own <glossterm>pluggable module</glossterm> and what are the conventions 
+	for creating them.</para>
+	
+	<sect2>
+		<title>How To Create a New Pluggable Module</title>
+		<para>
+		Creating a new <glossterm>pluggable module</glossterm> have been done as easy as possible. Nevertheless it still
+		includes some vital steps and considerations. This section will show you how 
+		to create a <glossterm>pluggable module</glossterm> step by step.
+		</para>
+		
+		<para>
+		The major task in authoring a new <glossterm>pluggable module</glossterm> is to create
+		<glossterm>pluggable module package</glossterm>. This package you can then load to the <glossterm>Software Repository</glossterm>
+		(doesn't matter whether by using ANT scripts or by simply uploading
+		it to <glossterm>Software Repository</glossterm> using Web UI or CLI).
+		After a valid <glossterm>pluggable module package</glossterm> is stored in <glossterm>Software Repository</glossterm>,
+		it's fully usable and ready to be used by <glossterm baseform="task">tasks</glossterm>.
+		</para>
+		
+		<para>Creating <glossterm>pluggable module</glossterm>'s package includes these steps:
+		</para>
+		<orderedlist>
+			<listitem><para>Define <glossterm>pluggable module</glossterm>'s interface</para></listitem>
+			<listitem><para>Implement functionality defined by <glossterm>pluggable module</glossterm>'s interface</para></listitem>
+			<listitem><para>Create <glossterm>package metadata file</glossterm> (<filename>metadata.xml</filename>)</para></listitem>
+			<listitem><para>Create pluggable module's <glossterm>task configuration file</glossterm> (<filename>config.xml</filename>)</para></listitem>
+		</orderedlist>
+		<para>We will now go through all of these steps in detail.</para>
+			
+		
+		<sect3>
+		<title>Defining pluggable module's interface</title>
+		<para>
+		Task that loaded a <glossterm>pluggable module</glossterm> will interact with it only using its
+		Java interface and every <glossterm>pluggable module</glossterm> has to provide such. This interface 
+		can provide any methods with any parameters you want, but there's a constraint 
+		caused by how <glossterm>pluggable module</glossterm> class-loading works. There are two types 
+		of parameters that methods can have:
+		</para>
+		
+		<itemizedlist>
+			<listitem><para>Parameters of primitive Java types or non-primitive types visible from BEEN core's class path. These 
+			parameters do not represent mean any limitation. If possible, try to use this kind of parameters only. </para></listitem>
+			<listitem><para>Parameters of non-primitive types not visible from BEEN core's class path. In order
+			to use this kind parameters, you need to include their class definitions in <glossterm>task</glossterm>'s package. Since
+			this adds complexity to <glossterm>pluggable module</glossterm> usage, try to avoid using this kind of parameters. 
+			Also, if possible, try to replace Java classes by Java interfaces.</para></listitem>
+		</itemizedlist>
+		
+		<para>
+		Here is an example how <glossterm>pluggable module</glossterm>'s interface can look like (real-life example 
+		of pluggable module simplifying work with Derby DB). Notice that parameter types are not pluggable module specific
+		and are visible to BEEN core classpath.
+		</para>
+		
+		<programlisting language="java"><![CDATA[public interface DerbyPluggableModule {
+
+    public abstract void startEngine(String home,
+            boolean networkAccessible)
+            throws PluggableModuleException;
+
+    public abstract void startEngine(String home,
+            boolean networkAccessible,
+            int networkPort)
+            throws PluggableModuleException;
+
+    public abstract void stopEngine()
+            throws PluggableModuleException;
+
+    public abstract Connection getConnection(
+            String databaseName)
+            throws SQLException;
+
+    ...
+
+    public abstract Connection setupDatabase(
+            String databaseName,
+            File setupScriptFile)
+            throws FileNotFoundException,
+            PluggableModuleException;
+
+    public abstract java.sql.Connection restoreDatabase(
+            String databaseName, File backupFile)
+            throws PluggableModuleException;
+
+    public abstract void dropDatabase(
+            String databaseName)
+            throws PluggableModuleException;
+}]]>
+</programlisting>
+		</sect3>
+		
+		<sect3>
+		<title>Implementing Pluggable Module's Functionality</title>
+		
+		<para>
+		<glossterm>Pluggable module</glossterm>'s functionality is to be implemented in 
+		a class that extends <classname>PluggableModule</classname> (see <xref linkend="been.devel.pluggable.api.pmapi"/>) 
+		base class and implements the already defined interface. Implementation
+		class has to have a 1-parametric constructor that takes <glossterm>Pluggable
+		Module Manager</glossterm> as a parameter (<glossterm>pluggable module</glossterm> instances are constructed
+		using reflection). To obey convention, put <glossterm>pluggable module</glossterm> implementation to
+		<package>implementation</package> subpackage of <glossterm>pluggable module</glossterm>'s root package.  
+		</para>
+		<para>
+		Here is an example how Derby pluggable module's implementation 
+		looks like:
+		</para>
+		<programlisting language="java"><![CDATA[package cz.cuni.mff.been.pluggablemodule.derby.implementation;
+
+public class DerbyPluggableModuleImpl extends
+        PluggableModule implements
+        DerbyPluggableModule {
+
+    public DerbyPluggableModuleImpl(
+            PluggableModuleManager manager) {
+        super(manager);
+    }
+    
+    ...	
+}]]>
+</programlisting>
+		</sect3>
+
+	<sect3>
+		<title>Creating Package Metadata File</title>
+		<para>
+		Creating <glossterm>package metadata file</glossterm> and <glossterm>configuration file</glossterm> is simple and self-explaining, so we only present
+		an example, how <filename>metadata.xml</filename> and <filename>config.xml</filename> files look like for Derby pluggable module. By convention,
+		<filename>metadata.xml</filename> and <filename>config.xml</filename> for core pluggable modules are kept in <filename>resources/packages/pluggablemodule/</filename> 
+		directory in project root. For more information about <glossterm>pluggable module metadata</glossterm> and configuration files
+		see <xref linkend="been.devel.pluggable.basics.whatis"/>.	
+		</para>	
+
+<para>Derby pluggable module's <filename>metadata.xml</filename></para>		
+<programlisting language="xml"><![CDATA[<package>
+  <name>derby</name>
+  <version>1.0</version>
+  <type>module</type>
+  <humanName>Apache Derby DB pluggable module</humanName>
+  <providedInterfaces>
+    <providedInterface>cz.cuni. ... .DerbyPluggableModule</providedInterface>
+  </providedInterfaces>
+</package>]]></programlisting>
+
+<para>Derby pluggable module's <filename>config.xml</filename></para>
+<programlisting language="xml"><![CDATA[<pluggableModuleConfiguration 
+  xmlns="http://been.mff.cuni.cz/pluggablemodule/config">
+  <java mainClass="cz.cuni. ... .DerbyPluggableModuleImpl">
+    <classpathItems>
+      <classpathItem>files/derby.jar</classpathItem>
+    </classpathItems>
+  </java>
+</pluggableModuleConfiguration>]]>
+</programlisting>
+	</sect3>	
+	
+	</sect2>
+	
+	<!--
+	example files, creating a new pluggable module
+	
+	conventions used, package structure.
+	-->
+	
+	<!--  <sect2>
+		<title>Pluggable module conventions</title>
+		<para>
+			
+		</para>
+	</sect2>-->
+</sect1>

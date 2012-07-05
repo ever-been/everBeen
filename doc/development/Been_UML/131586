@@ -1,0 +1,2042 @@
+format 59
+"rubis" // been::src::cz::cuni::mff::been::apps::benchmarkmanager::plugins::rubis
+  revision 1
+  modified_by 2 "Administrator"
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default show_stereotype_properties default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+  show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+  show_infonote default drawing_language default show_stereotype_properties default
+  
+  java_dir "cz/cuni/mff/been/apps/benchmarkmanager/plugins/rubis"
+  java_package "cz.cuni.mff.been.apps.benchmarkmanager.plugins.rubis"
+  classview 130434 "rubis"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default show_stereotype_properties default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+    //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+    show_infonote default drawing_language default show_stereotype_properties default
+    class 141954 "RubisConfigurator"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Manages the user interface for running the Rubis benchmark.
+"
+      classrelation 146818 // <generalisation>
+	relation 146818 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 146818 // <generalisation>
+	  b parent class_ref 129282 // Configurator
+      end
+
+      class 142210 "ScreenID"
+	visibility private stereotype "enum"
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}${final}${abstract}enum ${name}${implements} {
+${items};
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	attribute 141186 "SW_SELECTION"
+	  public type class_ref 142210 // ScreenID
+	  cpp_decl ""
+	  java_decl "  ${@}${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " Software selection screen 
+"
+	end
+
+	attribute 141314 "RUBIS_SUITE"
+	  public type class_ref 142210 // ScreenID
+	  cpp_decl ""
+	  java_decl "  ${@}${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " Rubis suite selection screen 
+"
+	end
+
+	attribute 141442 "COMPILE"
+	  public type class_ref 142210 // ScreenID
+	  cpp_decl ""
+	  java_decl "  ${@}${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " Compilation roles screen 
+"
+	end
+
+	attribute 141570 "BENCHMARK"
+	  public type class_ref 142210 // ScreenID
+	  cpp_decl ""
+	  java_decl "  ${@}${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " Benchmark roles screen 
+"
+	end
+
+	attribute 141698 "PROPERTIES"
+	  public type class_ref 142210 // ScreenID
+	  cpp_decl ""
+	  java_decl "  ${@}${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " Benchmark properties configuration screen 
+"
+	end
+      end
+
+      attribute 141826 "lastScreen"
+	private explicit_type "int"
+	init_value "=  -1"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " 
+Last processed screen, it's used for preventing the user 
+from jumping more than 1 screen forward with the help of the 
+browser history.
+
+"
+      end
+
+      attribute 141954 "mysqlVersion"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "private BenchmarkExperiment experiment = new BenchmarkExperiment();
+ Version of MySQL that will be used. 
+"
+      end
+
+      attribute 142082 "mysqlPlatform"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Desired platform for running MySQL 
+"
+      end
+
+      attribute 142210 "ejbServer"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Which EJB server will be used, \"JBoss\" or \"Jonas\" 
+"
+      end
+
+      attribute 142338 "ejbServerVersion"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Which version of the EJB server will be used 
+"
+      end
+
+      attribute 142466 "ejbServerPlatform"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " On which software platform should the EJB server run 
+"
+      end
+
+      classrelation 146946 // rslEJBServerCompile (<unidirectional association>)
+	relation 146946 --->
+	  a role_name "rslEJBServerCompile" private
+	    comment " RSL for the EJB server compilation role 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 146946 // rslEJBServerCompile (<unidirectional association>)
+	  b parent class_ref 138242 // Condition
+      end
+
+      classrelation 147074 // rslEJBServer (<unidirectional association>)
+	relation 147074 --->
+	  a role_name "rslEJBServer" private
+	    comment " RSL for the EJB server role 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 147074 // rslEJBServer (<unidirectional association>)
+	  b parent class_ref 138242 // Condition
+      end
+
+      classrelation 147202 // rslDatabaseServer (<unidirectional association>)
+	relation 147202 --->
+	  a role_name "rslDatabaseServer" private
+	    comment " RSL for the database server role 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 147202 // rslDatabaseServer (<unidirectional association>)
+	  b parent class_ref 138242 // Condition
+      end
+
+      classrelation 147330 // rslClient (<unidirectional association>)
+	relation 147330 --->
+	  a role_name "rslClient" private
+	    comment " RSL for the client role 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 147330 // rslClient (<unidirectional association>)
+	  b parent class_ref 138242 // Condition
+      end
+
+      attribute 142594 "clientHosts"
+	private explicit_type "int"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Number of hosts in the client role 
+"
+      end
+
+      attribute 142722 "rubisSuite"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Rubis suite chosen by the user
+"
+      end
+
+      attribute 142850 "runCount"
+	private explicit_type "int"
+	init_value "=  1"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Benchmark properties
+
+"
+      end
+
+      attribute 142978 "transitionTable"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Runtime properties of Rubis.
+
+"
+      end
+
+      attribute 143106 "dumpType"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 143234 "maxTransitions"
+	private explicit_type "int"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 143362 "upRampTime"
+	private explicit_type "int"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 143490 "upRampSlowdownFactor"
+	private explicit_type "int"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 143618 "downRampTime"
+	private explicit_type "int"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 143746 "downRampSlowdownFactor"
+	private explicit_type "int"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 143874 "sessionTime"
+	private explicit_type "int"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 144002 "clientCount"
+	private explicit_type "int"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 144130 "debugLevel"
+	private explicit_type "int"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 144258 "TRANSITION_TABLES"
+	class_attribute const_attribute private explicit_type "String"
+	multiplicity "[]"
+	init_value "=  {
+		\"browse_only_03.txt\", 
+		\"browse_only_05.txt\",
+		\"browse_only_15.txt\",
+		\"browse_only_2.txt\",
+		\"browse_only_transitions.txt\",
+		\"browse_only_transitions_7.txt\",
+		\"default_transitions.txt\",
+		\"default_transitions_03.txt\",
+		\"default_transitions_05.txt\",
+		\"default_transitions_15.txt\",
+		\"default_transitions_2.txt\",
+		\"default_transitions_7.txt\",
+		\"transitions.txt\"
+	}"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	java_annotation "@SuppressWarnings(\"unused\")
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Default values of the Rubis' properties.
+
+ Valid transition tables 
+"
+      end
+
+      attribute 144386 "DEFAULT_TRANSITION_TABLE"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  0"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Default transition table index in the transition table select 
+"
+      end
+
+      attribute 144514 "DEFAULT_MAX_TRANSITIONS"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  10"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Default values of properties that can be set in the GUI.
+
+"
+      end
+
+      attribute 144642 "DEFAULT_UPRAMP_TIME"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  1"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 144770 "DEFAULT_UPRAMP_SLOWDOWN_FACTOR"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  2"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 144898 "DEFAULT_DOWNRAMP_TIME"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  1"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 145026 "DEFAULT_DOWNRAMP_SLOWDOWN_FACTOR"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  3"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 145154 "DEFAULT_SESSION_TIME"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  10"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 145282 "DEFAULT_CLIENT_COUNT"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  20"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 145410 "DEFAULT_DEBUG_LEVEL"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  3"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 145538 "DEFAULT_RUN_COUNT"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  2"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 145666 "DEFAULT_EJB_SERVER"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  0"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 145794 "DEFAULT_JBOSS_PLATFORM"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  0"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 145922 "DEFAULT_JONAS_PLATFORM"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  0"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 146050 "DEFAULT_MYSQL_PLATFORM"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  0"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 146178 "DEFAULT_DUMP_TYPE"
+	class_attribute const_attribute private explicit_type "int"
+	init_value "=  0"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Default dump type index in the dump type select
+"
+      end
+
+      operation 194178 "getFirstScreen"
+	public return_type class_ref 134274 // Screen
+	nparams 0
+	nexceptions 1
+	  exception class_ref 142082 // ConfiguratorException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.apps.benchmarkmanager.plugins.ConfiguratorInterface#getFirstScreen()
+"
+      end
+
+      operation 194306 "getNextScreen"
+	public return_type class_ref 134274 // Screen
+	nparams 1
+	  param inout name "processedScreen" type class_ref 134274 // Screen
+	nexceptions 2
+	  exception class_ref 134530 // IllegalScreenSequenceException
+	  exception class_ref 142082 // ConfiguratorException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.apps.benchmarkmanager.plugins.ConfiguratorInterface#getNextScreen(cz.cuni.mff.been.benchmarkmanager.gui.Screen)
+"
+      end
+
+      operation 194434 "getDefaultRScripts"
+	public return_type class_ref 135554 // CallbackRScripts
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+      end
+
+      operation 194562 "getPreviousScreen"
+	public return_type class_ref 134274 // Screen
+	nparams 1
+	  param inout name "processedScreen" type class_ref 134274 // Screen
+	nexceptions 2
+	  exception class_ref 134530 // IllegalScreenSequenceException
+	  exception class_ref 142082 // ConfiguratorException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.apps.benchmarkmanager.plugins.ConfiguratorInterface#getPreviousScreen(cz.cuni.mff.been.benchmarkmanager.gui.Screen)
+"
+      end
+
+      operation 194690 "createExperiment"
+	private explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  exception class_ref 142082 // ConfiguratorException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the user given values in the configured experiment.
+
+"
+      end
+
+      operation 194818 "getUserInput"
+	private explicit_return_type "void"
+	nparams 1
+	  param inout name "screen" type class_ref 134274 // Screen
+	nexceptions 1
+	  exception class_ref 142082 // ConfiguratorException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Get the values enter by user in a screen.
+
+@param screen
+@throws IllegalScreenSequenceException
+"
+      end
+
+      operation 194946 "processSWSelectionScreen"
+	private explicit_return_type "void"
+	nparams 1
+	  param inout name "screen" type class_ref 134274 // Screen
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Gets the values entered by the user in the software selection screen.
+
+@param screen
+"
+      end
+
+      operation 195074 "processPropertiesScreen"
+	private explicit_return_type "void"
+	nparams 1
+	  param inout name "screen" type class_ref 134274 // Screen
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Gets the values entered by the user in the properties screen.
+
+@param screen
+"
+      end
+
+      operation 195202 "processCompileRolesScreen"
+	private explicit_return_type "void"
+	nparams 1
+	  param inout name "screen" type class_ref 134274 // Screen
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Gets the values entered by the user for the compilation roles.
+
+@param screen
+"
+      end
+
+      operation 195330 "processBenchmarkRolesScreen"
+	private explicit_return_type "void"
+	nparams 1
+	  param inout name "screen" type class_ref 134274 // Screen
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Gets the values entered by the user for the benchmarking roles.
+
+@param screen
+"
+      end
+
+      operation 195458 "processRubisSuiteScreen"
+	private explicit_return_type "void"
+	nparams 1
+	  param inout name "screen" type class_ref 134274 // Screen
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Gets the selected Rubis' suite.
+ 
+@param screen
+"
+      end
+
+      operation 195586 "createCompileRolesScreen"
+	private return_type class_ref 134274 // Screen
+	nparams 1
+	  param in name "ejbServerName" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Creates a screen for configuring the compilation roles.
+
+@param ejbServerName name of the EJB server
+@return screen for configuring the compilation roles.
+"
+      end
+
+      operation 195714 "createBenchmarkRolesScreen"
+	private return_type class_ref 134274 // Screen
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Creates a screen for configuring the benchmark roles.
+
+@return screen for configuring the benchmark roles.
+"
+      end
+
+      operation 195842 "createPropertiesScreen"
+	private return_type class_ref 134274 // Screen
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+
+@return screen for setting properties for the benchmark.
+"
+      end
+
+      operation 195970 "createSoftwareSelectionScreen"
+	private return_type class_ref 134274 // Screen
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+
+@return screen for selecting the used software.
+"
+      end
+
+      operation 196098 "createRubisSuiteScreen"
+	private return_type class_ref 134274 // Screen
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+
+@return screen for selecting the Rubis' suite.
+"
+      end
+    end
+
+    class 142338 "RubisTaskGenerator"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Task generator for the Rubis benchmark.
+
+@author Jaroslav Urban
+"
+      classrelation 147970 // <generalisation>
+	relation 147970 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 147970 // <generalisation>
+	  b parent class_ref 129410 // TaskGenerator
+      end
+
+      attribute 146562 "MYSQL_VERSION"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"mysql.version\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " software properties
+ Benchmark property name for the version of MySQL. 
+"
+      end
+
+      attribute 146690 "MYSQL_PLATFORM"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"mysql.platform\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Benchmark property name for the platform of MySQL. 
+"
+      end
+
+      attribute 146818 "EJB_SERVER"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"ejb.server\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Benchmark property name for the EJB server name. 
+"
+      end
+
+      attribute 146946 "EJB_SERVER_VERSION"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"ejb.server.version\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Benchmark property name for the version of the EJB server. 
+"
+      end
+
+      attribute 147074 "EJB_SERVER_PLATFORM"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"ejb.server.platform\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Benchmark property name for the platform of the EJB server. 
+"
+      end
+
+      attribute 147202 "EJB_SERVER_COMPILE_ROLE"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"EJB server compile\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " benchmarking roles
+ Benchmark role name for the host name for EJB server compilation. 
+"
+      end
+
+      attribute 147330 "EJB_SERVER_ROLE"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"EJB server\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Benchmark role name for the host name for the EJB server. 
+"
+      end
+
+      attribute 147458 "DATABASE_ROLE"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"Database server\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Benchmark role name for the host name for the database server. 
+"
+      end
+
+      attribute 147586 "CLIENT_ROLE"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"Clients\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Benchmark role name for the host name for the Rubis client. 
+"
+      end
+
+      attribute 147714 "RUBIS_SUITE_MDB"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"MDB\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Rubis \"suites\"
+ Valid value of the {@value #RUBIS_SUITE} benchmark property. 
+"
+      end
+
+      attribute 147842 "RUBIS_SUITE_EJB_LOCAL_REMOTE"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"EJB_local_remote\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Valid value of the {@value #RUBIS_SUITE} benchmark property. 
+"
+      end
+
+      attribute 147970 "RUBIS_SUITE_EJB_SESSION_FACADE"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"EJB_Session_facade\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Valid value of the {@value #RUBIS_SUITE} benchmark property. 
+"
+      end
+
+      attribute 148098 "RUBIS_SUITE_EJB_SESSIONBEAN"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"EJB_SessionBean\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Valid value of the {@value #RUBIS_SUITE} benchmark property. 
+"
+      end
+
+      attribute 148226 "RUBIS_SUITE_EJB_ENTITYBEAN_ID_BMP"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"EJB_EntityBean_id_BMP\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Valid value of the {@value #RUBIS_SUITE} benchmark property. 
+"
+      end
+
+      attribute 148354 "RUBIS_SUITE_EJB_ENTITYBEAN_ID"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"EJB_EntityBean_id\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Valid value of the {@value #RUBIS_SUITE} benchmark property. 
+"
+      end
+
+      attribute 148482 "RUBIS_SUITE_EJB_CMP2"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"EJB_CMP2.0\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Valid value of the {@value #RUBIS_SUITE} benchmark property. 
+"
+      end
+
+      attribute 148610 "RUBIS_SUITE"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"rubis.suite\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " rubis properties
+ Benchmark property name for the Rubis' suite. 
+"
+      end
+
+      attribute 148738 "TRANSITION_TABLE"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"rubis.transition.table\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Benchmark property name for the transition table. 
+"
+      end
+
+      attribute 148866 "TRANSITIONS_MAX"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"rubis.transitions.max\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Benchmark property name for the maximum number of transitions. 
+"
+      end
+
+      attribute 148994 "UP_RAMP_TIME"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"rubis.upramp.time\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Benchmark property name for the up ramp time. 
+"
+      end
+
+      attribute 149122 "UP_RAMP_SLOWDOWN_FACTOR"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"rubis.upramp.slowdown\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Benchmark property name for the up ramp slowdown factor. 
+"
+      end
+
+      attribute 149250 "DOWN_RAMP_TIME"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"rubis.downramp.time\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Benchmark property name for the down ramp time. 
+"
+      end
+
+      attribute 149378 "DOWN_RAMP_SLOWDOWN_FACTOR"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"rubis.downramp.slowdown\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Benchmark property name for the down ramp slowdown factor. 
+"
+      end
+
+      attribute 149506 "SESSION_TIME"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"rubis.session.time\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Benchmark property name for the session time. 
+"
+      end
+
+      attribute 149634 "CLIENT_COUNT"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"rubis.client.count\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Benchmark property name for the client count. 
+"
+      end
+
+      attribute 149762 "DEBUG_LEVEL"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"rubis.debug.level\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Benchmark property name for the cdebug level of Rubis. 
+"
+      end
+
+      attribute 149890 "DUMP_TYPE"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"dump.type\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " misc properties
+ Benchmark property name specifying which database dump type should be used.
+"
+      end
+
+      attribute 150018 "DUMP_TYPE_BINARY"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"binary\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " 
+Valid value of the {@value #DUMP_TYPE} benchmark property specifying a binary
+dump type. 
+
+"
+      end
+
+      attribute 150146 "DUMP_TYPE_TEXT"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"text\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " 
+Valid value of the {@value #DUMP_TYPE} benchmark property specifying a text
+dump type. 
+
+"
+      end
+
+      attribute 150274 "JBOSS_SVN_URL"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"http://anonsvn.jboss.org/repos/jbossas/branches/Branch_4_0\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " misc constants
+ URL for the JBoss SVN repository. 
+"
+      end
+
+      attribute 150402 "JONAS_SVN_URL"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"svn://svn.forge.objectweb.org/svnroot/jonas/jonas4/branches/jonas_4_8/jonas\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " URL for the Jonas SVN repository. 
+"
+      end
+
+      attribute 150530 "MYSQL_MAX_CONNECTIONS"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"500\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Maximum number of connections to the MySQL server. 
+"
+      end
+
+      classrelation 148098 // pathBuilder (<unidirectional association>)
+	relation 148098 --->
+	  a role_name "pathBuilder" init_value "=  new TaskPathBuilder(false)" const_relation private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 148098 // pathBuilder (<unidirectional association>)
+	  b parent class_ref 143234 // TaskPathBuilder
+      end
+
+      attribute 150658 "clientHosts"
+	private explicit_type "int"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 148226 // binary (<unidirectional association>)
+	relation 148226 --->
+	  a role_name "binary" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    java_annotation "@SuppressWarnings(\"unused\")
+"
+	    classrelation_ref 148226 // binary (<unidirectional association>)
+	  b parent class_ref 138754 // BID
+      end
+
+      attribute 150786 "jonasVersion"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 150914 "jbossVersion"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 151042 "RUBIS_VERSION"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"1.5.1\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 151170 "TOMCAT_VERSION"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"5.5.20\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 151298 "ASCII_TAB"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"\\t\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 151426 "ASCII_NEWLINE"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"\\n\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 151554 "DETAILED_LOAD_INTERVAL"
+	class_attribute const_attribute private explicit_type "long"
+	init_value "=  1000"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 151682 "useBinaryDump"
+	private explicit_type "boolean"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 151810 "serialize"
+	private explicit_type "boolean"
+	init_value "=  false"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " 
+If set to true, additional dependencies will be added to some tasks,
+so that too many tasks aren't started at once. It's useful if running
+Rubis on just 1 host.
+
+"
+      end
+
+      classrelation 148354 // jbossBinaryDownload (<unidirectional association>)
+	relation 148354 --->
+	  a role_name "jbossBinaryDownload" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 148354 // jbossBinaryDownload (<unidirectional association>)
+	  b parent class_ref 131074 // TaskDescriptor
+      end
+
+      classrelation 148482 // jonasBinaryDownload (<unidirectional association>)
+	relation 148482 --->
+	  a role_name "jonasBinaryDownload" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 148482 // jonasBinaryDownload (<unidirectional association>)
+	  b parent class_ref 131074 // TaskDescriptor
+      end
+
+      classrelation 148610 // ejbServerRun (<unidirectional association>)
+	relation 148610 --->
+	  a role_name "ejbServerRun" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 148610 // ejbServerRun (<unidirectional association>)
+	  b parent class_ref 131074 // TaskDescriptor
+      end
+
+      classrelation 148738 // mysqlBinaryDownload (<unidirectional association>)
+	relation 148738 --->
+	  a role_name "mysqlBinaryDownload" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 148738 // mysqlBinaryDownload (<unidirectional association>)
+	  b parent class_ref 131074 // TaskDescriptor
+      end
+
+      classrelation 148866 // tomcatBinaryDownload (<unidirectional association>)
+	relation 148866 --->
+	  a role_name "tomcatBinaryDownload" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 148866 // tomcatBinaryDownload (<unidirectional association>)
+	  b parent class_ref 131074 // TaskDescriptor
+      end
+
+      classrelation 148994 // binaryUpload (<unidirectional association>)
+	relation 148994 --->
+	  a role_name "binaryUpload" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 148994 // binaryUpload (<unidirectional association>)
+	  b parent class_ref 131074 // TaskDescriptor
+      end
+
+      classrelation 149122 // mysqlInitialization (<unidirectional association>)
+	relation 149122 --->
+	  a role_name "mysqlInitialization" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 149122 // mysqlInitialization (<unidirectional association>)
+	  b parent class_ref 131074 // TaskDescriptor
+      end
+
+      classrelation 149250 // mysqlFirstRun (<unidirectional association>)
+	relation 149250 --->
+	  a role_name "mysqlFirstRun" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 149250 // mysqlFirstRun (<unidirectional association>)
+	  b parent class_ref 131074 // TaskDescriptor
+      end
+
+      classrelation 149378 // rubisDeploy (<unidirectional association>)
+	relation 149378 --->
+	  a role_name "rubisDeploy" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 149378 // rubisDeploy (<unidirectional association>)
+	  b parent class_ref 131074 // TaskDescriptor
+      end
+
+      classrelation 149506 // mysqlRubisBackup (<unidirectional association>)
+	relation 149506 --->
+	  a role_name "mysqlRubisBackup" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 149506 // mysqlRubisBackup (<unidirectional association>)
+	  b parent class_ref 131074 // TaskDescriptor
+      end
+
+      classrelation 149634 // slaveClients (<unidirectional association>)
+	relation 149634 --->
+	  a role_name "slaveClients" multiplicity "[]" init_value "=  null" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	    classrelation_ref 149634 // slaveClients (<unidirectional association>)
+	  b parent class_ref 131074 // TaskDescriptor
+      end
+
+      classrelation 149762 // rubisDownloads (<unidirectional association>)
+	relation 149762 --->
+	  a role_name "rubisDownloads" multiplicity "[]" init_value "=  null" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	    classrelation_ref 149762 // rubisDownloads (<unidirectional association>)
+	  b parent class_ref 131074 // TaskDescriptor
+      end
+
+      classrelation 149890 // mainClient (<unidirectional association>)
+	relation 149890 --->
+	  a role_name "mainClient" init_value "=  null" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 149890 // mainClient (<unidirectional association>)
+	  b parent class_ref 131074 // TaskDescriptor
+      end
+
+      class 143362 "EJBServer"
+	visibility private stereotype "enum"
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}${final}${abstract}enum ${name}${implements} {
+${items};
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	attribute 151938 "JBoss"
+	  public type class_ref 143362 // EJBServer
+	  cpp_decl ""
+	  java_decl "  ${@}${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " JBoss application server 
+"
+	end
+
+	attribute 152066 "Jonas"
+	  public type class_ref 143362 // EJBServer
+	  cpp_decl ""
+	  java_decl "  ${@}${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " Jonas application server "
+	end
+      end
+
+      classrelation 150018 // ejbServer (<unidirectional association>)
+	relation 150018 --->
+	  a role_name "ejbServer" private
+	    comment " Which EJB server will be used. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 150018 // ejbServer (<unidirectional association>)
+	  b parent class_ref 143362 // EJBServer
+      end
+
+      class 143490 "SoftwarePlatform"
+	visibility private stereotype "enum"
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}${final}${abstract}enum ${name}${implements} {
+${items};
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	attribute 152194 "Linux"
+	  public type class_ref 143490 // SoftwarePlatform
+	  cpp_decl ""
+	  java_decl "  ${@}${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " Linux 
+"
+	end
+
+	attribute 152322 "Win32"
+	  public type class_ref 143490 // SoftwarePlatform
+	  cpp_decl ""
+	  java_decl "  ${@}${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " Windows "
+	end
+
+	operation 203266 "toString"
+	  public explicit_return_type "String"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  java_annotation "@Override
+"
+	  
+	  
+	  
+	end
+      end
+
+      classrelation 150146 // ejbPlatform (<unidirectional association>)
+	relation 150146 --->
+	  a role_name "ejbPlatform" private
+	    comment " Platform on which the EJB server will run 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 150146 // ejbPlatform (<unidirectional association>)
+	  b parent class_ref 143490 // SoftwarePlatform
+      end
+
+      classrelation 150274 // mysqlPlatform (<unidirectional association>)
+	relation 150274 --->
+	  a role_name "mysqlPlatform" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 150274 // mysqlPlatform (<unidirectional association>)
+	  b parent class_ref 143490 // SoftwarePlatform
+      end
+
+      operation 203394 "registerResults"
+	protected explicit_return_type "void"
+	nparams 1
+	  param inout name "roles" type class_ref 136706 // StandardRole
+	nexceptions 1
+	  exception class_ref 140418 // GeneratorException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0}[] ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+We only collect results from clients and will identify them by indexing
+"
+      end
+
+      operation 203522 "generate"
+	protected explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  exception class_ref 140418 // GeneratorException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+      end
+
+      operation 203650 "generateCompile"
+	private explicit_return_type "void"
+	nparams 0
+	nexceptions 2
+	  exception class_ref 140418 // GeneratorException
+	  exception class_ref 143618 // TaskDescriptorException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Generates compilation tasks that are necessary.
+
+"
+      end
+
+      operation 203778 "isJonasBinaryInSWRepo"
+	private explicit_return_type "boolean"
+	nparams 0
+	nexceptions 1
+	  exception class_ref 140418 // GeneratorException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 203906 "isJBossBinaryInSWRepo"
+	private explicit_return_type "boolean"
+	nparams 0
+	nexceptions 1
+	  exception class_ref 140418 // GeneratorException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 204034 "generateMysqlInitialization"
+	private explicit_return_type "void"
+	nparams 0
+	nexceptions 2
+	  exception class_ref 140418 // GeneratorException
+	  exception class_ref 143618 // TaskDescriptorException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Initialises MySQL and starts it.
+
+"
+      end
+
+      operation 204162 "updateTimestamps"
+	private return_type class_ref 131074 // TaskDescriptor
+	nparams 2
+	  param inout name "task" type class_ref 131074 // TaskDescriptor
+	  param in name "checkpointName" explicit_type "String"
+	nexceptions 1
+	  exception class_ref 143618 // TaskDescriptorException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Creates a task that updates the time stamps in the Rubis' database.
+
+@param task task that is a dependency of the time stamp update time.
+@param checkpointName on which checkpoint of the dependency is the
+time stamp update task dependent. If <tt>null</tt>, then it will
+depend on successful finish.
+@return task that updates the time stamps.
+@throws TaskDescriptorException
+"
+      end
+
+      operation 204290 "generateDeploy"
+	private explicit_return_type "void"
+	nparams 0
+	nexceptions 2
+	  exception class_ref 140418 // GeneratorException
+	  exception class_ref 143618 // TaskDescriptorException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Installs the requested EJB server and deploys Rubis in it.
+
+"
+      end
+
+      operation 204418 "generateRun"
+	private explicit_return_type "void"
+	nparams 0
+	nexceptions 2
+	  exception class_ref 140418 // GeneratorException
+	  exception class_ref 143618 // TaskDescriptorException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Starts the EJB servers and Rubis, and after the benchmark ends it stops
+the EJB servers.
+
+"
+      end
+
+      operation 204546 "generateShutdown"
+	private explicit_return_type "void"
+	nparams 0
+	nexceptions 2
+	  exception class_ref 140418 // GeneratorException
+	  exception class_ref 143618 // TaskDescriptorException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Shuts down the MySQL database and the EJB server.
+
+"
+      end
+
+      operation 204674 "generateResultsCollection"
+	private explicit_return_type "void"
+	nparams 1
+	  param in name "runIndex" explicit_type "int"
+	nexceptions 2
+	  exception class_ref 140418 // GeneratorException
+	  exception class_ref 143618 // TaskDescriptorException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Generates results collection tasks for a given run
+
+@param runIndex	Run index (0 to run count-1)
+"
+      end
+    end
+
+    class 143746 "RubisVersionProvider"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Version provider for the Rubis plugin.
+
+@author Jaroslav Urban
+"
+      classrelation 151170 // <generalisation>
+	relation 151170 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 151170 // <generalisation>
+	  b parent class_ref 143874 // TimestampBasedVersionProvider
+      end
+
+      operation 207362 "handleTimestamp"
+	public return_type class_ref 132738 // ExperimentMetadata
+	nparams 1
+	  param in name "timestamp" explicit_type "long"
+	nexceptions 1
+	  explicit_exception "Exception"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+      end
+    end
+  end
+
+  deploymentview 129026 "rubis"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+    artifact 134146 "RubisConfigurator"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.net.InetAddress;
+import java.util.ArrayList;
+import cz.cuni.mff.been.apps.benchmarkmanager.ExperimentMetadata;
+import cz.cuni.mff.been.apps.gui.IllegalScreenSequenceException;
+import cz.cuni.mff.been.apps.gui.Input;
+import cz.cuni.mff.been.apps.gui.Item;
+import cz.cuni.mff.been.apps.gui.Option;
+import cz.cuni.mff.been.apps.gui.RSLInput;
+import cz.cuni.mff.been.apps.gui.RadioWithSectionItem;
+import cz.cuni.mff.been.apps.gui.RadiosWithSections;
+import cz.cuni.mff.been.apps.gui.Screen;
+import cz.cuni.mff.been.apps.gui.Section;
+import cz.cuni.mff.been.apps.gui.Select;
+import cz.cuni.mff.been.apps.gui.Input.Size;
+import cz.cuni.mff.been.apps.common.Configurator;
+import cz.cuni.mff.been.apps.common.ConfiguratorException;
+import cz.cuni.mff.been.common.IntegerIntervalInputValidator;
+import cz.cuni.mff.been.common.id.SID;
+import cz.cuni.mff.been.common.rsl.Condition;
+import cz.cuni.mff.been.common.rsl.EqualsCondition;
+import cz.cuni.mff.been.common.rsl.ParseException;
+import cz.cuni.mff.been.common.rsl.ParserWrapper;
+import cz.cuni.mff.been.resultsrepository.gui.CallbackRScripts;
+${definition}"
+      associated_classes
+	class_ref 141954 // RubisConfigurator
+      end
+    end
+
+    artifact 134530 "RubisTaskGenerator"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import cz.cuni.mff.been.apps.benchmarkmanager.BenchmarkRole;
+import cz.cuni.mff.been.apps.benchmarkmanager.GeneratorException;
+import cz.cuni.mff.been.apps.benchmarkmanager.StandardRole;
+import cz.cuni.mff.been.apps.common.TaskGenerator;
+import cz.cuni.mff.been.common.TaskPathBuilder;
+import cz.cuni.mff.been.common.Version;
+import cz.cuni.mff.been.common.id.BID;
+import cz.cuni.mff.been.common.rsl.AndCondition;
+import cz.cuni.mff.been.common.rsl.Condition;
+import cz.cuni.mff.been.common.rsl.ContainsCondition;
+import cz.cuni.mff.been.common.rsl.EqualsCondition;
+import cz.cuni.mff.been.softwarerepository.PackageType;
+import cz.cuni.mff.been.taskmanager.Dependency;
+import cz.cuni.mff.been.taskmanager.TaskDescriptor;
+import cz.cuni.mff.been.taskmanager.TaskDescriptorException;
+import cz.cuni.mff.been.taskmanager.data.TaskExclusivity;
+${definition}"
+      associated_classes
+	class_ref 142338 // RubisTaskGenerator
+      end
+    end
+
+    artifact 134914 "RubisVersionProvider"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.text.DateFormat;
+import java.util.Date;
+import cz.cuni.mff.been.apps.benchmarkmanager.ExperimentMetadata;
+import cz.cuni.mff.been.apps.common.TimestampBasedVersionProvider;
+${definition}"
+      associated_classes
+	class_ref 143746 // RubisVersionProvider
+      end
+    end
+  end
+end

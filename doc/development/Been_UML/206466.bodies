@@ -1,0 +1,1621 @@
+class TaskManagerImplementation
+!!!690562.java!!!	deleteRecursive(inout file : File) : void
+		/* Check input parameters. */
+		if (file == null) {
+			throw new NullPointerException("directory is null");
+		}
+		
+		/* Delete (recursively). */
+		if (file.isFile()) {
+			file.delete();
+		} else if (file.isDirectory()) {
+			File[] items = file.listFiles();
+			for (File item : items) {
+				deleteRecursive(item);
+			}
+			file.delete();
+		}
+!!!690690.java!!!	storeConfiguration(inout configurationFile : File) : void
+		Document document;
+		try {
+			document = DocumentBuilderFactory.newInstance()
+				.newDocumentBuilder().newDocument();
+		} catch (ParserConfigurationException e) {
+			throw new RuntimeException("Could not create Document for XML. "
+					+ "This should not occur.", e);
+		}
+		
+		/* Add root element. */
+		Element configurationElement = document.createElement("configuration");
+		document.appendChild(configurationElement);
+		
+		/* Add hostRuntimes element. */
+		Element hostRuntimesElement
+			= document.createElement("hostRuntimes");
+		configurationElement.appendChild(hostRuntimesElement);
+		/* ... set attributes for hostRuntimes element. */
+		hostRuntimesElement.setAttribute("maxPackageCacheSize",
+				String.valueOf(this.maxPackageCacheSize));
+		hostRuntimesElement.setAttribute("keptClosedContextCount",
+				String.valueOf(this.keptClosedContextCount));
+		
+		/* Store to file. */
+		Transformer transformer;
+		try {
+			transformer = TransformerFactory.newInstance()
+				.newTransformer();
+		} catch (TransformerConfigurationException e) {
+			throw new RuntimeException("Could not create Transformer for XML. "
+					+ "This should not occur.", e);
+		}
+		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+		transformer.setOutputProperty(
+				OutputKeys.DOCTYPE_SYSTEM, "configuration.dtd");
+		try {
+			transformer.transform(new DOMSource(document),
+					new StreamResult(configurationFile));
+		} catch (TransformerException e) {
+			System.err.println("Could not store configuration of Task "
+					+ "Manager to XML file.");
+		}
+!!!690818.java!!!	loadConfiguration(inout configurationFile : File) : void
+		if (!configurationFile.exists() || !configurationFile.isFile()) {
+			throw new IllegalArgumentException("Configuration file (\""
+					+ configurationFile.getPath() + "\") not found");
+		}
+		
+		DocumentBuilderFactory documentBuilderFactory
+			= DocumentBuilderFactory.newInstance();
+		documentBuilderFactory.setValidating(true);
+		
+		Document document;
+		try {
+			document = documentBuilderFactory
+				.newDocumentBuilder().parse(configurationFile);
+		} catch (SAXException e) {
+			throw new IllegalArgumentException("Parse error occured.", e);
+		} catch (IOException e) {
+			throw new IllegalArgumentException("IO error occurred.", e);
+		} catch (ParserConfigurationException e) {
+			throw new IllegalArgumentException("DocumentBuilder can not be "
+					+ "created", e);
+		}
+		
+		/* Process element configuration... */
+		Element configurationElement = document.getDocumentElement();
+		if (!configurationElement.getTagName().equals("configuration")) {
+			logWarning("Unknown format of configuration file "
+					+ "(will not be loaded).");
+		}
+		
+		/* Process element hostRuntimes... */
+		Element hostRuntimesElement = (Element)
+			configurationElement.getElementsByTagName("hostRuntimes").item(0);
+		/* ... attribute maxPackageCacheSize. */
+		String attributeMaxPackageCacheSize
+			= hostRuntimesElement.getAttribute("maxPackageCacheSize");
+		if (!attributeMaxPackageCacheSize.equals("")) {
+			this.maxPackageCacheSize
+				= Long.parseLong(attributeMaxPackageCacheSize);
+		}
+		/* ... attribute keptClosedContextCount. */
+		String attributeKeptClosedContextCount
+			= hostRuntimesElement.getAttribute("keptClosedContextCount");
+		if (!attributeKeptClosedContextCount.equals("")) {
+			this.keptClosedContextCount
+				= Integer.parseInt(attributeKeptClosedContextCount);
+		}
+!!!690946.java!!!	reinitializeDataWhenRescue() : void
+		HostRuntimeEntry[] hostRuntimes = this.data.getHostRuntimes();
+		
+		for (HostRuntimeEntry hostRuntime : hostRuntimes) {
+			/* Construct URI of Host Runtime control interface. */
+			URI hostRuntimeUri;
+			try {
+				hostRuntimeUri = new URI("rmi", null, hostRuntime.getHostName(),
+						Registry.REGISTRY_PORT,
+						HostRuntimeInterface.URL, null, null);
+			} catch (URISyntaxException e) {
+				System.err.println("Could not construct hierarchical URI from "
+						+ "the given components (hostName \""
+						+ hostRuntime.getHostName() + "\"):" + e.getMessage());
+				continue;
+			}
+			
+			/* Obtain RMI reference to Host Runtime. */
+			HostRuntimeInterface hostRuntimeInterface;
+			try {
+				hostRuntimeInterface = (HostRuntimeInterface)
+				Naming.lookup(hostRuntimeUri.toString());
+			} catch (Exception e) {
+				System.err.println("Could not get RMI reference for host "
+						+ "runtime (URI \"" + hostRuntimeUri.toString()
+						+ "\")");
+				
+				/* Set all tasks of that hostRuntime to ABORTED and remove
+				 * hostRuntime */
+				TaskEntry[] tasks
+					= this.data.getTasksOnHost(hostRuntime.getHostName());
+				for (TaskEntry task : tasks) {
+					this.data.changeTaskState(
+							task.getTaskId(), task.getContextId(),
+							TaskState.ABORTED);
+				}
+				this.data.removeHostRuntime(hostRuntime);
+				
+				continue;
+			}
+			
+			/* Get all RMI interfaces to tasks from each Host Runtime and set
+			 * Task Manager's data. */
+			try {
+				TaskInterface[] taskInterfaces;
+				taskInterfaces = hostRuntimeInterface.getRunningTaskInterfaces();
+				for (TaskInterface taskInterface : taskInterfaces) {
+					String taskId = taskInterface.getTaskID();
+					String contextId = taskInterface.getContextID();
+					/* Set TaskInterface in data. */
+					try {
+						this.data.setTaskInterface(taskId, contextId,
+								taskInterface);
+					} catch (Exception e) {
+						System.err.println("Problem when setting "
+								+ "taskInterface: " + e.getMessage());
+					}
+				}
+			} catch (RemoteException e) {
+				System.out.println("Could not get interfaces of running tasks "
+						+ "on hostRuntime (URI \"" + hostRuntimeUri.toString()
+						+ "\"): " + e.getMessage());
+			}
+		}
+		
+!!!691074.java!!!	TaskManagerImplementation(in rootDirectory : String, inout level : LogLevel)
+		super();
+		
+		/* Is Task Manager initialised from rescue? */
+		//boolean rescued = false;
+		
+		this.rootDirectory = rootDirectory;
+		this.logLevel = level;
+		
+		File rescueDirectory = new File(rootDirectory, RESCUE_DIR_NAME);
+//		if (rescueDirectory.exists()) {
+//			rescued = true;
+//			/* Rescue... */
+//			System.err.println("Reload to last state...");
+//			File rescueDirectoryOld
+//				= new File(rootDirectory, RESCUE_DIR_NAME + "_OLD");
+//			rescueDirectory.renameTo(rescueDirectoryOld);
+//			this.data = Rescue.rescueData(rescueDirectory, rescueDirectoryOld);
+//			this.reinitializeDataWhenRescue();
+//			deleteRecursive(rescueDirectoryOld);
+//			System.err.println("Reloaded.");
+//		} else {
+			this.data = new Data(rescueDirectory);
+//		}
+		
+		this.registrationListeners = new ArrayList<HostRuntimeRegistrationListener>();
+		
+		/* Prepare and load configuration from XML file. */
+		this.configurationFile = new File(rootDirectory, CONFIGURATION_FILE);
+		try {
+			this.loadConfiguration(configurationFile);
+		} catch (IllegalArgumentException e) {
+			System.err.println("Could not load configuration file. New "
+					+ "configuration file will be created (with default values "
+					+ "set).");
+			this.storeConfiguration(configurationFile);
+		}
+		
+		/* Create and initialise the log storage. */
+		try {
+			String logDirPath = rootDirectory + File.separator + "logs";
+			File logDir = new File(logDirPath);
+			if (logDir.exists()) {
+				Delete.deleteDirectory(logDirPath);
+			}
+			
+			logStorage = new FilesystemLogStorage(rootDirectory + File.separator + "logs"); 
+		} catch (LogStorageException e) {
+			System.err.println("Cannot create the log storage: " + e.getMessage());
+			System.exit(1);
+		} catch (AntTaskException e) {
+			System.err.println("Cannot delete the log directory: " + e.getMessage());
+			System.exit(1);
+		}
+		
+//		if (!rescued) {
+			/* Create system context. */
+			this.newContext(SYSTEM_CONTEXT_ID,
+					SYSTEM_CONTEXT_NAME, SYSTEM_CONTEXT_DESCRIPTION, null);
+
+			try {
+				this.logStorage.addTask(SYSTEM_CONTEXT_ID, TASKMANAGER_TASKNAME);
+				this.logStorage.setTaskHostname(SYSTEM_CONTEXT_ID, TASKMANAGER_TASKNAME, 
+						InetAddress.getLocalHost().getCanonicalHostName());
+			} catch (Exception e) {
+				logFatal("Cannot store Task Manager's logs: " + e.getMessage());
+				System.exit(1);
+			}
+//		}
+		
+		/* If the Task Manager shuts down, do some work. */ 
+//		Runtime.getRuntime().addShutdownHook(new Thread() {
+//			public void run() {
+////				deleteRecursive(data.getRescueRootDir());
+//			}
+//		});
+!!!691202.java!!!	stopTaskManager() : void
+		System.exit(0);
+!!!691330.java!!!	stopTaskManagerAndHostRuntimes() : void
+		HostRuntimeEntry[] hostRuntimes = this.data.getHostRuntimes();
+		
+		for (HostRuntimeEntry hostRuntime : hostRuntimes) {
+			/* Construct URI of Host Runtime control interface. */
+			URI hostRuntimeUri;
+			try {
+				hostRuntimeUri = new URI("rmi", null, hostRuntime.getHostName(),
+						Registry.REGISTRY_PORT,
+						HostRuntimeInterface.URL, null, null);
+			} catch (URISyntaxException e) {
+				throw new RemoteException("Could not construct URI of Host "
+						+ "Runtime");
+			}
+			
+			/* Obtain RMI reference to Host Runtime. */
+			HostRuntimeInterface hostRuntimeInterface;
+			try {
+				hostRuntimeInterface = (HostRuntimeInterface)
+				Naming.lookup(hostRuntimeUri.toString());
+			} catch (Exception e) {
+				throw new RemoteException("Could not connect to required Host "
+						+ "Runtime (URI=\"" + hostRuntimeUri.toString()
+						+ "\")");
+			}
+			
+			/* Kill Host Runtime... */
+			hostRuntimeInterface.terminate();
+		}
+		
+		System.exit(0);
+!!!691458.java!!!	selectHostRuntime(inout task : TaskData, in hosts : String) : String
+		String hostName;
+		TaskDescriptor taskDescriptor = task.getTaskDescriptor();
+		String otherTask;
+		if ((otherTask = taskDescriptor.getHostRuntimesAsTask()) != null) {
+			hostName = this.data.getTaskHost(
+					otherTask,
+					taskDescriptor.getContextId());
+		} else {
+			String[] hostnames = taskDescriptor.getHostRuntimesName();
+			hostName = hosts[random.nextInt(hostnames.length)];
+		}
+		return hostName;
+!!!691586.java!!!	isTaskReadyToRun(inout taskEntry : TaskEntry, inout taskData : TaskData) : boolean
+		/* Test for reached checkPoints from task's dependencies. */
+		if (!this.checkDependencies(taskData)) {
+			return false;
+		}
+
+		/* Test task's HostRuntime exclusivity... */
+		String contextId = taskEntry.getContextId();
+		
+		/* Get hostName. */
+		String hostName;
+
+		if (taskData.getTaskDescriptor().getHostRuntimesName() == null) {
+			this.prepareHostName(taskData.getTaskDescriptor());
+			hostName = selectHostRuntime(taskData, 
+					taskData.getTaskDescriptor().getHostRuntimesName());
+			String[] hostNames = new String[] {hostName}; 
+			taskData.getTaskDescriptor().setHostRuntimesName(hostNames);
+		} else {
+			hostName = selectHostRuntime(taskData, 
+					taskData.getTaskDescriptor().getHostRuntimesName());
+			String[] hostNames = new String[] {hostName}; 
+			taskData.getTaskDescriptor().setHostRuntimesName(hostNames);
+		}
+		
+		HostRuntimeEntry hostRuntimeEntry
+			= this.data.getHostRuntimeByName(hostName);
+		if (hostRuntimeEntry != null) {
+			String hostReservation = hostRuntimeEntry.getReservation();
+
+			TaskExclusivity taskExclusivity = taskEntry.getExclusivity();
+			switch (taskExclusivity) {
+				case NON_EXCLUSIVE:
+					if (hostReservation != null) {
+						if (!hostReservation.equals(contextId)) {
+							return false;
+						}
+					}
+					break;
+				case CONTEXT_EXCLUSIVE:
+					if ((hostReservation != null)
+							&& !hostReservation.equals(contextId)) {
+						return false;
+					} else {
+						TaskEntry[] tasksOnHost
+						= this.data.getTasksOnHost(hostName);
+						for (TaskEntry taskOnHost : tasksOnHost) {
+							TaskState taskState = taskOnHost.getState();
+							if ((taskState == TaskState.RUNNING)
+									|| (taskState == TaskState.SLEEPING)) {
+								if (!taskOnHost.getContextId()
+										.equals(contextId)) {
+									return false;
+								}
+							}
+						}
+					}
+					break;
+				case EXCLUSIVE:
+					if (hostReservation != null) {
+						return false;
+					} else {
+						TaskEntry[] tasksOnHost
+						= this.data.getTasksOnHost(hostName);
+						for (TaskEntry taskOnHost : tasksOnHost) {
+							TaskState taskState = taskOnHost.getState();
+							if ((taskState == TaskState.RUNNING)
+									|| (taskState == TaskState.SLEEPING)) {
+							return false;
+							}
+						}
+					}
+					break;
+				default:
+					// no other variants...
+					break;
+			}
+		}
+		
+		return true;
+!!!691714.java!!!	runTaskIfReady(inout taskEntry : TaskEntry, inout taskData : TaskData) : boolean
+		boolean taskReady;
+		
+		synchronized (this.data) {
+			taskReady = this.isTaskReadyToRun(taskEntry, taskData);
+			if (taskReady) {
+				String taskId = taskEntry.getTaskId();
+				String contextId = taskEntry.getContextId();
+
+				data.changeTaskState(taskId, contextId, TaskState.SCHEDULED);
+			}
+		}
+		if (taskReady) {
+			this.taskStart(taskData);
+		}
+		
+		return taskReady;
+!!!691842.java!!!	runAllReadyTasks() : void
+		synchronized (data) {
+			TaskEntry[] tasksSubmitted
+			= this.data.getTasksByState(TaskState.SUBMITTED);
+		
+			for (TaskEntry taskEntry : tasksSubmitted) {
+				String taskId = taskEntry.getTaskId();
+				String contextId = taskEntry.getContextId();
+
+				TaskData taskData = this.data.getTaskData(taskId, contextId);
+
+				this.runTaskIfReady(taskEntry, taskData);
+			}
+		}
+!!!691970.java!!!	runTask(in taskDescriptorPaths : String) : void
+		/* Paths to TaskDescriptors in Task Manager's root
+		 * directory. */
+		String[] taskDescriptors
+			= new String[taskDescriptorPaths.length];
+		
+		/* Copy TaskDescriptor XML files to the Task Manager's
+		 * root directory. */
+		for (int i = 0; i < taskDescriptorPaths.length; i++) {
+			try {
+				File oldFile = new File(taskDescriptorPaths[i]);
+				File newFile = new File(this.rootDirectory,
+						oldFile.getName());
+				taskDescriptors[i]
+					= newFile.getCanonicalPath();
+				
+				/* Transfer data to the newFile... */
+				BufferedInputStream in
+				= new BufferedInputStream(
+						new FileInputStream(oldFile));
+				BufferedOutputStream out
+				= new BufferedOutputStream(
+						new FileOutputStream(newFile));
+				final int bufferSize = 1024;
+				byte [] buffer = new byte[bufferSize];
+				int len;
+				while ((len = in.read(buffer, 0, bufferSize)) != -1) {
+					out.write(buffer, 0, len);
+				}
+				
+				in.close();
+				out.close();
+			} catch (Exception e) {
+				throw new RemoteException("Cannot copy task descriptor", e);
+			}
+		}
+		
+		/* Create task for each Task Descriptor. */
+		for (int i = 0; i < taskDescriptors.length; i++) {
+			TaskDescriptor taskDescriptor = null;
+			
+			try {
+				taskDescriptor = TaskDescriptorXmlParser
+					.parseXmlTaskDescriptor(new File(taskDescriptors[i]));
+			} catch (TaskDescriptorException e) {
+				throw new RemoteException("Could not parse XML taskDescriptor",
+						e);
+			}
+			
+			this.runTask(taskDescriptor);
+		}
+!!!692098.java!!!	getCanonicalHostName(in hostName : String) : String
+
+		String canonicalName = null;
+		
+		if (hostName.equalsIgnoreCase("localhost")) {
+			canonicalName = InetAddress.getLocalHost().getCanonicalHostName();
+		} else {
+			canonicalName = InetAddress.getByName(hostName).getCanonicalHostName();
+		}
+		
+		if (canonicalName.equalsIgnoreCase("localhost")
+				|| canonicalName.equalsIgnoreCase("127.0.0.1")) {
+			canonicalName = InetAddress.getLocalHost().getCanonicalHostName();
+		}
+		
+		return canonicalName;
+!!!692226.java!!!	runTask(inout taskDescriptor : TaskDescriptor) : void
+		if (taskDescriptor.getHostRuntimesName() != null) {
+			String []canonicalNames = new String[taskDescriptor.getHostRuntimesName().length];
+
+			for (int i = 0; i < taskDescriptor.getHostRuntimesName().length; ++i) {
+				try {
+					canonicalNames[i] = getCanonicalHostName(taskDescriptor.getHostRuntimesName()[i]);
+				} catch (UnknownHostException e) {
+					throw new RemoteException("Unable to resolve host \""
+							+ taskDescriptor.getHostRuntimesName()[i] + "\".", e);
+				}
+			}
+
+			taskDescriptor.setHostRuntimesName(canonicalNames);
+		}
+		
+		try {
+			this.taskNew(taskDescriptor);
+		} catch (TaskManagerException e) {
+			throw new RemoteException("Cannot start task", e);
+		}
+!!!692354.java!!!	runTask(inout taskDescriptors : TaskDescriptor) : void
+		synchronized (data) {
+			for (int i = 0; i < taskDescriptors.length; i++) {
+				this.runTask(taskDescriptors[i]);
+			}
+		}
+!!!692482.java!!!	runTaskImmediately(inout taskDescriptor : TaskDescriptor) : void
+		if (taskDescriptor.getHostRuntimesName() != null) {
+			String []canonicalNames
+				= new String[taskDescriptor.getHostRuntimesName().length];
+
+			for (int i = 0; i < taskDescriptor.getHostRuntimesName().length;
+			++i) {
+				try {
+					canonicalNames[i] = getCanonicalHostName(
+							taskDescriptor.getHostRuntimesName()[i]);
+				} catch (UnknownHostException e) {
+					throw new RemoteException("Unable to resolve host \""
+							+ taskDescriptor.getHostRuntimesName()[i] + "\".",
+							e);
+				}
+			}
+
+			taskDescriptor.setHostRuntimesName(canonicalNames);
+		}
+		
+		boolean started = false;
+		try {
+			this.taskNew(taskDescriptor);
+		} catch (TaskManagerException e) {
+			throw new RemoteException("Cannot start task", e);
+		}
+		
+		if (!started) {
+			throw new IllegalStateException("Task (taskId \""
+					+ taskDescriptor.getTaskTid() + "\", contextId \""
+					+ taskDescriptor.getContextId() + "\") could not be "
+					+ "started immediately");
+		}
+!!!692610.java!!!	getNewContextId() : String
+		lastContextIndex++;
+		
+		return lastContextIndex + "_" + System.currentTimeMillis();
+!!!692738.java!!!	newContext(in name : String, in description : String, inout magicObject : Serializable) : String
+		String id = getNewContextId();
+		
+		this.newContext(id, name, description, magicObject);
+		
+		return id;
+!!!692866.java!!!	newContext(in id : String, in name : String, in description : String, inout magicObject : Serializable) : void
+		/* Test if context currently exists. */
+		ContextEntry currentContextEntry = this.data.getContextById(id);
+		if (currentContextEntry != null) {
+//			if (currentContextEntry.isOpen()) {
+//				throw new IllegalStateException("Context with id \"" + id
+//						+ "\" already exists and is still opened");
+//			}
+			throw new IllegalStateException("Context with id \"" + id
+					+ "\" already exists");
+		}
+		
+		ContextEntry contextEntry
+			= new ContextEntry(id, name, description, magicObject);
+		this.data.newContext(contextEntry);
+		
+		/* Add new context to log storage. */
+		try {
+			this.logStorage.addContext(id);
+		} catch (LogStorageException e) {
+			throw new RemoteException("Unable to add context to the log storage", e);
+		}
+!!!692994.java!!!	closeContext(in id : String) : void
+		this.data.closeContext(id);
+!!!693122.java!!!	getTasks() : TaskEntry
+		return this.data.getTasks();
+!!!693250.java!!!	getTasksInContext(in contextId : String) : TaskEntry
+		return this.data.getTasksInContext(contextId);
+!!!693378.java!!!	getTasksOnHost(in hostName : String) : TaskEntry
+		return this.data.getTasksOnHost(hostName);
+!!!693506.java!!!	getContexts() : ContextEntry
+		return this.data.getContexts();
+!!!693634.java!!!	getTaskById(in taskId : String, in contextId : String) : TaskEntry
+		TaskEntry result = data.getTaskById(taskId, contextId);
+		if (result == null) {
+			throw new IllegalArgumentException("Invalid contextId (\"" + contextId
+				+ "\") or taskId (\"" + taskId + "\").");
+		}
+		return result;
+!!!693762.java!!!	getContextById(in contextId : String) : ContextEntry
+		ContextEntry result = data.getContextById(contextId); 
+		if (result == null) {
+			throw new IllegalArgumentException("Invalid contextId (\"" + contextId + "\").");
+		}
+		return result;
+!!!693890.java!!!	killTaskById(in taskId : String, in contextId : String) : void
+		TaskInterface taskInterface = null;
+		
+		synchronized (data) {
+			TaskData taskData = this.data.getTaskData(taskId, contextId);
+			if (taskData == null) {
+				throw new IllegalArgumentException("task (taskId \"" + taskId
+						+ "\", contextId \"" + contextId + "\") not found");
+			}
+
+			taskInterface = taskData.getTaskInterface();
+			if (taskInterface == null) {
+				this.taskReachedState(taskId, contextId, TaskState.ABORTED);
+				this.data.changeTaskState(taskId, contextId, TaskState.ABORTED);
+			}
+		}
+		
+		if (taskInterface != null) {
+			taskInterface.kill();
+		}
+		
+		unregisterFinishedService(contextId, taskId);
+!!!694018.java!!!	killContextById(in contextId : String) : void
+		ContextEntry contextEntry = this.data.getContextById(contextId);
+		if (contextEntry == null) {
+			throw new IllegalArgumentException("context (contextId \""
+					+ contextId + "\") not found");
+		}
+		
+		TaskEntry[] taskEntries = this.data.getTasksInContext(contextId);
+		for (TaskEntry taskEntry : taskEntries) {
+			this.killTaskById(taskEntry.getTaskId(), taskEntry.getContextId());
+		}
+!!!694146.java!!!	checkPointReached(in name : String, in value : String, in taskId : String, in contextId : String, in hostName : String, inout magicObject : Serializable) : void
+		this.checkPointReached(new CheckPoint(taskId, contextId,
+				name, value));
+!!!694274.java!!!	checkPointReached(inout checkPoint : CheckPoint) : void
+		logDebug("[" + checkPoint.getContextId() + ":" 
+			+ checkPoint.getTaskId() + "] Checkpoint \"" + checkPoint.getName() 
+			+ "\" set to \"" + checkPoint.getValue() + "\"");
+		
+		/* Add information about this checkpoint to the list of
+		 * reached checkpoints. */
+		String name = checkPoint.getName();
+		String taskId = checkPoint.getTaskId();
+		String contextId = checkPoint.getContextId();
+		String hostName = checkPoint.getHostName();
+		Serializable magicObject = checkPoint.getValue();
+		CheckPointEntry checkPointEntry = new CheckPointEntry(name,
+				taskId, contextId, hostName, magicObject);
+		
+		synchronized (data) {
+			this.data.newCheckPointOver(checkPointEntry);
+		}
+
+		/* Test dependencies of all waiting tasks if they were
+		 * already reached. */
+		
+		try {
+			this.runAllReadyTasks();
+		} catch (TaskManagerException e) {
+			logError("Some tasks cannot be started: " + e.getMessage());
+		}
+		
+		/* Notify all tasks waiting for checkpoint in checkPointLook(). */
+		synchronized (this.checkPointWaitingObject) {
+			this.checkPointWaitingObject.notifyAll();
+		}
+!!!694402.java!!!	isCheckPointReachPossible(in taskId : String, in contextId : String) : boolean
+		/* Test if specified context exists and is still open. */
+		ContextEntry contextEntry = this.data.getContextById(contextId);
+		if (contextEntry == null) {
+			return false;
+		}
+		if (contextEntry.isOpen()) {
+			return true;
+		}
+		
+		/* If context is not open so check if there is not-ended task with
+		 * specified taskId. */
+		TaskEntry taskEntry = this.data.getTaskById(taskId, contextId);
+		if (taskEntry == null) {
+			return false;
+		}
+		if ((taskEntry.getState() == TaskState.FINISHED)
+				|| (taskEntry.getState() == TaskState.ABORTED)) {
+			return false;
+		}
+		
+		/* If there is not-ended task (specified by its taskId and contextId) in
+		 * closed context... */
+		return true;
+!!!694530.java!!!	checkPointLook(in name : String, inout value : Serializable, in taskId : String, in contextId : String) : CheckPoint
+		CheckPointEntry[] checkPointEntries
+			= this.data.getCheckPoints(name, taskId, contextId, value);
+		
+		CheckPoint[] matchingCheckPoints
+			= new CheckPoint[checkPointEntries.length];
+		
+		for (int i = 0; i < checkPointEntries.length; i++) {
+			matchingCheckPoints[i] = new CheckPoint(
+					checkPointEntries[i].getTaskId(),
+					checkPointEntries[i].getContextId(),
+					checkPointEntries[i].getName(),
+					checkPointEntries[i].getMagicObject());
+		}
+		
+		return matchingCheckPoints;
+!!!694658.java!!!	checkPointLook(in name : String, inout value : Serializable, in taskId : String, in contextId : String, in timeout : long) : CheckPoint
+		long startTimeNano = System.nanoTime();
+		CheckPoint[] result = null;
+		
+		synchronized (this.checkPointWaitingObject) {
+			while ((result = this.checkPointLook(
+					name, value, taskId, contextId)).length < 1) {
+				
+				if (!this.isCheckPointReachPossible(taskId, contextId)) {
+					throw new TaskManagerException("Required checkPoint can "
+							+ "not be reached anyway");
+				}
+				
+				if (timeout == INFINITE_TIME) {
+					try {
+						this.checkPointWaitingObject.wait();
+					} catch (InterruptedException e) {
+						// do nothing
+					}
+				} else {
+					long elapsedTime
+					= (System.nanoTime() - startTimeNano) / 1000000;
+					long remainTime = timeout - elapsedTime;
+
+					if (remainTime <= 0) {
+						return new CheckPoint[0];
+					}
+
+					try {
+						this.checkPointWaitingObject.wait(remainTime);
+					} catch (InterruptedException e) {
+						// do nothing
+					}
+				}
+			}
+		}
+		
+		return result;
+!!!694786.java!!!	checkPointLook(in name : String, in taskId : String, in contextId : String, in timeout : long) : Serializable
+		/* Check input parameters. */
+		if (name == null) {
+			throw new NullPointerException("name is null");
+		}
+		if (taskId == null) {
+			throw new NullPointerException("taskId is null");
+		}
+		if (contextId == null) {
+			throw new NullPointerException("contextId is null");
+		}
+		if (name == null) {
+			throw new NullPointerException("name is null");
+		}
+		
+		CheckPoint[] foundCheckPoints
+			= this.checkPointLook(name, null, taskId, contextId, timeout);
+		
+		if (foundCheckPoints.length == 0) {
+			throw new IllegalArgumentException("specified checkpoint not foud");
+		}
+		
+		return foundCheckPoints[0].getValue();
+!!!694914.java!!!	checkPointLook(inout checkPointTemplate : CheckPoint, in timeout : long) : CheckPoint
+		String name = checkPointTemplate.getName();
+		Serializable value = checkPointTemplate.getValue();
+		String taskId = checkPointTemplate.getTaskId();
+		String contextId = checkPointTemplate.getContextId();
+		
+		return this.checkPointLook(name, value, taskId, contextId, timeout);
+!!!695042.java!!!	log(in contextId : String, in taskId : String, inout level : LogLevel, inout timestamp : Date, in message : String) : void
+		if (!logLevel.isGreaterOrEqual(LogLevel.WARN)) {
+			System.out.println("[" + contextId + ":" + taskId + "] " + level
+					+ " " + message);
+		}
+		
+		try {
+			logStorage.log(contextId, taskId, timestamp, level, message);
+		} catch (LogStorageException e) {
+			throw new RemoteException("Cannot store the log message in the log "
+					+ "storage", e);
+		}
+!!!695170.java!!!	serviceRegister(inout service : ServiceEntry) : void
+		/* Check all values in ServiceEntry. */
+		if (service.getServiceName() == null) {
+			throw new IllegalArgumentException("service.serviceName can not be "
+					+ "null");
+		}
+		if (service.getInterfaceName() == null) {
+			throw new IllegalArgumentException("service.InterfaceName can not "
+					+ "be null");
+		}
+		if (service.getRmiAddress() == null) {
+			throw new IllegalArgumentException("service.rmiAddress can not be "
+					+ "null");
+		}
+//		if ((service.getServiceName() == null)
+//				|| (service.getInterfaceName() == null)
+//				|| (service.getRmiAddress() == null)) {
+//			logWarning("Warning: Registered service entry must have "
+//				+ "all fields filled in (i.e. serviceName, interfaceName, "
+//				+ "rmiAddress, remoteInterface). This entry ["
+//				+ service.getServiceName() + "," + service.getInterfaceName()
+//				+ "," + service.getRmiAddress() + ","
+//				+ service.getRemoteInterface() + "] won't be registered!!");
+//			return;
+//		}
+		
+		ServiceEntry newEntry = service.clone();
+		
+		synchronized (this.serviceRegistry) {
+			this.serviceRegistry.add(newEntry);
+		}
+!!!695298.java!!!	serviceUnregister(inout serviceTemplate : ServiceEntry) : void
+		/* Make patterns for regex matching. */
+		Pattern serviceNamePattern = null;
+		Pattern interfaceNamePattern = null;
+		Pattern rmiAddressPattern = null;
+		
+		String serviceNameTemplate = serviceTemplate.getServiceName();
+		if (serviceNameTemplate == null) {
+			/* Match everything. */
+			serviceNamePattern = Pattern.compile(".*");
+		} else {
+			serviceNamePattern
+				= Pattern.compile(serviceNameTemplate);
+		}
+		
+		String interfaceNameTemplate
+			= serviceTemplate.getInterfaceName();
+		if (interfaceNameTemplate == null) {
+			interfaceNamePattern = Pattern.compile(".*");
+		} else {
+			interfaceNamePattern
+				= Pattern.compile(interfaceNameTemplate);
+		}
+		
+		URI rmiAddressTemplate = serviceTemplate.getRmiAddress();
+		if (rmiAddressTemplate == null) {
+			rmiAddressPattern = Pattern.compile(".*");
+		} else {
+			rmiAddressPattern = Pattern.compile(rmiAddressTemplate
+					.normalize().toString());
+					// normalised and converted to String
+		}
+		
+		synchronized (this.serviceRegistry) {
+			Iterator< ServiceEntry > registryIterator = this.serviceRegistry.iterator();	
+			while (registryIterator.hasNext()) {
+				ServiceEntry serviceEntry = registryIterator.next();
+				
+				/* Do matching... */
+				Matcher serviceNameMatcher = serviceNamePattern
+					.matcher(serviceEntry.getServiceName());
+				if (!serviceNameMatcher.matches()) {
+					continue;
+				}
+				
+				Matcher interfaceNameMatcher = interfaceNamePattern
+					.matcher(serviceEntry.getInterfaceName());
+				if (!interfaceNameMatcher.matches()) {
+					continue;
+				}
+				
+				Matcher rmiAddressMatcher = rmiAddressPattern
+					.matcher(serviceEntry.getRmiAddress()
+							.normalize().toString());
+				if (!rmiAddressMatcher.matches()) {
+					continue;
+				}
+				
+				/* If everything matches so remove this entry from
+				 * registry. */
+				registryIterator.remove();
+			}
+		}
+!!!695426.java!!!	serviceLook(inout serviceTemplate : ServiceEntry) : ServiceEntry
+		LinkedList<ServiceEntry> matchingEntries
+			= new LinkedList<ServiceEntry>();
+		
+		/* Make patterns for regex matching. */
+		Pattern serviceNamePattern = null;
+		Pattern interfaceNamePattern = null;
+		Pattern rmiAddressPattern = null;
+		
+		String serviceNameTemplate = serviceTemplate.getServiceName();
+		if (serviceNameTemplate == null) {
+			/* Match everything. */
+			serviceNamePattern = Pattern.compile(".*");
+		} else {
+			serviceNamePattern
+				= Pattern.compile(serviceNameTemplate);
+		}
+		
+		String interfaceNameTemplate
+			= serviceTemplate.getInterfaceName();
+		if (interfaceNameTemplate == null) {
+			interfaceNamePattern = Pattern.compile(".*");
+		} else {
+			interfaceNamePattern
+				= Pattern.compile(interfaceNameTemplate);
+		}
+		
+		URI rmiAddressTemplate = serviceTemplate.getRmiAddress();
+		if (rmiAddressTemplate == null) {
+			rmiAddressPattern = Pattern.compile(".*");
+		} else {
+			rmiAddressPattern = Pattern.compile(rmiAddressTemplate
+					.normalize().toString());
+					// normalised and converted to String
+		}
+		
+		String taskId = serviceTemplate.getTaskId();
+		String contextId = serviceTemplate.getContextId();
+		
+		synchronized (this.serviceRegistry) {
+			Iterator< ServiceEntry > registryIterator = this.serviceRegistry.iterator();
+			while (registryIterator.hasNext()) {
+				ServiceEntry serviceEntry = registryIterator.next();
+				
+				/* Do matching... */
+				Matcher serviceNameMatcher = serviceNamePattern
+					.matcher(serviceEntry.getServiceName());
+				if (!serviceNameMatcher.matches()) {
+					continue;
+				}
+				
+				Matcher interfaceNameMatcher = interfaceNamePattern
+					.matcher(serviceEntry.getInterfaceName());
+				if (!interfaceNameMatcher.matches()) {
+					continue;
+				}
+				
+				Matcher rmiAddressMatcher = rmiAddressPattern
+					.matcher(serviceEntry.getRmiAddress()
+							.normalize().toString());
+				if (!rmiAddressMatcher.matches()) {
+					continue;
+				}
+				
+				if ((taskId != null) && (!taskId.equals(serviceEntry.getTaskId()))) {
+					continue;
+				}
+
+				if ((contextId != null) && (!contextId.equals(serviceEntry.getContextId()))) {
+					continue;
+				}
+				
+				/* If everything matches so add clone of this entry to
+				 * the created list. */
+				ServiceEntry matchingEntry = serviceEntry.clone();
+				matchingEntries.add(matchingEntry);
+			}
+		}
+		
+		return matchingEntries.toArray(new ServiceEntry[matchingEntries.size()]);
+!!!695554.java!!!	serviceFind(in serviceName : String, in interfaceName : String) : Remote
+		/* Check input parameters (null is not allowed). */
+		if ((serviceName == null) || (interfaceName == null)) {
+			return null;
+		}
+		
+		/* Do search. */
+		ServiceEntry templateEntry = new ServiceEntry(
+			Pattern.quote(serviceName),
+			Pattern.quote(interfaceName), null, null, null, null);
+		ServiceEntry[] matchingEntries
+			= this.serviceLook(templateEntry);
+		
+		/* If found then return the first. */
+		if (matchingEntries.length > 0) {
+			return matchingEntries[0].getRemoteInterface();
+		}
+		
+		/* Return null by default (if nothing found). */
+		return null;
+!!!695682.java!!!	serviceFindURI(in serviceName : String, in interfaceName : String) : URI
+		/* Check input parameters (null is not allowed). */
+		if ((serviceName == null) || (interfaceName == null)) {
+			return null;
+		}
+		
+		/* Do search. */
+		ServiceEntry templateEntry = new ServiceEntry(
+			Pattern.quote(serviceName),
+			Pattern.quote(interfaceName), null, null, null, null);
+		ServiceEntry[] matchingEntries
+			= this.serviceLook(templateEntry);
+		
+		/* If found then return the first. */
+		if (matchingEntries.length > 0) {
+			return matchingEntries[0].getRmiAddress();
+		}
+		
+		/* Return null by default (if nothing found). */
+		return null;
+!!!695810.java!!!	getLogsForTask(in context : String, in taskID : String) : LogRecord
+		return logStorage.getLogsForTask(context, taskID);
+!!!695938.java!!!	isContextRegistered(in name : String) : boolean
+		return logStorage.isContextRegistered(name);
+!!!696066.java!!!	isTaskRegistered(in context : String, in taskID : String) : boolean
+		return logStorage.isTaskRegistered(context, taskID);
+!!!696194.java!!!	addErrorOutput(in context : String, in taskID : String, in output : String) : void
+		logStorage.addErrorOutput(context, taskID, output);
+!!!696322.java!!!	addStandardOutput(in context : String, in taskID : String, in output : String) : void
+		logStorage.addStandardOutput(context, taskID, output);
+!!!696450.java!!!	getErrorOutput(in context : String, in taskID : String) : OutputHandle
+		return logStorage.getErrorOutput(context, taskID);
+!!!696578.java!!!	getStandardOutput(in context : String, in taskID : String) : OutputHandle
+		return logStorage.getStandardOutput(context, taskID);
+!!!696706.java!!!	isContextFinished(in contextId : String) : boolean
+		/* Check if system context. */
+		if (SYSTEM_CONTEXT_ID.equals(contextId)) {
+			return false;
+		}
+		
+		synchronized (this.data) {
+			/* Check if context exists. */
+			ContextEntry contextEntry = this.data.getContextById(contextId);
+			if (contextEntry == null) {
+				throw new IllegalArgumentException("Context \"" + contextId + "\" "
+						+ "does not exist");
+			}
+
+			/* Check if context is open. */
+			if (contextEntry.isOpen()) {
+				return false;
+			}
+
+			/* Check if some task with specified contextId is not ended (FINISHED or
+			 * ABORTED). */
+			TaskEntry[] taskEntries = this.data.getTasksInContext(contextId);
+			for (TaskEntry taskEntry : taskEntries) {
+				if ((taskEntry.getState() != TaskState.FINISHED)
+						&& (taskEntry.getState() != TaskState.ABORTED)) {
+					return false;
+				}
+			}
+		}
+		
+		/* Otherwise context is finished... */
+		return true;
+!!!696834.java!!!	removeContext(in contextId : String) : void
+		/* Check if system context. */
+		if (SYSTEM_CONTEXT_ID.equals(contextId)) {
+			return;
+		}
+		
+		/* Get names of hosts used by this context. */
+		HashSet<String> hostNames = new HashSet<String>();
+		TaskEntry[] taskEntries = this.data.getTasksInContext(contextId);
+		for (TaskEntry taskEntry : taskEntries) {
+			String hostName = taskEntry.getHostName();
+			if (hostName != null) {
+				hostNames.add(hostName);
+			}
+		}
+		
+		/* Remove context from logStorage. */
+		try {
+			this.logStorage.removeContext(contextId);
+		} catch (LogStorageException e) {
+			System.err.println("Cannot remove context from the log storage: "
+					+ e.getMessage());
+		}
+		
+		/* Remove context from each used HostRuntime. */
+		Iterator<String> hostNameIterator = hostNames.iterator();
+		while (hostNameIterator.hasNext()) {
+			String hostName = hostNameIterator.next();
+			
+			/* Construct URI of Host Runtime control interface. */
+			URI hostRuntimeUri;
+			try {
+				hostRuntimeUri = new URI("rmi", null, hostName,
+						Registry.REGISTRY_PORT,
+						HostRuntimeInterface.URL, null, null);
+			} catch (URISyntaxException e) {
+				logError("Constructing of hierarchical URI from the given "
+						+ "components failed (hostName \"" + hostName + "\": "
+						+ e.getMessage());
+				break;
+			}
+			
+			/* Obtain RMI reference to Host Runtime. */
+			HostRuntimeInterface hostRuntimeInterface;
+			try {
+				hostRuntimeInterface = (HostRuntimeInterface)
+				Naming.lookup(hostRuntimeUri.toString());
+			} catch (Exception e) {
+				logError("Obtaining of RMI reference to hostRuntime failed "
+						+ "(URI \"" + hostRuntimeUri.toString() + "\"): "
+						+ e.getMessage());
+				break;
+			}
+			
+			/* Close context for Host Runtime. */
+			try {
+				hostRuntimeInterface.closeContext(contextId);
+			} catch (HostRuntimeException e) {
+				logError("Deleting of context data failed:" + e.getMessage());
+			} catch (RemoteException e) {
+				logError("Some error occured when deleting data of context:"
+						+ e.getMessage());
+			}
+		}
+!!!696962.java!!!	taskRestarted(in taskId : String, in contextId : String) : void
+		this.data.notifyTaskRestarted(taskId, contextId);
+!!!697090.java!!!	taskReachedState(in taskId : String, in contextId : String, inout state : TaskState) : void
+		if (state == TaskState.FINISHED || state == TaskState.ABORTED) {
+			synchronized (this.data) {
+				
+				unregisterFinishedService(contextId, taskId);
+				
+				/* Set state of task. */
+				this.data.changeTaskState(taskId, contextId,state);
+
+				if (state == TaskState.ABORTED) {
+					checkPointReached(new CheckPoint(
+							taskId,
+							contextId,
+							Task.CHECKPOINT_NAME_FINISHED,
+							String.valueOf(Task.EXIT_CODE_ERROR)));
+				}
+				
+				/* Unset reservation of Host Runtime if possible and set... */
+				TaskEntry taskEntry = this.data.getTaskById(taskId, contextId);
+				TaskExclusivity taskExclusivity = taskEntry.getExclusivity();
+				
+				String hostName = taskEntry.getHostName();
+				
+				if (hostName != null) {
+					switch (taskExclusivity) {
+						case CONTEXT_EXCLUSIVE:
+							unset_exclusivity: {
+							TaskEntry[] tasksOnHost
+								= this.data.getTasksOnHost(hostName);
+							for (TaskEntry taskOnHost : tasksOnHost) {
+								TaskState taskState = taskOnHost.getState();
+								if ((taskState == TaskState.RUNNING)
+										|| (taskState == TaskState.SLEEPING)) {
+									TaskExclusivity taskExclusivity2
+										= taskOnHost.getExclusivity();
+									if (taskExclusivity2 != TaskExclusivity.NON_EXCLUSIVE) {
+										break unset_exclusivity;
+									}
+								}
+							}
+							this.data.changeHostRuntimeReservation(
+									hostName, null);
+						}
+						break;
+						case EXCLUSIVE:
+							this.data.changeHostRuntimeReservation(hostName, null);
+							break;
+						default:
+							break;  // No work needs to be done...
+					}
+				}
+			}
+			
+			try {
+				this.runAllReadyTasks();
+			} catch (TaskManagerException e) {
+				logError("Some tasks cannot be started: " + e.getMessage());
+			}
+			
+			/* Remove context if finished. */
+			if (this.isContextFinished(contextId)) {
+				this.removeContext(contextId);
+			}
+		}
+!!!697218.java!!!	prepareHostName(inout taskDescriptor : TaskDescriptor) : void
+		if (taskDescriptor.getHostRuntimesName() == null) {
+			if (taskDescriptor.getHostRuntimesAsTask() != null) {
+				TaskEntry determiningTask = this.data.getTaskById(
+						taskDescriptor.getHostRuntimesAsTask(),
+						taskDescriptor.getContextId());
+				if (determiningTask != null) {
+					String[] hostNames = { determiningTask.getHostName() };
+					taskDescriptor.setHostRuntimesName(hostNames);
+				}
+			} else {
+				RSLRestriction restriction = new RSLRestriction(
+						taskDescriptor.getHostRuntimesRsl().toString());
+				RestrictionInterface[] restrictionInterface
+				= new RestrictionInterface [] {restriction};
+
+				try {
+					HostManagerInterface hostManagerInterface
+					= (HostManagerInterface) this.serviceFind(
+							HostManagerService.SERVICE_NAME,
+							Service.RMI_MAIN_IFACE);
+					HostInfoInterface[] hostInfoInterface
+					= hostManagerInterface.queryHosts(restrictionInterface);
+
+					/* Set taskDescriptor. */
+					String[] hostNames = new String[hostInfoInterface.length];
+					for (int i = 0; i < hostNames.length; i++) {
+						hostNames[i] = hostInfoInterface[i].getHostName();
+					}
+
+					if (hostNames.length > 0) {
+						taskDescriptor.setHostRuntimesName(hostNames);
+					}
+				} catch (RemoteException e) {
+					logError("Could not find hostManager service: "
+							+ e.getMessage());
+				} catch (HostManagerException e) {
+					logError("Could not resolve RSL to hostNames (RSL \""
+							+ taskDescriptor.getHostRuntimesRsl().toString()
+							+ "\"): " + e.getMessage());
+					return;
+				}
+			}
+		}
+!!!697346.java!!!	preparePackageName(inout taskDescriptor : TaskDescriptor) : void
+		if (taskDescriptor.getPackageName() == null) {
+			RSLPackageQueryCallback packageQueryCallback
+				= new RSLPackageQueryCallback(taskDescriptor.getPackageRsl());
+			
+			try {
+				SoftwareRepositoryInterface softwareRepositoryInterface
+					= (SoftwareRepositoryInterface) this.serviceFind(
+							SoftwareRepositoryService.SERVICE_NAME,
+							Service.RMI_MAIN_IFACE);
+				if (softwareRepositoryInterface == null) {
+					throw new TaskManagerException("Software Repository not found");
+				}
+				
+				PackageMetadata[] metadata
+					= softwareRepositoryInterface
+					.queryPackages(packageQueryCallback);
+				
+				/* Set taskDescriptor. */
+				// use only the first... */
+				if (metadata.length < 1) {
+					throw new IllegalArgumentException("Name of package not "
+							+ "found: " + taskDescriptor.getPackageRsl());
+				}
+				taskDescriptor.setPackageName(metadata[0].getFilename());
+			} catch (RemoteException e) {
+				throw new TaskManagerException ("Could not find "
+						+ "softwareRepository service", e);
+			} catch (MatchException e) {
+				throw new IllegalArgumentException("Could not get package "
+						+ "names", e);
+			}
+		}
+!!!697474.java!!!	taskStart(inout taskData : TaskData) : void
+		URI hostRuntimeUri;
+		HostRuntimeInterface hostRuntime;
+		TaskDescriptor taskDescriptor = taskData.getTaskDescriptor();
+		
+		/* Prepare hostName. */
+		this.prepareHostName(taskDescriptor);
+		
+		/* Get hostName. */
+		String hostName;
+		try {
+			String[] hostnames = taskDescriptor.getHostRuntimesName();
+			hostName = InetAddress.getByName(hostnames[0])
+					.getCanonicalHostName();
+		} catch (UnknownHostException e) {
+			throw new TaskManagerException("Getting of canonical host name "
+					+ "failed", e);
+		}
+		
+		if (this.data.getHostRuntimeByName(hostName) == null) {
+			throw new TaskManagerException("Host runtime not registered: " + hostName);
+		}
+		
+		try {
+			hostRuntimeUri = new URI("rmi", null, hostName,
+					Registry.REGISTRY_PORT,
+					HostRuntimeInterface.URL, null, null);
+		} catch (URISyntaxException e) {
+			throw new TaskManagerException("Could not construct URI of Host Runtime");
+		}
+		
+		try {
+			hostRuntime = (HostRuntimeInterface)
+				Naming.lookup(hostRuntimeUri.toString());
+		} catch (Exception e) {
+			throw new TaskManagerException("Could not connect to required Host "
+				+ "Runtime (URI=\"" + hostRuntimeUri.toString() + "\")");
+		}
+		
+		try {
+			String taskId = taskData.getTaskDescriptor().getTaskTid();
+			String contextId = taskData.getTaskDescriptor().getContextId();
+			
+			/* Add task to logStorage. */
+			logStorage.setTaskHostname(contextId, taskId, hostName);
+			
+			/* Initialise hostRuntime. */
+			hostRuntime.initialize(this, maxPackageCacheSize, keptClosedContextCount);
+			
+			synchronized (this.data) {
+				/* Set task's state. */
+				this.data.changeTaskState(taskId, contextId, TaskState.RUNNING);
+				
+				/* Run task on Host Runtime. */
+				taskData.setTaskInterface(
+						hostRuntime.createTask(taskData.getTaskDescriptor()));
+			
+				/* Set HostRuntime for running task. */
+				this.data.setTaskHostRuntime(taskId, contextId, hostName);
+				
+				/* Set reservation of Host Runtime if needed. */
+				TaskExclusivity taskExclusivity
+					= taskData.getTaskDescriptor().getTaskExclusive();
+				switch (taskExclusivity) {
+					case CONTEXT_EXCLUSIVE:
+						this.data.changeHostRuntimeReservation(
+								hostName, contextId);
+						break;
+						
+					case EXCLUSIVE:
+						this.data.changeHostRuntimeReservation(hostName, "");
+						break;
+						
+					default:
+						break;  // No work needs to be done...
+				}
+			}
+			
+			/* Set task's directory paths. */
+			String taskDirectory
+				= taskData.getTaskInterface().getTaskDirectory();
+			String workingDirectory
+				= taskData.getTaskInterface().getWorkingDirectory();
+			String temporaryDirectory
+				= taskData.getTaskInterface().getTemporaryDirectory();
+			this.data.setTaskDirectories(taskId, contextId,
+					taskDirectory, workingDirectory, temporaryDirectory);
+			
+			logTrace("[" + taskData.getTaskDescriptor().getContextId()
+					+ ":" + taskData.getTaskDescriptor().getTaskTid() + "] "
+					+ "Started.");
+		} catch (Exception e) {
+			throw new TaskManagerException(e);
+		}
+!!!697602.java!!!	checkDependency(inout dependencyCheckpoint : Dependency, in contextId : String) : boolean
+		String type = dependencyCheckpoint.getType();
+		String taskId = dependencyCheckpoint.getTaskId();
+		Serializable magicObject = dependencyCheckpoint.getValue();
+		CheckPointEntry[] checkPointEntries
+			= this.data.getCheckPoints(type, taskId, contextId, magicObject);
+		
+		return ((checkPointEntries.length > 0) ? true : false);
+!!!697730.java!!!	checkDependencies(inout taskData : TaskData) : boolean
+		Dependency[] dependencyCheckPoints =
+			taskData.getTaskDescriptor().getDependencyCheckPoints();
+		
+		for (int i = 0; i < dependencyCheckPoints.length; i++) {
+			if (!this.checkDependency(dependencyCheckPoints[i],
+					taskData.getTaskDescriptor().getContextId())) {
+				logTrace("[" + taskData.getTaskDescriptor().getContextId()
+						+ ":" + taskData.getTaskDescriptor().getTaskTid()
+						+ "] Testing dependencies: failed.");
+				return false;
+			}
+		}
+		
+		logTrace("[" + taskData.getTaskDescriptor().getContextId()
+				+ ":" + taskData.getTaskDescriptor().getTaskTid()
+				+ "] Testing dependencies: succeded.");
+		return true;
+!!!697858.java!!!	taskNew(inout taskDescriptor : TaskDescriptor) : boolean
+		/* Check validity of taskDescriptor. */
+		if (!taskDescriptor.validate()) {
+			throw new IllegalArgumentException("Task descriptor is not valid.");
+		}
+		
+		String taskId = taskDescriptor.getTaskTid();
+		String contextId = taskDescriptor.getContextId();
+		
+		/* Test if task already exists. */
+		TaskEntry foundTaskEntry = this.data.getTaskById(taskId, contextId);
+		synchronized (data) {
+			if (foundTaskEntry != null) {
+				if ((foundTaskEntry.getState() == TaskState.FINISHED)
+						|| (foundTaskEntry.getState() == TaskState.ABORTED)) {
+					/* Remove this task. */
+					this.data.delTask(taskId, contextId);
+				}
+			}
+
+			/* Prepare packageName. */
+			this.preparePackageName(taskDescriptor);
+
+			/* Prepare TaskEntry. */
+			TaskEntry taskEntry = new TaskEntry();
+			taskEntry.setTaskId(taskId);
+			taskEntry.setContextId(contextId);
+			taskEntry.setTaskName(taskDescriptor.getTaskName());
+			taskEntry.setTaskDescription(taskDescriptor.getTaskDescription());
+			taskEntry.setPackageName(taskDescriptor.getPackageName());
+			taskEntry.setExclusivity(taskDescriptor.getTaskExclusive());
+			taskEntry.setRestartMax(taskDescriptor.getRestartMax());
+			taskEntry.setTaskProperties(taskDescriptor.getTaskProperties());
+
+			/* Prepare TaskData. */
+			TaskData taskData = new TaskData(taskDescriptor);
+
+			/* Add new task to TM's Data. */
+			this.data.newTask(taskEntry, taskData);
+
+			if (contextId.equals(SYSTEM_CONTEXT_ID)
+					&& taskId.equals(TASKMANAGER_TASKNAME)) {
+				throw new TaskManagerException("Task ID " + TASKMANAGER_TASKNAME 
+						+ " in the context " + SYSTEM_CONTEXT_ID + " is reserved");
+			}
+
+			/* Add new task to log storage. */
+			try {
+				this.logStorage.addTask(contextId, taskId);
+			} catch (LogStorageException e) {
+				throw new TaskManagerException("Cannot register the task in the "
+						+ "log storage", e);
+			}
+
+			try {
+				return this.runTaskIfReady(taskEntry, taskData);
+			} catch (TaskManagerException e) {
+				logError("Cannot run task (contextId \"" + contextId
+						+ "\", taskId \"" + taskId + "\"): " + e.getMessage());
+				this.data.delTask(taskId, contextId);
+				throw e;
+			}
+		}
+!!!697986.java!!!	getHostRuntimeInterface(in hostName : String) : HostRuntimeInterface
+		URI hostRuntimeUri;
+		
+		try {
+			hostRuntimeUri = new URI("rmi", null, hostName,
+					Registry.REGISTRY_PORT,
+					HostRuntimeInterface.URL, null, null);
+		} catch (URISyntaxException e) {
+			logError("Could not construct URI of Host Runtime.");
+			return null;
+		}
+		
+		HostRuntimeInterface hostRuntimeInterface;
+		
+		try {
+			hostRuntimeInterface = (HostRuntimeInterface)
+				Naming.lookup(hostRuntimeUri.toString());
+		} catch (Exception e) {
+			logError("Could not connect to required Host "
+				+ "Runtime (URI=\"" + hostRuntimeUri.toString() + "\").");
+			return null;
+		}
+		
+		return hostRuntimeInterface;
+!!!698114.java!!!	getMaxPackageCacheSize() : long
+		return maxPackageCacheSize;
+!!!698242.java!!!	setMaxPackageCacheSize(in maxPackageCacheSize : long) : void
+		this.maxPackageCacheSize = maxPackageCacheSize;
+		this.storeConfiguration(configurationFile);
+		
+		/* Distribute to all known hostRuntimes. */
+		HostRuntimeEntry[] hostRuntimes = this.data.getHostRuntimes();
+		for (HostRuntimeEntry hostRuntime : hostRuntimes) {
+			String hostName = hostRuntime.getHostName();
+			HostRuntimeInterface hostRuntimeInterface
+				= this.getHostRuntimeInterface(hostName);
+			if (hostRuntimeInterface != null) {
+				hostRuntimeInterface
+					.setMaxPackageCacheSize(maxPackageCacheSize);
+			}
+		}
+!!!698370.java!!!	getKeptClosedContextCount() : int
+		return keptClosedContextCount;
+!!!698498.java!!!	setKeptClosedContextCount(in keptClosedContextCount : int) : void
+		this.keptClosedContextCount = keptClosedContextCount;
+		this.storeConfiguration(this.configurationFile);
+		
+		/* Distribute to all known hostRuntimes. */
+		HostRuntimeEntry[] hostRuntimes = this.data.getHostRuntimes();
+		for (HostRuntimeEntry hostRuntime : hostRuntimes) {
+			String hostName = hostRuntime.getHostName();
+			HostRuntimeInterface hostRuntimeInterface
+				= this.getHostRuntimeInterface(hostName);
+			if (hostRuntimeInterface != null) {
+				hostRuntimeInterface
+					.setKeptClosedContextCount(keptClosedContextCount);
+			}
+		}
+!!!698626.java!!!	getTaskManager() : TaskManagerInterface
+		return this;
+!!!698754.java!!!	unregisterFinishedService(in contextId : String, in taskId : String) : void
+		ServiceEntry template = new ServiceEntry();
+		template.setContextId(contextId);
+		template.setTaskId(taskId);
+		ServiceEntry[] registeredServices = serviceLook(template);
+		if (registeredServices.length > 0) {
+			for (ServiceEntry entry : registeredServices) {
+				serviceRegistry.remove(entry);
+			}
+		}
+!!!698882.java!!!	log(inout level : LogLevel, in message : String) : void
+		if (!level.isGreaterOrEqual(logLevel)) {
+			return;
+		}
+		
+		Date timestamp = new Date(System.currentTimeMillis());
+
+		SimpleDateFormat format = 
+			(SimpleDateFormat) DateFormat.getDateTimeInstance();
+		format.applyPattern("dd.MM.yyyy HH:mm:ss.SSS");
+
+		System.out.println(level + " " + message);
+
+		try {
+			logStorage.log(SYSTEM_CONTEXT_ID, 
+					TASKMANAGER_TASKNAME, 
+					timestamp,
+					level,
+					message);
+		} catch (Exception e) {
+			System.err.println("Unable to store log message: "
+					+ e.getMessage());
+		}
+!!!699010.java!!!	logFatal(in message : String) : void
+		log(LogLevel.FATAL, message);
+!!!699138.java!!!	logError(in message : String) : void
+		log(LogLevel.ERROR, message);
+!!!699266.java!!!	logWarning(in message : String) : void
+		log(LogLevel.WARN, message);
+!!!699394.java!!!	logInfo(in message : String) : void
+		log(LogLevel.INFO, message);
+!!!699522.java!!!	logDebug(in message : String) : void
+		log(LogLevel.DEBUG, message);
+!!!699650.java!!!	logTrace(in message : String) : void
+		log(LogLevel.TRACE, message);
+!!!699778.java!!!	registerEventListener(inout listener : HostRuntimeRegistrationListener) : void
+		if (listener == null) {
+			throw new NullPointerException("Listener is null");
+		}
+		if (registrationListeners.contains(listener)) {
+			throw new IllegalArgumentException("Listener already registered");
+		}
+		registrationListeners.add(listener);
+!!!699906.java!!!	registerHostRuntime(in hostname : String) : void
+		if (hostname == null) {
+			throw new NullPointerException("Hostname is null");
+		}
+		
+		String canonicalHostName; 
+		try {
+			canonicalHostName = InetAddress.getByName(hostname)
+					.getCanonicalHostName();
+		} catch (UnknownHostException e) {
+			throw new RemoteException("Getting of canonical host name failed",
+					e);
+		}
+		
+		HostRuntimeEntry hostRuntime = new HostRuntimeEntry(canonicalHostName);
+		this.data.addHostRuntime(hostRuntime);
+		
+		for (HostRuntimeRegistrationListener listener : registrationListeners) {
+			listener.hostRuntimeRegistered(hostname);
+		}
+		
+		logInfo("Host Runtime registered for host: " + hostname);
+!!!700034.java!!!	unregisterEventListener(inout listener : HostRuntimeRegistrationListener) : void
+		if (listener == null) {
+			throw new NullPointerException("Listener is null");
+		}
+		if (!registrationListeners.remove(listener)) {
+			throw new IllegalArgumentException("Listener not registered");
+		}
+!!!700162.java!!!	unregisterHostRuntime(in hostName : String) : void
+		if (hostName == null) {
+			throw new NullPointerException("Hostname is null");
+		}
+		
+		String canonicalHostName; 
+		try {
+			canonicalHostName = InetAddress.getByName(hostName)
+					.getCanonicalHostName();
+		} catch (UnknownHostException e) {
+			throw new RemoteException("Getting of canonical host name failed",
+					e);
+		}
+		
+		/* Abort all non-finished tasks. */
+		TaskEntry[] tasks = this.data.getTasksOnHost(hostName);
+		for (TaskEntry task : tasks) {
+			TaskState taskState = task.getState();
+			if ((taskState != TaskState.FINISHED)
+					&& (taskState != TaskState.ABORTED)) {
+				this.taskReachedState(task.getTaskId(), task.getContextId(),
+						TaskState.ABORTED);
+			}
+		}
+		
+		HostRuntimeEntry hostRuntime = new HostRuntimeEntry(canonicalHostName);
+		this.data.removeHostRuntime(hostRuntime);
+		
+		for (HostRuntimeRegistrationListener listener : registrationListeners) {
+			listener.hostRuntimeUnregistered(hostName);
+		}
+		
+		logInfo("Host Runtime unregistered for host: " + hostName);
+!!!700290.java!!!	getRegisteredHostRuntimes() : String
+		HostRuntimeEntry[] hostRuntimes = this.data.getHostRuntimes();
+		String[] hostnames = new String[hostRuntimes.length];
+		for (int i = 0; i < hostRuntimes.length; i++) {
+			hostnames[i] = hostRuntimes[i].getHostName();
+		}
+		return hostnames;
+!!!700418.java!!!	deleteContext(in id : String) : void
+		if (id.equals(TaskManagerInterface.SYSTEM_CONTEXT_ID)) {
+			// do not delete the "system" context
+			return;
+		}
+		
+		killContextById(id);
+		removeContext(id);
+		/* Remove context from data of TaskManager. */
+		this.data.delContextByForce(id);
+!!!700546.java!!!	getLogCountForTask(in context : String, in taskID : String) : long
+		return logStorage.getLogCountForTask(context, taskID);
+!!!700674.java!!!	getLogsForTask(in context : String, in taskID : String, in first : long, in last : long) : LogRecord
+		return logStorage.getLogsForTask(context, taskID, first, last);

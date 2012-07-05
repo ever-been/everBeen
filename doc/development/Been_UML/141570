@@ -1,0 +1,1894 @@
+format 70
+"benchmarks" // been::src::cz::cuni::mff::been::webinterface::benchmarks
+  revision 3
+  modified_by 8 "BoRiS"
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+  show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+  show_infonote default drawing_language default show_stereotype_properties default
+  
+  java_dir "cz/cuni/mff/been/webinterface/benchmarks"
+  java_package "cz.cuni.mff.been.webinterface.benchmarks"
+  classview 138114 "benchmarks"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+    //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+    show_infonote default drawing_language default show_stereotype_properties default
+    class 211458 "BenchmarkRunState"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Contains state information used when navigating through the benchmark run
+wizard. Instances of this object are saved in the session.  
+
+@author David Majda
+"
+      attribute 349314 "SESSION_PREFIX"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"benchmark-run-state-\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Prefix used in name of the session attributes, where instances of
+<code>BenchmarkRunState</code> class are stored.
+
+"
+      end
+
+      class 211586 "WizardScreen"
+	visibility public stereotype "enum"
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}${final}${abstract}enum ${name}${implements} {
+${items};
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	attribute 349442 "SELECT_PLUGIN"
+	  public type class_ref 211586 // WizardScreen
+	  cpp_decl ""
+	  java_decl "  ${@}${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	attribute 349570 "SELECT_CREATE_EXPERIMENT"
+	  public type class_ref 211586 // WizardScreen
+	  cpp_decl ""
+	  java_decl "  ${@}${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	attribute 349698 "SCHEDULING_INFO"
+	  public type class_ref 211586 // WizardScreen
+	  cpp_decl ""
+	  java_decl "  ${@}${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	attribute 349826 "CONFIGURE_PLUGIN"
+	  public type class_ref 211586 // WizardScreen
+	  cpp_decl ""
+	  java_decl "  ${@}${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	attribute 349954 "SELECT_HOSTS_FOR_ROLES"
+	  public type class_ref 211586 // WizardScreen
+	  cpp_decl ""
+	  java_decl "  ${@}${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	attribute 350082 "CALLBACK_R_SCRIPTS"
+	  public type class_ref 211586 // WizardScreen
+	  cpp_decl ""
+	  java_decl "  ${@}${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	attribute 350210 "CONFIRM"
+	  public type class_ref 211586 // WizardScreen
+	  cpp_decl ""
+	  java_decl "  ${@}${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	attribute 350338 "TASKS"
+	  public type class_ref 211586 // WizardScreen
+	  cpp_decl ""
+	  java_decl "  ${@}${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+      end
+
+      classrelation 275842 // brid (<unidirectional association>)
+	relation 275842 --->
+	  a role_name "brid" private
+	    comment " Benchmark run identifier. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 275842 // brid (<unidirectional association>)
+	  b parent class_ref 134402 // BRID
+      end
+
+      classrelation 275970 // aid (<unidirectional association>)
+	relation 275970 --->
+	  a role_name "aid" private
+	    comment " Analysis identifier. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 275970 // aid (<unidirectional association>)
+	  b parent class_ref 130434 // AID
+      end
+
+      attribute 350466 "isRegression"
+	private explicit_type "boolean"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Information whether the analysis is regression. 
+"
+      end
+
+      classrelation 276226 // lastWizardScreen (<unidirectional association>)
+	relation 276226 --->
+	  a role_name "lastWizardScreen" private
+	    comment " 
+Last screen in the wizard whose results were processed successfully, or
+<code>null</code> if we are in the beginning of the wizard.
+
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 276226 // lastWizardScreen (<unidirectional association>)
+	  b parent class_ref 211586 // WizardScreen
+      end
+
+      classrelation 276482 // tasks (<unidirectional association>)
+	relation 276482 --->
+	  a role_name "tasks" multiplicity "[]" private
+	    comment " Task descriptors of generated benchmark tasks. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	    classrelation_ref 276482 // tasks (<unidirectional association>)
+	  b parent class_ref 131074 // TaskDescriptor
+      end
+
+      attribute 350594 "experimentName"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Name of the experiment. 
+"
+      end
+
+      attribute 350722 "experimentDescription"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Description of the experiment. 
+"
+      end
+
+      operation 753026 "getBrid"
+	public return_type class_ref 134402 // BRID
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return the benchmark run identifier "
+      end
+
+      operation 753154 "getAid"
+	public return_type class_ref 130434 // AID
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return the analysis identifier "
+      end
+
+      operation 753282 "setAid"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "aid" type class_ref 130434 // AID
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the analysis identifier.
+
+@param aid analysis identifier
+"
+      end
+
+      operation 753410 "getIsRegression"
+	public explicit_return_type "boolean"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return the information whether the analysis is regression "
+      end
+
+      operation 753538 "setIsRegression"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "isRegression" explicit_type "boolean"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the information whether the analysis is regression.
+
+@param isRegression information whether the analysis is regression to set
+"
+      end
+
+      operation 753666 "getPlugin"
+	public explicit_return_type "BeenPluginDescriptor"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return information about selected plugin "
+      end
+
+      operation 753794 "setPlugin"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "plugin" explicit_type "BeenPluginDescriptor"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the information about selected plugin.
+
+@param plugin information about selected plugin to set
+"
+      end
+
+      operation 753922 "getCurrentScreen"
+	public explicit_return_type "Screen"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return the currently displayed configurator screen "
+      end
+
+      operation 754050 "setCurrentScreen"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "currentScreen" explicit_type "Screen"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the currently displayed configurator screen.
+
+@param currentScreen currently displayed configurator screen to set
+"
+      end
+
+      operation 754178 "getLastWizardScreen"
+	public return_type class_ref 211586 // WizardScreen
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return the last screen in the wizard whose results were processed
+         successfully, or <code>null</code> if we are in the beginning of
+         the wizard.
+"
+      end
+
+      operation 754306 "setLastWizardScreen"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "lastWizardScreen" type class_ref 211586 // WizardScreen
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the last screen in the wizard whose results were processed
+successfully.
+
+@param lastWizardScreen last screen in the wizard whose results were
+        processed successfully to set
+"
+      end
+
+      operation 754434 "getTasks"
+	public return_type class_ref 131074 // TaskDescriptor
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return task descriptors of generated benchmark tasks "
+      end
+
+      operation 754562 "setTasks"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "tasks" type class_ref 131074 // TaskDescriptor
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0}[] ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the task descriptors of generated benchmark tasks.
+
+@param tasks task descriptors of generated benchmark tasks
+"
+      end
+
+      operation 754690 "getExperimentName"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return name of the experiment "
+      end
+
+      operation 754818 "setExperimentName"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "experimentName" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the name of the experiment.
+
+@param experimentName name of the experiment to set
+"
+      end
+
+      operation 754946 "getExperimentDescription"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return the experimentDescription description of the experiment "
+      end
+
+      operation 755074 "setExperimentDescription"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "experimentDescription" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the description of the experiment.
+
+@param experimentDescription description of the experiment to set
+"
+      end
+
+      operation 755202 "getSchedulerInfo"
+	public explicit_return_type "SchedulerInfo"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return the information about scheduling of the experiment "
+      end
+
+      operation 755330 "setSchedulerInfo"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "schedulerInfo" explicit_type "SchedulerInfo"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the information about scheduling of the experiment
+
+@param schedulerInfo information about scheduling of the experiment to set
+"
+      end
+
+      operation 755458 "getRoles"
+	public explicit_return_type "Role"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return information about assignment of hosts to roles "
+      end
+
+      operation 755586 "setRoles"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "roles" explicit_type "Role"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0}[] ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the information about assignment of hosts to roles.
+
+@param roles information about assignment of hosts to roles to set
+"
+      end
+
+      operation 755714 "getCallbackRScripts"
+	public explicit_return_type "CallbackRScripts"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return callback R scripts "
+      end
+
+      operation 755842 "setCallbackRScripts"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "callbackRScripts" explicit_type "CallbackRScripts"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the callback R scripts.
+
+@param callbackRScripts R scripts to set
+"
+      end
+
+      operation 755970 "getExperiment"
+	public explicit_return_type "Entity"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}<EID> ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return callback R scripts "
+      end
+
+      operation 756098 "setExperiment"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "experiment" explicit_type "ExperimentEntity"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets the experiment.
+
+@param experiment the experiment.
+"
+      end
+
+      operation 756226 "BenchmarkRunState"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "brid" type class_ref 134402 // BRID
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>BenchmarkRunState</code> object.
+
+@param brid benchmark run identifier
+"
+      end
+    end
+
+    class 211714 "Binary"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Wrapper class for the binary entity in the Benchmark Manager.
+
+@author David Majda
+"
+      classrelation 277250 // runs (<unidirectional association>)
+	relation 277250 --->
+	  a role_name "runs" multiplicity "[]" private
+	    comment " Runs in wrapped binary. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	    classrelation_ref 277250 // runs (<unidirectional association>)
+	  b parent class_ref 211842 // Run
+      end
+
+      classrelation 277378 // tasks (<unidirectional association>)
+	relation 277378 --->
+	  a role_name "tasks" multiplicity "[]" private
+	    comment " Tasks in wrapped binary. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	    classrelation_ref 277378 // tasks (<unidirectional association>)
+	  b parent class_ref 184706 // TaskEntry
+      end
+
+      classrelation 277506 // checkpoints (<unidirectional association>)
+	relation 277506 --->
+	  stereotype "Map"
+	  a role_name "checkpoints" private
+	    comment " Reached checkpoints of tasks in this binary. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<${type}, CheckPoint[]> ${name}${value};
+"
+	    classrelation_ref 277506 // checkpoints (<unidirectional association>)
+	  b parent class_ref 184706 // TaskEntry
+      end
+
+      operation 756354 "getId"
+	public return_type class_ref 138754 // BID
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return binary identifier "
+      end
+
+      operation 756482 "getName"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return binary name "
+      end
+
+      operation 756610 "getStatus"
+	public explicit_return_type "EntityStatus"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return binary status "
+      end
+
+      operation 756738 "aggregatedTaskCount"
+	public explicit_return_type "int"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return number of tasks in this binary and contained runs "
+      end
+
+      operation 756866 "aggregatedFinishedTaskCount"
+	public explicit_return_type "int"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return number of finished tasks in this binary and contained runs "
+      end
+
+      operation 756994 "runCount"
+	public explicit_return_type "int"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return number of runs in this binary "
+      end
+
+      operation 757122 "getRuns"
+	public return_type class_ref 211842 // Run
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return runs in this binary "
+      end
+
+      operation 757250 "getTasks"
+	public return_type class_ref 184706 // TaskEntry
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return tasks in this binary  "
+      end
+
+      operation 757378 "getAggregatedTasks"
+	public return_type class_ref 184706 // TaskEntry
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return tasks in this binary and contained runs "
+      end
+
+      operation 757506 "getCheckpoints"
+	public return_type class_ref 184706 // TaskEntry
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}Map<${type}, CheckPoint[]> ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return reached checkpoints of tasks in this binary "
+      end
+
+      operation 757634 "Binary"
+	public explicit_return_type ""
+	nparams 4
+	  param inout name "entity" explicit_type "BinaryEntity"
+	  param inout name "runs" type class_ref 211842 // Run
+	  param inout name "tasks" type class_ref 184706 // TaskEntry
+	  param inout name "checkpoints" explicit_type "Map<TaskEntry, CheckPoint[]>"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1}[] ${p1}, ${t2}[] ${p2}, ${t3} ${p3}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>Run</code> object.
+
+@param entity wrapped entity
+@param runs runs in this binary
+@param tasks tasks in this binary
+@param checkpoints reached checkpoints of tasks in this binary
+"
+      end
+    end
+
+    class 211842 "Run"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Wrapper class for the run entity in the Benchmark Manager.
+
+@author David Majda
+"
+      classrelation 278274 // tasks (<unidirectional association>)
+	relation 278274 --->
+	  a role_name "tasks" multiplicity "[]" private
+	    comment " Tasks in this run. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	    classrelation_ref 278274 // tasks (<unidirectional association>)
+	  b parent class_ref 184706 // TaskEntry
+      end
+
+      classrelation 278402 // checkpoints (<unidirectional association>)
+	relation 278402 --->
+	  stereotype "Map"
+	  a role_name "checkpoints" private
+	    comment " Reached checkpoints of tasks in this run. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<${type}, CheckPoint[]> ${name}${value};
+"
+	    classrelation_ref 278402 // checkpoints (<unidirectional association>)
+	  b parent class_ref 184706 // TaskEntry
+      end
+
+      operation 759682 "getId"
+	public return_type class_ref 140290 // RID
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return run identifier "
+      end
+
+      operation 759810 "getName"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return run name "
+      end
+
+      operation 759938 "getStatus"
+	public explicit_return_type "EntityStatus"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return run status "
+      end
+
+      operation 760066 "taskCount"
+	public explicit_return_type "int"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return number of tasks in this run "
+      end
+
+      operation 760194 "finishedTaskCount"
+	public explicit_return_type "int"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return number of finished tasks in this run "
+      end
+
+      operation 760322 "getTasks"
+	public return_type class_ref 184706 // TaskEntry
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return tasks in this run "
+      end
+
+      operation 760450 "getCheckpoints"
+	public return_type class_ref 184706 // TaskEntry
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}Map<${type}, CheckPoint[]> ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return reached checkpoints of tasks in this run "
+      end
+
+      operation 760578 "Run"
+	public explicit_return_type ""
+	nparams 3
+	  param inout name "entity" explicit_type "RunEntity"
+	  param inout name "tasks" type class_ref 184706 // TaskEntry
+	  param inout name "checkpoints" explicit_type "Map<TaskEntry, CheckPoint[]>"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1}[] ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>Run</code> object.
+
+@param entity wrapped run
+@param tasks tasks in this run
+@param checkpoints reached checkpoints of tasks in this run 
+"
+      end
+    end
+
+    class 211970 "Experiment"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Wrapper class for the experiment entity in the Benchmark Manager.
+
+@author David Majda
+"
+      classrelation 277762 // binaries (<unidirectional association>)
+	relation 277762 --->
+	  a role_name "binaries" multiplicity "[]" private
+	    comment " Binaries in this experiment. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	    classrelation_ref 277762 // binaries (<unidirectional association>)
+	  b parent class_ref 211714 // Binary
+      end
+
+      classrelation 277890 // tasks (<unidirectional association>)
+	relation 277890 --->
+	  a role_name "tasks" multiplicity "[]" private
+	    comment " Tasks in this experiment. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	    classrelation_ref 277890 // tasks (<unidirectional association>)
+	  b parent class_ref 184706 // TaskEntry
+      end
+
+      classrelation 278018 // checkpoints (<unidirectional association>)
+	relation 278018 --->
+	  stereotype "Map"
+	  a role_name "checkpoints" private
+	    comment " Reached checkpoints of tasks in this experiment. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<${type}, CheckPoint[]> ${name}${value};
+"
+	    classrelation_ref 278018 // checkpoints (<unidirectional association>)
+	  b parent class_ref 184706 // TaskEntry
+      end
+
+      operation 757762 "getId"
+	public return_type class_ref 133378 // EID
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return experiment identifier "
+      end
+
+      operation 757890 "getName"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return experiment name "
+      end
+
+      operation 758018 "getStatus"
+	public explicit_return_type "EntityStatus"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return experiment status "
+      end
+
+      operation 758146 "getRoles"
+	public explicit_return_type "Role"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return benchmarking roles of this experiment "
+      end
+
+      operation 758274 "getCallbackRScripts"
+	public explicit_return_type "CallbackRScripts"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return callback R scripts of this experiment "
+      end
+
+      operation 758402 "aggregatedTaskCount"
+	public explicit_return_type "int"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return number of tasks in this experiment, contained binaries and runs
+"
+      end
+
+      operation 758530 "aggregatedFinishedTaskCount"
+	public explicit_return_type "int"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return number of finished tasks in this experiment, contained binaries
+         and runs
+"
+      end
+
+      operation 758658 "runCount"
+	public explicit_return_type "int"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return number of runs in this experiment "
+      end
+
+      operation 758786 "binaryCount"
+	public explicit_return_type "int"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return number of binaries in this experiment "
+      end
+
+      operation 758914 "getBinaries"
+	public return_type class_ref 211714 // Binary
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return bnaries in this experiment "
+      end
+
+      operation 759042 "getTasks"
+	public return_type class_ref 184706 // TaskEntry
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return tasks in this experiment "
+      end
+
+      operation 759170 "getAggregatedTasks"
+	public return_type class_ref 184706 // TaskEntry
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return tasks in this experiment, contained binaries and runs "
+      end
+
+      operation 759298 "getCheckpoints"
+	public return_type class_ref 184706 // TaskEntry
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}Map<${type}, CheckPoint[]> ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return reached checkpoints of tasks in this experiment "
+      end
+
+      operation 759426 "getContextId"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return context ID of context associated with this experiment "
+      end
+
+      operation 759554 "Experiment"
+	public explicit_return_type ""
+	nparams 4
+	  param inout name "entity" explicit_type "ExperimentEntity"
+	  param inout name "binaries" type class_ref 211714 // Binary
+	  param inout name "tasks" type class_ref 184706 // TaskEntry
+	  param inout name "checkpoints" explicit_type "Map<TaskEntry, CheckPoint[]>"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1}[] ${p1}, ${t2}[] ${p2}, ${t3} ${p3}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>Experiment</code> object.
+
+@param entity wrapped entity
+@param binaries binaries in this experiment
+@param tasks tasks in this experiment
+@param checkpoints reached checkpoints of tasks in this experiment
+"
+      end
+    end
+
+    class 212098 "ScreenHandler"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Processes screens from the plugin configurator in the benchmark run wizard.
+\"Processes\" means three things:
+
+1. Ensures all parameters were sent in the HTTP request (<code>ensure</code>
+   method).
+2. Checks all parametsrs' values (<code>check</code> method).
+3. Updates all items' values according to the parameters sent in the HTTP
+   request (<code>updateItems</code>) method.
+   
+For each type of item, there exists an subclass of <code>ItemHandler</code>
+class. This subclass processes parameters for items of its type - the
+<code>ScreenHandler</code> delegates its work using a Class->ItemHandler
+hashmap.  
+  
+@author David Majda
+"
+      class 212226 "ItemHandler"
+	abstract visibility private 
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	operation 760706 "ensure"
+	  abstract public explicit_return_type "void"
+	  nparams 1
+	    param inout name "item" explicit_type "Item"
+	  nexceptions 2
+	    exception class_ref 210050 // MissingParamException
+	    exception class_ref 208770 // InvalidParamValueException
+	  
+	  java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Checks if required parameters were sent and they have valid values. If
+the parameters are OK, the method doesn't do anything, otherwise it
+throws <code>MissingParamException</code> or
+<code>InvalidParamValueException</code> respectively.
+ 
+@param item processed screen item
+@throws MissingParamException if some required parameter is missing
+@throws InvalidParamValueException if required parameter contains
+         invalid value
+"
+	end
+
+	operation 760834 "check"
+	  abstract public explicit_return_type "void"
+	  nparams 1
+	    param inout name "item" explicit_type "Item"
+	  
+	  java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Checks if required parameters have valid values and writes error message
+if some parameters do not.
+
+This method is used when validating free-text fields (e.g. when user
+should enter only integer value) and in similar situations.  
+
+@param item processed screen item
+"
+	end
+
+	operation 760962 "updateItem"
+	  abstract public explicit_return_type "void"
+	  nparams 1
+	    param inout name "item" explicit_type "Item"
+	  
+	  java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Updates the item value according to the parameters sent in the HTTP
+request.
+
+@param item processed screen item
+"
+	end
+      end
+
+      classrelation 278530 // params (<unidirectional association>)
+	relation 278530 --->
+	  a role_name "params" init_value "=  Params.getInstance()" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 278530 // params (<unidirectional association>)
+	  b parent class_ref 210562 // Params
+      end
+
+      classrelation 278658 // errorMessages (<unidirectional association>)
+	relation 278658 --->
+	  a role_name "errorMessages" init_value "=  Page.getInstance().getErrorMessages()" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 278658 // errorMessages (<unidirectional association>)
+	  b parent class_ref 209794 // Messages
+      end
+
+      attribute 350850 "request"
+	private explicit_type "HttpServletRequest"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 278786 // itemHandlers (<unidirectional association>)
+	relation 278786 --->
+	  stereotype "Map"
+	  a role_name "itemHandlers" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<Class, ${type}> ${name}${value};
+"
+	    classrelation_ref 278786 // itemHandlers (<unidirectional association>)
+	  b parent class_ref 212226 // ItemHandler
+      end
+
+      classrelation 278914 // staticTextHandler (<unidirectional association>)
+	relation 278914 --->
+	  a role_name "staticTextHandler" init_value "=  new ItemHandler() {
+		/**
+		 * @see cz.cuni.mff.been.webinterface.benchmarks.ScreenHandler.ItemHandler#ensure(cz.cuni.mff.been.apps.gui.Item)
+		 */
+		public void ensure(Item item)
+				throws MissingParamException, InvalidParamValueException {
+			/* Don't do anything  - no params expected. */
+		}
+		
+		/**
+		 * @see cz.cuni.mff.been.webinterface.benchmarks.ScreenHandler.ItemHandler#check(cz.cuni.mff.been.apps.gui.Item)
+		 */
+		public void check(Item item) {
+			/* Don't do anything - no params expected. */
+		}
+
+		/**
+		 * @see cz.cuni.mff.been.webinterface.benchmarks.ScreenHandler.ItemHandler#updateItem(cz.cuni.mff.been.apps.gui.Item)
+		 */
+		public void updateItem(Item item) {
+			/* Don't do anything. */
+		}
+	}" const_relation private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 278914 // staticTextHandler (<unidirectional association>)
+	  b parent class_ref 212226 // ItemHandler
+      end
+
+      classrelation 279042 // inputHandler (<unidirectional association>)
+	relation 279042 --->
+	  a role_name "inputHandler" init_value "=  new ItemHandler() {
+		/**
+		 * @see cz.cuni.mff.been.webinterface.benchmarks.ScreenHandler.ItemHandler#ensure(cz.cuni.mff.been.apps.gui.Item)
+		 */
+		public void ensure(Item item)
+				throws MissingParamException, InvalidParamValueException {
+			params.ensureExists(item.formElementName());
+		}
+		
+		/**
+		 * @see cz.cuni.mff.been.webinterface.benchmarks.ScreenHandler.ItemHandler#check(cz.cuni.mff.been.apps.gui.Item)
+		 */
+		public void check(Item item) {
+			InputValidator validator = ((Input) item).getValidator();
+			if (validator != null) {
+				String value = request.getParameter(item.formElementName());
+				String validationResult = validator.validate(value);
+				if (validationResult != null) {
+					errorMessages.addTextMessage(item.getLabel() + \": \"
+							+ validationResult);
+				}
+			}
+		}
+
+		/**
+		 * @see cz.cuni.mff.been.webinterface.benchmarks.ScreenHandler.ItemHandler#updateItem(cz.cuni.mff.been.apps.gui.Item)
+		 */
+		public void updateItem(Item item) {
+			((Input) item).setValue(request.getParameter(item.formElementName()));
+		}
+	}" const_relation private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 279042 // inputHandler (<unidirectional association>)
+	  b parent class_ref 212226 // ItemHandler
+      end
+
+      classrelation 279170 // rslInputHandler (<unidirectional association>)
+	relation 279170 --->
+	  a role_name "rslInputHandler" init_value "=  new ItemHandler() {
+		/**
+		 * @see cz.cuni.mff.been.webinterface.benchmarks.ScreenHandler.ItemHandler#ensure(cz.cuni.mff.been.apps.gui.Item)
+		 */
+		public void ensure(Item item)
+				throws MissingParamException, InvalidParamValueException {
+			params.ensureExists(item.formElementName());
+		}
+		
+		/**
+		 * @see cz.cuni.mff.been.webinterface.benchmarks.ScreenHandler.ItemHandler#check(cz.cuni.mff.been.apps.gui.Item)
+		 */
+		public void check(Item item) {
+			String rsl = request.getParameter(item.formElementName());
+			String validationResult = RSLValidator.validate(rsl);
+			if (validationResult != null) {
+				errorMessages.addHTMLMessage(item.getLabel() + \": \" + validationResult);
+			}
+		}
+
+		/**
+		 * @see cz.cuni.mff.been.webinterface.benchmarks.ScreenHandler.ItemHandler#updateItem(cz.cuni.mff.been.apps.gui.Item)
+		 */
+		public void updateItem(Item item) {
+			((RSLInput) item).setValue(request.getParameter(item.formElementName()));
+		}
+	}" const_relation private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 279170 // rslInputHandler (<unidirectional association>)
+	  b parent class_ref 212226 // ItemHandler
+      end
+
+      classrelation 279298 // selectHandler (<unidirectional association>)
+	relation 279298 --->
+	  a role_name "selectHandler" init_value "=  new ItemHandler() {
+		/**
+		 * @see cz.cuni.mff.been.webinterface.benchmarks.ScreenHandler.ItemHandler#ensure(cz.cuni.mff.been.apps.gui.Item)
+		 */
+		public void ensure(Item item)
+				throws MissingParamException, InvalidParamValueException {
+			params.ensureExists(item.formElementName());
+			String id = request.getParameter(item.formElementName());
+			for (Option option: ((Select) item).getOptions()) {
+				if (option.getId().equals(id)) {
+					return;
+				}
+			}
+			throw new InvalidParamValueException(\"Parameter \\\"\" 
+					+ item.formElementName() + \"\\\" has invalid value.\");
+		}
+		
+		/**
+		 * @see cz.cuni.mff.been.webinterface.benchmarks.ScreenHandler.ItemHandler#check(cz.cuni.mff.been.apps.gui.Item)
+		 */
+		public void check(Item item) {
+			/* Don't do anything - every value that passed ensure should be OK. */
+		}
+
+		/**
+		 * @see cz.cuni.mff.been.webinterface.benchmarks.ScreenHandler.ItemHandler#updateItem(cz.cuni.mff.been.apps.gui.Item)
+		 */
+		public void updateItem(Item item) {
+			((Select) item).setSelectedId(request.getParameter(item.formElementName()));
+		}
+	}" const_relation private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 279298 // selectHandler (<unidirectional association>)
+	  b parent class_ref 212226 // ItemHandler
+      end
+
+      classrelation 279426 // mulitSelectHandler (<unidirectional association>)
+	relation 279426 --->
+	  a role_name "mulitSelectHandler" init_value "=  new ItemHandler() {
+		/**
+		 * @see cz.cuni.mff.been.webinterface.benchmarks.ScreenHandler.ItemHandler#ensure(cz.cuni.mff.been.apps.gui.Item)
+		 */
+		public void ensure(Item item)
+				throws MissingParamException, InvalidParamValueException {
+			params.ensureExists(item.formElementName());
+			String[] indexStrings = Routines.split2(\",\",
+				request.getParameter(item.formElementName()));
+			for (String indexString: indexStrings) {
+				int index;
+				try {
+					index = Integer.valueOf(indexString);
+				} catch (NumberFormatException e) {
+					throw new InvalidParamValueException(\"Parameter \\\"\" 
+							+ item.formElementName() + \"\\\" has invalid value.\");
+				}
+				if (index < 0 || ((MultiSelect) item).getOptions().length <= index) { 
+					throw new InvalidParamValueException(\"Parameter \\\"\" 
+							+ item.formElementName() + \"\\\" has invalid value.\");
+				}
+			}
+		}
+		
+		/**
+		 * @see cz.cuni.mff.been.webinterface.benchmarks.ScreenHandler.ItemHandler#check(cz.cuni.mff.been.apps.gui.Item)
+		 */
+		public void check(Item item) {
+			/* Don't do anything - every value that passed ensure should be OK. */
+		}
+
+		/**
+		 * @see cz.cuni.mff.been.webinterface.benchmarks.ScreenHandler.ItemHandler#updateItem(cz.cuni.mff.been.apps.gui.Item)
+		 */
+		public void updateItem(Item item) {
+			String[] indexStrings = Routines.split2(\",\",
+				request.getParameter(item.formElementName()));
+			int[] indexes = new int[indexStrings.length];
+			for (int i = 0; i < indexes.length; i++) {
+				indexes[i] = Integer.valueOf(indexStrings[i]);
+			}
+			((MultiSelect) item).setSelectedIndexes(indexes);
+		}
+	}" const_relation private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 279426 // mulitSelectHandler (<unidirectional association>)
+	  b parent class_ref 212226 // ItemHandler
+      end
+
+      classrelation 279554 // radiosWithSectionsHandler (<unidirectional association>)
+	relation 279554 --->
+	  a role_name "radiosWithSectionsHandler" init_value "=  new ItemHandler() {
+		/**
+		 * @see cz.cuni.mff.been.webinterface.benchmarks.ScreenHandler.ItemHandler#ensure(cz.cuni.mff.been.apps.gui.Item)
+		 */
+		public void ensure(Item item)
+				throws MissingParamException, InvalidParamValueException {
+			params.ensureExists(item.formElementName());
+
+			for (RadioWithSectionItem radioItem: ((RadiosWithSections) item).getItems()) {
+				if (radioItem.getSection() != null) {
+					for (Item item2: radioItem.getSection().getItems()) {
+						itemHandlers.get(item2.getClass()).ensure(item2);
+					}
+				}
+			}
+			
+			String id = request.getParameter(item.formElementName());
+			for (RadioWithSectionItem radioItem: ((RadiosWithSections) item).getItems()) {
+				if (radioItem.getOption().getId().equals(id)) {
+					return;
+				}
+			}
+			throw new InvalidParamValueException(\"Parameter \\\"\" 
+					+ item.formElementName() + \"\\\" has invalid value.\");
+		}
+		
+		/**
+		 * @see cz.cuni.mff.been.webinterface.benchmarks.ScreenHandler.ItemHandler#check(cz.cuni.mff.been.apps.gui.Item)
+		 */
+		public void check(Item item) {
+			String id = request.getParameter(item.formElementName());
+			for (RadioWithSectionItem radioItem: ((RadiosWithSections) item).getItems()) {
+				if (radioItem.getOption().getId().equals(id)) {
+					if (radioItem.getSection() != null) {
+						for (Item item2: radioItem.getSection().getItems()) {
+							itemHandlers.get(item2.getClass()).check(item2);
+						}
+					}
+				}
+			}
+		}
+
+		/**
+		 * @see cz.cuni.mff.been.webinterface.benchmarks.ScreenHandler.ItemHandler#updateItem(cz.cuni.mff.been.apps.gui.Item)
+		 */
+		public void updateItem(Item item) {
+			((RadiosWithSections) item).setSelectedId(request.getParameter(item.formElementName()));
+
+			String id = request.getParameter(item.formElementName());
+			for (RadioWithSectionItem radioItem: ((RadiosWithSections) item).getItems()) {
+				if (radioItem.getOption().getId().equals(id)) {
+					if (radioItem.getSection() != null) {
+						for (Item item2: radioItem.getSection().getItems()) {
+							itemHandlers.get(item2.getClass()).updateItem(item2);
+						}
+					}
+				}
+			}
+		}
+	}" const_relation private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 279554 // radiosWithSectionsHandler (<unidirectional association>)
+	  b parent class_ref 212226 // ItemHandler
+      end
+
+      operation 761090 "ScreenHandler"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "aRequest" explicit_type "HttpServletRequest"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>ScreenHandler</code> object.
+
+@param aRequest HTTP request in which the parameters will be processed
+"
+      end
+
+      operation 761218 "ensure"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "screen" explicit_type "Screen"
+	nexceptions 2
+	  exception class_ref 210050 // MissingParamException
+	  exception class_ref 208770 // InvalidParamValueException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Checks if required parameters were sent for all items and they have valid
+values. If the parameters are OK, the method doesn't do anything, otherwise
+it throws <code>MissingParamException</code> or
+<code>InvalidParamValueException</code> respectively.
+ 
+@param screen processed screen
+@throws MissingParamException if some required parameter is missing
+@throws InvalidParamValueException if required parameter contains invalid
+         value
+"
+      end
+
+      operation 761346 "check"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "screen" explicit_type "Screen"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Checks if required parameters for all items have valid values and writes
+error message if some parameters do not.
+
+@param screen processed screen
+"
+      end
+
+      operation 761474 "updateItems"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "screen" explicit_type "Screen"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Updates all items' values according to the parameters sent in the HTTP
+request.
+
+@param screen processed screen
+"
+      end
+    end
+  end
+
+  deploymentview 137218 "benchmarks"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+    artifact 191362 "BenchmarkRunState"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import cz.cuni.mff.been.apps.BeenPluginDescriptor;
+import cz.cuni.mff.been.apps.benchmarkmanager.Entity;
+import cz.cuni.mff.been.apps.benchmarkmanager.ExperimentEntity;
+import cz.cuni.mff.been.apps.gui.Role;
+import cz.cuni.mff.been.apps.gui.SchedulerInfo;
+import cz.cuni.mff.been.apps.gui.Screen;
+import cz.cuni.mff.been.common.id.AID;
+import cz.cuni.mff.been.common.id.BRID;
+import cz.cuni.mff.been.common.id.EID;
+import cz.cuni.mff.been.resultsrepository.gui.CallbackRScripts;
+import cz.cuni.mff.been.taskmanager.TaskDescriptor;
+${definition}"
+      associated_classes
+	class_ref 211458 // BenchmarkRunState
+      end
+    end
+
+    artifact 191490 "Binary"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import cz.cuni.mff.been.apps.benchmarkmanager.BinaryEntity;
+import cz.cuni.mff.been.apps.benchmarkmanager.EntityStatus;
+import cz.cuni.mff.been.common.id.BID;
+import cz.cuni.mff.been.taskmanager.CheckPoint;
+import cz.cuni.mff.been.taskmanager.data.TaskEntry;
+import cz.cuni.mff.been.taskmanager.data.TaskState;
+${definition}"
+      associated_classes
+	class_ref 211714 // Binary
+      end
+    end
+
+    artifact 191618 "Experiment"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import cz.cuni.mff.been.apps.benchmarkmanager.EntityStatus;
+import cz.cuni.mff.been.apps.benchmarkmanager.ExperimentEntity;
+import cz.cuni.mff.been.apps.gui.Role;
+import cz.cuni.mff.been.common.id.EID;
+import cz.cuni.mff.been.resultsrepository.gui.CallbackRScripts;
+import cz.cuni.mff.been.taskmanager.CheckPoint;
+import cz.cuni.mff.been.taskmanager.data.TaskEntry;
+import cz.cuni.mff.been.taskmanager.data.TaskState;
+${definition}"
+      associated_classes
+	class_ref 211970 // Experiment
+      end
+    end
+
+    artifact 191746 "Run"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.util.Map;
+import cz.cuni.mff.been.apps.benchmarkmanager.EntityStatus;
+import cz.cuni.mff.been.apps.benchmarkmanager.RunEntity;
+import cz.cuni.mff.been.common.id.RID;
+import cz.cuni.mff.been.taskmanager.CheckPoint;
+import cz.cuni.mff.been.taskmanager.data.TaskEntry;
+import cz.cuni.mff.been.taskmanager.data.TaskState;
+${definition}"
+      associated_classes
+	class_ref 211842 // Run
+      end
+    end
+
+    artifact 191874 "ScreenHandler"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.util.HashMap;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import cz.cuni.mff.been.apps.gui.Input;
+import cz.cuni.mff.been.apps.gui.InputValidator;
+import cz.cuni.mff.been.apps.gui.Item;
+import cz.cuni.mff.been.apps.gui.MultiSelect;
+import cz.cuni.mff.been.apps.gui.Option;
+import cz.cuni.mff.been.apps.gui.RSLInput;
+import cz.cuni.mff.been.apps.gui.RadioWithSectionItem;
+import cz.cuni.mff.been.apps.gui.RadiosWithSections;
+import cz.cuni.mff.been.apps.gui.Screen;
+import cz.cuni.mff.been.apps.gui.Section;
+import cz.cuni.mff.been.apps.gui.Select;
+import cz.cuni.mff.been.apps.gui.StaticText;
+import cz.cuni.mff.been.webinterface.InvalidParamValueException;
+import cz.cuni.mff.been.webinterface.Messages;
+import cz.cuni.mff.been.webinterface.MissingParamException;
+import cz.cuni.mff.been.webinterface.Page;
+import cz.cuni.mff.been.webinterface.Params;
+import cz.cuni.mff.been.webinterface.RSLValidator;
+import cz.cuni.mff.been.webinterface.Routines;
+${definition}"
+      associated_classes
+	class_ref 212098 // ScreenHandler
+      end
+    end
+  end
+end

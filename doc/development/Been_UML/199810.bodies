@@ -1,0 +1,93 @@
+class JBossRun
+!!!636546.java!!!	JBossRun()
+		super();
+!!!636674.java!!!	run() : void
+		logDebug("Timeout for JBoss' startup: " + STARTUP_TIMEOUT + " seconds");
+		logDebug("Frequency of testing if JBoss has started: " + TIMEOUT_INCREMENT + " seconds");
+		
+		jbossDir = getTaskProperty(JBOSS_DIR);
+
+		Process jbossProcess = null;
+		
+		String fSep = File.separator;
+		String[] cmdArray = null;
+		if (isRunningInLinux()) {
+			String[] command = {
+					jbossDir + fSep + "bin" + fSep + "run.sh"
+			};
+			cmdArray = command;
+		}
+		if (isRunningInWindows()) {
+			String[] command = {
+					"cmd",
+					"/C",
+					"call",
+					jbossDir + fSep + "bin" + fSep + "run.bat"
+			};
+			cmdArray = command;
+		}
+		
+		logInfo("Starting JBoss");
+		logDebug("Executing: " + ArrayUtils.join(" ", cmdArray));
+		try {
+			ProcessBuilder builder = new ProcessBuilder(cmdArray);
+			Map<String, String> env = builder.environment();
+			if (env.containsKey(JBOSS_HOME_VARIABLE)) {
+				logDebug("Environment variable " + JBOSS_HOME_VARIABLE + " was set." +
+				" It's removed from the new process.");
+				env.remove(JBOSS_HOME_VARIABLE);
+			}
+			builder.directory(new File(jbossDir));
+			jbossProcess = builder.start();
+			jbossProcess.getOutputStream().close();
+			
+			/* Read in the output from the subprocess */
+			OutputReader stdoutReader = 
+				new OutputReader(jbossProcess.getInputStream(), OutputType.STDOUT);
+			OutputReader stderrReader = 
+				new OutputReader(jbossProcess.getErrorStream(), OutputType.STDERR);
+			stdoutReader.start();
+			stderrReader.start();
+			
+			/*
+			 * Check if JBoss started
+			 */
+
+			// object with does the actual test if JBoss has started
+			JBossStartupTest test = new JBossStartupTest(jbossDir, 1097);
+			boolean jbossStarted = false;
+			
+			// look if JBoss started for 5 minutes
+			// if it's doesn't start up until then, give up
+			for (int i = 0; i < STARTUP_TIMEOUT; i = i + TIMEOUT_INCREMENT) {
+				logInfo("Checking if JBoss has started");
+				// call the test
+				if (test.jbossRunning()) {
+					jbossStarted = true;
+					break;
+				}
+				logInfo("JBoss not started yet");
+				
+				// wait 20 seconds
+				try {
+					Thread.sleep(TIMEOUT_INCREMENT * 1000);
+				} catch (InterruptedException e) {
+					// nothing bad happened
+					Thread.currentThread().interrupt();
+				}
+			}
+			
+			if (jbossStarted) {
+				logInfo("JBoss started");
+				checkPointReached(CHECKPOINT_RUNNING, null);
+			} else {
+				throw new TaskException("JBoss not started");
+			}
+			
+			// wait until JBoss finishes
+			jbossProcess.waitFor();
+		} catch (Exception e) {
+			throw new TaskException("Cannot run JBoss", e);
+		}
+!!!636802.java!!!	checkRequiredProperties() : void
+		checkRequiredProperty(JBOSS_DIR);

@@ -1,0 +1,51 @@
+class GreaterThanConditionTest
+!!!812674.java!!!	testLongWithUnitParse() : void
+		assertEquals(
+			new GreaterThanCondition<LongWithUnit>("a", new LongWithUnit(42, 'k', "Hz")),
+			ParserWrapper.parseString("a > 42kHz")
+		);
+!!!812802.java!!!	testLongWithUnitTrue() : void
+		assertTrue(Utils.eval("longProperty > 41", context));
+!!!812930.java!!!	testLongWithUnitFalse1() : void
+		assertFalse(Utils.eval("longProperty > 42", context));
+!!!813058.java!!!	testLongWithUnitFalse2() : void
+		assertFalse(Utils.eval("longProperty > 43", context));
+!!!813186.java!!!	testStringTrue() : void
+		assertTrue(Utils.eval("stringProperty > \"41\"", context));
+!!!813314.java!!!	testStringFalse1() : void
+		assertFalse(Utils.eval("stringProperty > \"42\"", context));
+!!!813442.java!!!	testStringFalse2() : void
+		assertFalse(Utils.eval("stringProperty > \"43\"", context));
+!!!813570.java!!!	testVersionTrue() : void
+		assertTrue(Utils.eval("versionProperty > 41.0", context));
+!!!813698.java!!!	testVersionFalse1() : void
+		assertFalse(Utils.eval("versionProperty > 42.0", context));
+!!!813826.java!!!	testVersionFalse2() : void
+		assertFalse(Utils.eval("versionProperty > 43.0", context));
+!!!813954.java!!!	testDateParse() : void
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeZone(TimeZone.getTimeZone("GMT"));
+		calendar.set(2006, 4, 17, 23, 30, 42);
+		calendar.setTimeInMillis((calendar.getTimeInMillis() / 1000) * 1000);
+		assertEquals(
+			new GreaterThanCondition<Date>("dateProperty", calendar.getTime()),
+			ParserWrapper.parseString("dateProperty > 2006-05-17T23:30:42Z")
+		);
+!!!814082.java!!!	testDateTrue() : void
+		assertTrue(Utils.eval("dateProperty > 2006-05-17T23:30:41Z", context));
+!!!814210.java!!!	testDateFalse1() : void
+		assertFalse(Utils.eval("dateProperty > 2006-05-17T23:30:42Z", context));
+!!!814338.java!!!	testDateFalse2() : void
+		assertFalse(Utils.eval("dateProperty > 2006-05-17T23:30:43Z", context));
+!!!814466.java!!!	testPackageTypeFail() : void
+		try {
+			Utils.eval("packageTypeProperty < source", context);
+			fail();
+		} catch (InvalidOperatorException e) {
+			/* Eat it. */
+		}
+!!!814594.java!!!	testToString() : void
+		assertEquals(
+			"a > 42",
+			ParserWrapper.parseString("a > 42").toString()
+		);

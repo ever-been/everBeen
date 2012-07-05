@@ -1,0 +1,54 @@
+class TaskNode
+!!!728706.java!!!	TaskNode(inout taskEntry : TaskEntry, inout context : ContextNode, inout hostRuntime : HostRuntimeNode)
+		/* Check input parameters. */
+		if (taskEntry == null) {
+			throw new NullPointerException("Parameter taskEntry is null.");
+		}
+		if (context == null) {
+			throw new NullPointerException("Parameter context is null.");
+		}
+		
+		/* Store taskEntry. */
+			this.taskEntry = taskEntry;
+		
+		/* Link with context and HostRutime. */
+		this.context = context;
+		this.hostRuntime = hostRuntime;
+!!!728834.java!!!	TaskNode(inout taskEntry : TaskEntry, inout context : ContextNode)
+		/* Check input parameters. */
+		if (taskEntry == null) {
+			throw new NullPointerException("Parameter taskEntry is null.");
+		}
+		if (context == null) {
+			throw new NullPointerException("Parameter context is null.");
+		}
+		
+		/* Store taskEntry. */
+			this.taskEntry = taskEntry;
+		
+		/* Link with context. */
+		this.context = context;
+!!!728962.java!!!	getTaskEntry() : TaskEntry
+		return this.taskEntry;
+!!!729090.java!!!	getContext() : ContextNode
+		return this.context;
+!!!729218.java!!!	getCheckPoints() : CheckPointNode
+		return this.checkPoints;
+!!!729346.java!!!	getHostRuntime() : HostRuntimeNode
+		return this.hostRuntime;
+!!!729474.java!!!	setHostRuntime(inout hostRuntimeNode : HostRuntimeNode) : void
+		this.hostRuntime = hostRuntimeNode;
+!!!729602.java!!!	addCheckPoint(inout checkPointNode : CheckPointNode) : void
+		this.checkPoints.add(checkPointNode);
+!!!729730.java!!!	removeCheckPoint(inout checkPointNode : CheckPointNode) : void
+		boolean removed = this.checkPoints.remove(checkPointNode);
+		
+		if (!removed) {
+			throw new DataRuntimeException("CheckPointNode required to remove "
+					+ "not found in list of CheckPointNode elements in this "
+					+ "Context");
+		}
+!!!729858.java!!!	setTaskData(inout taskData : TaskData) : void
+		this.taskData = taskData;
+!!!729986.java!!!	getTaskData() : TaskData
+		return this.taskData;

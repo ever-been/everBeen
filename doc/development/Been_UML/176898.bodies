@@ -1,0 +1,48 @@
+class EventQueue
+!!!402050.java!!!	EventQueue()
+		
+		queue = new LinkedList< LoadMonitorEvent >();
+!!!402178.java!!!	isEmpty() : boolean
+		
+		return queue.isEmpty();
+!!!402306.java!!!	size() : int
+		
+		return queue.size();
+!!!402434.java!!!	add(inout event : LoadMonitorEvent) : void
+		
+		queue.addLast(event);
+		notify();
+!!!402562.java!!!	getFirst() : LoadMonitorEvent
+		
+		while (queue.isEmpty()) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				// Ignore
+			}
+		}
+		
+		return queue.getFirst();
+!!!402690.java!!!	getAll(inout target : Collection< LoadMonitorEvent >) : void
+		
+		while (queue.isEmpty()) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				// Ignore
+			}
+		}
+		
+		target.addAll(queue);
+		queue.clear();
+!!!402818.java!!!	addAll(inout events : Collection< LoadMonitorEvent >) : void
+		
+		queue.addAll(events);
+		notify();
+!!!402946.java!!!	addAll(inout events : LoadMonitorEvent) : void
+		
+		for (LoadMonitorEvent event: events) {
+			queue.addLast(event);
+		}
+		
+		notify();

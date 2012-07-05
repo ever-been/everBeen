@@ -1,0 +1,71 @@
+class OperatingSystem
+!!!369666.java!!!	OperatingSystem(in name : String, in vendor : String, in arch : String, in family : String)
+		
+		super(HostInfoInterface.Objects.OPERATING_SYSTEM, null);
+		
+		this.name = name;
+		this.vendor = vendor;
+		architecture = arch;
+		this.family = family;
+		
+		try {
+			putProperty(Properties.NAME, new ValueString(name));
+			putProperty(Properties.VENDOR, new ValueString(vendor));
+			putProperty(Properties.ARCHITECTURE, new ValueString(architecture));
+			putProperty(Properties.FAMILY, new ValueString(family));
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+			assert false : "Unable to add properties to the OperatingSystem.";
+		}
+!!!369794.java!!!	OperatingSystem(in family : String)
+		
+		super(HostInfoInterface.Objects.OPERATING_SYSTEM, null);
+		
+		this.family = family;
+		
+		try {
+			putProperty(Properties.FAMILY, new ValueString(family));
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+			assert false : "Unable to add properties to the OperatingSystem.";
+		}
+!!!369922.java!!!	parseBasicInfoNode(inout osNode : Node) : void
+
+		Node basicInfoNode = XMLHelper.getSubNodeByName("basicInfo", osNode);
+		
+		name = XMLHelper.getSubNodeValueByName("name", basicInfoNode);
+		vendor = XMLHelper.getSubNodeValueByName("vendor", basicInfoNode);
+		architecture = XMLHelper.getSubNodeValueByName("arch", basicInfoNode);
+
+		try {
+			putProperty(Properties.NAME, new ValueString(name));
+			putProperty(Properties.VENDOR, new ValueString(vendor));
+			putProperty(Properties.ARCHITECTURE, new ValueString(architecture));
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+			assert false : "Unable to add properties to the OperatingSystem.";
+		}
+!!!370050.java!!!	getName() : String
+		
+		return name;
+!!!370178.java!!!	getVendor() : String
+		
+		return vendor;
+!!!370306.java!!!	getArchitecture() : String
+		
+		return architecture;
+!!!370434.java!!!	getFamily() : String
+		
+		return family;
+!!!370562.java!!!	exportBasicAsElement(inout document : Document) : Element
+		
+		Element basicInfoElement = document.createElement("basicInfo");
+		
+		basicInfoElement.appendChild(XMLHelper.writeValueToElement(document, name, "name"));
+		basicInfoElement.appendChild(XMLHelper.writeValueToElement(document, vendor, "vendor"));
+		basicInfoElement.appendChild(XMLHelper.writeValueToElement(document, architecture, "arch"));
+		
+		return basicInfoElement;

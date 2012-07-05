@@ -1,0 +1,23 @@
+class Item
+!!!220290.java!!!	getLabel() : String
+		return label;
+!!!220418.java!!!	getParent() : Section
+		return parent;
+!!!220546.java!!!	setParent(inout parent : Section) : void
+		this.parent = parent;
+!!!220674.java!!!	getIndex() : int
+		return index;
+!!!220802.java!!!	setIndex(in index : int) : void
+		this.index = index;
+!!!220930.java!!!	Item(in label : String)
+		this.label = label;
+!!!221058.java!!!	formElementNameBase() : String
+		assert parent != null : "Item's parent can't be null.";
+		assert index != -1 : "Item's index can't be -1.";
+		
+		return parent.formElementNamePrefix() + "-" + Integer.toString(index);
+!!!221186.java!!!	formElementName() : String
+		assert parent != null : "Item's parent can't be null.";
+		assert index != -1 : "Item's index can't be -1.";
+		
+		return "item[" + formElementNameBase() + "]";

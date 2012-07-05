@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sect2
+	xml:id="been.user.cli.reference.pkg"
+	xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xsi:schemaLocation="http://docbook.org/ns/docbook ../../../../docbook-5.0/xsd/docbook.xsd"
+>
+	<title>Packages Module</title>
+	<subtitle>Querying the Software Repository</subtitle>
+	
+	<para>The Packages Module transfers data to and from the
+	<glossterm>Software Repository</glossterm>. It can list and manipulate
+	<glossterm baseform="package">packages</glossterm>.</para>
+
+	<para>Module identifier: <command>packages</command></para>
+	
+	<table xml:id="been.user.cli.reference.pkg.table" tocentry="1" frame="none">
+		<title>Actions of the Packages Module</title>
+
+		<tgroup cols="3" align="left" colsep="0" rowsep="0">
+			<colspec colnum="1" colname="action" colwidth="3*"/>
+			<colspec colnum="2" colname="option" colwidth="3*"/>
+			<colspec colnum="3" colname="desc" colwidth="9*"/>
+			
+			<tbody valign="top">
+			
+				<!-- list -->
+				<row>
+					<entry morerows="8">
+						<command>list</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Lists BEEN <glossterm baseform="package">packages</glossterm> stored in the
+						<glossterm>Softwaer Repository</glossterm>.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>pattern</option></emphasis><footnote
+						xml:id="been.user.cli.reference.pkg.regexp">
+						<para>Expressions recognized by
+						<classname>java.util.regex.Pattern</classname> are accepted.
+						When unspecified, no filtering will take place.</para></footnote>
+					</entry>
+					<entry>
+						A regular expression to filter package file names. 
+					</entry>
+				</row>
+				<row>
+					<entry><option>desc</option></entry>
+					<entry>
+						Show package description strings.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<option>source</option><footnote xml:id="been.user.cli.reference.pkg.type">
+							<para>When no package type flag is present, packages of all types
+							will be listed.</para>
+						</footnote>
+					</entry>
+					<entry>
+						List packages containing source code.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<option>binary</option><footnoteref
+						linkend="been.user.cli.reference.pkg.type"/>
+					</entry>
+					<entry>
+						List packages containing binaries.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<option>task</option><footnoteref
+						linkend="been.user.cli.reference.pkg.type"/>
+					</entry>
+					<entry>
+						List packages containing tasks.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<option>data</option><footnoteref
+						linkend="been.user.cli.reference.pkg.type"/>
+					</entry>
+					<entry>
+						List packages containing data.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<option>module</option><footnoteref
+						linkend="been.user.cli.reference.pkg.type"/>
+					</entry>
+					<entry>
+						List packages containing pluggable modules.
+					</entry>
+				</row>
+				<row>
+					<entry><emphasis role="strong"><option>STDOUT</option></emphasis></entry>
+					<entry>
+						<code>[name] [type] [file] [date] [size] [version]
+						[[hw_platform],...] [[sw_platform],...] [[interface],...]
+						[long_name]</code><footnote
+							xml:id="been.user.cli.reference.pkg.desc">
+							<para>This field only appears when the <option>desc</option>
+							flag is present.</para></footnote><code>
+						[binary]</code><footnoteref
+							linkend="been.user.cli.reference.pkg.desc"/><code>
+						[config]</code><footnoteref
+							linkend="been.user.cli.reference.pkg.desc"/><code>
+						[source]</code><footnoteref
+							linkend="been.user.cli.reference.pkg.desc"/><code>
+						[url]</code><footnoteref
+							linkend="been.user.cli.reference.pkg.desc"/>
+					</entry>
+				</row>
+				
+				<!-- upload -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="1">
+						<command>upload</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Uploads a new package file to the <glossterm>Software Repository</glossterm>.
+					</entry>
+				</row>
+				<row>
+					<entry><emphasis role="strong"><option>STDIN</option></emphasis></entry>
+					<entry>Data of the BEEN <glossterm>package</glossterm> to store.</entry>
+				</row>
+				
+				<!-- download -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="2">
+						<command>download</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Downloads a <glossterm>package</glossterm> from the
+						<glossterm>Software Repository</glossterm>.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>filename</option></emphasis><footnote
+							xml:id="been.user.cli.reference.pkg.mandatory">
+							<para>This parameter is mandatory.</para></footnote>
+					</entry>
+					<entry>
+						Name of the file to download.
+					</entry>
+				</row>
+				<row>
+					<entry><emphasis role="strong"><option>STDOUT</option></emphasis></entry>
+					<entry>Data of the BEEN <glossterm>package</glossterm> file.</entry>
+				</row>
+				
+				<!-- delete -->
+				<row><entry namest="action" nameend="desc"/></row>
+				<row>
+					<entry morerows="1">
+						<command>delete</command>
+					</entry>
+					<entry namest="option" nameend="desc">
+						Deletes a <glossterm>package</glossterm> from the
+						<glossterm>Software Repository</glossterm>.
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<emphasis role="strong"><option>filename</option></emphasis><footnoteref
+						linkend="been.user.cli.reference.pkg.mandatory"/>
+					</entry>
+					<entry>
+						Name of the file to delete.
+					</entry>
+				</row>
+				
+				<row><entry namest="action" nameend="desc"/></row>
+			</tbody>
+		</tgroup>
+	</table>
+
+	<xi:include href="../examples/pkg.xml"/>
+</sect2>

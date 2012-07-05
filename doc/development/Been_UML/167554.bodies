@@ -1,0 +1,79 @@
+class DiskPartition
+!!!337666.java!!!	DiskPartition(in partName : String, in fs : String, in device : String, in partSize : long, in free : long)
+		
+		super(DiskDrive.Objects.PARTITION, null);
+		
+		size = partSize;
+		freeSpace = free;
+		fileSystem = fs;
+		deviceName = device;
+		name = partName;
+		
+		try {
+			putProperty(Properties.SIZE, new ValueInteger(size, "B"));
+			putProperty(Properties.FREE_SPACE, new ValueInteger(freeSpace, "B"));
+			putProperty(Properties.FILE_SYSTEM, new ValueString(fileSystem));
+			putProperty(Properties.DEVICE_NAME, new ValueString(deviceName));
+			putProperty(Properties.NAME, new ValueString(name));
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+			assert false : "Unable to add basic properties to DiskPartition.";
+		}
+!!!337794.java!!!	DiskPartition(inout partNode : Node)
+		
+		super(DiskDrive.Objects.PARTITION, null);
+
+		parseXMLNode(partNode);
+!!!337922.java!!!	parseXMLNode(inout node : Node) : void
+
+		deviceName = XMLHelper.getSubNodeValueByName("deviceName", node);
+		name = XMLHelper.getSubNodeValueByName("name", node);
+		fileSystem = XMLHelper.getSubNodeValueByName("fileSystem", node);
+		size = Long.valueOf(XMLHelper.getSubNodeValueByName("size", node)).longValue();
+		freeSpace = Long.valueOf(XMLHelper.getSubNodeValueByName("freeSpace", node)).longValue();
+		
+		try {
+			putProperty(Properties.SIZE, new ValueInteger(size, "B"));
+			putProperty(Properties.FREE_SPACE, new ValueInteger(freeSpace, "B"));
+			putProperty(Properties.FILE_SYSTEM, new ValueString(fileSystem));
+			putProperty(Properties.DEVICE_NAME, new ValueString(deviceName));
+			putProperty(Properties.NAME, new ValueString(name));
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+			assert false : "Unable to add basic properties to DiskPartition.";
+		}
+!!!338050.java!!!	exportAsElement(inout document : Document) : Element
+		
+		Element partitionElement = document.createElement("diskPartition");
+		
+		partitionElement.appendChild(XMLHelper.writeValueToElement(document, deviceName, "deviceName"));
+		partitionElement.appendChild(XMLHelper.writeValueToElement(document, name, "name"));
+		partitionElement.appendChild(XMLHelper.writeValueToElement(document, fileSystem, "fileSystem"));
+		partitionElement.appendChild(XMLHelper.writeValueToElement(document, size, "size"));
+		partitionElement.appendChild(XMLHelper.writeValueToElement(document, freeSpace, "freeSpace"));
+		
+		return partitionElement;
+!!!338178.java!!!	getSize() : long
+		
+		return size;
+!!!338306.java!!!	getFreeSpace() : long
+		
+		return freeSpace;
+!!!338434.java!!!	getFileSystemName() : String
+		
+		return fileSystem;
+!!!338562.java!!!	getDeviceName() : String
+		
+		return deviceName;
+!!!338690.java!!!	getName() : String
+		
+		return name;
+!!!338818.java!!!	toString() : String
+		
+		return "DiskPartition{" + fileSystem + ", size=" + (size / 1073741824)
+		       + " GB, free=" + (freeSpace / 1073741824) + " GB}";
+!!!338946.java!!!	getXMLNodeName() : String
+		
+		return "diskPartition";

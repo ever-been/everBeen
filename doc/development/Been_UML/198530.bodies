@@ -1,0 +1,57 @@
+class RegexSubstitute
+!!!632578.java!!!	RegexSubstitute()
+		super();
+!!!632706.java!!!	run() : void
+		String path = getTaskProperty(FILE);
+		file = new File(path);
+		logInfo("File: " + path);
+		
+		regex = getTaskProperty(REGEX);
+		logInfo("Regular expression: " + regex);
+		
+		substitution = getTaskProperty(SUBSTITUTION);
+		logInfo("Substitution: " + substitution);
+
+		StringBuffer contents = new StringBuffer();
+		
+		/* Read the original contents of the file */
+		BufferedReader input = null;
+		try {
+			String line = null;
+			input = new BufferedReader(new FileReader(file));
+			
+			while ((line = input.readLine()) != null) {
+				contents.append(line + "\n");
+			}
+
+			if (input != null) {
+				input.close();
+			}
+		} catch (Exception e) {
+			throw new TaskException("Cannot read file: " + path, e);
+		}
+		
+		/* Create the new contents of the file, i.e. do the substitution */
+		String newContents = null;
+		try {
+			newContents = (contents.toString()).replaceAll(regex, substitution);
+		} catch (Exception e) {
+			throw new TaskException("Cannot do substitution", e);
+		}
+		
+		/* Overwrite the file with new contents */
+		BufferedWriter output = null;
+		try {
+			output = new BufferedWriter(new FileWriter(file));
+			output.write(newContents.toString());
+
+			if (output != null) {
+				output.close();
+			}
+		} catch (Exception e) {
+			throw new TaskException("Cannot save modified file: " + path, e);
+		}
+		
+		checkPointReached("finish",	null);
+!!!632834.java!!!	checkRequiredProperties() : void
+		checkRequiredProperties(new String[]{FILE,REGEX,SUBSTITUTION});

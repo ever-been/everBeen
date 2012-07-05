@@ -1,0 +1,7 @@
+class TestingSimpleProperty
+!!!845698.java!!!	TestingSimpleProperty(in propertyName : String)
+			this.propertyName = propertyName;
+!!!845826.java!!!	getValue() : Object
+			return simplePropertyValues.get(propertyName);
+!!!845954.java!!!	getValueClass() : Class
+			return simplePropertyClasses.get(propertyName);

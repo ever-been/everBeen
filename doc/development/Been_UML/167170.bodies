@@ -1,0 +1,111 @@
+class DiskDrive
+!!!336002.java!!!	DiskDrive(in size : long, in model : String, in media : String, in device : String)
+
+		super(HostInfoInterface.Objects.DRIVE, null);
+		
+		this.size = size;
+		this.modelName = model;
+		this.mediaType = media;
+		this.deviceName = device;
+
+		partitions = new ArrayList< DiskPartition >();
+		
+		try {
+			putProperty(Properties.SIZE, new ValueInteger(this.size, "B"));
+			putProperty(Properties.MODEL_NAME, new ValueString(this.modelName));
+			putProperty(Properties.MEDIA_TYPE, new ValueString(this.mediaType));
+			putProperty(Properties.DEVICE_NAME, new ValueString(this.deviceName));
+			putProperty(Properties.PARTITIONS, new ValueInteger(0));
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+			assert false : "Unable to add basic properties to DiskDrive.";
+		}
+!!!336130.java!!!	exportAsElement(inout document : Document) : Element
+		
+		Element driveElement = document.createElement("diskDrive");
+		
+		driveElement.appendChild(XMLHelper.writeValueToElement(document, modelName, "model"));
+		driveElement.appendChild(XMLHelper.writeValueToElement(document, deviceName, "deviceName"));
+		driveElement.appendChild(XMLHelper.writeValueToElement(document, size, "size"));
+		driveElement.appendChild(XMLHelper.writeValueToElement(document, mediaType, "mediaType"));
+		
+		for (DiskPartition partition: partitions) {
+			driveElement.appendChild(partition.exportAsElement(document));
+		}
+		
+		return driveElement;
+!!!336258.java!!!	DiskDrive(inout diskDriveNode : Node)
+		
+		super(HostInfoInterface.Objects.DRIVE, null);
+
+		partitions = new ArrayList< DiskPartition >();
+	
+		parseXMLNode(diskDriveNode);
+!!!336386.java!!!	parseXMLNode(inout node : Node) : void
+
+		modelName = XMLHelper.getSubNodeValueByName("model", node);
+		deviceName = XMLHelper.getSubNodeValueByName("deviceName", node);
+		size = Long.valueOf(XMLHelper.getSubNodeValueByName("size", node)).longValue();
+		mediaType = XMLHelper.getSubNodeValueByName("mediaType", node);
+		
+		// Read all partitions
+		ArrayList< Node > partitionNodes = XMLHelper.getChildNodesByName("diskPartition", node);
+
+		try {
+			putProperty(Properties.SIZE, new ValueInteger(size, "B"));
+			putProperty(Properties.MODEL_NAME, new ValueString(modelName));
+			putProperty(Properties.MEDIA_TYPE, new ValueString(mediaType));
+			putProperty(Properties.DEVICE_NAME, new ValueString(deviceName));
+			putProperty(Properties.PARTITIONS, new ValueInteger(partitions.size()));
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+			assert false : "Unable to add basic properties to DiskDrive.";
+		}
+		
+		// does this drive have any partitions?
+		if (partitionNodes.size() > 0) {
+			
+			for (Iterator< Node > it = partitionNodes.iterator(); it.hasNext(); ) {
+				
+				addPartition(new DiskPartition(it.next()));
+			}
+		}
+!!!336514.java!!!	getSize() : long
+		
+		return size;
+!!!336642.java!!!	getModelName() : String
+		
+		return modelName;
+!!!336770.java!!!	getMediaType() : String
+		
+		return mediaType;
+!!!336898.java!!!	getDeviceName() : String
+		
+		return deviceName;
+!!!337026.java!!!	getPartitionCount() : int
+		
+		return partitions.size();
+!!!337154.java!!!	getPartition(in index : int) : DiskPartition
+
+		return partitions.get(index);
+!!!337282.java!!!	addPartition(inout newPart : DiskPartition) : void
+
+		newPart.setParent(this);
+		partitions.add(newPart);
+		addObject(newPart);
+		
+		try {
+			setPropertyValue(Properties.PARTITIONS, new ValueInteger(partitions.size()));
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+			assert false : "Unable to set pratition count in DiskDrive.";
+		}
+!!!337410.java!!!	toString() : String
+		
+		return "Drive{" + modelName + ", " + mediaType + ", size=" + (size / 1073741824) + " GB}";
+!!!337538.java!!!	getXMLNodeName() : String
+		
+		return "diskDrive";

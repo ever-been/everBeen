@@ -1,0 +1,7 @@
+class ExtensionFileFilter
+!!!347010.java!!!	ExtensionFileFilter(in ext : String)
+			
+			extension = "." + ext;
+!!!347138.java!!!	accept(inout dir : File, in name : String) : boolean
+			
+			return name.endsWith(extension);

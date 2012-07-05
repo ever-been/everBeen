@@ -1,0 +1,11 @@
+class HostManagerArrayProperty
+!!!382210.java!!!	HostManagerArrayProperty(inout readInterface : PropertyTreeReadInterface, in propertyName : String)
+			this.readInterface = readInterface;
+			this.propertyName = propertyName;
+!!!382338.java!!!	getItems() : ContainerProperty
+			ContainerProperty[] result
+				= new ContainerProperty[readInterface.getObjectCount(propertyName)];
+			for (int i = 0; i < result.length; i++) {
+				result[i] = new HostManagerContainerProperty(readInterface.getObject(propertyName, i));
+			}
+			return result;

@@ -1,0 +1,19 @@
+class TaskExclusivity
+!!!728450.java!!!	toString() : String
+		return HUMAN_READABLE[this.ordinal()];
+!!!728578.java!!!	fromString(in string : String) : TaskExclusivity
+		/* Check input parameters. */
+		if (string == null) {
+			throw new NullPointerException("string is null");
+		}
+		
+		/* Do search. */
+		for (int i = 0; i < VALUES.length; i++) {
+			if (string.equals(STRINGS[i])) {
+				return VALUES[i];
+			}
+		}
+		
+		/* Throw exception if not found. */
+		throw new IllegalArgumentException("No enum value has its string "
+				+ "representation equal to \"" + string + "\"");

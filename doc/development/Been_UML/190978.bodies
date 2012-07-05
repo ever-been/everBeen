@@ -1,0 +1,55 @@
+class ImportDumb
+!!!544130.java!!!	setDatabase(inout aDatabase : Database) : void
+		database = aDatabase;
+!!!544258.java!!!	beginAnalysesImport(inout ip : InetAddress, in port : int) : UploadHandle
+		
+		File tmpFile = new File(database.getTempDirectory() + "/import.tmp");
+		if (tmpFile.exists()) {
+			tmpFile.delete();
+		}
+		
+		try {
+			return (database.uploadFile(tmpFile.getAbsolutePath(), 
+				ip.getCanonicalHostName(), port, false, false, null, null));
+		} catch (IOException e) {
+			return null;
+		}
+!!!544386.java!!!	beginExperimentsImport(inout ip : InetAddress, in port : int) : UploadHandle
+		
+		File tmpFile = new File(database.getTempDirectory() + "/import.tmp");
+		if (tmpFile.exists()) {
+			tmpFile.delete();
+		}
+		
+		try {
+			return (database.uploadFile(tmpFile.getAbsolutePath(), 
+				ip.getCanonicalHostName(), port, false, false, null, null));
+		} catch (IOException e) {
+			return null;
+		}
+!!!544514.java!!!	beginBinariesImport(inout ip : InetAddress, in port : int) : UploadHandle
+		
+		File tmpFile = new File(database.getTempDirectory() + "/import.tmp");
+		if (tmpFile.exists()) {
+			tmpFile.delete();
+		}
+						
+		try {
+			return (database.uploadFile(tmpFile.getAbsolutePath(), 
+				ip.getCanonicalHostName(), port, false, false, null, null));
+		} catch (IOException e) {
+			return null;
+		}
+!!!544642.java!!!	beginRunsImport(inout ip : InetAddress, in port : int) : UploadHandle
+		
+		File tmpFile = new File(database.getTempDirectory() + "/import.tmp");
+		if (tmpFile.exists()) {
+			tmpFile.delete();
+		}
+				
+		try {
+			return (database.uploadFile(tmpFile.getAbsolutePath(), 
+				ip.getCanonicalHostName(), port, false, false, null, null));
+		} catch (IOException e) {
+			return null;
+		}

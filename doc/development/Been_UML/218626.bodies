@@ -1,0 +1,6 @@
+class TestingArrayProperty
+!!!846978.java!!!	getItems() : ContainerProperty
+			return new ContainerProperty[] {
+				new TestingContainerProperty("name1", 12),	
+				new TestingContainerProperty("name2", 13),	
+			};

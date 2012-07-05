@@ -1,0 +1,6862 @@
+format 70
+"softwarerepository" // been::src::cz::cuni::mff::been::softwarerepository
+  revision 3
+  modified_by 8 "BoRiS"
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+  show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+  show_infonote default drawing_language default show_stereotype_properties default
+  
+  java_dir "cz/cuni/mff/been/softwarerepository"
+  java_package "cz.cuni.mff.been.softwarerepository"
+  classview 130562 "softwarerepository"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+    //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+    show_infonote default drawing_language default show_stereotype_properties default
+    classdiagram 134786 "SoftwareRepository"
+      draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+      size A0-Landscape
+    end
+
+    class 142594 "SoftwareRepositoryInterface"
+      visibility public stereotype "interface"
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}interface ${name}${extends} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+RMI interface to the Software Repository.
+
+@author David Majda
+"
+      classrelation 251266 // <generalisation>
+	relation 251266 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 251266 // <generalisation>
+	  b parent class_ref 130818 // Remote
+      end
+
+      attribute 268546 "PACKAGE_MIME_TYPE"
+	public explicit_type "String"
+	init_value "=  \"application/vnd.mff.cuni.cz.been-package\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Package MIME type. 
+"
+      end
+
+      attribute 268674 "UPLOAD_BUFFER_SIZE"
+	public explicit_type "int"
+	init_value "=  4096"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Size of buffer used when uploading packages from clients. 
+"
+      end
+
+      attribute 268802 "DOWNLOAD_BUFFER_SIZE"
+	public explicit_type "int"
+	init_value "=  4096"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Size of buffer used when downloading packages to clients. 
+"
+      end
+
+      operation 615554 "beginPackageDownload"
+	public return_type class_ref 149762 // DownloadHandle
+	nparams 3
+	  param in name "filename" explicit_type "String"
+	  param inout name "ip" explicit_type "InetAddress"
+	  param in name "port" explicit_type "int"
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Downloads a package form the Software Repository. The client must open
+the socket on some port before calling this function. Then it calls the
+<code>downloadPackage</code> function.
+
+This function work asynchronously and returns immediately.
+Before return it starts a new thread that will send the package contents
+to the socket open on given host and port.
+
+If there is any error when sending the package contents, the socket
+is closed. It's client's responsibility to check (via the
+<code>getPackageDownloadStatus</code> method whether the package
+arrived complete and undamaged.
+
+After the download finishes, client should close the returned handle
+via the <code>endPackageDownload</code> method.  
+
+@param filename filename of the package to download
+@param ip IP address of the machine waiting for receiving the packcage
+           (not necessairly the caller itself)  
+@param port port open for receiving the package contents
+@return package download handle
+@throws RemoteException when something in RMI goes bad
+"
+      end
+
+      operation 615682 "getPackageDownloadStatus"
+	public return_type class_ref 149890 // DownloadStatus
+	nparams 1
+	  param inout name "handle" type class_ref 149762 // DownloadHandle
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns the status of the package download. Result is one
+of the values listed in the <code>DownlaodStatus</code> enumeration.
+
+Values <code>INITIALIZING</code> and <code>DOWNLOADING</code> mean that
+Software Repository still works on the package download. Values
+<code>SUCCEEDED</code> and <code>ERROR</code> mean that Software Repository
+has finished its work (either successfully or unsuccessfully) and the download
+handle is ready to be closed by the <code>endPackageDownload</code> method.   
+
+@param handle package download handle
+@return download status
+@throws RemoteException when something in RMI goes bad
+"
+      end
+
+      operation 615810 "endPackageDownload"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "handle" type class_ref 149762 // DownloadHandle
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Closes the download handle. Client should call this method after the downlaod
+status returned by <code>getPackageDownloadStatus</code> has value
+<code>SUCCEEDED</code> or <code>ERROR</code>.
+
+If the client doesn't close the download handle, Software Repository will leak
+a little amount of memory. However, no other resources than memory
+(such as open files, locks...) are associated with the download handle. 
+
+@param handle download handle
+@throws RemoteException when something in RMI goes bad
+"
+      end
+
+      operation 615938 "beginPackageUpload"
+	public return_type class_ref 134658 // UploadHandle
+	nparams 2
+	  param inout name "ip" explicit_type "InetAddress"
+	  param in name "port" explicit_type "int"
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Uploads a package to the Software Repository. The client must open
+the socket on some port before calling this function. Then it calls the
+<code>uploadPackage</code> function.
+
+This function work asynchronously and returns immediately.
+Before return it starts a new thread that will receive the package contents
+from the socket open on given host and port.
+
+If there is any error when sending the package contents, the socket
+is closed. 
+
+Calling this function doesn't guarantee that this package will be added
+to the Software Repository - if it arrives damaged, it is invalid,
+or some error during processing occurs, Software Repository rejects
+the package. Client has an opportunity to check (via the
+<code>getPackageUploadStatus</code> method whether the package
+arrived complete and undamaged.
+ 
+After the upload finishes, client should close the returned handle
+via the <code>endPackageUpload</code> method.  
+ 
+@param ip IP address of the machine prepared for sending the packcage
+           (not necessairly the caller itself)
+@param port port open for sending the package contents
+@throws RemoteException when something in RMI goes bad
+"
+      end
+
+      operation 616066 "getPackageUploadStatus"
+	public return_type class_ref 134786 // UploadStatus
+	nparams 1
+	  param inout name "handle" type class_ref 134658 // UploadHandle
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns the status of the package upload. Result is one
+of the values listed in the <code>UploadStatus</code> enumeration.
+
+Values <code>INITIALIZING</code> and <code>UPLOADING</code> mean that
+Software Repository still works on the package upload. Values
+<code>ACCEPTED</code>, <code>REJECTED</code> and <code>ERROR</code>
+mean that Software Repository has finished its work (either successfully
+or unsuccessfully) and the download handle is ready to be closed by the
+<code>endPackageUpload</code> method.   
+
+@param handle package upload handle
+@return upload status
+@throws RemoteException when something in RMI goes bad
+"
+      end
+
+      operation 616194 "getRejectedPackageUploadErrorMessages"
+	public explicit_return_type "String"
+	nparams 1
+	  param inout name "handle" type class_ref 134658 // UploadHandle
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns the error messages associated with rejected package upload. These
+messages contain human-readable messages describing the reason of the
+rejection and are suitable for displaying to the user.
+
+@param handle package upload handle
+@return error messages associated with rejected package upload
+@throws IllegalStateException if the package upload status is different
+         from <code>REJECTED</code>
+@throws RemoteException when something in RMI goes bad
+"
+      end
+
+      operation 616322 "endPackageUpload"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "handle" type class_ref 134658 // UploadHandle
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Closes the upload handle. Client should call this method after the upload
+status returned by <code>getPackageUploadStatus</code> has value
+<code>ACCEPTED</code>, <code>REJECTED</code> or <code>ERROR</code>.
+
+If the client doesn't close the upload handle, Software Repository will leak
+a little amount of memory. However, no other resources than memory
+(such as open files, locks...) are associated with the upload handle. 
+
+@param handle upload handle
+@throws RemoteException when something in RMI goes bad
+"
+      end
+
+      operation 616450 "deletePackage"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param in name "filename" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Deletes the package form the Software Repository.
+
+@param filename filename of the deleted package
+@return <code>true</code> if the deletion was successfull;
+         <code>false</code> otherwise
+@throws RemoteException when something in RMI goes bad
+"
+      end
+
+      operation 616578 "queryPackages"
+	public return_type class_ref 142850 // PackageMetadata
+	nparams 1
+	  param inout name "callback" type class_ref 182530 // PackageQueryCallbackInterface
+	nexceptions 2
+	  explicit_exception "RemoteException"
+	  exception class_ref 182658 // MatchException
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Queries the Software Repository by the package metadata.
+
+Queries are made in a very general manner - caller will pass an instance of
+a class implementing <code>PackageQueryCallbackInterface</code> interface. This interface
+has a method <code>match</code>, that decides wheteher given package stored
+in the repository matches the caller's query conditions.
+
+The <code>queryPackages</code> method returns metadata of those packages,
+for which the <code>match</code> method returned true. 
+ 
+@param callback query callback interface
+@return metadata of packages matching the query
+@throws RemoteException when something in RMI goes bad
+@throws MatchException if some error occurs when matching packages in the
+                        PackageQueryCallbackInterface
+"
+      end
+    end
+
+    class 182530 "PackageQueryCallbackInterface"
+      visibility public stereotype "interface"
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}interface ${name}${extends} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Callback interface for querying the Software Repository.
+
+@author David Majda
+"
+      operation 479618 "match"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "metadata" type class_ref 142850 // PackageMetadata
+	nexceptions 1
+	  exception class_ref 182658 // MatchException
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Decides, whether given package matches the query.
+
+@param metadata metadata of queried package
+@return <code>true</code> if the package matches the query;
+         <code>false</code> otherwise
+@throws MatchException if some error in matching occurs
+"
+      end
+    end
+
+    class 145538 "PackageType"
+      visibility public stereotype "enum"
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}enum ${name}${implements} {
+${items};
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Enum representing the package type (source, binary, task or data).
+
+@author David Majda
+"
+      classrelation 250114 // <realization>
+	relation 250114 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 250114 // <realization>
+	  b parent class_ref 148226 // Serializable
+      end
+
+      attribute 267650 "SOURCE"
+	public type class_ref 145538 // PackageType
+	cpp_decl ""
+	java_decl "  ${@}${name}${value},${comment}"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Source package type. 
+"
+      end
+
+      attribute 267778 "BINARY"
+	public type class_ref 145538 // PackageType
+	cpp_decl ""
+	java_decl "  ${@}${name}${value},${comment}"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Binary package type. 
+"
+      end
+
+      attribute 267906 "TASK"
+	public type class_ref 145538 // PackageType
+	cpp_decl ""
+	java_decl "  ${@}${name}${value},${comment}"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Task package type. 
+"
+      end
+
+      attribute 268034 "DATA"
+	public type class_ref 145538 // PackageType
+	cpp_decl ""
+	java_decl "  ${@}${name}${value},${comment}"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Data package type. "
+      end
+
+      classrelation 250242 // VALUES (<unidirectional association>)
+	relation 250242 --->
+	  a role_name "VALUES" multiplicity "[]" init_value "=  {
+		SOURCE,
+		BINARY,
+		TASK,
+		DATA
+	}" class_relation const_relation private
+	    comment " All enum values. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	    classrelation_ref 250242 // VALUES (<unidirectional association>)
+	  b parent class_ref 145538 // PackageType
+      end
+
+      attribute 268162 "STRINGS"
+	class_attribute const_attribute private explicit_type "String"
+	multiplicity "[]"
+	init_value "=  {
+		\"source\",
+		\"binary\",
+		\"task\",
+		\"data\"
+	}"
+	stereotype "attribute"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " String representation of the package types. 
+"
+      end
+
+      attribute 268290 "SUFFIXES"
+	class_attribute const_attribute private explicit_type "String"
+	multiplicity "[]"
+	init_value "=  {
+		\"src\",
+		\"bin\",
+		\"task\",
+		\"data\"
+	}"
+	stereotype "attribute"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Suffixes of the package types. 
+"
+      end
+
+      operation 613762 "toString"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+Returns a string representation of the object.
+
+@return a string representation of the object
+@see java.lang.Object#toString()
+"
+      end
+
+      operation 613890 "realValueOf"
+	class_operation public return_type class_ref 145538 // PackageType
+	nparams 1
+	  param in name "name" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Return a <code>PackageType</code> object corresponding to given string. The
+passed string is not the name of the enum constant, but rather its
+<code>toString</code> value.
+
+This method should be really named <code>valueOf</code>, but Java is not
+flexible enough to not allow it, as it generates implicit
+<code>valueOf</code> method for each enum class. 
+
+@param name string representing a <code>PackageType</code> enum constant
+@return <code>PackageType</code> object corresponding to given string
+@throws NullPointerException if <code>name</code> is <code>null</code>
+@throws IllegalArgumentException if no enum constant corresponding to
+         <code>name</code> exists
+"
+      end
+
+      operation 614018 "getSuffix"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns a package suffix for this package type.
+
+@return packge suffix
+"
+      end
+    end
+
+    class 142850 "PackageMetadata"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Container class for the package metadata.
+
+PackageMetadata is intended to be immutable, as
+it is accessed during querying by the callback class and it shouldn't be possible  
+for the callback class to alter the metadata.
+
+However, not all class fields (notably hardwarePlatforms, softwarePlaftorms and attributeInfo)
+are immutable now, so immutability of the whole class isn't guaranteed. 
+
+This behavior should be changed (e.g. by some read-only replacement for ArrayList and Date)
+if the class is ever passed to someone we don't trust.   
+
+@author David Majda
+"
+      classrelation 248962 // <realization>
+	relation 248962 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 248962 // <realization>
+	  b parent class_ref 148226 // Serializable
+      end
+
+      attribute 266114 "serialVersionUID"
+	class_attribute const_attribute private explicit_type "long"
+	init_value "=  -5439687347169490846L"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      operation 610690 "getGetter"
+	class_operation private explicit_return_type "Method"
+	nparams 1
+	  param in name "name" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      classrelation 249090 // ATTRIBUTE_INFO (<unidirectional association>)
+	relation 249090 --->
+	  a role_name "ATTRIBUTE_INFO" multiplicity "[]" init_value "=  new AttributeInfo[] {
+		new AttributeInfo(
+				\"name\",
+				\"package name\",
+				String.class,
+				StringAttributeHelper.getInstance(),
+				EnumSet.of(
+					PackageType.SOURCE,
+					PackageType.BINARY,
+					PackageType.TASK,
+					PackageType.DATA
+				),
+				EnumSet.of(
+					PackageType.SOURCE,
+					PackageType.BINARY,
+					PackageType.TASK,
+					PackageType.DATA
+				),
+				getGetter(\"getName\")
+		),
+		new AttributeInfo(
+				\"version\", 
+				\"version\",
+				Version.class,
+				VersionAttributeHelper.getInstance(),
+				EnumSet.of(
+					PackageType.SOURCE,
+					PackageType.BINARY,
+					PackageType.TASK,
+					PackageType.DATA
+				),
+				EnumSet.of(
+					PackageType.SOURCE,
+					PackageType.BINARY,
+					PackageType.TASK,
+					PackageType.DATA
+				),
+				getGetter(\"getVersion\")
+		),
+		new AttributeInfo(
+				\"hardwarePlatforms\",
+				\"hardware platforms\",
+				ArrayList.class,
+				ArrayListAttributeHelper.getInstance(),
+				EnumSet.of(
+					PackageType.SOURCE,
+					PackageType.BINARY,
+					PackageType.TASK,
+					PackageType.DATA
+				),
+				EnumSet.noneOf(PackageType.class),
+				getGetter(\"getHardwarePlatforms\")
+		),
+		new AttributeInfo(
+				\"softwarePlatforms\",
+				\"software platforms\",
+				ArrayList.class,
+				ArrayListAttributeHelper.getInstance(),
+				EnumSet.of(
+					PackageType.SOURCE,
+					PackageType.BINARY,
+					PackageType.TASK,
+					PackageType.DATA
+				),
+				EnumSet.noneOf(PackageType.class),
+				getGetter(\"getSoftwarePlatforms\")
+		),
+		new AttributeInfo(
+				\"type\",
+				\"package type\",
+				PackageType.class,
+				PackageTypeAttributeHelper.getInstance(),
+				EnumSet.of(
+					PackageType.SOURCE,
+					PackageType.BINARY,
+					PackageType.TASK,
+					PackageType.DATA
+				),
+				EnumSet.of(
+					PackageType.SOURCE,
+					PackageType.BINARY,
+					PackageType.TASK,
+					PackageType.DATA
+				),
+				getGetter(\"getType\")
+		),
+		new AttributeInfo(
+				\"humanName\",
+				\"human package name\",
+				String.class,
+				StringAttributeHelper.getInstance(),
+				EnumSet.of(
+					PackageType.SOURCE,
+					PackageType.BINARY,
+					PackageType.TASK,
+					PackageType.DATA
+				),
+				EnumSet.of(
+					PackageType.SOURCE,
+					PackageType.BINARY,
+					PackageType.TASK,
+					PackageType.DATA
+				),
+				getGetter(\"getHumanName\")
+		),
+		new AttributeInfo(
+				\"downloadURL\",
+				\"downloaded from\",
+				String.class,
+				StringAttributeHelper.getInstance(),
+				EnumSet.of(
+					PackageType.SOURCE,
+					PackageType.BINARY,
+					PackageType.TASK,
+					PackageType.DATA
+				),
+				EnumSet.noneOf(PackageType.class),
+				getGetter(\"getDownloadURL\")
+		),
+		new AttributeInfo(
+				\"downloadDate\",
+				\"download date and time\",
+				Date.class,
+				DateAttributeHelper.getInstance(),
+				EnumSet.of(
+					PackageType.SOURCE,
+					PackageType.BINARY,
+					PackageType.TASK,
+					PackageType.DATA
+				),
+				EnumSet.noneOf(PackageType.class),
+				getGetter(\"getDownloadDate\")
+		),
+		new AttributeInfo(
+				\"sourcePackageFilename\",
+				\"source package\",
+				String.class,
+				StringAttributeHelper.getInstance(),
+				EnumSet.of(
+					PackageType.BINARY,
+					PackageType.TASK
+				),
+				EnumSet.noneOf(PackageType.class),
+				getGetter(\"getSourcePackageFilename\")
+		),
+		new AttributeInfo(
+				\"binaryIdentifier\",
+				\"binary identifier\",
+				String.class,
+				StringAttributeHelper.getInstance(),
+				EnumSet.of(
+					PackageType.BINARY
+				),
+				EnumSet.noneOf(PackageType.class),
+				getGetter(\"getBinaryIdentifier\")
+		),
+		new AttributeInfo(
+				\"buildConfiguration\",
+				\"build configuration name\",
+				String.class,
+				StringAttributeHelper.getInstance(),
+				EnumSet.of(
+					PackageType.BINARY
+				),
+				EnumSet.noneOf(PackageType.class),
+				getGetter(\"getBuildConfiguration\")
+		),
+	}" class_relation const_relation public
+	    comment " Information about attributes. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	    classrelation_ref 249090 // ATTRIBUTE_INFO (<unidirectional association>)
+	  b parent class_ref 195330 // AttributeInfo
+      end
+
+      attribute 266242 "filename"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Filename of the package in the Software Repository. 
+"
+      end
+
+      attribute 266370 "size"
+	private explicit_type "long"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Size of the package file. 
+"
+      end
+
+      attribute 266498 "name"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Canonical name of the package. 
+"
+      end
+
+      classrelation 249218 // version (<unidirectional association>)
+	relation 249218 --->
+	  a role_name "version" private
+	    comment " Package version. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 249218 // version (<unidirectional association>)
+	  b parent class_ref 141442 // Version
+      end
+
+      attribute 266626 "hardwarePlatforms"
+	private explicit_type "ArrayList"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Hardware platforms. 
+"
+      end
+
+      attribute 266754 "softwarePlatforms"
+	private explicit_type "ArrayList"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Software platforms. 
+"
+      end
+
+      classrelation 249346 // type (<unidirectional association>)
+	relation 249346 --->
+	  a role_name "type" private
+	    comment " Determines package type. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 249346 // type (<unidirectional association>)
+	  b parent class_ref 145538 // PackageType
+      end
+
+      attribute 266882 "humanName"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Human-readable package name. 
+"
+      end
+
+      attribute 267010 "downloadURL"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Source of this package, if downloaded from some external site. 
+"
+      end
+
+      attribute 267138 "downloadDate"
+	private explicit_type "Date"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Download date and time, if downloaded from some external site. 
+"
+      end
+
+      attribute 267266 "sourcePackageFilename"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Filename of the source package in Software Repository. 
+"
+      end
+
+      attribute 267394 "binaryIdentifier"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " BID of the binary in experiment, which this package is used in. 
+"
+      end
+
+      attribute 267522 "buildConfiguration"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Name of the build configuration, in which this package was built. 
+"
+      end
+
+      operation 610818 "getFilename"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return the filename "
+      end
+
+      operation 610946 "getSize"
+	public explicit_return_type "long"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return the size "
+      end
+
+      operation 611074 "getName"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return the name "
+      end
+
+      operation 611202 "getVersion"
+	public return_type class_ref 141442 // Version
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return the version "
+      end
+
+      operation 611330 "getHardwarePlatforms"
+	public explicit_return_type "ArrayList"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return the hardwarePlatforms "
+      end
+
+      operation 611458 "getSoftwarePlatforms"
+	public explicit_return_type "ArrayList"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return the softwarePlatform "
+      end
+
+      operation 611586 "getType"
+	public return_type class_ref 145538 // PackageType
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return the type "
+      end
+
+      operation 611714 "getHumanName"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return the humanName "
+      end
+
+      operation 611842 "getDownloadURL"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return the downloadURL "
+      end
+
+      operation 611970 "getDownloadDate"
+	public explicit_return_type "Date"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return the downloadDate "
+      end
+
+      operation 612098 "getSourcePackageFilename"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return the sourcePackageFilename "
+      end
+
+      operation 612226 "getBinaryIdentifier"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return the binaryIdentifier "
+      end
+
+      operation 612354 "getBuildConfiguration"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return the buildConfiguration "
+      end
+
+      operation 612482 "PackageMetadata"
+	public explicit_return_type ""
+	nparams 13
+	  param in name "filename" explicit_type "String"
+	  param in name "size" explicit_type "long"
+	  param in name "name" explicit_type "String"
+	  param inout name "version" type class_ref 141442 // Version
+	  param inout name "hardwarePlatforms" explicit_type "ArrayList"
+	  param inout name "softwarePlatforms" explicit_type "ArrayList"
+	  param inout name "type" type class_ref 145538 // PackageType
+	  param in name "humanName" explicit_type "String"
+	  param in name "downloadURL" explicit_type "String"
+	  param inout name "downloadDate" explicit_type "Date"
+	  param in name "sourcePackageFilename" explicit_type "String"
+	  param in name "binaryIdentifier" explicit_type "String"
+	  param in name "buildConfiguration" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}, ${t5} ${p5}, ${t6} ${p6}, ${t7} ${p7}, ${t8} ${p8}, ${t9} ${p9}, ${t10} ${p10}, ${t11} ${p11}, ${t12} ${p12}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>PackageMetadata</code> object.
+
+@param filename filename of the package in the Software Repository
+@param size size of the package file
+@param name canonical name of the package
+@param version package version
+@param hardwarePlatforms hardware platforms
+@param softwarePlatforms software platforms
+@param type determines package type
+@param humanName human-readable package name
+@param downloadURL source of this package, if downloaded from some external site
+@param downloadDate download date and time, if downloaded from some external site
+@param sourcePackageFilename filename of the source package in the Software Repository
+@param binaryIdentifier BID of the binary in experiment, which this package is used in
+@param buildConfiguration name of the build configuration, in which this package was built
+"
+      end
+
+      operation 612610 "PackageMetadata"
+	public explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Necessary for creating instances in the web interface. 
+"
+      end
+
+      operation 612738 "appendIfNotNull"
+	private explicit_return_type "void"
+	nparams 2
+	  param inout name "parent" explicit_type "Element"
+	  param inout name "child" explicit_type "Element"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 612866 "saveToFile"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "metadataFile" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "TransformerException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Saves the metadata to a file. 
+
+@param metadataFile file, where the metadata should be saved
+@throws TransformerException if an unrecoverable error occurs during the
+         course of the transformation
+"
+      end
+    end
+
+    class 195074 "ArrayListAttributeHelper"
+      visibility public 
+      nactuals 2
+      actual class class_ref 195202 // AttributeHelper
+        rank 0 explicit_value "ArrayList"
+      actual class class_ref 195202 // AttributeHelper
+        rank 1 explicit_value ""
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+ArrayList metadata attribute helper class.
+
+@author David Majda
+"
+      classrelation 247554 // <realization>
+	relation 247554 -_-|>
+	  stereotype "bind"
+	  a public
+	    java "${type}"
+	    classrelation_ref 247554 // <realization>
+	  b parent class_ref 195202 // AttributeHelper
+      end
+
+      classrelation 247682 // instance (<unidirectional association>)
+	relation 247682 --->
+	  a role_name "instance" class_relation private
+	    comment " Class instance (singleton pattern). 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 247682 // instance (<unidirectional association>)
+	  b parent class_ref 195074 // ArrayListAttributeHelper
+      end
+
+      operation 606722 "ArrayListAttributeHelper"
+	private explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>ArrayListAttributeHelper</code> object. Construcor is
+private so only instance in <code>instance</code> field can be constructed
+(singleton pattern).
+"
+      end
+
+      operation 606850 "validateInXML"
+	public explicit_return_type "String"
+	nparams 1
+	  param inout name "element" explicit_type "Element"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+
+
+XML element representation of the ArrayList attribute is valid
+iff following conditions are all met:
+
+<ol>
+  <li>element name is in plural (ends with \"s\")</li>
+  <li>if element contains some child nodes, those of them, which are also
+  elements, have name of the base element in singular (without trailing
+  \"s\") and contain only text</li>
+</ol>
+
+@see cz.cuni.mff.been.softwarerepository.AttributeHelper#validateInXML(org.w3c.dom.Element)
+"
+      end
+
+      operation 606978 "readValueFromElement"
+	public explicit_return_type "ArrayList"
+	nparams 1
+	  param inout name "element" explicit_type "Element"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.softwarerepository.AttributeHelper#readValueFromElement(org.w3c.dom.Element)
+"
+      end
+
+      operation 607106 "writeValueToElement"
+	public explicit_return_type "Element"
+	nparams 3
+	  param inout name "document" explicit_type "Document"
+	  param in name "tagName" explicit_type "String"
+	  param inout name "value" explicit_type "ArrayList"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 607234 "getInstance"
+	class_operation public return_type class_ref 195074 // ArrayListAttributeHelper
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns the only class instance (singleton pattern).
+
+@return class instance
+"
+      end
+    end
+
+    class 195202 "AttributeHelper"
+      abstract visibility public 
+      nformals 2
+      formal name "T" type "" explicit_default_value ""
+        explicit_extends ""
+      formal name "T" type "" explicit_default_value ""
+        explicit_extends ""
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Base class for \"attribute class helpers\". These helpers contain methods,
+that should be included in classes of the attributes, but it wasn't
+possible, because many of these classes are declared final.   
+
+@author David Majda
+"
+      operation 606210 "validateInXML"
+	abstract public explicit_return_type "String"
+	nparams 1
+	  param inout name "element" explicit_type "Element"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Validates attrbitue value in the XML element.
+
+@param element XML element with (possible) attribute value
+@return <code>null</code> if element contains valid value of given
+         attribute type;
+         <code>String</code> with human-readable error message  otherwise
+"
+      end
+
+      operation 606338 "readValueFromElement"
+	abstract public explicit_return_type "T"
+	nparams 1
+	  param inout name "element" explicit_type "Element"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Extracts the attribute value form the XML element. It assumes the element
+contains valid value and exact behavior in case it doesn't is undefined.
+
+@param element XML element
+@return extracted attribute value; the caller should cast
+         it to the appropriate type
+"
+      end
+
+      operation 606466 "writeValueToElement"
+	abstract public explicit_return_type "Element"
+	nparams 3
+	  param inout name "document" explicit_type "Document"
+	  param in name "tagName" explicit_type "String"
+	  param inout name "value" explicit_type "T"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Writes the attribute value to the XML element.
+
+@param document document where the resulting element belongs
+@param tagName name of the element's tag
+@param value value to wrtie, can be <code>null</code>
+@return Element with written value
+"
+      end
+
+      operation 606594 "extractTextValueFromElement"
+	protected explicit_return_type "String"
+	nparams 1
+	  param inout name "element" explicit_type "Element"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Extracts text value form the XML element.
+
+@param element XML element
+@return element's text value if the element contains exactly one child that
+         is a text node; <code>null</code> otherwise
+"
+      end
+    end
+
+    class 195330 "AttributeInfo"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Describes an attribute in the package metadata.
+
+@author David Majda
+"
+      attribute 265474 "name"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Attribute name. 
+"
+      end
+
+      attribute 265602 "humanName"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Human-readable attribute name (for use in UI). 
+"
+      end
+
+      attribute 265730 "klass"
+	private explicit_type "Class"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Attribute class. 
+"
+      end
+
+      classrelation 247810 // helper (<unidirectional association>)
+	relation 247810 --->
+	  a role_name "helper" private
+	    comment " Attribute helper. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 247810 // helper (<unidirectional association>)
+	  b parent class_ref 195202 // AttributeHelper
+      end
+
+      classrelation 247938 // allowed (<unidirectional association>)
+	relation 247938 --->
+	  stereotype "EnumSet"
+	  a role_name "allowed" private
+	    comment " Where is this attribute allowed. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<${type}> ${name}${value};
+"
+	    classrelation_ref 247938 // allowed (<unidirectional association>)
+	  b parent class_ref 145538 // PackageType
+      end
+
+      classrelation 248066 // required (<unidirectional association>)
+	relation 248066 --->
+	  stereotype "EnumSet"
+	  a role_name "required" private
+	    comment " Where is this attribute required. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<${type}> ${name}${value};
+"
+	    classrelation_ref 248066 // required (<unidirectional association>)
+	  b parent class_ref 145538 // PackageType
+      end
+
+      attribute 265858 "getter"
+	private explicit_type "Method"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Attribute getter. 
+"
+      end
+
+      operation 607362 "getName"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return the name "
+      end
+
+      operation 607490 "getHumanName"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return the humanName "
+      end
+
+      operation 607618 "getKlass"
+	public explicit_return_type "Class"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return the class "
+      end
+
+      operation 607746 "getHelper"
+	public return_type class_ref 195202 // AttributeHelper
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return the helper "
+      end
+
+      operation 607874 "getGetter"
+	public explicit_return_type "Method"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return the getter "
+      end
+
+      operation 608002 "getAllowed"
+	public return_type class_ref 145538 // PackageType
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}EnumSet<${type}> ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return the allowed "
+      end
+
+      operation 608130 "getRequired"
+	public return_type class_ref 145538 // PackageType
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}EnumSet<${type}> ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return the required "
+      end
+
+      operation 608258 "AttributeInfo"
+	public explicit_return_type ""
+	nparams 7
+	  param in name "name" explicit_type "String"
+	  param in name "humanName" explicit_type "String"
+	  param inout name "klass" explicit_type "Class"
+	  param inout name "helper" type class_ref 195202 // AttributeHelper
+	  param inout name "allowed" explicit_type "EnumSet<PackageType>"
+	  param inout name "required" explicit_type "EnumSet<PackageType>"
+	  param inout name "getter" explicit_type "Method"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}, ${t5} ${p5}, ${t6} ${p6}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>AttributeInfo</code> object.
+
+@param name attrbiute name
+@param humanName human-readable attribute name
+@param klass attribute class
+@param helper attribute helper
+@param allowed where is this attribute allowed
+@param required where is this attribute required 
+@param getter attribute getter
+"
+      end
+    end
+
+    class 195458 "DateAttributeHelper"
+      visibility public 
+      nactuals 2
+      actual class class_ref 195202 // AttributeHelper
+        rank 0 explicit_value "Date"
+      actual class class_ref 195202 // AttributeHelper
+        rank 1 explicit_value ""
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Date metadata attribute helper class.
+
+@author David Majda
+"
+      classrelation 248194 // <realization>
+	relation 248194 -_-|>
+	  stereotype "bind"
+	  a public
+	    java "${type}"
+	    classrelation_ref 248194 // <realization>
+	  b parent class_ref 195202 // AttributeHelper
+      end
+
+      attribute 265986 "PATTERN_RFC1123"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"EEE, dd MMM yyyy HH:mm:ss zzz\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Date format pattern used to read/write date in RFC 1123 format. 
+"
+      end
+
+      classrelation 248322 // instance (<unidirectional association>)
+	relation 248322 --->
+	  a role_name "instance" class_relation private
+	    comment " Class instance (singleton pattern). 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 248322 // instance (<unidirectional association>)
+	  b parent class_ref 195458 // DateAttributeHelper
+      end
+
+      operation 608386 "DateAttributeHelper"
+	private explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>DateAttributeHelper</code> object. Construcor is private so only
+instance in <code>instance</code> field can be constructed (singleton
+pattern).
+"
+      end
+
+      operation 608514 "validateInXML"
+	public explicit_return_type "String"
+	nparams 1
+	  param inout name "element" explicit_type "Element"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.softwarerepository.AttributeHelper#validateInXML(org.w3c.dom.Element)
+"
+      end
+
+      operation 608642 "readValueFromElement"
+	public explicit_return_type "Date"
+	nparams 1
+	  param inout name "element" explicit_type "Element"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.softwarerepository.AttributeHelper#readValueFromElement(org.w3c.dom.Element)
+"
+      end
+
+      operation 608770 "writeValueToElement"
+	public explicit_return_type "Element"
+	nparams 3
+	  param inout name "document" explicit_type "Document"
+	  param in name "tagName" explicit_type "String"
+	  param inout name "value" explicit_type "Date"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 608898 "getInstance"
+	class_operation public return_type class_ref 195458 // DateAttributeHelper
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns the only class instance (singleton pattern).
+
+@return class instance
+"
+      end
+    end
+
+    class 195586 "ElementAttributeHelper"
+      visibility public 
+      nactuals 2
+      actual class class_ref 195202 // AttributeHelper
+        rank 0 explicit_value "Element"
+      actual class class_ref 195202 // AttributeHelper
+        rank 1 explicit_value ""
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Element metadata attribute helper class.
+
+@author David Majda
+"
+      classrelation 248450 // <realization>
+	relation 248450 -_-|>
+	  stereotype "bind"
+	  a public
+	    java "${type}"
+	    classrelation_ref 248450 // <realization>
+	  b parent class_ref 195202 // AttributeHelper
+      end
+
+      classrelation 248578 // instance (<unidirectional association>)
+	relation 248578 --->
+	  a role_name "instance" class_relation private
+	    comment " Class instance (singleton pattern). 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 248578 // instance (<unidirectional association>)
+	  b parent class_ref 195586 // ElementAttributeHelper
+      end
+
+      operation 609026 "ElementAttributeHelper"
+	private explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>ElementAttributeHelper</code> object. Construcor is private so only
+instance in <code>instance</code> field can be constructed (singleton
+pattern).
+"
+      end
+
+      operation 609154 "validateInXML"
+	public explicit_return_type "String"
+	nparams 1
+	  param inout name "element" explicit_type "Element"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.softwarerepository.AttributeHelper#validateInXML(org.w3c.dom.Element)
+"
+      end
+
+      operation 609282 "readValueFromElement"
+	public explicit_return_type "Element"
+	nparams 1
+	  param inout name "element" explicit_type "Element"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.softwarerepository.AttributeHelper#readValueFromElement(org.w3c.dom.Element)
+"
+      end
+
+      operation 609410 "writeValueToElement"
+	public explicit_return_type "Element"
+	nparams 3
+	  param inout name "document" explicit_type "Document"
+	  param in name "tagName" explicit_type "String"
+	  param inout name "value" explicit_type "Element"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 609538 "getInstance"
+	class_operation public return_type class_ref 195586 // ElementAttributeHelper
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns the only class instance (singleton pattern).
+
+@return class instance
+"
+      end
+    end
+
+    class 195842 "PackageMetadataPropertyRoot"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Impementation of the property root for the Software Repository RSL query
+interface.
+
+All other necessary interfaces are implemented as inner classes.
+
+@author David Majda
+"
+      classrelation 249474 // <realization>
+	relation 249474 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 249474 // <realization>
+	  b parent class_ref 156930 // ContainerProperty
+      end
+
+      classrelation 249602 // metadata (<unidirectional association>)
+	relation 249602 --->
+	  a role_name "metadata" private
+	    comment " Package metadata we are querying. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 249602 // metadata (<unidirectional association>)
+	  b parent class_ref 142850 // PackageMetadata
+      end
+
+      classrelation 249730 // properties (<unidirectional association>)
+	relation 249730 --->
+	  stereotype "Map"
+	  a role_name "properties" init_value "=  new HashMap<String, SimpleProperty>()" private
+	    comment "
+Map of <code>SimpleProperty</code> objects corresponding to the package
+metadata attributes. The map is filled lazily, as there won't be namy
+attributes checked in the typical RSL query.
+
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<String, ${type}> ${name}${value};
+"
+	    classrelation_ref 249730 // properties (<unidirectional association>)
+	  b parent class_ref 156802 // SimpleProperty
+      end
+
+      class 195970 "PackageMetadataProperty"
+	visibility private 
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	classrelation 249858 // <realization>
+	  relation 249858 -_-|>
+	    a public
+	      java "${type}"
+	      classrelation_ref 249858 // <realization>
+	    b parent class_ref 156802 // SimpleProperty
+	end
+
+	classrelation 249986 // info (<unidirectional association>)
+	  relation 249986 --->
+	    a role_name "info" private
+	      comment " Information about corresponding attribute. 
+"
+	      java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	      classrelation_ref 249986 // info (<unidirectional association>)
+	    b parent class_ref 195330 // AttributeInfo
+	end
+
+	operation 612994 "PackageMetadataProperty"
+	  public explicit_return_type ""
+	  nparams 1
+	    param inout name "info" type class_ref 195330 // AttributeInfo
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Allocates a new <code>PackageMetadataProperty</code> object.
+
+@param info	information about corresponding attribute
+"
+	end
+
+	operation 613122 "getValue"
+	  public explicit_return_type "Object"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+@see cz.cuni.mff.been.common.rsl.SimpleProperty#getValue()
+"
+	end
+
+	operation 613250 "getValueClass"
+	  public explicit_return_type "Class"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+@see cz.cuni.mff.been.common.rsl.SimpleProperty#getValueClass()
+"
+	end
+      end
+
+      operation 613378 "PackageMetadataPropertyRoot"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "metadata" type class_ref 142850 // PackageMetadata
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>PackageMetadataPropertyRoot</code> object.
+
+@param metadata package metadata we are querying
+"
+      end
+
+      operation 613506 "getProperty"
+	public return_type class_ref 157698 // Property
+	nparams 1
+	  param in name "propertyName" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.common.rsl.ContainerProperty#getProperty(java.lang.String)
+"
+      end
+
+      operation 613634 "hasProperty"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param in name "propertyName" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.common.rsl.ContainerProperty#hasProperty(java.lang.String)
+"
+      end
+    end
+
+    class 196098 "PackageTypeAttributeHelper"
+      visibility public 
+      nactuals 2
+      actual class class_ref 195202 // AttributeHelper
+        rank 0 value class_ref 145538 // PackageType
+      actual class class_ref 195202 // AttributeHelper
+        rank 1 explicit_value ""
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+PackageData metadata attribute helper class.
+
+@author David Majda
+"
+      classrelation 250370 // <realization>
+	relation 250370 -_-|>
+	  stereotype "bind"
+	  a public
+	    java "${type}"
+	    classrelation_ref 250370 // <realization>
+	  b parent class_ref 195202 // AttributeHelper
+      end
+
+      classrelation 250498 // instance (<unidirectional association>)
+	relation 250498 --->
+	  a role_name "instance" class_relation private
+	    comment " Class instance (singleton pattern). 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 250498 // instance (<unidirectional association>)
+	  b parent class_ref 196098 // PackageTypeAttributeHelper
+      end
+
+      operation 614146 "PackageTypeAttributeHelper"
+	private explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>PackageTypeAttributeHelper</code> object. Construcor is private so only
+instance in <code>instance</code> field can be constructed (singleton
+pattern).
+"
+      end
+
+      operation 614274 "validateInXML"
+	public explicit_return_type "String"
+	nparams 1
+	  param inout name "element" explicit_type "Element"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.softwarerepository.AttributeHelper#validateInXML(org.w3c.dom.Element)
+"
+      end
+
+      operation 614402 "readValueFromElement"
+	public return_type class_ref 145538 // PackageType
+	nparams 1
+	  param inout name "element" explicit_type "Element"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.softwarerepository.AttributeHelper#readValueFromElement(org.w3c.dom.Element)
+"
+      end
+
+      operation 614530 "writeValueToElement"
+	public explicit_return_type "Element"
+	nparams 3
+	  param inout name "document" explicit_type "Document"
+	  param in name "tagName" explicit_type "String"
+	  param inout name "value" type class_ref 145538 // PackageType
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 614658 "getInstance"
+	class_operation public return_type class_ref 196098 // PackageTypeAttributeHelper
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns the only class instance (singleton pattern).
+
+@return class instance
+"
+      end
+    end
+
+    class 196354 "RSLPackageQueryCallback"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Imlementation of the callback interface for querying the Software
+Repository, whitch uses RSL for specifying the conditions.
+
+@author David Majda
+"
+      classrelation 250754 // <realization>
+	relation 250754 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 250754 // <realization>
+	  b parent class_ref 182530 // PackageQueryCallbackInterface
+      end
+
+      classrelation 250882 // <realization>
+	relation 250882 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 250882 // <realization>
+	  b parent class_ref 148226 // Serializable
+      end
+
+      classrelation 251010 // condition (<unidirectional association>)
+	relation 251010 --->
+	  a role_name "condition" private
+	    comment " Parsed RSL condition specifying restrictions for the packages. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 251010 // condition (<unidirectional association>)
+	  b parent class_ref 138242 // Condition
+      end
+
+      operation 615042 "getCondition"
+	public return_type class_ref 138242 // Condition
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return parsed RSL condition specifying restrictions for the packages "
+      end
+
+      operation 615170 "match"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "metadata" type class_ref 142850 // PackageMetadata
+	nexceptions 1
+	  exception class_ref 182658 // MatchException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Decides, whether given package matches the query.
+
+@param metadata metadata of queried package
+@return <code>true</code> if the package matches the query;
+         <code>false</code> otherwise
+@throws MatchException if some RSL error in matching occurs
+
+@see cz.cuni.mff.been.softwarerepository.PackageQueryCallbackInterface#match(cz.cuni.mff.been.softwarerepository.PackageMetadata)
+"
+      end
+
+      operation 615298 "RSLPackageQueryCallback"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "condition" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>RSLPackageQueryCallback</code> object.
+
+@param condition RSL condition specifying restrictions for the packages
+@throws IllegalArgumentException if the RSL is syntactically invalid
+"
+      end
+
+      operation 615426 "RSLPackageQueryCallback"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "condition" type class_ref 138242 // Condition
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>RSLPackageQueryCallback</code> object.
+
+@param condition RSL condition specifying restrictions for the packages
+"
+      end
+    end
+
+    class 196482 "SoftwareRepositoryImplementation"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Implementation of the main Software Repository interface.
+ 
+@author David Majda
+"
+      classrelation 251138 // <generalisation>
+	relation 251138 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 251138 // <generalisation>
+	  b parent class_ref 130178 // UnicastRemoteObject
+      end
+
+      classrelation 251394 // <realization>
+	relation 251394 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 251394 // <realization>
+	  b parent class_ref 142594 // SoftwareRepositoryInterface
+      end
+
+      classrelation 251522 // instance (<unidirectional association>)
+	relation 251522 --->
+	  a role_name "instance" class_relation private
+	    comment " Class instance (singleton pattern). 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 251522 // instance (<unidirectional association>)
+	  b parent class_ref 196482 // SoftwareRepositoryImplementation
+      end
+
+      attribute 268930 "PACKAGE_FILES_DIR"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"files\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Name of the directory with real content in packages. 
+"
+      end
+
+      attribute 269058 "PACKAGE_METADATA_FILE"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"metadata.xml\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Name of the file with metadata in packages. 
+"
+      end
+
+      attribute 269186 "PACKAGE_CONFIG_FILE"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"config.xml\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Name of the file with configuration information in packages. 
+"
+      end
+
+      attribute 269314 "PACKAGE_FILE_SUFFIX"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \".bpk\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Suffix of the package files. Case sensitive, with leading \".\". 
+"
+      end
+
+      attribute 269442 "TEMPFILE_PREFIX"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"been-software-repository\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Prefix for temporary files used by Software Repository. 
+"
+      end
+
+      attribute 269570 "TEMPFILE_SUFFIX"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  null"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Suffix for temporary files used by Software Repository. 
+ null = use default "
+      end
+
+      attribute 269698 "COUNTER_FILE"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"counter.dat\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Name of the file where the autoincremented counter value is stored. 
+"
+      end
+
+      attribute 269826 "dataDir"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Name of the directory with data files. 
+"
+      end
+
+      attribute 269954 "tempDir"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Name of the directory with temporary files. 
+"
+      end
+
+      classrelation 251650 // task (<unidirectional association>)
+	relation 251650 --->
+	  a role_name "task" private
+	    comment " Software Repository's task. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 251650 // task (<unidirectional association>)
+	  b parent class_ref 136578 // Task
+      end
+
+      classrelation 251778 // packageMetadata (<unidirectional association>)
+	relation 251778 --->
+	  stereotype "List"
+	  a role_name "packageMetadata" init_value "=  new LinkedList<PackageMetadata>()" private
+	    comment " Package metadata. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<${type}> ${name}${value};
+"
+	    classrelation_ref 251778 // packageMetadata (<unidirectional association>)
+	  b parent class_ref 142850 // PackageMetadata
+      end
+
+      attribute 270082 "autoIncrementedCounter"
+	private explicit_type "long"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "
+Counter used to generate unique file names for packages in Software
+Repository. It is incremented automatically when needed.
+
+"
+      end
+
+      classrelation 251906 // downloadStatuses (<unidirectional association>)
+	relation 251906 --->
+	  stereotype "Map"
+	  a role_name "downloadStatuses" init_value "=  Collections.synchronizedMap(new HashMap<DownloadHandle, DownloadStatus>())" private
+	    comment " Download statuses. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<${type}, DownloadStatus> ${name}${value};
+"
+	    classrelation_ref 251906 // downloadStatuses (<unidirectional association>)
+	  b parent class_ref 149762 // DownloadHandle
+      end
+
+      classrelation 252034 // uploadStatuses (<unidirectional association>)
+	relation 252034 --->
+	  stereotype "Map"
+	  a role_name "uploadStatuses" init_value "=  Collections.synchronizedMap(new HashMap<UploadHandle, UploadStatus>())" private
+	    comment " Upload statuses. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<${type}, UploadStatus> ${name}${value};
+"
+	    classrelation_ref 252034 // uploadStatuses (<unidirectional association>)
+	  b parent class_ref 134658 // UploadHandle
+      end
+
+      classrelation 252162 // uploadErrorMessages (<unidirectional association>)
+	relation 252162 --->
+	  stereotype "Map"
+	  a role_name "uploadErrorMessages" init_value "=  Collections.synchronizedMap(new HashMap<UploadHandle, String[]>())" private
+	    comment " Upload error messages. 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<${type}, String[]> ${name}${value};
+"
+	    classrelation_ref 252162 // uploadErrorMessages (<unidirectional association>)
+	  b parent class_ref 134658 // UploadHandle
+      end
+
+      operation 616706 "SoftwareRepositoryImplementation"
+	private explicit_return_type ""
+	nparams 0
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>SoftwareRepositoryImplementation</code> object.
+Construcor is private so only instance in <code>instance</code> field can
+be constructed (singleton pattern).
+
+@throws RemoteException if failed to export object
+"
+      end
+
+      operation 616834 "getDataDir"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return the dataDir
+"
+      end
+
+      operation 616962 "getTempDir"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@return the tempDir
+"
+      end
+
+      operation 617090 "getInstance"
+	class_operation public return_type class_ref 196482 // SoftwareRepositoryImplementation
+	nparams 0
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns the only class instance (singleton pattern).
+
+@return class instance
+@throws RemoteException if failed to export object
+s	 "
+      end
+
+      operation 617218 "initialize"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "dataDir" explicit_type "String"
+	  param in name "tempDir" explicit_type "String"
+	nexceptions 2
+	  explicit_exception "IOException"
+	  explicit_exception "ClassNotFoundException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Initializes the service, i.e. reads the metadata form the index file or
+tries to extract it form the packages.
+
+@param dataDir name of the directory with data files
+@param tempDir name of the directory with temporary files
+@throws IOException if some I/O error occurs
+@throws ClassNotFoundException if error during loading metadata occurs
+"
+      end
+
+      operation 617346 "logInfo"
+	private explicit_return_type "void"
+	nparams 1
+	  param in name "message" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Logs an information message. If the Software Repository is run as a task
+(i.e. <code>task</code> field is not <code>null</code>), it uses task
+logging facility to write the message, otherwise it prints it to the error
+output.
+
+@param message message text
+"
+      end
+
+      operation 617474 "logError"
+	private explicit_return_type "void"
+	nparams 1
+	  param in name "message" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Logs an error message. If the Software Repository is run as a task
+(i.e. <code>task</code> field is not <code>null</code>), it uses task
+logging facility to write the message, otherwise it prints it to the error
+output.
+
+@param message message text
+"
+      end
+
+      operation 617602 "readXMLDocumentFromZippedFile"
+	private explicit_return_type "Document"
+	nparams 2
+	  param inout name "zipFile" explicit_type "ZipFile"
+	  param in name "xmlFilename" explicit_type "String"
+	nexceptions 2
+	  explicit_exception "IOException"
+	  explicit_exception "ParserConfigurationException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Reads XML document from file in a ZIP archive.   
+
+@param zipFile the archive file
+@param xmlFilename name of the file in the archive with the XML document
+@return XML document if the ZIP archive is succesfully opened, file
+         <code>xmlFilename</code> found and read and it contains valid
+         XML document; <code>null</code> otherwise 
+@throws IOException if some I/O error occurs
+@throws ParserConfigurationException if serious parser configuration error occurs   
+@throws FactoryConfigurationError if serious parser factory configuration error occurs
+"
+      end
+
+      operation 617730 "getDocumentPackageType"
+	private return_type class_ref 145538 // PackageType
+	nparams 1
+	  param inout name "document" explicit_type "Document"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Determines, what package type is given XML document describing.
+
+@param document document to examine
+@return resulting package type
+"
+      end
+
+      operation 617858 "getAttributeElementByName"
+	private explicit_return_type "Element"
+	nparams 2
+	  param inout name "document" explicit_type "Document"
+	  param in name "name" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Retreives an element associated with given metadata attribute name
+from given XML document. 
+
+@param document document to examine
+@param name attribute name 
+@return associated element if exactly one element associated with 
+         given metadata attribute is found;
+         <code>null</code> otherwise 
+"
+      end
+
+      operation 617986 "validateAttributeExiststenceAndValue"
+	private explicit_return_type "String"
+	nparams 2
+	  param inout name "document" explicit_type "Document"
+	  param inout name "info" type class_ref 195330 // AttributeInfo
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Determines, whether metadata attribute exists in given XML document
+and has valid value. 
+
+@param document document to examine
+@param info information about the attribute
+@return empty <code>String</code> array if metadata attribute exists in
+         given XML document and has valid value for given attribute type;
+         list of found errors in human-readable form otherwise
+"
+      end
+
+      operation 618114 "validateRequiredAttributesAndValues"
+	private explicit_return_type "String"
+	nparams 2
+	  param inout name "document" explicit_type "Document"
+	  param inout name "packageType" type class_ref 145538 // PackageType
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Determines, whether document contains all required metadata attributes
+for its package type and those attributes contain valid values.
+
+@param document document to examine
+@param packageType package type 
+@return empty <code>String</code> array if if all metadata attributes
+         required for given package type exist in given XML document and
+         have valid values for their attribute types;
+         list of found errors in human-readable form otherwise
+"
+      end
+
+      operation 618242 "validatePackageMetadataFile"
+	private explicit_return_type "String"
+	nparams 1
+	  param inout name "zipFile" explicit_type "ZipFile"
+	nexceptions 2
+	  explicit_exception "IOException"
+	  explicit_exception "ParserConfigurationException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Determines, whether given package contains valid package metadata file and
+reports errors in human-readable form.
+
+@param zipFile package file
+@return empty <code>String</code> array if the package contains valid
+         metadata file;
+         list of found errors in human-readable form otherwise
+@throws IOException if some I/O error occurs
+@throws ParserConfigurationException if serious parser configuration error occurs   
+@throws FactoryConfigurationError if serious parser factory configuration error occurs
+"
+      end
+
+      operation 618370 "validatePackageConfigFile"
+	private explicit_return_type "String"
+	nparams 1
+	  param inout name "zipFile" explicit_type "ZipFile"
+	nexceptions 2
+	  explicit_exception "IOException"
+	  explicit_exception "ParserConfigurationException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Determines, whether given package contains valid package configuration file
+and reports errors in human-readable form.  
+
+@param zipFile package file
+@return empty <code>String</code> array if the package contains valid
+         configuration file;
+         list of found errors in human-readable form otherwise
+@throws IOException if some I/O error occurs
+@throws ParserConfigurationException if serious parser configuration error occurs   
+"
+      end
+
+      operation 618498 "validatePackage"
+	private explicit_return_type "String"
+	nparams 1
+	  param in name "filename" explicit_type "String"
+	nexceptions 2
+	  explicit_exception "IOException"
+	  explicit_exception "ParserConfigurationException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Determines, whether given file contains valid package and reports errors in
+human-readable form.  
+
+@param filename file to examine
+@return empty <code>String</code> array if given file contains valid package;
+         list of found errors in human-readable form otherwise
+@throws IOException if some I/O error occurs
+@throws ParserConfigurationException if serious parser configuration error occurs   
+@throws FactoryConfigurationError if serious parser factory configuration error occurs
+"
+      end
+
+      operation 618626 "readPackageMetadata"
+	private return_type class_ref 142850 // PackageMetadata
+	nparams 1
+	  param in name "filename" explicit_type "String"
+	nexceptions 2
+	  explicit_exception "IOException"
+	  explicit_exception "ParserConfigurationException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Reads metadata form the package. Assumes the package format is correct (pre-validated).
+
+@param filename package file name
+@return package metadata
+@throws IOException if some I/O error occurs
+@throws ParserConfigurationException if serious parser configuration error occurs   
+@throws FactoryConfigurationError if serious parser factory configuration error occurs
+"
+      end
+
+      operation 618754 "addMetadata"
+	private explicit_return_type "void"
+	nparams 1
+	  param inout name "metadata" type class_ref 142850 // PackageMetadata
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Adds new metadata to the <code>packageMetadata</code> list. 
+
+@param metadata metadata to add
+@throws IOException if some I/O error occurs
+"
+      end
+
+      operation 618882 "deleteMetadataForFilename"
+	private explicit_return_type "void"
+	nparams 1
+	  param in name "filename" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Deletes the metadata for package specified by it's filename. 
+
+@param filename package do delete
+"
+      end
+
+      operation 619010 "createPackageFilename"
+	private explicit_return_type "String"
+	nparams 1
+	  param inout name "metadata" type class_ref 142850 // PackageMetadata
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Creates unique package file name from the package metadata and increases
+internal counter, which guarantees that the name is unique. This increment
+operation must be synchronized.
+
+@param metadata package metadata
+@return name of the package
+"
+      end
+
+      operation 619138 "extractMetadataFromPackages"
+	private explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Walks through packages in the data directory and extracts metadata from them.
+
+@throws IOException if some I/O error occurs
+"
+      end
+
+      class 196610 "PackageUploadThread"
+	visibility private 
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	classrelation 252290 // <generalisation>
+	  relation 252290 ---|>
+	    a public
+	      java "${type}"
+	      classrelation_ref 252290 // <generalisation>
+	    b parent class_ref 151042 // Thread
+	end
+
+	attribute 270210 "MAX_CREATE_TEMP_FILE_TRY_COUNT"
+	  class_attribute const_attribute private explicit_type "int"
+	  init_value "=  1024"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment "
+How many times we should try to create a temp file. See
+<code>createTempFile</code> method for explanation, why we need this
+constant.
+
+"
+	end
+
+	classrelation 252418 // handle (<unidirectional association>)
+	  relation 252418 --->
+	    a role_name "handle" private
+	      comment " Upload handle. 
+"
+	      java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	      classrelation_ref 252418 // handle (<unidirectional association>)
+	    b parent class_ref 134658 // UploadHandle
+	end
+
+	attribute 270338 "ip"
+	  private explicit_type "InetAddress"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " IP address of host to download the package from. 
+"
+	end
+
+	attribute 270466 "port"
+	  private explicit_type "int"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " Port to download the package from. 
+"
+	end
+
+	operation 619266 "getHandle"
+	  public return_type class_ref 134658 // UploadHandle
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment " @return returns the handle "
+	end
+
+	operation 619394 "getIp"
+	  public explicit_return_type "InetAddress"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment " @return returns the IP addresss "
+	end
+
+	operation 619522 "getPort"
+	  public explicit_return_type "int"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment " @return returns the port "
+	end
+
+	operation 619650 "PackageUploadThread"
+	  public explicit_return_type ""
+	  nparams 3
+	    param inout name "handle" type class_ref 134658 // UploadHandle
+	    param inout name "ip" explicit_type "InetAddress"
+	    param in name "port" explicit_type "int"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Allocates a new <code>PackageUploadThread</code> object with specified
+parameters.
+
+@param handle upload handle
+@param ip IP address of host to download the package from
+@param port port to download the package from
+"
+	end
+
+	operation 619778 "setStatus"
+	  private explicit_return_type "void"
+	  nparams 1
+	    param inout name "status" type class_ref 134786 // UploadStatus
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Sets the upload status to given value.
+
+@param status upload status
+"
+	end
+
+	operation 619906 "setErrorMessages"
+	  private explicit_return_type "void"
+	  nparams 1
+	    param in name "errorMessages" explicit_type "String"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0}[] ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Sets the error messages.
+
+@param errorMessages error messages
+"
+	end
+
+	operation 620034 "uploadPackage"
+	  private explicit_return_type "void"
+	  nparams 1
+	    param inout name "file" explicit_type "File"
+	  nexceptions 1
+	    explicit_exception "IOException"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Uploads the package from the uploader to the specified file.
+
+@param file file to download
+@throws IOException if some I/O error occurs
+"
+	end
+
+	operation 620162 "deleteFileIfExists"
+	  private explicit_return_type "void"
+	  nparams 1
+	    param inout name "file" explicit_type "File"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Deletes specified file if it exists.
+
+@param file file to delete
+"
+	end
+
+	operation 620290 "createTempFile"
+	  private explicit_return_type "File"
+	  nparams 0
+	  nexceptions 1
+	    explicit_exception "IOException"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Creates teporary file in the <code>tmpDir</code> directory.
+
+@return the temporary file
+
+@throws IOException if the temporary file can not be created
+"
+	end
+
+	operation 620418 "run"
+	  public explicit_return_type "void"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Connects to given host and port, downloads the package file form there,
+validates its contents and adds the package into the Software Repository.
+
+@see java.lang.Runnable#run()
+"
+	end
+      end
+
+      class 196738 "PackageDownloadThread"
+	visibility private 
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	classrelation 252546 // <generalisation>
+	  relation 252546 ---|>
+	    a public
+	      java "${type}"
+	      classrelation_ref 252546 // <generalisation>
+	    b parent class_ref 151042 // Thread
+	end
+
+	classrelation 252674 // handle (<unidirectional association>)
+	  relation 252674 --->
+	    a role_name "handle" private
+	      comment " Download handle. 
+"
+	      java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	      classrelation_ref 252674 // handle (<unidirectional association>)
+	    b parent class_ref 149762 // DownloadHandle
+	end
+
+	attribute 270594 "filename"
+	  private explicit_type "String"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " Filename of the package. 
+"
+	end
+
+	attribute 270722 "ip"
+	  private explicit_type "InetAddress"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " IP of host to upload the package to. 
+"
+	end
+
+	attribute 270850 "port"
+	  private explicit_type "int"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " Port to upload the package to. 
+"
+	end
+
+	operation 620546 "getHandle"
+	  public return_type class_ref 149762 // DownloadHandle
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment " @return returns the download handle "
+	end
+
+	operation 620674 "getFilename"
+	  public explicit_return_type "String"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment " @return returns the filename "
+	end
+
+	operation 620802 "getIp"
+	  public explicit_return_type "InetAddress"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment " @return returns the IP address "
+	end
+
+	operation 620930 "getPort"
+	  public explicit_return_type "int"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment " @return returns the port "
+	end
+
+	operation 621058 "PackageDownloadThread"
+	  public explicit_return_type ""
+	  nparams 4
+	    param inout name "handle" type class_ref 149762 // DownloadHandle
+	    param in name "filename" explicit_type "String"
+	    param inout name "ip" explicit_type "InetAddress"
+	    param in name "port" explicit_type "int"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Allocates a new <code>PackageDownloadThread</code> object
+with specified parameters.
+
+@param handle download handle
+@param filename filename of the package
+@param ip IP address of host to download the package from
+@param port port to download the package from
+"
+	end
+
+	operation 621186 "setStatus"
+	  private explicit_return_type "void"
+	  nparams 1
+	    param inout name "status" type class_ref 149890 // DownloadStatus
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Sets the download status to given value.
+
+@param status download status
+"
+	end
+
+	operation 621314 "downloadPackage"
+	  private explicit_return_type "void"
+	  nparams 1
+	    param inout name "file" explicit_type "File"
+	  nexceptions 1
+	    explicit_exception "IOException"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Uploads the package to the downloader from the specified file.
+
+@param file file to upload
+@throws IOException if some I/O error occurs
+"
+	end
+
+	operation 621442 "run"
+	  public explicit_return_type "void"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  comment "
+Connects to given host and port and uploads the package file there.
+
+@see java.lang.Runnable#run()
+"
+	end
+      end
+
+      operation 621570 "beginPackageDownload"
+	public return_type class_ref 149762 // DownloadHandle
+	nparams 3
+	  param in name "filename" explicit_type "String"
+	  param inout name "ip" explicit_type "InetAddress"
+	  param in name "port" explicit_type "int"
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.softwarerepository.SoftwareRepositoryInterface#beginPackageDownload(java.lang.String, java.net.InetAddress, int)
+"
+      end
+
+      operation 621698 "getPackageDownloadStatus"
+	public return_type class_ref 149890 // DownloadStatus
+	nparams 1
+	  param inout name "handle" type class_ref 149762 // DownloadHandle
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.softwarerepository.SoftwareRepositoryInterface#getPackageDownloadStatus(cz.cuni.mff.been.common.DownloadHandle)
+"
+      end
+
+      operation 621826 "endPackageDownload"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "handle" type class_ref 149762 // DownloadHandle
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.softwarerepository.SoftwareRepositoryInterface#endPackageDownload(cz.cuni.mff.been.common.DownloadHandle)
+"
+      end
+
+      operation 621954 "beginPackageUpload"
+	public return_type class_ref 134658 // UploadHandle
+	nparams 2
+	  param inout name "ip" explicit_type "InetAddress"
+	  param in name "port" explicit_type "int"
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.softwarerepository.SoftwareRepositoryInterface#beginPackageUpload(java.net.InetAddress, int)
+"
+      end
+
+      operation 622082 "getPackageUploadStatus"
+	public return_type class_ref 134786 // UploadStatus
+	nparams 1
+	  param inout name "handle" type class_ref 134658 // UploadHandle
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.softwarerepository.SoftwareRepositoryInterface#getPackageUploadStatus(cz.cuni.mff.been.common.UploadHandle)
+"
+      end
+
+      operation 622210 "getRejectedPackageUploadErrorMessages"
+	public explicit_return_type "String"
+	nparams 1
+	  param inout name "handle" type class_ref 134658 // UploadHandle
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.softwarerepository.SoftwareRepositoryInterface#getRejectedPackageUploadErrorMessages(cz.cuni.mff.been.common.UploadHandle)
+"
+      end
+
+      operation 622338 "endPackageUpload"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "handle" type class_ref 134658 // UploadHandle
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.softwarerepository.SoftwareRepositoryInterface#endPackageUpload(cz.cuni.mff.been.common.UploadHandle)
+"
+      end
+
+      operation 622466 "deletePackage"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param in name "filename" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.softwarerepository.SoftwareRepositoryInterface#deletePackage(java.lang.String)
+"
+      end
+
+      operation 622594 "queryPackages"
+	public return_type class_ref 142850 // PackageMetadata
+	nparams 1
+	  param inout name "callback" type class_ref 182530 // PackageQueryCallbackInterface
+	nexceptions 2
+	  explicit_exception "RemoteException"
+	  exception class_ref 182658 // MatchException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " 
+@see cz.cuni.mff.been.softwarerepository.SoftwareRepositoryInterface#queryPackages(cz.cuni.mff.been.softwarerepository.PackageQueryCallbackInterface)
+"
+      end
+
+      operation 622722 "counterFileExists"
+	private explicit_return_type "boolean"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Determines whether the <code>COUNTER_FILE</code> exists.
+
+@return <code>true</code> if the file with autoincremented counter exists;
+         <code>false</code> otherwise
+"
+      end
+
+      operation 622850 "loadCounter"
+	private explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@SuppressWarnings(\"unchecked\")
+"
+	
+	
+	
+	comment "
+Loads autoincremented counter form the <code>COUNTER_FILE</code>.
+
+@throws IOException if some I/O error occurs
+"
+      end
+
+      operation 622978 "saveCounter"
+	private explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Saved autoincremented counter to the <code>COUNTER_FILE</code>. 
+
+@throws IOException if some I/O error occurs
+"
+      end
+    end
+
+    class 196866 "SoftwareRepositoryService"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+The Software Repository service class.
+
+@author David Majda
+"
+      classrelation 252802 // <generalisation>
+	relation 252802 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 252802 // <generalisation>
+	  b parent class_ref 136962 // Service
+      end
+
+      attribute 270978 "TEMP_DIR_PROPERTY"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"temp.dir\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 271106 "DATA_DIR_PROPERTY"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"data.dir\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 271234 "BEEN_HOME"
+	class_attribute const_attribute private explicit_type "String"
+	init_value "=  \"BEEN_HOME\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 271362 "SERVICE_NAME"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"softwarerepository\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Name of the service. 
+"
+      end
+
+      attribute 271490 "SERVICE_HUMAN_NAME"
+	class_attribute const_attribute public explicit_type "String"
+	init_value "=  \"Software Repository\""
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Human-readable name of the service (displayed in the web interface). 
+"
+      end
+
+      attribute 271618 "dataDirectory"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 271746 "tempDirectory"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 252930 // implementation (<unidirectional association>)
+	relation 252930 --->
+	  a role_name "implementation" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 252930 // implementation (<unidirectional association>)
+	  b parent class_ref 196482 // SoftwareRepositoryImplementation
+      end
+
+      operation 623106 "SoftwareRepositoryService"
+	public explicit_return_type ""
+	nparams 0
+	nexceptions 1
+	  exception class_ref 137218 // TaskInitializationException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>SoftwareRepositoryService</code> object.
+
+@throws TaskInitializationException if something fails during the service
+         creation
+"
+      end
+
+      operation 623234 "getName"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.task.Service#getName()
+"
+      end
+
+      operation 623362 "start"
+	protected explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  exception class_ref 137346 // TaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.task.Service#start()
+"
+      end
+
+      operation 623490 "stop"
+	protected explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  exception class_ref 137346 // TaskException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.task.Service#stop()
+"
+      end
+
+      operation 623618 "checkDirectory"
+	private explicit_return_type "void"
+	nparams 1
+	  param in name "directoryName" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 623746 "getAndCheckDirectories"
+	private explicit_return_type "void"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+    end
+
+    class 196994 "StringAttributeHelper"
+      visibility public 
+      nactuals 2
+      actual class class_ref 195202 // AttributeHelper
+        rank 0 explicit_value "string"
+      actual class class_ref 195202 // AttributeHelper
+        rank 1 explicit_value ""
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+String metadata attribute helper class.
+
+@author David Majda
+"
+      classrelation 253058 // <realization>
+	relation 253058 -_-|>
+	  stereotype "bind"
+	  a public
+	    java "${type}"
+	    classrelation_ref 253058 // <realization>
+	  b parent class_ref 195202 // AttributeHelper
+      end
+
+      classrelation 253186 // instance (<unidirectional association>)
+	relation 253186 --->
+	  a role_name "instance" class_relation private
+	    comment " Class instance (singleton pattern). 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 253186 // instance (<unidirectional association>)
+	  b parent class_ref 196994 // StringAttributeHelper
+      end
+
+      operation 623874 "StringAttributeHelper"
+	private explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>StringAttributeHelper</code> object. Construcor is private so only
+instance in <code>instance</code> field can be constructed (singleton
+pattern).
+"
+      end
+
+      operation 624002 "validateInXML"
+	public explicit_return_type "String"
+	nparams 1
+	  param inout name "element" explicit_type "Element"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.softwarerepository.AttributeHelper#validateInXML(org.w3c.dom.Element)
+"
+      end
+
+      operation 624130 "readValueFromElement"
+	public explicit_return_type "String"
+	nparams 1
+	  param inout name "element" explicit_type "Element"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.softwarerepository.AttributeHelper#readValueFromElement(org.w3c.dom.Element)
+"
+      end
+
+      operation 624258 "writeValueToElement"
+	public explicit_return_type "Element"
+	nparams 3
+	  param inout name "document" explicit_type "Document"
+	  param in name "tagName" explicit_type "String"
+	  param in name "value" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 624386 "getInstance"
+	class_operation public return_type class_ref 196994 // StringAttributeHelper
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns the only class instance (singleton pattern).
+
+@return class instance
+"
+      end
+    end
+
+    class 197122 "VersionAttributeHelper"
+      visibility public 
+      nactuals 2
+      actual class class_ref 195202 // AttributeHelper
+        rank 0 value class_ref 141442 // Version
+      actual class class_ref 195202 // AttributeHelper
+        rank 1 explicit_value ""
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Version metadata attribute helper class.
+
+@author David Majda
+"
+      classrelation 253314 // <realization>
+	relation 253314 -_-|>
+	  stereotype "bind"
+	  a public
+	    java "${type}"
+	    classrelation_ref 253314 // <realization>
+	  b parent class_ref 195202 // AttributeHelper
+      end
+
+      classrelation 253442 // instance (<unidirectional association>)
+	relation 253442 --->
+	  a role_name "instance" class_relation private
+	    comment " Class instance (singleton pattern). 
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 253442 // instance (<unidirectional association>)
+	  b parent class_ref 197122 // VersionAttributeHelper
+      end
+
+      operation 624514 "VersionAttributeHelper"
+	private explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>VersionAttributeHelper</code> object. Construcor is private so only
+instance in <code>instance</code> field can be constructed (singleton
+pattern).
+"
+      end
+
+      operation 624642 "validateInXML"
+	public explicit_return_type "String"
+	nparams 1
+	  param inout name "element" explicit_type "Element"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.softwarerepository.AttributeHelper#validateInXML(org.w3c.dom.Element)
+"
+      end
+
+      operation 624770 "readValueFromElement"
+	public return_type class_ref 141442 // Version
+	nparams 1
+	  param inout name "element" explicit_type "Element"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+@see cz.cuni.mff.been.softwarerepository.AttributeHelper#readValueFromElement(org.w3c.dom.Element)
+"
+      end
+
+      operation 624898 "writeValueToElement"
+	public explicit_return_type "Element"
+	nparams 3
+	  param inout name "document" explicit_type "Document"
+	  param in name "tagName" explicit_type "String"
+	  param inout name "value" type class_ref 141442 // Version
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 625026 "getInstance"
+	class_operation public return_type class_ref 197122 // VersionAttributeHelper
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Returns the only class instance (singleton pattern).
+
+@return class instance
+"
+      end
+    end
+
+    class 220546 "RSLPackageQueryCallbackTest"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 300802 // softwareRepository (<unidirectional association>)
+	relation 300802 --->
+	  a role_name "softwareRepository" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 300802 // softwareRepository (<unidirectional association>)
+	  b parent class_ref 196482 // SoftwareRepositoryImplementation
+      end
+
+      attribute 365314 "beenHome"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 365442 "matches"
+	private explicit_type "String, Integer"
+	stereotype "HashMap"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<${type}> ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      operation 867842 "setUp"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "Exception"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Before
+"
+	
+	
+	
+      end
+
+      operation 867970 "doMatchTest"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "matches" explicit_type "HashMap<String, Integer>"
+	nexceptions 2
+	  exception class_ref 182658 // MatchException
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 868098 "testName"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 2
+	  exception class_ref 182658 // MatchException
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 868226 "testVersion"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 2
+	  exception class_ref 182658 // MatchException
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 868354 "testHardwarePlatforms"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 2
+	  exception class_ref 182658 // MatchException
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 868482 "testSoftwarePlatforms"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 2
+	  exception class_ref 182658 // MatchException
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 868610 "testType"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 2
+	  exception class_ref 182658 // MatchException
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 868738 "testHumanName"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 2
+	  exception class_ref 182658 // MatchException
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 868866 "testDownloadURL"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 2
+	  exception class_ref 182658 // MatchException
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 868994 "testDownloadDate"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 2
+	  exception class_ref 182658 // MatchException
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 869122 "testSourcePackageFilename"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 2
+	  exception class_ref 182658 // MatchException
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 869250 "testBinaryIdentifier"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 2
+	  exception class_ref 182658 // MatchException
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 869378 "testBuildConfiguration"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 2
+	  exception class_ref 182658 // MatchException
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+    end
+
+    class 220674 "SoftwareRepositoryTest"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 300930 // softwareRepository (<unidirectional association>)
+	relation 300930 --->
+	  a role_name "softwareRepository" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 300930 // softwareRepository (<unidirectional association>)
+	  b parent class_ref 196482 // SoftwareRepositoryImplementation
+      end
+
+      attribute 365570 "beenHome"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      operation 869506 "setUp"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "Exception"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Before
+"
+	
+	
+	
+      end
+
+      operation 869634 "assertPackageAccepted"
+	private explicit_return_type "void"
+	nparams 1
+	  param in name "packageName" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 869762 "assertPackageRejected"
+	private explicit_return_type "void"
+	nparams 2
+	  param in name "packageName" explicit_type "String"
+	  param in name "errorMessages" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1}[] ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 869890 "testGeneralEmptyFile"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 870018 "testGeneralEmptyZipFile"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 870146 "testGeneralNoFiles"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 870274 "testGeneralFilesNotDir"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 870402 "testGeneralNoMetadata"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 870530 "testGeneralMetadataNotXML"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 870658 "testMetadataNoPackageElement"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 870786 "testMetadataEmptyPackageElement"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 870914 "testMetadataPackageElementWithUnrecognizedSubelement"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 871042 "testMetadataNoType"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 871170 "testMetadataInvalidType"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 871298 "testMetadataSourceMinimal"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 871426 "testMetadataSourceMoreHardwarePlatforms"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 871554 "testMetadataSourceMoreSoftwarePlatforms"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 871682 "testMetadataSourceAllOptionalElements"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 871810 "testMetadataSourceNoName"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 871938 "testMetadataSourceEmptyName"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 872066 "testMetadataSourceInvalidName"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 872194 "testMetadataSourceNoVersion"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 872322 "testMetadataSourceNoHumanName"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 872450 "testMetadataBinaryMinimal"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 872578 "testMetadataBinaryMorehardwarePlatforms"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 872706 "testMetadataBinaryMoreSoftwarePlatforms"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 872834 "testMetadataBinaryAllOptionalElements"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 872962 "testMetadataBinaryNoName"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 873090 "testMetadataBinaryEmptyName"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 873218 "testMetadataBinaryInvalidName"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 873346 "testMetadataBinaryNoVersion"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 873474 "testMetadataBinaryNoHumanName"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 873602 "testMetadataTaskMinimal"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 873730 "testMetadataTaskMoreHardwarePlatforms"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 873858 "testMetadataTaskMoreSoftwarePlatforms"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 873986 "testMetadataTaskAllOptionalElements"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 874114 "testMetadataTaskNoName"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 874242 "testMetadataTaskEmptyName"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 874370 "testMetadataTaskInvalidTaskName"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 874498 "testMetadataTaskNoVersion"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 874626 "testMetadataTaskNoHumanName"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 874754 "testMetadataDataMinimal"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 874882 "testMetadataDataMoreHardwarePlatforms"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 875010 "testMetadataDataMoreSoftwarePlatforms"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 875138 "testMetadataDataAlloptionalElements"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 875266 "testMetadataDataNoName"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 875394 "testMetadataDataEmptyName"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 875522 "testMetadataDataInvalidName"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 875650 "testMetadataDataNoVersion"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 875778 "testMetadataDataNoHumanName"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 875906 "testConfigTaskNoConfig"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 876034 "testConfigTaskConfigNotXML"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 876162 "testConfigTaskNoPackageConfigurationElement"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 876290 "testConfigTaskEmptyPackageConfigurationElement"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 876418 "testConfigTaskNoJavaElement"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 876546 "testConfigTaskNoClassPathAttribute"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+
+      operation 876674 "testConfigTaskNoMainClassAttribute"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+    end
+
+    class 220802 "Utils"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Little utility class for Software Repository tests.
+
+@author David Majda
+"
+      operation 876802 "Utils"
+	private explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      class 220930 "UploadResult"
+	visibility public 
+	cpp_decl ""
+	java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	classrelation 301058 // status (<unidirectional association>)
+	  relation 301058 --->
+	    a role_name "status" private
+	      java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	      classrelation_ref 301058 // status (<unidirectional association>)
+	    b parent class_ref 134786 // UploadStatus
+	end
+
+	attribute 365698 "errorMessages"
+	  private explicit_type "String"
+	  multiplicity "[]"
+	  cpp_decl ""
+	  java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	end
+
+	operation 876930 "getStatus"
+	  public return_type class_ref 134786 // UploadStatus
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 877058 "getErrorMessages"
+	  public explicit_return_type "String"
+	  nparams 0
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+
+	operation 877186 "UploadResult"
+	  public explicit_return_type ""
+	  nparams 2
+	    param inout name "status" type class_ref 134786 // UploadStatus
+	    param in name "errorMessages" explicit_type "String"
+	  
+	  preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1}[] ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	end
+      end
+
+      operation 877314 "setUpRepository"
+	class_operation public return_type class_ref 196482 // SoftwareRepositoryImplementation
+	nparams 1
+	  param in name "beenHome" explicit_type "String"
+	nexceptions 2
+	  explicit_exception "IOException"
+	  explicit_exception "ClassNotFoundException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Sets up the Software Repository.
+
+@param beenHome BEEN home diroectory 
+@return initialized Software Repository implementation
+@throws IOException if some error in file manipulation occurs
+@throws ClassNotFoundException when reading of the metadata index fails
+"
+      end
+
+      operation 877442 "uploadPackage"
+	class_operation public return_type class_ref 220930 // UploadResult
+	nparams 3
+	  param inout name "softwareRepository" type class_ref 196482 // SoftwareRepositoryImplementation
+	  param in name "packageName" explicit_type "String"
+	  param in name "beenHome" explicit_type "String"
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Uploads a testing package to the Software Repository. 
+
+@param softwareRepository Software Repository implementation
+@param packageName package name
+@param beenHome BEEN home directory
+@return upload result
+@throws IOException if I/O fails somewhere
+"
+      end
+    end
+
+    class 182658 "MatchException"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+Thrown when some error occurs when matching packages in the
+<code>PackageQueryCallbackInterface</code>.
+
+@author David Majda
+"
+      classrelation 248834 // <generalisation>
+	relation 248834 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 248834 // <generalisation>
+	  b parent class_ref 195714 // SoftwareRepositoryException
+      end
+
+      operation 610178 "MatchException"
+	public explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>MatchException</code> object.
+"
+      end
+
+      operation 610306 "MatchException"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "message" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>MatchException</code> object
+with specified message.
+
+@param message exception message
+"
+      end
+
+      operation 610434 "MatchException"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "cause" explicit_type "Throwable"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>MatchException</code> object
+with specified cause.
+
+@param cause exception cause
+"
+      end
+
+      operation 610562 "MatchException"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "message" explicit_type "String"
+	  param inout name "cause" explicit_type "Throwable"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>MatchException</code> object
+with specified message and cause.
+
+@param message exception message
+@param cause exception cause
+"
+      end
+    end
+
+    class 195714 "SoftwareRepositoryException"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+This class is a base class for all user exceptions thrown in Software Repository package.
+
+@author David Majda
+"
+      classrelation 248706 // <generalisation>
+	relation 248706 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 248706 // <generalisation>
+	  b parent class_ref 128130 // BeenException
+      end
+
+      operation 609666 "SoftwareRepositoryException"
+	public explicit_return_type ""
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>SoftwareRepositoryException</code> object.
+"
+      end
+
+      operation 609794 "SoftwareRepositoryException"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "message" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>SoftwareRepositoryException</code> object
+with specified message.
+
+@param message exception message
+"
+      end
+
+      operation 609922 "SoftwareRepositoryException"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "cause" explicit_type "Throwable"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>SoftwareRepositoryException</code> object
+with specified cause.
+
+@param cause exception cause
+"
+      end
+
+      operation 610050 "SoftwareRepositoryException"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "message" explicit_type "String"
+	  param inout name "cause" explicit_type "Throwable"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>SoftwareRepositoryException</code> object
+with specified message and cause.
+
+@param message exception message
+@param cause exception cause
+"
+      end
+    end
+
+    class 196226 "PackageUploadException"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+General exception for use in pacakge upload.
+
+@author David Majda
+"
+      classrelation 250626 // <generalisation>
+	relation 250626 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 250626 // <generalisation>
+	  b parent class_ref 195714 // SoftwareRepositoryException
+      end
+
+      attribute 268418 "errorMessages"
+	private explicit_type "String"
+	multiplicity "[]"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Detailed error messages describing the error in the package upload. 
+"
+      end
+
+      operation 614786 "getErrorMessages"
+	public explicit_return_type "String"
+	nparams 0
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " @return detailed error messages "
+      end
+
+      operation 614914 "PackageUploadException"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "message" explicit_type "String"
+	  param in name "errorMessages" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1}[] ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "
+Allocates a new <code>PackageUploadException</code> object
+with specified message and detailed error messages.
+
+@param message exception message
+@param errorMessages detailed error messages
+"
+      end
+    end
+
+    class 193160 "InputStreamInterface"
+      visibility public stereotype "interface"
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}interface ${name}${extends} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "A simple interface for input stream transporters that completely hides RMIIO.
+
+@author Andrej Podzimek"
+      classrelation 238344 // <generalisation>
+	relation 238344 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 238344 // <generalisation>
+	  b parent class_ref 148226 // Serializable
+      end
+
+      operation 535176 "getInputStream"
+	public explicit_return_type "InputStream"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "Input stream getter.
+
+@return An input stream which points at the remote stream server.
+@throws IOException When something bad happens."
+      end
+
+      operation 535304 "close"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "success" explicit_type "boolean"
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "Closes the underlying remote stream implementation.
+
+@param success The flag set by the remote stream.
+@throws IOException When closing fails."
+      end
+    end
+
+    class 193288 "InputStreamTransporter"
+      visibility public 
+      cpp_decl ""
+      final java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "This is a simple wrapper for the RMIIO library.
+
+@author Andrej Podzimek"
+      classrelation 238472 // <realization>
+	relation 238472 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 238472 // <realization>
+	  b parent class_ref 193160 // InputStreamInterface
+      end
+
+      attribute 281864 "serialVersionUID"
+	class_attribute const_attribute private explicit_type "long"
+	init_value " 8857452141714859386L"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 281992 "stream"
+	const_attribute package explicit_type "RemoteInputStream"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " The internal serializable stream instance. "
+      end
+
+      operation 535432 "InputStreamTransporter"
+	public explicit_return_type ""
+	nparams 2
+	  param inout name "stream" explicit_type "InputStream"
+	  param inout name "monitor" type class_ref 146952 // InputStreamEndMonitor
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "Initializes the new wrapper with the supplied input stream and stream monitor.
+
+@param stream The input stream to make available remotely.
+@param monitor The monitor used to track the activity of the stream.
+@throws RemoteException When it rains."
+      end
+
+      operation 535560 "getInputStream"
+	public explicit_return_type "InputStream"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "Input stream getter.
+
+@return An input stream which points at the remote stream server.
+@throws IOException When something bad happens."
+      end
+
+      operation 535688 "close"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "success" explicit_type "boolean"
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "Closes the underlying remote stream implementation.
+
+@param success The flag set by the remote stream.
+@throws IOException When closing fails."
+      end
+    end
+
+    class 193416 "OutputStreamInterface"
+      visibility public stereotype "interface"
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}interface ${name}${extends} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "A simple interface for output stream transporters that completely hides RMIIO.
+
+@author Andrej Podzimek"
+      classrelation 238600 // <generalisation>
+	relation 238600 ---|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 238600 // <generalisation>
+	  b parent class_ref 148226 // Serializable
+      end
+
+      operation 535816 "getOutputStream"
+	public explicit_return_type "OutputStream"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "Output stream getter.
+
+@return An output stream which points at the remote stream server.
+@throws IOException When something bad happens."
+      end
+
+      operation 535944 "close"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "success" explicit_type "boolean"
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "Closes the underlying remote stream implementation.
+
+@param success The flag set by the remote stream.
+@throws IOException When closing fails."
+      end
+    end
+
+    class 193544 "OutputStreamTransporter"
+      visibility public 
+      cpp_decl ""
+      final java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "This is a simple wrapper for the RMIIO library.
+
+@author Andrej Podzimek"
+      classrelation 238728 // <realization>
+	relation 238728 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 238728 // <realization>
+	  b parent class_ref 193416 // OutputStreamInterface
+      end
+
+      attribute 282120 "serialVersionUID"
+	class_attribute const_attribute private explicit_type "long"
+	init_value " -6119285612901988312L"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 282248 "stream"
+	const_attribute package explicit_type "RemoteOutputStream"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " The internal serializable stream instance. "
+      end
+
+      operation 536072 "OutputStreamTransporter"
+	public explicit_return_type ""
+	nparams 2
+	  param inout name "stream" explicit_type "OutputStream"
+	  param inout name "monitor" type class_ref 147336 // OutputStreamEndMonitor
+	nexceptions 1
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "Initializes the new wrapper with the supplied output stream and stream monitor.
+
+@param stream The output stream to make available remotely.
+@param monitor The monitor used to track the activity of the stream.
+@throws RemoteException When it rains."
+      end
+
+      operation 536200 "getOutputStream"
+	public explicit_return_type "OutputStream"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+      end
+
+      operation 536328 "close"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "success" explicit_type "boolean"
+	nexceptions 1
+	  explicit_exception "IOException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Override
+"
+	
+	
+	
+      end
+    end
+
+    class 193672 "ProvidedInterfaceQueryCallback"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "Callback interface to the Software Repository, which checks if the 
+pluggable module provides given interface.
+
+@author Jan Tattermusch"
+      classrelation 238856 // <realization>
+	relation 238856 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 238856 // <realization>
+	  b parent class_ref 182530 // PackageQueryCallbackInterface
+      end
+
+      classrelation 238984 // <realization>
+	relation 238984 -_-|>
+	  a public
+	    java "${type}"
+	    classrelation_ref 238984 // <realization>
+	  b parent class_ref 148226 // Serializable
+      end
+
+      attribute 282376 "serialVersionUID"
+	class_attribute const_attribute private explicit_type "long"
+	init_value " -5621054370095541670L"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 282504 "interfaceName"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Interface name to check. "
+      end
+
+      operation 536456 "ProvidedInterfaceQueryCallback"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "interfaceName" explicit_type "String"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${synchronized}${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "Allocates a new <code>ProvidedInterfaceQueryCallback</code> object.
+
+@param interfaceName fully classified name of interface name to be searched for"
+      end
+
+      operation 536584 "match"
+	public explicit_return_type "boolean"
+	nparams 1
+	  param inout name "metadata" type class_ref 142850 // PackageMetadata
+	nexceptions 1
+	  exception class_ref 182658 // MatchException
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment "@see cz.cuni.mff.been.softwarerepository.PackageQueryCallbackInterface#match(cz.cuni.mff.been.softwarerepository.PackageMetadata)"
+      end
+    end
+
+    class 206344 "ProvidedInterfaceQueryCallbackTest"
+      visibility public 
+      cpp_decl ""
+      java_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+
+ @author: Jiri Tauber"
+      classrelation 262280 // softwareRepository (<unidirectional association>)
+	relation 262280 --->
+	  a role_name "softwareRepository" private
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 262280 // softwareRepository (<unidirectional association>)
+	  b parent class_ref 196482 // SoftwareRepositoryImplementation
+      end
+
+      attribute 333832 "beenHome"
+	private explicit_type "String"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 333960 "matches"
+	private explicit_type "String, Integer"
+	stereotype "HashMap"
+	cpp_decl ""
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<${type}> ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      operation 627592 "setUp"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "Exception"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Before
+"
+	
+	
+	
+      end
+
+      operation 627720 "doMatchTest"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "matches" explicit_type "HashMap<String, Integer>"
+	nexceptions 2
+	  exception class_ref 182658 // MatchException
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      operation 627848 "testInterfaces"
+	public explicit_return_type "void"
+	nparams 0
+	nexceptions 2
+	  exception class_ref 182658 // MatchException
+	  explicit_exception "RemoteException"
+	
+	preserve_java_body_indent java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	java_annotation "@Test
+"
+	
+	
+	
+      end
+    end
+  end
+
+  deploymentview 130818 "softwarerepository"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+    artifact 163842 "PackageQueryCallbackInterface"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+${definition}"
+      associated_classes
+	class_ref 182530 // PackageQueryCallbackInterface
+      end
+    end
+
+    artifact 174978 "AttributeHelper"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+${definition}"
+      associated_classes
+	class_ref 195202 // AttributeHelper
+      end
+    end
+
+    artifact 175106 "ArrayListAttributeHelper"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.util.ArrayList;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+${definition}"
+      associated_classes
+	class_ref 195074 // ArrayListAttributeHelper
+      end
+    end
+
+    artifact 175234 "AttributeInfo"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.lang.reflect.Method;
+import java.util.EnumSet;
+${definition}"
+      associated_classes
+	class_ref 195330 // AttributeInfo
+      end
+    end
+
+    artifact 175362 "DateAttributeHelper"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+${definition}"
+      associated_classes
+	class_ref 195458 // DateAttributeHelper
+      end
+    end
+
+    artifact 175490 "ElementAttributeHelper"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+${definition}"
+      associated_classes
+	class_ref 195586 // ElementAttributeHelper
+      end
+    end
+
+    artifact 175618 "SoftwareRepositoryException"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import cz.cuni.mff.been.common.BeenException;
+${definition}"
+      associated_classes
+	class_ref 195714 // SoftwareRepositoryException
+      end
+    end
+
+    artifact 175746 "MatchException"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+${definition}"
+      associated_classes
+	class_ref 182658 // MatchException
+      end
+    end
+
+    artifact 175874 "PackageMetadata"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.File;
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.EnumSet;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import cz.cuni.mff.been.common.Version;
+${definition}"
+      associated_classes
+	class_ref 142850 // PackageMetadata
+      end
+    end
+
+    artifact 176002 "PackageMetadataPropertyRoot"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
+import cz.cuni.mff.been.common.rsl.ContainerProperty;
+import cz.cuni.mff.been.common.rsl.Property;
+import cz.cuni.mff.been.common.rsl.SimpleProperty;
+${definition}"
+      associated_classes
+	class_ref 195842 // PackageMetadataPropertyRoot
+      end
+    end
+
+    artifact 176130 "PackageType"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.Serializable;
+${definition}"
+      associated_classes
+	class_ref 145538 // PackageType
+      end
+    end
+
+    artifact 176258 "PackageTypeAttributeHelper"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+${definition}"
+      associated_classes
+	class_ref 196098 // PackageTypeAttributeHelper
+      end
+    end
+
+    artifact 176386 "PackageUploadException"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+${definition}"
+      associated_classes
+	class_ref 196226 // PackageUploadException
+      end
+    end
+
+    artifact 176514 "RSLPackageQueryCallback"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.Serializable;
+import cz.cuni.mff.been.common.rsl.Condition;
+import cz.cuni.mff.been.common.rsl.ContainerProperty;
+import cz.cuni.mff.been.common.rsl.ParseException;
+import cz.cuni.mff.been.common.rsl.ParserWrapper;
+import cz.cuni.mff.been.common.rsl.RSLSemanticException;
+${definition}"
+      associated_classes
+	class_ref 196354 // RSLPackageQueryCallback
+      end
+    end
+
+    artifact 176642 "SoftwareRepositoryInterface"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.net.InetAddress;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import cz.cuni.mff.been.common.DownloadHandle;
+import cz.cuni.mff.been.common.DownloadStatus;
+import cz.cuni.mff.been.common.UploadHandle;
+import cz.cuni.mff.been.common.UploadStatus;
+${definition}"
+      associated_classes
+	class_ref 142594 // SoftwareRepositoryInterface
+      end
+    end
+
+    artifact 176770 "SoftwareRepositoryImplementation"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.FactoryConfigurationError;
+import javax.xml.parsers.ParserConfigurationException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+import cz.cuni.mff.been.common.DownloadHandle;
+import cz.cuni.mff.been.common.DownloadStatus;
+import cz.cuni.mff.been.common.UploadHandle;
+import cz.cuni.mff.been.common.UploadStatus;
+import cz.cuni.mff.been.common.Version;
+import cz.cuni.mff.been.task.Task;
+${definition}"
+      associated_classes
+	class_ref 196482 // SoftwareRepositoryImplementation
+      end
+    end
+
+    artifact 176898 "SoftwareRepositoryService"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.File;
+import java.io.IOException;
+import java.rmi.RemoteException;
+import cz.cuni.mff.been.task.Service;
+import cz.cuni.mff.been.task.TaskException;
+import cz.cuni.mff.been.task.TaskInitializationException;
+${definition}"
+      associated_classes
+	class_ref 196866 // SoftwareRepositoryService
+      end
+    end
+
+    artifact 177026 "StringAttributeHelper"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+${definition}"
+      associated_classes
+	class_ref 196994 // StringAttributeHelper
+      end
+    end
+
+    artifact 177154 "VersionAttributeHelper"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import cz.cuni.mff.been.common.Version;
+${definition}"
+      associated_classes
+	class_ref 197122 // VersionAttributeHelper
+      end
+    end
+
+    artifact 198786 "RSLPackageQueryCallbackTest"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.rmi.RemoteException;
+import java.util.HashMap;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.assertTrue;
+${definition}"
+      associated_classes
+	class_ref 220546 // RSLPackageQueryCallbackTest
+      end
+    end
+
+    artifact 198914 "SoftwareRepositoryTest"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.IOException;
+import java.util.Arrays;
+import org.junit.Before;
+import org.junit.Test;
+import cz.cuni.mff.been.common.UploadStatus;
+import cz.cuni.mff.been.softwarerepository.Utils.UploadResult;
+import static org.junit.Assert.assertTrue;
+${definition}"
+      associated_classes
+	class_ref 220674 // SoftwareRepositoryTest
+      end
+    end
+
+    artifact 199042 "Utils"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import cz.cuni.mff.been.common.UploadHandle;
+import cz.cuni.mff.been.common.UploadStatus;
+${definition}"
+      associated_classes
+	class_ref 220802 // Utils
+      end
+    end
+
+    artifact 181256 "InputStreamInterface"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+${definition}"
+      associated_classes
+	class_ref 193160 // InputStreamInterface
+      end
+    end
+
+    artifact 181384 "InputStreamTransporter"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.IOException;
+import java.io.InputStream;
+import java.rmi.RemoteException;
+import com.healthmarketscience.rmiio.RemoteInputStream;
+import com.healthmarketscience.rmiio.RemoteInputStreamClient;
+import com.healthmarketscience.rmiio.SimpleRemoteInputStream;
+import cz.cuni.mff.been.clinterface.adapters.InputStreamEndMonitor;
+${definition}"
+      associated_classes
+	class_ref 193288 // InputStreamTransporter
+      end
+    end
+
+    artifact 181512 "OutputStreamInterface"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Serializable;
+${definition}"
+      associated_classes
+	class_ref 193416 // OutputStreamInterface
+      end
+    end
+
+    artifact 181640 "OutputStreamTransporter"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.IOException;
+import java.io.OutputStream;
+import java.rmi.RemoteException;
+import com.healthmarketscience.rmiio.RemoteOutputStream;
+import com.healthmarketscience.rmiio.RemoteOutputStreamClient;
+import com.healthmarketscience.rmiio.SimpleRemoteOutputStream;
+import cz.cuni.mff.been.clinterface.adapters.OutputStreamEndMonitor;
+${definition}"
+      associated_classes
+	class_ref 193544 // OutputStreamTransporter
+      end
+    end
+
+    artifact 181768 "ProvidedInterfaceQueryCallback"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.io.Serializable;
+${definition}"
+      associated_classes
+	class_ref 193672 // ProvidedInterfaceQueryCallback
+      end
+    end
+
+    artifact 192776 "ProvidedInterfaceQueryCallbackTest"
+      stereotype "source"
+      java_src "${comment}
+${package}
+${imports}
+import java.rmi.RemoteException;
+import java.util.HashMap;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.assertTrue;
+${definition}"
+      associated_classes
+	class_ref 206344 // ProvidedInterfaceQueryCallbackTest
+      end
+      comment " BEEN: Benchmarking Environment
+ ==============================
+
+ File author: Jiri Tauber
+
+ GNU Lesser General Public License Version 2.1
+ ---------------------------------------------
+ Copyright (C) 2004-2006 Distributed Systems Research Group,
+ Faculty of Mathematics and Physics, Charles University in Prague
+
+ This library is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public
+ License version 2.1, as published by the Free Software Foundation.
+
+ This library is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this library; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+ MA  02111-1307  USA"
+    end
+  end
+end

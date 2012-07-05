@@ -1,0 +1,73 @@
+class CheckPointEntry
+!!!701442.java!!!	CheckPointEntry()
+		this.currentTimeMillis = System.currentTimeMillis();
+!!!701570.java!!!	CheckPointEntry(in name : String, in taskId : String, in contextId : String, in hostName : String, inout magicObject : Serializable)
+		this.currentTimeMillis = System.currentTimeMillis();
+		
+		/* Inicialization of following (protected write access) variables with
+		 * default values:
+		 * 	timeReached.
+		 */
+		this.initInternals(0);
+		
+		/* Inicialization of variables with public write access. */
+		this.setName(name);
+		this.setTaskId(taskId);
+		this.setContextId(contextId);
+		this.setHostName(hostName);
+		this.setMagicObject(magicObject);
+!!!701698.java!!!	initInternals(in timeReached : long) : void
+		this.setTimeReached(timeReached);
+!!!701826.java!!!	setTimeReached(in timeReached : long) : void
+		this.timeReached = timeReached;
+!!!701954.java!!!	setName(in type : String) : void
+		if (Pattern.matches(REGEXP_NAME, type)) {
+			this.name = type;
+		} else {
+			throw new IllegalArgumentException("type is not valid");
+		}
+!!!702082.java!!!	setTaskId(in taskId : String) : void
+		if (Pattern.matches(REGEXP_TASK_ID, taskId)) {
+			this.taskId = taskId;
+		} else {
+			throw new IllegalArgumentException("taskId is not valid");
+		}
+!!!702210.java!!!	setContextId(in contextId : String) : void
+		if (Pattern.matches(REGEXP_CONTEXT_ID, contextId)) {
+			this.contextId = contextId;
+		} else {
+			throw new IllegalArgumentException("contextId is not valid");
+		}
+!!!702338.java!!!	setHostName(in hostName : String) : void
+		if (Pattern.matches(REGEXP_HOST_NAME, hostName)) {
+			this.hostName = hostName;
+		} else {
+			throw new IllegalArgumentException("hostName is not valid");
+		}
+!!!702466.java!!!	setMagicObject(inout magicObject : Serializable) : void
+		this.magicObject = magicObject;
+!!!702594.java!!!	getCurentTime() : long
+		return this.currentTimeMillis;
+!!!702722.java!!!	getTimeReached() : long
+		return this.timeReached;
+!!!702850.java!!!	getName() : String
+		return this.name;
+!!!702978.java!!!	getTaskId() : String
+		return this.taskId;
+!!!703106.java!!!	getContextId() : String
+		return this.contextId;
+!!!703234.java!!!	getHostName() : String
+		return this.hostName;
+!!!703362.java!!!	getMagicObject() : Serializable
+		return this.magicObject;
+!!!703490.java!!!	clone() : CheckPointEntry
+		CheckPointEntry checkPointEntry = (CheckPointEntry) super.clone();
+		
+		/* Set current time. */
+		checkPointEntry.currentTimeMillis = System.currentTimeMillis();
+		
+		/* Clone magicObject. */
+		checkPointEntry.setMagicObject(
+				CloneSerializable.cloneSerializable(this.magicObject));
+		
+		return checkPointEntry;

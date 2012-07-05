@@ -1,0 +1,11 @@
+class TaskItem
+!!!186882.java!!!	TaskItem(inout descriptor : TaskDescriptor)
+			this.descriptor = descriptor;
+!!!187010.java!!!	getDescriptor() : TaskDescriptor
+			return descriptor;
+!!!187138.java!!!	getStatus() : EntityStatus
+			return status;
+!!!187266.java!!!	setStatus(inout status : EntityStatus) : void
+			this.status = status;
+!!!187394.java!!!	toString() : String
+			return descriptor.getTaskTid() + "=" + status;

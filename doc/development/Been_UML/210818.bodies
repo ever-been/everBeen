@@ -1,0 +1,115 @@
+class RSLValidator
+!!!750338.java!!!	formatCode(in rsl : String, inout errorToken : Token, in maxExpectedTokenCount : int) : String
+		/* Compute begin and end columns.
+		 * 
+		 * Note columns in the tokens are 1-based, but sometimes
+		 * Token.beginColumn is 0 (e.g. when empty RSL string is entered). We
+		 * must handle it.
+		 * 
+		 * Our beginColumn and endColumn variables are 0-based and endColumn
+		 * actually points *after* the token, so it can passed to
+		 * String.substring easily.  
+		 */
+		int beginColumn = errorToken.beginColumn > 0
+			? errorToken.beginColumn - 1
+			: 0;
+		int endColumn = errorToken.endColumn;
+		
+    Token t = errorToken;
+    for (int i = 0; i < maxExpectedTokenCount; i++) {
+    	endColumn = t.endColumn;
+      if (t.kind == TOKEN_KIND_EOF) {
+        break;
+      }
+    }
+
+		String result = "";
+		
+    /* Format the code. */
+		result += "<pre>";
+		result += "  " + Routines.htmlspecialchars(
+			rsl.substring(0, beginColumn)
+		);
+		result += "<span style='background-color: #C07E00'>"
+			+ Routines.htmlspecialchars(
+				rsl.substring(beginColumn, endColumn)
+			)
+			+ "</span>";
+		result += Routines.htmlspecialchars(
+			rsl.substring(endColumn, rsl.length())
+		);
+		result += "</pre>";
+		
+		return result;
+!!!750466.java!!!	formatEncounteredTokens(inout e : cz.cuni.mff.been.common.rsl.ParseException, inout errorToken : Token, in maxExpectedTokenCount : int) : String
+		String result = "";
+    
+		Token t = errorToken;
+    for (int i = 0; i < maxExpectedTokenCount; i++) {
+      if (i != 0) {
+      	result += " ";
+      }
+      if (t.kind == TOKEN_KIND_EOF) {
+      	result += e.tokenImage[TOKEN_KIND_EOF];
+        break;
+      }
+      result += Routines.htmlspecialchars(t.image);
+      t = t.next; 
+    }
+		
+    return result;
+!!!750594.java!!!	formatExpectedTokens(inout e : cz.cuni.mff.been.common.rsl.ParseException) : String
+		String result = "";
+		
+		for (int i = 0; i < e.expectedTokenSequences.length; i++) {
+    	if (i != 0) {
+    		result += " or ";
+    	}
+      for (int j = 0; j < e.expectedTokenSequences[i].length; j++) {
+        result += e.tokenImage[e.expectedTokenSequences[i][j]] + " ";
+      }
+      if (e.expectedTokenSequences[i][e.expectedTokenSequences[i].length - 1]
+          != TOKEN_KIND_EOF) {
+        result += "...";
+      }
+    }
+		
+		return result;
+!!!750722.java!!!	formatParseExceptionMessage(in rsl : String, inout e : cz.cuni.mff.been.common.rsl.ParseException) : String
+		String result = "";
+		Token errorToken = e.currentToken.next;
+		
+		/* Error location. */
+		result += "RSL syntax error at column " + errorToken.beginColumn + ":";
+		
+		/* Compute maximum size of the expected token chain. */
+    int maxExpectedTokenCount = 0;
+    for (int i = 0; i < e.expectedTokenSequences.length; i++) {
+      if (maxExpectedTokenCount < e.expectedTokenSequences[i].length) {
+      	maxExpectedTokenCount = e.expectedTokenSequences[i].length;
+      }
+    }
+		
+		/* Code with marked-up error token. */
+		result += formatCode(rsl, errorToken, maxExpectedTokenCount);
+		
+		/* What we encountered. */
+		result += "Encountered \""
+			+ formatEncounteredTokens(e, errorToken, maxExpectedTokenCount)
+			+ "\", ";
+		
+		/* What we expected. */
+    result += "expected " + formatExpectedTokens(e);
+		
+		return result;
+!!!750850.java!!!	validate(in rsl : String) : String
+		String result = null;
+		try {
+			ParserWrapper.parseString(rsl);
+		/* For some reason, Tomcat reports "Unresolved compilation problems" when
+		 * PackageException is used in unqualified form (without the package name).
+		 */
+		} catch (cz.cuni.mff.been.common.rsl.ParseException e) {
+			result = formatParseExceptionMessage(rsl, e);
+		}
+		return result;

@@ -1,0 +1,85 @@
+class ResultsRepositoryService
+!!!570754.java!!!	ResultsRepositoryService()
+		/* Check all necessary running directories */
+		getAndCheckDirectories();
+		
+		/* Create the results repository instance. */
+		createInstance();
+		
+		/* Bind the results repository interfaces to RMI URLs*/
+		addRemoteInterface(cz.cuni.mff.been.resultsrepository.gui.ResultsRepositoryInterface.RMI_NAME, 
+				(cz.cuni.mff.been.resultsrepository.gui.ResultsRepositoryInterface) resultsRepositoryInstance);
+		addRemoteInterface(ResultsRepositoryInterface.RMI_NAME, 
+				(ResultsRepositoryInterface) resultsRepositoryInstance);
+		addRemoteInterface(cz.cuni.mff.been.resultsrepository.ResultsRepositoryDebugInterface.RMI_NAME, 
+				(cz.cuni.mff.been.resultsrepository.ResultsRepositoryDebugInterface) resultsRepositoryInstance);
+		
+		/* Everything is OK */
+		logInfo("Results repository is up and running.");
+	
+!!!570882.java!!!	checkDirectory(in directoryName : String) : void
+		
+		File directory = new File(directoryName);
+		
+		if (!directory.exists()) {
+			logFatal(directory + " does not exist.");
+			System.exit(Task.EXIT_CODE_ERROR);
+		}
+		if (!directory.isDirectory()) {
+			logFatal(directory + " is not directory.");
+			System.exit(Task.EXIT_CODE_ERROR);
+		}
+		if (!directory.canWrite()) {
+			logFatal(directory + " is not writable.");
+			System.exit(Task.EXIT_CODE_ERROR);
+		}
+		
+!!!571010.java!!!	getAndCheckDirectories() : void
+		
+		String beenHome;
+		
+		/* Ensure BEEN_HOME environment variable exists */
+		if ((beenHome = System.getenv("BEEN_HOME")) == null) {
+			logFatal("Environment variable BEEN_HOME not defined.");
+			System.exit(EXIT_CODE_ERROR);
+		}
+		
+		/* Check whether this directory exists */
+		checkDirectory(beenHome);
+				
+		/* Set up and check results repository database directory */
+		if (getTaskProperty(DBASE_DIRECTORY) == null) {
+			dbaseDirectory = getWorkingDirectory();
+		} else {
+			dbaseDirectory = beenHome + File.separatorChar 
+				+ getTaskProperty(DBASE_DIRECTORY);
+		}
+				
+		checkDirectory(dbaseDirectory);
+		
+		tempDirectory = getTempDirectory();
+		checkDirectory(tempDirectory);
+		
+!!!571138.java!!!	createInstance() : void
+		
+		resultsRepositoryInstance = null;
+		try {
+			resultsRepositoryInstance = ResultsRepositoryImplementation.getInstance();
+		} catch (IOException e) {
+			logFatal("I/O error occuerd: " + e.getMessage());
+			throw new TaskInitializationException(e);
+		}
+!!!571266.java!!!	getName() : String
+		return SERVICE_NAME;
+!!!571394.java!!!	start() : void
+
+		try {
+			tryCopyExampleData();
+			/* NOTE: copies all package data, not just exampleData as name denotes */
+		} catch (IOException e) {
+			throw new TaskException(e);
+		}		
+		
+		resultsRepositoryInstance.initialize(dbaseDirectory, tempDirectory);
+!!!571522.java!!!	stop() : void
+	    ResultsRepositoryImplementation.shutdown();

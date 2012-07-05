@@ -1,0 +1,37 @@
+class AnalysisMetadata
+!!!144770.java!!!	AnalysisMetadata(inout id : AID)
+		this.id = id;
+!!!144898.java!!!	getID() : AID
+		return id;
+!!!145026.java!!!	getDescription() : String
+		return description;
+!!!145154.java!!!	getName() : String
+		return name;
+!!!145282.java!!!	setDescription(in description : String) : void
+		this.description = description;
+!!!145410.java!!!	setName(in name : String) : void
+		assert name != null && name.length() > 0 : "Analysis name must be non-empty";
+		this.name = name;
+!!!145538.java!!!	toString() : String
+		return "AnalysisMetadata(" + id +	"," + name + ")";
+!!!145666.java!!!	isRegression() : boolean
+		return false;
+!!!145794.java!!!	addExperiment(inout experiment : ExperimentMetadata) : void
+		experiments.add(experiment);
+!!!145922.java!!!	removeExperiment(inout experiment : ExperimentMetadata) : void
+		experiments.remove(experiment);
+!!!146050.java!!!	getExperiments() : ExperimentMetadata
+		return experiments.toArray(new ExperimentMetadata[experiments.size()]);
+!!!146178.java!!!	getExperiment(inout eid : EID) : ExperimentMetadata
+		return (ExperimentMetadata) experiments.findByID(eid);
+!!!146306.java!!!	getStatus() : EntityStatus
+		for (ExperimentMetadata experiment : getExperiments()) {
+			if (experiment.getStatus(experiment.getID()) == EntityStatus.RUNNING) {
+				return EntityStatus.RUNNING;
+			}
+		}
+		
+		return EntityStatus.FINISHED;
+!!!146434.java!!!	readObject(inout is : ObjectInputStream) : void
+		is.defaultReadObject();
+		this.experiments = new IdentifiableList<EID>();

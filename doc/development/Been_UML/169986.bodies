@@ -1,0 +1,70 @@
+class Memory
+!!!370690.java!!!	Memory(in physicalMemorySize : long, in virtualSize : long, in swapSize : long, in pagingFilesSize : long)
+		
+		super(HostInfoInterface.Objects.MEMORY, null);
+		
+		this.physicalSize = physicalMemorySize;
+		this.virtualSize = virtualSize;
+		this.swapSize = swapSize;
+		this.pagingSize = pagingFilesSize;
+		
+		try {
+			putProperty(Properties.PHYSICAL_MEMORY_SIZE, new ValueInteger(this.physicalSize, "B"));
+			putProperty(Properties.VIRTUAL_MEMORY_SIZE, new ValueInteger(this.virtualSize, "B"));
+			putProperty(Properties.SWAP_SIZE, new ValueInteger(this.swapSize, "B"));
+			putProperty(Properties.PAGING_FILE_SIZE, new ValueInteger(this.pagingSize, "B"));
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+			assert false : "Unable to add properties to Memory.";
+		}
+!!!370818.java!!!	Memory(inout memoryNode : Node)
+		
+		super(HostInfoInterface.Objects.MEMORY, null);
+
+		parseXMLNode(memoryNode);
+!!!370946.java!!!	parseXMLNode(inout node : Node) : void
+
+		physicalSize = Long.valueOf(XMLHelper.getSubNodeValueByName("physicalMemorySize", node)).longValue();
+		virtualSize = Long.valueOf(XMLHelper.getSubNodeValueByName("virtualMemorySize", node)).longValue();
+		swapSize = Long.valueOf(XMLHelper.getSubNodeValueByName("swapSize", node)).longValue();
+		pagingSize = Long.valueOf(XMLHelper.getSubNodeValueByName("pagingFileSize", node)).longValue();
+
+		try {
+			putProperty(Properties.PHYSICAL_MEMORY_SIZE, new ValueInteger(physicalSize, "B"));
+			putProperty(Properties.VIRTUAL_MEMORY_SIZE, new ValueInteger(virtualSize, "B"));
+			putProperty(Properties.SWAP_SIZE, new ValueInteger(swapSize, "B"));
+			putProperty(Properties.PAGING_FILE_SIZE, new ValueInteger(pagingSize, "B"));
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+			assert false : "Unable to add properties to Memory.";
+		}
+!!!371074.java!!!	getPhysicalMemorySize() : long
+		
+		return physicalSize;
+!!!371202.java!!!	getVirtualMemorySize() : long
+		
+		return virtualSize;
+!!!371330.java!!!	getSwapSize() : long
+		
+		return swapSize;
+!!!371458.java!!!	getPagingSize() : long
+		
+		return pagingSize;
+!!!371586.java!!!	exportAsElement(inout document : Document) : Element
+		
+		Element memoryElement = document.createElement("memory");
+		
+		memoryElement.appendChild(XMLHelper.writeValueToElement(document, physicalSize, "physicalMemorySize"));
+		memoryElement.appendChild(XMLHelper.writeValueToElement(document, virtualSize, "virtualMemorySize"));
+		memoryElement.appendChild(XMLHelper.writeValueToElement(document, swapSize, "swapSize"));
+		memoryElement.appendChild(XMLHelper.writeValueToElement(document, pagingSize, "pagingFileSize"));
+		
+		return memoryElement;
+!!!371714.java!!!	toString() : String
+		
+		return "Memory{" + (physicalSize / 1048576) + " MB}";
+!!!371842.java!!!	getXMLNodeName() : String
+		
+		return "memory";
