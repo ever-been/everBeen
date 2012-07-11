@@ -49,82 +49,38 @@
 			<param-value>WEB-INF/work</param-value>
 		</init-param>
 	</servlet>
-
-	<!-- This directive is copied (and slightly modified) from Tomcat's main
-	     web.xml file. I don't know why the original directive doesn't work
-	     here. -->
-	<servlet>
-		<servlet-name>static</servlet-name>
-		<servlet-class>org.apache.catalina.servlets.DefaultServlet</servlet-class>
-		<init-param>
-			<param-name>debug</param-name>
-			<param-value>0</param-value>
-		</init-param>
-		<init-param>
-			<param-name>listings</param-name>
-			<param-value>true</param-value>
-		</init-param>
-		<init-param>
-			<param-name>work-directory</param-name>
-			<param-value>WEB-INF/work</param-value>
-		</init-param>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-
+	
 	<!-- ========== Mappings ========== -->
-
-	<!-- Statically-served directories & files -->
-
-	<servlet-mapping>
-		<servlet-name>static</servlet-name>
-		<url-pattern>*.gif</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>static</servlet-name>
-		<url-pattern>*.png</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>static</servlet-name>
-		<url-pattern>*.ico</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>static</servlet-name>
-		<url-pattern>*.html</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>static</servlet-name>
-		<url-pattern>*.css</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>static</servlet-name>
-		<url-pattern>*.js</url-pattern>
-	</servlet-mapping>
-
-	<!-- Web interface servlet -->
-
-	<servlet-mapping>
-		<servlet-name>beenWebInterface</servlet-name>
-		<url-pattern>/</url-pattern>
-	</servlet-mapping>
 
 	<!-- JSP-served directories & files -->
 
 	<servlet-mapping>
 		<servlet-name>jsp</servlet-name>
 		<url-pattern>/templates/*</url-pattern>
-		<init-param>
-			<param-name>compilerSourceVM</param-name>
-			<param-value>1.6</param-value>
-		</init-param>
-		<init-param>
-			<param-name>compilerTargetVM</param-name>
-			<param-value>1.6</param-value>
-		</init-param>
+	</servlet-mapping>
+	
+	<!-- Statically-served resources -->
+
+	<servlet-mapping>
+		<servlet-name>default</servlet-name>
+		<url-pattern>/styles/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>default</servlet-name>
+		<url-pattern>/scripts/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>default</servlet-name>
+		<url-pattern>/img/*</url-pattern>
 	</servlet-mapping>
 
+	<!-- Web interface servlet -->
+	
+	<servlet-mapping>
+		<servlet-name>beenWebInterface</servlet-name>
+		<url-pattern>/*</url-pattern>
+	</servlet-mapping>
+	
 </web-app>
