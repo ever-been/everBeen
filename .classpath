@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="been/src"/>
+	<classpathentry kind="src" path="third_party/seznam.cz/src"/>
+	<classpathentry kind="src" path="been/mock"/>
+	<classpathentry kind="src" path="been/spy"/>
+	<classpathentry kind="src" path="been/tests"/>
+	<classpathentry kind="lib" path="been/lib/jaxb/jaxb-api.jar" sourcepath="been/lib/jaxb/jaxb-api-src.zip"/>
+	<classpathentry kind="lib" path="been/lib/jaxb/jaxb-impl.jar" sourcepath="been/lib/jaxb/jaxb-impl.src.zip"/>
+	<classpathentry kind="lib" path="been/lib/jaxb/jaxb-xjc.jar" sourcepath="been/lib/jaxb/jaxb-xjc.src.zip"/>
+	<classpathentry kind="lib" path="been/lib/jaxb/jaxb1-impl.jar" sourcepath="been/lib/jaxb/jaxb1-impl-src.zip"/>
+	<classpathentry kind="lib" path="been/lib/jpda/tools.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="been/lib/ant/ant.jar"/>
+	<classpathentry kind="lib" path="been/lib/examples/hello.jar"/>
+	<classpathentry kind="lib" path="been/lib/javasvn/javasvn.jar"/>
+	<classpathentry kind="lib" path="been/lib/jython/jython.jar"/>
+	<classpathentry kind="lib" path="been/lib/log4j/log4j-1.2.12.jar"/>
+	<classpathentry kind="lib" path="been/lib/sjava/antlr.jar"/>
+	<classpathentry kind="lib" path="been/lib/sjava/jas.jar"/>
+	<classpathentry kind="lib" path="been/lib/sjava/jhall.jar"/>
+	<classpathentry kind="lib" path="been/lib/webinterface/jsp-api.jar"/>
+	<classpathentry kind="lib" path="been/lib/webinterface/servlet-api.jar"/>
+	<classpathentry kind="lib" path="been/lib/jaxb/activation.jar"/>
+	<classpathentry kind="lib" path="been/lib/jaxb/jsr173_1.0_api.jar"/>
+	<classpathentry kind="lib" path="been/lib/hibernate/antlr.jar"/>
+	<classpathentry kind="lib" path="been/lib/hibernate/asm-attrs.jar"/>
+	<classpathentry kind="lib" path="been/lib/hibernate/asm.jar"/>
+	<classpathentry kind="lib" path="been/lib/hibernate/cglib.jar"/>
+	<classpathentry kind="lib" path="been/lib/hibernate/commons-collections.jar"/>
+	<classpathentry kind="lib" path="been/lib/hibernate/dom4j.jar"/>
+	<classpathentry kind="lib" path="been/lib/hibernate/ehcache.jar"/>
+	<classpathentry kind="lib" path="been/lib/hibernate/ejb3-persistence.jar"/>
+	<classpathentry kind="lib" path="been/lib/hibernate/hibernate-annotations.jar"/>
+	<classpathentry kind="lib" path="been/lib/hibernate/hibernate-commons-annotations.jar"/>
+	<classpathentry kind="lib" path="been/lib/hibernate/hibernate-entitymanager.jar"/>
+	<classpathentry kind="lib" path="been/lib/hibernate/hibernate-tools.jar"/>
+	<classpathentry kind="lib" path="been/lib/hibernate/hibernate3.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="https://www.hibernate.org/hib_docs/v3/api/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="been/lib/hibernate/javassist.jar"/>
+	<classpathentry kind="lib" path="been/lib/hibernate/jdbc2_0-stdext.jar"/>
+	<classpathentry kind="lib" path="been/lib/hibernate/jta.jar"/>
+	<classpathentry kind="lib" path="been/lib/derby/derby.jar"/>
+	<classpathentry kind="lib" path="been/lib/derby/derbyclient.jar"/>
+	<classpathentry kind="lib" path="been/lib/derby/derbynet.jar"/>
+	<classpathentry kind="lib" path="been/lib/derby/derbytools.jar"/>
+	<classpathentry kind="lib" path="been/lib/sjava/JRI.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://www.rosuda.org/R/nightly/JavaDoc/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="been/lib/rmiio/rmiio-2.0.2.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://openhms.sourceforge.net/rmiio/apidocs/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="been/lib/commons-logging/commons-logging-1.1.1.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://commons.apache.org/logging/apidocs/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="been/lib/webinterface/commons-io-1.4.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://commons.apache.org/io/apidocs/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="been/lib/webinterface/commons-fileupload-1.2.1.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://commons.apache.org/fileupload/apidocs/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="been/lib/opencsv/opencsv-2.0.jar"/>
+	<classpathentry kind="lib" path="been/lib/javacc/javacc.jar"/>
+	<classpathentry kind="lib" path="been/lib/collections-generic/collections-generic-4.01.jar"/>
+	<classpathentry kind="output" path="been/build"/>
+</classpath>
