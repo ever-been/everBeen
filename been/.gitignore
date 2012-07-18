@@ -1,3 +1,4 @@
+.ant-targets-build.xml
 build
 dist
 doc/javadoc
