@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema
+	targetNamespace="http://been.mff.cuni.cz/taskmanager/td"
+	elementFormDefault="qualified"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"	
+	xmlns:condition="http://been.mff.cuni.cz/taskmanager/td"
+	xmlns:common="http://been.mff.cuni.cz/common"
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+	jaxb:extensionBindingPrefixes="xjc"
+	jaxb:version="2.0">
+	
+	<xs:import schemaLocation="common.xsd" namespace="http://been.mff.cuni.cz/common"/>
+	<xs:include schemaLocation="strbin.xsd"/>
+	
+	<xs:attributeGroup name="compareAttrGroup">
+		<xs:attribute name="property" type="common:IDStringColumn" use="required"/>
+	</xs:attributeGroup>
+	
+	<xs:complexType name="Compare">
+		<xs:choice>
+			<xs:element ref="condition:strval"/>
+			<xs:element ref="condition:binval"/>
+		</xs:choice>
+		<xs:attributeGroup ref="condition:compareAttrGroup"/>
+	</xs:complexType>
+	
+	<xs:complexType name="NullCompare">
+		<xs:simpleContent>
+			<xs:extension base="xs:boolean">
+				<xs:attributeGroup ref="condition:compareAttrGroup"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:complexType name="True"/>
+	
+	<xs:element name="eq" type="condition:Compare"/>
+	<xs:element name="ne" type="condition:Compare"/>
+	<xs:element name="ge" type="condition:Compare"/>
+	<xs:element name="gt" type="condition:Compare"/>
+	<xs:element name="le" type="condition:Compare"/>
+	<xs:element name="lt" type="condition:Compare"/>
+	<xs:element name="null" type="condition:NullCompare"/>
+	<xs:element name="true" type="condition:True"/>
+
+	<xs:group name="LogicalGroup">
+		<xs:annotation>
+			<xs:appinfo>
+				<jaxb:property name="operand"/>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element ref="condition:and"/>
+			<xs:element ref="condition:or"/>
+			<xs:element ref="condition:eq"/>
+			<xs:element ref="condition:ne"/>
+			<xs:element ref="condition:ge"/>
+			<xs:element ref="condition:gt"/>
+			<xs:element ref="condition:le"/>
+			<xs:element ref="condition:lt"/>
+			<xs:element ref="condition:null"/>
+			<xs:element ref="condition:true"/>
+		</xs:choice>
+	</xs:group>
+
+	<xs:complexType name="Logical">
+		<xs:sequence>
+			<xs:group ref="condition:LogicalGroup" minOccurs="1" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:element name="and" type="condition:Logical"/>
+	<xs:element name="or" type="condition:Logical"/>
+
+	<xs:element name="condition">
+		<xs:complexType>
+			<xs:group ref="condition:LogicalGroup"/>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

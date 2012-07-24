@@ -1,0 +1,145 @@
+<?xml version="1.0"?>
+<!--
+
+  BEEN: Benchmarking Environment
+  ==============================
+
+  File author: Jiri Tauber
+  File author: Andrej Podzimek
+
+  GNU Lesser General Public License Version 2.1
+  - - - - - - - - - - - - - - - - - - - - - - -
+  Copyright (C) 2004-2006 Distributed Systems Research Group,
+  Faculty of Mathematics and Physics, Charles University in Prague
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License version 2.1, as published by the Free Software Foundation.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+  MA  02111-1307  USA
+
+-->
+<project name="BEEN" default="dist" basedir=".">
+
+	<!-- ================ PROPERTIES ================ -->
+
+	<!-- Name of the task -->
+	<property name="task.name" value="benchmarkmanagerng" />
+
+	<!-- version of the task. -->	
+	<property name="task.version" value="1.0" />
+
+	<!-- Name of the JAR file with Benchmark Manager's classes -->
+	<property name="task.jar" value="${task.name}.jar" />
+	
+	<!-- Package's filename -->
+	<property name="task.bpk" value="${task.name}-${task.version}.bpk" />
+
+	<!-- the task's source directory -->
+	<property name="bmng.src.dir" location="${src.dir}/cz/cuni/mff/been/benchmarkmanagerng" />
+	
+	<!-- The resources directory of the Benchmark Manager -->
+	<property name="bmng.resources.dir" location="${packages.dir}/benchmarkmanagerng" />
+	
+	<!-- Directory path of the Benchmark Manager's package -->
+	<property name="bmng.package.path" value="cz/cuni/mff/been/benchmarkmanagerng" />
+
+	<!-- Temporary directory for Benchmark Manager's package -->
+	<property name="task.data.dir" location="${data.dir}/benchmarkmanagerng" />
+
+	<!-- Properties used in pluggable modules' build files -->
+	<property name="modules.src.dir" location="${bmng.src.dir}/module"/>
+	<property name="modules.package.path" value="${bmng.package.path}/module"/>
+	<property name="modules.resources.dir" location="${bmng.resources.dir}/module" />
+
+	<!-- ============== FILESETS, CLASSPATH, etc. ================ -->
+	
+	<!-- Benchmark Manager's class files -->
+	<fileset id="bmng.classes" dir="${build.classes.dir}">
+		<include name="${bmng.package.path}/*.class" />
+		<include name="${bmng.package.path}/module/*.class" />
+
+		<!-- include used pluggable module interfaces -->
+		<include name="cz/cuni/mff/been/pluggablemodule/derby/*.class"/>
+		<include name="cz/cuni/mff/been/pluggablemodule/hibernate/*.class"/>
+	</fileset>
+
+	<fileset id="bmng.resources" dir="${bmng.resources.dir}">
+		<include name="config.xml" />
+		<include name="metadata.xml" />
+	</fileset>
+
+	<!-- ================ TARGETS ================ -->
+	
+	<!-- Checks if we need to re-generate the BEEN package -->
+	<target name="package-uptodate">
+		<uptodate property="dont.build.package" targetfile="${dist.tasks.dir}/${task.bpk}">
+			<srcfiles refid="bmng.classes" />
+			<srcfiles refid="bmng.resources" />
+		</uptodate>
+	</target>
+
+	<target name="generate-modules">
+		<!-- build the BMModule pluggable modules -->
+		<ant inheritrefs="true" dir="${modules.src.dir}/generator" target="dist" />
+		<ant inheritrefs="true" dir="${modules.src.dir}/evaluator" target="dist" />
+	</target>
+
+	<!-- Create a BEEN package for the Benchmark Manager -->
+	<target name="generate-package" depends="package-uptodate" unless="dont.build.package">
+		<!-- create temp directory -->
+		<mkdir dir="${task.data.dir}" />
+		
+		<!-- Create the JAR file with Benchmark Manager's classes -->
+		<jar destfile="${task.data.dir}/${task.jar}">
+			<fileset refid="bmng.classes" />
+		</jar>
+		
+		<!-- Create the BEEN package in the distribution directory -->
+		<zip destfile="${dist.tasks.dir}/${task.bpk}" update="false">
+			<!-- Zip in the task JAR file -->
+			<zipfileset prefix="files" dir="${task.data.dir}">	
+				<include name="${task.jar}" />
+			</zipfileset>
+			<!-- Zip in the task properties -->
+			<fileset refid="bmng.resources" />
+			<zipfileset prefix="files" dir="${jaxb.src.dir}">
+				<include name="attrtypes.xsd" />
+				<include name="common.xsd" />
+				<include name="config.xsd" />
+			</zipfileset>
+			<zipfileset prefix="files" dir="${bmng.resources.dir}">
+				<include name="boot.properties"/>
+				<include name="log4j.properties"/>
+			</zipfileset>
+			<!-- Zip in the logging utilities -->
+			<zipfileset prefix="files" dir="${lib.dir}/commons-logging">
+				<include name="*.jar"/>
+			</zipfileset>
+		</zip>
+
+		<!-- delete the temp directory -->
+		<delete failonerror="false" dir="${task.data.dir}"/>
+	</target>
+
+	<target name="package" depends="generate-package, generate-modules" />
+
+	<target name="dist" depends="package">
+		<!-- Used to create directories for the BM and copy example files -->
+	</target>
+	
+	<target name="clean">
+		<delete failonerror="false" dir="${bmng.src.dir}/jaxb" includes="*/**/*" />
+		<ant inheritrefs="true" dir="${modules.src.dir}/generator" target="clean" />
+		<ant inheritrefs="true" dir="${modules.src.dir}/evaluator" target="clean" />
+	</target>
+	
+</project>
