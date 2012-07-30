@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+  <classpathentry kind="src" path="src/main/java" including="**/*.java"/>
+  <classpathentry kind="output" path="target/classes"/>
+  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/junit/junit.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/webinterface/jsp-api.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/webinterface/servlet-api.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/webinterface/commons-io-1.4.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/webinterface/commons-fileupload-1.2.1.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/hibernate/hibernate-tools.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/hibernate/antlr.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/hibernate/hibernate-annotations.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/hibernate/ejb3-persistence.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/hibernate/javassist.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/hibernate/jdbc2_0-stdext.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/hibernate/dom4j.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/hibernate/cglib.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/hibernate/jta.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/hibernate/asm-attrs.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/hibernate/hibernate-entitymanager.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/hibernate/asm.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/hibernate/ehcache.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/hibernate/hibernate-commons-annotations.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/hibernate/commons-collections.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/hibernate/hibernate3.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/rmiio/rmiio-2.0.2.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/commons-xmlgraphics/xmlgraphics-commons-1.3.1.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/fop/fop-hyph.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/fop/fop.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/xerces/xercesImpl.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/saxon/saxon9he.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/sjava/jhall.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/sjava/antlr.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/sjava/JRI.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/sjava/jas.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/avalon/avalon-framework-impl-4.3.1.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/avalon/avalon-framework-api-4.3.1.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/avalon/avalon-logkit-2.2.1.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/ant/ant.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/collections-generic/collections-generic-4.01.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/log4j/log4j-1.2.12.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/javacc/javacc.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/derby/derby.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/derby/derbytools.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/derby/derbyclient.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/derby/derbynet.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/jpda/tools.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/examples/hello.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/opencsv/opencsv-2.0.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/jaxb/jaxb-xjc.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/jaxb/activation.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/jaxb/jaxb-api.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/jaxb/jaxb1-impl.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/jaxb/jsr173_1.0_api.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/jaxb/jaxb-impl.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/commons-logging/commons-logging-1.1.1.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/jython/jython.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/batik/batik-all-1.7.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/batik/batik-ext-1.6.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/commons-io/commons-io-1.4.jar"/>
+  <classpathentry kind="lib" path="/home/develop/swp/ow2-been/been/lib/javasvn/javasvn.jar"/>
+</classpath><?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+  <name>cline_interface</name>
+  <comment>NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
+  <projects/>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>
