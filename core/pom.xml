@@ -14,7 +14,7 @@
 
 	<parent>
 		<groupId>cz.cuni.mff.d3s.been</groupId>
-		<artifactId>been-mavenized</artifactId>
+		<artifactId>parent</artifactId>
 		<version>0.0.1</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>

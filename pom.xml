@@ -3,13 +3,13 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>cz.cuni.mff.d3s.been</groupId>
-	<artifactId>been-mavenized</artifactId>
+	<artifactId>parent</artifactId>
 	<version>0.0.1</version>
 	<packaging>pom</packaging>
-	<name>been-mavenized</name>
+	<name>parent</name>
 
 	<modules>
-		<module>webInterface</module>
+		<module>web_interface</module>
 		<module>core</module>
 	</modules>
 
