@@ -1,10 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>cz.cuni.mff.d3s.been</groupId>
-	<artifactId>client_interface</artifactId>
+	<artifactId>cline_interface</artifactId>
 	<packaging>war</packaging>
 	<version>2.1.0</version>
-	<name>client_interface</name>
+	<name>cline_interface</name>
 
 	<parent>
 		<groupId>cz.cuni.mff.d3s.been</groupId>

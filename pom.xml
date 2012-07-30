@@ -10,7 +10,7 @@
 
 	<modules>
 		<module>core</module>
-		<module>client_interface</module>
+		<module>cline_interface</module>
 		<module>web_interface</module>
 	</modules>
 
