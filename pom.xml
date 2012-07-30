@@ -9,8 +9,9 @@
 	<name>parent</name>
 
 	<modules>
-		<module>web_interface</module>
 		<module>core</module>
+		<module>client_interface</module>
+		<module>web_interface</module>
 	</modules>
 
 	<properties>
