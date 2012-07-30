@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<!--
+
+  BEEN: Benchmarking Environment
+  ==============================
+
+  File author: Jiri Tauber
+
+  GNU Lesser General Public License Version 2.1
+  - - - - - - - - - - - - - - - - - - - - - - -
+  Copyright (C) 2004-2006 Distributed Systems Research Group,
+  Faculty of Mathematics and Physics, Charles University in Prague
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License version 2.1, as published by the Free Software Foundation.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+  MA  02111-1307  USA
+
+-->
+<project name="BEEN" default="package" basedir=".">
+	<!-- ============== PROPERTIES ============== -->
+
+	<property name="evaluator.task.name" value="fileexport-evaluator-task" />
+
+	<!-- version of the task. -->	
+	<property name="evaluator.task.version" value="1.0"/>
+
+	<!-- Directory of the task in the ${etc.dir} directory -->
+	<property name="evaluator.task.dir" location="${packages.dir}/task/benchmarkmanagerng/evaluator/fileexport" />
+
+	<!-- Name of the created task package -->
+	<property name="evaluator.task.bpk" value="${evaluator.task.name}-${evaluator.task.version}.bpk" />
+
+	<!-- Directory path of the package of the task -->
+	<property name="base.class.package.path" value="cz/cuni/mff/been/task/benchmarkmanagerng/evaluator" />
+
+	<!-- Directory path of the package of the task -->
+	<property name="evaluator.task.package.path" value="${base.class.package.path}/fileexport" />
+
+	<!-- ============== FILESETS, CLASSPATH, etc ================ -->
+	<!-- build.classes.dir = BEEN/been/build -->
+	<fileset id="evaluator.task.classes" dir="${build.classes.dir}">
+		<include name="${evaluator.task.package.path}/*.class"/>
+		<!-- Base class -->
+		<include name="${base.class.package.path}/*.class"/>
+	</fileset>
+
+	<!-- -->
+	<fileset id="evaluator.metadata" dir="${evaluator.task.dir}">
+		<include name="metadata.xml"/>
+		<include name="config.xml"/>
+	</fileset>
+
+	<!-- ============== TARGETS ================ -->
+
+	<!-- Checks if we need to regenerate the package -->
+	<target name="package-uptodate">
+		<uptodate property="dont.build.package" targetfile="${dist.tasks.dir}/${evaluator.task.bpk}">
+			<srcfiles refid="evaluator.task.classes"/>
+			<srcfiles refid="evaluator.metadata"/>
+		</uptodate>
+	</target>
+
+
+	<target name="build-package" depends="package-uptodate"
+			unless="dont.build.package"> 
+
+		<jar destfile="${evaluator.task.dir}/${evaluator.task.name}.jar">
+			<fileset refid="evaluator.task.classes"/>
+		</jar>
+
+		<!-- create the zip file with the task package's contents in the dist directory -->
+		<zip destfile="${dist.tasks.dir}/${evaluator.task.bpk}" update="false">
+			<zipfileset dir="${evaluator.task.dir}" prefix="files">
+				<include name="${evaluator.task.name}.jar"/>
+			</zipfileset>
+			<zipfileset refid="evaluator.metadata"/>
+		</zip>
+
+		<delete file="${evaluator.task.dir}/${evaluator.task.name}.jar"/>
+	</target>
+
+
+	<target name="package" depends="build-package" />
+
+	<target name="dist" depends="package" />
+
+</project>
