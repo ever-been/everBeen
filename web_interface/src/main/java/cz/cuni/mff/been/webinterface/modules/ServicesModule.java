@@ -38,7 +38,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import cz.cuni.mff.been.clinterface.CommandLineService;
 import cz.cuni.mff.been.common.ComponentInitializationException;
 import cz.cuni.mff.been.debugassistant.DebugAssistantService;
 import cz.cuni.mff.been.hostmanager.HostManagerService;
@@ -46,6 +45,7 @@ import cz.cuni.mff.been.jaxb.td.TaskDescriptor;
 import cz.cuni.mff.been.logging.LogRecord;
 import cz.cuni.mff.been.logging.LogStorageException;
 import cz.cuni.mff.been.logging.OutputHandle;
+import cz.cuni.mff.been.services.Names;
 import cz.cuni.mff.been.softwarerepository.SoftwareRepositoryService;
 import cz.cuni.mff.been.task.InvalidServiceStateException;
 import cz.cuni.mff.been.task.Service;
@@ -116,8 +116,8 @@ public class ServicesModule extends Module implements EventListener {
 					cz.cuni.mff.been.resultsrepositoryng.ResultsRepositoryService.SERVICE_HUMAN_NAME
 			),
 			new ServiceInfo(
-				CommandLineService.SERVICE_NAME,
-				CommandLineService.SERVICE_HUMAN_NAME
+				Names.COMMAND_LINE_SERVICE_NAME,
+				Names.COMMAND_LINE_SERVICE_HUMAN_NAME
 			)
 		};
 	}
