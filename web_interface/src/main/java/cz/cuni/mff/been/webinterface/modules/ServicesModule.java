@@ -50,7 +50,9 @@ import cz.cuni.mff.been.softwarerepository.SoftwareRepositoryService;
 import cz.cuni.mff.been.task.InvalidServiceStateException;
 import cz.cuni.mff.been.task.Service;
 import cz.cuni.mff.been.task.ServiceControlInterface;
+import cz.cuni.mff.been.task.ServiceInfo;
 import cz.cuni.mff.been.task.TaskException;
+import cz.cuni.mff.been.task.ServiceInfo.Status;
 import cz.cuni.mff.been.taskmanager.TaskDescriptorHelper;
 import cz.cuni.mff.been.taskmanager.TaskManagerException;
 import cz.cuni.mff.been.taskmanager.TaskManagerInterface;
@@ -61,8 +63,6 @@ import cz.cuni.mff.been.webinterface.MissingParamException;
 import cz.cuni.mff.been.webinterface.event.Event;
 import cz.cuni.mff.been.webinterface.event.EventListener;
 import cz.cuni.mff.been.webinterface.ref.TaskManagerReference;
-import cz.cuni.mff.been.webinterface.services.ServiceInfo;
-import cz.cuni.mff.been.webinterface.services.ServiceInfo.Status;
 
 /**
  * Web interface module for the services management.

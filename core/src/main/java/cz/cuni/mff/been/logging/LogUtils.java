@@ -23,7 +23,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston,
  *  MA  02111-1307  USA
  */
-package cz.cuni.mff.been.webinterface;
+package cz.cuni.mff.been.logging;
 
 import java.rmi.RemoteException;
 import java.util.Arrays;
@@ -31,8 +31,6 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
-import cz.cuni.mff.been.logging.LogRecord;
-import cz.cuni.mff.been.logging.LogStorageException;
 import cz.cuni.mff.been.taskmanager.TaskManagerInterface;
 import cz.cuni.mff.been.taskmanager.data.TaskEntry;
 
