@@ -27,7 +27,7 @@ package cz.cuni.mff.been.task.example.service1;
 
 import java.rmi.RemoteException;
 
-import cz.cuni.mff.been.task.Service;
+import cz.cuni.mff.been.services.Service;
 import cz.cuni.mff.been.task.TaskInitializationException;
 
 /**
@@ -67,7 +67,7 @@ public class ExampleService1 extends Service {
 	}
 	
 	/**
-	 * @see cz.cuni.mff.been.task.Service#getName()
+	 * @see cz.cuni.mff.been.services.Service#getName()
 	 */
 	@Override
 	public String getName() {
@@ -75,7 +75,7 @@ public class ExampleService1 extends Service {
 	}
 
 	/**
-	 * @see cz.cuni.mff.been.task.Service#start()
+	 * @see cz.cuni.mff.been.services.Service#start()
 	 */
 	@Override
 	protected void start(){
@@ -102,7 +102,7 @@ public class ExampleService1 extends Service {
 	}
 
 	/**
-	 * @see cz.cuni.mff.been.task.Service#stop()
+	 * @see cz.cuni.mff.been.services.Service#stop()
 	 */
 	@Override
 	protected void stop(){

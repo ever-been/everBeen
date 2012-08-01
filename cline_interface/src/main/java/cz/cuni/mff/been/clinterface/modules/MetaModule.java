@@ -42,6 +42,7 @@ import cz.cuni.mff.been.clinterface.ref.ServiceReference;
 import cz.cuni.mff.been.clinterface.ref.TaskManagerReference;
 import cz.cuni.mff.been.common.ComponentInitializationException;
 import cz.cuni.mff.been.common.Message;
+import cz.cuni.mff.been.services.Names;
 
 /**
  * This Module sets some tunable values inside the Command Line Interface. The debugging level
@@ -286,9 +287,9 @@ public final class MetaModule extends CommandLineModule {
 		taskManagerReference = new TaskManagerReference();
 		this.cliReference = new ServiceReference< CommandLineInterface >(
 			taskManagerReference,
-			CommandLineService.SERVICE_NAME,
+			Names.COMMAND_LINE_SERVICE_NAME,
 			CommandLineService.RMI_MAIN_IFACE,
-			CommandLineService.SERVICE_HUMAN_NAME
+			Names.COMMAND_LINE_SERVICE_HUMAN_NAME
 		);		
 	}
 	

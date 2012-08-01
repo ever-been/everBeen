@@ -37,7 +37,7 @@ import cz.cuni.mff.been.hostmanager.load.LoadServerImplementation;
 import cz.cuni.mff.been.hostmanager.util.MiscUtils;
 import cz.cuni.mff.been.logging.LogLevel;
 
-import cz.cuni.mff.been.task.Service;
+import cz.cuni.mff.been.services.Service;
 import cz.cuni.mff.been.task.TaskException;
 import cz.cuni.mff.been.task.TaskInitializationException;
 
@@ -99,7 +99,7 @@ public class HostManagerService extends Service {
 	}
 	
 	/**
-	 * @see cz.cuni.mff.been.task.Service#getName()
+	 * @see cz.cuni.mff.been.services.Service#getName()
 	 */
 	@Override
 	public String getName() {
@@ -108,7 +108,7 @@ public class HostManagerService extends Service {
 	}
 
 	/**
-	 * @see cz.cuni.mff.been.task.Service#start()
+	 * @see cz.cuni.mff.been.services.Service#start()
 	 */
 	@Override
 	protected void start() throws TaskException {
@@ -229,7 +229,7 @@ public class HostManagerService extends Service {
 	}
 	
 	/**
-	 * @see cz.cuni.mff.been.task.Service#stop()
+	 * @see cz.cuni.mff.been.services.Service#stop()
 	 */
 	@Override
 	protected void stop() throws TaskException {

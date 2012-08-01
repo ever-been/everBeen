@@ -34,7 +34,7 @@ import cz.cuni.mff.been.pluggablemodule.PluggableModuleException;
 import cz.cuni.mff.been.pluggablemodule.derby.DerbyPluggableModule;
 import cz.cuni.mff.been.pluggablemodule.hibernate.HibernatePluggableModule;
 import cz.cuni.mff.been.resultsrepositoryng.implementation.ResultsRepositoryImplementation;
-import cz.cuni.mff.been.task.Service;
+import cz.cuni.mff.been.services.Service;
 import cz.cuni.mff.been.task.Task;
 import cz.cuni.mff.been.task.TaskException;
 import cz.cuni.mff.been.task.TaskInitializationException;
@@ -108,7 +108,7 @@ public class ResultsRepositoryService extends Service {
 	}
 
 	/**
-	 * @see cz.cuni.mff.been.task.Service#getName()
+	 * @see cz.cuni.mff.been.services.Service#getName()
 	 */
 	@Override
 	public String getName() {
@@ -116,7 +116,7 @@ public class ResultsRepositoryService extends Service {
 	}
 
 	/**
-	 * @see cz.cuni.mff.been.task.Service#start()
+	 * @see cz.cuni.mff.been.services.Service#start()
 	 */
 	@Override
 	protected void start() throws TaskException {
@@ -147,7 +147,7 @@ public class ResultsRepositoryService extends Service {
  	}
 
 	/**
-	 * @see cz.cuni.mff.been.task.Service#stop()
+	 * @see cz.cuni.mff.been.services.Service#stop()
 	 */
 	@Override
 	protected void stop() throws TaskException {

@@ -79,7 +79,7 @@ import cz.cuni.mff.been.resultsrepositoryng.data.DataHandleException;
 import cz.cuni.mff.been.resultsrepositoryng.data.DataHandleTuple;
 import cz.cuni.mff.been.resultsrepositoryng.data.DataHandle.DataType;
 import cz.cuni.mff.been.resultsrepositoryng.transaction.RRTransaction;
-import cz.cuni.mff.been.task.Service;
+import cz.cuni.mff.been.services.Service;
 import cz.cuni.mff.been.task.Task;
 import cz.cuni.mff.been.task.xampler.execute.XamplerExecute;
 import cz.cuni.mff.been.taskmanager.TaskDescriptorHelper;

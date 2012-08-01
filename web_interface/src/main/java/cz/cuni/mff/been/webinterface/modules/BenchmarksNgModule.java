@@ -54,7 +54,7 @@ import cz.cuni.mff.been.common.rsl.Condition;
 import cz.cuni.mff.been.common.rsl.ParseException;
 import cz.cuni.mff.been.common.rsl.ParserWrapper;
 import cz.cuni.mff.been.jaxb.config.Config;
-import cz.cuni.mff.been.task.Service;
+import cz.cuni.mff.been.services.Service;
 import cz.cuni.mff.been.webinterface.InvalidParamValueException;
 import cz.cuni.mff.been.webinterface.MissingParamException;
 import cz.cuni.mff.been.webinterface.Page.LayoutType;

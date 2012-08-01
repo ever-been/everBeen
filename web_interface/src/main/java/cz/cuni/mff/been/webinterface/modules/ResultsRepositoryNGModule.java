@@ -42,7 +42,7 @@ import cz.cuni.mff.been.resultsrepositoryng.RRManagerInterface;
 import cz.cuni.mff.been.resultsrepositoryng.ResultsRepositoryException;
 import cz.cuni.mff.been.resultsrepositoryng.ResultsRepositoryService;
 import cz.cuni.mff.been.resultsrepositoryng.data.DataHandleTuple;
-import cz.cuni.mff.been.task.Service;
+import cz.cuni.mff.been.services.Service;
 import cz.cuni.mff.been.webinterface.MissingParamException;
 import cz.cuni.mff.been.webinterface.Page.LayoutType;
 import cz.cuni.mff.been.webinterface.ref.ServiceReference;

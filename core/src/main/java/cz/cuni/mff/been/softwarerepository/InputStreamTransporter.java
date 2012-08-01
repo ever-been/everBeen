@@ -31,9 +31,9 @@ import java.rmi.RemoteException;
 
 import com.healthmarketscience.rmiio.RemoteInputStream;
 import com.healthmarketscience.rmiio.RemoteInputStreamClient;
+import com.healthmarketscience.rmiio.RemoteInputStreamMonitor;
 import com.healthmarketscience.rmiio.SimpleRemoteInputStream;
 
-import cz.cuni.mff.been.clinterface.adapters.InputStreamEndMonitor;
 
 /**
  * This is a simple wrapper for the RMIIO library.
@@ -54,7 +54,7 @@ public final class InputStreamTransporter implements InputStreamInterface {
 	 * @param monitor The monitor used to track the activity of the stream.
 	 * @throws RemoteException When it rains.
 	 */
-	public InputStreamTransporter( InputStream stream, InputStreamEndMonitor monitor )
+	public InputStreamTransporter( InputStream stream, RemoteInputStreamMonitor monitor )
 	throws RemoteException {
 		this.stream = new SimpleRemoteInputStream( stream, monitor ).export();
 	}

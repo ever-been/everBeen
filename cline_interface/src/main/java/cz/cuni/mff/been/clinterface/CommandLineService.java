@@ -27,7 +27,8 @@ package cz.cuni.mff.been.clinterface;
 
 import java.io.IOException;
 
-import cz.cuni.mff.been.task.Service;
+import cz.cuni.mff.been.services.Names;
+import cz.cuni.mff.been.services.Service;
 import cz.cuni.mff.been.task.TaskException;
 import cz.cuni.mff.been.task.TaskInitializationException;
 
@@ -38,12 +39,6 @@ import cz.cuni.mff.been.task.TaskInitializationException;
  * @author Andrej Podzimek
  */
 public class CommandLineService extends Service {
-	
-	/** Official name of the service. */
-	public static final String SERVICE_NAME = "clinterface";
-	
-	/** Human-readable name of the service. */
-	public static final String SERVICE_HUMAN_NAME = "Command Line Interface";
 	
 	/** Implementation of the RMI interface for remote service management. */
 	private final CommandLineImplementation implementation;
@@ -72,7 +67,7 @@ public class CommandLineService extends Service {
 
 	@Override
 	public String getName() {
-		return SERVICE_NAME;
+		return Names.COMMAND_LINE_SERVICE_NAME;
 	}
 
 	@Override

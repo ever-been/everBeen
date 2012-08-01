@@ -47,7 +47,7 @@ import cz.cuni.mff.been.resultsrepositoryng.data.DataHandle;
 import cz.cuni.mff.been.resultsrepositoryng.data.DataHandleTuple;
 import cz.cuni.mff.been.resultsrepositoryng.data.DataHandle.DataType;
 import cz.cuni.mff.been.resultsrepositoryng.filestore.FileStoreClient;
-import cz.cuni.mff.been.task.Service;
+import cz.cuni.mff.been.services.Service;
 import cz.cuni.mff.been.task.Task;
 
 /**

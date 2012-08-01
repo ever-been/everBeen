@@ -29,7 +29,7 @@ import java.rmi.RemoteException;
 
 import cz.cuni.mff.been.common.ComponentInitializationException;
 import cz.cuni.mff.been.pluggablemodule.PluggableModuleManager;
-import cz.cuni.mff.been.task.Service;
+import cz.cuni.mff.been.services.Service;
 import cz.cuni.mff.been.task.Task;
 import cz.cuni.mff.been.task.TaskException;
 import cz.cuni.mff.been.task.TaskInitializationException;
@@ -71,7 +71,7 @@ public class BenchmarkManagerService extends Service {
 	}
 
 	/**
-	 * @see cz.cuni.mff.been.task.Service#getName()
+	 * @see cz.cuni.mff.been.services.Service#getName()
 	 */
 	@Override
 	public String getName() {
@@ -79,7 +79,7 @@ public class BenchmarkManagerService extends Service {
 	}
 
 	/**
-	 * @see cz.cuni.mff.been.task.Service#start()
+	 * @see cz.cuni.mff.been.services.Service#start()
 	 */
 	@Override
 	protected void start() throws TaskException {
@@ -100,7 +100,7 @@ public class BenchmarkManagerService extends Service {
 	}
 
 	/**
-	 * @see cz.cuni.mff.been.task.Service#stop()
+	 * @see cz.cuni.mff.been.services.Service#stop()
 	 */
 	@Override
 	protected void stop() throws TaskException {

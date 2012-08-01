@@ -21,7 +21,7 @@
  * along with this library; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-package cz.cuni.mff.been.task;
+package cz.cuni.mff.been.services;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -41,7 +41,11 @@ import java.util.HashMap;
 
 import cz.cuni.mff.been.common.RMI;
 import cz.cuni.mff.been.hostruntime.TasksPortInterface;
-import cz.cuni.mff.been.task.ServiceInfo.Status;
+import cz.cuni.mff.been.services.ServiceInfo.Status;
+import cz.cuni.mff.been.task.InvalidServiceStateException;
+import cz.cuni.mff.been.task.Task;
+import cz.cuni.mff.been.task.TaskException;
+import cz.cuni.mff.been.task.TaskInitializationException;
 import cz.cuni.mff.been.taskmanager.ServiceEntry;
 
 /**
