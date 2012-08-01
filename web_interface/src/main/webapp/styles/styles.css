@@ -1,0 +1,967 @@
+/*
+ *  BEEN: Benchmarking Environment
+ *  ==============================
+ *
+ *  File author: David Majda
+ *
+ *  GNU Lesser General Public License Version 2.1
+ *  ---------------------------------------------
+ *  Copyright (C) 2004-2006 Distributed Systems Research Group,
+ *  Faculty of Mathematics and Physics, Charles University in Prague
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License version 2.1, as published by the Free Software Foundation.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+ *  MA  02111-1307  USA
+ */
+
+body, td, th, input, select {
+	font-family: Verdana, "Geneva CE", lucida, sans-serif;
+	font-size: 9pt;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	color: black;
+	background-color: white;
+}
+
+table {
+	border-spacing: 0;
+	border-collapse: collapse;
+}
+
+table td, table th {
+	padding: 0;
+	vertical-align: top;
+}
+
+table.list {
+	margin: 0 auto;
+}
+
+table.list td, table.list th {
+	border-bottom: 1px dotted #C2CAC3;
+	padding: .5em .25em;
+}
+
+table.list th {
+	text-align: left;
+}
+
+table.list td.button-spacer {
+	width: 3em;
+}
+
+table.list h2 {
+	margin: 0;
+	border-bottom: none;
+	font-size: 9pt;
+}
+
+table.list input.type-submit, table.list input.type-submit-wide {
+	margin: .1em;
+}
+
+table.list button {
+	margin: .1em;
+}
+
+table.list td.left, table.list th.left {
+	text-align: left;
+}
+
+table.list td.center, table.list th.center {
+	text-align: center;
+}
+
+table.list td.right, table.list th.right {
+	text-align: right;
+}
+
+table.list td.buttons {
+	border-bottom: none;
+}
+
+table.list tr.header td {
+	padding: 0 0 .75em 0;
+	border: none;
+}
+
+table.list tr.header h2 {
+	border-bottom: 2px solid #C2CAC3;
+	font-size: 11pt;
+}
+
+table.list input.type-text-narrow {
+	width: 6em;
+}
+
+table.list input.type-text-wide, table.list input.type-text {
+	width: 15em;
+}
+
+table.list input.type-submit {
+	min-width: 6em;
+}
+
+table.form td, table.form th {
+	padding: .5em;
+}
+
+table.form th {
+	text-align: left;
+}
+
+table.form th.indented, table.form td.indented {
+	padding-left: 4em;
+}
+
+table.form td.buttons {
+	padding-top: 1em;
+	text-align: right;
+}
+
+table.form h2 {
+	margin: 0;
+}
+
+table.spacing td, table.spacing th {
+	text-align: left;
+	vertical-align: top;
+	padding: .5em;
+}
+
+table.spacing h2 {
+	margin: 0;
+}
+
+table.real {
+	border-collapse: collapse;
+	border: 1px solid #C2CAC3;
+}
+
+table.real td, table.real th {
+	padding: 0.25em;
+	border: 1px solid #C2CAC3;
+}
+
+table.real td.left, table.real th.left {
+	text-align: left;
+}
+
+table.real td.center, table.real th.center {
+	text-align: center;
+}
+
+table.real td.right, table.real th.right {
+	text-align: right;
+}
+
+table.real th {
+	text-align: center;
+	background-color: #DCE5DE;
+}
+
+table.multiselect td {
+	padding: 0px;
+	vertical-align: middle;
+}
+
+table.multiselect td input.type-button {
+	margin: .5em;
+}
+
+table.statistics {
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+
+table.calendar {
+	border-collapse: collapse;
+	border: 1px solid #C2CAC3;
+}
+
+table.calendar td {
+	padding: 0.3em 0.5em;
+	border: 1px solid #C2CAC3;
+	text-align: center;
+	cursor: pointer;
+}
+
+table.calendar td.selected {
+	color: HighlightText;
+	background-color: Highlight; 
+}
+
+h1 {
+	margin: 0 0 0.5em 0;
+	text-align: center;
+	font-size: 13pt;
+}
+
+h2 {
+	margin: 0 0 0.5em 0;
+	border-bottom: 2px solid #C2CAC3;
+	font-size: 11pt;
+}
+
+h3 {
+	margin: 0;
+}
+
+form {
+	margin: 0; /* IE */
+}
+
+img {
+	border: 0;
+}
+
+input.type-button, input.type-submit, button {
+	min-width: 6em;
+	/* Uncomment to achieve same look of buttons across all platforms and
+	   browsers. This look is probably uglier than default on most platforms,
+	   so it is disabled by default. */
+	/*
+	border: 1px solid black;
+	padding: .1em .5em;
+	background-color: #C2CAC3;
+	*/
+}
+
+hr {
+	height: 1px;
+	border: none;
+	color: #C2CAC3; /* MSIE */
+	background-color: #C2CAC3;
+}
+
+pre {
+	margin-left: 2em;
+}
+
+.left {
+	text-align: left;
+}
+
+.center {
+	text-align: center;
+}
+
+.right {
+	text-align: right;
+}
+
+.center-block {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.full-width {
+	width: 100%;
+}
+
+.half-width {
+	width: 50%;
+}
+
+.no-underline {
+	text-decoration: none;
+}
+
+.bar {
+	text-align: center;
+	background-color: #D0D9D1;
+	margin-bottom: 1em;
+}
+
+.bar .top-left {
+	background: url("../img/bar-top-left.gif") top left no-repeat;
+}
+
+.bar .top-right {
+	background: url("../img/bar-top-right.gif") top right no-repeat;
+}
+
+.bar .bottom-left {
+	background: url("../img/bar-bottom-left.gif") bottom left no-repeat;
+}
+
+.bar .bottom-right {
+	background: url("../img/bar-bottom-right.gif") bottom right no-repeat;
+}
+
+.bar .inner {
+	padding: .5em;
+}
+
+.bar label {
+	margin-left: 1em;
+}
+
+.bar input.type-submit, .bar input.type-submit-wide {
+	margin: 0 1em;
+	/* Uncomment to achieve same look of buttons across all platforms and
+	   browsers. This look is probably uglier than default on most platforms,
+	   so it is disabled by default. */
+	/*
+	border: 1px solid black;
+	background-color: #C2CAC3;
+	*/
+}
+
+.pager {
+	margin-bottom: 1em;
+	padding: .25em .5em;
+	text-align: center;
+	background-color: #7A8C99;
+}
+
+.pager a {
+	text-decoration: none;
+	color: white;
+}
+
+.pager a.active {
+	color: yellow;
+}
+
+.tabsheet ul.tabsheet-tabs {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+.tabsheet ul.tabsheet-tabs li {
+	display: block;
+	float: left;
+	margin-right: 1px;
+	font-weight: bold;
+	background: #E9F2EA url("../img/tabsheet-tab-right.gif") top right no-repeat;
+}
+
+.tabsheet ul.tabsheet-tabs li.active {
+	background: #C2CAC3 url("../img/tabsheet-tab-right-active.gif") top right no-repeat;
+}
+
+.tabsheet ul.tabsheet-tabs li a {
+	display: block;
+	min-height: 19px;
+	padding: 3px 15px 0 15px;
+	text-decoration: none;
+	color: black;
+	background: url("../img/tabsheet-tab-left.gif") top left no-repeat;
+}
+
+.tabsheet ul.tabsheet-tabs li a:focus {
+	outline: none;
+}
+
+.tabsheet ul.tabsheet-tabs li.active a {
+	background: url("../img/tabsheet-tab-left-active.gif") top left no-repeat;
+}
+
+.tabsheet .tabsheet-sheets {
+	clear: both;
+	padding: 1em;
+	border: 2px solid #C2CAC3;
+}
+
+.tabsheet .tabsheet-sheets .tabsheet-sheet-visible {
+	display: block;
+}
+
+.tabsheet .tabsheet-sheets .tabsheet-sheet-invisible{
+	display: none;
+}
+
+.tree-node-children {
+	margin-left: 4px;
+	padding-left: 1em;
+	background: url("../img/not-finished.gif") top left repeat-y;
+}
+
+.autocomplete {
+	position: absolute;
+	display: none;
+	overflow: hidden;
+	border: 1px solid WindowFrame;
+	background-color: Window;
+}
+
+.autocomplete ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.autocomplete li {
+	display: list-item;
+	width: 1000em; /* Will overfloww, but will be cropped. */
+	padding: 0 5px;
+	cursor: default;
+	white-space: nowrap;
+}
+
+.autocomplete li.highlight {
+	color: HighlightText;
+	background-color: Highlight;
+}
+
+.log-view {
+	margin: 0 auto;
+	border: 1px solid #C2CAC3;
+	padding: 1px;
+	overflow: auto;
+}
+
+.log-view table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+.log-view table tr.log-level-trace td {
+	background-color: rgb(193, 215, 217);
+}
+
+.log-view table tr.log-level-debug td {
+	background-color: rgb(214, 228, 202);
+}
+
+.log-view table tr.log-level-info td {
+	background-color: rgb(240, 240, 240);
+}
+
+.log-view table tr.log-level-warning td {
+	background-color: rgb(232, 232, 0);
+}
+
+.log-view table tr.log-level-error td {
+	background-color: rgb(255, 186, 118);
+}
+
+.log-view table tr.log-level-fatal td {
+	background-color: rgb(255, 117, 117);
+}
+
+.log-view table td, .log-view table th {
+	border: 2px solid white;
+	padding: 0.25em 0.5em;
+}
+
+.log-view table th {
+	padding-right: 24px;
+	text-align: center;
+	background-color: #DCE5DE;
+	cursor: pointer;
+}
+
+.log-view table th.sorted-asc {
+	background: #c2cac3 url("../img/log-view-sort-asc.gif") right 50% no-repeat;
+}
+
+.log-view table th.sorted-desc {
+	padding-right: 24px;
+	text-align: center;
+	background: #c2cac3 url("../img/log-view-sort-desc.gif") right 50% no-repeat;
+}
+
+.output-view {
+	font-family: monospace;
+	border: 1px solid #C2CAC3;
+}
+
+.calendar-select-links {
+	margin-top: .5em;
+	font-size: 7pt;
+}
+
+.note {
+	font-size: 7pt;
+	font-weight: normal;
+}
+
+.error-message {
+	font-weight: bold;
+	color: #c00000;
+}
+
+.info-messages {
+	margin: 1em 0;
+	background-color: #c0ffc0;
+}
+
+.info-messages .top-left {
+	background: url("../img/info-messages-top-left.gif") top left no-repeat;
+}
+
+.info-messages .top-right {
+	background: url("../img/info-messages-top-right.gif") top right no-repeat;
+}
+
+.info-messages .bottom-left {
+	background: url("../img/info-messages-bottom-left.gif") bottom left no-repeat;
+}
+
+.info-messages .bottom-right {
+	background: url("../img/info-messages-bottom-right.gif") bottom right no-repeat;
+}
+
+.warning-messages {
+	margin: 1em 0;
+	background-color: #FFFF66;
+}
+
+.warning-messages .top-left {
+	background: url("../img/warning-messages-top-left.gif") top left no-repeat;
+}
+
+.warning-messages .top-right {
+	background: url("../img/warning-messages-top-right.gif") top right no-repeat;
+}
+
+.warning-messages .bottom-left {
+	background: url("../img/warning-messages-bottom-left.gif") bottom left no-repeat;
+}
+
+.warning-messages .bottom-right {
+	background: url("../img/warning-messages-bottom-right.gif") bottom right no-repeat;
+}
+
+.error-messages {
+	margin: 1em 0;
+	background-color: orange;
+}
+
+.error-messages .top-left {
+	background: url("../img/error-messages-top-left.gif") top left no-repeat;
+}
+
+.error-messages .top-right {
+	background: url("../img/error-messages-top-right.gif") top right no-repeat;
+}
+
+.error-messages .bottom-left {
+	background: url("../img/error-messages-bottom-left.gif") bottom left no-repeat;
+}
+
+.error-messages .bottom-right {
+	background: url("../img/error-messages-bottom-right.gif") bottom right no-repeat;
+}
+
+.info-messages .inner, .warning-messages .inner, .error-messages .inner {
+	padding: .5em 1em;
+}
+
+.info-messages ul, .warning-messages ul, .error-messages ul {
+	margin: 0;
+	padding-left: 2em;
+}
+
+#header {
+	background: black;
+}
+
+#header ul {
+	margin: 0 0 0 240px;
+	padding: 0;
+	list-style-type: none;
+	padding-top: 41px;
+}
+
+#header li {
+	display: block;
+	float: left;
+	margin-right: 1px;
+	font-weight: bold;
+	background: #253540 url("../img/header-tab-right.gif") top right no-repeat;
+}
+
+#header li.active {
+	background: #425E72 url("../img/header-tab-right-active.gif") top right no-repeat;
+}
+
+#header li a {
+	display: block;
+	min-height: 19px;
+	padding: 3px 15px 0 15px;
+	text-decoration: none;
+	color: white;
+	background: url("../img/header-tab-left.gif") top left no-repeat;
+}
+
+#header li.active a {
+	color: yellow;
+	background: url("../img/header-tab-left-active.gif") top left no-repeat;
+}
+
+#header li.disabled a {
+	color: gray;
+	cursor: default;
+}
+
+#logo {
+	display: block;
+	position: absolute;
+	left: 0;
+	width: 220px;
+	height: 63px;
+	background-image: url("../img/logo.gif");
+}
+
+#menu {
+	clear: left;
+	padding: .2em 1em .4em 1em;
+	font-size: 8pt;
+	background: #425E72;
+}
+
+#menu a {
+	color: white;
+	text-decoration: none;
+}
+
+#menu a.active {
+	color: yellow;
+}
+
+#content {
+	margin: 1em;
+}
+
+/* ===== Welcome ===== */
+
+#been {
+	margin-top: 180px;
+	height: 155px;
+	background: url("../img/been.gif") center no-repeat;
+}
+
+/* ===== Packages ===== */
+
+#packages-list-form input.type-text, #packages-list-form select {
+	width: 15em;
+}
+
+#packages-list-form input.type-submit, #packages-list-form input.type-submit-wide {
+	margin: 0;
+}
+
+#packages-upload-form input.name-file {
+	width: 25em;
+}
+
+/* ===== Benchmarks ===== */
+
+#benchmarks-analysis-add-form input.name-name {
+	width: 25em;
+}
+
+#benchmarks-analysis-add-form textarea.name-description,
+#benchmarks-analysis-add-form textarea.name-complete-run-script,
+#benchmarks-analysis-add-form textarea.name-complete-binary-script,
+#benchmarks-analysis-add-form textarea.name-complete-experiment-script,
+#benchmarks-analysis-add-form textarea.name-incomplete-binary-script,
+#benchmarks-analysis-add-form textarea.name-incomplete-experiment-script {
+	width: 23.1em; /* 23.1em Courier = 25em Verdana :-) */
+	height: 10em;
+}
+
+#benchmarks-analysis-details-scheduling-info-form input.name-historical-start-date,
+#benchmarks-analysis-details-scheduling-info-form input.name-historical-end-date,
+#benchmarks-analysis-details-scheduling-info-form input.name-hours,
+#benchmarks-analysis-details-scheduling-info-form input.name-minutes {
+	width: 15em;
+}
+
+#benchmarks-run-select-plugin-form select.name-plugin-id {
+	width: 25em;
+}
+
+#plugin-description-outer {
+	width: 25em;
+}
+
+#plugin-description {
+	height: 15em;
+	overflow: auto;
+	border: 1px solid #c0c000;
+	padding: .5em 1em;
+	background-color: #ffffc0;
+}
+
+#plugin-description *:first-child {
+	margin-top: .5em;
+}
+
+#plugin-description *:last-child {
+	margin-bottom: .5em;
+}
+
+#benchmarks-run-select-create-experiment-form input.name-new-experiment-name {
+	width: 25em;
+}
+
+#benchmarks-run-select-create-experiment-form textarea.name-new-experiment-description {
+	width: 23.1em; /* 23.1em Courier = 25em Verdana :-) */
+	height: 10em;
+}
+
+#benchmarks-run-scheduling-info-form input.name-historical-start-date,
+#benchmarks-run-scheduling-info-form input.name-historical-end-date,
+#benchmarks-run-scheduling-info-form input.name-hours,
+#benchmarks-run-scheduling-info-form input.name-minutes {
+	width: 15em;
+}
+
+#benchmarks-run-configure-plugin-form input.type-text-big {
+	width: 25em;
+}
+
+#benchmarks-run-configure-plugin-form input.type-text-small {
+	width: 5em;
+}
+
+#benchmarks-run-configure-plugin-form select {
+	min-width: 15em;
+}
+
+#benchmarks-run-configure-plugin-form textarea {
+	width: 23.1em; /* 23.1em Courier = 25em Verdana :-) */
+	height: 10em;
+}
+
+#benchmarks-run-select-hosts-for-roles-form select.name-role-hosts {
+	width: 15em;
+}
+
+#benchmarks-run-callback-r-scripts-form textarea.name-description,
+#benchmarks-run-callback-r-scripts-form textarea.name-complete-run-script,
+#benchmarks-run-callback-r-scripts-form textarea.name-complete-binary-script,
+#benchmarks-run-callback-r-scripts-form textarea.name-complete-experiment-script,
+#benchmarks-run-callback-r-scripts-form textarea.name-incomplete-binary-script,
+#benchmarks-run-callback-r-scripts-form textarea.name-incomplete-experiment-script {
+	width: 23.1em; /* 23.1em Courier = 25em Verdana :-) */
+	height: 10em;
+}
+
+#benchmarks-plugin-install-form input.name-file {
+	width: 25em;
+}
+
+.plugin-status-ok {
+	color: #00c000;
+}
+
+.plugin-status-error {
+	color: #c00000;
+}
+
+.entity-tree-item-header {
+	font-weight: bold;
+	margin: 1em 0 .5em 0;
+}
+
+.entity-tree-item-body {
+	margin-left: 2em;
+	display: none;
+}
+
+/* ===== Hosts ===== */
+
+.host-status-online {
+	color: #00c000;
+}
+
+.host-status-crashed, .host-status-unknown, .host-status-null {
+	color: #c00000;
+}
+
+#new-value-cell {
+	width: 23em;
+}
+
+#status-message-container {
+	width: 20em;
+}
+
+#hosts-host-add-form input.name-hostname {
+	width: 25em;
+}
+
+#hosts-group-add-edit-form input.name-name {
+	width: 25em;
+}
+
+#hosts-group-add-edit-form textarea.name-description {
+	width: 23.1em; /* 23.1em Courier = 25em Verdana :-) */
+	height: 10em;
+}
+
+#hosts-group-add-edit-form textarea.name-rsl {
+	width: 23.1em; /* 23.1em Courier = 25em Verdana :-) */
+	height: 10em;
+}
+
+#rsl-info-message-row, #rsl-error-message-row {
+	display: none;
+}
+
+#rsl-info-message, #rsl-error-message {
+	width: 30.5em;
+	font-size: 7pt;
+}
+
+#hosts-alias-add-edit-form input.name-alias-name,
+#hosts-alias-add-edit-form input.name-result-name,
+#hosts-alias-add-edit-form input.name-result-vendor,
+#hosts-alias-add-edit-form input.name-result-version {
+	width: 25em;
+}
+
+#hosts-alias-add-edit-form textarea.name-os-restriction,
+#hosts-alias-add-edit-form textarea.name-app-restriction {
+	width: 23.1em; /* 23.1em Courier = 25em Verdana :-) */
+	height: 10em;
+}
+
+/* ===== Tasks ===== */
+
+#tasks-run-task-gui-form select.name-task-name,
+#tasks-run-task-gui-form select.name-host {
+	width: 25em;
+}
+
+#tasks-run-task-gui-form select.name-context-id {
+	width: 15em;
+}
+
+#tasks-run-task-gui-form textarea.name-properties {
+	width: 23.1em; /* 23.1em Courier = 25em Verdana :-) */
+	height: 10em;
+}
+
+#tasks-run-task-xml-form textarea.name-xml {
+	width: 23.1em; /* 23.1em Courier = 25em Verdana :-) */
+	height: 15em;
+}
+
+.tabsheet.tasks-run-task {
+	width: 50em;
+	margin: 0 auto;
+}
+
+.task-state-running {
+	color: #0000c0;
+}
+
+.task-state-finished-success {
+	color: #00c000;
+}
+
+.task-state-aborted, .task-state-finished-error {
+	color: #c00000;
+}
+
+.context-state-closed {
+    background: rgb(255,255,204);
+}
+/* ===== Results ===== */
+
+.results-entity-details-tabsheet {
+	min-width: 50em;
+}
+
+#metadata-sheet textarea {
+	width: 23.1em; /* 23.1em Courier = 25em Verdana :-) */
+	height: 10em;
+}
+
+.invalid-invisible, .incomplete-invisible {
+	display: none;
+}
+
+.entity-status-valid, .entity-status-complete {
+	color: #00c000;
+}
+
+.entity-status-invalid, .entity-status-incomplete {
+	color: #c00000;
+}
+
+.value-highlight-positive {
+	color: #c00000;
+}
+
+.value-highlight-negative {
+	color: #00c000;
+}
+
+#results-package-upload-form input.name-file {
+	width: 25em;
+}
+
+/* ===== Configuration ===== */
+
+#configuration-configuration-form input.name-task-manager-hostname {
+	width: 25em;
+}
+
+#configuration-configuration-form input.name-max-package-cache-size,
+#configuration-configuration-form input.name-kept-closed-context-count,
+#configuration-configuration-form input.name-host-detection-timeout,
+#configuration-configuration-form input.name-pending-refresh-interval,
+#configuration-configuration-form input.name-activity-monitor-interval,
+#configuration-configuration-form input.name-dead-host-timeout,
+#configuration-configuration-form input.name-brief-mode-interval,
+#configuration-configuration-form input.name-default-detailed-mode-interval {
+	width: 5em;
+}
+
+/* ===== Services ===== */
+
+.service-status-running {
+	color: #00c000;
+}
+
+.service-status-starting, .service-status-stopping, .service-status-restarting {
+	color: #0000c0;
+}
+
+.service-status-null {
+	color: #c00000;
+}
+
+.rrdatasetdetail td, th {
+	padding: 5px;
+	vertical-align: top;
+}
+
+/* ===== Analyses ===== */
+
+.analysis-status-running {
+	color: #00c000;
+}
+
+.analysis-status-generating {
+	color: #0000c0;
+}
+
+.analysis-status-idle, .analysis-status-unknown {
+	color: #000000;
+}
+
+.analysis-time-passed {
+	color: #c00000;
+}

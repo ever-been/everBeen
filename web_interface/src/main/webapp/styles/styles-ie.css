@@ -1,0 +1,56 @@
+/*
+ *  BEEN: Benchmarking Environment
+ *  ==============================
+ *
+ *  File author: David Majda
+ *
+ *  GNU Lesser General Public License Version 2.1
+ *  ---------------------------------------------
+ *  Copyright (C) 2004-2006 Distributed Systems Research Group,
+ *  Faculty of Mathematics and Physics, Charles University in Prague
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License version 2.1, as published by the Free Software Foundation.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+ *  MA  02111-1307  USA
+ */
+
+input.type-button, input.type-submit, button {
+	width: expression(
+		(this.clientWidth < 72
+			? 72
+			: this.scrollWidth + 24)
+		 + "px"
+	);
+	margin: .1em;
+}
+
+/* Variation of the "Holly hack", correcting invalid display behavior of the
+ * bars composed of many nested <div>'s.
+ */
+.bar .inner, .error-messages .inner, .warning-messages .inner, .info-messages .inner {
+	height: 1%;
+}
+
+#header li a {
+	display: inline-block;
+	height: 19px; 
+}
+
+.tabsheet ul.tabsheet-tabs {
+	height: 22px;
+}
+
+.tabsheet ul.tabsheet-tabs li a {
+	display: inline-block;
+	height: 19px; 
+}

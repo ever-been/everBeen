@@ -1,0 +1,73 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>task-run-gui-ok</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">task-run-gui-ok</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>/been/tasks/task-run/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>task-name</td>
+	<td>label=metadata-task-all-optional-elements</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>host</td>
+	<td>index=5</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>context-id</td>
+	<td>label=system</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>properties</td>
+	<td>a=b<br /> c = d <br /><br /></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>run</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Task runned successfully.</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=task-0</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//tr[23]/td/table.1.0</td>
+	<td>a</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//tr[23]/td/table.1.1</td>
+	<td>b</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//tr[23]/td/table.2.0</td>
+	<td>c</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//tr[23]/td/table.2.1</td>
+	<td>d</td>
+</tr>
+</tbody></table>
+</body>
+</html>

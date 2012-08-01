@@ -1,0 +1,65 @@
+<!--
+
+  BEEN: Benchmarking Environment
+  ==============================
+
+  File author: David Majda
+
+  GNU Lesser General Public License Version 2.1
+  ---------------------------------------------
+  Copyright (C) 2004-2006 Distributed Systems Research Group,
+  Faculty of Mathematics and Physics, Charles University in Prague
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License version 2.1, as published by the Free Software Foundation.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+  MA  02111-1307  USA
+
+-->
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>BEEN Web Interface Test Suite</title>
+  </head>
+
+  <body>
+    <table id="suite-table" cellpadding="1" cellspacing="1" border="1">
+		<tr><td><h1>BEEN Web Interface Test Suite</h1></td></tr>
+    </table>
+	<script type="text/javascript" src="test-list.js"></script>
+	<script type="text/javascript">
+		function insertTestCell(table, testGroup, test) {
+			var row = table.insertRow(-1);
+			var cell = row.insertCell(-1);
+			var link = document.createElement("a");
+			link.href = "/been/tests/" + testGroup + "/" + test + ".html";
+			link.appendChild(document.createTextNode(testGroup + "/" + test))
+			cell.appendChild(link);
+		}
+
+		function insertTestGroupCells(testGroup) {
+			for (var i = 0; i < tests[testGroup].tests.length; i++) {
+				insertTestCell(suiteTable, testGroup, tests[testGroup].tests[i]);
+			}
+		}
+		
+		var suiteTable = document.getElementById("suite-table");
+		if (location.search) {
+			insertTestGroupCells(location.search.substring(1));
+		} else {
+			for (testGroup in tests) {
+				insertTestGroupCells(testGroup);
+			}
+		}
+	</script>
+  </body>
+</html>

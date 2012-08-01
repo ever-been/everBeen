@@ -1,0 +1,92 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>cz.cuni.mff.d3s.been</groupId>
+	<artifactId>obsolete_jar_installer</artifactId>
+	<version>0.0.1</version>
+	<packaging>pom</packaging>
+	<name>obsolete_jar_installer</name>
+
+	<parent>
+		<groupId>cz.cuni.mff.d3s.been</groupId>
+		<artifactId>parent</artifactId>
+		<version>0.0.1</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-install-plugin</artifactId>
+				<version>2.3.1</version>
+				<executions>
+					<execution>
+						<id>install-log4j</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>install-file</goal>
+						</goals>
+						<configuration>
+							<file>${project.basedir}/../been/lib/log4j/log4j-1.2.12.jar</file>
+							<groupId>webinterface</groupId>
+							<artifactId>log4j</artifactId>
+							<version>none</version>
+							<packaging>jar</packaging>
+						</configuration>
+					</execution>
+				
+					<execution>
+						<id>install-commons</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>install-file</goal>
+						</goals>
+						<configuration>
+							<file>${project.basedir}/../been/lib/commons-io/commons-io-1.4.jar</file>
+							<groupId>webinterface</groupId>
+							<artifactId>commons-io</artifactId>
+							<version>none</version>
+							<packaging>jar</packaging>
+						</configuration>
+					</execution>
+				
+					<execution>
+						<id>install-commons-fileupload</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>install-file</goal>
+						</goals>
+						<configuration>
+							<file>${project.basedir}/../been/lib/webinterface/commons-fileupload-1.2.1.jar</file>
+							<groupId>webinterface</groupId>
+							<artifactId>commons-fileupload</artifactId>
+							<version>none</version>
+							<packaging>jar</packaging>
+						</configuration>
+					</execution>
+				
+					<execution>
+						<id>install-rmiio</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>install-file</goal>
+						</goals>
+						<configuration>
+							<file>${project.basedir}/../been/lib/rmiio/rmiio-2.0.2.jar</file>
+							<groupId>webinterface</groupId>
+							<artifactId>rmiio</artifactId>
+							<version>none</version>
+							<packaging>jar</packaging>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

@@ -21,19 +21,38 @@
 			<version>2.1.0</version>
 		</dependency>
 
-		<!--
+		<!-- EXTERNAL DEPENDENCIES -->
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
-			<scope>test</scope>
+			<groupId>webinterface</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>none</version>
+			<scope>runtime</scope>
+			<type>jar</type>
 		</dependency>
-		-->
+		<dependency>
+			<groupId>webinterface</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>none</version>
+			<scope>runtime</scope>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>webinterface</groupId>
+			<artifactId>log4j</artifactId>
+			<version>none</version>
+			<scope>runtime</scope>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>webinterface</groupId>
+			<artifactId>rmiio</artifactId>
+			<version>none</version>
+			<scope>runtime</scope>
+			<type>jar</type>
+		</dependency>
 	</dependencies>
 
 	<build>
 		<finalName>web_interface</finalName>
-		<plugins>
-		</plugins>
 	</build>
 </project>

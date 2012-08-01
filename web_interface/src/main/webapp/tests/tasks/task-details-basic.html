@@ -1,0 +1,355 @@
+<!--
+
+  BEEN: Benchmarking Environment
+  ==============================
+   
+  File author: David Majda
+
+  GNU Lesser General Public License Version 2.1
+  ---------------------------------------------
+  Copyright (C) 2004-2006 Distributed Systems Research Group,
+  Faculty of Mathematics and Physics, Charles University in Prague
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License version 2.1, as published by the Free Software Foundation.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+  MA  02111-1307  USA
+
+-->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>task-details-basic</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">task-details-basic</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>/been/tasks/task-details/?cid=system&tid=benchmarkmanager-tid</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTitle</td>
+	<td>exact:BEEN: Task details: benchmarkmanager-tid</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>//h1</td>
+	<td>Task details: benchmarkmanager-tid</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//table.0.0</td>
+	<td>General</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//table.1.0</td>
+	<td>exact:ID:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//table.1.1</td>
+	<td>benchmarkmanager-tid</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//table.2.0</td>
+	<td>exact:Name:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//table.2.1</td>
+	<td>benchmarkmanager</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//table.3.0</td>
+	<td>exact:Description:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//table.3.1</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//table.4.0</td>
+	<td>Package name:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//table.4.1</td>
+	<td>benchmarkmanager.bpk</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//table.5.0</td>
+	<td>Host:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//table.5.1</td>
+	<td>regexp:[a-zA-Z0-9]([a-zA-Z0-9\-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9\-]*[a-zA-Z0-9])?)*</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//table.6.0</td>
+	<td>Status</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//table.7.0</td>
+	<td>exact:State:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//table.7.1</td>
+	<td>running</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//table.8.0</td>
+	<td>exact:Submitted:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//table.9.0</td>
+	<td>exact:Started:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//table.10.0</td>
+	<td>exact:Finished:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//table.10.1</td>
+	<td>N/A</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//table.11.0</td>
+	<td>Restarts & timeouts</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//table.12.0</td>
+	<td>Restart count:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//table.12.1</td>
+	<td>0</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//table.13.0</td>
+	<td>Maximum restarts allowed:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//table.13.1</td>
+	<td>not restricted</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//table.14.0</td>
+	<td>Maximum running time:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//table.14.1</td>
+	<td>not restricted</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//table.15.0</td>
+	<td>Directories</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//table.16.0</td>
+	<td>Task directory:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//table.17.0</td>
+	<td>Working directory:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//table.18.0</td>
+	<td>Temporary directory:</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//table.19.0</td>
+	<td>Reached checkpoints</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//td/table.0.0</td>
+	<td>Name</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//td/table.0.1</td>
+	<td>Value</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//td/table.1.0</td>
+	<td>task started</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//td/table.1.1</td>
+	<td>N/A</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//td/table.2.0</td>
+	<td>service status</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//td/table.2.1</td>
+	<td>running</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//table.21.0</td>
+	<td>Task properties</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//table.22.0</td>
+	<td>No task properties set.</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//a[@onclick="tabsheetActivate(this, 'logs-sheet'); return false;"]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[2]/div/div/div[1]/div/table.0.0</td>
+	<td>Time</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[2]/div/div/div[1]/div/table.0.1</td>
+	<td>Level</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[2]/div/div/div[1]/div/table.0.2</td>
+	<td>Message</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[2]/div/div/div[1]/div/table.1.0</td>
+	<td>regexp:\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[2]/div/div/div[1]/div/table.1.1</td>
+	<td>INFO</td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[2]/div/div/div[1]/div/table.1.2</td>
+	<td>Added service interface been/benchmarkmanager/control</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//thead/tr/th[1]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[2]/div/div/div[1]/div/table.1.0</td>
+	<td>regexp:\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//thead/tr/th[1]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[2]/div/div/div[1]/div/table.1.0</td>
+	<td>regexp:\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//thead/tr/th[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[2]/div/div/div[1]/div/table.1.1</td>
+	<td>DEBUG</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//thead/tr/th[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[2]/div/div/div[1]/div/table.1.1</td>
+	<td>INFO</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//thead/tr/th[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[2]/div/div/div[1]/div/table.1.2</td>
+	<td>Activated: cz.cuni.mff.been.plugins.rubis</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//thead/tr/th[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTable</td>
+	<td>//div[2]/div/div/div[1]/div/table.1.2</td>
+	<td>Service is starting</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Standard output</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>INFO [main] - got SAX parser factory</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Error output</td>
+	<td></td>
+</tr>
+</tbody></table>
+</body>
+</html>

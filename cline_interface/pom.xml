@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>cz.cuni.mff.d3s.been</groupId>
 	<artifactId>cline_interface</artifactId>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<version>2.1.0</version>
 	<name>cline_interface</name>
 
