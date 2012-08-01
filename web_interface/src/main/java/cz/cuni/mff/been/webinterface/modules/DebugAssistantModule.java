@@ -39,7 +39,7 @@ import cz.cuni.mff.been.debugassistant.DebugAssistantException;
 import cz.cuni.mff.been.debugassistant.DebugAssistantInterface;
 import cz.cuni.mff.been.debugassistant.DebugAssistantService;
 import cz.cuni.mff.been.debugassistant.SuspendedTask;
-import cz.cuni.mff.been.task.Service;
+import cz.cuni.mff.been.services.Service;
 import cz.cuni.mff.been.webinterface.MissingParamException;
 import cz.cuni.mff.been.webinterface.ref.ServiceReference;
 import cz.cuni.mff.been.webinterface.ref.TaskManagerReference;

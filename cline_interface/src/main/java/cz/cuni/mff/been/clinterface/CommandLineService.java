@@ -28,7 +28,7 @@ package cz.cuni.mff.been.clinterface;
 import java.io.IOException;
 
 import cz.cuni.mff.been.services.Names;
-import cz.cuni.mff.been.task.Service;
+import cz.cuni.mff.been.services.Service;
 import cz.cuni.mff.been.task.TaskException;
 import cz.cuni.mff.been.task.TaskInitializationException;
 

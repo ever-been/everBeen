@@ -25,8 +25,8 @@
  */
 package cz.cuni.mff.been.hostruntime;
 
+import cz.cuni.mff.been.services.Service;
 import cz.cuni.mff.been.task.Job;
-import cz.cuni.mff.been.task.Service;
 import cz.cuni.mff.been.task.Task;
 import cz.cuni.mff.been.task.TaskException;
 

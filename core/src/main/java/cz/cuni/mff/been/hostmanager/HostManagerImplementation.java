@@ -56,7 +56,7 @@ import cz.cuni.mff.been.hostmanager.database.SoftwareAliasDefinition;
 import cz.cuni.mff.been.hostmanager.load.LoadServerInterface;
 import cz.cuni.mff.been.hostmanager.util.MiscUtils;
 import cz.cuni.mff.been.jaxb.td.TaskDescriptor;
-import cz.cuni.mff.been.task.Service;
+import cz.cuni.mff.been.services.Service;
 import cz.cuni.mff.been.task.Task;
 import cz.cuni.mff.been.taskmanager.HostRuntimeRegistrationListener;
 import cz.cuni.mff.been.taskmanager.TaskDescriptorHelper;

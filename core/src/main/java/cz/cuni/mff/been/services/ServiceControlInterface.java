@@ -21,12 +21,14 @@
  * along with this library; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-package cz.cuni.mff.been.task;
+package cz.cuni.mff.been.services;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-import cz.cuni.mff.been.task.ServiceInfo.Status;
+import cz.cuni.mff.been.services.ServiceInfo.Status;
+import cz.cuni.mff.been.task.InvalidServiceStateException;
+import cz.cuni.mff.been.task.TaskException;
 
 /**
  * Interface used to remotely control a service task.
