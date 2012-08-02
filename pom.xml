@@ -13,6 +13,7 @@
 		<module>core</module>
 		<module>cline_interface</module>
 		<module>web_interface</module>
+		<module>bcmd</module>
 	</modules>
 
 	<properties>
