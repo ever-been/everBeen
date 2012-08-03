@@ -1,0 +1,38 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>cz.cuni.mff.d3s.been</groupId>
+	<artifactId>bcmd</artifactId>
+	<version>2.1.0</version>
+	<packaging>uexe</packaging>
+	<name>bcmd</name>
+
+	<build>
+		<finalName>bcmd</finalName>
+		<plugins>
+
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>native-maven-plugin</artifactId>
+				<version>1.0-alpha-7</version>
+				<extensions>true</extensions>
+				<configuration>
+					<outputFolder>bin</outputFolder>
+					<sources>
+						<source>
+							<directory>unix</directory>
+							<includes>
+								<include>bcmd.c</include>
+							</includes>
+						</source>
+					</sources>
+
+
+					<compilerProvider>generic-classic</compilerProvider>
+					<compilerExecutable>gcc</compilerExecutable>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
