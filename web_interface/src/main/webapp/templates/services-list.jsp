@@ -28,8 +28,8 @@
 	include file="includes.jsp"
 %><%@ page
 	import="cz.cuni.mff.been.task.*"
-	import="cz.cuni.mff.been.webinterface.services.*"
-	import="cz.cuni.mff.been.webinterface.services.ServiceInfo.Status"
+	import="cz.cuni.mff.been.services.*"
+	import="cz.cuni.mff.been.services.ServiceInfo.Status"
 %><%
 	page_.writeInfoMessages();
 	page_.writeWarningMessages();
