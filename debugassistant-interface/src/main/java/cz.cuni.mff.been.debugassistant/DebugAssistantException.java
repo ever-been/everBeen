@@ -26,14 +26,23 @@
 
 package cz.cuni.mff.been.debugassistant;
 
-import cz.cuni.mff.been.common.RMISafeException;
+//import cz.cuni.mff.been.common.RMISafeException;
 
 /**
  * All the bad things that could happen in the debug assistant.
  * 
  * @author Jan Tattermusch
+ *
+ * /
+
+
+
+ /*
+ * TODO: due to cyclic dependency between core and da-interface the class
+ * hiearchy has been changed, this is WRONG! After mavenenization is completead
+ * this change should be revereted!
  */
-public class DebugAssistantException extends RMISafeException {
+public class DebugAssistantException extends Exception /*extends RMISafeException*/ {
 
 	private static final long	serialVersionUID	= -8835602578525791295L;
 

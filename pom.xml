@@ -14,6 +14,8 @@
 		<module>cline_interface</module>
 		<module>web_interface</module>
 		<module>bcmd</module>
+        <module>debugassistant-interface</module>
+        <module>debugassistant-implementation</module>
 	</modules>
 
 	<properties>
@@ -723,13 +725,6 @@
 			<version>none</version>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/../been/lib/derby/derbynet.jar</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>jpda</groupId>
-			<artifactId>tools.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/jpda/tools.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>examples</groupId>

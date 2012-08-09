@@ -19,6 +19,17 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
+    <dependencies>
+        <!-- BEEN DEPENDENCIES -->
+
+        <!-- TODO: HostRuntime depends on da-interface, should be removed after the hr is removed from core -->
+        <dependency>
+            <groupId>cz.cuni.mff.d3s.been</groupId>
+            <artifactId>debugassistant-interface</artifactId>
+            <version>2.1.0</version>
+        </dependency>
+    </dependencies>
+
 	<build>
 		<plugins>
 			<plugin>

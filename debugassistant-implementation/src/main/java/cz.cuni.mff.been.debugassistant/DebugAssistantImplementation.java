@@ -23,7 +23,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston,
  *  MA  02111-1307  USA
  */
-package cz.cuni.mff.been.debugassistant.implementation;
+package cz.cuni.mff.been.debugassistant;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -39,9 +39,6 @@ import com.sun.jdi.connect.AttachingConnector;
 import com.sun.jdi.connect.IllegalConnectorArgumentsException;
 import com.sun.jdi.connect.Connector.Argument;
 
-import cz.cuni.mff.been.debugassistant.DebugAssistantException;
-import cz.cuni.mff.been.debugassistant.DebugAssistantInterface;
-import cz.cuni.mff.been.debugassistant.SuspendedTask;
 import cz.cuni.mff.been.task.Task;
 
 /**
@@ -144,7 +141,7 @@ public class DebugAssistantImplementation extends UnicastRemoteObject implements
               Map<String, Argument> arguments = connector.defaultArguments();
 
               arguments.get("hostname").setValue(hostname);
-              arguments.get("port").setValue(new Integer(port).toString());
+              arguments.get("port").setValue(Integer.toString(port));
 
               VirtualMachine vm = connector.attach(arguments);
               vm.setDebugTraceMode( VirtualMachine.TRACE_NONE);

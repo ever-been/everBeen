@@ -37,12 +37,15 @@ import javax.servlet.http.HttpServletResponse;
 import cz.cuni.mff.been.common.ComponentInitializationException;
 import cz.cuni.mff.been.debugassistant.DebugAssistantException;
 import cz.cuni.mff.been.debugassistant.DebugAssistantInterface;
-import cz.cuni.mff.been.debugassistant.DebugAssistantService;
 import cz.cuni.mff.been.debugassistant.SuspendedTask;
 import cz.cuni.mff.been.services.Service;
 import cz.cuni.mff.been.webinterface.MissingParamException;
 import cz.cuni.mff.been.webinterface.ref.ServiceReference;
 import cz.cuni.mff.been.webinterface.ref.TaskManagerReference;
+
+import static cz.cuni.mff.been.services.Names.DEBUG_ASSISTANT_SERVICE_HUMAN_NAME;
+import static cz.cuni.mff.been.services.Names.DEBUG_ASSISTANT_SERVICE_NAME;
+
 
 /**
  * Debug assistant module
@@ -68,9 +71,9 @@ public class DebugAssistantModule extends Module {
 		
 		this.debugAssistant = new ServiceReference< DebugAssistantInterface >(
 				new TaskManagerReference(),
-				DebugAssistantService.SERVICE_NAME,
+				DEBUG_ASSISTANT_SERVICE_NAME,
 				Service.RMI_MAIN_IFACE,
-				DebugAssistantService.SERVICE_HUMAN_NAME
+				DEBUG_ASSISTANT_SERVICE_HUMAN_NAME
 			);
 
 		
