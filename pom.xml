@@ -10,7 +10,9 @@
 
 	<modules>
 		<module>obsolete_jar_installer</module>
+		<module>service_interfaces</module>
 		<module>core</module>
+		<module>host_runtime</module>
 		<module>cline_interface</module>
 		<module>web_interface</module>
 		<module>bcmd</module>
