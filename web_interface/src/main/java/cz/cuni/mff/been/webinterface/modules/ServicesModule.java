@@ -37,9 +37,7 @@ import java.util.HashMap;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import cz.cuni.mff.been.common.ComponentInitializationException;
-import cz.cuni.mff.been.debugassistant.DebugAssistantService;
 import cz.cuni.mff.been.hostmanager.HostManagerService;
 import cz.cuni.mff.been.jaxb.td.TaskDescriptor;
 import cz.cuni.mff.been.logging.LogRecord;
@@ -63,6 +61,10 @@ import cz.cuni.mff.been.webinterface.MissingParamException;
 import cz.cuni.mff.been.webinterface.event.Event;
 import cz.cuni.mff.been.webinterface.event.EventListener;
 import cz.cuni.mff.been.webinterface.ref.TaskManagerReference;
+
+import static cz.cuni.mff.been.services.Names.DEBUG_ASSISTANT_SERVICE_NAME;
+import static cz.cuni.mff.been.services.Names.DEBUG_ASSISTANT_SERVICE_HUMAN_NAME;
+
 
 /**
  * Web interface module for the services management.
@@ -103,8 +105,8 @@ public class ServicesModule extends Module implements EventListener {
 				HostManagerService.SERVICE_HUMAN_NAME
 			),
 			new ServiceInfo(
-				DebugAssistantService.SERVICE_NAME,
-				DebugAssistantService.SERVICE_HUMAN_NAME
+				DEBUG_ASSISTANT_SERVICE_NAME,
+				DEBUG_ASSISTANT_SERVICE_HUMAN_NAME
 			),
 			
 			new ServiceInfo(

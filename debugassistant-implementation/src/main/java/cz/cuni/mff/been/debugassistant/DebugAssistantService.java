@@ -27,7 +27,6 @@ package cz.cuni.mff.been.debugassistant;
 
 import java.rmi.RemoteException;
 
-import cz.cuni.mff.been.debugassistant.DebugAssistantImplementation;
 import cz.cuni.mff.been.services.Service;
 import cz.cuni.mff.been.task.TaskException;
 import cz.cuni.mff.been.task.TaskInitializationException;

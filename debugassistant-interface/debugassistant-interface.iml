@@ -9,6 +9,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="core-exceptions" />
     <orderEntry type="library" name="Maven: junit:junit.jar:none" level="project" />
     <orderEntry type="library" name="Maven: webinterface:jsp-api.jar:none" level="project" />
     <orderEntry type="library" name="Maven: webinterface:servlet-api.jar:none" level="project" />

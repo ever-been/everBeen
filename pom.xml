@@ -10,6 +10,7 @@
 
 	<modules>
 		<module>obsolete_jar_installer</module>
+        <module>core-exceptions</module>
 		<module>core</module>
 		<module>cline_interface</module>
 		<module>web_interface</module>
