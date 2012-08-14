@@ -14,6 +14,7 @@
 		<module>cline_interface</module>
 		<module>web_interface</module>
 		<module>bcmd</module>
+        <module>examples</module>
 	</modules>
 
 	<properties>
