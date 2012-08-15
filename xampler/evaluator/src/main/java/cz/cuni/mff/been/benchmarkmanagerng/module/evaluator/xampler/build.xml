@@ -4,7 +4,7 @@
   BEEN: Benchmarking Environment
   ==============================
 
-  File author: Jiri Tauber
+  File author: Jan Tattermusch
 
   GNU Lesser General Public License Version 2.1
   - - - - - - - - - - - - - - - - - - - - - - -
@@ -28,25 +28,25 @@
 -->
 <!--
 
-  This file serves as a template for all the generator pluggable modules.
+  This file serves as a template for all the evaluator pluggable modules.
   I suggest you change just the 4 properties at the top and leave the rest.
   Don't forget to add your module to both "dist" and "clean" targets
-  in the .../module/generator/build.xml file.
+  in the .../module/evaluator/build.xml file.
 
 -->
-<project name="BEEN" default="dist" basedir=".">
+<project name="BEEN" default="dist" basedir="../../../../../../../../../../../../core/src/main/java/cz/cuni/mff/been/benchmarkmanagerng/module/evaluator/xampler">
 	<!-- ============== PROPERTIES ============== -->
 
-	<property name="module.name" value="xampler-svn-generator" />
+	<property name="module.name" value="xampler-evaluator" />
 
 	<!-- version of the task. -->
 	<property name="module.version" value="1.0" />
 
 	<!-- Directory path of the pluggable module package -->
-	<property name="module.package.path" value="${generator.package.path}/xamplersvn" />
+	<property name="module.package.path" value="${evaluator.package.path}/xampler" />
 
 	<!-- Directory path of the pluggable module resources -->
-	<property name="module.resources.dir" location="${generator.resources.dir}/xamplersvn" />
+	<property name="module.resources.dir" location="${evaluator.resources.dir}/xampler" />
 
 
 <!-- ==================== DON'T CHANGE BELLOW ========================= -->
@@ -65,10 +65,10 @@
 		<!-- Module classes -->
 		<include name="${module.package.path}/**/*.class" />
 		<!-- Base class -->
-		<include name="${module.interface.path}/GeneratorPluggableModule.class" />
+		<include name="${module.interface.path}/EvaluatorPluggableModule.class" />
 		<!-- Module interfaces -->
 		<include name="${module.interface.path}/ModuleInterface.class" />
-		<include name="${module.interface.path}/GeneratorInterface.class" />
+		<include name="${module.interface.path}/EvaluatorInterface.class" />
 	</fileset>
 
 	<!-- Modules's resource files -->
@@ -101,11 +101,8 @@
 		<zip destfile="${dist.tasks.dir}/${module.bpk}" update="false">
 			<fileset refid="module.resources" />
 			<zipfileset prefix="files" dir="${module.resources.dir}">
-				<include name="${module.jar}" />
+				<include name="${module.jar}"/>
 			</zipfileset>
-                        <zipfileset prefix="files" dir="${lib.dir}">
-                                <include name="${javasvn.jar}" />
-                        </zipfileset>
 		</zip>
 
 		<!-- delete the jar file with the task's classes (it's already zipped in the task's package -->

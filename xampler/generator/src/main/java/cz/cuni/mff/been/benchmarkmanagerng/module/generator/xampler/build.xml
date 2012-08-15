@@ -4,7 +4,7 @@
   BEEN: Benchmarking Environment
   ==============================
 
-  File author: Jan Tattermusch
+  File author: Jiri Tauber
 
   GNU Lesser General Public License Version 2.1
   - - - - - - - - - - - - - - - - - - - - - - -
@@ -34,19 +34,19 @@
   in the .../module/generator/build.xml file.
 
 -->
-<project name="BEEN" default="dist" basedir=".">
+<project name="BEEN" default="dist" basedir="">
 	<!-- ============== PROPERTIES ============== -->
 
-	<property name="module.name" value="xampler-swrep-generator" />
+	<property name="module.name" value="xampler-generator" />
 
 	<!-- version of the task. -->
 	<property name="module.version" value="1.0" />
 
 	<!-- Directory path of the pluggable module package -->
-	<property name="module.package.path" value="${generator.package.path}/xamplerswrep" />
+	<property name="module.package.path" value="${generator.package.path}/xampler" />
 
 	<!-- Directory path of the pluggable module resources -->
-	<property name="module.resources.dir" location="${generator.resources.dir}/xamplerswrep" />
+	<property name="module.resources.dir" location="${generator.resources.dir}/xampler" />
 
 
 <!-- ==================== DON'T CHANGE BELLOW ========================= -->
