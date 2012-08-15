@@ -11,6 +11,7 @@
         <module>generator</module>
         <module>generator-svn</module>
         <module>generator-swrep</module>
+        <module>task-execute</module>
 
     </modules>
 
