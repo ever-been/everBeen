@@ -12,7 +12,9 @@
         <module>generator-svn</module>
         <module>generator-swrep</module>
         <module>task-execute</module>
-
+        <module>task-deploy</module>
+        <module>task-collectresults</module>
+        <module>task-build-linux</module>
     </modules>
 
 

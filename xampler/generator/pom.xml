@@ -20,5 +20,12 @@
             <artifactId>xampler-task-execute</artifactId>
             <version>2.1.0</version>
         </dependency>
+        <dependency>
+            <groupId>collections-generic</groupId>
+            <artifactId>collections-generic-4.01.jar</artifactId>
+            <version>none</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/../../been/lib/collections-generic/collections-generic-4.01.jar</systemPath>
+        </dependency>
     </dependencies>
 </project>

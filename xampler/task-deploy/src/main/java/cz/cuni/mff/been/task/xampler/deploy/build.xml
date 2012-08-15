@@ -26,19 +26,19 @@
   MA  02111-1307  USA
 
 -->
-<project name="BEEN" default="package" basedir=".">
+<project name="BEEN" default="package" basedir="">
 	<!-- ============== PROPERTIES ============== -->
 	
-	<property name="task.name" value="xampler-build-linux"/>
+	<property name="task.name" value="xampler-deploy"/>
 	
 	<!-- version of the task. -->	
 	<property name="task.version" value="1.0"/>
 	
 	<!-- Directory of the task in the ${etc.dir} directory -->
-	<property name="task.dir" location="${packages.dir}/task/xampler/build/linux"/>
+	<property name="task.dir" location="${packages.dir}/task/xampler/deploy"/>
 	
 	<!-- Directory path of the package  of the task -->
-	<property name="task.package.path" value="cz/cuni/mff/been/task/xampler/build/linux"/>
+	<property name="task.package.path" value="cz/cuni/mff/been/task/xampler/deploy"/>
 	
 	<!-- Name of the jar file with task's classes  -->
 	<property name="task.jar" value="${task.name}.jar" />
@@ -54,7 +54,6 @@
 		
 		<include name="cz/cuni/mff/been/pluggablemodule/fileagent/*.class"/>
 		<exclude name="cz/cuni/mff/been/pluggablemodule/fileagent/implementation/*.class"/>
-		
 	</fileset>
 
 	<!-- ============== TARGETS ================ -->
