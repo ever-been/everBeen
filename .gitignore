@@ -1,3 +1,6 @@
 #Intellij IDEA files
 *.iml
 .idea
+.classpath
+.project
+target
