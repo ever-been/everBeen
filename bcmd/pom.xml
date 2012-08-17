@@ -10,15 +10,13 @@
 	<build>
 		<finalName>bcmd</finalName>
 		<plugins>
-
-
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>native-maven-plugin</artifactId>
 				<version>1.0-alpha-7</version>
 				<extensions>true</extensions>
 				<configuration>
-					<outputFolder>bin</outputFolder>
+
 					<sources>
 						<source>
 							<directory>unix</directory>
@@ -31,6 +29,16 @@
 
 					<compilerProvider>generic-classic</compilerProvider>
 					<compilerExecutable>gcc</compilerExecutable>
+
+                    <compilerStartOptions>
+                        <compilerStartOption>-std=c99 -O2 -pipe -Wall -pedantic</compilerStartOption>
+                    </compilerStartOptions>
+
+                    <!-- does NOT create the bin directory resulting in build failure -->
+                    <!--
+                    <linkerOutputDirectory>${project.build.directory}/bin</linkerOutputDirectory>
+                    -->
+
 				</configuration>
 			</plugin>
 		</plugins>
