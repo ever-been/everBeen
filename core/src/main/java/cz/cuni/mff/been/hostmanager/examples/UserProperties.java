@@ -30,20 +30,20 @@ import java.rmi.Naming;
 import java.rmi.RemoteException;
 
 import cz.cuni.mff.been.common.RMI;
+import cz.cuni.mff.been.common.value.ValueBoolean;
+import cz.cuni.mff.been.common.value.ValueDouble;
+import cz.cuni.mff.been.common.value.ValueInteger;
+import cz.cuni.mff.been.common.value.ValueList;
+import cz.cuni.mff.been.common.value.ValueRange;
+import cz.cuni.mff.been.common.value.ValueRegexp;
+import cz.cuni.mff.been.common.value.ValueString;
+import cz.cuni.mff.been.common.value.ValueType;
+import cz.cuni.mff.been.common.value.ValueVersion;
 import cz.cuni.mff.been.hostmanager.HostManagerInterface;
 import cz.cuni.mff.been.hostmanager.database.HostInfoInterface;
 import cz.cuni.mff.been.hostmanager.database.NameValuePair;
 import cz.cuni.mff.been.hostmanager.database.PropertyTreeInterface;
 import cz.cuni.mff.been.hostmanager.database.PropertyTreeReadInterface;
-import cz.cuni.mff.been.hostmanager.value.ValueBoolean;
-import cz.cuni.mff.been.hostmanager.value.ValueDouble;
-import cz.cuni.mff.been.hostmanager.value.ValueInteger;
-import cz.cuni.mff.been.hostmanager.value.ValueList;
-import cz.cuni.mff.been.hostmanager.value.ValueRange;
-import cz.cuni.mff.been.hostmanager.value.ValueRegexp;
-import cz.cuni.mff.been.hostmanager.value.ValueString;
-import cz.cuni.mff.been.hostmanager.value.ValueType;
-import cz.cuni.mff.been.hostmanager.value.ValueVersion;
 
 /**
  * This class represents simple application which connects to the Host Manager and retrieves list of all

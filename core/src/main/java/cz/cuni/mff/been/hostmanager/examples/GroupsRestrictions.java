@@ -30,6 +30,12 @@ import java.rmi.Naming;
 import java.rmi.RemoteException;
 
 import cz.cuni.mff.been.common.RMI;
+import cz.cuni.mff.been.common.value.ValueInteger;
+import cz.cuni.mff.been.common.value.ValueRange;
+import cz.cuni.mff.been.common.value.ValueRegexp;
+import cz.cuni.mff.been.common.value.ValueString;
+import cz.cuni.mff.been.common.value.ValueType;
+import cz.cuni.mff.been.common.value.ValueVersion;
 import cz.cuni.mff.been.hostmanager.HostManagerInterface;
 import cz.cuni.mff.been.hostmanager.HostManagerService;
 
@@ -45,12 +51,6 @@ import cz.cuni.mff.been.hostmanager.database.Processor;
 import cz.cuni.mff.been.hostmanager.database.Product;
 import cz.cuni.mff.been.hostmanager.database.RestrictionInterface;
 
-import cz.cuni.mff.been.hostmanager.value.ValueInteger;
-import cz.cuni.mff.been.hostmanager.value.ValueRange;
-import cz.cuni.mff.been.hostmanager.value.ValueRegexp;
-import cz.cuni.mff.been.hostmanager.value.ValueString;
-import cz.cuni.mff.been.hostmanager.value.ValueType;
-import cz.cuni.mff.been.hostmanager.value.ValueVersion;
 
 /**
  * This class represents simple application which creates group based on set of conditions.

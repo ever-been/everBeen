@@ -51,6 +51,9 @@ import org.w3c.dom.Node;
 
 import cz.cuni.mff.been.common.Pair;
 import cz.cuni.mff.been.common.RMI;
+import cz.cuni.mff.been.common.util.MiscUtils;
+import cz.cuni.mff.been.common.util.TimeUtils;
+import cz.cuni.mff.been.common.util.XMLHelper;
 
 import cz.cuni.mff.been.hostmanager.HostManagerException;
 import cz.cuni.mff.been.hostmanager.HostManagerOptionsInterface;
@@ -62,9 +65,6 @@ import cz.cuni.mff.been.hostmanager.ValueNotFoundException;
 
 import cz.cuni.mff.been.hostmanager.database.XMLSerializableInterface;
 
-import cz.cuni.mff.been.hostmanager.util.MiscUtils;
-import cz.cuni.mff.been.hostmanager.util.TimeUtils;
-import cz.cuni.mff.been.hostmanager.util.XMLHelper;
 
 /**
  * Implementation of the Load Monitor interface.

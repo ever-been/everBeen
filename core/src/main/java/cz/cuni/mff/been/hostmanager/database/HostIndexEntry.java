@@ -46,14 +46,14 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import cz.cuni.mff.been.common.Pair;
+import cz.cuni.mff.been.common.util.MiscUtils;
+import cz.cuni.mff.been.common.util.XMLHelper;
 
 import cz.cuni.mff.been.hostmanager.HostManagerInterface;
 import cz.cuni.mff.been.hostmanager.InputParseException;
 import cz.cuni.mff.been.hostmanager.InvalidArgumentException;
 import cz.cuni.mff.been.hostmanager.ValueNotFoundException;
 
-import cz.cuni.mff.been.hostmanager.util.MiscUtils;
-import cz.cuni.mff.been.hostmanager.util.XMLHelper;
 
 /**
  * Entry in the table of the hosts. Contains names of all files storing data for given host 

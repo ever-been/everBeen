@@ -26,11 +26,11 @@
 
 package cz.cuni.mff.been.hostmanager.database;
 
+import cz.cuni.mff.been.common.value.ValueCommonInterface;
 import cz.cuni.mff.been.hostmanager.HostManagerException;
 import cz.cuni.mff.been.hostmanager.InvalidArgumentException;
 import cz.cuni.mff.been.hostmanager.ValueNotFoundException;
 import cz.cuni.mff.been.hostmanager.ValueTypeIncorrectException;
-import cz.cuni.mff.been.hostmanager.value.ValueCommonInterface;
 
 /**
  * This interface provides means to manipulate collections of named objects and properties organised 

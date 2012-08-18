@@ -39,12 +39,12 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 
+import cz.cuni.mff.been.common.util.MiscUtils;
 import cz.cuni.mff.been.hostmanager.IllegalOperationException;
 import cz.cuni.mff.been.hostmanager.InputParseException;
 import cz.cuni.mff.been.hostmanager.InvalidArgumentException;
 import cz.cuni.mff.been.hostmanager.OutputWriteException;
 
-import cz.cuni.mff.been.hostmanager.util.MiscUtils;
 
 /**
  * This class implements parser of the load files. Data in load files is stored in chunks of

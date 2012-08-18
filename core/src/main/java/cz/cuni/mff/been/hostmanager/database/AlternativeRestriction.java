@@ -33,8 +33,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import cz.cuni.mff.been.common.util.XMLHelper;
 import cz.cuni.mff.been.hostmanager.InputParseException;
-import cz.cuni.mff.been.hostmanager.util.XMLHelper;
 
 /**
  * This class provides means to create conditions from several <code>ObjectRestriction</code>s 

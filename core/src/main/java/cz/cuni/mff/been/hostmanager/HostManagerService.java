@@ -31,10 +31,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.rmi.RemoteException;
 
+import cz.cuni.mff.been.common.util.MiscUtils;
 import cz.cuni.mff.been.hostmanager.database.HostDatabaseEngine;
 
 import cz.cuni.mff.been.hostmanager.load.LoadServerImplementation;
-import cz.cuni.mff.been.hostmanager.util.MiscUtils;
 import cz.cuni.mff.been.logging.LogLevel;
 
 import cz.cuni.mff.been.services.Service;

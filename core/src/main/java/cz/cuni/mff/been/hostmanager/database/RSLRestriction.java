@@ -50,15 +50,15 @@ import cz.cuni.mff.been.common.rsl.ParseException;
 import cz.cuni.mff.been.common.rsl.ParserWrapper;
 import cz.cuni.mff.been.common.rsl.Property;
 import cz.cuni.mff.been.common.rsl.SimpleProperty;
+import cz.cuni.mff.been.common.value.ValueCommonInterface;
+import cz.cuni.mff.been.common.value.ValueInteger;
+import cz.cuni.mff.been.common.value.ValueList;
+import cz.cuni.mff.been.common.value.ValueString;
+import cz.cuni.mff.been.common.value.ValueVersion;
 import cz.cuni.mff.been.hostmanager.InputParseException;
 import cz.cuni.mff.been.hostmanager.InvalidArgumentException;
 import cz.cuni.mff.been.hostmanager.ValueNotFoundException;
 import cz.cuni.mff.been.hostmanager.ValueTypeIncorrectException;
-import cz.cuni.mff.been.hostmanager.value.ValueCommonInterface;
-import cz.cuni.mff.been.hostmanager.value.ValueInteger;
-import cz.cuni.mff.been.hostmanager.value.ValueList;
-import cz.cuni.mff.been.hostmanager.value.ValueString;
-import cz.cuni.mff.been.hostmanager.value.ValueVersion;
 
 /**
  * Interface which allows you to specify condition as an RSL string.

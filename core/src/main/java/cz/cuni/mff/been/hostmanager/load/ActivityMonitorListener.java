@@ -28,9 +28,9 @@ package cz.cuni.mff.been.hostmanager.load;
 
 import java.util.Date;
 
+import cz.cuni.mff.been.common.util.MiscUtils;
 import cz.cuni.mff.been.hostmanager.HostManagerApplicationData;
 import cz.cuni.mff.been.hostmanager.HostManagerLogger;
-import cz.cuni.mff.been.hostmanager.util.MiscUtils;
 
 /**
  * This listener accepts all events from all hosts and stores samples in the sample cache.

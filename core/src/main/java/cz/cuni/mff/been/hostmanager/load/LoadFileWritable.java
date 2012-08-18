@@ -28,9 +28,9 @@ package cz.cuni.mff.been.hostmanager.load;
 
 import java.io.IOException;
 
+import cz.cuni.mff.been.common.util.MiscUtils;
 import cz.cuni.mff.been.hostmanager.InvalidArgumentException;
 
-import cz.cuni.mff.been.hostmanager.util.MiscUtils;
 
 /**
  * Handle to the load file. This handle allows writing as well as reading of the file.

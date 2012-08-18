@@ -32,14 +32,12 @@
 	import="cz.cuni.mff.been.logging.*"
 	import="cz.cuni.mff.been.jaxb.td.*"
 	import="java.util.EnumSet"
-%><%
-	TaskEntry task = (TaskEntry)application.getAttribute("task");
+%><%TaskEntryImplementation task = (TaskEntryImplementation)application.getAttribute("task");
 	CheckPoint[] checkpoints = (CheckPoint[])application.getAttribute("checkpoints");
 	LogRecord[] logRecords = (LogRecord[])application.getAttribute("logRecords");
 	EnumSet logFields = (EnumSet)application.getAttribute("logFields");
 	OutputHandle standardOutputHandle = (OutputHandle)application.getAttribute("standardOutputHandle");
-	OutputHandle errorOutputHandle = (OutputHandle)application.getAttribute("errorOutputHandle");
-%>	
+	OutputHandle errorOutputHandle = (OutputHandle)application.getAttribute("errorOutputHandle");%>	
 <div class="bar"><div class="top-left"><div class="top-right"><div class="bottom-left"><div class="bottom-right"><div class="inner">
 	<a href="<%=page_.actionURL("context-list")%>">Contexts</a>
 	&raquo;

@@ -30,9 +30,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
 
+import cz.cuni.mff.been.common.util.MiscUtils;
 import cz.cuni.mff.been.hostmanager.InvalidArgumentException;
 
-import cz.cuni.mff.been.hostmanager.util.MiscUtils;
 
 /**
  * This class represents unique handle to the Load File with detailed mode data on some computer. 

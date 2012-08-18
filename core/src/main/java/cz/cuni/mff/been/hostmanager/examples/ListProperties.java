@@ -30,11 +30,11 @@ import java.rmi.Naming;
 import java.rmi.RemoteException;
 
 import cz.cuni.mff.been.common.RMI;
+import cz.cuni.mff.been.common.value.ValueBasicInterface;
 import cz.cuni.mff.been.hostmanager.HostManagerInterface;
 import cz.cuni.mff.been.hostmanager.database.HostInfoInterface;
 import cz.cuni.mff.been.hostmanager.database.NameValuePair;
 import cz.cuni.mff.been.hostmanager.database.PropertyTreeReadInterface;
-import cz.cuni.mff.been.hostmanager.value.ValueBasicInterface;
 
 /**
  * This class represents simple application which connects to the Host Manager and retrieves list of all

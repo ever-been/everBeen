@@ -42,12 +42,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import cz.cuni.mff.been.common.util.XMLHelper;
 import cz.cuni.mff.been.hostmanager.HostDatabaseException;
 import cz.cuni.mff.been.hostmanager.HostManagerLogger;
 import cz.cuni.mff.been.hostmanager.InputParseException;
 import cz.cuni.mff.been.hostmanager.InvalidArgumentException;
 import cz.cuni.mff.been.hostmanager.ValueNotFoundException;
-import cz.cuni.mff.been.hostmanager.util.XMLHelper;
 
 /**
  * This class represents index of the database. It stores list of all files in the database and relations between

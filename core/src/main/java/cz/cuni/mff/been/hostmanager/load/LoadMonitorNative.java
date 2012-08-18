@@ -26,7 +26,7 @@
 
 package cz.cuni.mff.been.hostmanager.load;
 
-import cz.cuni.mff.been.hostmanager.util.TimeUtils;
+import cz.cuni.mff.been.common.util.TimeUtils;
 
 /**
  * Adapter for the native library for Load Monitor.

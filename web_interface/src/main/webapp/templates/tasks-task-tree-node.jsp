@@ -30,17 +30,14 @@
 	import="cz.cuni.mff.been.taskmanager.data.*"
 	import="cz.cuni.mff.been.webinterface.tasks.*"
 	import="cz.cuni.mff.been.common.id.*"
-%><%
-
-	String name = (String)application.getAttribute("name");
+%><%String name = (String)application.getAttribute("name");
 	String path = (String)application.getAttribute("path");
 	if( path == null ){ path = ""; }
 
-	TaskEntry task = (TaskEntry)application.getAttribute("task");
+	TaskEntryImplementation task = (TaskEntryImplementation)application.getAttribute("task");
 	String[] children = (String[])application.getAttribute("children");
 
-	if( task != null ){
-		%>Task: <a href="<%= page_.actionURL("task-details") %>?cid=<%=
+	if( task != null ){%>Task: <a href="<%= page_.actionURL("task-details") %>?cid=<%=
 			Routines.htmlspecialchars(task.getContextId()) %>&amp;tid=<%=
 			Routines.htmlspecialchars(task.getTaskId())%>"><%=
 			Routines.htmlspecialchars(task.getTaskName()) %></a><%

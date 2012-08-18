@@ -32,9 +32,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import cz.cuni.mff.been.common.util.XMLHelper;
 import cz.cuni.mff.been.hostmanager.InputParseException;
 
-import cz.cuni.mff.been.hostmanager.util.XMLHelper;
 
 /**
  * One entry in the list of groups in Database Index.

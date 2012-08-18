@@ -42,8 +42,9 @@ import java.util.HashMap;
 import cz.cuni.mff.been.common.RMI;
 import cz.cuni.mff.been.hostruntime.TasksPortInterface;
 import cz.cuni.mff.been.services.ServiceInfo.Status;
+import cz.cuni.mff.been.task.AbstractTask;
+import cz.cuni.mff.been.task.CurrentTaskSingleton;
 import cz.cuni.mff.been.task.InvalidServiceStateException;
-import cz.cuni.mff.been.task.Task;
 import cz.cuni.mff.been.task.TaskException;
 import cz.cuni.mff.been.task.TaskInitializationException;
 import cz.cuni.mff.been.taskmanager.ServiceEntry;
@@ -58,7 +59,7 @@ import cz.cuni.mff.been.taskmanager.ServiceEntry;
  * @author Jaroslav Urban
  * @author David Majda
  */
-public abstract class Service extends Task {
+public abstract class Service extends AbstractTask {
 	/**
 	 * RMI references to BEENs services are in the form
 	 * rmi://hostname:[RMI.REGISTRY_PORT
@@ -384,7 +385,7 @@ public abstract class Service extends Task {
 	 * service
 	 */
 	private void bindInterfaces() throws Exception {
-		Task.getTaskHandle().logInfo(
+		CurrentTaskSingleton.getTaskHandle().logInfo(
 				"Binding service interfaces. Total: " + rmiInterfaces.size());
 		for (String key : rmiInterfaces.keySet()) {
 			try {
@@ -395,7 +396,7 @@ public abstract class Service extends Task {
 				URI uri = new URI("rmi://" + hostName + ":" + RMI.REGISTRY_PORT
 						+ "/" + key);
 
-				Task.getTaskHandle().logInfo(key);
+				CurrentTaskSingleton.getTaskHandle().logInfo(key);
 				Naming.rebind(uri.toString(), rmiInterfaces.get(key));
 
 				// register in the BEEN naming service
@@ -410,7 +411,8 @@ public abstract class Service extends Task {
 				TasksPortInterface tasksPort = getTasksPort();
 				tasksPort.serviceRegister(serviceEntry);
 			} catch (Exception e) {
-				Task.getTaskHandle().logError("Cannot bind interface " + key);
+				CurrentTaskSingleton.getTaskHandle().logError(
+						"Cannot bind interface " + key);
 				throw new Exception("Cannot bind interface " + key, e);
 			}
 		}

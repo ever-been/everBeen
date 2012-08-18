@@ -36,8 +36,7 @@
 	import="java.text.*"
 	import="cz.cuni.mff.been.logging.*"
 	import="java.util.EnumSet"
-%><%
-	page_.writeInfoMessages();
+%><%page_.writeInfoMessages();
 	page_.writeErrorMessages();
 
 	Date date = (Date)application.getAttribute("date");
@@ -48,7 +47,7 @@
 	String newUserPropertyType = (String)application.getAttribute("newUserPropertyType");
 	String newUserPropertyValue = (String)application.getAttribute("newUserPropertyValue");
 	HostDataStatisticianInterface loadData = (HostDataStatisticianInterface)application.getAttribute("loadData");
-	TaskEntry[] tasks = (TaskEntry[])application.getAttribute("tasks");
+	TaskEntryImplementation[] tasks = (TaskEntryImplementation[])application.getAttribute("tasks");
 	Map checkpoints = (Map)application.getAttribute("checkpoints");
 	LogRecord[] logRecords = (LogRecord[])application.getAttribute("logRecords");
 	EnumSet logFields = (EnumSet)application.getAttribute("logFields");
@@ -57,8 +56,7 @@
 	NumberFormat numberFormat = NumberFormat.getInstance(Locale.ENGLISH);
 	numberFormat.setMaximumFractionDigits(1);
 
-	HashMap data = new HashMap();
-%>
+	HashMap data = new HashMap();%>
 <div class="tabsheet">
 	<ul class="tabsheet-tabs">
 		<li class="active"><a href="#" onclick="tabsheetActivate(this, 'configuration-sheet'); return false;">Configuration</a></li>

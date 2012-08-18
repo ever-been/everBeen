@@ -29,6 +29,7 @@ package cz.cuni.mff.been.hostmanager.examples;
 import java.rmi.Naming;
 
 import cz.cuni.mff.been.common.RMI;
+import cz.cuni.mff.been.common.value.ValueRegexp;
 import cz.cuni.mff.been.hostmanager.HostManagerInterface;
 import cz.cuni.mff.been.hostmanager.HostManagerService;
 
@@ -37,7 +38,6 @@ import cz.cuni.mff.been.hostmanager.database.ObjectRestriction;
 import cz.cuni.mff.been.hostmanager.database.SoftwareAlias;
 import cz.cuni.mff.been.hostmanager.database.SoftwareAliasDefinition;
 
-import cz.cuni.mff.been.hostmanager.value.ValueRegexp;
 
 /**
  * Example showing usage of the Software Aliases API. In this example you can see how to retrieve

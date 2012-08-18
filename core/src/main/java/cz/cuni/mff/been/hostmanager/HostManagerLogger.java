@@ -26,7 +26,7 @@
 
 package cz.cuni.mff.been.hostmanager;
 
-import cz.cuni.mff.been.hostmanager.util.TimeUtils;
+import cz.cuni.mff.been.common.util.TimeUtils;
 import cz.cuni.mff.been.logging.LogLevel;
 import cz.cuni.mff.been.task.Task;
 

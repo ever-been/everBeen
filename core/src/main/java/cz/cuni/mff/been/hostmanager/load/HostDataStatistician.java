@@ -36,12 +36,12 @@ import java.util.Date;
 import java.util.List;
 
 import cz.cuni.mff.been.common.Pair;
+import cz.cuni.mff.been.common.util.MiscUtils;
+import cz.cuni.mff.been.common.util.TimeUtils;
 import cz.cuni.mff.been.hostmanager.IllegalOperationException;
 import cz.cuni.mff.been.hostmanager.InputParseException;
 import cz.cuni.mff.been.hostmanager.InvalidArgumentException;
 import cz.cuni.mff.been.hostmanager.ValueNotFoundException;
-import cz.cuni.mff.been.hostmanager.util.MiscUtils;
-import cz.cuni.mff.been.hostmanager.util.TimeUtils;
 
 /**
  * This class provides access to the data collected by Load Monitors on hosts in the network.

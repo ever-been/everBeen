@@ -1,27 +1,25 @@
 /*
- *  BEEN: Benchmarking Environment
- *  ==============================
- *
- *  File author: Jiri Tauber
- *
- *  GNU Lesser General Public License Version 2.1
- *  ---------------------------------------------
- *  Copyright (C) 2004-2006 Distributed Systems Research Group,
- *  Faculty of Mathematics and Physics, Charles University in Prague
- *
- *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License version 2.1, as published by the Free Software Foundation.
- *
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this library; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston,
- *  MA  02111-1307  USA
+ * BEEN: Benchmarking Environment ==============================
+ * 
+ * File author: Jiri Tauber
+ * 
+ * GNU Lesser General Public License Version 2.1
+ * --------------------------------------------- Copyright (C) 2004-2006
+ * Distributed Systems Research Group, Faculty of Mathematics and Physics,
+ * Charles University in Prague
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License version 2.1, as published
+ * by the Free Software Foundation.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package cz.cuni.mff.been.benchmarkmanagerng;
 
@@ -84,25 +82,24 @@ import cz.cuni.mff.been.softwarerepository.PackageMetadata;
 import cz.cuni.mff.been.softwarerepository.ProvidedInterfaceQueryCallback;
 import cz.cuni.mff.been.softwarerepository.SoftwareRepositoryInterface;
 import cz.cuni.mff.been.softwarerepository.SoftwareRepositoryService;
+import cz.cuni.mff.been.task.CurrentTaskSingleton;
 import cz.cuni.mff.been.task.Task;
 import cz.cuni.mff.been.taskmanager.TaskDescriptorHelper;
 import cz.cuni.mff.been.taskmanager.TaskManagerInterface;
 
 /**
  * Implementation of the Benchmark Manager service.
- *
- *  @author Jiri Tauber
+ * 
+ * @author Jiri Tauber
  */
-public final class BenchmarkManagerImplementation
-	extends UnicastRemoteObject
-	implements BenchmarkManagerInterface, BenchmarkManagerCallbackInterface {
+public final class BenchmarkManagerImplementation extends UnicastRemoteObject
+		implements BenchmarkManagerInterface, BenchmarkManagerCallbackInterface {
 
-	/** UnicastRemoteObject mandatory field */ 
+	/** UnicastRemoteObject mandatory field */
 	private static final long serialVersionUID = 2128762920453341039L;
 
 	/** Network port on which will derby be accessible when in debug mode */
 	private static final int DERBY_DEBUG_NETWORK_PORT = 1531;
-
 
 	/** Derby database name */
 	public static final String ANALYSES_DATABASE = "benchmarkmanager_db";
@@ -113,47 +110,60 @@ public final class BenchmarkManagerImplementation
 
 	/** The JAXB-based XML parser. */
 	private final BindingParser<Config> parser;
-	
+
 	/** Task container shortcut */
-	private Task task;
+	private final Task task;
 
 	/** reference to pluggable module manager */
-	private PluggableModuleManager manager;
+	private final PluggableModuleManager manager;
 
 	/** reference to derby pluggable module */
 	private DerbyPluggableModule derby;
 
 	/** reference to hibernate session, which is used as data storage */
 	private SessionFactory hibernateSessionFactory;
-	
-	private Scheduler scheduler;
-	
-	private AnalysesTracker analysesTracker;
 
-	//----- Public Methods --------------------------------------------------//
+	private final Scheduler scheduler;
+
+	private final AnalysesTracker analysesTracker;
+
+	// ----- Public Methods --------------------------------------------------//
 
 	/**
 	 * Default constructor.
 	 * 
-	 * @throws RemoteException as a part of RMI definition
-	 * @throws ComponentInitializationException when something goes wrong
+	 * @throws RemoteException
+	 *             as a part of RMI definition
+	 * @throws ComponentInitializationException
+	 *             when something goes wrong
 	 */
 	public BenchmarkManagerImplementation(PluggableModuleManager manager)
-	throws RemoteException, ComponentInitializationException {
+			throws RemoteException, ComponentInitializationException {
 		this.manager = manager;
-		this.task = Task.getTaskHandle();															// Must occur BEFORE...
+		this.task = CurrentTaskSingleton.getTaskHandle(); // Must occur
+															// BEFORE...
 
 		Throwable t = null;
 		try {
-			this.parser = XSD.CONFIG.createParser(Config.class);									// ...BEFORE this...
+			this.parser = XSD.CONFIG.createParser(Config.class); // ...BEFORE
+																	// this...
 		} catch (SAXException exception) {
 			t = exception;
-			logError("JAXB parser could not find, read or parse schema files");			// ...so that logging works here...
-			throw new ComponentInitializationException("Schema initialization failed", exception);
+			logError("JAXB parser could not find, read or parse schema files"); // ...so
+																				// that
+																				// logging
+																				// works
+																				// here...
+			throw new ComponentInitializationException(
+					"Schema initialization failed",
+					exception);
 		} catch (JAXBException exception) {
 			t = exception;
-			logError("JAXB parser refused or could not load the binding class");			// ...and here.
-			throw new ComponentInitializationException("JAXB initialization failed", exception);
+			logError("JAXB parser refused or could not load the binding class"); // ...and
+																					// here.
+			throw new ComponentInitializationException(
+					"JAXB initialization failed",
+					exception);
 		} finally {
 			for (; null != t; t = t.getCause()) {
 				System.err.println();
@@ -170,81 +180,102 @@ public final class BenchmarkManagerImplementation
 		scheduler.start();
 	}
 
-	/** 
-	 * Releases all used resources.
-	 * Object shouldn't be used anymore after destroy() is called.
-	 * Create a new instance instead.
+	/**
+	 * Releases all used resources. Object shouldn't be used anymore after
+	 * destroy() is called. Create a new instance instead.
 	 */
-	public void destroy(){
+	public void destroy() {
 		hibernateSessionFactory.close();
-		try{
+		try {
 			derby.stopEngine();
 		} catch (PluggableModuleException e) {
-			logError("Couldn't stop DB engine because error occured: "+e.getMessage());
+			logError("Couldn't stop DB engine because error occured: "
+					+ e.getMessage());
 		}
 	}
 
+	// ----- Main Interface --------------------------------------------------//
 
-	//----- Main Interface --------------------------------------------------//
-
-	/* (non-Javadoc)
-	 * @see cz.cuni.mff.been.benchmarkmanagerng.BenchmarkManagerInterface#createAnalysis(cz.cuni.mff.been.benchmarkmanagerng.Analysis)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.cuni.mff.been.benchmarkmanagerng.BenchmarkManagerInterface#createAnalysis
+	 * (cz.cuni.mff.been.benchmarkmanagerng.Analysis)
 	 */
 	@Override
-	public void createAnalysis(Analysis analysis) throws RemoteException, BenchmarkManagerException, AnalysisException {
+	public void createAnalysis(Analysis analysis) throws RemoteException,
+			BenchmarkManagerException, AnalysisException {
 
 		// validate analysis
 		Collection<String> errors = analysis.validate(manager);
-		if( !errors.isEmpty() ){
-			throw new AnalysisException("Analysis is not valid: "+errors.iterator().next());
+		if (!errors.isEmpty()) {
+			throw new AnalysisException("Analysis is not valid: "
+					+ errors.iterator().next());
 		}
 
 		saveAnalysis(analysis);
 
 		// Instruct Generator to create its datasets
 		try {
-			GeneratorInterface generator = 
-				(GeneratorInterface)analysis.getGenerator().getPluggableModule(manager);
-			logInfo(analysis.getGenerator().getName()+" is creating datasets for analysis "+analysis.getName());
+			GeneratorInterface generator = (GeneratorInterface) analysis
+					.getGenerator().getPluggableModule(manager);
+			logInfo(analysis.getGenerator().getName()
+					+ " is creating datasets for analysis "
+					+ analysis.getName());
 			generator.configure(analysis);
 			generator.createDatasets();
-		} catch( PluggableModuleException e ){
+		} catch (PluggableModuleException e) {
 			deleteAnalysis(analysis);
-			throw new BenchmarkManagerException( "Can't load generator pluggable module", e);
-		} catch( ResultsRepositoryException e ){
+			throw new BenchmarkManagerException(
+					"Can't load generator pluggable module",
+					e);
+		} catch (ResultsRepositoryException e) {
 			deleteAnalysis(analysis);
-			throw new BenchmarkManagerException( "Generator can't create datasets", e);
+			throw new BenchmarkManagerException(
+					"Generator can't create datasets",
+					e);
 		}
-		
+
 		// instruct each Evaluator to create his triggers and datasets
 		EvaluatorInterface evaluator = null;
 		for (BMEvaluator bme : analysis.getEvaluators()) {
-			logInfo(bme.getName()+" is creating datasets and triggers");
+			logInfo(bme.getName() + " is creating datasets and triggers");
 			try {
-				evaluator = (EvaluatorInterface)bme.getPluggableModule(manager);
+				evaluator = (EvaluatorInterface) bme
+						.getPluggableModule(manager);
 				evaluator.attachToAnalysis(analysis, bme.getConfiguration());
-			} catch( PluggableModuleException e ){
+			} catch (PluggableModuleException e) {
 				deleteAnalysis(analysis);
-				throw new BenchmarkManagerException( "Can't load evaluator pluggable module", e);
-			} catch( RemoteException e ){
+				throw new BenchmarkManagerException(
+						"Can't load evaluator pluggable module",
+						e);
+			} catch (RemoteException e) {
 				deleteAnalysis(analysis);
-				throw new RemoteException( "Evaluator can't create datasets", e);
-			} catch( ResultsRepositoryException e ){
+				throw new RemoteException("Evaluator can't create datasets", e);
+			} catch (ResultsRepositoryException e) {
 				deleteAnalysis(analysis);
-				throw new BenchmarkManagerException( "Evaluator can't create datasets", e);
+				throw new BenchmarkManagerException(
+						"Evaluator can't create datasets",
+						e);
 			}
 		}
-		logInfo("Analysis '"+analysis.getName()+"' created sucessfully");
+		logInfo("Analysis '" + analysis.getName() + "' created sucessfully");
 	}
 
-
-	/* (non-Javadoc)
-	 * @see cz.cuni.mff.been.benchmarkmanagerng.BenchmarkManagerInterface#updateAnalysis(cz.cuni.mff.been.benchmarkmanagerng.Analysis)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.cuni.mff.been.benchmarkmanagerng.BenchmarkManagerInterface#updateAnalysis
+	 * (cz.cuni.mff.been.benchmarkmanagerng.Analysis)
 	 */
 	@Override
-	public synchronized void updateAnalysis(Analysis aNew) throws RemoteException, BenchmarkManagerException, AnalysisException {
+	public synchronized void updateAnalysis(Analysis aNew)
+			throws RemoteException, BenchmarkManagerException,
+			AnalysisException {
 		// check given analysis ID
-		if( aNew.getID() == null ){
+		if (aNew.getID() == null) {
 			throw new AnalysisException("Unknown analysis to update");
 		}
 		Analysis aOld = null;
@@ -252,26 +283,30 @@ public final class BenchmarkManagerImplementation
 
 		// check the new analysis validity
 		Collection<String> errors = aNew.validate(manager);
-		if( errors.size() > 0 ){
-			throw new AnalysisException("Error in analysis: "+errors.iterator().next());
+		if (errors.size() > 0) {
+			throw new AnalysisException("Error in analysis: "
+					+ errors.iterator().next());
 		}
 		// check name change:
 		// TODO: Analysis name change should be allowed in the future
-		if( !aOld.getName().equals(aNew.getName()) ){
-			throw new AnalysisException("Error in analysis: "+"Can't change analysis name");
+		if (!aOld.getName().equals(aNew.getName())) {
+			throw new AnalysisException("Error in analysis: "
+					+ "Can't change analysis name");
 		}
 		// check generator change:
-		if( !aOld.getGenerator().isSimilarTo(aNew.getGenerator()) ){
-			throw new AnalysisException("Error in analysis: "+"Can't change generator");
+		if (!aOld.getGenerator().isSimilarTo(aNew.getGenerator())) {
+			throw new AnalysisException("Error in analysis: "
+					+ "Can't change generator");
 		}
 
 		// update the RR
-		try{
+		try {
 			EvaluatorPluggableModule pm = null;
 			// detach removed or changed evaluators
 			for (BMEvaluator ev : aOld.getEvaluators()) {
-				if( !aNew.getEvaluators().contains(ev) ){
-					pm = (EvaluatorPluggableModule)ev.getPluggableModule(manager);
+				if (!aNew.getEvaluators().contains(ev)) {
+					pm = (EvaluatorPluggableModule) ev
+							.getPluggableModule(manager);
 					pm.detachFromAnalysis(aOld, ev.getConfiguration());
 				}
 			}
@@ -279,79 +314,103 @@ public final class BenchmarkManagerImplementation
 
 			// attach new or changed evaluators:
 			for (BMEvaluator ev : aNew.getEvaluators()) {
-				if( !aOld.getEvaluators().contains(ev) ){
-					pm = (EvaluatorPluggableModule)ev.getPluggableModule(manager);
+				if (!aOld.getEvaluators().contains(ev)) {
+					pm = (EvaluatorPluggableModule) ev
+							.getPluggableModule(manager);
 					pm.attachToAnalysis(aNew, ev.getConfiguration());
 				}
 			}
 
-		} catch (PluggableModuleException e){
-			throw new BenchmarkManagerException("Error loading pluggable module", e);
+		} catch (PluggableModuleException e) {
+			throw new BenchmarkManagerException(
+					"Error loading pluggable module",
+					e);
 		} catch (ResultsRepositoryException e) {
-			throw new BenchmarkManagerException("Error accessing the ResultsRepository", e);
+			throw new BenchmarkManagerException(
+					"Error accessing the ResultsRepository",
+					e);
 		}
 
 		// coppy automatic content from the old analysis:
 		aNew.setLastTime(aOld.getLastTime());
-		while( aNew.getRunCount() < aOld.getRunCount() ) aNew.increaseRunCount();
+		while (aNew.getRunCount() < aOld.getRunCount())
+			aNew.increaseRunCount();
 		saveAnalysis(aNew);
-		logInfo("Successfully updated analysis "+aNew.getName());
+		logInfo("Successfully updated analysis " + aNew.getName());
 	}
 
-
-	/* (non-Javadoc)
-	 * @see cz.cuni.mff.been.benchmarkmanagerng.BenchmarkManagerInterface#deleteAnalysis()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.cuni.mff.been.benchmarkmanagerng.BenchmarkManagerInterface#deleteAnalysis
+	 * ()
 	 */
 	@Override
-	public void deleteAnalysis(String name) throws RemoteException, BenchmarkManagerException{
+	public void deleteAnalysis(String name) throws RemoteException,
+			BenchmarkManagerException {
 		Analysis analysis = loadAnalysis(name);
 		deleteAnalysis(analysis);
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.cuni.mff.been.benchmarkmanagerng.BenchmarkManagerInterface#getAnalyses()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.cuni.mff.been.benchmarkmanagerng.BenchmarkManagerInterface#getAnalyses
+	 * ()
 	 */
 	@Override
-	public Collection<Analysis> getAnalyses() throws RemoteException, BenchmarkManagerException {
+	public Collection<Analysis> getAnalyses() throws RemoteException,
+			BenchmarkManagerException {
 		Collection<Analysis> result = new LinkedList<Analysis>();
 		Session session = null;
-		try{
+		try {
 			session = hibernateSessionFactory.openSession();
-			Criteria query = session.createCriteria(Analysis.class).addOrder( Order.asc("name"));
+			Criteria query = session.createCriteria(Analysis.class).addOrder(
+					Order.asc("name"));
 			Analysis an;
 			for (Object o : query.list()) {
 				an = new Analysis(o);
 				an.setState(analysesTracker.getAnalysisState(an.getName()));
 				result.add(an);
 			}
-		} catch (HibernateException e){
-			logError("Can't load analysis because error occured: " + e.getMessage());
+		} catch (HibernateException e) {
+			logError("Can't load analysis because error occured: "
+					+ e.getMessage());
 			throw new BenchmarkManagerException("Can't load analyses", e);
 		} finally {
-			if( session != null ) session.close();
+			if (session != null)
+				session.close();
 		}
 		return result;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see cz.cuni.mff.been.benchmarkmanagerng.BenchmarkManagerInterface#getAnalysis(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.cuni.mff.been.benchmarkmanagerng.BenchmarkManagerInterface#getAnalysis
+	 * (java.lang.String)
 	 */
 	@Override
-	public Analysis getAnalysis(String name) throws RemoteException, BenchmarkManagerException {
+	public Analysis getAnalysis(String name) throws RemoteException,
+			BenchmarkManagerException {
 		Analysis result;
 		try {
 			result = loadAnalysis(name);
 			result.setState(analysesTracker.getAnalysisState(result.getName()));
-		} catch ( AnalysisException e ){
+		} catch (AnalysisException e) {
 			result = null;
 		}
 		return result;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see cz.cuni.mff.been.benchmarkmanagerng.BenchmarkManagerInterface#getActiveContexts(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.cuni.mff.been.benchmarkmanagerng.BenchmarkManagerInterface#
+	 * getActiveContexts(java.lang.String)
 	 */
 	@Override
 	public Map<String, AnalysisState> getActiveContexts(String analysisName) {
@@ -360,121 +419,143 @@ public final class BenchmarkManagerImplementation
 			Analysis analysis = loadAnalysis(analysisName);
 			result = analysesTracker.getActiveContexts(analysis.getName());
 		} catch (AnalysisException e) {
-			logError("Can't load active contexts for analysis "+analysisName+
-					" because it was not found");
+			logError("Can't load active contexts for analysis " + analysisName
+					+ " because it was not found");
 			result = new HashMap<String, AnalysisState>();
 		} catch (BenchmarkManagerException e) {
-			logError("Can't load active contexts for analysis "+analysisName+
-					" because error occured: "+e.getMessage());
+			logError("Can't load active contexts for analysis " + analysisName
+					+ " because error occured: " + e.getMessage());
 			result = new HashMap<String, AnalysisState>();
 		}
 		return result;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see cz.cuni.mff.been.benchmarkmanagerng.BenchmarkManagerInterface#getEvaluators()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.cuni.mff.been.benchmarkmanagerng.BenchmarkManagerInterface#getEvaluators
+	 * ()
 	 */
 	@Override
-	public Collection<BMEvaluator> getEvaluators() throws RemoteException, BenchmarkManagerException {
+	public Collection<BMEvaluator> getEvaluators() throws RemoteException,
+			BenchmarkManagerException {
 		PackageMetadata[] packages = null;
 
 		SoftwareRepositoryInterface swRep = getSWRepositoryInterface();
 		try {
 			// Retrieve the packages that have evaluator interface
-			packages = swRep.queryPackages( new ProvidedInterfaceQueryCallback(
-					"cz.cuni.mff.been.benchmarkmanagerng.module.EvaluatorInterface"));
-		} catch( MatchException e ) {
-			logError("Couldn't find evaluators because error occured: " + e.getMessage());
+			packages = swRep
+					.queryPackages(new ProvidedInterfaceQueryCallback(
+							"cz.cuni.mff.been.benchmarkmanagerng.module.EvaluatorInterface"));
+		} catch (MatchException e) {
+			logError("Couldn't find evaluators because error occured: "
+					+ e.getMessage());
 			throw new BenchmarkManagerException("Couldn't find evaluators", e);
 		}
 
 		// convert the package metadate into BMEvaluators
-		LinkedList<BMEvaluator> evaluators = new LinkedList<BMEvaluator>(); 
+		LinkedList<BMEvaluator> evaluators = new LinkedList<BMEvaluator>();
 		for (PackageMetadata pcg : packages) {
-			evaluators.add(new BMEvaluator(pcg.getName(),pcg.getVersion().toString()));
+			evaluators.add(new BMEvaluator(pcg.getName(), pcg.getVersion()
+					.toString()));
 		}
 		return evaluators;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see cz.cuni.mff.been.benchmarkmanagerng.BenchmarkManagerInterface#getGenerators()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.cuni.mff.been.benchmarkmanagerng.BenchmarkManagerInterface#getGenerators
+	 * ()
 	 */
 	@Override
-	public Collection<BMGenerator> getGenerators() throws RemoteException, BenchmarkManagerException {
+	public Collection<BMGenerator> getGenerators() throws RemoteException,
+			BenchmarkManagerException {
 		PackageMetadata[] packages = null;
 
 		SoftwareRepositoryInterface swRep = getSWRepositoryInterface();
 		try {
 			// Retrieve the packages that have evaluator interface
-			packages = swRep.queryPackages(new ProvidedInterfaceQueryCallback(
-					"cz.cuni.mff.been.benchmarkmanagerng.module.GeneratorInterface"));
-		} catch( MatchException e ) {
-			logError("Couldn't find generators because error occured: " + e.getMessage());
+			packages = swRep
+					.queryPackages(new ProvidedInterfaceQueryCallback(
+							"cz.cuni.mff.been.benchmarkmanagerng.module.GeneratorInterface"));
+		} catch (MatchException e) {
+			logError("Couldn't find generators because error occured: "
+					+ e.getMessage());
 			throw new BenchmarkManagerException("Couldn't find generators", e);
 		}
 
 		// convert the package metadata into BMGenerators
-		LinkedList<BMGenerator> generators = new LinkedList<BMGenerator>(); 
+		LinkedList<BMGenerator> generators = new LinkedList<BMGenerator>();
 		for (PackageMetadata pcg : packages) {
-			generators.add(new BMGenerator(pcg.getName(),pcg.getVersion().toString()));
+			generators.add(new BMGenerator(pcg.getName(), pcg.getVersion()
+					.toString()));
 		}
 		return generators;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see cz.cuni.mff.been.benchmarkmanagerng.BenchmarkManagerInterface#getConfigurationDescription(cz.cuni.mff.been.benchmarkmanagerng.module.BMModule)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.cuni.mff.been.benchmarkmanagerng.BenchmarkManagerInterface#
+	 * getConfigurationDescription
+	 * (cz.cuni.mff.been.benchmarkmanagerng.module.BMModule)
 	 */
 	@Override
-	public Config getConfigurationDescription(BMModule module) throws RemoteException, BenchmarkManagerException {
+	public Config getConfigurationDescription(BMModule module)
+			throws RemoteException, BenchmarkManagerException {
 		String dir;
 		Throwable throwable = null;
 
 		try {
 			module.getPluggableModule(manager);
 		} catch (PluggableModuleException e) {
-			/// DEBUG
+			// / DEBUG
 			for (Throwable t = e; null != t; t = t.getCause()) {
 				System.err.println();
 				System.err.println(t.getMessage());
 				t.printStackTrace(System.err);
 			}
-			///
+			// /
 			throw new BenchmarkManagerException(e);
 		}
 
-		dir = Task.getTaskHandle().getTaskDirectory() + File.separator
-				+ "pluggablemodules" + File.separator
+		dir = CurrentTaskSingleton.getTaskHandle().getTaskDirectory()
+				+ File.separator + "pluggablemodules" + File.separator
 				+ module.getPackageName();
 		Config config = null;
 		InputStream stream = null;
 		try {
-			stream = new BufferedInputStream( new FileInputStream( dir + "/module-config.xml" ));
-			config = parser.parse( stream );
+			stream = new BufferedInputStream(new FileInputStream(dir
+					+ "/module-config.xml"));
+			config = parser.parse(stream);
 		} catch (FileNotFoundException e) {
 			throwable = e;
 			logError("Can't open the configuration file");
-			throw new BenchmarkManagerException("Can't open the configuration file", e);
+			throw new BenchmarkManagerException(
+					"Can't open the configuration file",
+					e);
 		} catch (JAXBException e) {
 			throwable = e;
 			logError("JAXB parser could not parse the module configuration");
 			throw new BenchmarkManagerException(
-				"JAXB parser could not parse the module configuration",
-				e
-			);
-		} catch (ConvertorException e) {															// NEVER happens with config.xsd.
+					"JAXB parser could not parse the module configuration",
+					e);
+		} catch (ConvertorException e) { // NEVER happens with config.xsd.
 			throwable = e;
 			logError("Unknown XML data conversion failure");
-			throw new BenchmarkManagerException("Unknown XML data conversion failure", e);
+			throw new BenchmarkManagerException(
+					"Unknown XML data conversion failure",
+					e);
 		} finally {
 			for (Throwable t = throwable; null != t; t = t.getCause()) {
 				System.err.println();
 				System.err.println(t.getMessage());
 				t.printStackTrace(System.err);
 			}
-			if( stream != null ){
+			if (stream != null) {
 				try {
 					stream.close();
 				} catch (IOException e) {
@@ -487,95 +568,127 @@ public final class BenchmarkManagerImplementation
 		return config;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see cz.cuni.mff.been.benchmarkmanagerng.BenchmarkManagerInterface#validateModuleConfiguration(cz.cuni.mff.been.benchmarkmanagerng.module.BMModule)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.cuni.mff.been.benchmarkmanagerng.BenchmarkManagerInterface#
+	 * validateModuleConfiguration
+	 * (cz.cuni.mff.been.benchmarkmanagerng.module.BMModule)
 	 */
 	@Override
 	public Collection<String> validateModuleConfiguration(BMModule module) {
 		Collection<String> result = new LinkedList<String>();
-		if( module == null ){
+		if (module == null) {
 			result.add("Module is null");
 			return result;
 		}
-		if( module.getConfiguration() == null ){
-			result.add(module.getName()+" configuration is null");
+		if (module.getConfiguration() == null) {
+			result.add(module.getName() + " configuration is null");
 			return result;
 		}
 		try {
-			ModuleInterface inst = (ModuleInterface)module.getPluggableModule(manager);
+			ModuleInterface inst = (ModuleInterface) module
+					.getPluggableModule(manager);
 			result = inst.validateConfiguration(module.getConfiguration());
-		} catch( PluggableModuleException e ){
-			result.add(module.getName()+" module couldn't validate the configuration!");
+		} catch (PluggableModuleException e) {
+			result.add(module.getName()
+					+ " module couldn't validate the configuration!");
 		}
 		return result;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see cz.cuni.mff.been.benchmarkmanagerng.BenchmarkManagerInterface#runAnalysis(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.cuni.mff.been.benchmarkmanagerng.BenchmarkManagerInterface#runAnalysis
+	 * (java.lang.String)
 	 */
 	@Override
-	public synchronized void runAnalysis(String name, boolean force) throws RemoteException, BenchmarkManagerException, AnalysisException{
+	public synchronized void runAnalysis(String name, boolean force)
+			throws RemoteException, BenchmarkManagerException,
+			AnalysisException {
 		Analysis analysis = loadAnalysis(name);
-		AnalysisState state = analysesTracker.getAnalysisState(analysis.getName());
-		if( state.isRunning() && !force ){
+		AnalysisState state = analysesTracker.getAnalysisState(analysis
+				.getName());
+		if (state.isRunning() && !force) {
 			throw new AnalysisException("Analysis is already runing");
 		}
-		if( force ){
-			if( state == AnalysisState.GENERATING ){
+		if (force) {
+			if (state == AnalysisState.GENERATING) {
 				logError("Can't force-run analysis that is still generating");
-				throw new BenchmarkManagerException("Can't force-run analysis that is still generating");
+				throw new BenchmarkManagerException(
+						"Can't force-run analysis that is still generating");
 			} else {
-				logInfo("Forced start of analysis "+name);
+				logInfo("Forced start of analysis " + name);
 			}
 		}
 		launchAnalysis(analysis);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see cz.cuni.mff.been.benchmarkmanagerng.BenchmarkManagerInterface#stopScheduler()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.cuni.mff.been.benchmarkmanagerng.BenchmarkManagerInterface#stopScheduler
+	 * ()
 	 */
 	@Override
 	public void stopScheduler() throws RemoteException {
 		scheduler.interrupt();
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.cuni.mff.been.benchmarkmanagerng.BenchmarkManagerInterface#isSchedulerRunning()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.cuni.mff.been.benchmarkmanagerng.BenchmarkManagerInterface#
+	 * isSchedulerRunning()
 	 */
 	@Override
 	public boolean isSchedulerRunning() throws RemoteException {
 		return scheduler != null ? scheduler.isAlive() : false;
 	}
 
-	//----- Callback Interface ----------------------------------------------//
+	// ----- Callback Interface ----------------------------------------------//
 
-	/* (non-Javadoc)
-	 * @see cz.cuni.mff.been.benchmarkmanagerng.BenchmarkManagerCallbackInterface#reportGeneratorSuccess(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.cuni.mff.been.benchmarkmanagerng.BenchmarkManagerCallbackInterface
+	 * #reportGeneratorSuccess(java.lang.String)
 	 */
 	@Override
-	public void reportGeneratorSuccess(String analysisName, String contextId, String generatorTid) throws RemoteException, BenchmarkManagerException {
-		logDebug("Recieved success report from "+generatorTid);
-		analysesTracker.generatorFinished(contextId, generatorTid); // might throw exception
+	public void reportGeneratorSuccess(
+			String analysisName,
+			String contextId,
+			String generatorTid) throws RemoteException,
+			BenchmarkManagerException {
+		logDebug("Recieved success report from " + generatorTid);
+		analysesTracker.generatorFinished(contextId, generatorTid); // might
+																	// throw
+																	// exception
 		Analysis analysis = loadAnalysis(analysisName);
 		analysis.setLastTime(new Date());
 		analysis.increaseRunCount();
 		saveAnalysis(analysis);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see cz.cuni.mff.been.benchmarkmanagerng.BenchmarkManagerCallbackInterface#reportAnalysisFinish(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.cuni.mff.been.benchmarkmanagerng.BenchmarkManagerCallbackInterface
+	 * #reportAnalysisFinish(java.lang.String)
 	 */
 	@Override
-	public void reportAnalysisFinish(String contextID) throws RemoteException, BenchmarkManagerException {
-		logDebug("Recieved success report from context "+contextID);
+	public void reportAnalysisFinish(String contextID) throws RemoteException,
+			BenchmarkManagerException {
+		logDebug("Recieved success report from context " + contextID);
 		analysesTracker.analysisFinished(contextID);
 	}
 
-	//----- Private Methods -------------------------------------------------//
+	// ----- Private Methods -------------------------------------------------//
 
 	/**
 	 * Logs an information message. If the Benchmark Manager is run as a task
@@ -583,7 +696,8 @@ public final class BenchmarkManagerImplementation
 	 * logging facility to write the message, otherwise it prints it to the
 	 * standard output.
 	 * 
-	 * @param message message text
+	 * @param message
+	 *            message text
 	 */
 	private void logInfo(String message) {
 		if (task != null) {
@@ -593,14 +707,14 @@ public final class BenchmarkManagerImplementation
 		}
 	}
 
-
 	/**
-	 * Logs an error message. If the Benchmark Manager is run as a task
-	 * (i.e. <code>task</code> field is not <code>null</code>), it uses task
-	 * logging facility to write the message, otherwise it prints it to the
-	 * error output.
+	 * Logs an error message. If the Benchmark Manager is run as a task (i.e.
+	 * <code>task</code> field is not <code>null</code>), it uses task logging
+	 * facility to write the message, otherwise it prints it to the error
+	 * output.
 	 * 
-	 * @param message message text
+	 * @param message
+	 *            message text
 	 */
 	private void logError(String message) {
 		if (task != null) {
@@ -610,14 +724,14 @@ public final class BenchmarkManagerImplementation
 		}
 	}
 
-
 	/**
-	 * Logs a debug message. If the Benchmark Manager is run as a task
-	 * (i.e. <code>task</code> field is not <code>null</code>), it uses task
-	 * logging facility to write the message, otherwise it prints it to the
-	 * standard output.
+	 * Logs a debug message. If the Benchmark Manager is run as a task (i.e.
+	 * <code>task</code> field is not <code>null</code>), it uses task logging
+	 * facility to write the message, otherwise it prints it to the standard
+	 * output.
 	 * 
-	 * @param message message text
+	 * @param message
+	 *            message text
 	 */
 	private void logDebug(String message) {
 		if (task != null) {
@@ -627,97 +741,118 @@ public final class BenchmarkManagerImplementation
 		}
 	}
 
-
 	/**
 	 * Saves analysis information to the database using bm hibernate session.
-	 * Creates new entry when Analysis doesn't have ID.
-	 * Updates existing entry when the analysis does have ID 
+	 * Creates new entry when Analysis doesn't have ID. Updates existing entry
+	 * when the analysis does have ID
 	 * 
-	 * @param analysis The analysis to save
+	 * @param analysis
+	 *            The analysis to save
 	 * 
-	 * @throws BenchmarkManagerException when hibernate has problem with the saved object
-	 * @throws AnalysisException when the analysis is new (no ID) and doesn't have unique name
+	 * @throws BenchmarkManagerException
+	 *             when hibernate has problem with the saved object
+	 * @throws AnalysisException
+	 *             when the analysis is new (no ID) and doesn't have unique name
 	 */
-	private synchronized void saveAnalysis(Analysis analysis) throws BenchmarkManagerException, AnalysisException {
+	private synchronized void saveAnalysis(Analysis analysis)
+			throws BenchmarkManagerException, AnalysisException {
 		Session session = null;
-		try{
+		try {
 			session = hibernateSessionFactory.openSession();
 			session.beginTransaction();
 			session.saveOrUpdate(analysis);
 			session.getTransaction().commit();
 
-		} catch (ConstraintViolationException e){
-			logError("Couldn't save analysis '"+analysis.getName()+"'. It probably doesn't have unique name");
-			if (session != null) session.getTransaction().rollback();
-			throw new AnalysisException("Couldn't save analysis '"+analysis.getName()+"'. It probably doesn't have unique name", e);
-		} catch (HibernateException e){
-			logError("Couldn't save analysis because error occured: "+e.getMessage());
-			if (session != null) session.getTransaction().rollback();
+		} catch (ConstraintViolationException e) {
+			logError("Couldn't save analysis '" + analysis.getName()
+					+ "'. It probably doesn't have unique name");
+			if (session != null)
+				session.getTransaction().rollback();
+			throw new AnalysisException("Couldn't save analysis '"
+					+ analysis.getName()
+					+ "'. It probably doesn't have unique name", e);
+		} catch (HibernateException e) {
+			logError("Couldn't save analysis because error occured: "
+					+ e.getMessage());
+			if (session != null)
+				session.getTransaction().rollback();
 			throw new BenchmarkManagerException("Couldn't save analysis", e);
 		} finally {
-			if (session != null) session.close();
+			if (session != null)
+				session.close();
 		}
 
 	}
 
-
 	/**
 	 * loads the specified analysis data.
 	 * 
-	 * @param name name of the analysis
+	 * @param name
+	 *            name of the analysis
 	 * 
 	 * @return The found analysis object
-	 * @throws BenchmarkManagerException when Hibernate gives us any trouble
-	 * @throws AnalysisException when Analysis wasn't found
+	 * @throws BenchmarkManagerException
+	 *             when Hibernate gives us any trouble
+	 * @throws AnalysisException
+	 *             when Analysis wasn't found
 	 */
-	private synchronized Analysis loadAnalysis(String name) throws BenchmarkManagerException, AnalysisException{
+	private synchronized Analysis loadAnalysis(String name)
+			throws BenchmarkManagerException, AnalysisException {
 		Session session = null;
-		try{
+		try {
 			session = hibernateSessionFactory.openSession();
 			Criteria query = session.createCriteria(Analysis.class);
 			query.add(Restrictions.eq("name", name));
-			if( query.list().size() != 1 ){
-				throw new AnalysisException("Couldn't find analysis with specified name");
+			if (query.list().size() != 1) {
+				throw new AnalysisException(
+						"Couldn't find analysis with specified name");
 			} else {
 				return new Analysis(query.list().get(0));
 			}
-		} catch (HibernateException e){
-			logError("Can't load analysis because error occured: " + e.getMessage());
+		} catch (HibernateException e) {
+			logError("Can't load analysis because error occured: "
+					+ e.getMessage());
 			throw new BenchmarkManagerException("Can't load analysis", e);
 		} finally {
-			if( session != null ) session.close();
+			if (session != null)
+				session.close();
 		}
 	}
-
 
 	/**
 	 * loads the specified analysis data.
 	 * 
-	 * @param id the unique identifier
+	 * @param id
+	 *            the unique identifier
 	 * 
 	 * @return The analysis object
-	 * @throws BenchmarkManagerException when Hibernate gives any trouble
-	 * @throws AnalysisException when no analysis was found
+	 * @throws BenchmarkManagerException
+	 *             when Hibernate gives any trouble
+	 * @throws AnalysisException
+	 *             when no analysis was found
 	 */
-	private synchronized Analysis loadAnalysis(int id) throws BenchmarkManagerException, AnalysisException{
+	private synchronized Analysis loadAnalysis(int id)
+			throws BenchmarkManagerException, AnalysisException {
 		Session session = null;
-		try{
+		try {
 			session = hibernateSessionFactory.openSession();
 			Criteria query = session.createCriteria(Analysis.class);
 			query.add(Restrictions.eq("id", id));
-			if( query.list().size() != 1 ){
-				throw new AnalysisException("Couldn't find analysis with specified id");
+			if (query.list().size() != 1) {
+				throw new AnalysisException(
+						"Couldn't find analysis with specified id");
 			} else {
 				return new Analysis(query.list().get(0));
 			}
-		} catch (HibernateException e){
-			logError("Can't load analysis because error occured: " + e.getMessage());
+		} catch (HibernateException e) {
+			logError("Can't load analysis because error occured: "
+					+ e.getMessage());
 			throw new BenchmarkManagerException("Can't load analysis", e);
 		} finally {
-			if( session != null ) session.close();
+			if (session != null)
+				session.close();
 		}
 	}
-
 
 	/**
 	 * Deletes given analysis
@@ -726,26 +861,35 @@ public final class BenchmarkManagerImplementation
 	 * @throws RemoteException
 	 * @throws BenchmarkManagerException
 	 */
-	private synchronized void deleteAnalysis(Analysis analysis) throws RemoteException, BenchmarkManagerException {
-		RRManagerInterface repository = (RRManagerInterface)Task.getTaskHandle().getTasksPort().
-				serviceFind(ResultsRepositoryService.SERVICE_NAME, Service.RMI_MAIN_IFACE);
-		if( repository == null ){
-			throw new BenchmarkManagerException("Results Repository reference cannot be obtained, maybe it is not running.");
+	private synchronized void deleteAnalysis(Analysis analysis)
+			throws RemoteException, BenchmarkManagerException {
+		RRManagerInterface repository = (RRManagerInterface) CurrentTaskSingleton
+				.getTaskHandle()
+				.getTasksPort()
+				.serviceFind(
+						ResultsRepositoryService.SERVICE_NAME,
+						Service.RMI_MAIN_IFACE);
+		if (repository == null) {
+			throw new BenchmarkManagerException(
+					"Results Repository reference cannot be obtained, maybe it is not running.");
 		}
 
 		// Delete analysis from the persistent storage
 		Session session = null;
-		try{
+		try {
 			session = hibernateSessionFactory.openSession();
 			session.beginTransaction();
 			session.delete(analysis);
 			session.getTransaction().commit();
-		} catch ( HibernateException e ) {
-			logError("Couldn't delete analysis because error occured: "+e.getMessage()); 
-			if( session != null) session.getTransaction().rollback();
-			throw new BenchmarkManagerException("Couldn't delete analysis", e); 
+		} catch (HibernateException e) {
+			logError("Couldn't delete analysis because error occured: "
+					+ e.getMessage());
+			if (session != null)
+				session.getTransaction().rollback();
+			throw new BenchmarkManagerException("Couldn't delete analysis", e);
 		} finally {
-			if( session != null ) session.close();
+			if (session != null)
+				session.close();
 		}
 
 		// Delete analysis from the results repository
@@ -755,41 +899,42 @@ public final class BenchmarkManagerImplementation
 				repository.deleteDataset(analysis.getName(), datasetName);
 			}
 		} catch (ResultsRepositoryException e) {
-			throw new BenchmarkManagerException("Couldn't delete analysis datasets from the Results Repository", e);
+			throw new BenchmarkManagerException(
+					"Couldn't delete analysis datasets from the Results Repository",
+					e);
 		}
 
 	}
-
 
 	/**
 	 * Retrieves the RMI reference to the SW repository.
 	 * 
 	 * @return Software Repository Interface
 	 */
-	private SoftwareRepositoryInterface getSWRepositoryInterface() throws RemoteException, BenchmarkManagerException {
-		SoftwareRepositoryInterface swRep = (SoftwareRepositoryInterface)
-			task.getTasksPort().serviceFind(
-					SoftwareRepositoryService.SERVICE_NAME,
-					Service.RMI_MAIN_IFACE );
+	private SoftwareRepositoryInterface getSWRepositoryInterface()
+			throws RemoteException, BenchmarkManagerException {
+		SoftwareRepositoryInterface swRep = (SoftwareRepositoryInterface) task
+				.getTasksPort().serviceFind(
+						SoftwareRepositoryService.SERVICE_NAME,
+						Service.RMI_MAIN_IFACE);
 
-		if( swRep == null ){
-			throw new BenchmarkManagerException("Couldn't find running instance of Software Repository");
+		if (swRep == null) {
+			throw new BenchmarkManagerException(
+					"Couldn't find running instance of Software Repository");
 		}
 		return swRep;
 	}
 
-
 	/**
-	 * Initialize hibernate session.
-	 * Loads necessary pluggable modules using <code>manager</code>,
-	 * initializes derby database if neccessary
-	 * and stores the hibernate session for future use in the <code>hibernateSession</code>
+	 * Initialize hibernate session. Loads necessary pluggable modules using
+	 * <code>manager</code>, initializes derby database if neccessary and stores
+	 * the hibernate session for future use in the <code>hibernateSession</code>
 	 * Hibernate will create or update the database schema if neccessary.
 	 * 
 	 * @throws ComponentInitializationException
 	 */
 	private void initHibernate() throws ComponentInitializationException {
-		if( hibernateSessionFactory != null ){
+		if (hibernateSessionFactory != null) {
 			return;
 		}
 
@@ -798,50 +943,56 @@ public final class BenchmarkManagerImplementation
 		PluggableModule m;
 		HibernatePluggableModule hibernateModule = null;
 
-		PluggableModuleDescriptor hibernate = new PluggableModuleDescriptor(moduleName, moduleVersion);
+		PluggableModuleDescriptor hibernate = new PluggableModuleDescriptor(
+				moduleName,
+				moduleVersion);
 
 		logInfo("Initialising hibernate component...");
 		try {
 			m = manager.getModule(hibernate);
 		} catch (PluggableModuleException e) {
-			logError("Error loading pluggable module: "+e.getMessage());
-			throw new ComponentInitializationException ("Error loading pluggable module.", e);
+			logError("Error loading pluggable module: " + e.getMessage());
+			throw new ComponentInitializationException(
+					"Error loading pluggable module.",
+					e);
 		}
 
-		if( !(m instanceof HibernatePluggableModule) ) {
-			throw new ComponentInitializationException(
-					"Pluggable module "+moduleName+"-"+moduleVersion
-					+" is not HibernatePluggableModule!");
+		if (!(m instanceof HibernatePluggableModule)) {
+			throw new ComponentInitializationException("Pluggable module "
+					+ moduleName + "-" + moduleVersion
+					+ " is not HibernatePluggableModule!");
 		}
 
 		String[] entityList = new String[] {
 				"cz.cuni.mff.been.benchmarkmanagerng.module.BMGenerator",
 				"cz.cuni.mff.been.benchmarkmanagerng.module.BMEvaluator",
-				"cz.cuni.mff.been.benchmarkmanagerng.Analysis"
-				};
+				"cz.cuni.mff.been.benchmarkmanagerng.Analysis" };
 
 		try {
 			hibernateModule = (HibernatePluggableModule) m;
 			logInfo("Initialising hibernate session factory...");
 			hibernateSessionFactory = hibernateModule.createSessionFactory(
-					getDerbyUrl(), entityList );
-		} catch ( HibernateException e ){
-			logError("Can't open hibernate session because error occured: "+e.getMessage());
-			throw new ComponentInitializationException("Can't create hibernate session factory", e);
+					getDerbyUrl(),
+					entityList);
+		} catch (HibernateException e) {
+			logError("Can't open hibernate session because error occured: "
+					+ e.getMessage());
+			throw new ComponentInitializationException(
+					"Can't create hibernate session factory",
+					e);
 		}
 	}
 
-
 	/**
-	 * Initializes connection to Derby database.
-	 * Uses <code>manager</code> to retrieve derby pluggable module, stores the refference
-	 * to the pluggable module in the variable <code>derby</code>.
-	 * Then it attempts to start the derby engine with home in the task working directory.
+	 * Initializes connection to Derby database. Uses <code>manager</code> to
+	 * retrieve derby pluggable module, stores the refference to the pluggable
+	 * module in the variable <code>derby</code>. Then it attempts to start the
+	 * derby engine with home in the task working directory.
 	 * 
 	 * @throws ComponentInitializationException
 	 */
 	private void initDerby() throws ComponentInitializationException {
-		if( derby != null ){
+		if (derby != null) {
 			return;
 		}
 
@@ -851,15 +1002,19 @@ public final class BenchmarkManagerImplementation
 
 		logInfo("Initialising database...");
 		try {
-			m = manager.getModule( new PluggableModuleDescriptor( moduleName, moduleVersion) );
+			m = manager.getModule(new PluggableModuleDescriptor(
+					moduleName,
+					moduleVersion));
 		} catch (PluggableModuleException e) {
-			logError("Error loading pluggable module: "+e.getMessage());
-			throw new ComponentInitializationException ("Error loading pluggable module.", e);
+			logError("Error loading pluggable module: " + e.getMessage());
+			throw new ComponentInitializationException(
+					"Error loading pluggable module.",
+					e);
 		}
 
-		if( !(m instanceof DerbyPluggableModule) ) {
-			String err = "Pluggable module "+moduleName+"-"+moduleVersion
-					+" is not DerbyPluggableModule!";
+		if (!(m instanceof DerbyPluggableModule)) {
+			String err = "Pluggable module " + moduleName + "-" + moduleVersion
+					+ " is not DerbyPluggableModule!";
 			logError(err);
 			throw new ComponentInitializationException(err);
 		}
@@ -867,91 +1022,116 @@ public final class BenchmarkManagerImplementation
 		// Set up database in cwd when running as in a test suite
 		// task.getWorkingDirectory() might cause nullPointerException
 		String dbDir = System.getProperty(Task.PROP_DIR_WORK);
-		if( dbDir == null ){
+		if (dbDir == null) {
 			dbDir = "";
 		}
 		try {
 			derby = (DerbyPluggableModule) m;
 			// start derby as network accessible if debug mode is on.
-			derby.startEngine(dbDir, Debug.isDebugModeOn(), DERBY_DEBUG_NETWORK_PORT);
+			derby.startEngine(
+					dbDir,
+					Debug.isDebugModeOn(),
+					DERBY_DEBUG_NETWORK_PORT);
 			logInfo("Derby engine started.");
 		} catch (Exception e) {
-			logError("Can't start derby engine: "+e.getMessage());
-			throw new ComponentInitializationException("Can't start derby engine.", e);
+			logError("Can't start derby engine: " + e.getMessage());
+			throw new ComponentInitializationException(
+					"Can't start derby engine.",
+					e);
 		}
 	}
 
-
-	/** 
+	/**
 	 * @return URL used to connect to embedded instance of derby
 	 */
 	private String getDerbyUrl() {
 		return "jdbc:derby:" + ANALYSES_DATABASE + ";create=true";
 	}
 
-
 	/**
-	 * Launches GeneratorRunner with specified analysis as parameter.
-	 * Not part of any interface to avoid changing analysis configuration with each run.
+	 * Launches GeneratorRunner with specified analysis as parameter. Not part
+	 * of any interface to avoid changing analysis configuration with each run.
 	 * 
 	 * @param analysis
 	 * 
-	 * @throws RemoteException when error occurs in any subsequent call
-	 * @throws BenchmarkManagerException when there is error on the BenchmarkManager side
+	 * @throws RemoteException
+	 *             when error occurs in any subsequent call
+	 * @throws BenchmarkManagerException
+	 *             when there is error on the BenchmarkManager side
 	 */
-	private synchronized void launchAnalysis(Analysis analysis) throws RemoteException, BenchmarkManagerException{
+	private synchronized void launchAnalysis(Analysis analysis)
+			throws RemoteException, BenchmarkManagerException {
 		// This check is pobably useless with the new task manager in place
 		Remote hostManager = null;
 		try {
-			hostManager = task.getTasksPort().serviceFind(HostManagerService.SERVICE_NAME, Service.RMI_MAIN_IFACE);
-		} catch( NullPointerException e ){
+			hostManager = task.getTasksPort().serviceFind(
+					HostManagerService.SERVICE_NAME,
+					Service.RMI_MAIN_IFACE);
+		} catch (NullPointerException e) {
 			// will be dealt with in the next if
 		}
-		if( hostManager == null ){
+		if (hostManager == null) {
 			throw new BenchmarkManagerException("Couldn't find Host Manager");
 		}
 
-		logInfo("Launching analysis "+analysis.getName());
+		logInfo("Launching analysis " + analysis.getName());
 
 		TaskManagerInterface taskManager = task.getTasksPort().getTaskManager();
 
 		String context = null;
 		try {
 			// Create brand new run context:
-			context = analysis.getName()+"-"+analysis.getRunCount();
+			context = analysis.getName() + "-" + analysis.getRunCount();
 			int retry = 0;
-			while( taskManager.isContextRegistered(context+"-"+retry) ){
+			while (taskManager.isContextRegistered(context + "-" + retry)) {
 				retry++;
 			}
-			context = context+"-"+retry;
+			context = context + "-" + retry;
 			String description;
-			description = "Context generated for analysis "+analysis.getName()
-					+" during run #"+analysis.getRunCount();
-			taskManager.newContext(context, context, description, analysis.getAID());
+			description = "Context generated for analysis "
+					+ analysis.getName() + " during run #"
+					+ analysis.getRunCount();
+			taskManager.newContext(
+					context,
+					context,
+					description,
+					analysis.getAID());
 		} catch (RemoteException e) {
-			throw new BenchmarkManagerException("Error reading context from the TaskManager", e);
+			throw new BenchmarkManagerException(
+					"Error reading context from the TaskManager",
+					e);
 		} catch (LogStorageException e) {
-			throw new BenchmarkManagerException("Error reading context from the TaskManager", e);
+			throw new BenchmarkManagerException(
+					"Error reading context from the TaskManager",
+					e);
 		} catch (IllegalArgumentException e) {
-			throw new BenchmarkManagerException("Error reading context from the TaskManager", e);
+			throw new BenchmarkManagerException(
+					"Error reading context from the TaskManager",
+					e);
 		} catch (NullPointerException e) {
-			throw new BenchmarkManagerException("Error reading context from the TaskManager", e);
+			throw new BenchmarkManagerException(
+					"Error reading context from the TaskManager",
+					e);
 		}
 
-		String tid = "generator-"+context; // context is unique enough at this point
-		String treePath = ANALYSES_TREEPATH_PREFIX
-					+"/"+analysis.getName()
-					+"/"+context+"/"+tid;
+		String tid = "generator-" + context; // context is unique enough at this
+												// point
+		String treePath = ANALYSES_TREEPATH_PREFIX + "/" + analysis.getName()
+				+ "/" + context + "/" + tid;
 		TaskDescriptor generatorRunner = TaskDescriptorHelper.createTask(
-				tid, GENERATORTASK_NAME, context,
-				analysis.getGeneratorHostRSL(), treePath);
+				tid,
+				GENERATORTASK_NAME,
+				context,
+				analysis.getGeneratorHostRSL(),
+				treePath);
 		try {
 			TaskDescriptorHelper.addTaskPropertyObjects(
-				generatorRunner,
-				Pair.pair("analysis", analysis)
-			);
+					generatorRunner,
+					Pair.pair("analysis", analysis));
 		} catch (IOException e) {
-			throw new BenchmarkManagerException("Error serializing analysis to Base64", e);
+			throw new BenchmarkManagerException(
+					"Error serializing analysis to Base64",
+					e);
 		}
 		task.getTasksPort().runTask(generatorRunner);
 		analysesTracker.analysisStarted(context, generatorRunner.getTaskId());

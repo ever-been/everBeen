@@ -44,17 +44,17 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
+import cz.cuni.mff.been.common.util.XMLHelper;
+import cz.cuni.mff.been.common.value.ValueCommonInterface;
+import cz.cuni.mff.been.common.value.ValueInteger;
+import cz.cuni.mff.been.common.value.ValueList;
+import cz.cuni.mff.been.common.value.ValueString;
+import cz.cuni.mff.been.common.value.ValueType;
 import cz.cuni.mff.been.hostmanager.HostManagerException;
 import cz.cuni.mff.been.hostmanager.HostManagerInterface;
 import cz.cuni.mff.been.hostmanager.InputParseException;
 import cz.cuni.mff.been.hostmanager.InvalidArgumentException;
 import cz.cuni.mff.been.hostmanager.ValueNotFoundException;
-import cz.cuni.mff.been.hostmanager.util.XMLHelper;
-import cz.cuni.mff.been.hostmanager.value.ValueCommonInterface;
-import cz.cuni.mff.been.hostmanager.value.ValueInteger;
-import cz.cuni.mff.been.hostmanager.value.ValueList;
-import cz.cuni.mff.been.hostmanager.value.ValueString;
-import cz.cuni.mff.been.hostmanager.value.ValueType;
 
 
 /**

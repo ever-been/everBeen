@@ -32,12 +32,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import cz.cuni.mff.been.common.util.XMLHelper;
+import cz.cuni.mff.been.common.value.ValueString;
+import cz.cuni.mff.been.common.value.ValueVersion;
 import cz.cuni.mff.been.hostmanager.InputParseException;
 
-import cz.cuni.mff.been.hostmanager.util.XMLHelper;
 
-import cz.cuni.mff.been.hostmanager.value.ValueString;
-import cz.cuni.mff.been.hostmanager.value.ValueVersion;
 
 /**
  * Stores data about Java implementation on host. Does not contain any detection.

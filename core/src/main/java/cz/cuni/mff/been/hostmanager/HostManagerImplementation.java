@@ -43,6 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import cz.cuni.mff.been.common.Pair;
 import cz.cuni.mff.been.common.id.OID;
+import cz.cuni.mff.been.common.util.MiscUtils;
 import cz.cuni.mff.been.hostmanager.database.DatabaseManagerInterface;
 import cz.cuni.mff.been.hostmanager.database.HostDatabaseEngine;
 import cz.cuni.mff.been.hostmanager.database.HostGroup;
@@ -54,7 +55,6 @@ import cz.cuni.mff.been.hostmanager.database.RestrictionInterface;
 import cz.cuni.mff.been.hostmanager.database.SimpleHostInfo;
 import cz.cuni.mff.been.hostmanager.database.SoftwareAliasDefinition;
 import cz.cuni.mff.been.hostmanager.load.LoadServerInterface;
-import cz.cuni.mff.been.hostmanager.util.MiscUtils;
 import cz.cuni.mff.been.jaxb.td.TaskDescriptor;
 import cz.cuni.mff.been.services.Service;
 import cz.cuni.mff.been.task.Task;

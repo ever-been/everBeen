@@ -38,17 +38,17 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import cz.cuni.mff.been.common.util.XMLHelper;
+import cz.cuni.mff.been.common.value.ValueBasicInterface;
+import cz.cuni.mff.been.common.value.ValueCommonInterface;
+import cz.cuni.mff.been.common.value.ValueList;
+import cz.cuni.mff.been.common.value.ValueRange;
+import cz.cuni.mff.been.common.value.ValueRegexp;
 import cz.cuni.mff.been.hostmanager.HostManagerException;
 import cz.cuni.mff.been.hostmanager.InputParseException;
 import cz.cuni.mff.been.hostmanager.InvalidArgumentException;
 import cz.cuni.mff.been.hostmanager.ValueNotFoundException;
 import cz.cuni.mff.been.hostmanager.ValueTypeIncorrectException;
-import cz.cuni.mff.been.hostmanager.util.XMLHelper;
-import cz.cuni.mff.been.hostmanager.value.ValueBasicInterface;
-import cz.cuni.mff.been.hostmanager.value.ValueCommonInterface;
-import cz.cuni.mff.been.hostmanager.value.ValueList;
-import cz.cuni.mff.been.hostmanager.value.ValueRange;
-import cz.cuni.mff.been.hostmanager.value.ValueRegexp;
 
 /**
  * Class which represent on node in tree-like hierarchy. For more information about terminology 

@@ -32,9 +32,9 @@ import java.io.IOException;
 
 import org.xml.sax.InputSource;
 
+import cz.cuni.mff.been.common.util.XMLHelper;
 import cz.cuni.mff.been.hostmanager.InputParseException;
 
-import cz.cuni.mff.been.hostmanager.util.XMLHelper;
 
 /**
  * This class allows you to construct instance of HostInfoInterface from data stored in file or save

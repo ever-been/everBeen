@@ -34,15 +34,13 @@
 	import="java.io.Serializable"
 	import="java.text.SimpleDateFormat"
 
-%><%
-	page_.writeInfoMessages();
+%><%page_.writeInfoMessages();
 	page_.writeWarningMessages();
 	page_.writeErrorMessages();
 
 	ContextEntry context = (ContextEntry)application.getAttribute("context");
-	TaskEntry[] tasks = (TaskEntry[])application.getAttribute("tasks");
-	Map checkpoints = (Map)application.getAttribute("checkpoints");
-%>
+	TaskEntryImplementation[] tasks = (TaskEntryImplementation[])application.getAttribute("tasks");
+	Map checkpoints = (Map)application.getAttribute("checkpoints");%>
 <div class="bar"><div class="top-left"><div class="top-right"><div class="bottom-left"><div class="bottom-right"><div class="inner">
 	<a href="<%=page_.actionURL("context-list")%>">Contexts</a>
 	&raquo;

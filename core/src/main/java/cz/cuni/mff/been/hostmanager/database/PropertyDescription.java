@@ -28,9 +28,9 @@ package cz.cuni.mff.been.hostmanager.database;
 
 import org.w3c.dom.Node;
 
+import cz.cuni.mff.been.common.util.XMLHelper;
 import cz.cuni.mff.been.hostmanager.InputParseException;
 
-import cz.cuni.mff.been.hostmanager.util.XMLHelper;
 
 import java.io.Serializable;
 

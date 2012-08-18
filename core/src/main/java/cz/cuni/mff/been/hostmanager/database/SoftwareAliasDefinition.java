@@ -35,12 +35,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import cz.cuni.mff.been.common.SubstituteVariableValues;
+import cz.cuni.mff.been.common.util.MiscUtils;
+import cz.cuni.mff.been.common.util.XMLHelper;
 
 import cz.cuni.mff.been.hostmanager.InputParseException;
 import cz.cuni.mff.been.hostmanager.InvalidArgumentException;
 
-import cz.cuni.mff.been.hostmanager.util.MiscUtils;
-import cz.cuni.mff.been.hostmanager.util.XMLHelper;
 
 /**
  * This class contains conditions application must meet before alias which represents given application

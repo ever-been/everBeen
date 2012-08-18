@@ -32,16 +32,16 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import cz.cuni.mff.been.common.value.ValueBoolean;
+import cz.cuni.mff.been.common.value.ValueCommonInterface;
+import cz.cuni.mff.been.common.value.ValueDouble;
+import cz.cuni.mff.been.common.value.ValueInteger;
+import cz.cuni.mff.been.common.value.ValueList;
+import cz.cuni.mff.been.common.value.ValueRange;
+import cz.cuni.mff.been.common.value.ValueRegexp;
+import cz.cuni.mff.been.common.value.ValueString;
+import cz.cuni.mff.been.common.value.ValueVersion;
 import cz.cuni.mff.been.hostmanager.database.NameValuePair;
-import cz.cuni.mff.been.hostmanager.value.ValueBoolean;
-import cz.cuni.mff.been.hostmanager.value.ValueCommonInterface;
-import cz.cuni.mff.been.hostmanager.value.ValueDouble;
-import cz.cuni.mff.been.hostmanager.value.ValueInteger;
-import cz.cuni.mff.been.hostmanager.value.ValueList;
-import cz.cuni.mff.been.hostmanager.value.ValueRange;
-import cz.cuni.mff.been.hostmanager.value.ValueRegexp;
-import cz.cuni.mff.been.hostmanager.value.ValueString;
-import cz.cuni.mff.been.hostmanager.value.ValueVersion;
 import cz.cuni.mff.been.webinterface.InvalidParamValueException;
 import cz.cuni.mff.been.webinterface.MissingParamException;
 import cz.cuni.mff.been.webinterface.Params;

@@ -39,11 +39,11 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import cz.cuni.mff.been.common.util.MiscUtils;
 import cz.cuni.mff.been.hostmanager.InputParseException;
 import cz.cuni.mff.been.hostmanager.InvalidArgumentException;
 import cz.cuni.mff.been.hostmanager.OutputWriteException;
 
-import cz.cuni.mff.been.hostmanager.util.MiscUtils;
 
 /**
  * This class handles all manipulation with load maps. Load map file is file which stores positions

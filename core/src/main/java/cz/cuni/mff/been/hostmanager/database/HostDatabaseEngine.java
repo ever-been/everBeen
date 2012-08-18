@@ -48,6 +48,10 @@ import org.xml.sax.InputSource;
 
 import cz.cuni.mff.been.common.Pair;
 import cz.cuni.mff.been.common.SubstituteVariableValues;
+import cz.cuni.mff.been.common.util.MiscUtils;
+import cz.cuni.mff.been.common.util.XMLHelper;
+import cz.cuni.mff.been.common.value.ValueCommonInterface;
+import cz.cuni.mff.been.common.value.ValueString;
 
 import cz.cuni.mff.been.hostmanager.HostDatabaseException;
 import cz.cuni.mff.been.hostmanager.HostManagerException;
@@ -59,11 +63,7 @@ import cz.cuni.mff.been.hostmanager.InvalidArgumentException;
 import cz.cuni.mff.been.hostmanager.ValueNotFoundException;
 import cz.cuni.mff.been.hostmanager.ValueTypeIncorrectException;
 
-import cz.cuni.mff.been.hostmanager.util.MiscUtils;
-import cz.cuni.mff.been.hostmanager.util.XMLHelper;
 
-import cz.cuni.mff.been.hostmanager.value.ValueCommonInterface;
-import cz.cuni.mff.been.hostmanager.value.ValueString;
 
 /**
  * This class manages host database. It takes care of all file operations on all files stored in database (load, host info, groups, history).

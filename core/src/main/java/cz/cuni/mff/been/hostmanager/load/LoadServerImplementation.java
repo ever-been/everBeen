@@ -44,6 +44,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import cz.cuni.mff.been.common.RMI;
 import cz.cuni.mff.been.common.id.OID;
+import cz.cuni.mff.been.common.util.MiscUtils;
 
 import cz.cuni.mff.been.hostmanager.HostDatabaseException;
 import cz.cuni.mff.been.hostmanager.HostManagerApplicationData;
@@ -55,7 +56,6 @@ import cz.cuni.mff.been.hostmanager.ValueNotFoundException;
 
 import cz.cuni.mff.been.hostmanager.database.HostDatabaseEngine;
 
-import cz.cuni.mff.been.hostmanager.util.MiscUtils;
 
 /**
  * Implementation of Load Server. Load Server manages all load data collected by Load Monitor on hosts.

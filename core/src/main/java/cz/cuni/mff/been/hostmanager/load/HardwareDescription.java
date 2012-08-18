@@ -32,9 +32,9 @@ import java.nio.ByteBuffer;
 
 import java.util.Date;
 
+import cz.cuni.mff.been.common.util.TimeUtils;
 import cz.cuni.mff.been.hostmanager.InputParseException;
 import cz.cuni.mff.been.hostmanager.OutputWriteException;
-import cz.cuni.mff.been.hostmanager.util.TimeUtils;
 
 /**
  * This class stores data about names of various hardware components whose performance is monitored

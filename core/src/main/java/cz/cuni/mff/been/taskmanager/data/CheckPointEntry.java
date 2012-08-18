@@ -47,7 +47,7 @@ public class CheckPointEntry implements Cloneable, Serializable {
 	/**
 	 * Regular expression for match <code>taskId</code>.
 	 */
-	public static final Pattern REGEXP_TASK_ID = TaskEntry.REGEXP_TASK_ID;
+	public static final Pattern REGEXP_TASK_ID = TaskEntryImplementation.REGEXP_TASK_ID;
 	
 	/**
 	 * Regular expression for match <code>contextId</code>.

@@ -33,12 +33,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import cz.cuni.mff.been.common.Pair;
+import cz.cuni.mff.been.common.util.XMLHelper;
+import cz.cuni.mff.been.common.value.ValueCommonInterface;
 
 import cz.cuni.mff.been.hostmanager.InputParseException;
 
-import cz.cuni.mff.been.hostmanager.util.XMLHelper;
 
-import cz.cuni.mff.been.hostmanager.value.ValueCommonInterface;
 
 /**
  * Class which provides user with means to specify condition for given property of object. 

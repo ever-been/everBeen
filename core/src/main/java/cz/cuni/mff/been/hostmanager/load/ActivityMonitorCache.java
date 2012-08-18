@@ -29,9 +29,9 @@ package cz.cuni.mff.been.hostmanager.load;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
+import cz.cuni.mff.been.common.util.MiscUtils;
 import cz.cuni.mff.been.hostmanager.InvalidArgumentException;
 import cz.cuni.mff.been.hostmanager.ValueNotFoundException;
-import cz.cuni.mff.been.hostmanager.util.MiscUtils;
 
 /**
  * Cache which stores data about activity of all hosts. 

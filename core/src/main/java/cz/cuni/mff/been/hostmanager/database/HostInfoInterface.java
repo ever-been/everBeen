@@ -34,10 +34,10 @@ import java.util.TreeMap;
 
 import org.w3c.dom.Node;
 
+import cz.cuni.mff.been.common.value.ValueCommonInterface;
 import cz.cuni.mff.been.hostmanager.InputParseException;
 import cz.cuni.mff.been.hostmanager.InvalidArgumentException;
 import cz.cuni.mff.been.hostmanager.ValueNotFoundException;
-import cz.cuni.mff.been.hostmanager.value.ValueCommonInterface;
 
 /**
  * This interface provides methods which you can use to access data about host's hardware and 

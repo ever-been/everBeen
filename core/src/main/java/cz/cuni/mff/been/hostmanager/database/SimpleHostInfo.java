@@ -28,9 +28,9 @@ package cz.cuni.mff.been.hostmanager.database;
 
 import java.io.Serializable;
 
-import cz.cuni.mff.been.hostmanager.value.ValueList;
-import cz.cuni.mff.been.hostmanager.value.ValueString;
-import cz.cuni.mff.been.hostmanager.value.ValueType;
+import cz.cuni.mff.been.common.value.ValueList;
+import cz.cuni.mff.been.common.value.ValueString;
+import cz.cuni.mff.been.common.value.ValueType;
 
 /**
  * This class represents basic informations about host. It contains only info needed to identify host in network.

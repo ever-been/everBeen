@@ -84,6 +84,7 @@ import cz.cuni.mff.been.jaxb.properties.Properties;
 import cz.cuni.mff.been.logging.LogRecord;
 import cz.cuni.mff.been.logging.LogStorageException;
 import cz.cuni.mff.been.logging.LogUtils;
+import cz.cuni.mff.been.task.CurrentTaskSingleton;
 import cz.cuni.mff.been.task.Task;
 import cz.cuni.mff.been.taskmanager.TaskManagerInterface;
 import cz.cuni.mff.been.taskmanager.data.TaskEntry;
@@ -1915,13 +1916,13 @@ public final class HostsModule extends CommandLineModule {
 			this.propertiesParser = XSD.PROPERTIES
 					.createParser(Properties.class);
 		} catch (SAXException exception) {
-			Task task = Task.getTaskHandle();
+			Task task = CurrentTaskSingleton.getTaskHandle();
 			if (null != task) {
 				task.logError("JAXB parser could not find, read or parse schema files.");
 			}
 			throw new CommandLineException(exception); // Trace will be written.
 		} catch (JAXBException exception) {
-			Task task = Task.getTaskHandle();
+			Task task = CurrentTaskSingleton.getTaskHandle();
 			if (null != task) {
 				task.logError("JAXB parser refused or could not load the binding class.");
 			}

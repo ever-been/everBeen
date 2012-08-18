@@ -31,14 +31,14 @@
 	import="cz.cuni.mff.been.taskmanager.data.*"
 	import="cz.cuni.mff.been.webinterface.tasks.*"
 	import="cz.cuni.mff.been.task.Task"
-%><%
-	TaskEntry[] tasks = (TaskEntry[])application.getAttribute("tasks");
+%><%TaskEntryImplementation[] tasks = (TaskEntryImplementation[])application.getAttribute("tasks");
 	Map checkpoints = (Map)application.getAttribute("checkpoints");
 	boolean showHost = ((Boolean)application.getAttribute("showHost")).booleanValue();
 	boolean showContext = ((Boolean)application.getAttribute("showContext")).booleanValue();
-	TaskListMode mode = (TaskListMode)application.getAttribute("mode");
+	TaskListMode mode = (TaskListMode)application.getAttribute("mode");%>
+<%
+	if (tasks.length > 0) {
 %>
-<% if (tasks.length > 0) { %>
 	<table class="list full-width">
 		<tr>
 			<th>Task ID</th>
@@ -46,16 +46,28 @@
 			<th>Tree address</th>
 			<th>Running time</th>
 			<th>State</th>
-			<% if (showHost) { %>
+			<%
+				if (showHost) {
+			%>
 				<th>Host</th>
-			<% } %>
-			<% if (showContext) { %>
+			<%
+				}
+			%>
+			<%
+				if (showContext) {
+			%>
 				<th>Context</th>
-			<% } %>
+			<%
+				}
+			%>
 			<th>&nbsp;</th>
 		</tr>
-		<% for(int i = 0; i < tasks.length; i++) { %>
-			<% TaskEntry task = tasks[i]; %>
+		<%
+			for(int i = 0; i < tasks.length; i++) {
+		%>
+			<%
+				TaskEntryImplementation task = tasks[i];
+			%>
 			<%
 				long runningTime = 0;
 				switch(task.getState()) {

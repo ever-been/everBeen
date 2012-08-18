@@ -44,10 +44,10 @@ import org.w3c.dom.Node;
 
 import org.xml.sax.InputSource;
 
+import cz.cuni.mff.been.common.util.XMLHelper;
 import cz.cuni.mff.been.hostmanager.InputParseException;
 import cz.cuni.mff.been.hostmanager.InvalidArgumentException;
 
-import cz.cuni.mff.been.hostmanager.util.XMLHelper;
 
 /**
  * This class represents group of hosts. Groups are based only on user choice, hosts in one group do not need to

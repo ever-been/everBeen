@@ -35,7 +35,7 @@ import java.util.LinkedList;
 public class TaskNode {
 	
 	/* Representation of this node for outside world. */
-	private TaskEntry taskEntry = null;
+	private TaskEntryImplementation taskEntry = null;
 	
 	/* Link to Context. */
 	private ContextNode context = null;
@@ -61,7 +61,7 @@ public class TaskNode {
 	 * 	<code>null</code>.
 	 * @throws DataRuntimeException If internal error occurred.
 	 */
-	protected TaskNode(TaskEntry taskEntry,
+	protected TaskNode(TaskEntryImplementation taskEntry,
 			ContextNode context, HostRuntimeNode hostRuntime) {
 		/* Check input parameters. */
 		if (taskEntry == null) {
@@ -89,7 +89,7 @@ public class TaskNode {
 	 * @throws NullPointerException If some parameter is <code>null</code>.
 	 * @throws DataRuntimeException If internal error occurred.
 	 */
-	protected TaskNode(TaskEntry taskEntry,
+	protected TaskNode(TaskEntryImplementation taskEntry,
 			ContextNode context) {
 		/* Check input parameters. */
 		if (taskEntry == null) {
@@ -113,7 +113,7 @@ public class TaskNode {
 	 * @return <code>TaskEntry</code> associated with this
 	 * 	<code>TaskNode</code>.
 	 */
-	protected TaskEntry getTaskEntry() {
+	protected TaskEntryImplementation getTaskEntry() {
 		return this.taskEntry;
 	}
 	
