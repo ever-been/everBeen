@@ -23,7 +23,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>cline_interface</finalName>
+		<finalName>host_runtime</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -31,6 +31,18 @@
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>cz.cuni.mff.been.hostruntime.HostRuntimeRunner</mainClass>
+							<packageName>cz.cuni.mff.been.hostruntime</packageName>
+						</manifest>
+					</archive>
 				</configuration>
 			</plugin>
 		</plugins>
