@@ -52,7 +52,6 @@ import cz.cuni.mff.been.common.anttasks.Delete;
 import cz.cuni.mff.been.common.serialize.Deserialize;
 import cz.cuni.mff.been.common.serialize.DeserializeException;
 import cz.cuni.mff.been.debugassistant.DebugAssistantInterface;
-import cz.cuni.mff.been.debugassistant.DebugAssistantService;
 import cz.cuni.mff.been.debugassistant.SuspendedTask;
 import cz.cuni.mff.been.hostmanager.IllegalOperationException;
 import cz.cuni.mff.been.hostmanager.load.LoadMonitorException;
@@ -74,6 +73,8 @@ import cz.cuni.mff.been.task.TaskException;
 import cz.cuni.mff.been.taskmanager.CheckPoint;
 import cz.cuni.mff.been.taskmanager.HostRuntimesPortInterface;
 import cz.cuni.mff.been.taskmanager.data.TaskState;
+
+import static cz.cuni.mff.been.services.Names.DEBUG_ASSISTANT_SERVICE_NAME;
 
 /**
  * The class representing a task instance in the host runtime.
@@ -577,7 +578,7 @@ public class TaskImplementation extends UnicastRemoteObject implements TaskInter
 	
 				try
 				{
-					DebugAssistantInterface da = (DebugAssistantInterface) hostRuntime.getTaskManager ().serviceFind (DebugAssistantService.SERVICE_NAME, Service.RMI_MAIN_IFACE);
+					DebugAssistantInterface da = (DebugAssistantInterface) hostRuntime.getTaskManager ().serviceFind (DEBUG_ASSISTANT_SERVICE_NAME, Service.RMI_MAIN_IFACE);
 					if (da == null)
 					{
 						displayMessage ("Debug assistant is not online, task will be run normally.");

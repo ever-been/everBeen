@@ -32,7 +32,9 @@ import cz.cuni.mff.been.common.RMISafeException;
  * All the bad things that could happen in the debug assistant.
  * 
  * @author Jan Tattermusch
+ *
  */
+
 public class DebugAssistantException extends RMISafeException {
 
 	private static final long	serialVersionUID	= -8835602578525791295L;

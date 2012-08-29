@@ -21,7 +21,7 @@
  * along with this library; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-package cz.cuni.mff.been.debugassistant.implementation;
+package cz.cuni.mff.been.debugassistant;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -37,10 +37,8 @@ import com.sun.jdi.connect.AttachingConnector;
 import com.sun.jdi.connect.Connector.Argument;
 import com.sun.jdi.connect.IllegalConnectorArgumentsException;
 
-import cz.cuni.mff.been.debugassistant.DebugAssistantException;
-import cz.cuni.mff.been.debugassistant.DebugAssistantInterface;
-import cz.cuni.mff.been.debugassistant.SuspendedTask;
 import cz.cuni.mff.been.task.CurrentTaskSingleton;
+import cz.cuni.mff.been.task.Task;
 
 /**
  * Debug Assistant implementation
