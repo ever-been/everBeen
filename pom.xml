@@ -17,6 +17,7 @@
 		<module>web_interface</module>
         	<module>debug_assistant</module>
 		<module>bcmd</module>
+		<module>bpk-plugin</module>
 	</modules>
 
 	<properties>
