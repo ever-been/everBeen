@@ -17,6 +17,7 @@
 		<module>cline_interface</module>
 		<module>web_interface</module>
 		<module>bcmd</module>
+		<module>bpk-plugin</module>
 	</modules>
 
 	<properties>
