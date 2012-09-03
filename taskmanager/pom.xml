@@ -51,7 +51,6 @@
 					<archive>
 						<manifest>
 							<mainClass>cz.cuni.mff.been.taskmanager.TaskManagerRunner</mainClass>
-							<packageName>cz.cuni.mff.been.hostruntime</packageName>
 						</manifest>
 					</archive>
 				</configuration>
