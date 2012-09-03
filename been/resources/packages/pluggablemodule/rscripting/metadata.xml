@@ -31,6 +31,6 @@
   <type>module</type>
   <humanName>R Scripting pluggable module</humanName>
   <providedInterfaces>
-	<providedInterface>cz.cuni.mff.been.pluggablemodule.rscripting.RScriptingPluggableModule</providedInterface>
+	<providedInterface>RScriptingPluggableModule</providedInterface>
   </providedInterfaces>
 </package>

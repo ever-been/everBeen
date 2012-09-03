@@ -304,7 +304,7 @@
 				</listitem>
 				<listitem>
 					<para>
-					Derby database is initialized. Derby pluggable module is loaded and the database engine is started. When debug mode is on (<package>cz.cuni.mff.been.common.Debug</package>) then the database is started as network accessible on port <constant>DERBY_DEBUG_NETWORK_PORT</constant>. This access is used only for debugging so we can see the actual content of the database. All BEEN services use Benchmark Manager to access it. The Benchmark Manager Hibernate engine connects from localhost so it has no problem with this restriction.
+					Derby database is initialized. Derby pluggable module is loaded and the database engine is started. When debug mode is on (<package>Debug</package>) then the database is started as network accessible on port <constant>DERBY_DEBUG_NETWORK_PORT</constant>. This access is used only for debugging so we can see the actual content of the database. All BEEN services use Benchmark Manager to access it. The Benchmark Manager Hibernate engine connects from localhost so it has no problem with this restriction.
 					</para>
 				</listitem>
 				<listitem>

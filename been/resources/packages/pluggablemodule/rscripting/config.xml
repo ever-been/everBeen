@@ -27,7 +27,7 @@
 
 -->
 <pluggableModuleConfiguration xmlns="http://been.mff.cuni.cz/pluggablemodule/config">
-   <java mainClass="cz.cuni.mff.been.pluggablemodule.rscripting.implementation.RScriptingPluggableModuleImpl">
+   <java mainClass="RScriptingPluggableModuleImpl">
       <classpathItems>
          <classpathItem>files/rscripting.jar</classpathItem>
       </classpathItems>

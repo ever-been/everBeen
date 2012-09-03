@@ -27,7 +27,7 @@
 
 -->
 <pluggableModuleConfiguration xmlns="http://been.mff.cuni.cz/pluggablemodule/config">
-   <java mainClass="cz.cuni.mff.been.pluggablemodule.hibernate.implementation.HibernatePluggableModuleImpl">
+   <java mainClass="HibernatePluggableModuleImpl">
 	<classpathItems>
 	   	<classpathItem>files/hibernate.jar</classpathItem>
 	</classpathItems>

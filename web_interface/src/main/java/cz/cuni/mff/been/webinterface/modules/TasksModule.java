@@ -44,12 +44,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.UnmarshalException;
 
+import cz.cuni.mff.been.services.Names;
 import org.xml.sax.SAXException;
 
 import cz.cuni.mff.been.common.ComponentInitializationException;
 import cz.cuni.mff.been.common.rsl.EqualsCondition;
 import cz.cuni.mff.been.hostmanager.HostManagerInterface;
-import cz.cuni.mff.been.hostmanager.HostManagerService;
 import cz.cuni.mff.been.jaxb.BindingParser;
 import cz.cuni.mff.been.jaxb.ConvertorException;
 import cz.cuni.mff.been.jaxb.XSD;
@@ -85,6 +85,8 @@ import cz.cuni.mff.been.webinterface.event.EventListener;
 import cz.cuni.mff.been.webinterface.ref.ServiceReference;
 import cz.cuni.mff.been.webinterface.ref.TaskManagerReference;
 
+import static cz.cuni.mff.been.services.Names.*;
+
 /**
  * Web interface module for the Execution Environment.
  * 
@@ -106,9 +108,9 @@ public class TasksModule extends Module implements EventListener {
 			SoftwareRepositoryService.SERVICE_HUMAN_NAME);
 	private final ServiceReference<HostManagerInterface> hostManager = new ServiceReference<HostManagerInterface>(
 			taskManager,
-			HostManagerService.SERVICE_NAME,
-			HostManagerService.REMOTE_INTERFACE_MAIN,
-			HostManagerService.SERVICE_HUMAN_NAME);
+			Names.HOST_MANAGER_SERVICE_NAME,
+			Names.HOST_MANAGER_REMOTE_INTERFACE_MAIN,
+			Names.HOST_MANAGER_SERVICE_HUMAN_NAME);
 
 	private long idIndex = 0;
 

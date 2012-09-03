@@ -13,7 +13,15 @@
 		<module>service_interfaces</module>
 		<module>core</module>
 		<module>host_runtime</module>
+        <module>taskmanager</module>
 		<module>cline_interface</module>
+        <module>softwarerepository</module>
+        <module>hostmanager</module>
+        <module>resultsrepository</module>
+        <module>benchmarkmanager</module>
+        <module>pluggablemodule</module>
+        <module>pluggablemodule-fileagent</module>
+        <module>pluggablemodule-fileagent-implementation</module>
 		<module>web_interface</module>
         	<module>debug_assistant</module>
 		<module>bcmd</module>
@@ -23,6 +31,20 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
+
+    <build>
+        <finalName>debug_assistant</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 	<dependencies>
 		<dependency>

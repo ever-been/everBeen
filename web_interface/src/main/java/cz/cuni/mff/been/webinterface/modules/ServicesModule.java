@@ -38,7 +38,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import cz.cuni.mff.been.common.ComponentInitializationException;
-import cz.cuni.mff.been.hostmanager.HostManagerService;
 import cz.cuni.mff.been.jaxb.td.TaskDescriptor;
 import cz.cuni.mff.been.logging.LogRecord;
 import cz.cuni.mff.been.logging.LogStorageException;
@@ -64,6 +63,8 @@ import cz.cuni.mff.been.webinterface.ref.TaskManagerReference;
 
 import static cz.cuni.mff.been.services.Names.DEBUG_ASSISTANT_SERVICE_NAME;
 import static cz.cuni.mff.been.services.Names.DEBUG_ASSISTANT_SERVICE_HUMAN_NAME;
+
+import static cz.cuni.mff.been.services.Names.*;
 
 
 /**
@@ -101,8 +102,8 @@ public class ServicesModule extends Module implements EventListener {
 				SoftwareRepositoryService.SERVICE_HUMAN_NAME
 			),
 			new ServiceInfo(
-				HostManagerService.SERVICE_NAME,
-				HostManagerService.SERVICE_HUMAN_NAME
+				Names.HOST_MANAGER_SERVICE_NAME,
+				Names.HOST_MANAGER_SERVICE_HUMAN_NAME
 			),
 			new ServiceInfo(
 				DEBUG_ASSISTANT_SERVICE_NAME,

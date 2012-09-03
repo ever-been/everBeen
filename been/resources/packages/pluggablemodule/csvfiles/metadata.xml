@@ -31,6 +31,6 @@
   <type>module</type>
   <humanName>CSV Files pluggable module</humanName>
   <providedInterfaces>
-	<providedInterface>cz.cuni.mff.been.pluggablemodule.csvfiles.CSVFilesPluggableModule</providedInterface>
+	<providedInterface>CSVFilesPluggableModule</providedInterface>
   </providedInterfaces>
 </package>

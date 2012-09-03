@@ -29,9 +29,12 @@ import java.rmi.RemoteException;
 
 import cz.cuni.mff.been.common.ComponentInitializationException;
 import cz.cuni.mff.been.hostmanager.HostManagerInterface;
-import cz.cuni.mff.been.hostmanager.HostManagerService;
 import cz.cuni.mff.been.hostmanager.load.LoadServerInterface;
 import cz.cuni.mff.been.webinterface.Config;
+
+import static cz.cuni.mff.been.services.Names.HOST_MANAGER_SERVICE_NAME;
+import static cz.cuni.mff.been.services.Names.HOST_MANAGER_REMOTE_INTERFACE_MAIN;
+import static cz.cuni.mff.been.services.Names.HOST_MANAGER_SERVICE_HUMAN_NAME;
 
 /**
  * Class encapsulating reference to the Load Server.
@@ -58,18 +61,18 @@ public class LoadServerReference extends RMIReference<LoadServerInterface> {
 		try {
 			HostManagerInterface hostManager
 				= (HostManagerInterface) taskManagerReference.get().serviceFind(
-					HostManagerService.SERVICE_NAME,
-					HostManagerService.REMOTE_INTERFACE_MAIN
+					HOST_MANAGER_SERVICE_NAME,
+					HOST_MANAGER_REMOTE_INTERFACE_MAIN
 				);
 			if (hostManager != null) {
 				return hostManager.getLoadServer();
 			} else {
 				throw new ComponentInitializationException(
 					"<strong>Task Manager can't find a running instance of the "
-					+ HostManagerService.SERVICE_HUMAN_NAME 
+					+HOST_MANAGER_SERVICE_HUMAN_NAME
 					+ ".</strong><br /><br />"
 					+ "Go to the <a href=\"../../services/\">Services</a> tab and make "
-					+ "sure the " + HostManagerService.SERVICE_HUMAN_NAME + " is running."
+					+ "sure the " + HOST_MANAGER_SERVICE_HUMAN_NAME + " is running."
 				);
 			}
 		} catch (RemoteException e) {

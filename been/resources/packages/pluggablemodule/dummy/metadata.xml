@@ -31,6 +31,6 @@
   <type>module</type>
   <humanName>Example dummy pluggable module</humanName>
   <providedInterfaces>
-	<providedInterface>cz.cuni.mff.been.pluggablemodule.dummy.DummyPluggableModule</providedInterface>
+	<providedInterface>DummyPluggableModule</providedInterface>
   </providedInterfaces>
 </package>

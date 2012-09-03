@@ -31,6 +31,6 @@
   <type>module</type>
   <humanName>File Agent pluggable module</humanName>
   <providedInterfaces>
-	<providedInterface>cz.cuni.mff.been.pluggablemodule.fileagent.FileAgentPluggableModule</providedInterface>
+	<providedInterface>FileAgentPluggableModule</providedInterface>
   </providedInterfaces>
 </package>

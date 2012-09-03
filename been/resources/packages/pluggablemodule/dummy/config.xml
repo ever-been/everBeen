@@ -27,7 +27,7 @@
 
 -->
 <pluggableModuleConfiguration xmlns="http://been.mff.cuni.cz/pluggablemodule/config">
-   <java mainClass="cz.cuni.mff.been.pluggablemodule.dummy.implementation.DummyPluggableModuleImpl">
+   <java mainClass="DummyPluggableModuleImpl">
       <classpathItems>
          <classpathItem>files/dummy.jar</classpathItem>
       </classpathItems>

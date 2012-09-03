@@ -31,6 +31,6 @@
   <type>module</type>
   <humanName>Hibernate pluggable module</humanName>
   <providedInterfaces>
-	<providedInterface>cz.cuni.mff.been.pluggablemodule.hibernate.HibernatePluggableModule</providedInterface>
+	<providedInterface>HibernatePluggableModule</providedInterface>
   </providedInterfaces>
 </package>

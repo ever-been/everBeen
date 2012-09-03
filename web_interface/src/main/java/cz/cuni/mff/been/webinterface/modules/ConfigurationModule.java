@@ -40,7 +40,7 @@ import cz.cuni.mff.been.common.ComponentInitializationException;
 import cz.cuni.mff.been.hostmanager.HostManagerException;
 import cz.cuni.mff.been.hostmanager.HostManagerInterface;
 import cz.cuni.mff.been.hostmanager.HostManagerOptionsInterface;
-import cz.cuni.mff.been.hostmanager.HostManagerService;
+import cz.cuni.mff.been.services.Names;
 import cz.cuni.mff.been.webinterface.Config;
 import cz.cuni.mff.been.webinterface.InvalidParamValueException;
 import cz.cuni.mff.been.webinterface.MissingParamException;
@@ -65,9 +65,9 @@ public class ConfigurationModule extends Module implements EventListener {
 	private ServiceReference<HostManagerInterface> hostManager
 		= new ServiceReference<HostManagerInterface>(
 			taskManager,
-			HostManagerService.SERVICE_NAME,
-			HostManagerService.REMOTE_INTERFACE_MAIN,
-			HostManagerService.SERVICE_HUMAN_NAME
+			Names.HOST_MANAGER_SERVICE_NAME,
+			Names.HOST_MANAGER_REMOTE_INTERFACE_MAIN,
+			Names.HOST_MANAGER_SERVICE_HUMAN_NAME
 		);
 
 	private Config config;

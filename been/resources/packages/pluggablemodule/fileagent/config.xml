@@ -27,7 +27,7 @@
 
 -->
 <pluggableModuleConfiguration xmlns="http://been.mff.cuni.cz/pluggablemodule/config">
-   <java mainClass="cz.cuni.mff.been.pluggablemodule.fileagent.implementation.FileAgentPluggableModuleImpl">
+   <java mainClass="FileAgentPluggableModuleImpl">
       <classpathItems>
          <classpathItem>files/fileagent.jar</classpathItem>
       </classpathItems>

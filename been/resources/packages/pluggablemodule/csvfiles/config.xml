@@ -27,7 +27,7 @@
 
 -->
 <pluggableModuleConfiguration xmlns="http://been.mff.cuni.cz/pluggablemodule/config">
-   <java mainClass="cz.cuni.mff.been.pluggablemodule.csvfiles.implementation.CSVFilesPluggableModuleImpl">
+   <java mainClass="CSVFilesPluggableModuleImpl">
       <classpathItems>
         <classpathItem>files/csvfiles.jar</classpathItem>
         <classpathItem>files/opencsv/opencsv-2.0.jar</classpathItem>

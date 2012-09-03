@@ -55,7 +55,6 @@ import cz.cuni.mff.been.common.value.ValueVersion;
 import cz.cuni.mff.been.hostmanager.HostDatabaseException;
 import cz.cuni.mff.been.hostmanager.HostManagerException;
 import cz.cuni.mff.been.hostmanager.HostManagerInterface;
-import cz.cuni.mff.been.hostmanager.HostManagerService;
 import cz.cuni.mff.been.hostmanager.HostOperationStatus;
 import cz.cuni.mff.been.hostmanager.InputParseException;
 import cz.cuni.mff.been.hostmanager.InvalidArgumentException;
@@ -74,6 +73,7 @@ import cz.cuni.mff.been.hostmanager.load.LoadMonitorException;
 import cz.cuni.mff.been.logging.LogRecord;
 import cz.cuni.mff.been.logging.LogStorageException;
 import cz.cuni.mff.been.logging.LogUtils;
+import cz.cuni.mff.been.services.Names;
 import cz.cuni.mff.been.task.TaskUtils;
 import cz.cuni.mff.been.taskmanager.CheckPoint;
 import cz.cuni.mff.been.taskmanager.data.TaskEntry;
@@ -111,9 +111,9 @@ public class HostsModule extends Module implements EventListener {
 	private final TaskManagerReference taskManager = new TaskManagerReference();
 	private final ServiceReference<HostManagerInterface> hostManager = new ServiceReference<HostManagerInterface>(
 			taskManager,
-			HostManagerService.SERVICE_NAME,
-			HostManagerService.REMOTE_INTERFACE_MAIN,
-			HostManagerService.SERVICE_HUMAN_NAME);
+			Names.HOST_MANAGER_SERVICE_NAME,
+			Names.HOST_MANAGER_REMOTE_INTERFACE_MAIN,
+			Names.HOST_MANAGER_SERVICE_HUMAN_NAME);
 	private final LoadServerReference loadServer = new LoadServerReference(
 			taskManager);
 

@@ -63,7 +63,6 @@ import cz.cuni.mff.been.common.Message;
 import cz.cuni.mff.been.hostmanager.HostDatabaseException;
 import cz.cuni.mff.been.hostmanager.HostManagerException;
 import cz.cuni.mff.been.hostmanager.HostManagerInterface;
-import cz.cuni.mff.been.hostmanager.HostManagerService;
 import cz.cuni.mff.been.hostmanager.InvalidArgumentException;
 import cz.cuni.mff.been.hostmanager.OperationHandle;
 import cz.cuni.mff.been.hostmanager.ValueNotFoundException;
@@ -88,6 +87,10 @@ import cz.cuni.mff.been.task.CurrentTaskSingleton;
 import cz.cuni.mff.been.task.Task;
 import cz.cuni.mff.been.taskmanager.TaskManagerInterface;
 import cz.cuni.mff.been.taskmanager.data.TaskEntry;
+
+import static cz.cuni.mff.been.services.Names.HOST_MANAGER_REMOTE_INTERFACE_MAIN;
+import static cz.cuni.mff.been.services.Names.HOST_MANAGER_SERVICE_NAME;
+import static cz.cuni.mff.been.services.Names.HOST_MANAGER_SERVICE_HUMAN_NAME;
 
 /**
  * A command line interface component that corresponds to the hosts listing
@@ -1899,9 +1902,9 @@ public final class HostsModule extends CommandLineModule {
 		this.taskManagerReference = new TaskManagerReference();
 		this.hostManagerReference = new ServiceReference<HostManagerInterface>(
 				taskManagerReference,
-				HostManagerService.SERVICE_NAME,
-				HostManagerService.RMI_MAIN_IFACE,
-				HostManagerService.SERVICE_HUMAN_NAME);
+				HOST_MANAGER_SERVICE_NAME,
+				HOST_MANAGER_REMOTE_INTERFACE_MAIN, //TODO: CHECK THIS!
+				HOST_MANAGER_SERVICE_HUMAN_NAME);
 		this.loadServerReference = new LoadServerReference(hostManagerReference);
 
 		try {

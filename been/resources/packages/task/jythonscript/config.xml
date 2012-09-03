@@ -28,5 +28,5 @@
 
 -->
 <packageConfiguration>
-	<java classPath="." mainClass="cz.cuni.mff.been.task.JythonScriptJob"/>
+	<java classPath="." mainClass="JythonScriptJob"/>
 </packageConfiguration>

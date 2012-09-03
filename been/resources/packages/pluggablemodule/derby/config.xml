@@ -27,7 +27,7 @@
 
 -->
 <pluggableModuleConfiguration xmlns="http://been.mff.cuni.cz/pluggablemodule/config">
-   <java mainClass="cz.cuni.mff.been.pluggablemodule.derby.implementation.DerbyPluggableModuleImpl">
+   <java mainClass="DerbyPluggableModuleImpl">
       <classpathItems>
          <classpathItem>files/derby.jar</classpathItem>
          <!--<classpathItem>files/derby/derby.jar</classpathItem>

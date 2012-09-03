@@ -31,6 +31,6 @@
   <type>module</type>
   <humanName>Apache Derby DB pluggable module</humanName>
   <providedInterfaces>
-	<providedInterface>cz.cuni.mff.been.pluggablemodule.derby.DerbyPluggableModule</providedInterface>
+	<providedInterface>DerbyPluggableModule</providedInterface>
   </providedInterfaces>
 </package>
