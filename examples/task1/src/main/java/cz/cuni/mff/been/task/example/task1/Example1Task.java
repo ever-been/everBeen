@@ -25,15 +25,12 @@
  */
 package cz.cuni.mff.been.task.example.task1;
 
+import cz.cuni.mff.been.task.*;
 import hello.Hello;
 
 import cz.cuni.mff.been.common.anttasks.Copy;
 import cz.cuni.mff.been.logging.ConsoleLogger;
 import cz.cuni.mff.been.logging.LogLevel;
-import cz.cuni.mff.been.task.Job;
-import cz.cuni.mff.been.task.Task;
-import cz.cuni.mff.been.task.TaskException;
-import cz.cuni.mff.been.task.TaskInitializationException;
 
 /**
  * <p>Example task explaining how to write tasks, use Ant to perform various 
@@ -133,7 +130,7 @@ public class Example1Task extends Job {
 			
 			// obtain the reference to the task which is using this class and 
 			// use it's logging facilities
-			Task myTask = Task.getTaskHandle();
+			Task myTask = CurrentTaskSingleton.getTaskHandle();
 			myTask.logInfo("Class Foo is logging through it's task");
 		}
 	}

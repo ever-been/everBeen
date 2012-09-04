@@ -52,7 +52,12 @@
         <!-- BEEN DEPENDENCIES -->
         <dependency>
             <groupId>cz.cuni.mff.d3s.been</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>service_interfaces</artifactId>
+            <version>2.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>cz.cuni.mff.d3s.been</groupId>
+            <artifactId>pluggablemodule</artifactId>
             <version>2.1.0</version>
         </dependency>
     </dependencies>

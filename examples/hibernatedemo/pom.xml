@@ -13,5 +13,15 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
+    <dependencies>
+        <dependency>
+            <groupId>ant</groupId>
+            <artifactId>ant.jar</artifactId>
+            <version>none</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/../../been/lib/hibernate/hibernate3.jar</systemPath>
+        </dependency>
+    </dependencies>
+
 
 </project>

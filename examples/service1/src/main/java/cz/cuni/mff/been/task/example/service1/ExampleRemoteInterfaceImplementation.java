@@ -28,6 +28,7 @@ package cz.cuni.mff.been.task.example.service1;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
+import cz.cuni.mff.been.task.CurrentTaskSingleton;
 import cz.cuni.mff.been.task.Task;
 
 /**
@@ -50,6 +51,6 @@ implements ExampleRemoteInterface{
 	}
 	
 	public void foo() throws RemoteException {
-		Task.getTaskHandle().logInfo("foo() invoked");
+		CurrentTaskSingleton.getTaskHandle().logInfo("foo() invoked");
 	}
 }

@@ -26,6 +26,7 @@
         <module>debug_assistant</module>
 		<module>bcmd</module>
         <module>xampler</module>
+        <module>examples</module>
         <module>bpk-plugin</module>
 	</modules>
 
