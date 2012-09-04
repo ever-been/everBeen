@@ -35,10 +35,7 @@ import cz.cuni.mff.been.common.anttasks.Untar;
 import cz.cuni.mff.been.pluggablemodule.PluggableModuleException;
 import cz.cuni.mff.been.pluggablemodule.fileagent.FileAgent;
 import cz.cuni.mff.been.pluggablemodule.fileagent.FileAgentPluggableModule;
-import cz.cuni.mff.been.task.Job;
-import cz.cuni.mff.been.task.Task;
-import cz.cuni.mff.been.task.TaskException;
-import cz.cuni.mff.been.task.TaskInitializationException;
+import cz.cuni.mff.been.task.*;
 
 public class XamplerDeploy extends Job {
     
@@ -188,7 +185,7 @@ public class XamplerDeploy extends Job {
 		logInfo("Loading pluggable modules...");
 		
 		try {
-			fileAgentModule = Task.getTaskHandle().getPluggableModule(
+			fileAgentModule = CurrentTaskSingleton.getTaskHandle().getPluggableModule(
 					FileAgentPluggableModule.class, "fileagent", "1.0");
 			
 		} catch (PluggableModuleException e) {

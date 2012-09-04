@@ -23,9 +23,10 @@
         <module>pluggablemodule-fileagent</module>
         <module>pluggablemodule-fileagent-implementation</module>
 		<module>web_interface</module>
-        	<module>debug_assistant</module>
+        <module>debug_assistant</module>
 		<module>bcmd</module>
         <module>xampler</module>
+        <module>bpk-plugin</module>
 	</modules>
 
 	<properties>

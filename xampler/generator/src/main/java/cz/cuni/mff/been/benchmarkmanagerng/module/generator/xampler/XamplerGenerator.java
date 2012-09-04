@@ -41,6 +41,7 @@ import java.util.TreeSet;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import cz.cuni.mff.been.task.CurrentTaskSingleton;
 import org.apache.commons.collections15.MultiMap;
 import org.apache.commons.collections15.multimap.MultiHashMap;
 
@@ -666,12 +667,12 @@ public class XamplerGenerator extends GeneratorPluggableModule {
 		
 		boolean exclusiveRuns = true;
 		if (Debug.isDebugModeOn()) {
-			Task.getTaskHandle().logInfo("Generator task in debug mode. Execute tasks will be not marked as TaskExclusivity.EXCLUSIVE.");
+			CurrentTaskSingleton.getTaskHandle().logInfo("Generator task in debug mode. Execute tasks will be not marked as TaskExclusivity.EXCLUSIVE.");
 			exclusiveRuns = false;
 		}
 		
 		if (exclusiveRuns && simulate) {
-			Task.getTaskHandle().logInfo("Analysis in simulation mode. Execute tasks will be not marked as TaskExclusivity.EXCLUSIVE.");
+			CurrentTaskSingleton.getTaskHandle().logInfo("Analysis in simulation mode. Execute tasks will be not marked as TaskExclusivity.EXCLUSIVE.");
 			exclusiveRuns = false;
 		}
 		
@@ -1263,7 +1264,7 @@ public class XamplerGenerator extends GeneratorPluggableModule {
 	 * @throws RemoteException
 	 */
 	private void initResultsRepositoryReference() throws GeneratorException, RemoteException {
-		Object rr = Task.getTaskHandle().getTasksPort().serviceFind(
+		Object rr = CurrentTaskSingleton.getTaskHandle().getTasksPort().serviceFind(
 				ResultsRepositoryService.SERVICE_NAME,
 				Service.RMI_MAIN_IFACE );
 		if( rr == null ){

@@ -14,4 +14,15 @@
     </parent>
 
 
+    <dependencies>
+        <dependency>
+            <groupId>ant</groupId>
+            <artifactId>ant.jar</artifactId>
+            <version>none</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/../../been/lib/ant/ant.jar</systemPath>
+        </dependency>
+    </dependencies>
+
+
 </project>
