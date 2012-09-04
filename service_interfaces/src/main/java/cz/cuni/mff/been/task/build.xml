@@ -46,11 +46,11 @@
         <ant inheritrefs="true" dir="${basedir}/benchmarkmanagerng/" target="package" />
 
 		<!-- example tasks -->
-		<ant inheritrefs="true" dir="${basedir}/example/task1" target="package" />
+		<ant inheritrefs="true" dir="/examples/task1/src/main/java/cz/cuni/mff/been/task/example/task1" target="package" />
 		<ant inheritrefs="true" dir="${basedir}/example/service1" target="package" />
 		<ant inheritrefs="true" dir="${basedir}/example/pluggablemoduledemo" target="package" />
-		<ant inheritrefs="true" dir="${basedir}/example/hibernatedemo" target="package" />
-		<ant inheritrefs="true" dir="${basedir}/example/jythontaskdemo" target="package" />
+		<ant inheritrefs="true" dir="/examples/src/main/java/cz/cuni/mff/been/task/example/hibernatedemo" target="package" />
+		<ant inheritrefs="true" dir="/examples/jythontaskdemo/src/main/java/cz/cuni/mff/been/task/example/jythontaskdemo" target="package" />
 		<ant inheritrefs="true" dir="${basedir}/example/shelltaskdemo/linux" target="package" />
 		<ant inheritrefs="true" dir="${basedir}/example/shelltaskdemo/windows" target="package" />
 		
