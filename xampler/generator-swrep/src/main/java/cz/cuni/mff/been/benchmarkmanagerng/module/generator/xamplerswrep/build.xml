@@ -1,0 +1,118 @@
+<?xml version="1.0"?>
+<!--
+
+  BEEN: Benchmarking Environment
+  ==============================
+
+  File author: Jan Tattermusch
+
+  GNU Lesser General Public License Version 2.1
+  - - - - - - - - - - - - - - - - - - - - - - -
+  Copyright (C) 2004-2006 Distributed Systems Research Group,
+  Faculty of Mathematics and Physics, Charles University in Prague
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License version 2.1, as published by the Free Software Foundation.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+  MA  02111-1307  USA
+
+-->
+<!--
+
+  This file serves as a template for all the generator pluggable modules.
+  I suggest you change just the 4 properties at the top and leave the rest.
+  Don't forget to add your module to both "dist" and "clean" targets
+  in the .../module/generator/build.xml file.
+
+-->
+<project name="BEEN" default="dist" basedir="">
+	<!-- ============== PROPERTIES ============== -->
+
+	<property name="module.name" value="xampler-swrep-generator" />
+
+	<!-- version of the task. -->
+	<property name="module.version" value="1.0" />
+
+	<!-- Directory path of the pluggable module package -->
+	<property name="module.package.path" value="${generator.package.path}/xamplerswrep" />
+
+	<!-- Directory path of the pluggable module resources -->
+	<property name="module.resources.dir" location="${generator.resources.dir}/xamplerswrep" />
+
+
+<!-- ==================== DON'T CHANGE BELLOW ========================= -->
+
+	<!-- Name of the jar file with module's classes  -->
+	<property name="module.jar" value="${module.name}.jar" />
+
+	<!-- Package's filename -->
+	<property name="module.bpk" value="${module.name}-${module.version}.bpk"/>
+
+
+	<!-- ============== FILESETS, CLASSPATH, etc ================ -->
+
+	<!-- Modules's class files -->
+	<fileset id="module.classes" dir="${build.classes.dir}">
+		<!-- Module classes -->
+		<include name="${module.package.path}/**/*.class" />
+		<!-- Base class -->
+		<include name="${module.interface.path}/GeneratorPluggableModule.class" />
+		<!-- Module interfaces -->
+		<include name="${module.interface.path}/ModuleInterface.class" />
+		<include name="${module.interface.path}/GeneratorInterface.class" />
+	</fileset>
+
+	<!-- Modules's resource files -->
+	<fileset id="module.resources" dir="${module.resources.dir}">
+		<include name="config.xml" />
+		<include name="metadata.xml" />
+		<include name="module-config.xml" />
+	</fileset>
+
+
+	<!-- ============== TARGETS ================ -->
+
+	<!-- Checks if we need to regenerate the package. -->
+	<target name="package-uptodate">
+		<uptodate property="dont.build.package" targetfile="${dist.tasks.dir}/${module.bpk}">
+			<srcfiles refid="module.classes" />
+			<srcfiles refid="module.resources" />
+		</uptodate>
+	</target>
+
+
+	<!-- Create a BEEN package for this pluggable module -->
+	<target name="dist" depends="package-uptodate" unless="dont.build.package">
+		<!-- create the jar file with module's classes -->
+		<jar destfile="${module.resources.dir}/${module.jar}">
+			<fileset refid="module.classes" />
+		</jar>
+
+		<!-- create the zip file with the modules package's contents in the dist directory -->
+		<zip destfile="${dist.tasks.dir}/${module.bpk}" update="false">
+			<fileset refid="module.resources" />
+			<zipfileset prefix="files" dir="${module.resources.dir}">
+				<include name="${module.jar}" />
+			</zipfileset>
+		</zip>
+
+		<!-- delete the jar file with the task's classes (it's already zipped in the task's package -->
+		<delete file="${module.resources.dir}/${module.jar}"/>
+	</target>
+
+	<target name="install" depends="dist" />
+
+	<target name="clean">
+		<delete file="${module.resources.dir}/${module.jar}"/>
+	</target>
+
+</project>
