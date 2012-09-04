@@ -15,7 +15,7 @@
 	
 	
 	<properties>
-		<jaxb-xsd-dir>${basedir}/../core/src/main/xsd</jaxb-xsd-dir>
+		<jaxb-xsd-dir>${basedir}/../service_interfaces/src/main/xsd</jaxb-xsd-dir>
 	</properties>
 
 	<dependencies>
@@ -63,6 +63,7 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
+
 			<!-- AND NOW WE WANT TO CREATE BPK PACKAGE -->
 			<plugin>
 				<groupId>cz.cuni.mff.d3s.been</groupId>
