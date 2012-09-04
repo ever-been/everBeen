@@ -8,18 +8,40 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-public class ZipUtil {
+/**
+ * This util is designed onaly and only to create simple Zip archive of
+ * specified list of files (list of {@link FileToArchive})
+ * 
+ * @author donarus
+ * 
+ */
+class ZipUtil {
 
-	public void createZip(List<FileToArchive> files, File output)
-			throws IOException {
+	/**
+	 * Main method ot this util. Creates zip archive from specified files in
+	 * specified output file.
+	 * 
+	 * @param files
+	 *          files to archive
+	 * @param output
+	 *          archive output file
+	 * @throws IOException
+	 *           when some of specified files is missing, cannot be read or output
+	 *           file cannot be opened with WRITE priviledes.
+	 */
+	public void createZip(List<FileToArchive> files, File output) throws IOException {
+		// initialize 
 		ZipOutputStream out = new ZipOutputStream(new FileOutputStream(output));
+		
+		// fill archive
 		addFilesToZip(files, out);
+		
+		// cleanup
 		out.flush();
 		out.close();
 	}
 
-	private void addFilesToZip(List<FileToArchive> files, ZipOutputStream out)
-			throws IOException {
+	private void addFilesToZip(List<FileToArchive> files, ZipOutputStream out) throws IOException {
 		// Create a buffer for reading the files
 		byte[] buf = new byte[1024];
 
