@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config
+	xmlns="http://been.mff.cuni.cz/benchmarkmanagerng/config"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+>
+	<type id="ttype">
+		<value name="basic" desc="Execution framework only">
+			<group id="basic" desc="Basic Test Configuration">
+				<item id="waitTime" type="text" desc="Wait time in seconds" constraint="this != empty" default="60"/>
+			</group>
+		</value>
+		<value name="extended" desc="Use Results Repository">
+			<group id="extended" desc="Results Repository Setup">
+				<item id="datasetName" type="text" desc="Name of the dataset" constraint="this != empty" default="SomeDataset"/>
+				<item id="randomCount" type="text" desc="Number of random numbers generated in one run" constraint="this > 0" default="1000"/>
+				<item id="randomMax" type="text" desc="Maximal value of random numbers" constraint="this > 1" default="100"/>
+			</group>
+		</value>
+	</type>
+
+	<group id="analysisType" desc="Choose the analysis type">
+		<item id="type" type="ttype" desc="Type of analysis" constraint="this != empty" default="extended"/>
+	</group>
+
+
+</config>
