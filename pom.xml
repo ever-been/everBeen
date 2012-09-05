@@ -30,6 +30,7 @@
         <module>bpk-plugin</module>
         <module>generators</module>
         <module>evaluators</module>
+        <module>tasks</module>
 	</modules>
 
 	<properties>
