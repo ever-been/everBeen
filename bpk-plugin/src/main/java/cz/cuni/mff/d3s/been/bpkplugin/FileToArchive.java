@@ -3,50 +3,34 @@ package cz.cuni.mff.d3s.been.bpkplugin;
 import java.io.File;
 
 /**
- * File specified here will be placed into generated bpk package.
- * 
+ * Simple POJO file which represents file in generated bpk archive.
  * @author donarus
- * 
+ *
  */
-public class FileToArchive {
+final class FileToArchive {
 
-	/**
-	 * Relative or absolute path to file, which will be placed into generated zip
-	 * file.
-	 * 
-	 * @parameter
-	 * 
-	 * @required
-	 */
+	//file on disk which should be added to bpk archive
 	private File file;
 
-	/**
-	 * Relative path, where input file will be placed in generated bpk (zip) file.
-	 * 
-	 * @parameter
-	 * 
-	 * @required
-	 */
+	//path in bpk archive
 	private String pathInZip;
 
-	/* FIXME - getter/setter for each parameter field must be here??? 
-	 * I tried it without it and it doesn't work. It is possible, 
-	 * that some annotations are wrong or missing on parameter fields. */
-	
+	/**
+	 * @param pathInZip path in bpk archive
+	 * @param file file on disk which should be added to bpk archive
+	 */
+	public FileToArchive(String pathInZip, File file) {
+		this.pathInZip = pathInZip;
+		// TODO Auto-generated constructor stub
+		this.file = file;
+	}
+
 	public String getPathInZip() {
 		return pathInZip;
 	}
 
-	public void setPathInZip(String pathInZip) {
-		this.pathInZip = pathInZip;
-	}
-
 	public File getFile() {
 		return file;
-	}
-
-	public void setFile(File file) {
-		this.file = file;
 	}
 
 }

@@ -2,6 +2,7 @@ package cz.cuni.mff.d3s.been.bpkplugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.maven.plugin.AbstractMojo;
@@ -24,8 +25,8 @@ import org.apache.maven.plugin.logging.Log;
  * 
  * <pre>
  * &lt;build&gt;
- * ...
  *   &lt;plugins&gt;
+ * ...
  *     &lt;plugin&gt;
  *       &lt;groupId&gt;cz.cuni.mff.d3s.been&lt;/groupId&gt;
  *       &lt;artifactId&gt;bpk-plugin&lt;/artifactId&gt;
@@ -40,17 +41,26 @@ import org.apache.maven.plugin.logging.Log;
  *       &lt;configuration&gt;
  *         &lt;finalName&gt;${project.artifactId}-${project.version}&lt;/finalName&gt;
  *         &lt;filesToArchive&gt;
- *           ...
- *           &lt;fileToArchive&gt;
- *             &lt;pathInZip&gt;files/${project.artifactId}-${project.version}.jar&lt;/pathInZip&gt;
+ * ...
+ *           &lt;fileItem&gt;
+ *             &lt;folder&gt;files&lt;/folder&gt;
  *             &lt;file&gt;${project.build.directory}/${project.build.finalName}.jar&lt;/file&gt;
- *           &lt;/fileToArchive&gt;
+ *           &lt;/fileItem&gt;
+ *           &lt;fileItem&gt;
+ *             &lt;wildcardWorkingDirectory&gt;${basedir}/src/main/resources/&lt;/wildcardWorkingDirectory&gt;
+ *             &lt;wildcard&gt;*.xml&lt;/wildcard&gt;
+ *           &lt;/fileItem&gt;
+ *           &lt;fileItem&gt;
+ *             &lt;folder&gt;files&lt;/folder&gt;
+ *             &lt;wildcardWorkingDirectory&gt;${jaxb-xsd-dir}&lt;/wildcardWorkingDirectory&gt;
+ *             &lt;wildcard&gt;*.xsd&lt;/wildcard&gt;
+ *           &lt;/fileItem&gt;
  *         &lt;/filesToArchive&gt;
- *         ...
+ * ...
  *       &lt;/configuration&gt;
  *     &lt;/plugin&gt;
- *   &lt;/plugins&gt;
  * ...
+ *   &lt;/plugins&gt;
  * &lt;/build&gt;
  * </pre>
  * 
@@ -65,30 +75,17 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 	private final Log log = getLog();
 
 	/**
-	 * Files specified here will be added to bpk archive. <br/>
-	 * <br/>
-	 * example code:
-	 * 
-	 * <pre>
-	 * &lt;filesToArchive&gt;
-	 *   ...
-	 *   &lt;fileToArchive&gt;
-	 *     &lt;pathInZip&gt;files/${project.artifactId}-${project.version}.jar&lt;/pathInZip&gt;
-	 *     &lt;file&gt;${project.build.directory}/${project.build.finalName}.jar&lt;/file&gt;
-	 *   &lt;/fileToArchive&gt;
-	 *   ...
-	 * &lt;/filesToArchive&gt;
-	 * </pre>
+	 * Files specified here will be added to bpk archive.
 	 * 
 	 * @parameter
 	 * 
 	 * @required
 	 */
-	private List<FileToArchive> filesToArchive;
+	private List<FileItem> filesToArchive;
 
 	/**
-	 * Bpk file will be generated into this directory. <b>project_loc/target<b/> by
-	 * default.
+	 * Bpk file will be generated into this directory. <b>project_loc/target<b/>
+	 * by default.
 	 * 
 	 * @parameter expression="${project.build.directory}"
 	 * 
@@ -106,7 +103,7 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 	private String finalName;
 
 	/**
-	 * This is the plugin main method. All generation logic starts here. 
+	 * This is the plugin main method. All generation logic starts here.
 	 */
 	public void execute() throws MojoExecutionException {
 		logStart();
@@ -114,7 +111,11 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 		File bpkFile = createEmptyBpkFile(); // output file
 
 		try {
-			new ZipUtil().createZip(filesToArchive, bpkFile);
+			List<FileToArchive> files = new ArrayList<FileToArchive>();
+			for (FileItem fitem : filesToArchive) {
+				files.addAll(fitem.getFilesToArchive(log));
+			}
+			new ZipUtil().createZip(files, bpkFile);
 			log.info("BPK exported to '" + bpkFile.getAbsolutePath() + "'");
 		} catch (IOException e) {
 			log.error("Cannot create BPK archive", e);
