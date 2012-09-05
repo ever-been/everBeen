@@ -29,5 +29,5 @@
 
 
 <packageConfiguration>
-	<java classPath=".:xampler-build-linux.jar" mainClass="cz.cuni.mff.been.task.xampler.build.linux.XamplerLinuxBuild"/>
+	<java classPath=".:xampler-task-build-linux.jar" mainClass="cz.cuni.mff.been.task.xampler.build.linux.XamplerLinuxBuild"/>
 </packageConfiguration>

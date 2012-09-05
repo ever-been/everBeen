@@ -26,7 +26,7 @@
 
 -->
 <package>
-  <name>xampler-collect-results</name>
+  <name>xampler-task-collectresults</name>
   <version>1.0</version>
   <type>task</type>
   <humanName>Collect Xampler results</humanName>

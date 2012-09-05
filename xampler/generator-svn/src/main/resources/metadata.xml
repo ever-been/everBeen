@@ -26,7 +26,7 @@
 
 -->
 <package>
-	<name>xampler-svn-generator</name>
+	<name>xampler-generator-svn</name>
 	<version>1.0</version>
 	<type>module</type>
 	<humanName>Xampler Generator Pluggable Module</humanName>

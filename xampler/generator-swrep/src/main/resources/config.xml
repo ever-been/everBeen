@@ -30,7 +30,7 @@
 <pluggableModuleConfiguration xmlns="http://been.mff.cuni.cz/pluggablemodule/config">
 	<java mainClass="cz.cuni.mff.been.benchmarkmanagerng.module.generator.xamplerswrep.XamplerSWRepositoryGenerator">
 		<classpathItems>
-			<classpathItem>files/xampler-swrep-generator.jar</classpathItem>
+			<classpathItem>files/xampler-generator-swrep.jar</classpathItem>
 		</classpathItems>
 	</java>
 </pluggableModuleConfiguration>

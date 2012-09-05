@@ -29,5 +29,5 @@
 
 
 <packageConfiguration>
-	<java classPath=".:xampler-collect-results.jar" mainClass="cz.cuni.mff.been.task.xampler.collectresults.XamplerCollectResults"/>
+	<java classPath=".:xampler-task-collectresults.jar" mainClass="cz.cuni.mff.been.task.xampler.collectresults.XamplerCollectResults"/>
 </packageConfiguration>

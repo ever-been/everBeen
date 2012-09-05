@@ -29,5 +29,5 @@
 
 
 <packageConfiguration>
-	<java classPath=".:xampler-deploy.jar" mainClass="cz.cuni.mff.been.task.xampler.deploy.XamplerDeploy"/>
+	<java classPath=".:xampler-task-deploy.jar" mainClass="cz.cuni.mff.been.task.xampler.deploy.XamplerDeploy"/>
 </packageConfiguration>

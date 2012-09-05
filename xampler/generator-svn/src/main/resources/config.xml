@@ -30,7 +30,7 @@
 <pluggableModuleConfiguration xmlns="http://been.mff.cuni.cz/pluggablemodule/config">
 	<java mainClass="cz.cuni.mff.been.benchmarkmanagerng.module.generator.xamplersvn.XamplerGenerator">
 		<classpathItems>
-			<classpathItem>files/xampler-svn-generator.jar</classpathItem>
+			<classpathItem>files/xampler-generator-svn.jar</classpathItem>
 			<classpathItem>files/javasvn/javasvn.jar</classpathItem>
 		</classpathItems>
 	</java>

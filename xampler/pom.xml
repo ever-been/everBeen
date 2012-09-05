@@ -57,7 +57,6 @@
 	</dependencies>
 
 	<build>
-		<finalName>xampler</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
