@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config
+	xmlns="http://been.mff.cuni.cz/benchmarkmanagerng/config"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+>
+	<group id="source" desc="Source Data Setup">
+		<item id="sourceDatasetName" type="text" desc="Name of the dataset" constraint="notEmpty" default="SomeDataset" />
+		<item id="sourceTags" type="text" desc="Source dataset tags" constraint="regexp:/^[a-zA-Z][a-zA-Z0-9_]*(,[a-zA-Z][a-zA-Z0-9_]*)*$/" default="dateTime,data" />
+		<item id="processOld" type="checkbox" desc="Re-evaluate old data" default="false" />
+	</group>
+
+	<group id="script" desc="Evaluation Script">
+		<item id="evaluationScript" type="textarea" desc="Evaluation script" default="q(); #see been/examples/r for more" />
+	</group>
+
+	<group id="destination" desc="Destination Data Setup">
+		<item id="destinationDatasetName" type="text" desc="Name of the dataset" />
+		<item id="destinationTags" type="textarea" desc="Destination dataset tags"
+			default="dateTime:STRING&#xa;mean:FLOAT&#xa;sd:FLOAT&#xa;INT|LONG|FLOAT|DOUBLE|STRING|UUID|SMALL_BINARY|FILE|SERIALIZABLE" />
+		<item id="destinationKeys" type="text" desc="Destination dataset key tags" constraint="regexp:/^[a-zA-Z][a-zA-Z0-9_]*(,[a-zA-Z][a-zA-Z0-9_]*)*$/" />
+	</group>
+
+	<group id="global" desc="Global Evaluation Settings">
+		<item id="separatorChar" type="text" desc="CSV separator character" constraint="notEmpty" default=";"/>
+		<item id="quoteChar" type="text" desc="CSV quote character" constraint="notEmpty" default="&quot;"/>
+		<item id="hostRSL" type="textarea" desc="Task host RSL" constraint="RSL" default="name=~/.*/"/>
+	</group>
+
+</config>
