@@ -15,7 +15,7 @@ import java.util.zip.ZipOutputStream;
  * @author donarus
  * 
  */
-class ZipUtil {
+final class ZipUtil {
 
 	/**
 	 * Main method ot this util. Creates zip archive from specified files in

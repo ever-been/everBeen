@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>cz.cuni.mff.d3s.been</groupId>
 	<artifactId>cline_interface</artifactId>
@@ -16,7 +15,7 @@
 	
 	
 	<properties>
-		<jaxb-xsd-dir>${basedir}/../core/src/main/xsd</jaxb-xsd-dir>
+		<jaxb-xsd-dir>${basedir}/../service_interfaces/src/main/xsd</jaxb-xsd-dir>
 	</properties>
 
 	<dependencies>
@@ -26,13 +25,32 @@
 			<artifactId>core</artifactId>
 			<version>2.1.0</version>
 		</dependency>
-		<dependency>
-			<groupId>cz.cuni.mff.d3s.been</groupId>
-			<artifactId>core-exceptions</artifactId>
-			<version>2.1.0</version>
-		</dependency>
+        <dependency>
+            <groupId>cz.cuni.mff.d3s.been</groupId>
+            <artifactId>service_interfaces</artifactId>
+            <version>2.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>cz.cuni.mff.d3s.been</groupId>
+            <artifactId>benchmarkmanager</artifactId>
+            <version>2.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>cz.cuni.mff.d3s.been</groupId>
+            <artifactId>hostmanager</artifactId>
+            <version>2.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>cz.cuni.mff.d3s.been</groupId>
+            <artifactId>resultsrepository</artifactId>
+            <version>2.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>cz.cuni.mff.d3s.been</groupId>
+            <artifactId>softwarerepository</artifactId>
+            <version>2.1.0</version>
+        </dependency>
 	</dependencies>
-	
 
 	<build>
 		<finalName>cline_interface</finalName>
@@ -45,11 +63,12 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
+
 			<!-- AND NOW WE WANT TO CREATE BPK PACKAGE -->
 			<plugin>
 				<groupId>cz.cuni.mff.d3s.been</groupId>
 				<artifactId>bpk-plugin</artifactId>
-				<version>1.0-SNAPSHOT</version>
+				<version>1.0.0</version>
 				<executions>
 					<execution>
 						<goals>
@@ -60,75 +79,22 @@
 				<configuration>
 					<finalName>${project.artifactId}-${project.version}</finalName>
 					<filesToArchive>
-						<fileToArchive>
-							<pathInZip>files/${project.artifactId}-${project.version}.jar</pathInZip>
+						<fileItem>
+							<folder>files</folder>
 							<file>${project.build.directory}/${project.build.finalName}.jar</file>
-						</fileToArchive>
-						<fileToArchive>
-							<pathInZip>config.xml</pathInZip>
-							<file>${basedir}/src/main/resources/config.xml</file>
-						</fileToArchive>
-						<fileToArchive>
-							<pathInZip>metadata.xml</pathInZip>
-							<file>${basedir}/src/main/resources/metadata.xml</file>
-						</fileToArchive>
-						<fileToArchive>
-							<pathInZip>files/attrtypes.xsd</pathInZip>
-							<file>${jaxb-xsd-dir}/attrtypes.xsd</file>
-						</fileToArchive>
-						<fileToArchive>
-							<pathInZip>files/benchmark.xsd</pathInZip>
-							<file>${jaxb-xsd-dir}/benchmark.xsd</file>
-						</fileToArchive>
-						<fileToArchive>
-							<pathInZip>files/common.xsd</pathInZip>
-							<file>${jaxb-xsd-dir}/common.xsd</file>
-						</fileToArchive>
-						<fileToArchive>
-							<pathInZip>files/condition.xsd</pathInZip>
-							<file>${jaxb-xsd-dir}/condition.xsd</file>
-						</fileToArchive>
-						<fileToArchive>
-							<pathInZip>files/config.xsd</pathInZip>
-							<file>${jaxb-xsd-dir}/config.xsd</file>
-						</fileToArchive>
-						<fileToArchive>
-							<pathInZip>files/dataset.xsd</pathInZip>
-							<file>${jaxb-xsd-dir}/dataset.xsd</file>
-						</fileToArchive>
-						<fileToArchive>
-							<pathInZip>files/group.xsd</pathInZip>
-							<file>${jaxb-xsd-dir}/group.xsd</file>
-						</fileToArchive>
-						<fileToArchive>
-							<pathInZip>files/pmc.xsd</pathInZip>
-							<file>${jaxb-xsd-dir}/pmc.xsd</file>
-						</fileToArchive>
-						<fileToArchive>
-							<pathInZip>files/properties.xsd</pathInZip>
-							<file>${jaxb-xsd-dir}/properties.xsd</file>
-						</fileToArchive>
-						<fileToArchive>
-							<pathInZip>files/strbin.xsd</pathInZip>
-							<file>${jaxb-xsd-dir}/strbin.xsd</file>
-						</fileToArchive>
-						<fileToArchive>
-							<pathInZip>files/td.xsd</pathInZip>
-							<file>${jaxb-xsd-dir}/td.xsd</file>
-						</fileToArchive>
-						<fileToArchive>
-							<pathInZip>files/trigger.xsd</pathInZip>
-							<file>${jaxb-xsd-dir}/trigger.xsd</file>
-						</fileToArchive>
-						<fileToArchive>
-							<pathInZip>files/tuplit.xsd</pathInZip>
-							<file>${jaxb-xsd-dir}/tuplit.xsd</file>
-						</fileToArchive>
+						</fileItem>
+						<fileItem>
+							<wildcardWorkingDirectory>${basedir}/src/main/resources/</wildcardWorkingDirectory>
+							<wildcard>*.xml</wildcard>
+						</fileItem>
+						<fileItem>
+							<folder>files</folder>
+							<wildcardWorkingDirectory>${jaxb-xsd-dir}</wildcardWorkingDirectory>
+							<wildcard>*.xsd</wildcard>
+						</fileItem>
 					</filesToArchive>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
-
-
 </project>
