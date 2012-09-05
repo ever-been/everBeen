@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<!--
+
+  BEEN: Benchmarking Environment
+  ==============================
+
+  File author: Jiri Tauber
+
+  GNU Lesser General Public License Version 2.1
+  - - - - - - - - - - - - - - - - - - - - - - -
+  Copyright (C) 2004-2006 Distributed Systems Research Group,
+  Faculty of Mathematics and Physics, Charles University in Prague
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License version 2.1, as published by the Free Software Foundation.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+  MA  02111-1307  USA
+
+-->
+<project name="BEEN" default="package" basedir=".">
+	<!-- ============== PROPERTIES ============== -->
+	
+	<property name="task.name" value="context-monitor"/>
+	
+	<!-- version of the task. -->	
+	<property name="task.version" value="1.0"/>
+
+	<!-- Directory of the task in the ${etc.dir} directory -->
+	<property name="task.dir" location="${packages.dir}/task/contextmonitor"/>
+	
+	<!-- Directory path of the package  of the task -->
+	<property name="task.package.path" value="cz/cuni/mff/been/task/contextmonitor"/>
+	
+	<!-- Name of the jar file with task's classes  -->
+	<property name="task.jar" value="${task.name}.jar" />
+	
+	<!-- Package's filename -->
+	<property name="task.bpk" value="${task.name}-${task.version}.bpk"/>
+
+	<!-- ============== FILESETS, CLASSPATH, etc ================ -->
+	
+	<!-- Task's class files -->
+	<fileset id="task.classes" dir="${build.classes.dir}">
+		<include name="${task.package.path}/*.class" />
+	</fileset>
+
+	<!-- ============== TARGETS ================ -->
+	
+	<!-- Checks if we need to regenerate the BEEN package. -->
+	<target name="package-uptodate">
+		<uptodate property="dont.build.package" targetfile="${dist.tasks.dir}/${task.bpk}">
+			<srcfiles refid="task.classes"></srcfiles>
+			<srcfiles dir="${task.dir}">
+				<include name="config.xml" />
+				<include name="metadata.xml" />
+			</srcfiles>
+		</uptodate>
+	</target>
+
+	<!-- Create a BEEN package for this task -->
+	<target name="package" depends="package-uptodate" unless="dont.build.package">
+		<!-- create the jar file with task's classes -->
+		<jar destfile="${task.dir}/${task.jar}">
+			<fileset refid="task.classes" />
+		</jar>
+		
+		<!-- create the zip file with the task package's contents in the dist directory -->
+		<zip destfile="${dist.tasks.dir}/${task.bpk}" update="false">
+			<zipfileset dir="${task.dir}">
+				<include name="config.xml"/>
+				<include name="metadata.xml" />
+			</zipfileset>
+			<zipfileset prefix="files" dir="${task.dir}">	
+				<include name="${task.jar}"/>
+			</zipfileset>
+		</zip>
+		
+		<!-- delete the jar file with the task's classes (it's already zipped in the task's package -->
+		<delete file="${task.dir}/${task.jar}"/>
+	</target>
+	
+</project>

@@ -8,6 +8,7 @@
 
     <modules>
         <module>detector</module>
+        <module>context_monitor</module>
     </modules>
 
 
