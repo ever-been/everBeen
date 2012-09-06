@@ -12,6 +12,8 @@
         <module>fileexport</module>
         <module>r</module>
         <module>simple_test</module>
+        <module>download_cvs</module>
+        <module>download_svn</module>
     </modules>
 
 
