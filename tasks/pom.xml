@@ -11,6 +11,7 @@
         <module>context_monitor</module>
         <module>fileexport</module>
         <module>r</module>
+        <module>simple_test</module>
     </modules>
 
 
