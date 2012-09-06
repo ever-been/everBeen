@@ -9,6 +9,7 @@
     <modules>
         <module>detector</module>
         <module>context_monitor</module>
+        <module>fileexport</module>
     </modules>
 
 
