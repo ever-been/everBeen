@@ -17,6 +17,9 @@
         <module>examples</module>
         <module>jythonscript</module>
         <module>shellscript</module>
+        <module>logtester</module>
+        <module>testworker</module>
+        <module>omniorb</module>
     </modules>
 
 
