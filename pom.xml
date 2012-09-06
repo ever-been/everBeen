@@ -26,7 +26,6 @@
         <module>debug_assistant</module>
 		<module>bcmd</module>
         <module>xampler</module>
-        <module>examples</module>
         <module>bpk-plugin</module>
         <module>generators</module>
         <module>evaluators</module>

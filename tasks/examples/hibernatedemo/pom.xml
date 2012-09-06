@@ -19,7 +19,7 @@
             <artifactId>ant.jar</artifactId>
             <version>none</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/../../been/lib/hibernate/hibernate3.jar</systemPath>
+            <systemPath>${project.basedir}/../../../been/lib/hibernate/hibernate3.jar</systemPath>
         </dependency>
     </dependencies>
 
