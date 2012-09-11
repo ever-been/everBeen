@@ -121,8 +121,8 @@ public class PersistentIDManager implements IDManagerInterface {
 	throws IllegalStateException {
 		Object[] value = idSet.get(clazz);
 		Counter ctr = null;
-		FileChannel channel = null;
 		
+		FileOutputStream os = null;
 		try {
 			if (value == null) {
 				ctr = new Counter(0);
@@ -130,13 +130,14 @@ public class PersistentIDManager implements IDManagerInterface {
 				if (!f.exists()) {
 					f.createNewFile();
 				}
-				channel = new FileOutputStream(f).getChannel();
+				os = new FileOutputStream(f);
 				idSet.put(clazz, new Object[]{ctr,f});
 			} else {
 				ctr = (Counter)value[0];
-				channel = new FileOutputStream((File)value[1]).getChannel();
+				os =  new FileOutputStream((File)value[1]);
 			}
 	
+			FileChannel channel = os.getChannel();
 			/*
 			 * The log must be written before doing update of counter.
 			 * With such behavior in the worst case we have updated log, but not the counter, so we will skip
@@ -160,6 +161,14 @@ public class PersistentIDManager implements IDManagerInterface {
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new IllegalStateException("Can't write value to file",e);
+		} finally {
+			if (os != null) {
+				try {
+					os.close();
+				} catch (Exception ex) {
+					// ignored
+				}
+			}
 		}
 	}
 
@@ -172,9 +181,12 @@ public class PersistentIDManager implements IDManagerInterface {
 		for (String keyName : instance.dataDirectory.list()) {
 			File keyFile = new File(instance.dataDirectory,keyName);
 			Class< ? > c = Class.forName(keyName);
-			FileChannel channel = new FileInputStream(keyFile).getChannel();
-			while (channel.read(buf) > 0);
-			channel.close();
+			FileInputStream fos = new FileInputStream(keyFile);
+			FileChannel channel = fos.getChannel();
+			while (channel.read(buf) > 0) {
+				// do nothing
+			}
+			fos.close();
 			if (buf.hasRemaining()) {
 				throw new IOException("The file " + keyFile.getPath() + " is corrupted");
 			}
