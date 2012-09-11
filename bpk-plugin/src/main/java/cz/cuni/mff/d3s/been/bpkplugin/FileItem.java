@@ -10,24 +10,16 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.maven.plugin.logging.Log;
 
 /**
- * Represents wildcard or file which will be added into generated BPK bundle.
+ * Represents wildcard or file which will be added into generated BPK bundle into "files" folder.
  * 
- * @author donarus
+ * @author Tadeáš Palusga
  * 
  */
 public final class FileItem {
 
 	/**
-	 * Folder in generated archive, where files will be situated. If not
-	 * specified, files will be added into root of generated archive.
-	 * 
-	 * @parameter
-	 */
-	private String folder;
-
-	/**
 	 * When specified, no wildcard will be used, but this file will be added
-	 * directly to archive.
+	 * directly into root of generated bpk archive.
 	 * 
 	 * @parameter
 	 */
@@ -61,7 +53,7 @@ public final class FileItem {
 	public List<FileToArchive> getFilesToArchive(Log log) {
 		checkParameters(log);
 
-		String folderName = generateFinalFolderName();
+		String folderName = "files/";
 		List<File> files = collectFilesForAdding();
 
 		List<FileToArchive> filesToArchive = new ArrayList<FileToArchive>();
@@ -85,22 +77,6 @@ public final class FileItem {
 	}
 
 	/**
-	 * Generate final folder name, to which will be situated input files in
-	 * archive.
-	 * 
-	 * @return
-	 */
-	private String generateFinalFolderName() {
-		String folderName;
-		if (folder == null || folder.trim().isEmpty()) {
-			folderName = "";
-		} else {
-			folderName = (folder.endsWith("/") ? folder : folder + "/");
-		}
-		return folderName;
-	}
-
-	/**
 	 * Check parameters of item. Log error into maven log, if some parameter is
 	 * incorrect. (When ERROR is logge into maven log, build failed)
 	 * 
@@ -115,7 +91,7 @@ public final class FileItem {
 		} else if (file != null && wildcard != null) {
 			log.error("You should specify file or wildcard, you can't specify both.");
 		} else if (wildcard != null && wildcardWorkingDirectory == null) {
-			log.error("WildcardWorkingDirectory must be specified when wildcard is specified.");
+			log.error("Parameter wildcardWorkingDirectory must be specified when wildcard is specified.");
 		}
 		/*
 		 * Files must exists
