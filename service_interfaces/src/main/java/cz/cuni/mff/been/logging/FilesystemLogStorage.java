@@ -120,6 +120,7 @@ public class FilesystemLogStorage implements LogStorage {
 			while (r.readLine() != null) {
 				count++;
 			}
+			r.close();
 			return count;
 		}
 	}
