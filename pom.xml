@@ -89,6 +89,31 @@
 		</dependency>
 		-->
 
+
+		<!-- REMOVED AND REPLACED BY CLASSICAL MAVEN DEPENDENCY. (AVOIDED PROBLEMS WITH 
+			DUPLICATE NAMES OF JAR FILES IN GENERATED ONE-JAR )
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io-1.4.jar</artifactId>
+			<version>none</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/../been/lib/commons-io/commons-io-1.4.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io-1.4.jar</artifactId>
+			<version>none</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/../been/lib/commons-io/commons-io-1.4.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>webinterface</groupId>
+			<artifactId>commons-io-1.4.jar</artifactId>
+			<version>none</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/../been/lib/webinterface/commons-io-1.4.jar</systemPath>
+		</dependency>
+
 		<dependency>
 			<groupId>hibernate</groupId>
 			<artifactId>hibernate-tools.jar</artifactId>
@@ -96,6 +121,16 @@
 			<scope>system</scope>
 			<systemPath>${project.basedir}/../been/lib/hibernate/hibernate-tools.jar</systemPath>
 		</dependency>
+		-->
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>1.4</version>
+		</dependency>           
+
+
+		<!-- REMOVED AND REPLACED BY CLASSICAL MAVEN DEPENDENCY. (AVOIDED PROBLEMS WITH 
+			DUPLICATE NAMES OF JAR FILES IN GENERATED ONE-JAR )
 		<dependency>
 			<groupId>hibernate</groupId>
 			<artifactId>antlr.jar</artifactId>
@@ -103,6 +138,22 @@
 			<scope>system</scope>
 			<systemPath>${project.basedir}/../been/lib/hibernate/antlr.jar</systemPath>
 		</dependency>
+
+		<dependency>
+			<groupId>sjava</groupId>
+			<artifactId>antlr.jar</artifactId>
+			<version>none</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/../been/lib/sjava/antlr.jar</systemPath>
+		</dependency>
+		-->
+		<dependency>
+			<groupId>antlr</groupId>
+			<artifactId>antlr</artifactId>
+			<version>2.7.6</version>
+		</dependency>
+
+
 		<dependency>
 			<groupId>hibernate</groupId>
 			<artifactId>hibernate-annotations.jar</artifactId>
@@ -251,13 +302,6 @@
 			<version>none</version>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/../been/lib/sjava/jhall.jar</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>sjava</groupId>
-			<artifactId>antlr.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/sjava/antlr.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>sjava</groupId>
@@ -444,13 +488,6 @@
 			<version>none</version>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/../been/lib/batik/batik-ext-1.6.jar</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io-1.4.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/commons-io/commons-io-1.4.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>javasvn</groupId>
@@ -482,13 +519,6 @@
 		</dependency>
 		<dependency>
 			<groupId>webinterface</groupId>
-			<artifactId>commons-io-1.4.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/webinterface/commons-io-1.4.jar</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>webinterface</groupId>
 			<artifactId>commons-fileupload-1.2.1.jar</artifactId>
 			<version>none</version>
 			<scope>system</scope>
@@ -500,13 +530,6 @@
 			<version>none</version>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/../been/lib/hibernate/hibernate-tools.jar</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>hibernate</groupId>
-			<artifactId>antlr.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/hibernate/antlr.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>hibernate</groupId>
@@ -654,13 +677,6 @@
 			<version>none</version>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/../been/lib/sjava/jhall.jar</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>sjava</groupId>
-			<artifactId>antlr.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/sjava/antlr.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>sjava</groupId>
@@ -843,13 +859,6 @@
 			<version>none</version>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/../been/lib/batik/batik-ext-1.6.jar</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io-1.4.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/commons-io/commons-io-1.4.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>javasvn</groupId>
