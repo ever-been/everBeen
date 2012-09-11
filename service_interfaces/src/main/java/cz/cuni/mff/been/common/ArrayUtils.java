@@ -31,6 +31,12 @@ package cz.cuni.mff.been.common;
  * @author Jaroslav Urban
  */
 public class ArrayUtils {
+	
+	private ArrayUtils() {
+		// instantiation not available
+	}
+	
+	
 	/**
 	 * Creates assembles String representations of members of an array into
 	 * one big String, separated by a token.

@@ -58,6 +58,7 @@ public final class BeenUtils {
 	 * @return taskToSort sorted by TIDs
 	 */
 	public static final TaskDescriptor[] sortTasks(TaskDescriptor[] tasksToSort) {
+		// FIXME by Tadeas Palusga -> this is inconsistent method -> possible point of failure -> should be reimplemented as void method or should return NEW array !!
 		Arrays.sort(tasksToSort,TID_COMPARATOR);
 		return tasksToSort;
 	}
