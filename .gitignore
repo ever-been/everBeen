@@ -9,4 +9,7 @@
 */.project
 target
 */target
+
+# + Eclipse files
 .settings
+*/.settings
