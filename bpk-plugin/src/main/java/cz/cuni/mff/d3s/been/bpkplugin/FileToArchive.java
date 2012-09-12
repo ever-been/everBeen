@@ -21,7 +21,6 @@ final class FileToArchive {
 	 */
 	public FileToArchive(String pathInZip, File file) {
 		this.pathInZip = pathInZip;
-		// TODO Auto-generated constructor stub
 		this.file = file;
 	}
 

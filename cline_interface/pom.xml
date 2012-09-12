@@ -13,8 +13,8 @@
 		<version>0.0.1</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
-	
-	
+
+
 	<properties>
 		<jaxb-xsd-dir>${basedir}/../service_interfaces/src/main/xsd</jaxb-xsd-dir>
 	</properties>
@@ -26,33 +26,33 @@
 			<artifactId>core</artifactId>
 			<version>2.1.0</version>
 		</dependency>
-        <dependency>
-            <groupId>cz.cuni.mff.d3s.been</groupId>
-            <artifactId>service_interfaces</artifactId>
-            <version>2.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>cz.cuni.mff.d3s.been</groupId>
-            <artifactId>benchmarkmanager</artifactId>
-            <version>2.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>cz.cuni.mff.d3s.been</groupId>
-            <artifactId>hostmanager</artifactId>
-            <version>2.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>cz.cuni.mff.d3s.been</groupId>
-            <artifactId>resultsrepository</artifactId>
-            <version>2.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>cz.cuni.mff.d3s.been</groupId>
-            <artifactId>softwarerepository</artifactId>
-            <version>2.1.0</version>
-        </dependency>
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>service_interfaces</artifactId>
+			<version>2.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>benchmarkmanager</artifactId>
+			<version>2.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>hostmanager</artifactId>
+			<version>2.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>resultsrepository</artifactId>
+			<version>2.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>softwarerepository</artifactId>
+			<version>2.1.0</version>
+		</dependency>
 	</dependencies>
-	
+
 
 	<build>
 		<finalName>cline_interface</finalName>
@@ -65,11 +65,29 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
+			<!-- CREATE STANDALONE ONE-JAR -->
+			<plugin>
+				<groupId>org.dstovall</groupId>
+				<artifactId>onejar-maven-plugin</artifactId>
+				<version>1.4.4</version>
+				<executions>
+					<execution>
+						<configuration>
+							<onejarVersion>0.97</onejarVersion>
+							<attachToBuild>true</attachToBuild>
+							<classifier>onejar</classifier>
+						</configuration>
+						<goals>
+							<goal>one-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<!-- AND NOW WE WANT TO CREATE BPK PACKAGE -->
 			<plugin>
 				<groupId>cz.cuni.mff.d3s.been</groupId>
 				<artifactId>bpk-plugin</artifactId>
-				<version>1.0.0</version>
+				<version>1.0.1</version>
 				<executions>
 					<execution>
 						<goals>
@@ -78,18 +96,11 @@
 					</execution>
 				</executions>
 				<configuration>
-					<finalName>${project.artifactId}-${project.version}</finalName>
+					<humanName>Command Line Interface</humanName>
+					<packageJarFile>${project.build.directory}/${project.build.finalName}.one-jar.jar</packageJarFile>
+					<mainClassName>cz.cuni.mff.been.clinterface.CommandLineService</mainClassName>
 					<filesToArchive>
 						<fileItem>
-							<folder>files</folder>
-							<file>${project.build.directory}/${project.build.finalName}.jar</file>
-						</fileItem>
-						<fileItem>
-							<wildcardWorkingDirectory>${basedir}/src/main/resources/</wildcardWorkingDirectory>
-							<wildcard>*.xml</wildcard>
-						</fileItem>
-						<fileItem>
-							<folder>files</folder>
 							<wildcardWorkingDirectory>${jaxb-xsd-dir}</wildcardWorkingDirectory>
 							<wildcard>*.xsd</wildcard>
 						</fileItem>
@@ -98,4 +109,11 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>onejar-maven-plugin.googlecode.com</id>
+			<url>http://onejar-maven-plugin.googlecode.com/svn/mavenrepo</url>
+		</pluginRepository>
+	</pluginRepositories>
 </project>

@@ -209,14 +209,7 @@ public class Version implements Cloneable, Comparable< Object >, Serializable {
 	 */
 	@Override
 	public String toString() {
-		String result = "";
-		for (int i = 0; i < parts.length; i++) {
-			if (i != 0) {
-				result += PART_SEPARATOR;
-			}
-			result += parts[i];
-		}
-		return result;
+		return ArrayUtils.join(PART_SEPARATOR, parts);
 	}
 	
 	/**

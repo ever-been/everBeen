@@ -21,11 +21,11 @@
 			<artifactId>core</artifactId>
 			<version>2.1.0</version>
 		</dependency>
-        <dependency>
-            <groupId>cz.cuni.mff.d3s.been</groupId>
-            <artifactId>service_interfaces</artifactId>
-            <version>2.1.0</version>
-        </dependency>
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>service_interfaces</artifactId>
+			<version>2.1.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -39,6 +39,55 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
+			<!-- CREATE STANDALONE ONE-JAR -->
+			<plugin>
+				<groupId>org.dstovall</groupId>
+				<artifactId>onejar-maven-plugin</artifactId>
+				<version>1.4.4</version>
+				<executions>
+					<execution>
+						<configuration>
+							<onejarVersion>0.97</onejarVersion>
+							<attachToBuild>true</attachToBuild>
+							<classifier>onejar</classifier>
+						</configuration>
+						<goals>
+							<goal>one-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- AND NOW WE WANT TO CREATE BPK PACKAGE -->
+			<plugin>
+				<groupId>cz.cuni.mff.d3s.been</groupId>
+				<artifactId>bpk-plugin</artifactId>
+				<version>1.0.1</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>buildpackage</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<humanName>Host Manager</humanName>
+					<packageJarFile>${project.build.directory}/${project.build.finalName}.one-jar.jar</packageJarFile>
+					<mainClassName>cz.cuni.mff.been.hostmanager.HostManagerService</mainClassName>
+					<filesToArchive>
+						<fileItem>
+							<wildcardWorkingDirectory>${basedir}/src/main/resources/files/</wildcardWorkingDirectory>
+							<wildcard>*</wildcard>
+						</fileItem>
+					</filesToArchive>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>onejar-maven-plugin.googlecode.com</id>
+			<url>http://onejar-maven-plugin.googlecode.com/svn/mavenrepo</url>
+		</pluginRepository>
+	</pluginRepositories>
 </project>
