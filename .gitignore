@@ -9,3 +9,5 @@
 */.project
 target
 */target
+.settings
+**/.settings
