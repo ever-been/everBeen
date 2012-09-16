@@ -8,47 +8,42 @@
 	<packaging>pom</packaging>
 	<name>parent</name>
 
+	<!-- When running "mvn {phase}" without specifying "buildAllModules" profile, only modules specified below will be included.
+		If you want to build all modules, run "mvn {phase} -P buildAllModules". See profiles section for more details. -->
+		
 	<modules>
-		<module>obsolete_jar_installer</module>
 		<module>service_interfaces</module>
 		<module>core</module>
 		<module>host_runtime</module>
-        <module>taskmanager</module>
+		<module>taskmanager</module>
 		<module>cline_interface</module>
-        <module>softwarerepository</module>
-        <module>hostmanager</module>
-        <module>resultsrepository</module>
-        <module>benchmarkmanager</module>
-        <module>pluggablemodule</module>
-        <module>pluggablemodule-fileagent</module>
-        <module>pluggablemodule-fileagent-implementation</module>
+		<module>softwarerepository</module>
+		<module>hostmanager</module>
+		<module>resultsrepository</module>
+		<module>benchmarkmanager</module>
+		<module>pluggablemodule</module>
+		<module>pluggablemodule-fileagent</module>
+		<module>pluggablemodule-fileagent-implementation</module>
 		<module>web_interface</module>
-        <module>debug_assistant</module>
-		<module>bcmd</module>
-        <module>xampler</module>
-        <module>bpk-plugin</module>
-        <module>generators</module>
-        <module>evaluators</module>
-        <module>tasks</module>
 	</modules>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
-    <build>
-        <finalName>debug_assistant</finalName>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+	<build>
+		<finalName>debug_assistant</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 	<dependencies>
 		<dependency>
@@ -72,81 +67,38 @@
 			<systemPath>${project.basedir}/../been/lib/webinterface/servlet-api.jar</systemPath>
 		</dependency>
 
-		<!--
-		<dependency>
-			<groupId>webinterface</groupId>
-			<artifactId>commons-io-1.4.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/webinterface/commons-io-1.4.jar</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>webinterface</groupId>
-			<artifactId>commons-fileupload-1.2.1.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/webinterface/commons-fileupload-1.2.1.jar</systemPath>
-		</dependency>
-		-->
+		<!-- <dependency> <groupId>webinterface</groupId> <artifactId>commons-io-1.4.jar</artifactId> 
+			<version>none</version> <scope>system</scope> <systemPath>${project.basedir}/../been/lib/webinterface/commons-io-1.4.jar</systemPath> 
+			</dependency> <dependency> <groupId>webinterface</groupId> <artifactId>commons-fileupload-1.2.1.jar</artifactId> 
+			<version>none</version> <scope>system</scope> <systemPath>${project.basedir}/../been/lib/webinterface/commons-fileupload-1.2.1.jar</systemPath> 
+			</dependency> -->
 
 
-		<!-- REMOVED AND REPLACED BY CLASSICAL MAVEN DEPENDENCY. (AVOIDED PROBLEMS WITH 
-			DUPLICATE NAMES OF JAR FILES IN GENERATED ONE-JAR )
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io-1.4.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/commons-io/commons-io-1.4.jar</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io-1.4.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/commons-io/commons-io-1.4.jar</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>webinterface</groupId>
-			<artifactId>commons-io-1.4.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/webinterface/commons-io-1.4.jar</systemPath>
-		</dependency>
-
-		<dependency>
-			<groupId>hibernate</groupId>
-			<artifactId>hibernate-tools.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/hibernate/hibernate-tools.jar</systemPath>
-		</dependency>
-		-->
+		<!-- REMOVED AND REPLACED BY CLASSICAL MAVEN DEPENDENCY. (AVOIDED PROBLEMS 
+			WITH DUPLICATE NAMES OF JAR FILES IN GENERATED ONE-JAR ) <dependency> <groupId>commons-io</groupId> 
+			<artifactId>commons-io-1.4.jar</artifactId> <version>none</version> <scope>system</scope> 
+			<systemPath>${project.basedir}/../been/lib/commons-io/commons-io-1.4.jar</systemPath> 
+			</dependency> <dependency> <groupId>commons-io</groupId> <artifactId>commons-io-1.4.jar</artifactId> 
+			<version>none</version> <scope>system</scope> <systemPath>${project.basedir}/../been/lib/commons-io/commons-io-1.4.jar</systemPath> 
+			</dependency> <dependency> <groupId>webinterface</groupId> <artifactId>commons-io-1.4.jar</artifactId> 
+			<version>none</version> <scope>system</scope> <systemPath>${project.basedir}/../been/lib/webinterface/commons-io-1.4.jar</systemPath> 
+			</dependency> <dependency> <groupId>hibernate</groupId> <artifactId>hibernate-tools.jar</artifactId> 
+			<version>none</version> <scope>system</scope> <systemPath>${project.basedir}/../been/lib/hibernate/hibernate-tools.jar</systemPath> 
+			</dependency> -->
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>1.4</version>
-		</dependency>           
-
-
-		<!-- REMOVED AND REPLACED BY CLASSICAL MAVEN DEPENDENCY. (AVOIDED PROBLEMS WITH 
-			DUPLICATE NAMES OF JAR FILES IN GENERATED ONE-JAR )
-		<dependency>
-			<groupId>hibernate</groupId>
-			<artifactId>antlr.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/hibernate/antlr.jar</systemPath>
 		</dependency>
 
-		<dependency>
-			<groupId>sjava</groupId>
-			<artifactId>antlr.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/sjava/antlr.jar</systemPath>
-		</dependency>
-		-->
+
+		<!-- REMOVED AND REPLACED BY CLASSICAL MAVEN DEPENDENCY. (AVOIDED PROBLEMS 
+			WITH DUPLICATE NAMES OF JAR FILES IN GENERATED ONE-JAR ) <dependency> <groupId>hibernate</groupId> 
+			<artifactId>antlr.jar</artifactId> <version>none</version> <scope>system</scope> 
+			<systemPath>${project.basedir}/../been/lib/hibernate/antlr.jar</systemPath> 
+			</dependency> <dependency> <groupId>sjava</groupId> <artifactId>antlr.jar</artifactId> 
+			<version>none</version> <scope>system</scope> <systemPath>${project.basedir}/../been/lib/sjava/antlr.jar</systemPath> 
+			</dependency> -->
 		<dependency>
 			<groupId>antlr</groupId>
 			<artifactId>antlr</artifactId>
@@ -252,15 +204,9 @@
 			<scope>system</scope>
 			<systemPath>${project.basedir}/../been/lib/hibernate/hibernate3.jar</systemPath>
 		</dependency>
-		<!--
-		<dependency>
-			<groupId>rmiio</groupId>
-			<artifactId>rmiio-2.0.2.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/rmiio/rmiio-2.0.2.jar</systemPath>
-		</dependency>
-		-->
+		<!-- <dependency> <groupId>rmiio</groupId> <artifactId>rmiio-2.0.2.jar</artifactId> 
+			<version>none</version> <scope>system</scope> <systemPath>${project.basedir}/../been/lib/rmiio/rmiio-2.0.2.jar</systemPath> 
+			</dependency> -->
 		<dependency>
 			<groupId>commons-xmlgraphics</groupId>
 			<artifactId>xmlgraphics-commons-1.3.1.jar</artifactId>
@@ -353,15 +299,9 @@
 			<systemPath>${project.basedir}/../been/lib/collections-generic/collections-generic-4.01.jar</systemPath>
 		</dependency>
 
-		<!--
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j-1.2.12.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/log4j/log4j-1.2.12.jar</systemPath>
-		</dependency>
-		-->
+		<!-- <dependency> <groupId>log4j</groupId> <artifactId>log4j-1.2.12.jar</artifactId> 
+			<version>none</version> <scope>system</scope> <systemPath>${project.basedir}/../been/lib/log4j/log4j-1.2.12.jar</systemPath> 
+			</dependency> -->
 
 		<dependency>
 			<groupId>javacc</groupId>
@@ -868,4 +808,43 @@
 			<systemPath>${project.basedir}/../been/lib/javasvn/javasvn.jar</systemPath>
 		</dependency>
 	</dependencies>
+
+
+	<profiles>
+		<profile>
+			<id>buildAllModules</id>
+			<activation>
+				<property>
+					<name>buildAllModules</name>
+					<value>true</value>
+				</property>
+			</activation>
+
+			<modules>
+				<module>service_interfaces</module>
+				<module>core</module>
+				<module>host_runtime</module>
+				<module>taskmanager</module>
+				<module>cline_interface</module>
+				<module>softwarerepository</module>
+				<module>hostmanager</module>
+				<module>resultsrepository</module>
+				<module>benchmarkmanager</module>
+				<module>pluggablemodule</module>
+				<module>pluggablemodule-fileagent</module>
+				<module>pluggablemodule-fileagent-implementation</module>
+				<module>web_interface</module>
+
+				<module>bpk-plugin</module>
+				<module>debug_assistant</module>
+				<module>bcmd</module>
+				<module>obsolete_jar_installer</module>
+				<module>xampler</module>
+				<module>generators</module>
+				<module>evaluators</module>
+				<module>tasks</module>
+			</modules>
+		</profile>
+	</profiles>
+
 </project>
