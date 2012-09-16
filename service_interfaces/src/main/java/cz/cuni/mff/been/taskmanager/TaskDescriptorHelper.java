@@ -68,25 +68,25 @@ public final class TaskDescriptorHelper {
 	public enum BootTask {
 		
 		/** WillBeen's new Benchmark Manager. */
-		BENCHMARK_MANAGER_NG( "benchmarkmanagerng", "1.0" ),
+		BENCHMARK_MANAGER_NG( "benchmarkmanagerng"),
 		
 		/** The original Host Manager. */
-		HOST_MANAGER( "hostmanager", "1.0" ),
+		HOST_MANAGER( "hostmanager"),
 		
 		/** The original Host Manager. */
-		DEBUG_ASSISTANT( "debugassistant", "1.0" ),
+		DEBUG_ASSISTANT( "debugassistant"),
 		
 		/** The original Software Repository. */
-		SOFTWARE_REPOSITORY( "softwarerepository", "1.0" ),
+		SOFTWARE_REPOSITORY( "softwarerepository"),
 		
 		/** WillBeen's new Results Repository. */
-		RESULTS_REPOSITORY_NG( "resultsrepositoryng", "1.0" ),
+		RESULTS_REPOSITORY_NG( "resultsrepositoryng"),
 		
 		/** Hardware detector, uses JNI. */
-		DETECTOR_TASK( "detectortask", "1.0" ),
+		DETECTOR_TASK( "detectortask"),
 		
 		/** WillBeen's new Command Line Interface. */
-		COMMAND_LINE_INTERFACE( "clinterface", "1.0" );
+		COMMAND_LINE_INTERFACE( "clinterface");
 
 		/** Maps task names to enum values. */
 		private static final TreeMap< String, BootTask > bootTaskMap;
@@ -102,18 +102,14 @@ public final class TaskDescriptorHelper {
 		/** Name of the service. */
 		private final String name;
 		
-		/** Version of the service */
-		private final String version;
-		
 		/**
 		 * Initializes the enum member with a name and a version.
 		 * 
 		 * @param name Name of the service.
 		 * @param version Verion of the service (package).
 		 */
-		private BootTask( String name, String version ) {
+		private BootTask( String name) {
 			this.name = name;
-			this.version = version;
 		}
 
 		/**
@@ -125,14 +121,6 @@ public final class TaskDescriptorHelper {
 			return name;
 		}
 		
-		/**
-		 * Version string getter.
-		 * 
-		 * @return Version of package which should be used for this BootTask. 
-		 */
-		public String getVersion() {
-			return version;
-		}
 		
 		/**
 		 * Enum member getter.
@@ -683,7 +671,7 @@ public final class TaskDescriptorHelper {
 		result.setName( name );
 		result.setTreeAddress( treeAddress );
 		result.setContextId( TaskManagerInterface.SYSTEM_CONTEXT_ID );
-		pacKage.setName( name + '-' + bootTask.getVersion() + PACKAGE_FILE_SUFFIX );
+		pacKage.setName( name + PACKAGE_FILE_SUFFIX );
 		result.setPackage( pacKage );
 		hostRuntimes.getName().add( hostName );
 		result.setHostRuntimes( hostRuntimes );
