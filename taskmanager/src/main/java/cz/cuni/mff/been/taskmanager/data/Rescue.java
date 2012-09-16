@@ -90,16 +90,16 @@ public class Rescue {
 	private final File hostRuntimesDir;
 
 	/**
-	 * Create new instance of Rescue class and set its root directory for
-	 * storing informations.
+	 * Create new instance of Rescue class and set its root directory for storing
+	 * informations.
 	 * 
 	 * @param rootDir
-	 *            Directory where to store informations (new directory will be
-	 *            created).
+	 *          Directory where to store informations (new directory will be
+	 *          created).
 	 * @throws NullPointerException
-	 *             If input parameter is <code>null</code>.
+	 *           If input parameter is <code>null</code>.
 	 * @throws IllegalArgumentException
-	 *             If directory already exists.
+	 *           If directory already exists.
 	 */
 	protected Rescue(File rootDir) {
 		/* Check input parameter. */
@@ -109,8 +109,7 @@ public class Rescue {
 
 		/* Test root directory. */
 		if (rootDir.exists()) {
-			throw new IllegalArgumentException("File or directory with name"
-					+ rootDir.getPath() + "already exists");
+			throw new IllegalArgumentException("File or directory with name" + rootDir.getPath() + "already exists");
 		}
 
 		/* Create root directory for rescue. */
@@ -141,16 +140,15 @@ public class Rescue {
 	 * Store <code>Object</code> to the specified <code>File</code>.
 	 * 
 	 * @param serializableObject
-	 *            Object to store.
+	 *          Object to store.
 	 * @param file
-	 *            File for writing object to.
+	 *          File for writing object to.
 	 * @throws NullPointerException
-	 *             If some input parameter is <code>null</code>.
+	 *           If some input parameter is <code>null</code>.
 	 * @throws RuntimeException
-	 *             If some unrecoverable error occurred.
+	 *           If some unrecoverable error occurred.
 	 */
-	private static void storeObjectToFile(
-			Serializable serializableObject,
+	private static void storeObjectToFile(Serializable serializableObject,
 			File file) {
 		/* Check input parameters. */
 		if (serializableObject == null) {
@@ -164,23 +162,20 @@ public class Rescue {
 		try {
 			fileOutputStream = new FileOutputStream(file);
 		} catch (FileNotFoundException e) {
-			throw new RuntimeException("Could not create new FileOutputStream "
-					+ "for object (file \"" + file.getAbsolutePath() + "\")", e);
+			throw new RuntimeException("Could not create new FileOutputStream " + "for object (file \"" + file.getAbsolutePath() + "\")", e);
 		}
 
 		ObjectOutputStream objectOutputStream;
 		try {
 			objectOutputStream = new ObjectOutputStream(fileOutputStream);
 		} catch (IOException e) {
-			throw new RuntimeException("Could not create new "
-					+ "ObjectOutputStream for object", e);
+			throw new RuntimeException("Could not create new " + "ObjectOutputStream for object", e);
 		}
 
 		try {
 			objectOutputStream.writeObject(serializableObject);
 		} catch (IOException e) {
-			throw new RuntimeException("Could not write object to file \""
-					+ file.getAbsolutePath() + "\"", e);
+			throw new RuntimeException("Could not write object to file \"" + file.getAbsolutePath() + "\"", e);
 		}
 
 		try {
@@ -194,13 +189,13 @@ public class Rescue {
 	 * Load <code>Serializable</code> from the specified <code>File</code>.
 	 * 
 	 * @param file
-	 *            File for reading object from.
+	 *          File for reading object from.
 	 * @return Loaded object of <code>null</code> if <code>file</code> does not
 	 *         exist.
 	 * @throws NullPointerException
-	 *             If input paramater is <code>null</code>.
+	 *           If input paramater is <code>null</code>.
 	 * @throws RuntimeException
-	 *             If some unrecoverable error occurred.
+	 *           If some unrecoverable error occurred.
 	 */
 	private static Serializable loadObjectFromFile(File file) {
 		/* Check input parameters. */
@@ -217,28 +212,23 @@ public class Rescue {
 		try {
 			fileInputStream = new FileInputStream(file);
 		} catch (FileNotFoundException e) {
-			throw new RuntimeException("Could not create new FileInputStream "
-					+ "for object (file \"" + file.getAbsolutePath() + "\")", e);
+			throw new RuntimeException("Could not create new FileInputStream " + "for object (file \"" + file.getAbsolutePath() + "\")", e);
 		}
 
 		ObjectInputStream objectInputStream;
 		try {
 			objectInputStream = new ObjectInputStream(fileInputStream);
 		} catch (IOException e) {
-			throw new RuntimeException(
-					"Could not create new ObjectInputStream " + "for object",
-					e);
+			throw new RuntimeException("Could not create new ObjectInputStream " + "for object", e);
 		}
 
 		Serializable serializableObject;
 		try {
 			serializableObject = (Serializable) objectInputStream.readObject();
 		} catch (IOException e) {
-			throw new RuntimeException("Could not read object from file \""
-					+ file.getAbsolutePath() + "\"", e);
+			throw new RuntimeException("Could not read object from file \"" + file.getAbsolutePath() + "\"", e);
 		} catch (ClassNotFoundException e) {
-			throw new RuntimeException("Unrecoverable error when reading "
-					+ "object from file \"" + file.getAbsolutePath() + "\"", e);
+			throw new RuntimeException("Unrecoverable error when reading " + "object from file \"" + file.getAbsolutePath() + "\"", e);
 		}
 
 		try {
@@ -254,9 +244,9 @@ public class Rescue {
 	 * Parse CDATA from element containing it.
 	 * 
 	 * @param elementWithCDATA
-	 *            Element containing CDATA.
-	 * @return <code>String</code> representation of CDATA or <code>null</code>
-	 *         if specified element does not contain any.
+	 *          Element containing CDATA.
+	 * @return <code>String</code> representation of CDATA or <code>null</code> if
+	 *         specified element does not contain any.
 	 */
 	private static String parseCDATA(Element elementWithCDATA) {
 		/* Check input parameters. */
@@ -283,14 +273,14 @@ public class Rescue {
 	 * Construct <code>ContextEntry</code> from rescue directory.
 	 * 
 	 * @param contextDir
-	 *            Rescue directory for context.
+	 *          Rescue directory for context.
 	 * @return Rescued <code>ContextEntry</code>.
 	 * @throws NullPointerException
-	 *             If input parameter is <code>null</code>.
+	 *           If input parameter is <code>null</code>.
 	 * @throws IllegalArgumentException
-	 *             If entry can not be rescued from specified directory.
+	 *           If entry can not be rescued from specified directory.
 	 * @throws RuntimeException
-	 *             If some other unexpected error occurred.
+	 *           If some other unexpected error occurred.
 	 */
 	private static ContextEntry rescueContext(File contextDir) {
 		/* Check input parameters. */
@@ -308,9 +298,7 @@ public class Rescue {
 			}
 		}
 		if (contextEntryFile == null) {
-			throw new IllegalArgumentException("File named \"contextEntry\" "
-					+ "not found in specified directory \""
-					+ contextDir.getAbsolutePath() + "\"");
+			throw new IllegalArgumentException("File named \"contextEntry\" " + "not found in specified directory \"" + contextDir.getAbsolutePath() + "\"");
 		}
 
 		/* Build ContextEntry object from XML file... */
@@ -327,17 +315,13 @@ public class Rescue {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		} catch (ParserConfigurationException e) {
-			throw new RuntimeException("DocumentBuilder can not be "
-					+ "created", e);
+			throw new RuntimeException("DocumentBuilder can not be " + "created", e);
 		}
 
 		/* Process the root element. */
 		Element rootElement = document.getDocumentElement();
 		if (!rootElement.getTagName().equals("contextEntry")) {
-			throw new IllegalArgumentException("Root element of XML file \""
-					+ contextEntryFile.getAbsolutePath() + "\" sould be "
-					+ "\"contextEntry\" (not \"" + rootElement.getTagName()
-					+ "\")");
+			throw new IllegalArgumentException("Root element of XML file \"" + contextEntryFile.getAbsolutePath() + "\" sould be " + "\"contextEntry\" (not \"" + rootElement.getTagName() + "\")");
 		}
 
 		/* Process attribute open. */
@@ -345,31 +329,22 @@ public class Rescue {
 		boolean open = (openAttribute.equals("true")) ? true : false;
 
 		/* Process element contextId. */
-		Element contextIdElement = (Element) rootElement.getElementsByTagName(
-				"contextId").item(0);
+		Element contextIdElement = (Element) rootElement.getElementsByTagName("contextId").item(0);
 		String contextId = parseCDATA(contextIdElement);
 
 		/* Process element contextName. */
-		Element contextNameElement = (Element) rootElement
-				.getElementsByTagName("contextName").item(0);
+		Element contextNameElement = (Element) rootElement.getElementsByTagName("contextName").item(0);
 		String contextName = parseCDATA(contextNameElement);
 
 		/* Process element contextDescription. */
-		Element contextDescriptionElement = (Element) rootElement
-				.getElementsByTagName("contextDescription").item(0);
+		Element contextDescriptionElement = (Element) rootElement.getElementsByTagName("contextDescription").item(0);
 		String contextDescription = parseCDATA(contextDescriptionElement);
 
 		/* Load MagicObject from file. */
-		Serializable magicObject = loadObjectFromFile(new File(
-				contextDir,
-				"magicObject"));
+		Serializable magicObject = loadObjectFromFile(new File(contextDir, "magicObject"));
 
 		/* Create (initialize) and return new entry. */
-		AbstractContextEntry contextEntry = new ContextEntryImplementation(
-				contextId,
-				contextName,
-				contextDescription,
-				magicObject);
+		ContextEntryImplementation contextEntry = new ContextEntryImplementation(contextId, contextName, contextDescription, magicObject);
 		if (!open) {
 			contextEntry.close();
 		}
@@ -380,14 +355,14 @@ public class Rescue {
 	 * Construct <code>TaskEntry</code> from rescue directory.
 	 * 
 	 * @param taskDir
-	 *            Rescue directory for task.
+	 *          Rescue directory for task.
 	 * @return Rescued <code>TaskEntry</code>.
 	 * @throws NullPointerException
-	 *             If input parameter is <code>null</code>.
+	 *           If input parameter is <code>null</code>.
 	 * @throws IllegalArgumentException
-	 *             If entry can not be rescued from specified directory.
+	 *           If entry can not be rescued from specified directory.
 	 * @throws RuntimeException
-	 *             If some other unexpected error occurred.
+	 *           If some other unexpected error occurred.
 	 */
 	private static TaskEntryImplementation rescueTask(File taskDir) {
 		/* Check input parameters. */
@@ -405,9 +380,7 @@ public class Rescue {
 			}
 		}
 		if (taskEntryFile == null) {
-			throw new IllegalArgumentException("File named \"taskEntry\" not "
-					+ "found in specified directory \""
-					+ taskDir.getAbsolutePath() + "\"");
+			throw new IllegalArgumentException("File named \"taskEntry\" not " + "found in specified directory \"" + taskDir.getAbsolutePath() + "\"");
 		}
 
 		/* Build TaskEntry object from XML file... */
@@ -424,147 +397,108 @@ public class Rescue {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		} catch (ParserConfigurationException e) {
-			throw new RuntimeException("DocumentBuilder can not be "
-					+ "created", e);
+			throw new RuntimeException("DocumentBuilder can not be " + "created", e);
 		}
 
 		/* Process the root element. */
 		Element rootElement = document.getDocumentElement();
 		if (!rootElement.getTagName().equals("taskEntry")) {
-			throw new IllegalArgumentException("Root element of XML file \""
-					+ taskEntryFile.getAbsolutePath() + "\" sould be "
-					+ "\"taskEntry\" (not \"" + rootElement.getTagName()
-					+ "\")");
+			throw new IllegalArgumentException("Root element of XML file \"" + taskEntryFile.getAbsolutePath() + "\" sould be " + "\"taskEntry\" (not \"" + rootElement.getTagName() + "\")");
 		}
 
 		/* Process attribute exclusivity. */
 		String exclusivityAttribute = rootElement.getAttribute("exclusivity");
-		TaskExclusivity exclusivity = TaskExclusivity
-				.fromValue(exclusivityAttribute);
+		TaskExclusivity exclusivity = TaskExclusivity.fromValue(exclusivityAttribute);
 
 		/* Process attribute serviceFlag. */
 		String serviceFlagAttribute = rootElement.getAttribute("serviceFlag");
-		boolean serviceFlag = (serviceFlagAttribute.equals("true")) ? true
-				: false;
+		boolean serviceFlag = (serviceFlagAttribute.equals("true")) ? true : false;
 
 		/* Process attribute state. */
 		String stateAttribute = rootElement.getAttribute("state");
 		TaskState state = TaskState.fromString(stateAttribute);
 
 		/* Process element taskId. */
-		Element taskIdElement = (Element) rootElement.getElementsByTagName(
-				"taskId").item(0);
+		Element taskIdElement = (Element) rootElement.getElementsByTagName("taskId").item(0);
 		String taskId = parseCDATA(taskIdElement);
 
 		/* Process element contextId. */
-		Element contextIdElement = (Element) rootElement.getElementsByTagName(
-				"contextId").item(0);
+		Element contextIdElement = (Element) rootElement.getElementsByTagName("contextId").item(0);
 		String contextId = parseCDATA(contextIdElement);
 
 		/* Process element packageName. */
-		Element packageNameElement = (Element) rootElement
-				.getElementsByTagName("packageName").item(0);
+		Element packageNameElement = (Element) rootElement.getElementsByTagName("packageName").item(0);
 		String packageName = parseCDATA(packageNameElement);
 
 		/* Process element taskName. */
-		Element taskNameElement = (Element) rootElement.getElementsByTagName(
-				"taskName").item(0);
+		Element taskNameElement = (Element) rootElement.getElementsByTagName("taskName").item(0);
 		String taskName = parseCDATA(taskNameElement);
 
 		/* Process element taskDescription. */
-		Element taskDescriptionElement = (Element) rootElement
-				.getElementsByTagName("taskDescription").item(0);
+		Element taskDescriptionElement = (Element) rootElement.getElementsByTagName("taskDescription").item(0);
 		String taskDescription = parseCDATA(taskDescriptionElement);
 
 		/* Process element hostName. */
-		Element hostNameElement = (Element) rootElement.getElementsByTagName(
-				"hostName").item(0);
+		Element hostNameElement = (Element) rootElement.getElementsByTagName("hostName").item(0);
 		String hostName = parseCDATA(hostNameElement);
 
 		/* Process element directoryPathTask. */
-		Element directoryPathTaskElement = (Element) rootElement
-				.getElementsByTagName("directoryPathTask").item(0);
+		Element directoryPathTaskElement = (Element) rootElement.getElementsByTagName("directoryPathTask").item(0);
 		String directoryPathTask = parseCDATA(directoryPathTaskElement);
 
 		/* Process element directoryPathWorking. */
-		Element directoryPathWorkingElement = (Element) rootElement
-				.getElementsByTagName("directoryPathWorking").item(0);
+		Element directoryPathWorkingElement = (Element) rootElement.getElementsByTagName("directoryPathWorking").item(0);
 		String directoryPathWorking = parseCDATA(directoryPathWorkingElement);
 
 		/* Process element directoryPathTemporary. */
-		Element directoryPathTemporaryElement = (Element) rootElement
-				.getElementsByTagName("directoryPathTemporary").item(0);
+		Element directoryPathTemporaryElement = (Element) rootElement.getElementsByTagName("directoryPathTemporary").item(0);
 		String directoryPathTemporary = parseCDATA(directoryPathTemporaryElement);
 
 		/* Process element taskProperties. */
-		Element taskPropertiesElement = (Element) rootElement
-				.getElementsByTagName("taskProperties").item(0);
+		Element taskPropertiesElement = (Element) rootElement.getElementsByTagName("taskProperties").item(0);
 		/*
 		 * Process elements taskProperty (sub-elements of taskProperties
 		 * element).
 		 */
-		NodeList taskPropertyElementList = taskPropertiesElement
-				.getElementsByTagName("taskProperty");
+		NodeList taskPropertyElementList = taskPropertiesElement.getElementsByTagName("taskProperty");
 		Properties taskProperties = new Properties();
 		for (int i = 0; i < taskPropertyElementList.getLength(); i++) {
-			Element taskPropertyElement = (Element) taskPropertyElementList
-					.item(i);
+			Element taskPropertyElement = (Element) taskPropertyElementList.item(i);
 			String key = taskPropertyElement.getAttribute("key");
 			String value = taskPropertyElement.getAttribute("value");
 			taskProperties.setProperty(key, value);
 		}
 
 		/* Process element timeSubmitted. */
-		Element timeSubmittedElement = (Element) rootElement
-				.getElementsByTagName("timeSubmitted").item(0);
+		Element timeSubmittedElement = (Element) rootElement.getElementsByTagName("timeSubmitted").item(0);
 		long timeSubmitted = Long.parseLong(parseCDATA(timeSubmittedElement));
 
 		/* Process element timeScheduled. */
-		Element timeScheduledElement = (Element) rootElement
-				.getElementsByTagName("timeScheduled").item(0);
+		Element timeScheduledElement = (Element) rootElement.getElementsByTagName("timeScheduled").item(0);
 		long timeScheduled = Long.parseLong(parseCDATA(timeScheduledElement));
 
 		/* Process element timeStarted. */
-		Element timeStartedElement = (Element) rootElement
-				.getElementsByTagName("timeStarted").item(0);
+		Element timeStartedElement = (Element) rootElement.getElementsByTagName("timeStarted").item(0);
 		long timeStarted = Long.parseLong(parseCDATA(timeStartedElement));
 
 		/* Process element timeFinished. */
-		Element timeFinishedElement = (Element) rootElement
-				.getElementsByTagName("timeFinished").item(0);
+		Element timeFinishedElement = (Element) rootElement.getElementsByTagName("timeFinished").item(0);
 		long timeFinished = Long.parseLong(parseCDATA(timeFinishedElement));
 
 		/* Process element restartCount. */
-		Element restartCountElement = (Element) rootElement
-				.getElementsByTagName("restartCount").item(0);
+		Element restartCountElement = (Element) rootElement.getElementsByTagName("restartCount").item(0);
 		int restartCount = Integer.parseInt(parseCDATA(restartCountElement));
 
 		/* Process element restartMax. */
-		Element restartMaxElement = (Element) rootElement.getElementsByTagName(
-				"restartMax").item(0);
+		Element restartMaxElement = (Element) rootElement.getElementsByTagName("restartMax").item(0);
 		int restartMax = Integer.parseInt(parseCDATA(restartMaxElement));
 
 		/* Process element timeoutRun. */
-		Element timeoutRunElement = (Element) rootElement.getElementsByTagName(
-				"timeoutRun").item(0);
+		Element timeoutRunElement = (Element) rootElement.getElementsByTagName("timeoutRun").item(0);
 		long timeoutRun = Long.parseLong(parseCDATA(timeoutRunElement));
 
 		/* Create (initialize) and return new entry. */
-		TaskEntryImplementation taskEntry = new TaskEntryImplementation(
-				taskId,
-				contextId,
-				packageName,
-				taskName,
-				taskDescription,
-				hostName,
-				directoryPathTask,
-				directoryPathWorking,
-				directoryPathTemporary,
-				taskProperties,
-				exclusivity,
-				serviceFlag,
-				restartMax,
-				timeoutRun);
+		TaskEntryImplementation taskEntry = new TaskEntryImplementation(taskId, contextId, packageName, taskName, taskDescription, hostName, directoryPathTask, directoryPathWorking, directoryPathTemporary, taskProperties, exclusivity, serviceFlag, restartMax, timeoutRun);
 		taskEntry.setState(state);
 		taskEntry.setTimeSubmitted(timeSubmitted);
 		taskEntry.setTimeScheduled(timeScheduled);
@@ -578,14 +512,14 @@ public class Rescue {
 	 * Construct <code>CheckPointEntry</code> from rescue directory.
 	 * 
 	 * @param checkPointDir
-	 *            Rescue directory for checkPoint.
+	 *          Rescue directory for checkPoint.
 	 * @return Rescued <code>CheckPointEntry</code>.
 	 * @throws NullPointerException
-	 *             If input parameter is <code>null</code>.
+	 *           If input parameter is <code>null</code>.
 	 * @throws IllegalArgumentException
-	 *             If entry can not be rescued from specified directory.
+	 *           If entry can not be rescued from specified directory.
 	 * @throws RuntimeException
-	 *             If some other unexpected error occurred.
+	 *           If some other unexpected error occurred.
 	 */
 	private static CheckPointEntry rescueCheckPoint(File checkPointDir) {
 		/* Check input parameters. */
@@ -603,10 +537,7 @@ public class Rescue {
 			}
 		}
 		if (checkPointEntryFile == null) {
-			throw new IllegalArgumentException(
-					"File named \"checkPointEntry\" "
-							+ "not found in specified directory \""
-							+ checkPointDir.getAbsolutePath() + "\"");
+			throw new IllegalArgumentException("File named \"checkPointEntry\" " + "not found in specified directory \"" + checkPointDir.getAbsolutePath() + "\"");
 		}
 
 		/* Build CheckPointEntry object from XML file... */
@@ -623,51 +554,36 @@ public class Rescue {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		} catch (ParserConfigurationException e) {
-			throw new RuntimeException("DocumentBuilder can not be "
-					+ "created", e);
+			throw new RuntimeException("DocumentBuilder can not be " + "created", e);
 		}
 
 		/* Process the root element. */
 		Element rootElement = document.getDocumentElement();
 		if (!rootElement.getTagName().equals("checkPointEntry")) {
-			throw new IllegalArgumentException("Root element of XML file \""
-					+ checkPointEntryFile.getAbsolutePath() + "\" sould be "
-					+ "\"checkPointEntry\" (not \"" + rootElement.getTagName()
-					+ "\")");
+			throw new IllegalArgumentException("Root element of XML file \"" + checkPointEntryFile.getAbsolutePath() + "\" sould be " + "\"checkPointEntry\" (not \"" + rootElement.getTagName() + "\")");
 		}
 
 		/* Process element name. */
-		Element nameElement = (Element) rootElement
-				.getElementsByTagName("name").item(0);
+		Element nameElement = (Element) rootElement.getElementsByTagName("name").item(0);
 		String name = parseCDATA(nameElement);
 
 		/* Process element taskId. */
-		Element taskIdElement = (Element) rootElement.getElementsByTagName(
-				"taskId").item(0);
+		Element taskIdElement = (Element) rootElement.getElementsByTagName("taskId").item(0);
 		String taskId = parseCDATA(taskIdElement);
 
 		/* Process element contextId. */
-		Element contextIdElement = (Element) rootElement.getElementsByTagName(
-				"contextId").item(0);
+		Element contextIdElement = (Element) rootElement.getElementsByTagName("contextId").item(0);
 		String contextId = parseCDATA(contextIdElement);
 
 		/* Process element hostName. */
-		Element hostNameElement = (Element) rootElement.getElementsByTagName(
-				"hostName").item(0);
+		Element hostNameElement = (Element) rootElement.getElementsByTagName("hostName").item(0);
 		String hostName = parseCDATA(hostNameElement);
 
 		/* Load MagicObject from file. */
-		Serializable magicObject = loadObjectFromFile(new File(
-				checkPointDir,
-				"magicObject"));
+		Serializable magicObject = loadObjectFromFile(new File(checkPointDir, "magicObject"));
 
 		/* Create (initialize) and return new entry. */
-		CheckPointEntry checkPointEntry = new CheckPointEntry(
-				name,
-				taskId,
-				contextId,
-				hostName,
-				magicObject);
+		CheckPointEntry checkPointEntry = new CheckPointEntry(name, taskId, contextId, hostName, magicObject);
 		return checkPointEntry;
 	}
 
@@ -675,14 +591,14 @@ public class Rescue {
 	 * Construct <code>HostRuntimeEntry</code> from rescue directory.
 	 * 
 	 * @param hostRuntimeDir
-	 *            Rescue directory for hostRuntime.
+	 *          Rescue directory for hostRuntime.
 	 * @return Rescued <code>HostRuntimeEntry</code>.
 	 * @throws NullPointerException
-	 *             If input parameter is <code>null</code>.
+	 *           If input parameter is <code>null</code>.
 	 * @throws IllegalArgumentException
-	 *             If entry can not be rescued from specified directory.
+	 *           If entry can not be rescued from specified directory.
 	 * @throws RuntimeException
-	 *             If some other unexpected error occurred.
+	 *           If some other unexpected error occurred.
 	 */
 	private static HostRuntimeEntry rescueHostRuntime(File hostRuntimeDir) {
 		/* Check input parameters. */
@@ -700,10 +616,7 @@ public class Rescue {
 			}
 		}
 		if (hostRuntimeEntryFile == null) {
-			throw new IllegalArgumentException(
-					"File named "
-							+ "\"hostRuntimeEntry\" not found in specified directory \""
-							+ hostRuntimeDir.getAbsolutePath() + "\"");
+			throw new IllegalArgumentException("File named " + "\"hostRuntimeEntry\" not found in specified directory \"" + hostRuntimeDir.getAbsolutePath() + "\"");
 		}
 
 		/* Build HostRuntimeEntry object from XML file... */
@@ -720,32 +633,25 @@ public class Rescue {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		} catch (ParserConfigurationException e) {
-			throw new RuntimeException("DocumentBuilder can not be "
-					+ "created", e);
+			throw new RuntimeException("DocumentBuilder can not be " + "created", e);
 		}
 
 		/* Process the root element. */
 		Element rootElement = document.getDocumentElement();
 		if (!rootElement.getTagName().equals("hostRuntimeEntry")) {
-			throw new IllegalArgumentException("Root element of XML file \""
-					+ hostRuntimeEntryFile.getAbsolutePath() + "\" sould be "
-					+ "\"hostRuntimeEntry\" (not \"" + rootElement.getTagName()
-					+ "\")");
+			throw new IllegalArgumentException("Root element of XML file \"" + hostRuntimeEntryFile.getAbsolutePath() + "\" sould be " + "\"hostRuntimeEntry\" (not \"" + rootElement.getTagName() + "\")");
 		}
 
 		/* Process element hostName. */
-		Element hostNameElement = (Element) rootElement.getElementsByTagName(
-				"hostName").item(0);
+		Element hostNameElement = (Element) rootElement.getElementsByTagName("hostName").item(0);
 		String hostName = parseCDATA(hostNameElement);
 
 		/* Process element reservation. */
-		Element reservationElement = (Element) rootElement
-				.getElementsByTagName("reservation").item(0);
+		Element reservationElement = (Element) rootElement.getElementsByTagName("reservation").item(0);
 		String reservation = parseCDATA(reservationElement);
 
 		/* Create (initialize) and return new entry. */
-		HostRuntimeEntry hostRuntimeEntry = new HostRuntimeEntryImplementation(
-				hostName);
+		HostRuntimeEntry hostRuntimeEntry = new HostRuntimeEntryImplementation(hostName);
 		hostRuntimeEntry.setReservation(reservation);
 		return hostRuntimeEntry;
 	}
@@ -755,22 +661,20 @@ public class Rescue {
 	 * based on rescue informations.
 	 * 
 	 * @param newRootDir
-	 *            Root directory for storing rescue informations for newly
-	 *            created <code>Data</code> object.
+	 *          Root directory for storing rescue informations for newly created
+	 *          <code>Data</code> object.
 	 * @param oldRootDir
-	 *            Root directory containing rescue informations.
+	 *          Root directory containing rescue informations.
 	 * @param taskTree
-	 *            Task Manager's tree of tasks.
+	 *          Task Manager's tree of tasks.
 	 * @return Rescued <code>Data</code> object for TaskManager.
 	 * @throws NullPointerException
-	 *             If some input parameter is <code>null</code>.
+	 *           If some input parameter is <code>null</code>.
 	 * @throws IllegalArgumentException
-	 *             It <code>oldRoodDir</code> direstory does not exist or is not
-	 *             a directory.
+	 *           It <code>oldRoodDir</code> direstory does not exist or is not a
+	 *           directory.
 	 */
-	public static Data rescueData(
-			File newRootDir,
-			File oldRootDir,
+	public static Data rescueData(File newRootDir, File oldRootDir,
 			TaskTreeInput taskTree) {
 		/* Check input parameters. */
 		if (newRootDir == null) {
@@ -782,9 +686,7 @@ public class Rescue {
 
 		/* Test if oldRootDir directory exists. */
 		if (!oldRootDir.exists() || !oldRootDir.isDirectory()) {
-			throw new IllegalArgumentException("oldRootDir \""
-					+ oldRootDir.getAbsolutePath() + "does not exist or it is "
-					+ "not directory");
+			throw new IllegalArgumentException("oldRootDir \"" + oldRootDir.getAbsolutePath() + "does not exist or it is " + "not directory");
 		}
 
 		/* Create new data object. */
@@ -816,9 +718,7 @@ public class Rescue {
 			File[] tasks = tasksContext.listFiles();
 			for (File task : tasks) {
 				TaskEntryImplementation taskEntry = rescueTask(task);
-				TaskDescriptor taskDescriptor = (TaskDescriptor) loadObjectFromFile(new File(
-						task,
-						"taskDescriptor"));
+				TaskDescriptor taskDescriptor = (TaskDescriptor) loadObjectFromFile(new File(task, "taskDescriptor"));
 				TaskData taskData = new TaskData(taskDescriptor);
 				data.newTask(taskEntry, taskData);
 			}
@@ -844,11 +744,11 @@ public class Rescue {
 	 * Delete file or directory (recursively) specified by <code>file</code>.
 	 * 
 	 * @param file
-	 *            File or directory to be removed.
+	 *          File or directory to be removed.
 	 * @throws NullPointerException
-	 *             If input parameter is <code>null</code>.
+	 *           If input parameter is <code>null</code>.
 	 * @throws IllegalArgumentException
-	 *             If file is unknown thing...
+	 *           If file is unknown thing...
 	 */
 	private static void deleteRecursive(File file) {
 		/* Check input parameters. */
@@ -872,13 +772,13 @@ public class Rescue {
 	 * Write DOM document to XML file.
 	 * 
 	 * @param document
-	 *            DOM document.
+	 *          DOM document.
 	 * @param xmlFile
-	 *            XML file (will be created).
+	 *          XML file (will be created).
 	 * @throws NullPointerException
-	 *             If some input parameter is <code>null</code>.
+	 *           If some input parameter is <code>null</code>.
 	 * @throws RuntimeException
-	 *             If some other unexpected error occurred.
+	 *           If some other unexpected error occurred.
 	 */
 	private static void writeXmlFile(Document document, File xmlFile) {
 		/* Check input parameters. */
@@ -894,13 +794,11 @@ public class Rescue {
 		try {
 			transformer = TransformerFactory.newInstance().newTransformer();
 		} catch (TransformerConfigurationException e) {
-			throw new RuntimeException("Could not create Transformer for XML. "
-					+ "This should not occur.", e);
+			throw new RuntimeException("Could not create Transformer for XML. " + "This should not occur.", e);
 		}
 		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 		try {
-			transformer.transform(new DOMSource(document), new StreamResult(
-					xmlFile));
+			transformer.transform(new DOMSource(document), new StreamResult(xmlFile));
 		} catch (TransformerException e) {
 			throw new RuntimeException("Unexpected failure", e);
 		}
@@ -910,11 +808,11 @@ public class Rescue {
 	 * Add context.
 	 * 
 	 * @param context
-	 *            <code>ContextEntry</code> of added context.
+	 *          <code>ContextEntry</code> of added context.
 	 * @throws NullPointerException
-	 *             If input parameter is <code>null</code>.
+	 *           If input parameter is <code>null</code>.
 	 * @throws RuntimeException
-	 *             If some other unexpected error occurred.
+	 *           If some other unexpected error occurred.
 	 */
 	protected synchronized void addContext(ContextEntry context) {
 		/* Check input parameters. */
@@ -925,9 +823,7 @@ public class Rescue {
 		/* Prepare directories. */
 		File contextsSubDir = new File(this.contextsDir, context.getContextId());
 		File tasksSubDir = new File(this.tasksDir, context.getContextId());
-		File checkPointsSubDir = new File(
-				this.checkPointsDir,
-				context.getContextId());
+		File checkPointsSubDir = new File(this.checkPointsDir, context.getContextId());
 		/* Make directories. */
 		contextsSubDir.mkdir();
 		tasksSubDir.mkdir();
@@ -938,11 +834,9 @@ public class Rescue {
 		/* Prepare new document. */
 		Document document;
 		try {
-			document = DocumentBuilderFactory.newInstance()
-					.newDocumentBuilder().newDocument();
+			document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
 		} catch (ParserConfigurationException e) {
-			throw new RuntimeException("Could not create new DOM Document. "
-					+ "This should not occur.", e);
+			throw new RuntimeException("Could not create new DOM Document. " + "This should not occur.", e);
 		}
 
 		/* Add root element. */
@@ -954,41 +848,35 @@ public class Rescue {
 		/* Add contextId element. */
 		Element contextIdElement = document.createElement("contextId");
 		rootElement.appendChild(contextIdElement);
-		CDATASection contextIdData = document.createCDATASection(context
-				.getContextId());
+		CDATASection contextIdData = document.createCDATASection(context.getContextId());
 		contextIdElement.appendChild(contextIdData);
 
 		/* Add contextName element. */
 		Element contextNameElement = document.createElement("contextName");
 		rootElement.appendChild(contextNameElement);
-		CDATASection contextNameData = document.createCDATASection(context
-				.getContextName());
+		CDATASection contextNameData = document.createCDATASection(context.getContextName());
 		contextNameElement.appendChild(contextNameData);
 
 		/* Add contextDescription element. */
-		Element contextDescriptionElement = document
-				.createElement("contextDescription");
+		Element contextDescriptionElement = document.createElement("contextDescription");
 		rootElement.appendChild(contextDescriptionElement);
-		CDATASection contextDescriptionData = document
-				.createCDATASection(context.getContextDescription());
+		CDATASection contextDescriptionData = document.createCDATASection(context.getContextDescription());
 		contextDescriptionElement.appendChild(contextDescriptionData);
 
 		/* Write to XML file. */
 		writeXmlFile(document, new File(contextsSubDir, "contextEntry.xml"));
 
 		/* Store MagicObject to file. */
-		storeObjectToFile(context.getMagicObject(), new File(
-				contextsSubDir,
-				"magicObject"));
+		storeObjectToFile(context.getMagicObject(), new File(contextsSubDir, "magicObject"));
 	}
 
 	/**
 	 * Remove context.
 	 * 
 	 * @param contextId
-	 *            ID of context.
+	 *          ID of context.
 	 * @throws NullPointerException
-	 *             If input parameter is <code>null</code>.
+	 *           If input parameter is <code>null</code>.
 	 */
 	protected synchronized void remContext(String contextId) {
 		/* Check input parameters. */
@@ -1010,9 +898,9 @@ public class Rescue {
 	 * Change already stored context.
 	 * 
 	 * @param context
-	 *            <code>ContextEntry</code> of changed context.
+	 *          <code>ContextEntry</code> of changed context.
 	 * @throws NullPointerException
-	 *             If input parameter is <code>null</code>.
+	 *           If input parameter is <code>null</code>.
 	 */
 	protected synchronized void changeContext(ContextEntry context) {
 		/* Check input parameters. */
@@ -1032,16 +920,15 @@ public class Rescue {
 	 * Add task.
 	 * 
 	 * @param task
-	 *            <code>TaskEntry</code> of added task.
+	 *          <code>TaskEntry</code> of added task.
 	 * @param taskData
-	 *            <code>TaskData</code> of added task.
+	 *          <code>TaskData</code> of added task.
 	 * @throws NullPointerException
-	 *             If input parameter is <code>null</code>.
+	 *           If input parameter is <code>null</code>.
 	 * @throws RuntimeException
-	 *             If some other unexpected error occurred.
+	 *           If some other unexpected error occurred.
 	 */
-	protected synchronized void addTask(
-			TaskEntryImplementation task,
+	protected synchronized void addTask(TaskEntryImplementation task,
 			TaskData taskData) {
 		/* Check input parameters. */
 		if (task == null) {
@@ -1049,12 +936,8 @@ public class Rescue {
 		}
 
 		/* Prepare directories. */
-		File tasksSubDir = new File(
-				new File(this.tasksDir, task.getContextId()),
-				task.getTaskId());
-		File checkPointsSubDir = new File(new File(
-				this.checkPointsDir,
-				task.getContextId()), task.getTaskId());
+		File tasksSubDir = new File(new File(this.tasksDir, task.getContextId()), task.getTaskId());
+		File checkPointsSubDir = new File(new File(this.checkPointsDir, task.getContextId()), task.getTaskId());
 		/* Make directories. */
 		tasksSubDir.mkdir();
 		checkPointsSubDir.mkdir();
@@ -1064,22 +947,18 @@ public class Rescue {
 		/* Prepare new document. */
 		Document document;
 		try {
-			document = DocumentBuilderFactory.newInstance()
-					.newDocumentBuilder().newDocument();
+			document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
 		} catch (ParserConfigurationException e) {
-			throw new RuntimeException("Could not create new DOM Document. "
-					+ "This should not occur.", e);
+			throw new RuntimeException("Could not create new DOM Document. " + "This should not occur.", e);
 		}
 
 		/* Add root element. */
 		Element rootElement = document.createElement("taskEntry");
 		document.appendChild(rootElement);
 		/* Set attributes. */
-		rootElement.setAttribute("exclusivity", task.getExclusivity()
-				.toString());
-		rootElement.setAttribute(
-				"serviceFlag",
-				(task.getServiceFlag()) ? "true" : "false");
+		rootElement.setAttribute("exclusivity", task.getExclusivity().toString());
+		rootElement.setAttribute("serviceFlag", (task.getServiceFlag()) ? "true"
+				: "false");
 		rootElement.setAttribute("state", task.getState().toString());
 
 		/* Add taskId element. */
@@ -1091,80 +970,65 @@ public class Rescue {
 		/* Add contextId element. */
 		Element contextIdElement = document.createElement("contextId");
 		rootElement.appendChild(contextIdElement);
-		CDATASection contextIdData = document.createCDATASection(task
-				.getContextId());
+		CDATASection contextIdData = document.createCDATASection(task.getContextId());
 		contextIdElement.appendChild(contextIdData);
 
 		/* Add packageName element. */
 		Element packageNameElement = document.createElement("packageName");
 		rootElement.appendChild(packageNameElement);
-		CDATASection packageNameData = document.createCDATASection(task
-				.getPackageName());
+		CDATASection packageNameData = document.createCDATASection(task.getPackageName());
 		packageNameElement.appendChild(packageNameData);
 
 		/* Add taskName element. */
 		Element taskNameElement = document.createElement("taskName");
 		rootElement.appendChild(taskNameElement);
-		CDATASection taskNameData = document.createCDATASection(task
-				.getTaskName());
+		CDATASection taskNameData = document.createCDATASection(task.getTaskName());
 		taskNameElement.appendChild(taskNameData);
 
 		/* Add taskDescription element. */
-		Element taskDescriptionElement = document
-				.createElement("taskDescription");
+		Element taskDescriptionElement = document.createElement("taskDescription");
 		rootElement.appendChild(taskDescriptionElement);
-		CDATASection taskDescriptionData = document.createCDATASection(task
-				.getTaskDescription());
+		CDATASection taskDescriptionData = document.createCDATASection(task.getTaskDescription());
 		taskDescriptionElement.appendChild(taskDescriptionData);
 
 		/* Add hostName element. */
 		Element hostNameElement = document.createElement("hostName");
 		rootElement.appendChild(hostNameElement);
 		if (task.getHostName() != null) {
-			CDATASection hostNameData = document.createCDATASection(task
-					.getHostName());
+			CDATASection hostNameData = document.createCDATASection(task.getHostName());
 			hostNameElement.appendChild(hostNameData);
 		}
 
 		/* Add directoryPathTask element. */
-		Element directoryPathTaskElement = document
-				.createElement("directoryPathTask");
+		Element directoryPathTaskElement = document.createElement("directoryPathTask");
 		rootElement.appendChild(directoryPathTaskElement);
-		CDATASection directoryPathTaskData = document.createCDATASection(task
-				.getDirectoryPathTask());
+		CDATASection directoryPathTaskData = document.createCDATASection(task.getDirectoryPathTask());
 		directoryPathTaskElement.appendChild(directoryPathTaskData);
 
 		/* Add directoryPathWorking element. */
-		Element directoryPathWorkingElement = document
-				.createElement("directoryPathWorking");
+		Element directoryPathWorkingElement = document.createElement("directoryPathWorking");
 		rootElement.appendChild(directoryPathWorkingElement);
-		CDATASection directoryPathWorkingData = document
-				.createCDATASection(task.getDirectoryPathWorking());
+		CDATASection directoryPathWorkingData = document.createCDATASection(task.getDirectoryPathWorking());
 		directoryPathWorkingElement.appendChild(directoryPathWorkingData);
 
 		/* Add directoryPathTemporary element. */
-		Element directoryPathTemporaryElement = document
-				.createElement("directoryPathTemporary");
+		Element directoryPathTemporaryElement = document.createElement("directoryPathTemporary");
 		rootElement.appendChild(directoryPathTemporaryElement);
-		CDATASection directoryPathTemporaryData = document
-				.createCDATASection(task.getDirectoryPathTemporary());
+		CDATASection directoryPathTemporaryData = document.createCDATASection(task.getDirectoryPathTemporary());
 		directoryPathTemporaryElement.appendChild(directoryPathTemporaryData);
 
 		/* Add taskProperties element. */
-		Element taskPropertiesElement = document
-				.createElement("taskProperties");
+		Element taskPropertiesElement = document.createElement("taskProperties");
 		rootElement.appendChild(taskPropertiesElement);
 		/*
 		 * Add taskProperty elements (sub-elements of taskProperties element).
 		 */
 		Properties taskProperties = task.getTaskProperties();
-		Enumeration<?> taskPropertiesEnumeration = taskProperties
-				.propertyNames();
+		Enumeration<?> taskPropertiesEnumeration = taskProperties.propertyNames();
 		while (taskPropertiesEnumeration.hasMoreElements()) {
 			String key = (String) taskPropertiesEnumeration.nextElement();
 			String value = (String) taskProperties.get(key);
-			Element taskPropertyElement = document
-					.createElement("taskProperty");
+			Element taskPropertyElement = document.createElement("taskProperty");
 			taskPropertiesElement.appendChild(taskPropertyElement);
 			taskPropertyElement.setAttribute("key", key);
 			taskPropertyElement.setAttribute("value", value);
@@ -1173,50 +1037,43 @@ public class Rescue {
 		/* Add timeSubmitted element. */
 		Element timeSubmittedElement = document.createElement("timeSubmitted");
 		rootElement.appendChild(timeSubmittedElement);
-		CDATASection timeSubmittedData = document.createCDATASection(String
-				.valueOf(task.getTimeSubmitted()));
+		CDATASection timeSubmittedData = document.createCDATASection(String.valueOf(task.getTimeSubmitted()));
 		timeSubmittedElement.appendChild(timeSubmittedData);
 
 		/* Add timeScheduled element. */
 		Element timeScheduledElement = document.createElement("timeScheduled");
 		rootElement.appendChild(timeScheduledElement);
-		CDATASection timeScheduledData = document.createCDATASection(String
-				.valueOf(task.getTimeScheduled()));
+		CDATASection timeScheduledData = document.createCDATASection(String.valueOf(task.getTimeScheduled()));
 		timeScheduledElement.appendChild(timeScheduledData);
 
 		/* Add timeStarted element. */
 		Element timeStartedElement = document.createElement("timeStarted");
 		rootElement.appendChild(timeStartedElement);
-		CDATASection timeStartedData = document.createCDATASection(String
-				.valueOf(task.getTimeStarted()));
+		CDATASection timeStartedData = document.createCDATASection(String.valueOf(task.getTimeStarted()));
 		timeStartedElement.appendChild(timeStartedData);
 
 		/* Add timeFinished element. */
 		Element timeFinishedElement = document.createElement("timeFinished");
 		rootElement.appendChild(timeFinishedElement);
-		CDATASection timeFinishedData = document.createCDATASection(String
-				.valueOf(task.getTimeFinished()));
+		CDATASection timeFinishedData = document.createCDATASection(String.valueOf(task.getTimeFinished()));
 		timeFinishedElement.appendChild(timeFinishedData);
 
 		/* Add restartCount element. */
 		Element restartCountElement = document.createElement("restartCount");
 		rootElement.appendChild(restartCountElement);
-		CDATASection restartCountData = document.createCDATASection(String
-				.valueOf(task.getRestartCount()));
+		CDATASection restartCountData = document.createCDATASection(String.valueOf(task.getRestartCount()));
 		restartCountElement.appendChild(restartCountData);
 
 		/* Add restartMax element. */
 		Element restartMaxElement = document.createElement("restartMax");
 		rootElement.appendChild(restartMaxElement);
-		CDATASection restartMaxData = document.createCDATASection(String
-				.valueOf(task.getRestartMax()));
+		CDATASection restartMaxData = document.createCDATASection(String.valueOf(task.getRestartMax()));
 		restartMaxElement.appendChild(restartMaxData);
 
 		/* Add timeoutRun element. */
 		Element timeoutRunElement = document.createElement("timeoutRun");
 		rootElement.appendChild(timeoutRunElement);
-		CDATASection timeoutRunData = document.createCDATASection(String
-				.valueOf(task.getTimeoutRun()));
+		CDATASection timeoutRunData = document.createCDATASection(String.valueOf(task.getTimeoutRun()));
 		timeoutRunElement.appendChild(timeoutRunData);
 
 		/* Write to XML file. */
@@ -1224,9 +1081,7 @@ public class Rescue {
 
 		/* Store taskDescriptor to file. */
 		if (taskData.getTaskDescriptor() != null) {
-			storeObjectToFile(taskData.getTaskDescriptor(), new File(
-					tasksSubDir,
-					"taskDescriptor"));
+			storeObjectToFile(taskData.getTaskDescriptor(), new File(tasksSubDir, "taskDescriptor"));
 		}
 	}
 
@@ -1234,11 +1089,11 @@ public class Rescue {
 	 * Remove task.
 	 * 
 	 * @param taskId
-	 *            ID of task.
+	 *          ID of task.
 	 * @param contextId
-	 *            ID of contex.
+	 *          ID of contex.
 	 * @throws NullPointerException
-	 *             If some input parameter is <code>null</code>.
+	 *           If some input parameter is <code>null</code>.
 	 */
 	protected synchronized void remTask(String taskId, String contextId) {
 		/* Check input parameters. */
@@ -1251,9 +1106,7 @@ public class Rescue {
 
 		/* Prepare directories. */
 		File tasksSubDir = new File(new File(this.tasksDir, contextId), taskId);
-		File checkPointsSubDir = new File(new File(
-				this.checkPointsDir,
-				contextId), taskId);
+		File checkPointsSubDir = new File(new File(this.checkPointsDir, contextId), taskId);
 		/* Delete directories. */
 		deleteRecursive(tasksSubDir);
 		deleteRecursive(checkPointsSubDir);
@@ -1263,15 +1116,14 @@ public class Rescue {
 	 * Change already stored task.
 	 * 
 	 * @param task
-	 *            <code>TaskEntry</code> of changed task.
+	 *          <code>TaskEntry</code> of changed task.
 	 * @param taskData
-	 *            <code>TaskData</code> of changed task.
+	 *          <code>TaskData</code> of changed task.
 	 * 
 	 * @throws NullPointerException
-	 *             If input parameter is <code>null</code>.
+	 *           If input parameter is <code>null</code>.
 	 */
-	protected synchronized void changeTask(
-			TaskEntryImplementation task,
+	protected synchronized void changeTask(TaskEntryImplementation task,
 			TaskData taskData) {
 		/* Check input parameters. */
 		if (task == null) {
@@ -1279,9 +1131,7 @@ public class Rescue {
 		}
 
 		/* Prepare directories. */
-		File tasksSubDir = new File(
-				new File(this.tasksDir, task.getContextId()),
-				task.getTaskId());
+		File tasksSubDir = new File(new File(this.tasksDir, task.getContextId()), task.getTaskId());
 		/* Remove directories. */
 		deleteRecursive(tasksSubDir);
 
@@ -1292,9 +1142,9 @@ public class Rescue {
 	 * Add checkPoint.
 	 * 
 	 * @param checkPoint
-	 *            <code>CheckPointEntry</code> of added checkPoint.
+	 *          <code>CheckPointEntry</code> of added checkPoint.
 	 * @throws NullPointerException
-	 *             If input parameter is <code>null</code>.
+	 *           If input parameter is <code>null</code>.
 	 */
 	protected synchronized void addCheckPoint(CheckPointEntry checkPoint) {
 		/* Check input parameters. */
@@ -1303,11 +1153,7 @@ public class Rescue {
 		}
 
 		/* Prepare directories. */
-		File checkPointsSubSubDir = new File(
-				new File(new File(
-						this.checkPointsDir,
-						checkPoint.getContextId()), checkPoint.getTaskId()),
-				checkPoint.getName());
+		File checkPointsSubSubDir = new File(new File(new File(this.checkPointsDir, checkPoint.getContextId()), checkPoint.getTaskId()), checkPoint.getName());
 		/* Make directories. */
 		checkPointsSubSubDir.mkdir();
 
@@ -1316,11 +1162,9 @@ public class Rescue {
 		/* Prepare new document. */
 		Document document;
 		try {
-			document = DocumentBuilderFactory.newInstance()
-					.newDocumentBuilder().newDocument();
+			document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
 		} catch (ParserConfigurationException e) {
-			throw new RuntimeException("Could not create new DOM Document. "
-					+ "This should not occur.", e);
+			throw new RuntimeException("Could not create new DOM Document. " + "This should not occur.", e);
 		}
 
 		/* Add root element. */
@@ -1332,57 +1176,47 @@ public class Rescue {
 		/* Add name element. */
 		Element nameElement = document.createElement("name");
 		rootElement.appendChild(nameElement);
-		CDATASection nameData = document.createCDATASection(checkPoint
-				.getName());
+		CDATASection nameData = document.createCDATASection(checkPoint.getName());
 		nameElement.appendChild(nameData);
 
 		/* Add taskId element. */
 		Element taskIdElement = document.createElement("taskId");
 		rootElement.appendChild(taskIdElement);
-		CDATASection taskIdData = document.createCDATASection(checkPoint
-				.getTaskId());
+		CDATASection taskIdData = document.createCDATASection(checkPoint.getTaskId());
 		taskIdElement.appendChild(taskIdData);
 
 		/* Add contextId element. */
 		Element contextIdElement = document.createElement("contextId");
 		rootElement.appendChild(contextIdElement);
-		CDATASection contextIdData = document.createCDATASection(checkPoint
-				.getContextId());
+		CDATASection contextIdData = document.createCDATASection(checkPoint.getContextId());
 		contextIdElement.appendChild(contextIdData);
 
 		/* Add hostName element. */
 		Element hostNameElement = document.createElement("hostName");
 		rootElement.appendChild(hostNameElement);
-		CDATASection hostNameData = document.createCDATASection(checkPoint
-				.getHostName());
+		CDATASection hostNameData = document.createCDATASection(checkPoint.getHostName());
 		hostNameElement.appendChild(hostNameData);
 
 		/* Write to XML file. */
-		writeXmlFile(document, new File(
-				checkPointsSubSubDir,
-				"checkPointEntry.xml"));
+		writeXmlFile(document, new File(checkPointsSubSubDir, "checkPointEntry.xml"));
 
 		/* Store MagicObject to file. */
-		storeObjectToFile(checkPoint.getMagicObject(), new File(
-				checkPointsSubSubDir,
-				"magicObject"));
+		storeObjectToFile(checkPoint.getMagicObject(), new File(checkPointsSubSubDir, "magicObject"));
 	}
 
 	/**
 	 * Remove checkPoint.
 	 * 
 	 * @param name
-	 *            Name of checkPoint.
+	 *          Name of checkPoint.
 	 * @param taskId
-	 *            ID of task.
+	 *          ID of task.
 	 * @param contextId
-	 *            ID of context.
+	 *          ID of context.
 	 * @throws NullPointerException
-	 *             If some input parameter is <code>null</code>.
+	 *           If some input parameter is <code>null</code>.
 	 */
-	protected synchronized void remCheckPoint(
-			String name,
-			String taskId,
+	protected synchronized void remCheckPoint(String name, String taskId,
 			String contextId) {
 		/* Check input parameters. */
 		if (name == null) {
@@ -1396,9 +1230,7 @@ public class Rescue {
 		}
 
 		/* Prepare directories. */
-		File checkPointsSubSubDir = new File(new File(new File(
-				this.checkPointsDir,
-				contextId), taskId), name);
+		File checkPointsSubSubDir = new File(new File(new File(this.checkPointsDir, contextId), taskId), name);
 		/* Delete directories. */
 		deleteRecursive(checkPointsSubSubDir);
 	}
@@ -1407,11 +1239,11 @@ public class Rescue {
 	 * Add hostRuntime.
 	 * 
 	 * @param hostRuntime
-	 *            <code>HostRuntimeEntry</code> of added hostRuntime.
+	 *          <code>HostRuntimeEntry</code> of added hostRuntime.
 	 * @throws NullPointerException
-	 *             If input parameter is <code>null</code>.
+	 *           If input parameter is <code>null</code>.
 	 * @throws RuntimeException
-	 *             If some other unexpected error occurred.
+	 *           If some other unexpected error occurred.
 	 */
 	protected synchronized void addHostRuntime(HostRuntimeEntry hostRuntime) {
 		/* Check input parameters. */
@@ -1420,9 +1252,7 @@ public class Rescue {
 		}
 
 		/* Prepare directories. */
-		File hostRuntimesSubDir = new File(
-				this.hostRuntimesDir,
-				hostRuntime.getHostName());
+		File hostRuntimesSubDir = new File(this.hostRuntimesDir, hostRuntime.getHostName());
 		/* Make directories. */
 		hostRuntimesSubDir.mkdir();
 
@@ -1431,11 +1261,9 @@ public class Rescue {
 		/* Prepare new document. */
 		Document document;
 		try {
-			document = DocumentBuilderFactory.newInstance()
-					.newDocumentBuilder().newDocument();
+			document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
 		} catch (ParserConfigurationException e) {
-			throw new RuntimeException("Could not create new DOM Document. "
-					+ "This should not occur.", e);
+			throw new RuntimeException("Could not create new DOM Document. " + "This should not occur.", e);
 		}
 
 		/* Add root element. */
@@ -1447,32 +1275,28 @@ public class Rescue {
 		/* Add hostName element. */
 		Element hostNameElement = document.createElement("hostName");
 		rootElement.appendChild(hostNameElement);
-		CDATASection hostNameData = document.createCDATASection(hostRuntime
-				.getHostName());
+		CDATASection hostNameData = document.createCDATASection(hostRuntime.getHostName());
 		hostNameElement.appendChild(hostNameData);
 
 		/* Add reservation element. */
 		Element reservationElement = document.createElement("reservation");
 		rootElement.appendChild(reservationElement);
 		if (hostRuntime.getReservation() != null) {
-			CDATASection reservationData = document
-					.createCDATASection(hostRuntime.getReservation());
+			CDATASection reservationData = document.createCDATASection(hostRuntime.getReservation());
 			reservationElement.appendChild(reservationData);
 		}
 
 		/* Write to XML file. */
-		writeXmlFile(document, new File(
-				hostRuntimesSubDir,
-				"hostRuntimeEntry.xml"));
+		writeXmlFile(document, new File(hostRuntimesSubDir, "hostRuntimeEntry.xml"));
 	}
 
 	/**
 	 * Remove hostRuntime.
 	 * 
 	 * @param hostName
-	 *            Name of host.
+	 *          Name of host.
 	 * @throws NullPointerException
-	 *             If input parameter is <code>null</code>.
+	 *           If input parameter is <code>null</code>.
 	 */
 	protected synchronized void remHostRuntime(String hostName) {
 		/* Check input parameters. */
@@ -1490,9 +1314,9 @@ public class Rescue {
 	 * Change already stored hostRuntime.
 	 * 
 	 * @param hostRuntime
-	 *            <code>HostRuntimeEntry</code> of changed hostRuntime.
+	 *          <code>HostRuntimeEntry</code> of changed hostRuntime.
 	 * @throws NullPointerException
-	 *             If input parameter is <code>null</code>.
+	 *           If input parameter is <code>null</code>.
 	 */
 	protected synchronized void changeHostRuntime(HostRuntimeEntry hostRuntime) {
 		/* Check input parameters. */
@@ -1501,9 +1325,7 @@ public class Rescue {
 		}
 
 		/* Prepare directories. */
-		File hostRuntimesSubDir = new File(
-				this.hostRuntimesDir,
-				hostRuntime.getHostName());
+		File hostRuntimesSubDir = new File(this.hostRuntimesDir, hostRuntime.getHostName());
 		/* Remove directories. */
 		deleteRecursive(hostRuntimesSubDir);
 

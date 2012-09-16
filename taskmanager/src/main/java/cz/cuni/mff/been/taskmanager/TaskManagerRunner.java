@@ -89,6 +89,11 @@ public class TaskManagerRunner {
 			System.err.println("Task manager initialization failed because:");
 			System.err.println(e.getMessage());
 		}
+
+		for (String propName : System.getProperties().stringPropertyNames()) {
+			System.out.println(String.format("%s = %s", propName, System.getProperties().getProperty(propName)));
+		}
+
 		/* Check command-line arguments. */
 		if (args.length < 1) {
 			System.out.println("Usage: java cz.cuni.mff.been." + "taskmanager.TaskManagerRunner " + "<TRACE | DEBUG | INFO | WARN | ERROR | FATAL> " + "<path_to_TaskManager_directory>[ " + "<XML_task_descriptor>[ " + "<XML_task_descriptor>[ ...]]]");
@@ -103,6 +108,7 @@ public class TaskManagerRunner {
 		System.out.println("Log level: " + level);
 		argNo = 1;
 
+		System.out.println(String.format("Security manager is %s", System.getSecurityManager()));
 		try {
 			LocateRegistry.createRegistry(RMI.REGISTRY_PORT);
 		} catch (RemoteException e) {

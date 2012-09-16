@@ -29,7 +29,10 @@ export BEEN_HOME=`pwd`
 echo "BEEN_HOME=$BEEN_HOME";
 
 TASKMANAGER_JAR="${BEEN_HOME}/taskmanager/target/taskmanager.one-jar.jar"
-TASKDESCRIPTOR_DIR="${BEEN_HOME}/resources/task-descriptors"
+TASKDESCRIPTOR_DIR="${BEEN_HOME}/been/resources/task-descriptors"
+
+export RMI_FLAGS="-Djava.security.manager -Djava.security.policy=${BEEN_HOME}/security/ffa.policy -Djava.rmi.server.codebase=file://${TASKMANAGER_JAR}"
+echo "RMI_FLAGS = ${RMI_FLAGS}"
 
 if [ -n "${BEEN_DEBUG}" ]; then
 	echo "Running Task Manager with debug option..."
@@ -45,7 +48,11 @@ if [ -n "${BEEN_SERVICES}" ]; then
 fi	
 
 if [ -z $1 ]; then
-	VERBOSITY=INFO
+	if [ -n "${BEEN_DEBUG}" ]; then
+		VERBOSITY=INFO
+	else
+		VERBOSITY=DEBUG
+	fi
 else
 	VERBOSITY=$1
 fi
@@ -56,4 +63,4 @@ if [ ! -d "${DATA_DIRECTORY}" ]; then
   echo "Fatal error: Task Manager data directory not found: ${DATA_DIRECTORY}."
 fi
 
-java ${DEBUG_OPTS} -ea -jar $TASKMANAGER_JAR $VERBOSITY "${DATA_DIRECTORY}" ${RUN_TASKS[@]}
+java ${DEBUG_OPTS} -ea -jar ${RMI_FLAGS} $TASKMANAGER_JAR $VERBOSITY "${DATA_DIRECTORY}" ${RUN_TASKS[@]}

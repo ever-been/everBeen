@@ -12,25 +12,17 @@ import java.util.regex.Pattern;
 public interface ContextEntry extends Cloneable, Serializable {
 
 	/**
-	 * @author darklight
-	 * 
-	 */
-	interface Closeable {
-	}
-
-	/**
 	 * Regular expression for match <code>contextId</code>.
 	 */
-	public static final Pattern REGEXP_CONTEXT_ID = Pattern
-			.compile("^[a-zA-Z_0-9 -]+$");
+	public static final Pattern REGEXP_CONTEXT_ID = Pattern.compile("^[a-zA-Z_0-9 -]+$");
 
 	/**
 	 * Set ID of this context.
 	 * 
 	 * @param contextId
-	 *            ID of this context.
+	 *          ID of this context.
 	 * @throws IllegalArgumentException
-	 *             If <code>contextId</code> is not valid.
+	 *           If <code>contextId</code> is not valid.
 	 */
 	void setContextId(String contextId);
 
@@ -38,9 +30,9 @@ public interface ContextEntry extends Cloneable, Serializable {
 	 * Set human readable name of this context.
 	 * 
 	 * @param contextName
-	 *            Human readable name of this context.
+	 *          Human readable name of this context.
 	 * @throws IllegalArgumentException
-	 *             If <code>contextName</code> is not valid.
+	 *           If <code>contextName</code> is not valid.
 	 */
 	void setContextName(String contextName);
 
@@ -48,9 +40,9 @@ public interface ContextEntry extends Cloneable, Serializable {
 	 * Set human readable description of this context.
 	 * 
 	 * @param contextDescription
-	 *            Human readable description of this context.
+	 *          Human readable description of this context.
 	 * @throws IllegalArgumentException
-	 *             If <code>contextDescription</code> is not valid.
+	 *           If <code>contextDescription</code> is not valid.
 	 */
 	void setContextDescription(String contextDescription);
 
@@ -58,8 +50,7 @@ public interface ContextEntry extends Cloneable, Serializable {
 	 * Set some magic object from outside... (no one understands to this).
 	 * 
 	 * @param magicObject
-	 *            Some magic object from outside... (no one understands to
-	 *            this).
+	 *          Some magic object from outside... (no one understands to this).
 	 */
 	void setMagicObject(Serializable magicObject);
 
@@ -109,19 +100,30 @@ public interface ContextEntry extends Cloneable, Serializable {
 	boolean isOpen();
 
 	/**
-	 * Sets number of finished tasks that will be kept in context without
-	 * cleaning them by task manager. -1 means no tasks will be cleaned.
+	 * Sets number of finished tasks that will be kept in context without cleaning
+	 * them by task manager. -1 means no tasks will be cleaned.
 	 * 
 	 * @param finishedTasksKept
 	 */
 	void setFinishedTasksKept(int finishedTasksKept);
 
 	/**
-	 * Number of finished tasks that will be kept in context without cleaning
-	 * them by task manager. -1 means no tasks will be cleaned.
+	 * Number of finished tasks that will be kept in context without cleaning them
+	 * by task manager. -1 means no tasks will be cleaned.
 	 * 
 	 * @return number of finished tasks kept
 	 */
 	int getFinishedTasksKept();
+
+	/**
+	 * Clone this {@link TaskEntry}.
+	 * 
+	 * @return The clone.
+	 * 
+	 * @throws CloneNotSupportedException
+	 *           If cloning the object failed. Technically, this should never
+	 *           happen.
+	 */
+	public ContextEntry clone() throws CloneNotSupportedException;
 
 }

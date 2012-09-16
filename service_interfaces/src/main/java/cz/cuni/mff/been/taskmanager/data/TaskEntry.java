@@ -19,8 +19,7 @@ public interface TaskEntry extends Cloneable, Serializable {
 	/**
 	 * Regular expression for match <code>taskId</code>.
 	 */
-	public static final Pattern REGEXP_TASK_ID = Pattern
-			.compile("^[a-zA-Z_0-9-]+$");
+	public static final Pattern REGEXP_TASK_ID = Pattern.compile("^[a-zA-Z_0-9-]+$");
 
 	/**
 	 * Regular expression for match <code>contextId</code>.
@@ -30,8 +29,7 @@ public interface TaskEntry extends Cloneable, Serializable {
 	/**
 	 * Regular expression for match <code>packageName</code>.
 	 */
-	public static final Pattern REGEXP_PACKAGE_NAME = Pattern
-			.compile("^[a-zA-Z_0-9.+-]+$");
+	public static final Pattern REGEXP_PACKAGE_NAME = Pattern.compile("^[a-zA-Z_0-9.+-]+$");
 
 	/**
 	 * Regular expression for match <code>hostName</code>.
@@ -47,10 +45,10 @@ public interface TaskEntry extends Cloneable, Serializable {
 	 * Set name of host with <code>Host Runtime</code> running this task.
 	 * 
 	 * @param hostName
-	 *            Name of host with <code>Host Runtime</code> running this task
-	 *            (or <code>null</code> for unlink).
+	 *          Name of host with <code>Host Runtime</code> running this task (or
+	 *          <code>null</code> for unlink).
 	 * @throws IllegalArgumentException
-	 *             If <code>hostName</code> is not valid.
+	 *           If <code>hostName</code> is not valid.
 	 */
 	public void setHostName(String hostName);
 
@@ -58,9 +56,9 @@ public interface TaskEntry extends Cloneable, Serializable {
 	 * Set path to task's directory <code>Task</code>.
 	 * 
 	 * @param directoryPathTask
-	 *            Path to task's directory <code>Task</code>.
+	 *          Path to task's directory <code>Task</code>.
 	 * @throws IllegalArgumentException
-	 *             If <code>directoryPathTask</code> is not valid.
+	 *           If <code>directoryPathTask</code> is not valid.
 	 */
 	public void setDirectoryPathTask(String directoryPathTask);
 
@@ -68,9 +66,9 @@ public interface TaskEntry extends Cloneable, Serializable {
 	 * Set path to task's directory <code>Working</code>.
 	 * 
 	 * @param directoryPathWorking
-	 *            Path to task's directory <code>Working</code>.
+	 *          Path to task's directory <code>Working</code>.
 	 * @throws IllegalArgumentException
-	 *             If <code>directoryPathWorking</code> is not valid.
+	 *           If <code>directoryPathWorking</code> is not valid.
 	 */
 	public void setDirectoryPathWorking(String directoryPathWorking);
 
@@ -78,19 +76,19 @@ public interface TaskEntry extends Cloneable, Serializable {
 	 * Set path to task's directory <code>Temporary</code>.
 	 * 
 	 * @param directoryPathTemporary
-	 *            Path to task's directory <code>Temporary</code>.
+	 *          Path to task's directory <code>Temporary</code>.
 	 * @throws IllegalArgumentException
-	 *             If <code>directoryPathTemporary</code> is not valid.
+	 *           If <code>directoryPathTemporary</code> is not valid.
 	 */
 	public void setDirectoryPathTemporary(String directoryPathTemporary);
 
 	/**
-	 * Set <code>true</code> if this task is service, otherwise
-	 * <code>false</code>.
+	 * Set <code>true</code> if this task is service, otherwise <code>false</code>
+	 * .
 	 * 
 	 * @param serviceFlag
-	 *            <code>true</code> if this task is service, otherwise
-	 *            <code>false</code>.
+	 *          <code>true</code> if this task is service, otherwise
+	 *          <code>false</code>.
 	 */
 	public void setServiceFlag(boolean serviceFlag);
 
@@ -204,8 +202,7 @@ public interface TaskEntry extends Cloneable, Serializable {
 	public Properties getTaskProperties();
 
 	/**
-	 * Get exclusivity of this task (non-exclusive, context-exclusive,
-	 * exclusive).
+	 * Get exclusivity of this task (non-exclusive, context-exclusive, exclusive).
 	 * 
 	 * @return Exclusivity of this task (non-exclusive, context-exclusive,
 	 *         exclusive).
@@ -222,8 +219,7 @@ public interface TaskEntry extends Cloneable, Serializable {
 	public boolean getServiceFlag();
 
 	/**
-	 * Get state of this task (submitted, scheduled, running, waiting,
-	 * finished).
+	 * Get state of this task (submitted, scheduled, running, waiting, finished).
 	 * 
 	 * @return State of this task (submitted, scheduled, running, waiting,
 	 *         finished).
@@ -238,8 +234,8 @@ public interface TaskEntry extends Cloneable, Serializable {
 	public long getTimeSubmitted();
 
 	/**
-	 * Get time (in milliseconds) when task was scheduled or zero if not
-	 * scheduled yet.
+	 * Get time (in milliseconds) when task was scheduled or zero if not scheduled
+	 * yet.
 	 * 
 	 * @return Time (in milliseconds) when task was scheduled or zero if not
 	 *         scheduled yet.
@@ -250,8 +246,8 @@ public interface TaskEntry extends Cloneable, Serializable {
 	 * Get time (in milliseconds) when task was started or zero if not started
 	 * yet.
 	 * 
-	 * @return Time (in milliseconds) when task was started of zero if not
-	 *         started yet.
+	 * @return Time (in milliseconds) when task was started of zero if not started
+	 *         yet.
 	 */
 	public long getTimeStarted();
 
@@ -281,13 +277,13 @@ public interface TaskEntry extends Cloneable, Serializable {
 	public int getRestartMax();
 
 	/**
-	 * Get how long (in milliseconds) this task can run (from
-	 * <code>started</code> to <code>finished</code> state). Zero if not
-	 * restricted.
+	 * Get how long (in milliseconds) this task can run (from <code>started</code>
+	 * to <code>finished</code> state). Zero if not restricted.
 	 * 
 	 * @return How long (in milliseconds) this task can run (from
 	 *         <code>started</code> to <code>finished</code> state). Zero if not
 	 *         restricted.
 	 */
 	public long getTimeoutRun();
+
 }

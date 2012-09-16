@@ -57,8 +57,7 @@ public class Data {
 	 * Constructor of this <code>Data</code> object. Should be used by
 	 * <code>Task Manager</code>.
 	 */
-	public Data(@SuppressWarnings("unused") File rescueRootDir,
-			TaskTreeInput taskTree) {
+	public Data(@SuppressWarnings("unused") File rescueRootDir, TaskTreeInput taskTree) {
 		this.data = new DataStructures();
 		this.taskTree = taskTree;
 	}
@@ -67,14 +66,13 @@ public class Data {
 	 * Add new Task.
 	 * 
 	 * @param taskEntry
-	 *            <code>TaskEntry</code> for new Task.
+	 *          <code>TaskEntry</code> for new Task.
 	 * @throws NullPointerException
-	 *             If input parameter is <code>null</code>.
+	 *           If input parameter is <code>null</code>.
 	 * @throws DataRuntimeException
-	 *             If internal error occurred.
+	 *           If internal error occurred.
 	 */
-	public synchronized void newTask(
-			TaskEntryImplementation taskEntry,
+	public synchronized void newTask(TaskEntryImplementation taskEntry,
 			TaskData taskData) {
 		/* Check input parameters. */
 		if (taskEntry == null) {
@@ -117,11 +115,11 @@ public class Data {
 	 * Add new Context.
 	 * 
 	 * @param contextEntry
-	 *            <code>ContextEntry</code> for new Context.
+	 *          <code>ContextEntry</code> for new Context.
 	 * @throws NullPointerException
-	 *             If input parameter is <code>null</code>.
+	 *           If input parameter is <code>null</code>.
 	 * @throws DataRuntimeException
-	 *             If internal error occurred.
+	 *           If internal error occurred.
 	 */
 	public synchronized void newContext(ContextEntry contextEntry) {
 		/* Check input parameters. */
@@ -134,8 +132,7 @@ public class Data {
 		/* Clone ContextEntry. */
 		try {
 			// FIXME remove cast by fixing ContextEntry type hierarchy
-			newContextEntry = (ContextEntry) ((AbstractContextEntry) contextEntry)
-					.clone();
+			newContextEntry = ((ContextEntryImplementation) contextEntry).clone();
 		} catch (CloneNotSupportedException e) {
 			throw new DataRuntimeException("Could not clone contextEntry", e);
 		}
@@ -154,11 +151,11 @@ public class Data {
 	 * Add new CheckPoint.
 	 * 
 	 * @param checkPointEntry
-	 *            <code>CheckPointEntry</code> for new CheckPoint.
+	 *          <code>CheckPointEntry</code> for new CheckPoint.
 	 * @throws NullPointerException
-	 *             If input parameter is <code>null</code>.
+	 *           If input parameter is <code>null</code>.
 	 * @throws DataRuntimeException
-	 *             If internal error occurred.
+	 *           If internal error occurred.
 	 */
 	public synchronized void newCheckPoint(CheckPointEntry checkPointEntry) {
 		/* Check input parameters. */
@@ -186,14 +183,14 @@ public class Data {
 	}
 
 	/**
-	 * Add new CheckPoint. It finds all CheckPoints with the same name, taskId
-	 * and contextId and name as newly added one and removes them from list
-	 * before new one is added.
+	 * Add new CheckPoint. It finds all CheckPoints with the same name, taskId and
+	 * contextId and name as newly added one and removes them from list before new
+	 * one is added.
 	 * 
 	 * @param checkPointEntry
-	 *            <code>CheckPointEntry</code> for new CheckPoint.
+	 *          <code>CheckPointEntry</code> for new CheckPoint.
 	 * @throws NullPointerException
-	 *             If input parameter is <code>null</code>.
+	 *           If input parameter is <code>null</code>.
 	 */
 	public synchronized void newCheckPointOver(CheckPointEntry checkPointEntry) {
 		/* Check input parameters. */
@@ -202,11 +199,7 @@ public class Data {
 		}
 
 		/* Find checkPoints with the same name, taskId and contextId. */
-		CheckPointEntry[] foundedCheckPoints = this.data.getCheckPoints(
-				checkPointEntry.getName(),
-				checkPointEntry.getTaskId(),
-				checkPointEntry.getContextId(),
-				null);
+		CheckPointEntry[] foundedCheckPoints = this.data.getCheckPoints(checkPointEntry.getName(), checkPointEntry.getTaskId(), checkPointEntry.getContextId(), null);
 		/* Remove all founded. */
 		for (CheckPointEntry checkPoint : foundedCheckPoints) {
 			this.data.removeCheckPoint(checkPoint);
@@ -223,13 +216,13 @@ public class Data {
 	 * Delete Task.
 	 * 
 	 * @param taskId
-	 *            ID of Task.
+	 *          ID of Task.
 	 * @param contextId
-	 *            ID of Context.
+	 *          ID of Context.
 	 * @throws NullPointerException
-	 *             If input parameter is <code>null</code>.
+	 *           If input parameter is <code>null</code>.
 	 * @throws IllegalArgumentException
-	 *             If task not found.
+	 *           If task not found.
 	 */
 	public synchronized void delTask(String taskId, String contextId) {
 		/* Check input parameters. */
@@ -245,8 +238,7 @@ public class Data {
 		/* Get TaskEntry. */
 		taskEntry = this.data.getTask(taskId, contextId);
 		if (taskEntry == null) {
-			throw new IllegalArgumentException("Task not found (taskId \""
-					+ taskId + "\", contextId \"" + contextId + "\")");
+			throw new IllegalArgumentException("Task not found (taskId \"" + taskId + "\", contextId \"" + contextId + "\")");
 		}
 
 		/* Remove Task from Data. */
@@ -263,7 +255,7 @@ public class Data {
 			 * exist, there's no need to worry.
 			 */
 		} catch (RemoteException exception) { // Local call. Should never
-												// happen.
+			// happen.
 			assert false : "RemoteException from a loacal call.";
 		}
 
@@ -275,11 +267,11 @@ public class Data {
 	 * Delete Context.
 	 * 
 	 * @param contextId
-	 *            ID of Context.
+	 *          ID of Context.
 	 * @throws NullPointerException
-	 *             If input parameter is <code>null</code>.
+	 *           If input parameter is <code>null</code>.
 	 * @throws IllegalArgumentException
-	 *             If context not found.
+	 *           If context not found.
 	 */
 	public synchronized void delContext(String contextId) {
 		/* Check input parameters. */
@@ -292,8 +284,7 @@ public class Data {
 		/* Get ContextEntry. */
 		contextEntry = this.data.getContext(contextId);
 		if (contextEntry == null) {
-			throw new IllegalArgumentException("Context not found (contextId "
-					+ "\"" + contextId + "\")");
+			throw new IllegalArgumentException("Context not found (contextId " + "\"" + contextId + "\")");
 		}
 
 		/* Remove Context from Data. */
@@ -304,15 +295,15 @@ public class Data {
 	}
 
 	/**
-	 * Delete Context by force (i.e. if context contains some tasks then they
-	 * are deleted from system automatically).
+	 * Delete Context by force (i.e. if context contains some tasks then they are
+	 * deleted from system automatically).
 	 * 
 	 * @param contextId
-	 *            ID of Context.
+	 *          ID of Context.
 	 * @throws NullPointerException
-	 *             If input parameter is <code>null</code>.
+	 *           If input parameter is <code>null</code>.
 	 * @throws IllegalArgumentException
-	 *             If context not found.
+	 *           If context not found.
 	 */
 	public synchronized void delContextByForce(String contextId) {
 		/* Check input parameters. */
@@ -325,8 +316,7 @@ public class Data {
 		/* Get ContextEntry. */
 		contextEntry = this.data.getContext(contextId);
 		if (contextEntry == null) {
-			throw new IllegalArgumentException("Context not found (contextId "
-					+ "\"" + contextId + "\")");
+			throw new IllegalArgumentException("Context not found (contextId " + "\"" + contextId + "\")");
 		}
 
 		/* Remove Context from Data. */
@@ -340,15 +330,13 @@ public class Data {
 	 * Set <code>TaskInterface</code> in <code>TaskData</code>.
 	 * 
 	 * @throws NullPointerException
-	 *             If some input parameter is <code>null</code>.
+	 *           If some input parameter is <code>null</code>.
 	 * @throws IllegalArgumentException
-	 *             If task not found.
+	 *           If task not found.
 	 * @throws IllegalStateException
-	 *             If taskInterface is already set.
+	 *           If taskInterface is already set.
 	 */
-	public synchronized void setTaskInterface(
-			String taskId,
-			String contextId,
+	public synchronized void setTaskInterface(String taskId, String contextId,
 			TaskInterface taskInterface) {
 		/* Check input parameters. */
 		if (taskId == null) {
@@ -364,8 +352,7 @@ public class Data {
 		/* Get and check TaskData. */
 		TaskData taskData = this.data.getTaskData(taskId, contextId);
 		if (taskData == null) {
-			throw new IllegalArgumentException("Task not found (taskId \""
-					+ taskId + "\", contextId \"" + contextId + "\")");
+			throw new IllegalArgumentException("Task not found (taskId \"" + taskId + "\", contextId \"" + contextId + "\")");
 		}
 
 		/* Check current TaskInterface. */
@@ -381,9 +368,9 @@ public class Data {
 	 * Get the hostname where the task was running.
 	 * 
 	 * @param taskId
-	 *            ID of the task.
+	 *          ID of the task.
 	 * @param contextId
-	 *            ID of the context.
+	 *          ID of the context.
 	 * @return hostname.
 	 */
 	public synchronized String getTaskHost(String taskId, String contextId) {
@@ -398,8 +385,7 @@ public class Data {
 		/* Find task. */
 		TaskEntryImplementation task = this.data.getTask(taskId, contextId);
 		if (task == null) {
-			throw new IllegalArgumentException("Task not found (taskId \""
-					+ taskId + "\", contextId \"" + contextId + "\")");
+			throw new IllegalArgumentException("Task not found (taskId \"" + taskId + "\", contextId \"" + contextId + "\")");
 		}
 
 		return task.getHostName();
@@ -409,19 +395,17 @@ public class Data {
 	 * Set hostRuntime for task. This can be done only once for each task.
 	 * 
 	 * @param taskId
-	 *            ID of Task.
+	 *          ID of Task.
 	 * @param contextId
-	 *            ID of Context.
+	 *          ID of Context.
 	 * @param hostName
-	 *            Name of host running HostRuntime.
+	 *          Name of host running HostRuntime.
 	 * @throws NullPointerException
-	 *             If input parameter is <code>null</code>.
+	 *           If input parameter is <code>null</code>.
 	 * @throws IllegalArgumentException
-	 *             If task not found.
+	 *           If task not found.
 	 */
-	public synchronized void setTaskHostRuntime(
-			String taskId,
-			String contextId,
+	public synchronized void setTaskHostRuntime(String taskId, String contextId,
 			String hostName) {
 		/* Check input parameters. */
 		if (taskId == null) {
@@ -437,14 +421,12 @@ public class Data {
 		/* Find task. */
 		TaskEntryImplementation task = this.data.getTask(taskId, contextId);
 		if (task == null) {
-			throw new IllegalArgumentException("Task not found (taskId \""
-					+ taskId + "\", contextId \"" + contextId + "\")");
+			throw new IllegalArgumentException("Task not found (taskId \"" + taskId + "\", contextId \"" + contextId + "\")");
 		}
 
 		HostRuntimeEntry hostRuntime = this.data.getHostRuntime(hostName);
 		if (hostRuntime == null) {
-			throw new IllegalArgumentException("HostRuntime not found "
-					+ "(hostName \"" + hostName + "\")");
+			throw new IllegalArgumentException("HostRuntime not found " + "(hostName \"" + hostName + "\")");
 		}
 
 		/* Link Task with HostRuntime. */
@@ -458,30 +440,25 @@ public class Data {
 	}
 
 	/**
-	 * Set paths to task's directories. This can be done only once for each
-	 * task.
+	 * Set paths to task's directories. This can be done only once for each task.
 	 * 
 	 * @param taskId
-	 *            ID of Task.
+	 *          ID of Task.
 	 * @param contextId
-	 *            ID of Context.
+	 *          ID of Context.
 	 * @param taskDirectory
-	 *            Path to Task directory.
+	 *          Path to Task directory.
 	 * @param workingDirectory
-	 *            Path to Working directory.
+	 *          Path to Working directory.
 	 * @param temporaryDirectory
-	 *            Path to Temporary directory.
+	 *          Path to Temporary directory.
 	 * @throws NullPointerException
-	 *             If input parameter is <code>null</code>.
+	 *           If input parameter is <code>null</code>.
 	 * @throws IllegalArgumentException
-	 *             If task not found or already set.
+	 *           If task not found or already set.
 	 */
-	public synchronized void setTaskDirectories(
-			String taskId,
-			String contextId,
-			String taskDirectory,
-			String workingDirectory,
-			String temporaryDirectory) {
+	public synchronized void setTaskDirectories(String taskId, String contextId,
+			String taskDirectory, String workingDirectory, String temporaryDirectory) {
 		/* Check input parameters. */
 		if (taskId == null) {
 			throw new NullPointerException("taskId is null");
@@ -502,17 +479,12 @@ public class Data {
 		/* Find task. */
 		TaskEntryImplementation task = this.data.getTask(taskId, contextId);
 		if (task == null) {
-			throw new IllegalArgumentException("Task not found (taskId \""
-					+ taskId + "\", contextId \"" + contextId + "\")");
+			throw new IllegalArgumentException("Task not found (taskId \"" + taskId + "\", contextId \"" + contextId + "\")");
 		}
 
 		/* Check if paths are not already set. */
-		if (!(task.getDirectoryPathTask().equals("")
-				&& task.getDirectoryPathWorking().equals("") && task
-				.getDirectoryPathTemporary().equals(""))) {
-			throw new IllegalArgumentException("Task (taskId \"" + taskId
-					+ "\", contextId \"" + contextId + "\") has its directory "
-					+ "paths already set");
+		if (!(task.getDirectoryPathTask().equals("") && task.getDirectoryPathWorking().equals("") && task.getDirectoryPathTemporary().equals(""))) {
+			throw new IllegalArgumentException("Task (taskId \"" + taskId + "\", contextId \"" + contextId + "\") has its directory " + "paths already set");
 		}
 
 		/* Set directory paths. */
@@ -534,21 +506,19 @@ public class Data {
 	 * allowed only from RUNNING
 	 * 
 	 * @param taskId
-	 *            ID of task.
+	 *          ID of task.
 	 * @param contextId
-	 *            ID of context.
+	 *          ID of context.
 	 * @param newState
-	 *            New state of task.
+	 *          New state of task.
 	 * @throws NullPointerException
-	 *             If input parameter is <code>null</code>.
+	 *           If input parameter is <code>null</code>.
 	 * @throws IllegalArgumentException
-	 *             If task not found or change to required state is not allowed.
+	 *           If task not found or change to required state is not allowed.
 	 * @throws DataRuntimeException
-	 *             If internal error occurred.
+	 *           If internal error occurred.
 	 */
-	public synchronized void changeTaskState(
-			String taskId,
-			String contextId,
+	public synchronized void changeTaskState(String taskId, String contextId,
 			TaskState newState) {
 		/* Check input parameters. */
 		if (taskId == null) {
@@ -564,8 +534,7 @@ public class Data {
 		/* Find task. */
 		TaskEntryImplementation task = this.data.getTask(taskId, contextId);
 		if (task == null) {
-			throw new IllegalArgumentException("Task not found (taskId \""
-					+ taskId + "\", contextId \"" + contextId + "\")");
+			throw new IllegalArgumentException("Task not found (taskId \"" + taskId + "\", contextId \"" + contextId + "\")");
 		}
 
 		/* Get old (current) state. */
@@ -573,28 +542,18 @@ public class Data {
 
 		switch (newState) {
 			case SUBMITTED:
-				throw new IllegalArgumentException("State SUBMITTED should "
-						+ "not be set explicitly (taskId \"" + taskId + "\", "
-						+ "contextId \"" + contextId + "\")");
+				throw new IllegalArgumentException("State SUBMITTED should " + "not be set explicitly (taskId \"" + taskId + "\", " + "contextId \"" + contextId + "\")");
 				// break; // Unreachable code
 			case SCHEDULED:
 				if (oldState != TaskState.SUBMITTED) {
-					throw new IllegalArgumentException("State SCHEDULED can "
-							+ "be set only if current state is SUBMITTED, but "
-							+ "current state is " + oldState + " (taskId \""
-							+ taskId + "\", contextId \"" + contextId + "\")");
+					throw new IllegalArgumentException("State SCHEDULED can " + "be set only if current state is SUBMITTED, but " + "current state is " + oldState + " (taskId \"" + taskId + "\", contextId \"" + contextId + "\")");
 				}
 				task.setState(TaskState.SCHEDULED);
 				task.setTimeScheduled(System.currentTimeMillis());
 				break;
 			case RUNNING:
-				if ((oldState != TaskState.SCHEDULED)
-						&& (oldState != TaskState.SLEEPING)) {
-					throw new IllegalArgumentException("State RUNNING can be "
-							+ "set only if current state is SCHEDULED or "
-							+ "SLEEPING, but current state is " + oldState
-							+ " (taskId \"" + taskId + "\", contextId " + "\""
-							+ contextId + "\")");
+				if ((oldState != TaskState.SCHEDULED) && (oldState != TaskState.SLEEPING)) {
+					throw new IllegalArgumentException("State RUNNING can be " + "set only if current state is SCHEDULED or " + "SLEEPING, but current state is " + oldState + " (taskId \"" + taskId + "\", contextId " + "\"" + contextId + "\")");
 				}
 				task.setState(TaskState.RUNNING);
 				if (oldState == TaskState.SCHEDULED) {
@@ -603,22 +562,13 @@ public class Data {
 				break;
 			case SLEEPING:
 				if (oldState != TaskState.RUNNING) {
-					throw new IllegalArgumentException("State SLEEPING can be "
-							+ "set only if current state is RUNNING, but "
-							+ "current state is " + oldState + " (taskId "
-							+ "\"" + taskId + "\", contextId \"" + contextId
-							+ "\")");
+					throw new IllegalArgumentException("State SLEEPING can be " + "set only if current state is RUNNING, but " + "current state is " + oldState + " (taskId " + "\"" + taskId + "\", contextId \"" + contextId + "\")");
 				}
 				task.setState(TaskState.SLEEPING);
 				break;
 			case FINISHED:
-				if ((oldState != TaskState.RUNNING)
-						&& (oldState != TaskState.FINISHED)) {
-					throw new IllegalArgumentException("State FINISHED can be "
-							+ "set only if current state is RUNNING, but "
-							+ "current state is " + oldState + "  (taskId "
-							+ "\"" + taskId + "\", contextId \"" + contextId
-							+ "\")");
+				if ((oldState != TaskState.RUNNING) && (oldState != TaskState.FINISHED)) {
+					throw new IllegalArgumentException("State FINISHED can be " + "set only if current state is RUNNING, but " + "current state is " + oldState + "  (taskId " + "\"" + taskId + "\", contextId \"" + contextId + "\")");
 				}
 				task.setState(TaskState.FINISHED);
 				task.setTimeFinished(System.currentTimeMillis());
@@ -630,9 +580,7 @@ public class Data {
 				}
 				break;
 			default:
-				throw new DataRuntimeException("Required unknown state for "
-						+ "task (taskId \"" + taskId + "\", contextId \""
-						+ contextId + "\")");
+				throw new DataRuntimeException("Required unknown state for " + "task (taskId \"" + taskId + "\", contextId \"" + contextId + "\")");
 				// break; // Unreachable code
 		}
 
@@ -647,16 +595,15 @@ public class Data {
 	 * Change reservation of specified hostRuntime.
 	 * 
 	 * @param hostName
-	 *            Name of host running HostRuntime.
+	 *          Name of host running HostRuntime.
 	 * @param newReservation
-	 *            ID of Context, <code>null</code> or <code>""</code>.
+	 *          ID of Context, <code>null</code> or <code>""</code>.
 	 * @throws NullPointerException
-	 *             If input parameter is <code>null</code>.
+	 *           If input parameter is <code>null</code>.
 	 * @throws IllegalArgumentException
-	 *             If hostRuntime not found or required change is not allowed.
+	 *           If hostRuntime not found or required change is not allowed.
 	 */
-	public synchronized void changeHostRuntimeReservation(
-			String hostName,
+	public synchronized void changeHostRuntimeReservation(String hostName,
 			String newReservation) {
 		/* Check input parameters. */
 		if (hostName == null) {
@@ -666,8 +613,7 @@ public class Data {
 		/* Find hostRuntime. */
 		HostRuntimeEntry hostRuntime = this.data.getHostRuntime(hostName);
 		if (hostRuntime == null) {
-			throw new IllegalArgumentException("Host Runtime not found "
-					+ "(hostName \"" + hostName + "\")");
+			throw new IllegalArgumentException("Host Runtime not found " + "(hostName \"" + hostName + "\")");
 		}
 
 		/* Get old (current) reservation. */
@@ -681,12 +627,7 @@ public class Data {
 					// the same context can be reserved several times (e.g. more
 					// roles
 					// on the same host)
-					throw new IllegalArgumentException(
-							"HostRuntime (hostName \"" + hostName
-									+ "\") is already reserved for \""
-									+ oldReservation
-									+ "\" so reservation for \""
-									+ newReservation + "\" can not be set");
+					throw new IllegalArgumentException("HostRuntime (hostName \"" + hostName + "\") is already reserved for \"" + oldReservation + "\" so reservation for \"" + newReservation + "\" can not be set");
 				}
 			}
 			hostRuntime.setReservation(newReservation);
@@ -700,16 +641,15 @@ public class Data {
 	 * Increase restart count of specified task.
 	 * 
 	 * @param taskId
-	 *            ID of task.
+	 *          ID of task.
 	 * @param contextId
-	 *            ID of context.
+	 *          ID of context.
 	 * @throws NullPointerException
-	 *             If some input parameter is <code>null</code>.
+	 *           If some input parameter is <code>null</code>.
 	 * @throws IllegalArgumentException
-	 *             If task not found.
+	 *           If task not found.
 	 */
-	public synchronized void
-			notifyTaskRestarted(String taskId, String contextId) {
+	public synchronized void notifyTaskRestarted(String taskId, String contextId) {
 		/* Check input parameters. */
 		if (taskId == null) {
 			throw new NullPointerException("taskId is null");
@@ -721,8 +661,7 @@ public class Data {
 		/* Find task. */
 		TaskEntryImplementation task = this.data.getTask(taskId, contextId);
 		if (task == null) {
-			throw new IllegalArgumentException("Task not found (taskId \""
-					+ taskId + "\", contextId \"" + contextId + "\")");
+			throw new IllegalArgumentException("Task not found (taskId \"" + taskId + "\", contextId \"" + contextId + "\")");
 		}
 
 		/* Increase restart count. */
@@ -734,11 +673,11 @@ public class Data {
 	 * Close context.
 	 * 
 	 * @param contextId
-	 *            ID of context.
+	 *          ID of context.
 	 * @throws NullPointerException
-	 *             If input parameter is <code>null</code>.
+	 *           If input parameter is <code>null</code>.
 	 * @throws IllegalArgumentException
-	 *             If context not found.
+	 *           If context not found.
 	 */
 	public synchronized void closeContext(String contextId) {
 		/* Check input parameters. */
@@ -747,11 +686,9 @@ public class Data {
 		}
 
 		/* Find context. */
-		AbstractContextEntry context = (AbstractContextEntry) this.data
-				.getContext(contextId);
+		ContextEntryImplementation context = (ContextEntryImplementation) this.data.getContext(contextId);
 		if (context == null) {
-			throw new IllegalArgumentException("Context not found (contextId "
-					+ "\"" + contextId + "\")");
+			throw new IllegalArgumentException("Context not found (contextId " + "\"" + contextId + "\")");
 		}
 
 		/* Close context. */
@@ -765,10 +702,10 @@ public class Data {
 	 * Clone all <code>TaskEntry</code> objects from input array.
 	 * 
 	 * @param taskEntries
-	 *            Array of <code>TaskEntry</code> objects to clone.
+	 *          Array of <code>TaskEntry</code> objects to clone.
 	 * @return Array of cloned <code>TaskEntry</code> objects.
 	 * @throws DataRuntimeException
-	 *             If internal error occurred.
+	 *           If internal error occurred.
 	 */
 	private TaskEntryImplementation[] cloneTaskEntries(
 			TaskEntryImplementation[] taskEntries) {
@@ -790,21 +727,16 @@ public class Data {
 	 * hostName. Returned array contains cloned objects.
 	 * 
 	 * @param taskId
-	 *            ID of task.
+	 *          ID of task.
 	 * @param contextId
-	 *            ID of context.
+	 *          ID of context.
 	 * @param hostName
-	 *            Name of host.
+	 *          Name of host.
 	 * @return Array of cloned <code>TaskEntry</code> objects.
 	 */
-	private TaskEntryImplementation[] getTasks(
-			String taskId,
-			String contextId,
+	private TaskEntryImplementation[] getTasks(String taskId, String contextId,
 			String hostName) {
-		TaskEntryImplementation[] taskEntries = this.data.getTasks(
-				taskId,
-				contextId,
-				hostName);
+		TaskEntryImplementation[] taskEntries = this.data.getTasks(taskId, contextId, hostName);
 		return this.cloneTaskEntries(taskEntries);
 	}
 
@@ -821,16 +753,15 @@ public class Data {
 	 * Get tasks from specified context.
 	 * 
 	 * @param contextId
-	 *            ID of context.
+	 *          ID of context.
 	 * @return Array of <code>TaskEntry</code> objects.
 	 * @throws NullPointerException
-	 *             If input parameter is <code>null</code>.
+	 *           If input parameter is <code>null</code>.
 	 */
 	public synchronized TaskEntryImplementation[] getTasksInContext(
 			String contextId) {
 		if (contextId == null)
-			throw new NullPointerException(
-					"Attempt to get tasks in null context.");
+			throw new NullPointerException("Attempt to get tasks in null context.");
 		return this.getTasks(null, contextId, null);
 	}
 
@@ -838,13 +769,12 @@ public class Data {
 	 * Get tasks from specified host.
 	 * 
 	 * @param hostName
-	 *            Name of host.
+	 *          Name of host.
 	 * @return Array of <code>TaskEntry</code> objects.
 	 * @throws NullPointerException
-	 *             If input parameter is <code>null</code>.
+	 *           If input parameter is <code>null</code>.
 	 */
-	public synchronized TaskEntryImplementation[]
-			getTasksOnHost(String hostName) {
+	public synchronized TaskEntryImplementation[] getTasksOnHost(String hostName) {
 		if (hostName == null)
 			throw new NullPointerException("Attempt to get tasks on null host.");
 		return this.getTasks(null, null, hostName);
@@ -854,10 +784,10 @@ public class Data {
 	 * Get tasks with specified state.
 	 * 
 	 * @param taskState
-	 *            State of task.
+	 *          State of task.
 	 * @return Array of <code>TaskEntry</code> objects.
 	 * @throws NullPointerException
-	 *             If input paremeter is <code>null</code>.
+	 *           If input paremeter is <code>null</code>.
 	 */
 	public synchronized TaskEntryImplementation[] getTasksByState(
 			TaskState taskState) {
@@ -877,25 +807,23 @@ public class Data {
 			}
 		}
 
-		return matchingTasks.toArray(new TaskEntryImplementation[matchingTasks
-				.size()]);
+		return matchingTasks.toArray(new TaskEntryImplementation[matchingTasks.size()]);
 	}
 
 	/**
 	 * Get task with specified ID's.
 	 * 
 	 * @param taskId
-	 *            ID of task.
+	 *          ID of task.
 	 * @param contextId
-	 *            ID of context.
+	 *          ID of context.
 	 * @return <code>TaskEntry</code> object or <code>null</code> if not found.
 	 * @throws NullPointerException
-	 *             If input parameter is <code>null</code>.
+	 *           If input parameter is <code>null</code>.
 	 * @throws DataRuntimeException
-	 *             If internal error occurred.
+	 *           If internal error occurred.
 	 */
-	public synchronized TaskEntryImplementation getTaskById(
-			String taskId,
+	public synchronized TaskEntryImplementation getTaskById(String taskId,
 			String contextId) {
 		/* Check input parameters. */
 		if (taskId == null) {
@@ -906,14 +834,9 @@ public class Data {
 		}
 
 		/* Get and check result... */
-		TaskEntryImplementation[] taskEntries = this.getTasks(
-				taskId,
-				contextId,
-				null);
+		TaskEntryImplementation[] taskEntries = this.getTasks(taskId, contextId, null);
 		if (taskEntries.length > 1) {
-			throw new DataRuntimeException("There is more then one task with "
-					+ "taskId \"" + taskId + "\" and contextId \"" + contextId
-					+ "\"");
+			throw new DataRuntimeException("There is more then one task with " + "taskId \"" + taskId + "\" and contextId \"" + contextId + "\"");
 		}
 		if (taskEntries.length == 0) {
 			return null;
@@ -927,14 +850,14 @@ public class Data {
 	 * Get data of task with specified ID's.
 	 * 
 	 * @param taskId
-	 *            ID of task.
+	 *          ID of task.
 	 * @param contextId
-	 *            ID of context.
+	 *          ID of context.
 	 * @return <code>TaskData</code> object or <code>null</code> if not found.
 	 * @throws NullPointerException
-	 *             If input parameter is <code>null</code>.
+	 *           If input parameter is <code>null</code>.
 	 * @throws DataRuntimeException
-	 *             If internal error occurred.
+	 *           If internal error occurred.
 	 */
 	public synchronized TaskData getTaskData(String taskId, String contextId) {
 		/* Check input parameters. */
@@ -955,23 +878,19 @@ public class Data {
 	 * Clone all <code>ContextEntry</code> objects from input array.
 	 * 
 	 * @param contextEntries
-	 *            Array of <code>ContextEntry</code> objects to clone.
+	 *          Array of <code>ContextEntry</code> objects to clone.
 	 * @return Array of cloned <code>ContextEntry</code> objects.
 	 * @throws DataRuntimeException
-	 *             If internal error occurred.
+	 *           If internal error occurred.
 	 */
-	private ContextEntry[] cloneContextEntries(
-			AbstractContextEntry[] contextEntries) {
+	private ContextEntry[] cloneContextEntries(ContextEntry[] contextEntries) {
 		ContextEntry[] contextEntriesClone = new ContextEntry[contextEntries.length];
 
 		for (int i = 0; i < contextEntries.length; i++) {
 			try {
-				contextEntriesClone[i] = (ContextEntry) contextEntries[i]
-						.clone();
+				contextEntriesClone[i] = contextEntries[i].clone();
 			} catch (CloneNotSupportedException e) {
-				throw new DataRuntimeException(
-						"Could not clone contextEntry",
-						e);
+				throw new DataRuntimeException("Could not clone contextEntry", e);
 			}
 		}
 
@@ -983,14 +902,12 @@ public class Data {
 	 * contains cloned objects.
 	 * 
 	 * @param contextId
-	 *            ID of context.
+	 *          ID of context.
 	 * @return Array of cloned <code>ContextEntry</code> objects.
 	 */
 	private ContextEntry[] getContexts(String contextId) {
 		/* Get entries from Data. */
-		// FIXME remove cast by fixing ContextEntry data type hierarchy
-		AbstractContextEntry[] contextEntries = (AbstractContextEntry[]) this.data
-				.getContexts(contextId);
+		ContextEntry[] contextEntries = this.data.getContexts(contextId);
 
 		/* Return cloned entries. */
 		return this.cloneContextEntries(contextEntries);
@@ -1009,13 +926,12 @@ public class Data {
 	 * Get context with specified ID.
 	 * 
 	 * @param contextId
-	 *            ID of context.
-	 * @return <code>ContextEntry</code> object or <code>null</code> if not
-	 *         found.
+	 *          ID of context.
+	 * @return <code>ContextEntry</code> object or <code>null</code> if not found.
 	 * @throws NullPointerException
-	 *             If input parameter is <code>null</code>.
+	 *           If input parameter is <code>null</code>.
 	 * @throws DataRuntimeException
-	 *             If internal error occurred.
+	 *           If internal error occurred.
 	 */
 	public synchronized ContextEntry getContextById(String contextId) {
 		/* Check input parameters. */
@@ -1026,8 +942,7 @@ public class Data {
 		/* Get and check result... */
 		ContextEntry[] contextEntries = this.getContexts(contextId);
 		if (contextEntries.length > 1) {
-			throw new DataRuntimeException("There is more then one context "
-					+ "with contextId \"" + contextId + "\"");
+			throw new DataRuntimeException("There is more then one context " + "with contextId \"" + contextId + "\"");
 		}
 		if (contextEntries.length == 0) {
 			return null;
@@ -1041,10 +956,10 @@ public class Data {
 	 * Clone all <code>CheckPointEntry</code> objects from input array.
 	 * 
 	 * @param checkPointEntries
-	 *            Array of <code>CheckPointEntry</code> objects to clone.
+	 *          Array of <code>CheckPointEntry</code> objects to clone.
 	 * @return Array of cloned <code>CheckPointEntry</code> objects.
 	 * @throws DataRuntimeException
-	 *             If internal error occurred.
+	 *           If internal error occurred.
 	 */
 	private CheckPointEntry[] cloneCheckPointEntries(
 			CheckPointEntry[] checkPointEntries) {
@@ -1054,8 +969,7 @@ public class Data {
 			try {
 				checkPointEntriesClone[i] = checkPointEntries[i].clone();
 			} catch (CloneNotSupportedException e) {
-				throw new DataRuntimeException("Could not clone "
-						+ "checkPointEntry", e);
+				throw new DataRuntimeException("Could not clone " + "checkPointEntry", e);
 			}
 		}
 
@@ -1067,58 +981,43 @@ public class Data {
 	 * taskId, contextId. Returned array contains cloned objects.
 	 * 
 	 * @param type
-	 *            Type of checkPoint.
+	 *          Type of checkPoint.
 	 * @param taskId
-	 *            ID of task.
+	 *          ID of task.
 	 * @param contextId
-	 *            ID of context.
+	 *          ID of context.
 	 * @param magicObject
-	 *            Some magic object from outside... (no one understands to
-	 *            this).
+	 *          Some magic object from outside... (no one understands to this).
 	 * @return Array of cloned <code>CheckPointEntry</code> objects.
 	 */
-	public synchronized CheckPointEntry[] getCheckPoints(
-			String type,
-			String taskId,
-			String contextId,
-			Serializable magicObject) {
+	public synchronized CheckPointEntry[] getCheckPoints(String type,
+			String taskId, String contextId, Serializable magicObject) {
 		/* Get entries from Data. */
-		CheckPointEntry[] checkPointEntries = this.data.getCheckPoints(
-				type,
-				taskId,
-				contextId,
-				magicObject);
+		CheckPointEntry[] checkPointEntries = this.data.getCheckPoints(type, taskId, contextId, magicObject);
 
 		/* Return cloned entries. */
 		return this.cloneCheckPointEntries(checkPointEntries);
 	}
 
 	/**
-	 * Get (only last) checkPoint specified by none or more parameters from
-	 * type, value, taskId, contextId.
+	 * Get (only last) checkPoint specified by none or more parameters from type,
+	 * value, taskId, contextId.
 	 * 
 	 * @param type
-	 *            Type of checkPoint.
+	 *          Type of checkPoint.
 	 * @param value
-	 *            Value of checkPoint.
+	 *          Value of checkPoint.
 	 * @param taskId
-	 *            ID of task.
+	 *          ID of task.
 	 * @param contextId
-	 *            ID of context.
-	 * @return Cloned <code>CheckPointEntry</code> objects or <code>null</code>
-	 *         if not found.
+	 *          ID of context.
+	 * @return Cloned <code>CheckPointEntry</code> objects or <code>null</code> if
+	 *         not found.
 	 */
-	public synchronized CheckPointEntry getCheckPoint(
-			String type,
-			String value,
-			String taskId,
-			String contextId) {
+	public synchronized CheckPointEntry getCheckPoint(String type, String value,
+			String taskId, String contextId) {
 		/* Get all matching checkPoints. */
-		CheckPointEntry[] checkPoints = this.getCheckPoints(
-				type,
-				value,
-				taskId,
-				contextId);
+		CheckPointEntry[] checkPoints = this.getCheckPoints(type, value, taskId, contextId);
 
 		/* Return appropriate thing. */
 		int length = checkPoints.length;
@@ -1188,11 +1087,11 @@ public class Data {
 	// }
 
 	/**
-	 * Get hostRuntimes specified by none parameter or by hostName. Returned
-	 * array contains cloned objects.
+	 * Get hostRuntimes specified by none parameter or by hostName. Returned array
+	 * contains cloned objects.
 	 * 
 	 * @param hostName
-	 *            Name of host.
+	 *          Name of host.
 	 * @return Array of cloned <code>HostRuntimeEntry</code> objects.
 	 */
 	private HostRuntimeEntry[] getHostRuntimes(String hostName) {
@@ -1213,13 +1112,13 @@ public class Data {
 	 * Get hostRuntime with specified hostName.
 	 * 
 	 * @param hostName
-	 *            Name of host.
+	 *          Name of host.
 	 * @return <code>HostRuntimeEntry</code> object or <code>null</code> if not
 	 *         found.
 	 * @throws NullPointerException
-	 *             If input parameter is <code>null</code>.
+	 *           If input parameter is <code>null</code>.
 	 * @throws DataRuntimeException
-	 *             If internal error occurred.
+	 *           If internal error occurred.
 	 */
 	public synchronized HostRuntimeEntry getHostRuntimeByName(String hostName) {
 		/* Check input parameters. */
@@ -1230,9 +1129,7 @@ public class Data {
 		/* Get and check result... */
 		HostRuntimeEntry[] hostRuntimeEntries = this.getHostRuntimes(hostName);
 		if (hostRuntimeEntries.length > 1) {
-			throw new DataRuntimeException(
-					"There is more then one hostRuntime " + "with hostName \""
-							+ hostName + "\"");
+			throw new DataRuntimeException("There is more then one hostRuntime " + "with hostName \"" + hostName + "\"");
 		}
 		if (hostRuntimeEntries.length == 0) {
 			return null;
@@ -1260,20 +1157,16 @@ public class Data {
 	 * Unregisters a host runtime.
 	 * 
 	 * @param hostName
-	 *            Name of the host.
+	 *          Name of the host.
 	 * @throws IllegalArgumentException
-	 *             if removing failed.
+	 *           if removing failed.
 	 */
-	public synchronized void removeHostRuntime(String hostName)
-			throws IllegalArgumentException {
+	public synchronized void removeHostRuntime(String hostName) throws IllegalArgumentException {
 		/*
 		 * Remove all tasks from removed hostRuntime but leave them in
 		 * TaskManager (if task is not FINISHED then set its state to ABORTED)
 		 */
-		TaskEntryImplementation[] tasks = this.data.getTasks(
-				null,
-				null,
-				hostName);
+		TaskEntryImplementation[] tasks = this.data.getTasks(null, null, hostName);
 		for (TaskEntryImplementation task : tasks) {
 			// if (task.getState() != TaskState.FINISHED) {
 			// task.setState(TaskState.ABORTED);

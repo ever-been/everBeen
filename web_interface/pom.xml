@@ -41,6 +41,11 @@
             <artifactId>softwarerepository</artifactId>
             <version>2.1.0</version>
         </dependency>
+	<dependency>
+		<groupId>cz.cuni.mff.d3s.been</groupId>
+		<artifactId>taskmanager</artifactId>
+		<version>2.1.0</version>
+	</dependency>
 
 		<!-- EXTERNAL DEPENDENCIES -->
 		<dependency>

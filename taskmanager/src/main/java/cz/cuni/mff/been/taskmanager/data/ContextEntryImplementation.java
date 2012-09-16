@@ -32,7 +32,7 @@ import java.io.Serializable;
  * 
  * @author Antonin Tomecek
  */
-public class ContextEntryImplementation extends AbstractContextEntry {
+public class ContextEntryImplementation implements ContextEntry {
 
 	private static final long serialVersionUID = -8591690131481196620L;
 
@@ -75,8 +75,8 @@ public class ContextEntryImplementation extends AbstractContextEntry {
 	private Serializable magicObject = null;
 
 	/**
-	 * Creates a new (empty - default inicialized) <code>ContextEntry</code>.
-	 * This constructor is neded by <code>Serializable</code>.
+	 * Creates a new (empty - default inicialized) <code>ContextEntry</code>. This
+	 * constructor is neded by <code>Serializable</code>.
 	 */
 	public ContextEntryImplementation() {
 		this.currentTimeMillis = System.currentTimeMillis();
@@ -92,18 +92,15 @@ public class ContextEntryImplementation extends AbstractContextEntry {
 	 * Creates a new (and initialized) <code>ContextEntry</code>.
 	 * 
 	 * @param contextId
-	 *            ID of this context.
+	 *          ID of this context.
 	 * @param contextName
-	 *            Human readable name of this context (or <code>null</code>).
+	 *          Human readable name of this context (or <code>null</code>).
 	 * @param contextDescription
-	 *            Human readable description of this context (or
-	 *            <code>null</code>).
+	 *          Human readable description of this context (or <code>null</code>).
 	 * @param magicObject
-	 *            Some magic object from outside... (no one understands to
-	 *            this).
+	 *          Some magic object from outside... (no one understands to this).
 	 */
-	public ContextEntryImplementation(String contextId, String contextName,
-			String contextDescription, Serializable magicObject) {
+	public ContextEntryImplementation(String contextId, String contextName, String contextDescription, Serializable magicObject) {
 		this.currentTimeMillis = System.currentTimeMillis();
 
 		this.setContextId(contextId);
@@ -123,23 +120,18 @@ public class ContextEntryImplementation extends AbstractContextEntry {
 	 * Creates a new (and initialized) <code>ContextEntry</code>.
 	 * 
 	 * @param contextId
-	 *            ID of this context.
+	 *          ID of this context.
 	 * @param contextName
-	 *            Human readable name of this context (or <code>null</code>).
+	 *          Human readable name of this context (or <code>null</code>).
 	 * @param contextDescription
-	 *            Human readable description of this context (or
-	 *            <code>null</code>).
+	 *          Human readable description of this context (or <code>null</code>).
 	 * @param magicObject
-	 *            Some magic object from outside... (no one understands to
-	 *            this).
+	 *          Some magic object from outside... (no one understands to this).
 	 * @param finishedTasksKept
-	 *            Number of finished tasks that will be kept in context without
-	 *            cleaning them by task manager. -1 means no tasks will be
-	 *            cleaned.
+	 *          Number of finished tasks that will be kept in context without
+	 *          cleaning them by task manager. -1 means no tasks will be cleaned.
 	 */
-	public ContextEntryImplementation(String contextId, String contextName,
-			String contextDescription, Serializable magicObject,
-			int finishedTasksKept) {
+	public ContextEntryImplementation(String contextId, String contextName, String contextDescription, Serializable magicObject, int finishedTasksKept) {
 		this.currentTimeMillis = System.currentTimeMillis();
 
 		this.setContextId(contextId);
@@ -183,8 +175,7 @@ public class ContextEntryImplementation extends AbstractContextEntry {
 		if (contextDescription != null) {
 			this.contextDescription = contextDescription;
 		} else {
-			throw new IllegalArgumentException("contextDescription is not "
-					+ "valid");
+			throw new IllegalArgumentException("contextDescription is not " + "valid");
 		}
 	}
 
@@ -193,7 +184,6 @@ public class ContextEntryImplementation extends AbstractContextEntry {
 		this.magicObject = magicObject;
 	}
 
-	@Override
 	void close() {
 		if (!this.open) {
 			throw new IllegalStateException("Context is already closed");
@@ -245,8 +235,7 @@ public class ContextEntryImplementation extends AbstractContextEntry {
 		// contextEntry.currentTimeMillis = System.currentTimeMillis();
 
 		/* Clone magicObject. */
-		contextEntry.setMagicObject(CloneSerializable
-				.cloneSerializable(this.magicObject));
+		contextEntry.setMagicObject(CloneSerializable.cloneSerializable(this.magicObject));
 
 		return contextEntry;
 	}
