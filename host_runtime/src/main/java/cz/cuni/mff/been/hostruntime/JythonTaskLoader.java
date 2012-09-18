@@ -26,29 +26,33 @@
 
 package cz.cuni.mff.been.hostruntime;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import cz.cuni.mff.been.task.JythonScriptJob;
 import cz.cuni.mff.been.task.Task;
 import cz.cuni.mff.been.task.TaskInitializationException;
 
 /**
- * Task loader for Jython tasks.
- * Runs JythonScriptTask with set script filename
+ * Task loader for Jython tasks. Runs JythonScriptTask with set script filename
+ * 
  * @author Jan Tattermusch
  */
 public class JythonTaskLoader extends TaskLoader {
+	
+	private static final Logger logger = LoggerFactory
+			.getLogger(JythonTaskLoader.class);
 
 	/**
 	 * Loads task (instance of JythonScriptTask)
 	 */
-	
+
 	@Override
 	protected void loadTask(String scriptFileName) {
 		try {
 			this.task = new JythonScriptJob(scriptFileName);
 		} catch (TaskInitializationException e) {
-			System.err.println("Cannot create instance of JythonScriptJob " 
-					+ " : " + e.getMessage());
-			e.printStackTrace();
+			logger.error("Cannot create instance of JythonScriptJob.", e);
 			System.exit(Task.EXIT_CODE_ERROR);
 		}
 	}
@@ -59,10 +63,10 @@ public class JythonTaskLoader extends TaskLoader {
 	 */
 	public static void main(String[] args) {
 		if (args.length < 1) {
-			System.out.println("You must give the scripts's filename as a command line parameter");
+			logger.error("You must give the scripts's filename as a command line parameter");
 			System.exit(Task.EXIT_CODE_ERROR);
 		}
-		
+
 		String scriptFile = args[0];
 		JythonTaskLoader loader = new JythonTaskLoader();
 		loader.loadTask(scriptFile);

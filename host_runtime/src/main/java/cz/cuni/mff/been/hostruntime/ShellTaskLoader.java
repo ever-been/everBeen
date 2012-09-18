@@ -26,29 +26,33 @@
 
 package cz.cuni.mff.been.hostruntime;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import cz.cuni.mff.been.task.ShellScriptJob;
 import cz.cuni.mff.been.task.Task;
 import cz.cuni.mff.been.task.TaskInitializationException;
 
 /**
- * Task loader for Shell tasks.
- * Runs ShellScriptTask with set script filename
+ * Task loader for Shell tasks. Runs ShellScriptTask with set script filename
+ * 
  * @author Jan Tattermusch
  */
 public class ShellTaskLoader extends TaskLoader {
 
+	private static final Logger logger = LoggerFactory
+			.getLogger(ShellTaskLoader.class);
+
 	/**
 	 * Loads task (instance of ShellScriptTask)
 	 */
-	
+
 	@Override
 	protected void loadTask(String scriptFileName) {
 		try {
 			this.task = new ShellScriptJob(scriptFileName);
 		} catch (TaskInitializationException e) {
-			System.err.println("Cannot create instance of ShellScriptJob " 
-					+ " : " + e.getMessage());
-			e.printStackTrace();
+			logger.error("Cannot create instance of ShellScriptJob.", e);
 			System.exit(Task.EXIT_CODE_ERROR);
 		}
 	}
@@ -59,10 +63,10 @@ public class ShellTaskLoader extends TaskLoader {
 	 */
 	public static void main(String[] args) {
 		if (args.length < 1) {
-			System.out.println("You must give the scripts's filename as a command line parameter");
+			logger.error("You must give the scripts's filename as a command line parameter");
 			System.exit(Task.EXIT_CODE_ERROR);
 		}
-		
+
 		String taskClass = args[0];
 		ShellTaskLoader loader = new ShellTaskLoader();
 		loader.loadTask(taskClass);

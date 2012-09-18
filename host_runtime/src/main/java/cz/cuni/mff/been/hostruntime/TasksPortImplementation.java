@@ -31,6 +31,9 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import cz.cuni.mff.been.common.VariableReplacer;
 import cz.cuni.mff.been.common.VariableReplacer.ValueProvider;
 import cz.cuni.mff.been.jaxb.td.TaskDescriptor;
@@ -56,6 +59,9 @@ import cz.cuni.mff.been.taskmanager.data.TaskEntry;
  */
 public class TasksPortImplementation extends UnicastRemoteObject implements
 		TasksPortInterface {
+
+	private static final Logger logger = LoggerFactory
+			.getLogger(TasksPortImplementation.class);
 
 	private static final long serialVersionUID = 6142533585015365733L;
 
@@ -89,16 +95,14 @@ public class TasksPortImplementation extends UnicastRemoteObject implements
 	@Override
 	public String getWorkingDirectory(String contextID, String taskID)
 			throws RemoteException {
-		return task.getHostRuntime().getWorkingDirectoryForTask(
-				contextID,
+		return task.getHostRuntime().getWorkingDirectoryForTask(contextID,
 				taskID);
 	}
 
 	@Override
 	public String getTemporaryDirectory(String contextID, String taskID)
 			throws RemoteException {
-		return task.getHostRuntime().getTemporaryDirectoryForTask(
-				contextID,
+		return task.getHostRuntime().getTemporaryDirectoryForTask(contextID,
 				taskID);
 	}
 
@@ -156,10 +160,7 @@ public class TasksPortImplementation extends UnicastRemoteObject implements
 	}
 
 	@Override
-	public void newContext(
-			String id,
-			String name,
-			String description,
+	public void newContext(String id, String name, String description,
 			Serializable data) throws RemoteException {
 		task.getHostRuntime().getTaskManager()
 				.newContext(id, name, description, data);
@@ -183,9 +184,8 @@ public class TasksPortImplementation extends UnicastRemoteObject implements
 	}
 
 	@Override
-	public void
-			unregisterEventListener(HostRuntimeRegistrationListener listener)
-					throws RemoteException {
+	public void unregisterEventListener(HostRuntimeRegistrationListener listener)
+			throws RemoteException {
 		task.getHostRuntime().getTaskManager()
 				.unregisterEventListener(listener);
 	}
@@ -226,19 +226,15 @@ public class TasksPortImplementation extends UnicastRemoteObject implements
 	}
 
 	@Override
-	public Serializable checkPointWait(
-			String contextID,
-			String taskID,
-			String name,
-			long timeout) throws RemoteException {
+	public Serializable checkPointWait(String contextID, String taskID,
+			String name, long timeout) throws RemoteException {
 		/* If context is null, use the context of the calling task. */
 		String realContextID = contextID != null ? contextID : task
 				.getTaskDescriptor().getContextId();
 
 		try {
 			CheckPoint[] checkPoints = hostRuntimesPort.checkPointLook(
-					new CheckPoint(taskID, realContextID, name, null),
-					timeout);
+					new CheckPoint(taskID, realContextID, name, null), timeout);
 
 			if (checkPoints.length > 0) {
 				return checkPoints[0].getValue();
@@ -246,6 +242,7 @@ public class TasksPortImplementation extends UnicastRemoteObject implements
 				return null;
 			}
 		} catch (TaskManagerException e) {
+			logger.error("Checkpoint look error.", e);
 			return null;
 		}
 	}
@@ -258,13 +255,9 @@ public class TasksPortImplementation extends UnicastRemoteObject implements
 	@Override
 	public void serviceUnregister(ServiceEntry serviceTemplate)
 			throws RemoteException {
-		hostRuntimesPort.serviceUnregister(new ServiceEntry(
-				serviceTemplate.getServiceName(),
-				serviceTemplate.getInterfaceName(),
-				serviceTemplate.getRmiAddress(),
-				null,
-				null,
-				null));
+		hostRuntimesPort.serviceUnregister(new ServiceEntry(serviceTemplate
+				.getServiceName(), serviceTemplate.getInterfaceName(),
+				serviceTemplate.getRmiAddress(), null, null, null));
 	}
 
 	@Override
@@ -275,13 +268,8 @@ public class TasksPortImplementation extends UnicastRemoteObject implements
 
 	@Override
 	public ServiceEntry[] serviceFindAll() throws RemoteException {
-		return hostRuntimesPort.serviceLook(new ServiceEntry(
-				null,
-				"main",
-				null,
-				null,
-				null,
-				null));
+		return hostRuntimesPort.serviceLook(new ServiceEntry(null, "main",
+				null, null, null, null));
 	}
 
 	@Override
@@ -297,22 +285,17 @@ public class TasksPortImplementation extends UnicastRemoteObject implements
 	}
 
 	@Override
-	public void extractPackage(
-			String packageName,
-			String packageVersion,
-			String path,
-			PackageType packageType) throws RemoteException {
+	public void extractPackage(String packageName, String packageVersion,
+			String path, PackageType packageType) throws RemoteException {
 		try {
-			task
-					.getHostRuntime()
+			task.getHostRuntime()
 					.getPackageCacheManager()
-					.extractPackage(
-							packageName,
-							packageVersion,
-							path,
+					.extractPackage(packageName, packageVersion, path,
 							packageType);
-		} catch (Exception ex) {
-			throw new RemoteException("Error extracting package", ex);
+		} catch (Exception e) {
+			String message = "Error extracting package";
+			logger.error(message, e);
+			throw new RemoteException(message, e);
 		}
 	}
 

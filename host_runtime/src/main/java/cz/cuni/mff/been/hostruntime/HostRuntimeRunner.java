@@ -30,6 +30,9 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import cz.cuni.mff.been.common.RMI;
 import cz.cuni.mff.been.hostmanager.load.LoadMonitorException;
 
@@ -41,27 +44,31 @@ import cz.cuni.mff.been.hostmanager.load.LoadMonitorException;
  * @author David Majda
  */
 public class HostRuntimeRunner {
+
+	private static final Logger logger = LoggerFactory
+			.getLogger(HostRuntimeRunner.class);
+
 	/**
-	 * Writes the usage information and exits. 
+	 * Writes the usage information and exits.
 	 */
 	private static void writeUsageAndExit() {
-		System.out.println("Usage: "
-				+ "java cz.cuni.mff.been.hostruntime.HostRuntimeRunner "
-				+ "task_manager_host_name root_directory");
+		System.out
+				.println("Usage: java cz.cuni.mff.been.hostruntime.HostRuntimeRunner task_manager_host_name root_directory");
 		System.exit(1);
 	}
-	
+
 	/**
 	 * Checks command-line parameters.
 	 * 
-	 * @param args command-line parameters
+	 * @param args
+	 *            command-line parameters
 	 */
 	private static void checkParams(String[] args) {
 		if (args.length != 2) {
 			writeUsageAndExit();
 		}
 	}
-	
+
 	/**
 	 * Initializes the RMI Registry.
 	 */
@@ -69,14 +76,17 @@ public class HostRuntimeRunner {
 		try {
 			LocateRegistry.createRegistry(RMI.REGISTRY_PORT);
 		} catch (RemoteException e) {
-			System.err.println("Note: Can't start the RMI registry - another instance is probably running.");
+			logger.error(
+					"Note: Can't start the RMI registry - another instance is probably running.",
+					e);
 		}
 	}
 
 	/**
 	 * Main method, which runs the Host Runtime.
 	 * 
-	 * @param args command-line parameters
+	 * @param args
+	 *            command-line parameters
 	 */
 	public static void main(String[] args) {
 		checkParams(args);
@@ -84,24 +94,25 @@ public class HostRuntimeRunner {
 		try {
 			new HostRuntimeImplementation(args[0], args[1]);
 		} catch (RemoteException e) {
-			System.err.println("Error executing remote call ("+e.getMessage()+")");
+			logger.error("Error executing remote call.", e);
 			System.exit(1);
 		} catch (LoadMonitorException e) {
-			System.err.println(e.getMessage());
+			logger.error("Error constructiong HostRuntime.", e);
 			System.exit(1);
 		} catch (IOException e) {
-			System.err.println(e.getMessage());
+			logger.error("Error constructiong HostRuntime.", e);
 			System.exit(1);
 		} catch (NotBoundException e) {
-			System.err.println("Can't connect to the Task Manager on host \""
-				+ args[0] + "\".");
+			logger.error(String.format(
+					"Can't connect to the Task Manager on host \"%s\".",
+					args[0]), e);
 			System.exit(1);
 		}
-		System.out.println("Host Runtime started...");
+		logger.info("Host Runtime started...");
 	}
-	
+
 	/**
-	 * Private construcor is so no instances can be created.
+	 * Disallow default construction.
 	 */
 	private HostRuntimeRunner() {
 	}

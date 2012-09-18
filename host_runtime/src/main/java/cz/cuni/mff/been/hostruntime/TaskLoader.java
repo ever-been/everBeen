@@ -25,68 +25,75 @@
  */
 package cz.cuni.mff.been.hostruntime;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import cz.cuni.mff.been.services.Service;
 import cz.cuni.mff.been.task.Job;
 import cz.cuni.mff.been.task.Task;
 import cz.cuni.mff.been.task.TaskException;
 
 /**
- * Loads a BEEN task and starts it. The task is given as a command parameter 
- * and is started in a correct way depending on whether it's a Job or a Service.
+ * Loads a BEEN task and starts it. The task is given as a command parameter and
+ * is started in a correct way depending on whether it's a Job or a Service.
  * 
  * @author Jaroslav Urban
  */
 public class TaskLoader {
+
+	private static final Logger logger = LoggerFactory
+			.getLogger(TaskLoader.class);
+
 	/** The loaded task. */
 	protected Task task;
-	
+
 	/**
 	 * Loads a task.
-	 * @param taskClass full classname of the task.
+	 * 
+	 * @param taskClass
+	 *            full classname of the task.
 	 */
 	protected void loadTask(String taskClass) {
 		// load the task's class
-		Class< ? > clazz = null;
+		Class<?> clazz = null;
 		try {
 			clazz = Class.forName(taskClass);
 		} catch (ClassNotFoundException e) {
-			System.err.println("Class not found: " + taskClass);
-			e.printStackTrace();
+			logger.error("Task class not found.", e);
 			System.exit(Task.EXIT_CODE_ERROR);
-			return;																					// Just to suppress warnings.
 		}
-		
+
 		// create instance of the task
 		try {
 			task = (Task) clazz.newInstance();
 		} catch (InstantiationException e) {
-			System.err.println("Cannot create instance of the task " + taskClass 
-					+ " : " + e.getMessage());
-			System.err.println("Possible reasons: no nullary constructor, the "
-					+ "class class cannot be instantiated (is abstract, interface, etc)"
-					+ " or instantiation failed for some other reason");
-			e.printStackTrace();
+			logger.error(
+					String.format(
+							"Cannot create instance of the task \"%s\". Possible reasons: no nullary constructor,"
+									+ " the class class cannot be instantiated (is abstract, interface, etc)"
+									+ " or instantiation failed for some other reason",
+							taskClass), e.getMessage());
 			System.exit(Task.EXIT_CODE_ERROR);
 		} catch (IllegalAccessException e) {
-			System.err.println("Cannot create instance of the task " + taskClass 
-					+ " : " + e.getMessage());
-			System.err.println("Possible reasons: class or it's nullary contructor are"
-					+ " not accessible");
-			e.printStackTrace();
+			logger.error(
+					String.format(
+							"Cannot create instance of the task \"%s\". Possible reasons: "
+									+ "class or it's nullary contructor are not accessible.",
+							taskClass), e);
 			System.exit(Task.EXIT_CODE_ERROR);
 		}
 	}
-	
+
 	/**
 	 * Runs the task. It uses the correct way for a Job or a Service.
-	 *
+	 * 
 	 */
 	protected void runTask() {
 		if (task instanceof Job) {
 			try {
 				((Job) task).runJob();
 			} catch (TaskException e) {
-				e.printStackTrace();
+				logger.error("Cannot run task.", e);
 				task.logFatal(e.getMessage());
 				System.exit(Task.EXIT_CODE_ERROR);
 			}
@@ -95,13 +102,13 @@ public class TaskLoader {
 			try {
 				((Service) task).startService();
 			} catch (TaskException e) {
-				System.err.println("Cannot start service: " + e.getMessage());
-				e.printStackTrace();
+				logger.error("Cannot start service.", e);
 				System.exit(Task.EXIT_CODE_ERROR);
 			}
 		} else {
-			System.err.println("The loaded class is not a Job nor a Service: " 
-				+ task.getClass().getCanonicalName());
+			logger.error(String.format(
+					"The loaded class is not a Job nor a Service: %s", task
+							.getClass().getCanonicalName()));
 			System.exit(Task.EXIT_CODE_ERROR);
 		}
 	}
@@ -111,10 +118,10 @@ public class TaskLoader {
 	 */
 	public static void main(String[] args) {
 		if (args.length < 1) {
-			System.out.println("You must give the task's classname as a command line parameter");
+			logger.error("You must give the task's classname as a command line parameter");
 			System.exit(Task.EXIT_CODE_ERROR);
 		}
-		
+
 		String taskClass = args[0];
 		TaskLoader loader = new TaskLoader();
 		loader.loadTask(taskClass);
