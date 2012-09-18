@@ -23,6 +23,8 @@
  */
 package cz.cuni.mff.been.taskmanager;
 
+import static cz.cuni.mff.been.services.Names.HOST_MANAGER_SERVICE_NAME;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -42,6 +44,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -66,6 +69,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -79,11 +84,6 @@ import cz.cuni.mff.been.common.util.MiscUtils;
 import cz.cuni.mff.been.common.value.ValueInteger;
 import cz.cuni.mff.been.hostmanager.HostManagerException;
 import cz.cuni.mff.been.hostmanager.HostManagerInterface;
-
-
-import static cz.cuni.mff.been.services.Names.HOST_MANAGER_SERVICE_NAME;
-
-
 import cz.cuni.mff.been.hostmanager.ValueNotFoundException;
 import cz.cuni.mff.been.hostmanager.database.HostInfoInterface;
 import cz.cuni.mff.been.hostmanager.database.Memory;
@@ -141,8 +141,9 @@ import cz.cuni.mff.been.taskmanager.tasktree.TaskTreeRecord;
  * @author Antonin Tomecek
  * @author Andrej Podzimek
  */
-public class TaskManagerImplementation extends UnicastRemoteObject implements
-		TaskManagerInterface, HostRuntimesPortInterface {
+public class TaskManagerImplementation extends UnicastRemoteObject implements TaskManagerInterface, HostRuntimesPortInterface {
+
+	private static final Logger log = LoggerFactory.getLogger(TaskManagerImplementation.class);
 
 	private static final long serialVersionUID = -4208900267250364137L;
 
@@ -177,16 +178,9 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	/** Log storage component */
 	private LogStorage logStorage = null;
 
-	/** Log level of the Task Manager. */
-	private final LogLevel logLevel;
-
 	private final LinkedList<ServiceEntry> serviceRegistry = new LinkedList<ServiceEntry>();
 
-	private final CheckPoint checkPointWaitingObject = new CheckPoint(
-			null,
-			null,
-			null,
-			null);
+	private final CheckPoint checkPointWaitingObject = new CheckPoint(null, null, null, null);
 
 	private int lastTaskNumber = 0;
 	/**
@@ -242,16 +236,14 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * Store configuration to configuration file.
 	 * 
 	 * @param configurationFile
-	 *            XML file for storing configuration.
+	 *          XML file for storing configuration.
 	 */
 	private void storeConfiguration(File configurationFile) {
 		Document document;
 		try {
-			document = DocumentBuilderFactory.newInstance()
-					.newDocumentBuilder().newDocument();
+			document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
 		} catch (ParserConfigurationException e) {
-			throw new RuntimeException("Could not create Document for XML. "
-					+ "This should not occur.", e);
+			throw new RuntimeException("Could not create Document for XML. " + "This should not occur.", e);
 		}
 
 		/* Add root element. */
@@ -262,31 +254,22 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 		Element hostRuntimesElement = document.createElement("hostRuntimes");
 		configurationElement.appendChild(hostRuntimesElement);
 		/* ... set attributes for hostRuntimes element. */
-		hostRuntimesElement.setAttribute(
-				"maxPackageCacheSize",
-				String.valueOf(maxPackageCacheSize));
-		hostRuntimesElement.setAttribute(
-				"keptClosedContextCount",
-				String.valueOf(keptClosedContextCount));
+		hostRuntimesElement.setAttribute("maxPackageCacheSize", String.valueOf(maxPackageCacheSize));
+		hostRuntimesElement.setAttribute("keptClosedContextCount", String.valueOf(keptClosedContextCount));
 
 		/* Store to file. */
 		Transformer transformer;
 		try {
 			transformer = TransformerFactory.newInstance().newTransformer();
 		} catch (TransformerConfigurationException e) {
-			throw new RuntimeException("Could not create Transformer for XML. "
-					+ "This should not occur.", e);
+			throw new RuntimeException("Could not create Transformer for XML. " + "This should not occur.", e);
 		}
 		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-		transformer.setOutputProperty(
-				OutputKeys.DOCTYPE_SYSTEM,
-				"configuration.dtd");
+		transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, "configuration.dtd");
 		try {
-			transformer.transform(new DOMSource(document), new StreamResult(
-					configurationFile));
+			transformer.transform(new DOMSource(document), new StreamResult(configurationFile));
 		} catch (TransformerException e) {
-			System.err.println("Could not store configuration of Task "
-					+ "Manager to XML file.");
+			System.err.println("Could not store configuration of Task " + "Manager to XML file.");
 		}
 	}
 
@@ -294,56 +277,47 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * Load configuration from configuration file.
 	 * 
 	 * @param configurationFile
-	 *            XML file for loading configuration.
+	 *          XML file for loading configuration.
 	 * @throws IllegalArgumentException
-	 *             If <code>configurationFile</code> could not be parsed for
-	 *             some reason.
+	 *           If <code>configurationFile</code> could not be parsed for some
+	 *           reason.
 	 */
 	private void loadConfiguration(File configurationFile) {
 		if (!configurationFile.exists() || !configurationFile.isFile()) {
-			throw new IllegalArgumentException("Configuration file (\""
-					+ configurationFile.getPath() + "\") not found");
+			throw new IllegalArgumentException("Configuration file (\"" + configurationFile.getPath() + "\") not found");
 		}
 
-		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory
-				.newInstance();
+		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 		documentBuilderFactory.setValidating(true);
 
 		Document document;
 		try {
-			document = documentBuilderFactory.newDocumentBuilder().parse(
-					configurationFile);
+			document = documentBuilderFactory.newDocumentBuilder().parse(configurationFile);
 		} catch (SAXException e) {
 			throw new IllegalArgumentException("Parse error occured.", e);
 		} catch (IOException e) {
 			throw new IllegalArgumentException("IO error occurred.", e);
 		} catch (ParserConfigurationException e) {
-			throw new IllegalArgumentException("DocumentBuilder can not be "
-					+ "created", e);
+			throw new IllegalArgumentException("DocumentBuilder can not be " + "created", e);
 		}
 
 		/* Process element configuration... */
 		Element configurationElement = document.getDocumentElement();
 		if (!configurationElement.getTagName().equals("configuration")) {
-			logWarning("Unknown format of configuration file "
-					+ "(will not be loaded).");
+			logWarning("Unknown format of configuration file " + "(will not be loaded).");
 		}
 
 		/* Process element hostRuntimes... */
-		Element hostRuntimesElement = (Element) configurationElement
-				.getElementsByTagName("hostRuntimes").item(0);
+		Element hostRuntimesElement = (Element) configurationElement.getElementsByTagName("hostRuntimes").item(0);
 		/* ... attribute maxPackageCacheSize. */
-		String attributeMaxPackageCacheSize = hostRuntimesElement
-				.getAttribute("maxPackageCacheSize");
+		String attributeMaxPackageCacheSize = hostRuntimesElement.getAttribute("maxPackageCacheSize");
 		if (!attributeMaxPackageCacheSize.equals("")) {
 			maxPackageCacheSize = Long.parseLong(attributeMaxPackageCacheSize);
 		}
 		/* ... attribute keptClosedContextCount. */
-		String attributeKeptClosedContextCount = hostRuntimesElement
-				.getAttribute("keptClosedContextCount");
+		String attributeKeptClosedContextCount = hostRuntimesElement.getAttribute("keptClosedContextCount");
 		if (!attributeKeptClosedContextCount.equals("")) {
-			keptClosedContextCount = Integer
-					.parseInt(attributeKeptClosedContextCount);
+			keptClosedContextCount = Integer.parseInt(attributeKeptClosedContextCount);
 		}
 	}
 
@@ -423,44 +397,35 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * implicit super constructor.
 	 * 
 	 * @param rootDirectory
-	 *            Root directory for Task Manager.
+	 *          Root directory for Task Manager.
 	 * @param level
-	 *            Log level of the Task Manager.
+	 *          Log level of the Task Manager.
 	 * @throws RemoteException
-	 *             If something failed during the execution of the remote method
-	 *             call.
+	 *           If something failed during the execution of the remote method
+	 *           call.
 	 */
-	protected TaskManagerImplementation(String rootDirectory, LogLevel level)
+	protected TaskManagerImplementation(String rootDirectory)
 			throws RemoteException {
-		Throwable throwable = null;
 
+		// FIXME remove the System.exit calls; this is a constructor FFS
 		this.taskTree = new TaskTree();
 		this.taskTreeReader = new TaskTreeReader(taskTree);
+		BindingParser<TaskDescriptor> parser = null;
 		try {
-			this.taskDescriptorParser = XSD.TD
-					.createParser(TaskDescriptor.class);
-		} catch (SAXException exception) {
-			throwable = exception;
-			throw new RuntimeException(); // Pro forma, finally {} exits.
-		} catch (JAXBException exception) {
-			throwable = exception;
-			throw new RuntimeException(); // Pro forma, finally {} exits.
-		} finally {
-			for (Throwable t = throwable; null != t; t = t.getCause()) {
-				System.err.println();
-				System.err.println(t.getMessage());
-				t.printStackTrace(System.err);
-			}
-			if (null != throwable) {
-				System.exit(1);
-			}
+			parser = XSD.TD.createParser(TaskDescriptor.class);
+		} catch (SAXException e) {
+			log.error("SAX error when creating task descriptor parser.", e);
+			System.exit(1);
+		} catch (JAXBException e) {
+			log.error("JAXB error when creating task descriptor parser", e);
+			System.exit(1);
 		}
+		this.taskDescriptorParser = parser;
 
 		/* Is Task Manager initialised from rescue? */
 		// boolean rescued = false;
 
 		this.rootDirectory = rootDirectory;
-		this.logLevel = level;
 
 		File rescueDirectory = new File(rootDirectory, RESCUE_DIR_NAME);
 		// if (rescueDirectory.exists()) {
@@ -486,10 +451,7 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 		try {
 			this.loadConfiguration(configurationFile);
 		} catch (IllegalArgumentException e) {
-			System.err
-					.println("Could not load configuration file. New "
-							+ "configuration file will be created (with default values "
-							+ "set).");
+			System.err.println("Could not load configuration file. New " + "configuration file will be created (with default values " + "set).");
 			this.storeConfiguration(configurationFile);
 		}
 
@@ -501,32 +463,22 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 				Delete.deleteDirectory(logDirPath);
 			}
 
-			logStorage = new FilesystemLogStorage(rootDirectory
-					+ File.separator + "logs");
+			logStorage = new FilesystemLogStorage(rootDirectory + File.separator + "logs");
 		} catch (LogStorageException e) {
-			System.err.println("Cannot create the log storage: "
-					+ e.getMessage());
+			System.err.println("Cannot create the log storage: " + e.getMessage());
 			System.exit(1);
 		} catch (AntTaskException e) {
-			System.err.println("Cannot delete the log directory: "
-					+ e.getMessage());
+			System.err.println("Cannot delete the log directory: " + e.getMessage());
 			System.exit(1);
 		}
 
 		// if (!rescued) {
 		/* Create system context. */
-		this.newContext(
-				SYSTEM_CONTEXT_ID,
-				SYSTEM_CONTEXT_NAME,
-				SYSTEM_CONTEXT_DESCRIPTION,
-				null);
+		this.newContext(SYSTEM_CONTEXT_ID, SYSTEM_CONTEXT_NAME, SYSTEM_CONTEXT_DESCRIPTION, null);
 
 		try {
 			this.logStorage.addTask(SYSTEM_CONTEXT_ID, TASKMANAGER_TASKNAME);
-			this.logStorage.setTaskHostname(
-					SYSTEM_CONTEXT_ID,
-					TASKMANAGER_TASKNAME,
-					InetAddress.getLocalHost().getCanonicalHostName());
+			this.logStorage.setTaskHostname(SYSTEM_CONTEXT_ID, TASKMANAGER_TASKNAME, InetAddress.getLocalHost().getCanonicalHostName());
 		} catch (Exception e) {
 			logFatal("Cannot store Task Manager's logs: " + e.getMessage());
 			System.exit(1);
@@ -559,27 +511,17 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 			/* Construct URI of Host Runtime control interface. */
 			URI hostRuntimeUri;
 			try {
-				hostRuntimeUri = new URI(
-						"rmi",
-						null,
-						hostRuntime.getHostName(),
-						RMI.REGISTRY_PORT,
-						HostRuntimeInterface.URL,
-						null,
-						null);
+				hostRuntimeUri = new URI("rmi", null, hostRuntime.getHostName(), RMI.REGISTRY_PORT, HostRuntimeInterface.URL, null, null);
 			} catch (URISyntaxException e) {
-				throw new RemoteException("Could not construct URI of Host "
-						+ "Runtime");
+				throw new RemoteException("Could not construct URI of Host " + "Runtime");
 			}
 
 			/* Obtain RMI reference to Host Runtime. */
 			HostRuntimeInterface hostRuntimeInterface;
 			try {
-				hostRuntimeInterface = (HostRuntimeInterface) Naming
-						.lookup(hostRuntimeUri.toString());
+				hostRuntimeInterface = (HostRuntimeInterface) Naming.lookup(hostRuntimeUri.toString());
 			} catch (Exception e) {
-				throw new RemoteException("Could not connect to required Host "
-						+ "Runtime (URI=\"" + hostRuntimeUri.toString() + "\")");
+				throw new RemoteException("Could not connect to required Host " + "Runtime (URI=\"" + hostRuntimeUri.toString() + "\")");
 			}
 
 			/* Kill Host Runtime... */
@@ -600,15 +542,14 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 		 * The decision making algorithm to find out whether the host can accept
 		 * 
 		 * @param host
-		 *            Task Manager's local entry for the host.
+		 *          Task Manager's local entry for the host.
 		 * @param descriptor
-		 *            Descriptor for the task to launch.
+		 *          Descriptor for the task to launch.
 		 * @return Whether the task can be accepted or not.
 		 * @throws RemoteException
-		 *             When the Host Manager cannot be contacted.
+		 *           When the Host Manager cannot be contacted.
 		 */
-		boolean canAcceptLoad(HostRuntimeEntry host, TaskDescriptor descriptor)
-				throws RemoteException;
+		boolean canAcceptLoad(HostRuntimeEntry host, TaskDescriptor descriptor) throws RemoteException;
 	}
 
 	/**
@@ -620,12 +561,11 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	private static final class NullLoadHandler implements LoadHandler {
 
 		@Override
-		public boolean canAcceptLoad(
-				HostRuntimeEntry host,
+		public boolean canAcceptLoad(HostRuntimeEntry host,
 				TaskDescriptor descriptor) {
-			host.addLoad(descriptor.isSetLoadMonitoring() ? descriptor
-					.getLoadMonitoring().getLoadUnits() : // OK, has default
-															// value.
+			host.addLoad(descriptor.isSetLoadMonitoring()
+					? descriptor.getLoadMonitoring().getLoadUnits() : // OK, has default
+					// value.
 					DEFAULT_LOAD_UNITS);
 			return true;
 		}
@@ -647,58 +587,48 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 		 * reference.
 		 * 
 		 * @param hostManager
-		 *            A reference to the Host Manager.
+		 *          A reference to the Host Manager.
 		 */
 		StandardLoadHandler(HostManagerInterface hostManager) {
 			this.hostManager = hostManager;
 		}
 
 		@Override
-		public boolean canAcceptLoad(
-				HostRuntimeEntry host,
+		public boolean canAcceptLoad(HostRuntimeEntry host,
 				TaskDescriptor descriptor) throws RemoteException {
-			final HostInfoInterface hostInfo = hostManager.getHostInfo(host
-					.getHostName());
+			final HostInfoInterface hostInfo = hostManager.getHostInfo(host.getHostName());
 			int limit;
 
 			try {
-				limit = ((ValueInteger) hostInfo
-						.getUserPropertyValue(HostInfoInterface.Properties.LOAD_UNITS))
-						.intValue();
+				limit = ((ValueInteger) hostInfo.getUserPropertyValue(HostInfoInterface.Properties.LOAD_UNITS)).intValue();
 			} catch (ValueNotFoundException exception) {
 				limit = getDefaultLimit(hostInfo);
 			} catch (ClassCastException exception) {
-				logError("LOAD_UNITS has invalid type on host "
-						+ host.getHostName());
+				logError("LOAD_UNITS has invalid type on host " + host.getHostName());
 				limit = getDefaultLimit(hostInfo);
 			}
-			return host.acceptLoad(
-					descriptor.isSetLoadMonitoring() ? descriptor
-							.getLoadMonitoring().getLoadUnits() : // OK, has
-																	// default
-																	// value.
-							DEFAULT_LOAD_UNITS,
-					limit);
+			return host.acceptLoad(descriptor.isSetLoadMonitoring()
+					? descriptor.getLoadMonitoring().getLoadUnits() : // OK, has
+					// default
+					// value.
+					DEFAULT_LOAD_UNITS, limit);
 		}
 
 		/**
 		 * Gets the default limit for a host runtime as configured by the Host
-		 * Manager. If no such value is available, a (hopefully) sane default
-		 * value will be computed.
+		 * Manager. If no such value is available, a (hopefully) sane default value
+		 * will be computed.
 		 * 
 		 * @param hostInfo
-		 *            Host information obtained from the Host Manager.
+		 *          Host information obtained from the Host Manager.
 		 * @return The default load units limit.
 		 */
 		private int getDefaultLimit(HostInfoInterface hostInfo) {
 			int limit;
 			try {
-				limit = ((ValueInteger) hostInfo
-						.getPropertyValue(HostInfoInterface.Properties.DEFAULT_LOAD_UNITS))
-						.intValue();
+				limit = ((ValueInteger) hostInfo.getPropertyValue(HostInfoInterface.Properties.DEFAULT_LOAD_UNITS)).intValue();
 			} catch (ValueNotFoundException exception1) {
-				logError("DEFAULT_LOAD_UNITS is not set for host "
-						+ hostInfo.getHostName());
+				logError("DEFAULT_LOAD_UNITS is not set for host " + hostInfo.getHostName());
 				limit = (int) (Memory.Properties.PHYSICAL_MEMORY_GUESS / Memory.Properties.BYTES_PER_UNIT);
 			} // C.C.Exception is fatal here.
 			return limit;
@@ -706,28 +636,26 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	}
 
 	/**
-	 * Selects a host runtime from the list of applicable hosts. The hosts on
-	 * the list are expected to meet all the statically defined conditions (RSL,
+	 * Selects a host runtime from the list of applicable hosts. The hosts on the
+	 * list are expected to meet all the statically defined conditions (RSL,
 	 * asTask and the like). Furthermore, they are expected to be online. This
-	 * method first selects hosts that meet dynamically changing conditions
-	 * (such as host reservation) from the supplied list. Then one of the
-	 * matching hosts is selected at random. When either no host matches the
-	 * dynamic conditions or an empty list is supplied, null will be returned.
+	 * method first selects hosts that meet dynamically changing conditions (such
+	 * as host reservation) from the supplied list. Then one of the matching hosts
+	 * is selected at random. When either no host matches the dynamic conditions
+	 * or an empty list is supplied, null will be returned.
 	 * 
 	 * @param taskDescriptor
-	 *            The task descriptor to read data from.
+	 *          The task descriptor to read data from.
 	 * @param hostManager
-	 *            A reference to the Host Manager.
+	 *          A reference to the Host Manager.
 	 * @throws RemoteException
-	 *             When the Host Manager can't be contacted.
+	 *           When the Host Manager can't be contacted.
 	 */
-	private boolean selectHostRuntime(
-			TaskDescriptor taskDescriptor,
+	private boolean selectHostRuntime(TaskDescriptor taskDescriptor,
 			HostManagerInterface hostManager) throws RemoteException {
 		final String taskId = taskDescriptor.getTaskId();
 		final String contextId = taskDescriptor.getContextId();
-		final List<String> hostNames = taskDescriptor.getHostRuntimes()
-				.getName(); // OK, we can modify the TD.
+		final List<String> hostNames = taskDescriptor.getHostRuntimes().getName(); // OK, we can modify the TD.
 		final TaskExclusivity taskExclusivity = taskDescriptor.getExclusive();
 		final Map<String, HostStatus> hostStatusMap;
 		final boolean isSystem = SYSTEM_CONTEXT_ID.equals(contextId);
@@ -741,20 +669,19 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 		 * runtimes.
 		 */
 		if (null == hostManager || // We don't have a HM.
-				(isSystem && taskId
-						.startsWith(HostManagerInterface.DETECTOR_PREFIX)) // It's
-																			// a
-																			// detector.
-																			// (Deadlock!)
+		(isSystem && taskId.startsWith(HostManagerInterface.DETECTOR_PREFIX)) // It's
+		// a
+		// detector.
+		// (Deadlock!)
 		) {
 			hostStatusMap = new HashMap<String, HostStatus>();
 			for (HostRuntimeEntry entry : data.getHostRuntimes()) { // For known
-																	// host
-																	// runtimes...
+				// host
+				// runtimes...
 				hostStatusMap.put(entry.getHostName(), HostStatus.ONLINE); // ...assume
-																			// they
-																			// are
-																			// online.
+				// they
+				// are
+				// online.
 			}
 			loadHandler = new NullLoadHandler();
 		} else {
@@ -769,41 +696,38 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 		hostSelection: while (hostIt.hasNext()) {
 			String hostName = hostIt.next();
 			if (HostStatus.ONLINE != hostStatusMap.get(hostName)) { // Either
-																	// unknown
-																	// or bad
-																	// host.
+				// unknown
+				// or bad
+				// host.
 				continue hostSelection;
 			}
-			HostRuntimeEntry hostRuntimeEntry = data
-					.getHostRuntimeByName(hostName);
+			HostRuntimeEntry hostRuntimeEntry = data.getHostRuntimeByName(hostName);
 			if (hostRuntimeEntry != null) {
 				String hostReservation = hostRuntimeEntry.getReservation();
 				switch (taskExclusivity) {
 					case NON_EXCLUSIVE:
 						if (null == hostReservation) { // No reservation? OK!
 						} else if (hostReservation.equals(contextId)) { // Our
-																		// reservation?
-																		// OK!
+							// reservation?
+							// OK!
 						} else {
 							continue hostSelection;
 						}
 						break;
 					case CONTEXT_EXCLUSIVE:
 						if (null == hostReservation) { // No reservation?
-							TaskEntryImplementation[] tasksOnHost = data
-									.getTasksOnHost(hostName);
+							TaskEntryImplementation[] tasksOnHost = data.getTasksOnHost(hostName);
 							for (TaskEntryImplementation taskOnHost : tasksOnHost) { // Check
-																						// for
-																						// other
-																						// ctx
-																						// first.
+								// for
+								// other
+								// ctx
+								// first.
 								switch (taskOnHost.getState()) {
 									case RUNNING:
 									case SLEEPING: // Yes, fall through.
-										if (!taskOnHost.getContextId().equals(
-												contextId)) {
+										if (!taskOnHost.getContextId().equals(contextId)) {
 											continue hostSelection; // Foe ctx
-																	// found.
+											// found.
 										}
 										break;
 									default:
@@ -811,27 +735,26 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 								}
 							} // All ctxs ours. We're OK.
 						} else if (hostReservation.equals(contextId)) { // Our
-																		// reservation?
-																		// OK!
+							// reservation?
+							// OK!
 						} else {
 							continue hostSelection;
 						}
 						break;
 					case EXCLUSIVE:
 						if (null == hostReservation) { // No reservation?
-							TaskEntryImplementation[] tasksOnHost = data
-									.getTasksOnHost(hostName);
+							TaskEntryImplementation[] tasksOnHost = data.getTasksOnHost(hostName);
 							for (TaskEntryImplementation taskOnHost : tasksOnHost) { // Then
-																						// we
-																						// want
-																						// no
-																						// other
-																						// tasks.
+								// we
+								// want
+								// no
+								// other
+								// tasks.
 								switch (taskOnHost.getState()) {
 									case RUNNING:
 									case SLEEPING: // Yes, fall through.
 										continue hostSelection; // Foe task
-																// found.
+										// found.
 									default:
 										break;
 								}
@@ -860,22 +783,19 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * Test if task is ready to run (exclusivity, dependencies, ...).
 	 * 
 	 * @param taskEntry
-	 *            <code>TaskEntry</code> of checked task.
+	 *          <code>TaskEntry</code> of checked task.
 	 * @param taskData
-	 *            <code>TaskData</code> of checked task.
+	 *          <code>TaskData</code> of checked task.
 	 * @return <code>true</code> if task is ready to run, <code>false</code>
 	 *         otherwise.
 	 * @throws TaskManagerException
-	 *             When checkpoint data deserialization fails.
+	 *           When checkpoint data deserialization fails.
 	 */
-	private boolean isTaskReadyToRun(
-			TaskEntryImplementation taskEntry,
+	private boolean isTaskReadyToRun(TaskEntryImplementation taskEntry,
 			TaskData taskData) throws TaskManagerException {
 		try {
 			final TaskDescriptor taskDescriptor = taskData.getTaskDescriptor();
-			final HostManagerInterface hostManager = (HostManagerInterface) serviceFind(
-					HOST_MANAGER_SERVICE_NAME,
-					Service.RMI_MAIN_IFACE);
+			final HostManagerInterface hostManager = (HostManagerInterface) serviceFind(HOST_MANAGER_SERVICE_NAME, Service.RMI_MAIN_IFACE);
 
 			prepareHostNames(taskDescriptor, hostManager);
 			if (!checkDependencies(taskData)) { // Test for reached checkpoints.
@@ -883,8 +803,7 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 			}
 			return selectHostRuntime(taskDescriptor, hostManager);
 		} catch (RemoteException exception) {
-			logError("Could not contact the Host Manager: "
-					+ exception.getMessage());
+			logError("Could not contact the Host Manager: " + exception.getMessage());
 			return false;
 		}
 	}
@@ -893,13 +812,12 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * Test if task is ready to run and start it.
 	 * 
 	 * @param taskEntry
-	 *            <code>TaskEntry</code> of checked task.
+	 *          <code>TaskEntry</code> of checked task.
 	 * @param taskData
-	 *            <code>TaskData</code> of checked task.
+	 *          <code>TaskData</code> of checked task.
 	 * @return <code>true</code> if task started, <code>false</code> otherwise.
 	 */
-	private boolean runTaskIfReady(
-			TaskEntryImplementation taskEntry,
+	private boolean runTaskIfReady(TaskEntryImplementation taskEntry,
 			TaskData taskData) {
 		boolean taskReady;
 		String taskId = taskEntry.getTaskId();
@@ -912,13 +830,11 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 					data.changeTaskState(taskId, contextId, TaskState.SCHEDULED);
 				}
 			} catch (TaskManagerException exception) { // This is fatal.
-				logError("Task cannot be started, giving up (" + taskId + ", "
-						+ contextId + "): " + exception.getMessage());
+				logError("Task cannot be started, giving up (" + taskId + ", " + contextId + "): " + exception.getMessage());
 				try {
 					taskReachedEnd(taskId, contextId, TaskState.ABORTED);
 				} catch (RemoteException e) {
-					logError("Task could not reach state (" + taskId + ", "
-							+ contextId + "): " + e.getMessage());
+					logError("Task could not reach state (" + taskId + ", " + contextId + "): " + e.getMessage());
 				}
 				taskReady = false;
 			}
@@ -938,8 +854,7 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 */
 	private void runAllReadyTasks() {
 		synchronized (data) {
-			TaskEntryImplementation[] tasksSubmitted = data
-					.getTasksByState(TaskState.SUBMITTED);
+			TaskEntryImplementation[] tasksSubmitted = data.getTasksByState(TaskState.SUBMITTED);
 			for (TaskEntryImplementation taskEntry : tasksSubmitted) {
 				String taskId = taskEntry.getTaskId();
 				String contextId = taskEntry.getContextId();
@@ -954,10 +869,10 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * (XML form).
 	 * 
 	 * @param taskDescriptorPaths
-	 *            Array containing paths to the XML representation of Task
-	 *            Descriptors.
+	 *          Array containing paths to the XML representation of Task
+	 *          Descriptors.
 	 * @throws RemoteException
-	 *             If something failed during this operation.
+	 *           If something failed during this operation.
 	 */
 	@Override
 	public void runTask(String... taskDescriptorPaths) throws RemoteException {
@@ -979,10 +894,8 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 				// method !
 
 				/* Transfer data to the newFile... */
-				BufferedInputStream in = new BufferedInputStream(
-						new FileInputStream(oldFile));
-				BufferedOutputStream out = new BufferedOutputStream(
-						new FileOutputStream(newFile));
+				BufferedInputStream in = new BufferedInputStream(new FileInputStream(oldFile));
+				BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(newFile));
 				final int bufferSize = 1024;
 				byte[] buffer = new byte[bufferSize];
 				int len;
@@ -1002,16 +915,11 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 			TaskDescriptor taskDescriptor = null;
 
 			try {
-				taskDescriptor = taskDescriptorParser.parse(new File(
-						taskDescriptors[i]));
+				taskDescriptor = taskDescriptorParser.parse(new File(taskDescriptors[i]));
 			} catch (JAXBException e) {
-				throw new RemoteException(
-						"Could not parse XML task descriptor",
-						e); // TODO: Don't throw RE!!!
+				throw new RemoteException("Could not parse XML task descriptor", e); // TODO: Don't throw RE!!!
 			} catch (ConvertorException e) {
-				throw new RemoteException(
-						"Could not parse XML task descriptor's RSL sections.",
-						e);// TODO: Don't throw RE!!!
+				throw new RemoteException("Could not parse XML task descriptor's RSL sections.", e);// TODO: Don't throw RE!!!
 			}
 
 			runTask(taskDescriptor);
@@ -1022,9 +930,9 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * Run (schedule) one new Task specified by its task descriptor.
 	 * 
 	 * @param taskDescriptor
-	 *            Task descriptor of new task to run.
+	 *          Task descriptor of new task to run.
 	 * @throws RemoteException
-	 *             If something failed during this operation.
+	 *           If something failed during this operation.
 	 */
 	@Override
 	public void runTask(TaskDescriptor taskDescriptor) throws RemoteException {
@@ -1037,9 +945,7 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 		hostRuntimes = modifiedTaskDescriptor.getHostRuntimes(); // Always set.
 		if (hostRuntimes.isSetAsTask()) { // Prepare the extra dependency.
 			TaskDescriptorHelper.addDependencyCheckpoint( // Value will be null.
-					modifiedTaskDescriptor,
-					hostRuntimes.getAsTask(),
-					Task.CHECKPOINT_NAME_STARTED); // OK, waiting arranged.
+			modifiedTaskDescriptor, hostRuntimes.getAsTask(), Task.CHECKPOINT_NAME_STARTED); // OK, waiting arranged.
 		} else if (hostRuntimes.isSetName()) { // Resolve names from 'outside'.
 			String name = null;
 			List<String> names;
@@ -1051,13 +957,11 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 					name = MiscUtils.getCanonicalHostName(it.next());
 					it.set(name);
 				} catch (UnknownHostException e) {
-					throw new RemoteException("Unable to resolve host \""
-							+ name + "\".", e); // TODO: NOT RemoteException!!!
+					throw new RemoteException("Unable to resolve host \"" + name + "\".", e); // TODO: NOT RemoteException!!!
 				}
 				if (null == data.getHostRuntimeByName(name)) {
-					throw new RemoteException("Host runtime \"" + name
-							+ "\" not connected."); // TODO: NOT
-													// RemoteException!!!
+					throw new RemoteException("Host runtime \"" + name + "\" not connected."); // TODO: NOT
+					// RemoteException!!!
 				}
 			}
 		}
@@ -1066,7 +970,7 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 			taskNew(modifiedTaskDescriptor, originalTaskDescriptor);
 		} catch (TaskManagerException e) {
 			throw new RemoteException("Cannot start task", e); // TODO: NOT
-																// RemoteException!!!
+			// RemoteException!!!
 		}
 	}
 
@@ -1074,13 +978,12 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * Run (schedule) one or more new tasks specified by their task descriptors.
 	 * 
 	 * @param taskDescriptors
-	 *            Task descriptors of new tasks to run.
+	 *          Task descriptors of new tasks to run.
 	 * @throws RemoteException
-	 *             If something failed during this operation.
+	 *           If something failed during this operation.
 	 */
 	@Override
-	public void runTask(TaskDescriptor... taskDescriptors)
-			throws RemoteException {
+	public void runTask(TaskDescriptor... taskDescriptors) throws RemoteException {
 		synchronized (data) {
 			for (int i = 0; i < taskDescriptors.length; i++) {
 				runTask(taskDescriptors[i]);
@@ -1106,19 +1009,17 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * Create new context.
 	 * 
 	 * @param name
-	 *            Human readable name of context.
+	 *          Human readable name of context.
 	 * @param description
-	 *            Human readable description of context.
+	 *          Human readable description of context.
 	 * @param magicObject
-	 *            Some magic object (Serializable and Cloneable).
+	 *          Some magic object (Serializable and Cloneable).
 	 * @return ID of context.
 	 * @throws RemoteException
-	 *             If something failed during this operation.
+	 *           If something failed during this operation.
 	 */
 	@Override
-	public String newContext(
-			String name,
-			String description,
+	public String newContext(String name, String description,
 			Serializable magicObject) throws RemoteException {
 		String id = getNewContextId();
 
@@ -1129,28 +1030,25 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 
 	/**
 	 * Create new context. If context with specified ID exists then if it is
-	 * already deactivated, it is deleted and newly created otherwise exception
-	 * is thrown. This method creates non-self-cleaning context (all the
-	 * finished tasks in context will be kept forever).
+	 * already deactivated, it is deleted and newly created otherwise exception is
+	 * thrown. This method creates non-self-cleaning context (all the finished
+	 * tasks in context will be kept forever).
 	 * 
 	 * @param id
-	 *            ID of context.
+	 *          ID of context.
 	 * @param name
-	 *            Human readable name of context.
+	 *          Human readable name of context.
 	 * @param description
-	 *            Human readable description of context.
+	 *          Human readable description of context.
 	 * @param magicObject
-	 *            Some magic object (Serializable and Cloneable).
+	 *          Some magic object (Serializable and Cloneable).
 	 * @throws IllegalStateException
-	 *             If context with specified ID already exists.
+	 *           If context with specified ID already exists.
 	 * @throws RemoteException
-	 *             If something failed during this operation.
+	 *           If something failed during this operation.
 	 */
 	@Override
-	public void newContext(
-			String id,
-			String name,
-			String description,
+	public void newContext(String id, String name, String description,
 			Serializable magicObject) throws RemoteException {
 
 		newContext(id, name, description, magicObject, false);
@@ -1158,33 +1056,28 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 
 	/**
 	 * Create new context. If context with specified ID exists then if it is
-	 * already deactivated, it is deleted and newly created otherwise exception
-	 * is thrown. This method support selfCleaning parameter which specifies
-	 * whether count of finished contexts should be limited to a predefined
-	 * constant.
+	 * already deactivated, it is deleted and newly created otherwise exception is
+	 * thrown. This method support selfCleaning parameter which specifies whether
+	 * count of finished contexts should be limited to a predefined constant.
 	 * 
 	 * @param id
-	 *            ID of context.
+	 *          ID of context.
 	 * @param name
-	 *            Human readable name of context.
+	 *          Human readable name of context.
 	 * @param description
-	 *            Human readable description of context.
+	 *          Human readable description of context.
 	 * @param magicObject
-	 *            Some magic object (Serializable and Cloneable).
+	 *          Some magic object (Serializable and Cloneable).
 	 * @param selfCleaning
-	 *            whether new context should be self cleaning.
+	 *          whether new context should be self cleaning.
 	 * @throws IllegalStateException
-	 *             If context with specified ID already exists.
+	 *           If context with specified ID already exists.
 	 * @throws RemoteException
-	 *             If something failed during this operation.
+	 *           If something failed during this operation.
 	 */
 	@Override
-	public void newContext(
-			String id,
-			String name,
-			String description,
-			Serializable magicObject,
-			boolean selfCleaning) throws RemoteException {
+	public void newContext(String id, String name, String description,
+			Serializable magicObject, boolean selfCleaning) throws RemoteException {
 		/* Test if context currently exists. */
 		ContextEntry currentContextEntry = data.getContextById(id);
 		if (currentContextEntry != null) {
@@ -1192,25 +1085,15 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 			// throw new IllegalStateException("Context with id \"" + id
 			// + "\" already exists and is still opened");
 			// }
-			throw new IllegalStateException("Context with id \"" + id
-					+ "\" already exists");
+			throw new IllegalStateException("Context with id \"" + id + "\" already exists");
 		}
 
 		ContextEntry contextEntry;
 
 		if (selfCleaning) {
-			contextEntry = new ContextEntryImplementation(
-					id,
-					name,
-					description,
-					magicObject,
-					DEFAULT_FINISHED_TASKS_KEPT);
+			contextEntry = new ContextEntryImplementation(id, name, description, magicObject, DEFAULT_FINISHED_TASKS_KEPT);
 		} else {
-			contextEntry = new ContextEntryImplementation(
-					id,
-					name,
-					description,
-					magicObject);
+			contextEntry = new ContextEntryImplementation(id, name, description, magicObject);
 		}
 
 		data.newContext(contextEntry);
@@ -1219,9 +1102,7 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 		try {
 			logStorage.addContext(id);
 		} catch (LogStorageException e) {
-			throw new RemoteException(
-					"Unable to add context to the log storage",
-					e);
+			throw new RemoteException("Unable to add context to the log storage", e);
 		}
 	}
 
@@ -1229,9 +1110,9 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * Close context.
 	 * 
 	 * @param contextId
-	 *            ID of context.
+	 *          ID of context.
 	 * @throws RemoteException
-	 *             If something failed during this operation.
+	 *           If something failed during this operation.
 	 */
 	@Override
 	public void closeContext(String contextId) throws RemoteException {
@@ -1243,7 +1124,7 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * 
 	 * @return Array containing TaskEntry for each task.
 	 * @throws RemoteException
-	 *             If something failed during this operation.
+	 *           If something failed during this operation.
 	 */
 	@Override
 	public TaskEntryImplementation[] getTasks() throws RemoteException {
@@ -1251,34 +1132,32 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	}
 
 	/**
-	 * Return informations about all tasks known inside Task Manager as member
-	 * of specified context.
+	 * Return informations about all tasks known inside Task Manager as member of
+	 * specified context.
 	 * 
 	 * @param contextId
-	 *            ID of requested context.
+	 *          ID of requested context.
 	 * @return Array containing TaskEntry for each convenient task.
 	 * @throws RemoteException
-	 *             If something failed during this operation.
+	 *           If something failed during this operation.
 	 */
 	@Override
-	public TaskEntryImplementation[] getTasksInContext(String contextId)
-			throws RemoteException {
+	public TaskEntryImplementation[] getTasksInContext(String contextId) throws RemoteException {
 		return data.getTasksInContext(contextId);
 	}
 
 	/**
-	 * Return informations about all tasks known inside Task Manager as
-	 * scheduled on specified HostRuntime.
+	 * Return informations about all tasks known inside Task Manager as scheduled
+	 * on specified HostRuntime.
 	 * 
 	 * @param hostName
-	 *            URI of requested Host Runtime.
+	 *          URI of requested Host Runtime.
 	 * @return Array containing TaskEntry for each convenient task.
 	 * @throws RemoteException
-	 *             If something failed during this operation.
+	 *           If something failed during this operation.
 	 */
 	@Override
-	public TaskEntryImplementation[] getTasksOnHost(String hostName)
-			throws RemoteException {
+	public TaskEntryImplementation[] getTasksOnHost(String hostName) throws RemoteException {
 		return data.getTasksOnHost(hostName);
 	}
 
@@ -1287,7 +1166,7 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * 
 	 * @return Array containing ContextEntry for each context.
 	 * @throws RemoteException
-	 *             If something failed during this operation.
+	 *           If something failed during this operation.
 	 */
 	@Override
 	public ContextEntry[] getContexts() throws RemoteException {
@@ -1298,19 +1177,17 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * Return informations about one task specified by its ID.
 	 * 
 	 * @param taskId
-	 *            ID of requested task.
+	 *          ID of requested task.
 	 * @return TaskEntry filled in by informations about requested task (null if
 	 *         requested task not found).
 	 * @throws RemoteException
-	 *             If something failed during this operation.
+	 *           If something failed during this operation.
 	 */
 	@Override
-	public TaskEntryImplementation getTaskById(String taskId, String contextId)
-			throws RemoteException {
+	public TaskEntryImplementation getTaskById(String taskId, String contextId) throws RemoteException {
 		TaskEntryImplementation result = data.getTaskById(taskId, contextId);
 		if (result == null) {
-			throw new IllegalArgumentException("Invalid contextId (\""
-					+ contextId // TODO: !!! CHECKED exception !!!
+			throw new IllegalArgumentException("Invalid contextId (\"" + contextId // TODO: !!! CHECKED exception !!!
 					+ "\") or taskId (\"" + taskId + "\").");
 		}
 		return result;
@@ -1320,18 +1197,17 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * Return informations about one context specified by its ID.
 	 * 
 	 * @param contextId
-	 *            ID of requested context.
+	 *          ID of requested context.
 	 * @return ContextEntry filled in by informations about requested context
 	 *         (null if requested task not found).
 	 * @throws RemoteException
-	 *             If something failed during this operation.
+	 *           If something failed during this operation.
 	 */
 	@Override
 	public ContextEntry getContextById(String contextId) throws RemoteException {
 		ContextEntry result = data.getContextById(contextId);
 		if (result == null) {
-			throw new IllegalArgumentException("Invalid contextId (\""
-					+ contextId + "\").");
+			throw new IllegalArgumentException("Invalid contextId (\"" + contextId + "\").");
 		}
 		return result;
 	}
@@ -1340,24 +1216,22 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * Kill task specified by its ID.
 	 * 
 	 * @param taskId
-	 *            ID of task.
+	 *          ID of task.
 	 * @param contextId
-	 *            ID of context.
+	 *          ID of context.
 	 * @throws IllegalArgumentException
-	 *             If task not found.
+	 *           If task not found.
 	 * @throws RemoteException
-	 *             If something failed during this operation.
+	 *           If something failed during this operation.
 	 */
 	@Override
-	public void killTaskById(String taskId, String contextId)
-			throws RemoteException {
+	public void killTaskById(String taskId, String contextId) throws RemoteException {
 		TaskInterface taskInterface = null;
 
 		synchronized (data) {
 			TaskData taskData = data.getTaskData(taskId, contextId);
 			if (taskData == null) {
-				throw new IllegalArgumentException("task (taskId \"" + taskId
-						+ "\", contextId \"" + contextId + "\") not found");
+				throw new IllegalArgumentException("task (taskId \"" + taskId + "\", contextId \"" + contextId + "\") not found");
 			}
 
 			taskInterface = taskData.getTaskInterface();
@@ -1377,20 +1251,18 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * Kill all tasks within specified context and that context.
 	 * 
 	 * @param contextId
-	 *            ID of context.
+	 *          ID of context.
 	 * @throws RemoteException
-	 *             If something failed during this operation.
+	 *           If something failed during this operation.
 	 */
 	@Override
 	public void killContextById(String contextId) throws RemoteException {
 		ContextEntry contextEntry = data.getContextById(contextId);
 		if (contextEntry == null) {
-			throw new IllegalArgumentException("context (contextId \""
-					+ contextId + "\") not found");
+			throw new IllegalArgumentException("context (contextId \"" + contextId + "\") not found");
 		}
 
-		TaskEntryImplementation[] taskEntries = data
-				.getTasksInContext(contextId);
+		TaskEntryImplementation[] taskEntries = data.getTasksInContext(contextId);
 		for (TaskEntryImplementation taskEntry : taskEntries) {
 			killTaskById(taskEntry.getTaskId(), taskEntry.getContextId());
 		}
@@ -1400,29 +1272,24 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * Used by Host Runtime for forwarding of check points reached by tasks.
 	 * 
 	 * @param name
-	 *            Name of checkPoint.
+	 *          Name of checkPoint.
 	 * @param value
-	 *            Value of checkPoint.
+	 *          Value of checkPoint.
 	 * @param taskId
-	 *            ID of task.
+	 *          ID of task.
 	 * @param contextId
-	 *            ID of context.
+	 *          ID of context.
 	 * @param hostName
-	 *            Name of host on which this checkPoint was reached.
+	 *          Name of host on which this checkPoint was reached.
 	 * @param magicObject
-	 *            <code>MagicObject</code> of this checkPoint.
+	 *          <code>MagicObject</code> of this checkPoint.
 	 * @throws RemoteException
-	 *             If something failed during the execution of the remote method
-	 *             call.
+	 *           If something failed during the execution of the remote method
+	 *           call.
 	 */
 	@Override
-	public void checkPointReached(
-			String name,
-			String value,
-			String taskId,
-			String contextId,
-			String hostName,
-			Serializable magicObject) throws RemoteException {
+	public void checkPointReached(String name, String value, String taskId,
+			String contextId, String hostName, Serializable magicObject) throws RemoteException {
 		checkPointReached(new CheckPoint(taskId, contextId, name, value));
 	}
 
@@ -1430,16 +1297,14 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * Used by Host Runtime for forwarding of checkpoint reached by task.
 	 * 
 	 * @param checkPoint
-	 *            CheckPoint representation of reached checkpoint.
+	 *          CheckPoint representation of reached checkpoint.
 	 * @throws RemoteException
-	 *             If something failed during the execution of the remote method
-	 *             call.
+	 *           If something failed during the execution of the remote method
+	 *           call.
 	 */
 	@Override
 	public void checkPointReached(CheckPoint checkPoint) throws RemoteException {
-		logDebug("[" + checkPoint.getContextId() + ":" + checkPoint.getTaskId()
-				+ "] Checkpoint \"" + checkPoint.getName() + "\" set to \""
-				+ checkPoint.getValue() + "\"");
+		logDebug("[" + checkPoint.getContextId() + ":" + checkPoint.getTaskId() + "] Checkpoint \"" + checkPoint.getName() + "\" set to \"" + checkPoint.getValue() + "\"");
 
 		/*
 		 * Add information about this checkpoint to the list of reached
@@ -1450,12 +1315,7 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 		String contextId = checkPoint.getContextId();
 		String hostName = checkPoint.getHostName();
 		Serializable magicObject = checkPoint.getValue();
-		CheckPointEntry checkPointEntry = new CheckPointEntry(
-				name,
-				taskId,
-				contextId,
-				hostName,
-				magicObject);
+		CheckPointEntry checkPointEntry = new CheckPointEntry(name, taskId, contextId, hostName, magicObject);
 
 		synchronized (data) {
 			data.newCheckPointOver(checkPointEntry);
@@ -1477,12 +1337,12 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * is not finished yet.
 	 * 
 	 * @param taskId
-	 *            ID of task.
+	 *          ID of task.
 	 * @param contextId
-	 *            ID of context.
-	 * @return <code>true</code> if checkPoint with specified
-	 *         <code>taskId</code> and <code>contextId</code> can be still
-	 *         reached; <code>false</code> otherwise.
+	 *          ID of context.
+	 * @return <code>true</code> if checkPoint with specified <code>taskId</code>
+	 *         and <code>contextId</code> can be still reached; <code>false</code>
+	 *         otherwise.
 	 */
 	private boolean isCheckPointReachPossible(String taskId, String contextId) {
 		/* Test if specified context exists and is still open. */
@@ -1502,8 +1362,7 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 		if (taskEntry == null) {
 			return false;
 		}
-		if ((taskEntry.getState() == TaskState.FINISHED)
-				|| (taskEntry.getState() == TaskState.ABORTED)) {
+		if ((taskEntry.getState() == TaskState.FINISHED) || (taskEntry.getState() == TaskState.ABORTED)) {
 			return false;
 		}
 
@@ -1520,38 +1379,27 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * Values set to null are arbitrary. Calling of this method is non-blocking.
 	 * 
 	 * @param name
-	 *            Name of checkpoint.
+	 *          Name of checkpoint.
 	 * @param value
-	 *            Value of checkpoint.
+	 *          Value of checkpoint.
 	 * @param taskId
-	 *            ID of task which reached checkpoint.
+	 *          ID of task which reached checkpoint.
 	 * @param contextId
-	 *            ID of context in which checkpoint was reached.
+	 *          ID of context in which checkpoint was reached.
 	 * @return Array containing all checkpoint matching specified
 	 *         checkpointTemplate.
 	 * @throws RemoteException
-	 *             If something failed during the execution of the remote method
-	 *             call.
+	 *           If something failed during the execution of the remote method
+	 *           call.
 	 */
-	private CheckPoint[] checkPointLook(
-			String name,
-			Serializable value,
-			String taskId,
-			String contextId) throws RemoteException {
-		CheckPointEntry[] checkPointEntries = data.getCheckPoints(
-				name,
-				taskId,
-				contextId,
-				value);
+	private CheckPoint[] checkPointLook(String name, Serializable value,
+			String taskId, String contextId) throws RemoteException {
+		CheckPointEntry[] checkPointEntries = data.getCheckPoints(name, taskId, contextId, value);
 
 		CheckPoint[] matchingCheckPoints = new CheckPoint[checkPointEntries.length];
 
 		for (int i = 0; i < checkPointEntries.length; i++) {
-			matchingCheckPoints[i] = new CheckPoint(
-					checkPointEntries[i].getTaskId(),
-					checkPointEntries[i].getContextId(),
-					checkPointEntries[i].getName(),
-					checkPointEntries[i].getMagicObject());
+			matchingCheckPoints[i] = new CheckPoint(checkPointEntries[i].getTaskId(), checkPointEntries[i].getContextId(), checkPointEntries[i].getName(), checkPointEntries[i].getMagicObject());
 		}
 
 		return matchingCheckPoints;
@@ -1563,29 +1411,25 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * Values set to null are arbitrary. Calling of this method is blocking.
 	 * 
 	 * @param name
-	 *            Name of checkpoint.
+	 *          Name of checkpoint.
 	 * @param value
-	 *            Value of checkpoint.
+	 *          Value of checkpoint.
 	 * @param taskId
-	 *            ID of task which reached checkpoint.
+	 *          ID of task which reached checkpoint.
 	 * @param contextId
-	 *            ID of context in which checkpoint was reached.
+	 *          ID of context in which checkpoint was reached.
 	 * @param timeout
-	 *            Maximum time to wait in milliseconds.
+	 *          Maximum time to wait in milliseconds.
 	 * @return Array containing all checkpoint matching specified
 	 *         checkpointTemplate.
 	 * @throws TaskManagerException
-	 *             If Required checkPoint can not be reached anyway
+	 *           If Required checkPoint can not be reached anyway
 	 * @throws RemoteException
-	 *             If something failed during the execution of the remote method
-	 *             call.
+	 *           If something failed during the execution of the remote method
+	 *           call.
 	 */
-	private CheckPoint[] checkPointLook(
-			String name,
-			Serializable value,
-			String taskId,
-			String contextId,
-			long timeout) throws TaskManagerException, RemoteException {
+	private CheckPoint[] checkPointLook(String name, Serializable value,
+			String taskId, String contextId, long timeout) throws TaskManagerException, RemoteException {
 		long startTimeNano = System.nanoTime();
 		CheckPoint[] result = null;
 
@@ -1593,8 +1437,7 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 			while ((result = checkPointLook(name, value, taskId, contextId)).length < 1) {
 
 				if (!isCheckPointReachPossible(taskId, contextId)) {
-					throw new TaskManagerException("Required checkPoint can "
-							+ "not be reached anyway");
+					throw new TaskManagerException("Required checkPoint can " + "not be reached anyway");
 				}
 
 				if (timeout == INFINITE_TIME) {
@@ -1628,35 +1471,32 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * reached checkpoints matching specified taskId, contextId and name. All
 	 * values must be non-null and must match.
 	 * 
-	 * Calling of this method is blocking. If timeout is set to zero, then
-	 * return immediately.
+	 * Calling of this method is blocking. If timeout is set to zero, then return
+	 * immediately.
 	 * 
 	 * @param name
-	 *            Name of checkpoint.
+	 *          Name of checkpoint.
 	 * @param taskId
-	 *            ID of task which reached checkpoint.
+	 *          ID of task which reached checkpoint.
 	 * @param contextId
-	 *            ID of context in which checkpoint was reached.
+	 *          ID of context in which checkpoint was reached.
 	 * @param timeout
-	 *            Maximum time to wait in milliseconds.
+	 *          Maximum time to wait in milliseconds.
 	 * 
 	 * @return Value of specified checkpoint (can be <code>null</code>).
 	 * @throws NullPointerException
-	 *             If some input parameter is null.
+	 *           If some input parameter is null.
 	 * @throws IllegalArgumentException
-	 *             If checkpoint not found.
+	 *           If checkpoint not found.
 	 * @throws TaskManagerException
-	 *             If Required checkPoint can not be reached anyway
+	 *           If Required checkPoint can not be reached anyway
 	 * @throws RemoteException
-	 *             If something failed during the execution of the remote method
-	 *             call.
+	 *           If something failed during the execution of the remote method
+	 *           call.
 	 */
 	@Override
-	public Serializable checkPointLook(
-			String name,
-			String taskId,
-			String contextId,
-			long timeout) throws TaskManagerException, RemoteException {
+	public Serializable checkPointLook(String name, String taskId,
+			String contextId, long timeout) throws TaskManagerException, RemoteException {
 		/* Check input parameters. */
 		if (name == null) {
 			throw new NullPointerException("name is null");
@@ -1668,12 +1508,7 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 			throw new NullPointerException("contextId is null");
 		}
 
-		CheckPoint[] foundCheckPoints = checkPointLook(
-				name,
-				null,
-				taskId,
-				contextId,
-				timeout);
+		CheckPoint[] foundCheckPoints = checkPointLook(name, null, taskId, contextId, timeout);
 
 		if (foundCheckPoints.length == 0) {
 			throw new IllegalArgumentException("specified checkpoint not foud");
@@ -1685,26 +1520,24 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	/**
 	 * Used by Host Runtime for forwarding of lookup request from task. Returns
 	 * array containing all reached checkpoints matching specified
-	 * checkpointTemplate. All filled in values must match. Values set to null
-	 * are arbitrary. Calling of this method is blocking. If timeout is set to
-	 * zero, then return immediately.
+	 * checkpointTemplate. All filled in values must match. Values set to null are
+	 * arbitrary. Calling of this method is blocking. If timeout is set to zero,
+	 * then return immediately.
 	 * 
 	 * @param checkPointTemplate
-	 *            Prepared template for checkpoint match.
+	 *          Prepared template for checkpoint match.
 	 * @param timeout
-	 *            Maximum time to wait in milliseconds.
+	 *          Maximum time to wait in milliseconds.
 	 * @return Array containing all checkpoint matching specified
 	 *         checkpointTemplate.
 	 * @throws TaskManagerException
-	 *             If Required checkPoint can not be reached anyway
+	 *           If Required checkPoint can not be reached anyway
 	 * @throws RemoteException
-	 *             If something failed during the execution of the remote method
-	 *             call.
+	 *           If something failed during the execution of the remote method
+	 *           call.
 	 */
 	@Override
-	public CheckPoint[] checkPointLook(
-			CheckPoint checkPointTemplate,
-			long timeout) throws TaskManagerException, RemoteException {
+	public CheckPoint[] checkPointLook(CheckPoint checkPointTemplate, long timeout) throws TaskManagerException, RemoteException {
 		String name = checkPointTemplate.getName();
 		Serializable value = checkPointTemplate.getValue();
 		String taskId = checkPointTemplate.getTaskId();
@@ -1717,66 +1550,54 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * Used by Host Runtime for forwarding of log messages from tasks.
 	 * 
 	 * @param contextId
-	 *            Id of the task's context.
+	 *          Id of the task's context.
 	 * @param taskId
-	 *            TID of task.
+	 *          TID of task.
 	 * @param level
-	 *            log level of this log message
+	 *          log level of this log message
 	 * @param timestamp
-	 *            time stamp of this log message
+	 *          time stamp of this log message
 	 * @param message
-	 *            Message to log.
+	 *          Message to log.
 	 * @throws RemoteException
-	 *             If something failed during the execution of the remote method
-	 *             call.
+	 *           If something failed during the execution of the remote method
+	 *           call.
 	 */
 	@Override
-	public void log(
-			String contextId,
-			String taskId,
-			LogLevel level,
-			Date timestamp,
-			String message) throws RemoteException {
-		if (!logLevel.isGreaterOrEqual(LogLevel.WARN)) {
-			System.out.println("[" + contextId + ":" + taskId + "] " + level
-					+ " " + message);
-		}
+	public void log(String contextId, String taskId, LogLevel level,
+			Date timestamp, String message) throws RemoteException {
+		log.warn("[" + contextId + ":" + taskId + "] " + level + " " + message);
 
 		try {
 			logStorage.log(contextId, taskId, timestamp, level, message);
 		} catch (LogStorageException e) {
-			throw new RemoteException(
-					"Cannot store the log message in the log " + "storage",
-					e);
+			throw new RemoteException("Cannot store the log message in the log " + "storage", e);
 		}
 	}
 
 	/**
-	 * Used by Host Runtime for forwarding of task's request for new
-	 * registration of service.
+	 * Used by Host Runtime for forwarding of task's request for new registration
+	 * of service.
 	 * 
 	 * @param service
-	 *            Object describing service to register.
+	 *          Object describing service to register.
 	 * @throws RemoteException
-	 *             If something failed during the execution of the remote method
-	 *             call.
+	 *           If something failed during the execution of the remote method
+	 *           call.
 	 * @throws IllegalArgumentException
-	 *             If <code>service</code> is not correctly filled in.
+	 *           If <code>service</code> is not correctly filled in.
 	 */
 	@Override
 	public void serviceRegister(ServiceEntry service) throws RemoteException {
 		/* Check all values in ServiceEntry. */
 		if (service.getServiceName() == null) {
-			throw new IllegalArgumentException(
-					"service.serviceName can not be " + "null");
+			throw new IllegalArgumentException("service.serviceName can not be " + "null");
 		}
 		if (service.getInterfaceName() == null) {
-			throw new IllegalArgumentException("service.InterfaceName can not "
-					+ "be null");
+			throw new IllegalArgumentException("service.InterfaceName can not " + "be null");
 		}
 		if (service.getRmiAddress() == null) {
-			throw new IllegalArgumentException("service.rmiAddress can not be "
-					+ "null");
+			throw new IllegalArgumentException("service.rmiAddress can not be " + "null");
 		}
 		// if ((service.getServiceName() == null)
 		// || (service.getInterfaceName() == null)
@@ -1798,20 +1619,18 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	}
 
 	/**
-	 * Used by Host Runtime for forwarding of task's request for deregistration
-	 * of services. All entries matching specified template are removed from the
+	 * Used by Host Runtime for forwarding of task's request for deregistration of
+	 * services. All entries matching specified template are removed from the
 	 * registry.
 	 * 
 	 * @param serviceTemplate
-	 *            Object describing services to remove (using regular
-	 *            expressions).
+	 *          Object describing services to remove (using regular expressions).
 	 * @throws RemoteException
-	 *             If something failed during the execution of the remote method
-	 *             call.
+	 *           If something failed during the execution of the remote method
+	 *           call.
 	 */
 	@Override
-	public void serviceUnregister(ServiceEntry serviceTemplate)
-			throws RemoteException {
+	public void serviceUnregister(ServiceEntry serviceTemplate) throws RemoteException {
 		/* Make patterns for regex matching. */
 		Pattern serviceNamePattern = null;
 		Pattern interfaceNamePattern = null;
@@ -1836,33 +1655,27 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 		if (rmiAddressTemplate == null) {
 			rmiAddressPattern = Pattern.compile(".*");
 		} else {
-			rmiAddressPattern = Pattern.compile(rmiAddressTemplate.normalize()
-					.toString());
+			rmiAddressPattern = Pattern.compile(rmiAddressTemplate.normalize().toString());
 			// normalised and converted to String
 		}
 
 		synchronized (serviceRegistry) {
-			Iterator<ServiceEntry> registryIterator = serviceRegistry
-					.iterator();
+			Iterator<ServiceEntry> registryIterator = serviceRegistry.iterator();
 			while (registryIterator.hasNext()) {
 				ServiceEntry serviceEntry = registryIterator.next();
 
 				/* Do matching... */
-				Matcher serviceNameMatcher = serviceNamePattern
-						.matcher(serviceEntry.getServiceName());
+				Matcher serviceNameMatcher = serviceNamePattern.matcher(serviceEntry.getServiceName());
 				if (!serviceNameMatcher.matches()) {
 					continue;
 				}
 
-				Matcher interfaceNameMatcher = interfaceNamePattern
-						.matcher(serviceEntry.getInterfaceName());
+				Matcher interfaceNameMatcher = interfaceNamePattern.matcher(serviceEntry.getInterfaceName());
 				if (!interfaceNameMatcher.matches()) {
 					continue;
 				}
 
-				Matcher rmiAddressMatcher = rmiAddressPattern
-						.matcher(serviceEntry.getRmiAddress().normalize()
-								.toString());
+				Matcher rmiAddressMatcher = rmiAddressPattern.matcher(serviceEntry.getRmiAddress().normalize().toString());
 				if (!rmiAddressMatcher.matches()) {
 					continue;
 				}
@@ -1881,14 +1694,13 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * specified template (using regular expressions).
 	 * 
 	 * @param serviceTemplate
-	 *            Object looked describing services (using regular expressions).
+	 *          Object looked describing services (using regular expressions).
 	 * @throws RemoteException
-	 *             If something failed during the execution of the remote method
-	 *             call.
+	 *           If something failed during the execution of the remote method
+	 *           call.
 	 */
 	@Override
-	public ServiceEntry[] serviceLook(ServiceEntry serviceTemplate)
-			throws RemoteException {
+	public ServiceEntry[] serviceLook(ServiceEntry serviceTemplate) throws RemoteException {
 		LinkedList<ServiceEntry> matchingEntries = new LinkedList<ServiceEntry>();
 
 		/* Make patterns for regex matching. */
@@ -1915,8 +1727,7 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 		if (rmiAddressTemplate == null) {
 			rmiAddressPattern = Pattern.compile(".*");
 		} else {
-			rmiAddressPattern = Pattern.compile(rmiAddressTemplate.normalize()
-					.toString());
+			rmiAddressPattern = Pattern.compile(rmiAddressTemplate.normalize().toString());
 			// normalised and converted to String
 		}
 
@@ -1927,32 +1738,26 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 			for (ServiceEntry serviceEntry : serviceRegistry) {
 
 				/* Do matching... */
-				Matcher serviceNameMatcher = serviceNamePattern
-						.matcher(serviceEntry.getServiceName());
+				Matcher serviceNameMatcher = serviceNamePattern.matcher(serviceEntry.getServiceName());
 				if (!serviceNameMatcher.matches()) {
 					continue;
 				}
 
-				Matcher interfaceNameMatcher = interfaceNamePattern
-						.matcher(serviceEntry.getInterfaceName());
+				Matcher interfaceNameMatcher = interfaceNamePattern.matcher(serviceEntry.getInterfaceName());
 				if (!interfaceNameMatcher.matches()) {
 					continue;
 				}
 
-				Matcher rmiAddressMatcher = rmiAddressPattern
-						.matcher(serviceEntry.getRmiAddress().normalize()
-								.toString());
+				Matcher rmiAddressMatcher = rmiAddressPattern.matcher(serviceEntry.getRmiAddress().normalize().toString());
 				if (!rmiAddressMatcher.matches()) {
 					continue;
 				}
 
-				if ((taskId != null)
-						&& (!taskId.equals(serviceEntry.getTaskId()))) {
+				if ((taskId != null) && (!taskId.equals(serviceEntry.getTaskId()))) {
 					continue;
 				}
 
-				if ((contextId != null)
-						&& (!contextId.equals(serviceEntry.getContextId()))) {
+				if ((contextId != null) && (!contextId.equals(serviceEntry.getContextId()))) {
 					continue;
 				}
 
@@ -1965,40 +1770,32 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 			}
 		}
 
-		return matchingEntries
-				.toArray(new ServiceEntry[matchingEntries.size()]);
+		return matchingEntries.toArray(new ServiceEntry[matchingEntries.size()]);
 	}
 
 	/**
-	 * Used by tasks for finding some registered remote interface. Given names
-	 * are compared for exact match (doesn't use regular expressions).
+	 * Used by tasks for finding some registered remote interface. Given names are
+	 * compared for exact match (doesn't use regular expressions).
 	 * 
 	 * @param serviceName
-	 *            Name of service.
+	 *          Name of service.
 	 * @param interfaceName
-	 *            Name of service's interface.
+	 *          Name of service's interface.
 	 * @return Remote representation of one from all matching interfaces or null
 	 *         if none.
 	 * @throws RemoteException
-	 *             If something failed during the execution of the remote method
-	 *             call.
+	 *           If something failed during the execution of the remote method
+	 *           call.
 	 */
 	@Override
-	public Remote serviceFind(String serviceName, String interfaceName)
-			throws RemoteException {
+	public Remote serviceFind(String serviceName, String interfaceName) throws RemoteException {
 		/* Check input parameters (null is not allowed). */
 		if ((serviceName == null) || (interfaceName == null)) {
 			return null;
 		}
 
 		/* Do search. */
-		ServiceEntry templateEntry = new ServiceEntry(
-				Pattern.quote(serviceName),
-				Pattern.quote(interfaceName),
-				null,
-				null,
-				null,
-				null);
+		ServiceEntry templateEntry = new ServiceEntry(Pattern.quote(serviceName), Pattern.quote(interfaceName), null, null, null, null);
 		ServiceEntry[] matchingEntries = serviceLook(templateEntry);
 
 		/* If found then return the first. */
@@ -2011,35 +1808,28 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	}
 
 	/**
-	 * Used by tasks for finding some registered remote interface. Given names
-	 * are compared for exact match (doesn't use regular expressions).
+	 * Used by tasks for finding some registered remote interface. Given names are
+	 * compared for exact match (doesn't use regular expressions).
 	 * 
 	 * @param serviceName
-	 *            Name of service.
+	 *          Name of service.
 	 * @param interfaceName
-	 *            Name of service's interface.
+	 *          Name of service's interface.
 	 * @return URI representation of one from all matching interfaces or null if
 	 *         none.
 	 * @throws RemoteException
-	 *             If something failed during the execution of the remote method
-	 *             call.
+	 *           If something failed during the execution of the remote method
+	 *           call.
 	 */
 	@Override
-	public URI serviceFindURI(String serviceName, String interfaceName)
-			throws RemoteException {
+	public URI serviceFindURI(String serviceName, String interfaceName) throws RemoteException {
 		/* Check input parameters (null is not allowed). */
 		if ((serviceName == null) || (interfaceName == null)) {
 			return null;
 		}
 
 		/* Do search. */
-		ServiceEntry templateEntry = new ServiceEntry(
-				Pattern.quote(serviceName),
-				Pattern.quote(interfaceName),
-				null,
-				null,
-				null,
-				null);
+		ServiceEntry templateEntry = new ServiceEntry(Pattern.quote(serviceName), Pattern.quote(interfaceName), null, null, null, null);
 		ServiceEntry[] matchingEntries = serviceLook(templateEntry);
 
 		/* If found then return the first. */
@@ -2052,50 +1842,37 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	}
 
 	@Override
-	public LogRecord[] getLogsForTask(String context, String taskID)
-			throws RemoteException, LogStorageException,
-			IllegalArgumentException, NullPointerException {
+	public LogRecord[] getLogsForTask(String context, String taskID) throws RemoteException, LogStorageException, IllegalArgumentException, NullPointerException {
 		return logStorage.getLogsForTask(context, taskID);
 	}
 
 	@Override
-	public boolean isContextRegistered(String name) throws RemoteException,
-			LogStorageException, IllegalArgumentException, NullPointerException {
+	public boolean isContextRegistered(String name) throws RemoteException, LogStorageException, IllegalArgumentException, NullPointerException {
 		return logStorage.isContextRegistered(name);
 	}
 
 	@Override
-	public boolean isTaskRegistered(String context, String taskID)
-			throws RemoteException, LogStorageException,
-			IllegalArgumentException, NullPointerException {
+	public boolean isTaskRegistered(String context, String taskID) throws RemoteException, LogStorageException, IllegalArgumentException, NullPointerException {
 		return logStorage.isTaskRegistered(context, taskID);
 	}
 
 	@Override
-	public void addErrorOutput(String context, String taskID, String output)
-			throws RemoteException, LogStorageException,
-			IllegalArgumentException, NullPointerException {
+	public void addErrorOutput(String context, String taskID, String output) throws RemoteException, LogStorageException, IllegalArgumentException, NullPointerException {
 		logStorage.addErrorOutput(context, taskID, output);
 	}
 
 	@Override
-	public void addStandardOutput(String context, String taskID, String output)
-			throws RemoteException, LogStorageException,
-			IllegalArgumentException, NullPointerException {
+	public void addStandardOutput(String context, String taskID, String output) throws RemoteException, LogStorageException, IllegalArgumentException, NullPointerException {
 		logStorage.addStandardOutput(context, taskID, output);
 	}
 
 	@Override
-	public OutputHandle getErrorOutput(String context, String taskID)
-			throws RemoteException, LogStorageException,
-			IllegalArgumentException, NullPointerException {
+	public OutputHandle getErrorOutput(String context, String taskID) throws RemoteException, LogStorageException, IllegalArgumentException, NullPointerException {
 		return logStorage.getErrorOutput(context, taskID);
 	}
 
 	@Override
-	public OutputHandle getStandardOutput(String context, String taskID)
-			throws RemoteException, LogStorageException,
-			IllegalArgumentException, NullPointerException {
+	public OutputHandle getStandardOutput(String context, String taskID) throws RemoteException, LogStorageException, IllegalArgumentException, NullPointerException {
 		return logStorage.getStandardOutput(context, taskID);
 	}
 
@@ -2103,11 +1880,11 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * Test if context is finished (i.e. closed and all its tasks are ended).
 	 * 
 	 * @param contextId
-	 *            ID of context.
+	 *          ID of context.
 	 * @return <code>true</code> if context is finished; <code>false</code>
 	 *         otherwise.
 	 * @throws IllegalArgumentException
-	 *             If context with specified ID does not exist.
+	 *           If context with specified ID does not exist.
 	 */
 	private boolean isContextFinished(String contextId) {
 		/* Check if system context. */
@@ -2119,8 +1896,7 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 			/* Check if context exists. */
 			ContextEntry contextEntry = data.getContextById(contextId);
 			if (contextEntry == null) {
-				throw new IllegalArgumentException("Context \"" + contextId
-						+ "\" " + "does not exist");
+				throw new IllegalArgumentException("Context \"" + contextId + "\" " + "does not exist");
 			}
 
 			/* Check if context is open. */
@@ -2132,11 +1908,9 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 			 * Check if some task with specified contextId is not ended
 			 * (FINISHED or ABORTED).
 			 */
-			TaskEntryImplementation[] taskEntries = data
-					.getTasksInContext(contextId);
+			TaskEntryImplementation[] taskEntries = data.getTasksInContext(contextId);
 			for (TaskEntryImplementation taskEntry : taskEntries) {
-				if ((taskEntry.getState() != TaskState.FINISHED)
-						&& (taskEntry.getState() != TaskState.ABORTED)) {
+				if ((taskEntry.getState() != TaskState.FINISHED) && (taskEntry.getState() != TaskState.ABORTED)) {
 					return false;
 				}
 			}
@@ -2167,8 +1941,7 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 		try {
 			killContextById(contextId);
 		} catch (RemoteException e) {
-			System.err.println("Error trying to kill tasks in context: "
-					+ e.getMessage());
+			System.err.println("Error trying to kill tasks in context: " + e.getMessage());
 		}
 
 		// Delete the thing.
@@ -2194,33 +1967,26 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 		// Free all resources used by tasks from the deleted context.
 		// Build the list of host runtimes as we go along.
 		Set<String> hostRuntimesToClean = new HashSet<String>();
-		TaskEntryImplementation[] taskEntriesToRemove = data
-				.getTasksInContext(contextId);
+		TaskEntryImplementation[] taskEntriesToRemove = data.getTasksInContext(contextId);
 		for (TaskEntryImplementation removedTaskEntry : taskEntriesToRemove) {
 			String removedContextId = removedTaskEntry.getContextId();
 			String removedTaskId = removedTaskEntry.getTaskId();
 
 			// TODO It is a bit illogical to have task entry and task data and
 			// search for one using the other.
-			TaskData removedTaskData = data.getTaskData(
-					removedTaskId,
-					removedContextId);
+			TaskData removedTaskData = data.getTaskData(removedTaskId, removedContextId);
 			hostRuntimesToClean.add(removedTaskEntry.getHostName());
 			try {
-				TaskInterface removedTaskInterface = removedTaskData
-						.getTaskInterface();
+				TaskInterface removedTaskInterface = removedTaskData.getTaskInterface();
 				if (removedTaskInterface != null) {
 					removedTaskInterface.destroy();
-					logInfo("Task [" + removedContextId + ":" + removedTaskId
-							+ "] removed on context removal.");
+					logInfo("Task [" + removedContextId + ":" + removedTaskId + "] removed on context removal.");
 				}
 			} catch (TaskException e) {
-				logError("Error removing task [" + removedContextId + ":"
-						+ removedTaskId + "] from its hostruntime.");
+				logError("Error removing task [" + removedContextId + ":" + removedTaskId + "] from its hostruntime.");
 				e.printStackTrace();
 			} catch (RemoteException e) {
-				logError("Error removing task [" + removedContextId + ":"
-						+ removedTaskId + "] from its hostruntime.");
+				logError("Error removing task [" + removedContextId + ":" + removedTaskId + "] from its hostruntime.");
 				e.printStackTrace();
 			}
 		}
@@ -2235,17 +2001,9 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 				// Build the URI.
 				URI cleanedHostRuntimeUri;
 				try {
-					cleanedHostRuntimeUri = new URI(
-							"rmi",
-							null,
-							cleanedHostRuntime,
-							RMI.REGISTRY_PORT,
-							HostRuntimeInterface.URL,
-							null,
-							null);
+					cleanedHostRuntimeUri = new URI("rmi", null, cleanedHostRuntime, RMI.REGISTRY_PORT, HostRuntimeInterface.URL, null, null);
 				} catch (URISyntaxException e) {
-					logError("Failed to construct the host runtime URI for \""
-							+ cleanedHostRuntime + "\".");
+					logError("Failed to construct the host runtime URI for \"" + cleanedHostRuntime + "\".");
 					e.printStackTrace();
 					break;
 				}
@@ -2253,11 +2011,9 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 				// Find the reference.
 				HostRuntimeInterface cleanedHostRuntimeInterface;
 				try {
-					cleanedHostRuntimeInterface = (HostRuntimeInterface) Naming
-							.lookup(cleanedHostRuntimeUri.toString());
+					cleanedHostRuntimeInterface = (HostRuntimeInterface) Naming.lookup(cleanedHostRuntimeUri.toString());
 				} catch (Exception e) {
-					logError("Failed to obtain reference for \""
-							+ cleanedHostRuntimeUri.toString() + "\".");
+					logError("Failed to obtain reference for \"" + cleanedHostRuntimeUri.toString() + "\".");
 					e.printStackTrace();
 					break;
 				}
@@ -2266,11 +2022,9 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 				try {
 					cleanedHostRuntimeInterface.deleteContext(contextId);
 				} catch (HostRuntimeException e) {
-					logError("Deleting of context on \"" + cleanedHostRuntime
-							+ "\" failed: " + e.getMessage());
+					logError("Deleting of context on \"" + cleanedHostRuntime + "\" failed: " + e.getMessage());
 				} catch (RemoteException e) {
-					logError("Remote exception when deleting context data: "
-							+ e.getMessage());
+					logError("Remote exception when deleting context data: " + e.getMessage());
 				}
 			}
 		}
@@ -2279,8 +2033,7 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 		try {
 			logStorage.removeContext(contextId);
 		} catch (LogStorageException e) {
-			System.err.println("Cannot remove context from the log storage: "
-					+ e.getMessage());
+			System.err.println("Cannot remove context from the log storage: " + e.getMessage());
 		}
 
 		// Finally forget the context data.
@@ -2291,16 +2044,15 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * Notification from Host Runtime, that specified task was restarted.
 	 * 
 	 * @param taskId
-	 *            ID of task.
+	 *          ID of task.
 	 * @param contextId
-	 *            ID of context.
+	 *          ID of context.
 	 * @throws RemoteException
-	 *             If something failed during the execution of the remote method
-	 *             call.
+	 *           If something failed during the execution of the remote method
+	 *           call.
 	 */
 	@Override
-	public void taskRestarted(String taskId, String contextId)
-			throws RemoteException {
+	public void taskRestarted(String taskId, String contextId) throws RemoteException {
 		data.notifyTaskRestarted(taskId, contextId);
 	}
 
@@ -2312,23 +2064,20 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * asynchronous handler.
 	 * 
 	 * @param taskId
-	 *            The identifier of the task.
+	 *          The identifier of the task.
 	 * @param state
-	 *            The final state of the task.
+	 *          The final state of the task.
 	 * @throws RemoteException
-	 *             If something failed during the execution of the remote method
-	 *             call.
+	 *           If something failed during the execution of the remote method
+	 *           call.
 	 */
 	@Override
-	public void
-			taskReachedEnd(String taskId, String contextId, TaskState state)
-					throws RemoteException {
+	public void taskReachedEnd(String taskId, String contextId, TaskState state) throws RemoteException {
 		// This method should really be called only on finished or aborted
 		// tasks.
 		// Failure to observe this rule used to be ignored silently before.
 		if (state != TaskState.FINISHED && state != TaskState.ABORTED) {
-			throw new AssertionError(
-					"Task end notification called with invalid task state.");
+			throw new AssertionError("Task end notification called with invalid task state.");
 		}
 
 		final String hostName;
@@ -2357,11 +2106,7 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 			// In case of abort, the checkpoint is therefore set by the task
 			// manager.
 			if (state == TaskState.ABORTED) {
-				checkPointReached(new CheckPoint(
-						taskId,
-						contextId,
-						Task.CHECKPOINT_NAME_FINISHED,
-						String.valueOf(Task.EXIT_CODE_ERROR)));
+				checkPointReached(new CheckPoint(taskId, contextId, Task.CHECKPOINT_NAME_FINISHED, String.valueOf(Task.EXIT_CODE_ERROR)));
 			}
 
 			// Remove the reservation of the host runtime capacity for the task.
@@ -2378,14 +2123,11 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 						// If there is such, preserve host runtime reservation,
 						// otherwise drop it.
 						unset_exclusivity: {
-							TaskEntryImplementation[] tasksOnHost = data
-									.getTasksOnHost(hostName);
+							TaskEntryImplementation[] tasksOnHost = data.getTasksOnHost(hostName);
 							for (TaskEntryImplementation taskOnHost : tasksOnHost) {
 								TaskState taskState = taskOnHost.getState();
-								if ((taskState == TaskState.RUNNING)
-										|| (taskState == TaskState.SLEEPING)) {
-									TaskExclusivity anotherTaskExclusivity = taskOnHost
-											.getExclusivity();
+								if ((taskState == TaskState.RUNNING) || (taskState == TaskState.SLEEPING)) {
+									TaskExclusivity anotherTaskExclusivity = taskOnHost.getExclusivity();
 									if (anotherTaskExclusivity != TaskExclusivity.NON_EXCLUSIVE) {
 										break unset_exclusivity;
 									}
@@ -2417,14 +2159,12 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 			// Removal is done later to make sure it is not inside synchronized
 			// block.
 			ContextEntry contextEntry = data.getContextById(contextId);
-			if (contextEntry != null
-					&& contextEntry.getFinishedTasksKept() >= 0) {
+			if (contextEntry != null && contextEntry.getFinishedTasksKept() >= 0) {
 
 				int finishedTasksKept = contextEntry.getFinishedTasksKept();
 
 				List<TaskEntryImplementation> finishedTasks = new ArrayList<TaskEntryImplementation>();
-				TaskEntryImplementation[] tasks = data
-						.getTasksInContext(contextId);
+				TaskEntryImplementation[] tasks = data.getTasksInContext(contextId);
 				for (TaskEntryImplementation task : tasks) {
 					if (TaskState.FINISHED.equals(task.getState())) {
 						finishedTasks.add(task);
@@ -2451,9 +2191,7 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 
 						TaskEntryImplementation toRemove = finishedTasks.get(i);
 						hostruntimeTaskRemovalQueue.add(toRemove);
-						data.delTask(
-								toRemove.getTaskId(),
-								toRemove.getContextId());
+						data.delTask(toRemove.getTaskId(), toRemove.getContextId());
 					}
 				}
 			}
@@ -2461,14 +2199,11 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 
 		// Remove reservation of load units on the host runtime.
 		if (hostName != null) {
-			final HostRuntimeEntry hostRuntimeEntry = data
-					.getHostRuntimeByName(hostName);
-			final TaskDescriptor taskDescriptor = taskEntry
-					.getModifiedTaskDescriptor();
-			hostRuntimeEntry
-					.removeLoad(taskDescriptor.isSetLoadMonitoring() ? taskDescriptor
-							.getLoadMonitoring().getLoadUnits()
-							: DEFAULT_LOAD_UNITS);
+			final HostRuntimeEntry hostRuntimeEntry = data.getHostRuntimeByName(hostName);
+			final TaskDescriptor taskDescriptor = taskEntry.getModifiedTaskDescriptor();
+			hostRuntimeEntry.removeLoad(taskDescriptor.isSetLoadMonitoring()
+					? taskDescriptor.getLoadMonitoring().getLoadUnits()
+					: DEFAULT_LOAD_UNITS);
 		}
 
 		// Rescan all dependencies and run tasks that can run.
@@ -2503,117 +2238,91 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 
 			// TODO It is a bit illogical to have task entry and task data and
 			// search for one using the other.
-			TaskData removedTaskData = data.getTaskData(
-					removedTaskId,
-					removedContextId);
+			TaskData removedTaskData = data.getTaskData(removedTaskId, removedContextId);
 			try {
-				TaskInterface removedTaskInterface = removedTaskData
-						.getTaskInterface();
+				TaskInterface removedTaskInterface = removedTaskData.getTaskInterface();
 				if (removedTaskInterface != null) {
 					removedTaskInterface.destroy();
-					logInfo("Task ["
-							+ removedContextId
-							+ ":"
-							+ removedTaskId
-							+ "] removed because finished task count limit has been reached.");
+					logInfo("Task [" + removedContextId + ":" + removedTaskId + "] removed because finished task count limit has been reached.");
 				}
 			} catch (TaskException e) {
-				logError("Error removing task [" + removedContextId + ":"
-						+ removedTaskId + "] from its hostruntime.");
+				logError("Error removing task [" + removedContextId + ":" + removedTaskId + "] from its hostruntime.");
 				e.printStackTrace();
 			} catch (RemoteException e) {
-				logError("Error removing task [" + removedContextId + ":"
-						+ removedTaskId + "] from its hostruntime.");
+				logError("Error removing task [" + removedContextId + ":" + removedTaskId + "] from its hostruntime.");
 				e.printStackTrace();
 			}
 
 			try {
 				// Also remove the task entries from the log storage.
 				logStorage.removeTask(removedContextId, removedTaskId);
-				logInfo("Task ["
-						+ removedContextId
-						+ ":"
-						+ removedTaskId
-						+ "] removed from log storage because finished task count limit has been reached.");
+				logInfo("Task [" + removedContextId + ":" + removedTaskId + "] removed from log storage because finished task count limit has been reached.");
 			} catch (LogStorageException e) {
-				logError("Error removing log storage for task ["
-						+ removedContextId + ":" + removedTaskId + "].");
+				logError("Error removing log storage for task [" + removedContextId + ":" + removedTaskId + "].");
 				e.printStackTrace();
 			}
 		}
 	}
 
 	/**
-	 * For specified taskDescriptor prepare its list of usable hostRuntimes
-	 * (based on RSL or asTask attribute) if needed.
+	 * For specified taskDescriptor prepare its list of usable hostRuntimes (based
+	 * on RSL or asTask attribute) if needed.
 	 * 
 	 * @param taskDescriptor
-	 *            TaskDescriptor to process.
+	 *          TaskDescriptor to process.
 	 * @param hostManager
-	 *            A reference to the Host Manager.
+	 *          A reference to the Host Manager.
 	 * @throws TaskManagerException
-	 *             When no host specification is found in the task descriptor.
+	 *           When no host specification is found in the task descriptor.
 	 */
-	private void prepareHostNames(
-			TaskDescriptor taskDescriptor,
+	private void prepareHostNames(TaskDescriptor taskDescriptor,
 			HostManagerInterface hostManager) throws TaskManagerException {
 		final List<String> hostNames;
 		final HostRuntimes hostRuntimes = taskDescriptor.getHostRuntimes(); // Should
-																			// be
-																			// always
-																			// set.
+		// be
+		// always
+		// set.
 		if (hostRuntimes.isSetAsTask()) { // First look at asTask.
-			TaskEntryImplementation determiningTask = data.getTaskById(
-					hostRuntimes.getAsTask(),
-					taskDescriptor.getContextId());
+			TaskEntryImplementation determiningTask = data.getTaskById(hostRuntimes.getAsTask(), taskDescriptor.getContextId());
 			hostNames = hostRuntimes.getName();
 			hostNames.clear(); // Start with a blank list.
 			if (null != determiningTask) { // This should ALWAYS hold...
 				String hostName = determiningTask.getHostName(); // May be null!
-																	// (Not run
-																	// yet.)
+				// (Not run
+				// yet.)
 				if (null != hostName) {
 					hostNames.add(hostName); // ...thanks to the dependency.
 				}
 			}
 		} else if (hostRuntimes.isSetRSL()) { // Then look at RSL.
 			if (null == hostManager) { // Hack for HM-less operation.
-				throw new TaskManagerException(
-						"You need to run Host Manager for RSL support");
+				throw new TaskManagerException("You need to run Host Manager for RSL support");
 			}
 
-			final RestrictionInterface[] restrictionInterfaces = new RestrictionInterface[] { new RSLRestriction(
-					hostRuntimes.getRSL()) };
+			final RestrictionInterface[] restrictionInterfaces = new RestrictionInterface[] { new RSLRestriction(hostRuntimes.getRSL()) };
 			hostNames = hostRuntimes.getName();
 			hostNames.clear(); // Start with a blank list.
 			try {
-				HostInfoInterface[] hostInfoInterfaces = hostManager
-						.queryHosts( // Make a RSL query.
-						restrictionInterfaces);
+				HostInfoInterface[] hostInfoInterfaces = hostManager.queryHosts( // Make a RSL query.
+				restrictionInterfaces);
 				for (HostInfoInterface hii : hostInfoInterfaces) { // Set
-																	// matching
-																	// host
-																	// names.
+					// matching
+					// host
+					// names.
 					hostNames.add(hii.getHostName());
 				}
 			} catch (RemoteException exception) {
-				logError("Could not contact the Host Manager: "
-						+ exception.getMessage()); // OK, returns empty list.
+				logError("Could not contact the Host Manager: " + exception.getMessage()); // OK, returns empty list.
 			} catch (HostManagerException exception) {
-				logError("Could not resolve host names RSL (RSL '"
-						+ hostRuntimes.getRSL() + "'): "
-						+ exception.getMessage());
-				throw new TaskManagerException(
-						"Could not resolve host names RSL.",
-						exception); // Fatal. No way to recover!
+				logError("Could not resolve host names RSL (RSL '" + hostRuntimes.getRSL() + "'): " + exception.getMessage());
+				throw new TaskManagerException("Could not resolve host names RSL.", exception); // Fatal. No way to recover!
 			}
 		} else if (hostRuntimes.isSetName()) { // OK, nothing to do.
 		} else { // This will NEVER happen...
-			throw new IllegalArgumentException(
-					"Task descriptor without host specification"); // ...if
-																	// called
-																	// after
-																	// validate().
+			throw new IllegalArgumentException("Task descriptor without host specification"); // ...if
+			// called
+			// after
+			// validate().
 		}
 	}
 
@@ -2622,46 +2331,35 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * RSL) if needed.
 	 * 
 	 * @param taskDescriptor
-	 *            TaskDescriptor to process.
+	 *          TaskDescriptor to process.
 	 * @throws TaskManagerException
-	 *             if anything goes wrong.
+	 *           if anything goes wrong.
 	 */
-	private void preparePackageName(TaskDescriptor taskDescriptor)
-			throws TaskManagerException {
+	private void preparePackageName(TaskDescriptor taskDescriptor) throws TaskManagerException {
 		Package pacKage;
 
 		pacKage = taskDescriptor.getPackage(); // Always set.
 		if (pacKage.isSetRSL()) {
-			RSLPackageQueryCallback packageQueryCallback = new RSLPackageQueryCallback(
-					pacKage.getRSL());
+			RSLPackageQueryCallback packageQueryCallback = new RSLPackageQueryCallback(pacKage.getRSL());
 
 			try {
-				SoftwareRepositoryInterface softwareRepositoryInterface = (SoftwareRepositoryInterface) serviceFind(
-						SoftwareRepositoryService.SERVICE_NAME,
-						Service.RMI_MAIN_IFACE);
+				SoftwareRepositoryInterface softwareRepositoryInterface = (SoftwareRepositoryInterface) serviceFind(SoftwareRepositoryService.SERVICE_NAME, Service.RMI_MAIN_IFACE);
 				if (softwareRepositoryInterface == null) {
-					throw new TaskManagerException(
-							"Software Repository not found");
+					throw new TaskManagerException("Software Repository not found");
 				}
 
-				PackageMetadata[] metadata = softwareRepositoryInterface
-						.queryPackages(packageQueryCallback);
+				PackageMetadata[] metadata = softwareRepositoryInterface.queryPackages(packageQueryCallback);
 
 				/* Set taskDescriptor. */
 				// use only the first... */
 				if (metadata.length < 1) {
-					throw new IllegalArgumentException(
-							"Name of package not found: " + pacKage.getRSL());
+					throw new IllegalArgumentException("Name of package not found: " + pacKage.getRSL());
 				}
 				pacKage.setName((metadata[0].getFilename()));
 			} catch (RemoteException e) {
-				throw new TaskManagerException(
-						"Could not find Software Repository service",
-						e);
+				throw new TaskManagerException("Could not find Software Repository service", e);
 			} catch (MatchException e) {
-				throw new IllegalArgumentException(
-						"Could not get package names",
-						e);
+				throw new IllegalArgumentException("Could not get package names", e);
 			}
 		}
 	}
@@ -2670,10 +2368,9 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * Starts execution of specified task.
 	 * 
 	 * @param taskData
-	 *            Task to start.
+	 *          Task to start.
 	 * @throws TaskManagerException
-	 *             CAUTION! Thrown on non-fatal problems here, unlike other
-	 *             places.
+	 *           CAUTION! Thrown on non-fatal problems here, unlike other places.
 	 */
 	private void taskStart(TaskData taskData) throws TaskManagerException {
 		URI hostRuntimeUri;
@@ -2685,41 +2382,27 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 		try {
 			List<String> hostNames = taskDescriptor.getHostRuntimes().getName();
 			hostName = MiscUtils.getCanonicalHostName(hostNames.get(0)); // Resolve
-																			// once
-																			// more.
-																			// (?)
+			// once
+			// more.
+			// (?)
 		} catch (UnknownHostException e) {
-			throw new TaskManagerException(
-					"Getting of canonical host name failed",
-					e);
+			throw new TaskManagerException("Getting of canonical host name failed", e);
 		}
 
 		if (data.getHostRuntimeByName(hostName) == null) {
-			throw new TaskManagerException("Host runtime not registered: "
-					+ hostName);
+			throw new TaskManagerException("Host runtime not registered: " + hostName);
 		}
 
 		try {
-			hostRuntimeUri = new URI(
-					"rmi",
-					null,
-					hostName,
-					RMI.REGISTRY_PORT,
-					HostRuntimeInterface.URL,
-					null,
-					null);
+			hostRuntimeUri = new URI("rmi", null, hostName, RMI.REGISTRY_PORT, HostRuntimeInterface.URL, null, null);
 		} catch (URISyntaxException e) {
-			throw new TaskManagerException(
-					"Could not construct URI of Host Runtime");
+			throw new TaskManagerException("Could not construct URI of Host Runtime");
 		}
 
 		try {
-			hostRuntime = (HostRuntimeInterface) Naming.lookup(hostRuntimeUri
-					.toString());
+			hostRuntime = (HostRuntimeInterface) Naming.lookup(hostRuntimeUri.toString());
 		} catch (Exception e) {
-			throw new TaskManagerException(
-					"Could not connect to required Host " + "Runtime (URI=\""
-							+ hostRuntimeUri.toString() + "\")");
+			throw new TaskManagerException("Could not connect to required Host " + "Runtime (URI=\"" + hostRuntimeUri.toString() + "\")");
 		}
 
 		try {
@@ -2737,15 +2420,13 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 				data.changeTaskState(taskId, contextId, TaskState.RUNNING);
 
 				/* Run task on Host Runtime. */
-				taskData.setTaskInterface(hostRuntime.createTask(taskData
-						.getTaskDescriptor()));
+				taskData.setTaskInterface(hostRuntime.createTask(taskData.getTaskDescriptor()));
 
 				/* Set HostRuntime for running task. */
 				data.setTaskHostRuntime(taskId, contextId, hostName);
 
 				/* Set reservation of Host Runtime if needed. */
-				TaskExclusivity taskExclusivity = taskData.getTaskDescriptor()
-						.getExclusive();
+				TaskExclusivity taskExclusivity = taskData.getTaskDescriptor().getExclusive();
 				switch (taskExclusivity) {
 					case CONTEXT_EXCLUSIVE:
 						data.changeHostRuntimeReservation(hostName, contextId);
@@ -2761,22 +2442,12 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 			}
 
 			/* Set task's directory paths. */
-			String taskDirectory = taskData.getTaskInterface()
-					.getTaskDirectory();
-			String workingDirectory = taskData.getTaskInterface()
-					.getWorkingDirectory();
-			String temporaryDirectory = taskData.getTaskInterface()
-					.getTemporaryDirectory();
-			data.setTaskDirectories(
-					taskId,
-					contextId,
-					taskDirectory,
-					workingDirectory,
-					temporaryDirectory);
+			String taskDirectory = taskData.getTaskInterface().getTaskDirectory();
+			String workingDirectory = taskData.getTaskInterface().getWorkingDirectory();
+			String temporaryDirectory = taskData.getTaskInterface().getTemporaryDirectory();
+			data.setTaskDirectories(taskId, contextId, taskDirectory, workingDirectory, temporaryDirectory);
 
-			logTrace("[" + taskData.getTaskDescriptor().getContextId() + ":"
-					+ taskData.getTaskDescriptor().getTaskId() + "] "
-					+ "Started.");
+			logTrace("[" + taskData.getTaskDescriptor().getContextId() + ":" + taskData.getTaskDescriptor().getTaskId() + "] " + "Started.");
 		} catch (Exception e) {
 			throw new TaskManagerException(e);
 		}
@@ -2786,39 +2457,30 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * Tests if specified dependencyCheckpoint was already reached.
 	 * 
 	 * @param dependencyCheckpoint
-	 *            Tested CheckPoint.
+	 *          Tested CheckPoint.
 	 * @return True if CheckPoint was already reached, false otherwise.
 	 * @throws TaskManagerException
-	 *             When task dependency deserialization fails.
+	 *           When task dependency deserialization fails.
 	 */
-	private boolean checkDependency(
-			DependencyCheckPoint dependencyCheckpoint,
+	private boolean checkDependency(DependencyCheckPoint dependencyCheckpoint,
 			String contextId) throws TaskManagerException {
 		final String type = dependencyCheckpoint.getType();
 		final String taskId = dependencyCheckpoint.getTaskId();
 		final Serializable magicObject;
 		try {
 			if (dependencyCheckpoint.isSetBinVal()) {
-				magicObject = Deserialize.fromBase64(dependencyCheckpoint
-						.getBinVal());
+				magicObject = Deserialize.fromBase64(dependencyCheckpoint.getBinVal());
 			} else if (dependencyCheckpoint.isSetStrVal()) {
-				magicObject = Deserialize.fromString(dependencyCheckpoint
-						.getStrVal());
+				magicObject = Deserialize.fromString(dependencyCheckpoint.getStrVal());
 			} else if (dependencyCheckpoint.isSetValue()) {
 				magicObject = dependencyCheckpoint.getValue();
 			} else {
 				magicObject = null;
 			}
 		} catch (DeserializeException exception) {
-			throw new TaskManagerException(
-					"Could not deserialize dependency",
-					exception);
+			throw new TaskManagerException("Could not deserialize dependency", exception);
 		}
-		CheckPointEntry[] checkPointEntries = data.getCheckPoints(
-				type,
-				taskId,
-				contextId,
-				magicObject);
+		CheckPointEntry[] checkPointEntries = data.getCheckPoints(type, taskId, contextId, magicObject);
 
 		return checkPointEntries.length > 0;
 	}
@@ -2827,31 +2489,26 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * Tests if all CheckPoints on which this task depends was already reached.
 	 * 
 	 * @param taskData
-	 *            Task to test.
+	 *          Task to test.
 	 * @return True if all dependencies were already reached, false otherwise.
 	 * @throws TaskManagerException
 	 */
-	private boolean checkDependencies(TaskData taskData)
-			throws TaskManagerException {
+	private boolean checkDependencies(TaskData taskData) throws TaskManagerException {
 		final TaskDescriptor taskDescriptor = taskData.getTaskDescriptor();
 		final String contextId = taskDescriptor.getContextId();
 
 		if (taskDescriptor.isSetDependencies()) {
 			Dependencies dependencies = taskDescriptor.getDependencies();
 			if (dependencies.isSetDependencyCheckPoint()) {
-				for (DependencyCheckPoint dcp : dependencies
-						.getDependencyCheckPoint()) {
+				for (DependencyCheckPoint dcp : dependencies.getDependencyCheckPoint()) {
 					if (!checkDependency(dcp, contextId)) {
-						logTrace("[" + contextId + ":"
-								+ taskDescriptor.getTaskId()
-								+ "] Testing dependencies: failed.");
+						logTrace("[" + contextId + ":" + taskDescriptor.getTaskId() + "] Testing dependencies: failed.");
 						return false;
 					}
 				}
 			}
 		}
-		logTrace("[" + contextId + ":" + taskDescriptor.getTaskId()
-				+ "] Testing dependencies: succeded.");
+		logTrace("[" + contextId + ":" + taskDescriptor.getTaskId() + "] Testing dependencies: succeded.");
 		return true;
 	}
 
@@ -2859,43 +2516,33 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * Adds new task to list of tasks and starts it.
 	 * 
 	 * @param modifiedTaskDescriptor
-	 *            A scratch task descriptor that can be modified.
+	 *          A scratch task descriptor that can be modified.
 	 * @param originalTaskDescriptor
-	 *            A read-only task descriptor to keep the original for
-	 *            reference.
+	 *          A read-only task descriptor to keep the original for reference.
 	 * @throws RemoteException
-	 *             Almost never. Should manipulate local objects only!
+	 *           Almost never. Should manipulate local objects only!
 	 * @throws IllegalArgumentException
-	 *             If taskDescriptor is not valid.
+	 *           If taskDescriptor is not valid.
 	 */
-	private boolean taskNew(
-			TaskDescriptor modifiedTaskDescriptor,
-			TaskDescriptor originalTaskDescriptor) throws TaskManagerException,
-			RemoteException {
-		StringBuilder validateLog = TaskDescriptorHelper
-				.validate(modifiedTaskDescriptor); // Validate TaskDescriptor.
+	private boolean taskNew(TaskDescriptor modifiedTaskDescriptor,
+			TaskDescriptor originalTaskDescriptor) throws TaskManagerException, RemoteException {
+		StringBuilder validateLog = TaskDescriptorHelper.validate(modifiedTaskDescriptor); // Validate TaskDescriptor.
 		if (0 < validateLog.length()) {
-			throw new IllegalArgumentException(
-					"Task descriptor is not valid:\n" + validateLog.toString());
+			throw new IllegalArgumentException("Task descriptor is not valid:\n" + validateLog.toString());
 		}
 
 		final String taskId = modifiedTaskDescriptor.getTaskId();
 		final String contextId = modifiedTaskDescriptor.getContextId();
 
-		if (contextId.equals(SYSTEM_CONTEXT_ID)
-				&& taskId.equals(TASKMANAGER_TASKNAME)) {
-			throw new TaskManagerException("Task ID " + TASKMANAGER_TASKNAME
-					+ " in the context " + SYSTEM_CONTEXT_ID + " is reserved");
+		if (contextId.equals(SYSTEM_CONTEXT_ID) && taskId.equals(TASKMANAGER_TASKNAME)) {
+			throw new TaskManagerException("Task ID " + TASKMANAGER_TASKNAME + " in the context " + SYSTEM_CONTEXT_ID + " is reserved");
 		}
 
 		/* Test if task already exists. */
-		final TaskEntryImplementation foundTaskEntry = data.getTaskById(
-				taskId,
-				contextId);
+		final TaskEntryImplementation foundTaskEntry = data.getTaskById(taskId, contextId);
 		synchronized (data) {
 			if (foundTaskEntry != null) {
-				if ((foundTaskEntry.getState() == TaskState.FINISHED)
-						|| (foundTaskEntry.getState() == TaskState.ABORTED)) {
+				if ((foundTaskEntry.getState() == TaskState.FINISHED) || (foundTaskEntry.getState() == TaskState.ABORTED)) {
 					data.delTask(taskId, contextId); // Remove task when needed.
 					// taskTree.clearInclusive(foundTaskEntry.getTreeAddress());
 					// // Not here! delTask() does it.
@@ -2906,11 +2553,7 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 			preparePackageName(modifiedTaskDescriptor);
 
 			/* Prepare TaskEntry. */
-			TaskEntryImplementation taskEntry = new TaskEntryImplementation(
-					taskTree.addressFromPath(modifiedTaskDescriptor
-							.getTreeAddress()),
-					modifiedTaskDescriptor,
-					originalTaskDescriptor);
+			TaskEntryImplementation taskEntry = new TaskEntryImplementation(taskTree.addressFromPath(modifiedTaskDescriptor.getTreeAddress()), modifiedTaskDescriptor, originalTaskDescriptor);
 
 			// TODO: Beginning of an ugly hack.
 			/*
@@ -2918,16 +2561,16 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 			 * system tasks.
 			 */
 			if (TaskManagerInterface.SYSTEM_CONTEXT_ID.equals(contextId)) { // Is
-																			// this
-																			// a
-																			// system
-																			// task?
+				// this
+				// a
+				// system
+				// task?
 				try {
 					taskTree.clearInclusive(taskEntry.getTreeAddress()); // Then
-																			// it
-																			// can
-																			// be
-																			// re-inserted.
+					// it
+					// can
+					// be
+					// re-inserted.
 				} catch (IllegalAddressException exception) {
 					// IGNORE!!!
 				} catch (RemoteException exception) {
@@ -2952,9 +2595,7 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 			try {
 				logStorage.addTask(contextId, taskId);
 			} catch (LogStorageException e) {
-				throw new TaskManagerException(
-						"Cannot register the task in the log storage",
-						e);
+				throw new TaskManagerException("Cannot register the task in the log storage", e);
 			}
 
 			return runTaskIfReady(taskEntry, taskData);
@@ -2978,21 +2619,14 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * Returns RMI interface of hostRuntime based on hostName.
 	 * 
 	 * @param hostName
-	 *            Name of host running hostRuntime.
+	 *          Name of host running hostRuntime.
 	 * @return RMI interface of hostRuntime.
 	 */
 	private HostRuntimeInterface getHostRuntimeInterface(String hostName) {
 		URI hostRuntimeUri;
 
 		try {
-			hostRuntimeUri = new URI(
-					"rmi",
-					null,
-					hostName,
-					RMI.REGISTRY_PORT,
-					HostRuntimeInterface.URL,
-					null,
-					null);
+			hostRuntimeUri = new URI("rmi", null, hostName, RMI.REGISTRY_PORT, HostRuntimeInterface.URL, null, null);
 		} catch (URISyntaxException e) {
 			logError("Could not construct URI of Host Runtime.");
 			return null;
@@ -3001,11 +2635,9 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 		HostRuntimeInterface hostRuntimeInterface;
 
 		try {
-			hostRuntimeInterface = (HostRuntimeInterface) Naming
-					.lookup(hostRuntimeUri.toString());
+			hostRuntimeInterface = (HostRuntimeInterface) Naming.lookup(hostRuntimeUri.toString());
 		} catch (Exception e) {
-			logError("Could not connect to required Host " + "Runtime (URI=\""
-					+ hostRuntimeUri.toString() + "\").");
+			logError("Could not connect to required Host " + "Runtime (URI=\"" + hostRuntimeUri.toString() + "\").");
 			return null;
 		}
 
@@ -3017,8 +2649,8 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * 
 	 * @return size limit of the Host Runtime's package cache.
 	 * @throws RemoteException
-	 *             if something failed during the execution of the remote method
-	 *             call.
+	 *           if something failed during the execution of the remote method
+	 *           call.
 	 */
 	@Override
 	public long getMaxPackageCacheSize() throws RemoteException {
@@ -3029,11 +2661,10 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * Set MaxPackageCacheSize option for hostRuntimes.
 	 * 
 	 * @param maxPackageCacheSize
-	 *            New value for maxPackageCacheSize option.
+	 *          New value for maxPackageCacheSize option.
 	 */
 	@Override
-	public void setMaxPackageCacheSize(long maxPackageCacheSize)
-			throws RemoteException {
+	public void setMaxPackageCacheSize(long maxPackageCacheSize) throws RemoteException {
 		this.maxPackageCacheSize = maxPackageCacheSize;
 		storeConfiguration(configurationFile);
 
@@ -3043,8 +2674,7 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 			String hostName = hostRuntime.getHostName();
 			HostRuntimeInterface hostRuntimeInterface = getHostRuntimeInterface(hostName);
 			if (hostRuntimeInterface != null) {
-				hostRuntimeInterface
-						.setMaxPackageCacheSize(maxPackageCacheSize);
+				hostRuntimeInterface.setMaxPackageCacheSize(maxPackageCacheSize);
 			}
 		}
 	}
@@ -3056,8 +2686,8 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * @return number of closed contexts, for which the Host Runtime should keep
 	 *         data on the disk
 	 * @throws RemoteException
-	 *             if something failed during the execution of the remote method
-	 *             call.
+	 *           if something failed during the execution of the remote method
+	 *           call.
 	 */
 	@Override
 	public int getKeptClosedContextCount() throws RemoteException {
@@ -3068,11 +2698,10 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * Set KeptClosedContextCount option for the task manager.
 	 * 
 	 * @param keptClosedContextCount
-	 *            New value for keptClosedContextCount option.
+	 *          New value for keptClosedContextCount option.
 	 */
 	@Override
-	public void setKeptClosedContextCount(int keptClosedContextCount)
-			throws RemoteException {
+	public void setKeptClosedContextCount(int keptClosedContextCount) throws RemoteException {
 		this.keptClosedContextCount = keptClosedContextCount;
 		storeConfiguration(configurationFile);
 	}
@@ -3086,14 +2715,13 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	}
 
 	/**
-	 * Searches the service registry and if it finds a service with the same
-	 * task ID and context ID, it unregisters it.
+	 * Searches the service registry and if it finds a service with the same task
+	 * ID and context ID, it unregisters it.
 	 * 
 	 * @param contextId
 	 * @param taskId
 	 */
-	private void unregisterFinishedService(String contextId, String taskId)
-			throws RemoteException {
+	private void unregisterFinishedService(String contextId, String taskId) throws RemoteException {
 		ServiceEntry template = new ServiceEntry();
 		template.setContextId(contextId);
 		template.setTaskId(taskId);
@@ -3109,33 +2737,55 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * Logs a log message.
 	 * 
 	 * @param level
-	 *            log level of the log message.
+	 *          log level of the log message.
 	 * @param message
-	 *            log message.
+	 *          log message.
 	 */
 	private void log(LogLevel level, String message) {
-		if (!level.isGreaterOrEqual(logLevel)) {
-			return;
+
+		switch (level) {
+			case FATAL:
+				// always log these
+				break;
+			case ERROR:
+				if (!log.isErrorEnabled()) {
+					return;
+				}
+				break;
+			case WARN:
+				if (!log.isWarnEnabled()) {
+					return;
+				}
+				break;
+			case INFO:
+				if (!log.isInfoEnabled()) {
+					return;
+				}
+				break;
+			case DEBUG:
+				if (!log.isDebugEnabled()) {
+					return;
+				}
+				break;
+			case TRACE:
+				if (!log.isTraceEnabled()) {
+					return;
+				}
+				break;
+			default:
+				// better log these odd messages
+				break;
 		}
 
 		Date timestamp = new Date(System.currentTimeMillis());
 
-		SimpleDateFormat format = (SimpleDateFormat) DateFormat
-				.getDateTimeInstance();
+		SimpleDateFormat format = (SimpleDateFormat) DateFormat.getDateTimeInstance();
 		format.applyPattern("dd.MM.yyyy HH:mm:ss.SSS");
 
-		System.out.println(level + " " + message);
-
 		try {
-			logStorage.log(
-					SYSTEM_CONTEXT_ID,
-					TASKMANAGER_TASKNAME,
-					timestamp,
-					level,
-					message);
+			logStorage.log(SYSTEM_CONTEXT_ID, TASKMANAGER_TASKNAME, timestamp, level, message);
 		} catch (Exception e) {
-			System.err
-					.println("Unable to store log message: " + e.getMessage());
+			log.error("Unable to store log message: " + e);
 		}
 	}
 
@@ -3143,11 +2793,12 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * Logs a log message with the FATAL log level.
 	 * 
 	 * @param message
-	 *            log message.
+	 *          log message.
 	 * @throws TaskManagerException
-	 *             if something goes wrong.
+	 *           if something goes wrong.
 	 */
 	private void logFatal(String message) {
+		log.error(message);
 		log(LogLevel.FATAL, message);
 	}
 
@@ -3155,11 +2806,12 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * Logs a log message with the ERROR log level.
 	 * 
 	 * @param message
-	 *            log message.
+	 *          log message.
 	 * @throws TaskManagerException
-	 *             if something goes wrong.
+	 *           if something goes wrong.
 	 */
 	private void logError(String message) {
+		log.error(message);
 		log(LogLevel.ERROR, message);
 	}
 
@@ -3167,11 +2819,12 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * Logs a log message with the WARN log level.
 	 * 
 	 * @param message
-	 *            log message.
+	 *          log message.
 	 * @throws TaskManagerException
-	 *             if something goes wrong.
+	 *           if something goes wrong.
 	 */
 	private void logWarning(String message) {
+		log.warn(message);
 		log(LogLevel.WARN, message);
 	}
 
@@ -3179,11 +2832,12 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * Logs a log message with the INFO log level.
 	 * 
 	 * @param message
-	 *            log message.
+	 *          log message.
 	 * @throws TaskManagerException
-	 *             if something goes wrong.
+	 *           if something goes wrong.
 	 */
 	private void logInfo(String message) {
+		log.info(message);
 		log(LogLevel.INFO, message);
 	}
 
@@ -3191,11 +2845,12 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * Logs a log message with the DEBUG log level.
 	 * 
 	 * @param message
-	 *            log message.
+	 *          log message.
 	 * @throws TaskManagerException
-	 *             if something goes wrong.
+	 *           if something goes wrong.
 	 */
 	private void logDebug(String message) {
+		log.debug(message);
 		log(LogLevel.DEBUG, message);
 	}
 
@@ -3203,11 +2858,12 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * Logs a log message with the TRACE log level.
 	 * 
 	 * @param message
-	 *            log message.
+	 *          log message.
 	 * @throws TaskManagerException
-	 *             if something goes wrong.
+	 *           if something goes wrong.
 	 */
 	private void logTrace(String message) {
+		log.trace(message);
 		log(LogLevel.TRACE, message);
 	}
 
@@ -3224,8 +2880,7 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	}
 
 	@Override
-	public synchronized void registerEventListener(TaskEventListener listener)
-			throws RemoteException {
+	public synchronized void registerEventListener(TaskEventListener listener) throws RemoteException {
 		if (listener == null) {
 			throw new NullPointerException("Listener is null");
 		}
@@ -3236,24 +2891,19 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	}
 
 	@Override
-	public synchronized void registerHostRuntime(String hostname)
-			throws RemoteException {
+	public synchronized void registerHostRuntime(String hostname) throws RemoteException {
 		if (hostname == null) {
 			throw new NullPointerException("Hostname is null");
 		}
 
 		String canonicalHostName;
 		try {
-			canonicalHostName = InetAddress.getByName(hostname)
-					.getCanonicalHostName();
+			canonicalHostName = InetAddress.getByName(hostname).getCanonicalHostName();
 		} catch (UnknownHostException e) {
-			throw new RemoteException(
-					"Getting of canonical host name failed",
-					e);
+			throw new RemoteException("Getting of canonical host name failed", e);
 		}
 
-		HostRuntimeEntry hostRuntime = new HostRuntimeEntryImplementation(
-				canonicalHostName);
+		HostRuntimeEntry hostRuntime = new HostRuntimeEntryImplementation(canonicalHostName);
 		data.addHostRuntime(hostRuntime);
 
 		for (HostRuntimeRegistrationListener listener : registrationListeners) {
@@ -3275,9 +2925,7 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	}
 
 	@Override
-	public synchronized void
-			unregisterEventListener(TaskEventListener listener)
-					throws RemoteException {
+	public synchronized void unregisterEventListener(TaskEventListener listener) throws RemoteException {
 		if (listener == null) {
 			throw new NullPointerException("Listener is null");
 		}
@@ -3287,32 +2935,24 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	}
 
 	@Override
-	public synchronized void unregisterHostRuntime(String hostName)
-			throws RemoteException {
+	public synchronized void unregisterHostRuntime(String hostName) throws RemoteException {
 		if (hostName == null) {
 			throw new NullPointerException("Hostname is null");
 		}
 
 		String canonicalHostName;
 		try {
-			canonicalHostName = InetAddress.getByName(hostName)
-					.getCanonicalHostName();
+			canonicalHostName = InetAddress.getByName(hostName).getCanonicalHostName();
 		} catch (UnknownHostException e) {
-			throw new RemoteException(
-					"Getting of canonical host name failed",
-					e);
+			throw new RemoteException("Getting of canonical host name failed", e);
 		}
 
 		/* Abort all non-finished tasks. */
 		TaskEntryImplementation[] tasks = data.getTasksOnHost(hostName);
 		for (TaskEntryImplementation task : tasks) {
 			TaskState taskState = task.getState();
-			if ((taskState != TaskState.FINISHED)
-					&& (taskState != TaskState.ABORTED)) {
-				taskReachedEnd(
-						task.getTaskId(),
-						task.getContextId(),
-						TaskState.ABORTED);
+			if ((taskState != TaskState.FINISHED) && (taskState != TaskState.ABORTED)) {
+				taskReachedEnd(task.getTaskId(), task.getContextId(), TaskState.ABORTED);
 			}
 		}
 
@@ -3336,19 +2976,13 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	}
 
 	@Override
-	public long getLogCountForTask(String context, String taskID)
-			throws LogStorageException, IllegalArgumentException,
-			NullPointerException {
+	public long getLogCountForTask(String context, String taskID) throws LogStorageException, IllegalArgumentException, NullPointerException {
 		return logStorage.getLogCountForTask(context, taskID);
 	}
 
 	@Override
-	public LogRecord[] getLogsForTask(
-			String context,
-			String taskID,
-			long first,
-			long last) throws LogStorageException, IllegalArgumentException,
-			NullPointerException {
+	public LogRecord[] getLogsForTask(String context, String taskID, long first,
+			long last) throws LogStorageException, IllegalArgumentException, NullPointerException {
 		return logStorage.getLogsForTask(context, taskID, first, last);
 	}
 
@@ -3388,119 +3022,92 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	/**
 	 * {@inheritDoc} TODO: This is an ugly temporary implementation. It will
 	 * certainly go away once the Task Manager and the rest of BEEN gets
-	 * integrated with the new Task Tree in a more reasonable way. The Log
-	 * Storage must be reimplemented to include a directory structure based on
-	 * the task tree instead of contexts.
+	 * integrated with the new Task Tree in a more reasonable way. The Log Storage
+	 * must be reimplemented to include a directory structure based on the task
+	 * tree instead of contexts.
 	 */
 	@Override
-	public OutputHandle getErrorOutput(TaskTreeAddress address)
-			throws RemoteException, LogStorageException,
-			IllegalAddressException {
+	public OutputHandle getErrorOutput(TaskTreeAddress address) throws RemoteException, LogStorageException, IllegalAddressException {
 		TaskEntry entry;
 
 		entry = taskTreeReader.getTaskAt(address);
-		return logStorage.getErrorOutput(
-				entry.getContextId(),
-				entry.getTaskId());
+		return logStorage.getErrorOutput(entry.getContextId(), entry.getTaskId());
 	}
 
 	/**
 	 * {@inheritDoc} TODO: This is an ugly temporary implementation. It will
 	 * certainly go away once the Task Manager and the rest of BEEN gets
-	 * integrated with the new Task Tree in a more reasonable way. The Log
-	 * Storage must be reimplemented to include a directory structure based on
-	 * the task tree instead of contexts.
+	 * integrated with the new Task Tree in a more reasonable way. The Log Storage
+	 * must be reimplemented to include a directory structure based on the task
+	 * tree instead of contexts.
 	 */
 	@Override
-	public long getLogCountForTask(TaskTreeAddress address)
-			throws RemoteException, LogStorageException,
-			IllegalAddressException {
+	public long getLogCountForTask(TaskTreeAddress address) throws RemoteException, LogStorageException, IllegalAddressException {
 		TaskEntry entry;
 
 		entry = taskTreeReader.getTaskAt(address);
-		return logStorage.getLogCountForTask(
-				entry.getContextId(),
-				entry.getTaskId());
+		return logStorage.getLogCountForTask(entry.getContextId(), entry.getTaskId());
 	}
 
 	/**
 	 * {@inheritDoc} TODO: This is an ugly temporary implementation. It will
 	 * certainly go away once the Task Manager and the rest of BEEN gets
-	 * integrated with the new Task Tree in a more reasonable way. The Log
-	 * Storage must be reimplemented to include a directory structure based on
-	 * the task tree instead of contexts.
+	 * integrated with the new Task Tree in a more reasonable way. The Log Storage
+	 * must be reimplemented to include a directory structure based on the task
+	 * tree instead of contexts.
 	 */
 	@Override
-	public LogRecord[] getLogsForTask(TaskTreeAddress address)
-			throws RemoteException, LogStorageException,
-			IllegalAddressException {
+	public LogRecord[] getLogsForTask(TaskTreeAddress address) throws RemoteException, LogStorageException, IllegalAddressException {
 		TaskEntry entry;
 
 		entry = taskTreeReader.getTaskAt(address);
-		return logStorage.getLogsForTask(
-				entry.getContextId(),
-				entry.getTaskId());
+		return logStorage.getLogsForTask(entry.getContextId(), entry.getTaskId());
 	}
 
 	/**
 	 * {@inheritDoc} TODO: This is an ugly temporary implementation. It will
 	 * certainly go away once the Task Manager and the rest of BEEN gets
-	 * integrated with the new Task Tree in a more reasonable way. The Log
-	 * Storage must be reimplemented to include a directory structure based on
-	 * the task tree instead of contexts.
+	 * integrated with the new Task Tree in a more reasonable way. The Log Storage
+	 * must be reimplemented to include a directory structure based on the task
+	 * tree instead of contexts.
 	 */
 	@Override
-	public LogRecord[] getLogsForTask(
-			TaskTreeAddress address,
-			long first,
-			long last) throws RemoteException, LogStorageException,
-			IllegalAddressException {
+	public LogRecord[] getLogsForTask(TaskTreeAddress address, long first,
+			long last) throws RemoteException, LogStorageException, IllegalAddressException {
 		TaskEntry entry;
 
 		entry = taskTreeReader.getTaskAt(address);
-		return logStorage.getLogsForTask(
-				entry.getContextId(),
-				entry.getTaskId(),
-				first,
-				last);
+		return logStorage.getLogsForTask(entry.getContextId(), entry.getTaskId(), first, last);
 	}
 
 	/**
 	 * {@inheritDoc} TODO: This is an ugly temporary implementation. It will
 	 * certainly go away once the Task Manager and the rest of BEEN gets
-	 * integrated with the new Task Tree in a more reasonable way. The Log
-	 * Storage must be reimplemented to include a directory structure based on
-	 * the task tree instead of contexts.
+	 * integrated with the new Task Tree in a more reasonable way. The Log Storage
+	 * must be reimplemented to include a directory structure based on the task
+	 * tree instead of contexts.
 	 */
 	@Override
-	public OutputHandle getStandardOutput(TaskTreeAddress address)
-			throws RemoteException, LogStorageException,
-			IllegalAddressException {
+	public OutputHandle getStandardOutput(TaskTreeAddress address) throws RemoteException, LogStorageException, IllegalAddressException {
 		TaskEntry entry;
 
 		entry = taskTreeReader.getTaskAt(address);
-		return logStorage.getStandardOutput(
-				entry.getContextId(),
-				entry.getTaskId());
+		return logStorage.getStandardOutput(entry.getContextId(), entry.getTaskId());
 	}
 
 	/**
 	 * {@inheritDoc} TODO: This is an ugly temporary implementation. It will
 	 * certainly go away once the Task Manager and the rest of BEEN gets
-	 * integrated with the new Task Tree in a more reasonable way. The Log
-	 * Storage must be reimplemented to include a directory structure based on
-	 * the task tree instead of contexts.
+	 * integrated with the new Task Tree in a more reasonable way. The Log Storage
+	 * must be reimplemented to include a directory structure based on the task
+	 * tree instead of contexts.
 	 */
 	@Override
-	public boolean isTaskRegistered(TaskTreeAddress address)
-			throws RemoteException, LogStorageException,
-			IllegalAddressException {
+	public boolean isTaskRegistered(TaskTreeAddress address) throws RemoteException, LogStorageException, IllegalAddressException {
 		TaskEntry entry;
 
 		entry = taskTreeReader.getTaskAt(address);
-		return logStorage.isTaskRegistered(
-				entry.getContextId(),
-				entry.getTaskId());
+		return logStorage.isTaskRegistered(entry.getContextId(), entry.getTaskId());
 	}
 
 	/**
@@ -3509,8 +3116,7 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * integrated with the new Task Tree in a more reasonable way.
 	 */
 	@Override
-	public void killNodeByAddress(TaskTreeAddress address)
-			throws RemoteException, IllegalAddressException {
+	public void killNodeByAddress(TaskTreeAddress address) throws RemoteException, IllegalAddressException {
 		killRecursive(address);
 	}
 
@@ -3520,21 +3126,19 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * integrated with the new Task Tree in a more reasonable way.
 	 */
 	@Override
-	public void deleteNodeByAddress(TaskTreeAddress address)
-			throws RemoteException, IllegalAddressException {
+	public void deleteNodeByAddress(TaskTreeAddress address) throws RemoteException, IllegalAddressException {
 		deleteRecursive(address);
 	}
 
 	/**
 	 * {@inheritDoc} TODO: This is an ugly temporary implementation. It will
 	 * certainly go away once the Task Manager and the rest of BEEN gets
-	 * integrated with the new Task Tree in a more reasonable way. The Log
-	 * Storage must be reimplemented to include a directory structure based on
-	 * the task tree instead of contexts.
+	 * integrated with the new Task Tree in a more reasonable way. The Log Storage
+	 * must be reimplemented to include a directory structure based on the task
+	 * tree instead of contexts.
 	 */
 	@Override
-	public void killTaskByAddress(TaskTreeAddress address)
-			throws RemoteException, IllegalAddressException {
+	public void killTaskByAddress(TaskTreeAddress address) throws RemoteException, IllegalAddressException {
 		TaskEntry entry;
 
 		entry = taskTreeReader.getTaskAt(address);
@@ -3544,13 +3148,12 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	/**
 	 * {@inheritDoc} TODO: This is an ugly temporary implementation. It will
 	 * certainly go away once the Task Manager and the rest of BEEN gets
-	 * integrated with the new Task Tree in a more reasonable way. The Log
-	 * Storage must be reimplemented to include a directory structure based on
-	 * the task tree instead of contexts.
+	 * integrated with the new Task Tree in a more reasonable way. The Log Storage
+	 * must be reimplemented to include a directory structure based on the task
+	 * tree instead of contexts.
 	 */
 	@Override
-	public void deleteTaskByAddress(TaskTreeAddress address)
-			throws RemoteException, IllegalAddressException {
+	public void deleteTaskByAddress(TaskTreeAddress address) throws RemoteException, IllegalAddressException {
 		TaskEntry entry;
 
 		entry = taskTreeReader.getTaskAt(address);
@@ -3564,30 +3167,27 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * everything to the task tree structure.
 	 * 
 	 * @param address
-	 *            The tree node or tree leaf to kill recursively.
+	 *          The tree node or tree leaf to kill recursively.
 	 * @throws IOException
-	 *             When it rains.
+	 *           When it rains.
 	 */
-	private void killRecursive(TaskTreeAddress address)
-			throws IllegalAddressException, RemoteException {
+	private void killRecursive(TaskTreeAddress address) throws IllegalAddressException, RemoteException {
 		TaskTreeRecord record;
 		TaskEntry entry;
 
 		record = taskTreeReader.getRecordAt(address, true, true, false); // If
-																			// thrown
-																			// here,
-																			// it
-																			// failed.
+		// thrown
+		// here,
+		// it
+		// failed.
 		switch (record.getType()) {
 			case LEAF:
 				entry = record.getTask();
 				try {
 					killTaskById(entry.getTaskId(), entry.getContextId());
 				} catch (IllegalArgumentException exception) { // Report, but
-																// loop on!
-					logWarning("Task '" + entry.getTaskId()
-							+ "' from context '" + entry.getContextId()
-							+ "' removed on the fly.");
+					// loop on!
+					logWarning("Task '" + entry.getTaskId() + "' from context '" + entry.getContextId() + "' removed on the fly.");
 				}
 				break;
 			case NODE:
@@ -3595,9 +3195,8 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 					try {
 						killRecursive(child);
 					} catch (IllegalAddressException exception) { // Report, but
-																	// loop on!
-						logWarning("Address removed on the fly: "
-								+ record.getPathString());
+						// loop on!
+						logWarning("Address removed on the fly: " + record.getPathString());
 					}
 				}
 				break;
@@ -3608,14 +3207,13 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 	 * Deletes a node identified by address recursively.
 	 * 
 	 * @param address
-	 *            Address of the node to delete.
+	 *          Address of the node to delete.
 	 * @throws IllegalAddressException
-	 *             When the address is unknown or refers to a leaf.
+	 *           When the address is unknown or refers to a leaf.
 	 * @throws RemoteException
-	 *             When it rains.
+	 *           When it rains.
 	 */
-	private void deleteRecursive(TaskTreeAddress address)
-			throws IllegalAddressException, RemoteException {
+	private void deleteRecursive(TaskTreeAddress address) throws IllegalAddressException, RemoteException {
 		TaskTreeRecord record;
 		TaskEntry entry;
 
@@ -3626,14 +3224,12 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 				try {
 					killTaskById(entry.getTaskId(), entry.getContextId());
 					data.delTask(entry.getTaskId(), entry.getContextId()); // No
-																			// clearInc,
-																			// delTask
-																			// does
-																			// it.
+					// clearInc,
+					// delTask
+					// does
+					// it.
 				} catch (IllegalArgumentException exception) {
-					logWarning("Task '" + entry.getTaskId()
-							+ "' from context '" + entry.getContextId()
-							+ "' removed on the fly.");
+					logWarning("Task '" + entry.getTaskId() + "' from context '" + entry.getContextId() + "' removed on the fly.");
 				}
 				break;
 			case NODE:
@@ -3641,8 +3237,7 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 					try {
 						deleteRecursive(child);
 					} catch (IllegalAddressException exception) {
-						logWarning("Address removed on the fly: "
-								+ record.getPathString());
+						logWarning("Address removed on the fly: " + record.getPathString());
 					}
 				}
 				taskTree.clearInclusive(address); // Cleaning an *empty* node.
@@ -3650,4 +3245,10 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements
 		}
 	}
 
+	@Override
+	public void runTasks(Collection<String> taskDescriptorPaths) throws RemoteException {
+		String[] pathArray = new String[taskDescriptorPaths.size()];
+		taskDescriptorPaths.toArray(pathArray);
+		runTask(pathArray);
+	}
 }

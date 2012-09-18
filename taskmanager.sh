@@ -63,4 +63,4 @@ if [ ! -d "${DATA_DIRECTORY}" ]; then
   echo "Fatal error: Task Manager data directory not found: ${DATA_DIRECTORY}."
 fi
 
-java ${DEBUG_OPTS} -ea -jar ${RMI_FLAGS} $TASKMANAGER_JAR $VERBOSITY "${DATA_DIRECTORY}" ${RUN_TASKS[@]}
+java ${DEBUG_OPTS} ${RMI_FLAGS} -ea -jar $TASKMANAGER_JAR "${DATA_DIRECTORY}" ${RUN_TASKS[@]}

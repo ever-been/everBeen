@@ -55,34 +55,27 @@ public class TaskRunner {
 			TaskEntry[] tasks = taskManager.getTasks();
 
 			for (TaskEntry task : tasks) {
-				System.out.println("\t\"" + task.getContextId() + "\" : \""
-						+ task.getTaskId() + "\" ("
-						+ task.getState().toString() + ")");
+				System.out.println("\t\"" + task.getContextId() + "\" : \"" + task.getTaskId() + "\" (" + task.getState().toString() + ")");
 			}
 		} catch (Exception e) {
-			System.err.println("Getting of list of tasks failed: "
-					+ e.getMessage());
+			System.err.println("Getting of list of tasks failed: " + e.getMessage());
 		}
 	}
 
 	/**
 	 * @param args
-	 *            TaskDescriptors represented by XML files.
+	 *          TaskDescriptors represented by XML files.
 	 */
 	public static void main(String[] args) {
 		/* Check command-line arguments. */
 		if (args.length < 1) {
-			System.err.println("Usage: java cz.cuni.mff.been."
-					+ "taskmanager.TaskRunner -l | "
-					+ "<XML_task_descriptor>[ "
-					+ "<XML_task_descriptor>[ ...]]");
+			System.err.println("Usage: java cz.cuni.mff.been." + "taskmanager.TaskRunner -l | " + "<XML_task_descriptor>[ " + "<XML_task_descriptor>[ ...]]");
 			System.exit(1);
 		}
 
 		try {
 			/* Do naming lookup for RMI interface... */
-			taskManager = (TaskManagerInterface) Naming.lookup(RMI.URL_PREFIX
-					+ TaskManagerInterface.URL);
+			taskManager = (TaskManagerInterface) Naming.lookup(RMI.URL_PREFIX + TaskManagerInterface.URL);
 
 			if ((args.length == 1) && (args[0].equals("-l"))) {
 				/* Do list function. */
@@ -94,8 +87,7 @@ public class TaskRunner {
 			System.out.println("Submitting tasks");
 			taskManager.runTask(args);
 		} catch (Exception e) {
-			System.err.println("Submitting of new tasks failed: "
-					+ e.getMessage());
+			System.err.println("Submitting of new tasks failed: " + e.getMessage());
 		}
 	}
 }
