@@ -611,9 +611,18 @@ public class PackageCacheManager {
 					inputStream = new BufferedInputStream(
 							zipFile.getInputStream(entry),
 							PACKAGE_EXTRACTION_BUFFER_SIZE);
+					
+					String fName = path + File.separator
+							+ entry.getName();
+					// create directory if needed
+					String dirName = fName.substring(0, fName.lastIndexOf(File.separator));
+					File dir = new File(dirName);
+					if (!dir.exists()) {
+						dir.mkdirs();
+					}
+					
 					outputStream = new BufferedOutputStream(
-							new FileOutputStream(path + File.separator
-									+ entry.getName()),
+							new FileOutputStream(fName),
 							PACKAGE_EXTRACTION_BUFFER_SIZE);
 					while ((bytesRead = inputStream.read(buffer)) != -1) {
 						outputStream.write(buffer, 0, bytesRead);
