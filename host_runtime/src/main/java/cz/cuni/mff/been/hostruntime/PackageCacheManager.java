@@ -627,6 +627,8 @@ public class PackageCacheManager {
 					while ((bytesRead = inputStream.read(buffer)) != -1) {
 						outputStream.write(buffer, 0, bytesRead);
 					}
+					closeCloseableQuitely(outputStream);
+					closeCloseableQuitely(inputStream);
 				} else {
 					new File(path, entry.getName()).mkdirs();
 				}
@@ -634,18 +636,21 @@ public class PackageCacheManager {
 		} catch (IOException e) {
 			throw e;
 		} finally {
-			closeCloseable(zipFile);
-			closeCloseable(inputStream);
-			closeCloseable(outputStream);
+			closeCloseableQuitely(zipFile);
+			closeCloseableQuitely(inputStream);
+			closeCloseableQuitely(outputStream);
 		}
 	}
 
-	private void closeCloseable(Closeable closeable) {
+	/**
+	 * close {@link Closeable} object quietly (exception is not thrown on failure)
+	 * @param closeable object implementing {@link Closeable} interface
+	 */
+	private void closeCloseableQuitely(Closeable closeable) {
 		if (closeable != null) {
 			try {
 				closeable.close();
 			} catch (IOException e) {
-				// we cannot do anything else
 				logger.error("Could not close closeable object.", e);
 			}
 		}
