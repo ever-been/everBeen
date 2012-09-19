@@ -49,32 +49,9 @@
 
 		<!-- EXTERNAL DEPENDENCIES -->
 		<dependency>
-			<groupId>webinterface</groupId>
+			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>none</version>
-			<scope>runtime</scope>
-			<type>jar</type>
-		</dependency>
-		<dependency>
-			<groupId>webinterface</groupId>
-			<artifactId>commons-fileupload</artifactId>
-			<version>none</version>
-			<scope>runtime</scope>
-			<type>jar</type>
-		</dependency>
-		<dependency>
-			<groupId>webinterface</groupId>
-			<artifactId>log4j</artifactId>
-			<version>none</version>
-			<scope>runtime</scope>
-			<type>jar</type>
-		</dependency>
-		<dependency>
-			<groupId>webinterface</groupId>
-			<artifactId>rmiio</artifactId>
-			<version>none</version>
-			<scope>runtime</scope>
-			<type>jar</type>
+			<version>${commons-io.version}</version>
 		</dependency>
 	</dependencies>
 
