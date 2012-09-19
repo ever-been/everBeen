@@ -13,6 +13,10 @@
 		<version>0.0.1</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
+	
+	<properties>
+		<jaxb-xsd-dir>${basedir}/../service_interfaces/src/main/xsd</jaxb-xsd-dir>
+	</properties>
 
 	<dependencies>
 		<!-- BEEN DEPENDENCIES -->
@@ -44,16 +48,79 @@
 	</dependencies>
 
 	<build>
-		<finalName>benchmarkmanager</finalName>
+		<finalName>benchmarkmanagerng</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.5.1</version>
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
 				</configuration>
 			</plugin>
+						<!-- CREATE STANDALONE ONE-JAR -->
+			<plugin>
+				<groupId>org.dstovall</groupId>
+				<artifactId>onejar-maven-plugin</artifactId>
+				<version>1.4.4</version>
+				<executions>
+					<execution>
+						<configuration>
+							<onejarVersion>0.97</onejarVersion>
+							<attachToBuild>true</attachToBuild>
+							<classifier>onejar</classifier>
+						</configuration>
+						<goals>
+							<goal>one-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- AND NOW WE WANT TO CREATE BPK PACKAGE -->
+			<plugin>
+				<groupId>cz.cuni.mff.d3s.been</groupId>
+				<artifactId>bpk-plugin</artifactId>
+				<version>1.0.1</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>buildpackage</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<humanName>Benchmark Manager</humanName>
+					<packageJarFile>${project.build.directory}/${project.build.finalName}.one-jar.jar</packageJarFile>
+					<mainClassName>cz.cuni.mff.been.benchmarkmanagerng.BenchmarkManagerService</mainClassName>
+					<finalName>${project.build.finalName}</finalName>
+					<filesToArchive>
+						<fileItem>
+							<wildcardWorkingDirectory>${jaxb-xsd-dir}</wildcardWorkingDirectory>
+							<wildcard>attrtypes.xsd</wildcard>
+						</fileItem>
+						<fileItem>
+							<wildcardWorkingDirectory>${jaxb-xsd-dir}</wildcardWorkingDirectory>
+							<wildcard>common.xsd</wildcard>
+						</fileItem>
+						<fileItem>
+							<wildcardWorkingDirectory>${jaxb-xsd-dir}</wildcardWorkingDirectory>
+							<wildcard>config.xsd</wildcard>
+						</fileItem>
+						<fileItem>
+							<wildcardWorkingDirectory>${basedir}/src/main/resources/files/</wildcardWorkingDirectory>
+							<wildcard>*</wildcard>
+						</fileItem>
+					</filesToArchive>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>onejar-maven-plugin.googlecode.com</id>
+			<url>http://onejar-maven-plugin.googlecode.com/svn/mavenrepo</url>
+		</pluginRepository>
+	</pluginRepositories>
 </project>
