@@ -81,8 +81,7 @@ import cz.cuni.mff.been.softwarerepository.SoftwareRepositoryInterface;
  */
 public class PackageCacheManager {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(PackageCacheManager.class);
+	private static final Logger logger = LoggerFactory.getLogger(PackageCacheManager.class);
 
 	/**
 	 * Immutable class containing information about one package in the cache.
@@ -105,16 +104,15 @@ public class PackageCacheManager {
 		};
 
 		/** Package file name in the cache. */
-		private String filename;
+		private final String filename;
 		/** Package size in bytes. */
-		private long size;
+		private final long size;
 		/** Package download time. */
-		private Date downloadTime;
+		private final Date downloadTime;
 		/**
-		 * Package type (boot/non-boot, not the type from the package
-		 * metadatata).
+		 * Package type (boot/non-boot, not the type from the package metadatata).
 		 */
-		private Type type;
+		private final Type type;
 
 		/** @return package file name in the cache */
 		public String getFilename() {
@@ -143,14 +141,14 @@ public class PackageCacheManager {
 		 * Allocates a new <code>Package</code> object.
 		 * 
 		 * @param filename
-		 *            name package filename in the cache
+		 *          name package filename in the cache
 		 * @param size
-		 *            package size in bytes
+		 *          package size in bytes
 		 * @param downloadTime
-		 *            package download time
+		 *          package download time
 		 * @param type
-		 *            package type (boot/non-boot, not the type from the package
-		 *            metadatata)
+		 *          package type (boot/non-boot, not the type from the package
+		 *          metadatata)
 		 */
 		public Package(String filename, long size, Date downloadTime, Type type) {
 			this.filename = filename;
@@ -161,20 +159,19 @@ public class PackageCacheManager {
 	}
 
 	/**
-	 * Callback interface to the Software Repository, which checks if the
-	 * package has specified type (task by default) and its file name equals to
-	 * the specified value.
+	 * Callback interface to the Software Repository, which checks if the package
+	 * has specified type (task by default) and its file name equals to the
+	 * specified value.
 	 * 
 	 * @author David Majda
 	 */
-	private static class PackageFilenameQueryCallback implements
-			PackageQueryCallbackInterface, Serializable {
+	private static class PackageFilenameQueryCallback implements PackageQueryCallbackInterface, Serializable {
 
 		private static final long serialVersionUID = -4917724355368780085L;
 		/** Package file name to check. */
-		private String packageFilename;
+		private final String packageFilename;
 		/** Package type to check */
-		private PackageType packageType;
+		private final PackageType packageType;
 
 		/**
 		 * Allocates a new <code>PackageFilenameQueryCallback</code> object.
@@ -182,12 +179,11 @@ public class PackageCacheManager {
 		 * Packages of arbitrary PackageType are matched.
 		 * 
 		 * @param packageFilename
-		 *            package file name to check
+		 *          package file name to check
 		 * @param packageType
-		 *            package type to check
+		 *          package type to check
 		 */
-		public PackageFilenameQueryCallback(String packageFilename,
-				PackageType packageType) {
+		public PackageFilenameQueryCallback(String packageFilename, PackageType packageType) {
 			this.packageFilename = packageFilename;
 			this.packageType = packageType;
 		}
@@ -195,42 +191,39 @@ public class PackageCacheManager {
 		/**
 		 * @see cz.cuni.mff.been.softwarerepository.PackageQueryCallbackInterface#match(cz.cuni.mff.been.softwarerepository.PackageMetadata)
 		 */
+		@Override
 		public boolean match(PackageMetadata metadata) throws MatchException {
-			return metadata.getType().equals(packageType)
-					&& metadata.getFilename().equals(packageFilename);
+			return metadata.getType().equals(packageType) && metadata.getFilename().equals(packageFilename);
 		}
 	}
 
 	/**
-	 * Callback interface to the Software Repository, which checks if the
-	 * package has given type and its name and version match the specified
-	 * values.
+	 * Callback interface to the Software Repository, which checks if the package
+	 * has given type and its name and version match the specified values.
 	 * 
 	 * @author Jan Tattermusch
 	 */
-	private static class PackageNameVersionQueryCallback implements
-			PackageQueryCallbackInterface, Serializable {
+	private static class PackageNameVersionQueryCallback implements PackageQueryCallbackInterface, Serializable {
 
 		private static final long serialVersionUID = -4917724355368780085L;
 		/** Package name to check. */
-		private String packageName;
+		private final String packageName;
 		/** Package version to check. */
-		private String packageVersion;
+		private final String packageVersion;
 		/** Package type to check */
-		private PackageType packageType;
+		private final PackageType packageType;
 
 		/**
 		 * Allocates a new <code>PackageNameVersionQueryCallback</code> object.
 		 * 
 		 * @param packageName
-		 *            package file name to check
+		 *          package file name to check
 		 * @param packageVersion
-		 *            package file name to check
+		 *          package file name to check
 		 * @param packageType
-		 *            package type to check
+		 *          package type to check
 		 */
-		public PackageNameVersionQueryCallback(String packageName,
-				String packageVersion, PackageType packageType) {
+		public PackageNameVersionQueryCallback(String packageName, String packageVersion, PackageType packageType) {
 			this.packageName = packageName;
 			this.packageVersion = packageVersion;
 			this.packageType = packageType;
@@ -239,25 +232,24 @@ public class PackageCacheManager {
 		/**
 		 * @see cz.cuni.mff.been.softwarerepository.PackageQueryCallbackInterface#match(cz.cuni.mff.been.softwarerepository.PackageMetadata)
 		 */
+		@Override
 		public boolean match(PackageMetadata metadata) throws MatchException {
-			return metadata.getType().equals(packageType)
-					&& metadata.getName().equals(packageName)
-					&& metadata.getVersion().toString().equals(packageVersion);
+			return metadata.getType().equals(packageType) && metadata.getName().equals(packageName) && metadata.getVersion().toString().equals(packageVersion);
 		}
 	}
 
 	/** Size of the buffer used when extracting the packages. */
 	private static final int PACKAGE_EXTRACTION_BUFFER_SIZE = 4096;
 	/** Cache directory. */
-	private String cacheDir;
+	private final String cacheDir;
 	/** Directory with boot packages. */
-	private String bootPackagesDir;
+	private final String bootPackagesDir;
 	/** Limit of the cache size. */
 	private long maxCacheSize;
 	/** RMI reference to the Software Repository. */
 	private SoftwareRepositoryInterface softwareRepository;
 	/** List of packages in the cache. */
-	private List<Package> packages = new LinkedList<Package>();
+	private final List<Package> packages = new LinkedList<Package>();
 
 	/** @return cache directory */
 	public String getCacheDir() {
@@ -278,7 +270,7 @@ public class PackageCacheManager {
 	 * Sets the limit of the cache size.
 	 * 
 	 * @param sizeLimit
-	 *            the limit of the cache size to set
+	 *          the limit of the cache size to set
 	 */
 	public synchronized void setMaxCacheSize(long sizeLimit) {
 		this.maxCacheSize = sizeLimit;
@@ -293,7 +285,7 @@ public class PackageCacheManager {
 	 * Sets the RMI reference to the Software Repository.
 	 * 
 	 * @param softwareRepository
-	 *            the RMI reference to the Software Repository to set
+	 *          the RMI reference to the Software Repository to set
 	 */
 	public synchronized void setSoftwareRepository(
 			SoftwareRepositoryInterface softwareRepository) {
@@ -304,16 +296,13 @@ public class PackageCacheManager {
 	 * Finds package in the cache by its name.
 	 * 
 	 * @param packageFilename
-	 *            package name
-	 * @return object representing found package or <code>null</code> if the
-	 *         cache does not contain package with given name
+	 *          package name
+	 * @return object representing found package or <code>null</code> if the cache
+	 *         does not contain package with given name
 	 */
 	private Package findPackage(String packageFilename) {
 		for (Package p : packages) {
-			if (p.getFilename().equals(
-					cacheDir + File.separator + packageFilename)
-					|| p.getFilename().equals(
-							bootPackagesDir + File.separator + packageFilename)) {
+			if (p.getFilename().equals(cacheDir + File.separator + packageFilename) || p.getFilename().equals(bootPackagesDir + File.separator + packageFilename)) {
 				return p;
 			}
 		}
@@ -329,9 +318,7 @@ public class PackageCacheManager {
 	private Package findOldestNonBootPackage() {
 		Package result = null;
 		for (Package p : packages) {
-			if (p.getType().equals(Package.Type.NON_BOOT)
-					&& (result == null || p.getDownloadTime().compareTo(
-							result.getDownloadTime()) < 0)) {
+			if (p.getType().equals(Package.Type.NON_BOOT) && (result == null || p.getDownloadTime().compareTo(result.getDownloadTime()) < 0)) {
 				result = p;
 			}
 		}
@@ -342,7 +329,7 @@ public class PackageCacheManager {
 	 * Deletes a package from the cache.
 	 * 
 	 * @param pakkage
-	 *            package to delete
+	 *          package to delete
 	 * @return <code>true</code> if the package was successfully deleted;
 	 *         <code>false</code> otherwise
 	 */
@@ -382,7 +369,7 @@ public class PackageCacheManager {
 	 * non-boot packages if necessary.
 	 * 
 	 * @param limit
-	 *            size limit
+	 *          size limit
 	 */
 	private void ensureSize(long limit) {
 		while (calculateCacheSize() > limit) {
@@ -394,16 +381,16 @@ public class PackageCacheManager {
 	 * Downloads package from the Software Repository and adds it to the cache.
 	 * 
 	 * @param packageFilename
-	 *            file name of the package to download
+	 *          file name of the package to download
 	 * @param packageType
-	 *            type of requested package.
+	 *          type of requested package.
 	 * 
-	 * @return object representing the downloaded package, or <code>null</code>
-	 *         if the package is not found in the Software Repository or the
-	 *         Software Repository reference is not set
+	 * @return object representing the downloaded package, or <code>null</code> if
+	 *         the package is not found in the Software Repository or the Software
+	 *         Repository reference is not set
 	 * 
 	 * @throws IOException
-	 *             if the download fails
+	 *           if the download fails
 	 */
 	private Package tryDownloadPackage(String packageFilename,
 			PackageType packageType) throws IOException {
@@ -416,8 +403,7 @@ public class PackageCacheManager {
 		 * Retrieve the package size and ensure we have enough space in the
 		 * cache.
 		 */
-		PackageMetadata metadata = findPackageByFilename(packageFilename,
-				packageType);
+		PackageMetadata metadata = findPackageByFilename(packageFilename, packageType);
 		if (metadata == null) {
 			return null;
 		}
@@ -429,8 +415,7 @@ public class PackageCacheManager {
 		downloadPackage(metadata.getFilename(), saveTo);
 
 		/* Add package to internal data structues. */
-		Package result = new Package(saveTo, packageSize, new Date(),
-				Package.Type.NON_BOOT);
+		Package result = new Package(saveTo, packageSize, new Date(), Package.Type.NON_BOOT);
 		packages.add(result);
 		return result;
 	}
@@ -439,21 +424,21 @@ public class PackageCacheManager {
 	 * Downloads package from the Software Repository and adds it to the cache.
 	 * 
 	 * @param packageName
-	 *            name of the package to download
+	 *          name of the package to download
 	 * @param packageVersion
-	 *            version of the package to download
+	 *          version of the package to download
 	 * @param packageType
-	 *            type of requested package.
+	 *          type of requested package.
 	 * 
-	 * @return object representing the downloaded package, or <code>null</code>
-	 *         if the package is not found in the Software Repository or the
-	 *         Software Repository reference is not set
+	 * @return object representing the downloaded package, or <code>null</code> if
+	 *         the package is not found in the Software Repository or the Software
+	 *         Repository reference is not set
 	 * 
 	 * @throws IOException
-	 *             if the download fails
+	 *           if the download fails
 	 */
-	private Package tryDownloadPackage(String packageName,
-			String packageVersion, PackageType packageType) throws IOException {
+	private Package tryDownloadPackage(String packageName, String packageVersion,
+			PackageType packageType) throws IOException {
 		/* No Software Repository reference set? */
 		if (softwareRepository == null) {
 			return null;
@@ -463,8 +448,7 @@ public class PackageCacheManager {
 		 * Retrieve the package size and ensure we have enough space in the
 		 * cache.
 		 */
-		PackageMetadata metadata = findPackageByNameVersion(packageName,
-				packageVersion, packageType);
+		PackageMetadata metadata = findPackageByNameVersion(packageName, packageVersion, packageType);
 		if (metadata == null) {
 			return null;
 		}
@@ -476,8 +460,7 @@ public class PackageCacheManager {
 		downloadPackage(metadata.getFilename(), saveTo);
 
 		/* Add package to internal data structues. */
-		Package result = new Package(saveTo, packageSize, new Date(),
-				Package.Type.NON_BOOT);
+		Package result = new Package(saveTo, packageSize, new Date(), Package.Type.NON_BOOT);
 		packages.add(result);
 		return result;
 	}
@@ -486,27 +469,20 @@ public class PackageCacheManager {
 	 * Downloads a file from software repository
 	 * 
 	 * @param packageFilename
-	 *            name of file to be downloaded
+	 *          name of file to be downloaded
 	 * @param saveTo
-	 *            name of file to which file should be downloaded.
+	 *          name of file to which file should be downloaded.
 	 */
-	private void downloadPackage(String packageFilename, String saveTo)
-			throws IOException {
+	private void downloadPackage(String packageFilename, String saveTo) throws IOException {
 		/* Download the package. */
 		ServerSocket serverSocket = new ServerSocket(0); // 0 = use any port
-		DownloadHandle handle = softwareRepository.beginPackageDownload(
-				packageFilename, InetAddress.getLocalHost(),
-				serverSocket.getLocalPort());
+		DownloadHandle handle = softwareRepository.beginPackageDownload(packageFilename, InetAddress.getLocalHost(), serverSocket.getLocalPort());
 		byte[] buffer = new byte[SoftwareRepositoryInterface.DOWNLOAD_BUFFER_SIZE];
 		int bytesRead;
 		Socket socket = serverSocket.accept();
 		try {
-			InputStream inputStream = new BufferedInputStream(
-					socket.getInputStream(),
-					SoftwareRepositoryInterface.DOWNLOAD_BUFFER_SIZE);
-			OutputStream outputStream = new BufferedOutputStream(
-					new FileOutputStream(saveTo),
-					SoftwareRepositoryInterface.DOWNLOAD_BUFFER_SIZE);
+			InputStream inputStream = new BufferedInputStream(socket.getInputStream(), SoftwareRepositoryInterface.DOWNLOAD_BUFFER_SIZE);
+			OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(saveTo), SoftwareRepositoryInterface.DOWNLOAD_BUFFER_SIZE);
 			try {
 				while ((bytesRead = inputStream.read(buffer)) != -1) {
 					outputStream.write(buffer, 0, bytesRead);
@@ -527,17 +503,15 @@ public class PackageCacheManager {
 	 * hit.
 	 * 
 	 * @param packageFilename
-	 *            filename to match
+	 *          filename to match
 	 * @param packageType
-	 *            package type to match
+	 *          package type to match
 	 * @return matching package's metadata
 	 */
 	private PackageMetadata findPackageByFilename(String packageFilename,
 			PackageType packageType) throws RemoteException {
 		try {
-			PackageMetadata[] metadata = softwareRepository
-					.queryPackages(new PackageFilenameQueryCallback(
-							packageFilename, packageType));
+			PackageMetadata[] metadata = softwareRepository.queryPackages(new PackageFilenameQueryCallback(packageFilename, packageType));
 
 			if (metadata.length == 0) {
 				return null;
@@ -552,24 +526,21 @@ public class PackageCacheManager {
 	}
 
 	/**
-	 * Searches software repository's packages by name and version and returns
-	 * the first hit.
+	 * Searches software repository's packages by name and version and returns the
+	 * first hit.
 	 * 
 	 * @param packageName
-	 *            package name to match
+	 *          package name to match
 	 * @param packageVersion
-	 *            package version to match
+	 *          package version to match
 	 * @param packageType
-	 *            package type to match
+	 *          package type to match
 	 * @return matching package's metadata
 	 */
 	private PackageMetadata findPackageByNameVersion(String packageName,
-			String packageVersion, PackageType packageType)
-			throws RemoteException {
+			String packageVersion, PackageType packageType) throws RemoteException {
 		try {
-			PackageMetadata[] metadata = softwareRepository
-					.queryPackages(new PackageNameVersionQueryCallback(
-							packageName, packageVersion, packageType));
+			PackageMetadata[] metadata = softwareRepository.queryPackages(new PackageNameVersionQueryCallback(packageName, packageVersion, packageType));
 
 			if (metadata.length == 0) {
 				return null;
@@ -586,51 +557,42 @@ public class PackageCacheManager {
 	 * Extract contents of the ZIP file to given path.
 	 * 
 	 * @param zipFilename
-	 *            ZIP file to extract
+	 *          ZIP file to extract
 	 * @param path
-	 *            path to extract the files
+	 *          path to extract the files
 	 * @throws IOException
-	 *             if the extraction fails
+	 *           if the extraction fails
 	 */
-	private void extractZipFile(String zipFilename, String path)
-			throws IOException {
+	private void extractZipFile(String zipFilename, String path) throws IOException {
 		ZipFile zipFile = null;
 		InputStream inputStream = null;
 		OutputStream outputStream = null;
+
 		try {
 			zipFile = new ZipFile(zipFilename);
-
 			Enumeration<? extends ZipEntry> entries = zipFile.entries();
-
 			while (entries.hasMoreElements()) {
 				ZipEntry entry = entries.nextElement();
 
-				if (!entry.isDirectory()) {
-					byte[] buffer = new byte[PACKAGE_EXTRACTION_BUFFER_SIZE];
-					int bytesRead;
-					inputStream = new BufferedInputStream(
-							zipFile.getInputStream(entry),
-							PACKAGE_EXTRACTION_BUFFER_SIZE);
-					
-					String fName = path + File.separator
-							+ entry.getName();
-					// create directory if needed
+				if (entry.isDirectory()) {
+					new File(path, entry.getName()).mkdirs();
+				} else {
+					// assemble zip entry path and ensure directories are created
+					String fName = path + File.separator + entry.getName();
 					String dirName = fName.substring(0, fName.lastIndexOf(File.separator));
 					File dir = new File(dirName);
 					if (!dir.exists()) {
 						dir.mkdirs();
 					}
-					
-					outputStream = new BufferedOutputStream(
-							new FileOutputStream(fName),
-							PACKAGE_EXTRACTION_BUFFER_SIZE);
-					while ((bytesRead = inputStream.read(buffer)) != -1) {
+
+					inputStream = new BufferedInputStream(zipFile.getInputStream(entry), PACKAGE_EXTRACTION_BUFFER_SIZE);
+					outputStream = new BufferedOutputStream(new FileOutputStream(fName), PACKAGE_EXTRACTION_BUFFER_SIZE);
+					byte[] buffer = new byte[PACKAGE_EXTRACTION_BUFFER_SIZE];
+					for (int bytesRead = inputStream.read(buffer); bytesRead != -1; bytesRead = inputStream.read(buffer)) {
 						outputStream.write(buffer, 0, bytesRead);
 					}
 					closeCloseableQuitely(outputStream);
 					closeCloseableQuitely(inputStream);
-				} else {
-					new File(path, entry.getName()).mkdirs();
 				}
 			}
 		} catch (IOException e) {
@@ -641,10 +603,11 @@ public class PackageCacheManager {
 			closeCloseableQuitely(outputStream);
 		}
 	}
-
 	/**
 	 * close {@link Closeable} object quietly (exception is not thrown on failure)
-	 * @param closeable object implementing {@link Closeable} interface
+	 * 
+	 * @param closeable
+	 *          object implementing {@link Closeable} interface
 	 */
 	private void closeCloseableQuitely(Closeable closeable) {
 		if (closeable != null) {
@@ -662,23 +625,23 @@ public class PackageCacheManager {
 	 * Repository and placing it to the cache).
 	 * 
 	 * Maintains invariant that size of all packages in the package cache
-	 * directory is less than <code>maxCacheSize</code>. If the invariant is
-	 * about to be broken when downloading new package form the Software
-	 * Repository, we delete oldest packages until there is enough space.
+	 * directory is less than <code>maxCacheSize</code>. If the invariant is about
+	 * to be broken when downloading new package form the Software Repository, we
+	 * delete oldest packages until there is enough space.
 	 * 
 	 * @param packageName
-	 *            name of the package to extract (package's filename, not the
-	 *            one from packages metadata.
+	 *          name of the package to extract (package's filename, not the one
+	 *          from packages metadata.
 	 * @param path
-	 *            directory where the package will be extracted
+	 *          directory where the package will be extracted
 	 * @param packageType
-	 *            type of requested package (only packages of given type will be
-	 *            searched).
+	 *          type of requested package (only packages of given type will be
+	 *          searched).
 	 * @throws IOException
-	 *             if the download or extraction fails
+	 *           if the download or extraction fails
 	 * @throws HostRuntimeException
-	 *             if the package can not be found in the Software Repository or
-	 *             the Software Repository reference is not set
+	 *           if the package can not be found in the Software Repository or the
+	 *           Software Repository reference is not set
 	 */
 	public synchronized void extractPackage(String packageName, String path,
 			PackageType packageType) throws IOException, HostRuntimeException {
@@ -700,41 +663,38 @@ public class PackageCacheManager {
 	 * Repository and placing it to the cache).
 	 * 
 	 * Maintains invariant that size of all packages in the package cache
-	 * directory is less than <code>maxCacheSize</code>. If the invariant is
-	 * about to be broken when downloading new package form the Software
-	 * Repository, we delete oldest packages until there is enough space.
+	 * directory is less than <code>maxCacheSize</code>. If the invariant is about
+	 * to be broken when downloading new package form the Software Repository, we
+	 * delete oldest packages until there is enough space.
 	 * 
 	 * @param packageName
-	 *            name of the package to extract (name from package's metadata)
+	 *          name of the package to extract (name from package's metadata)
 	 * @param packageVersion
-	 *            version of the package to extract (version from package's
-	 *            metadata)
+	 *          version of the package to extract (version from package's
+	 *          metadata)
 	 * @param path
-	 *            directory where the package will be extracted
+	 *          directory where the package will be extracted
 	 * @param packageType
-	 *            type of requested package (only packages of given type will be
-	 *            searched).
+	 *          type of requested package (only packages of given type will be
+	 *          searched).
 	 * @throws IOException
-	 *             if the download or extraction fails
+	 *           if the download or extraction fails
 	 * @throws HostRuntimeException
-	 *             if the package can not be found in the Software Repository or
-	 *             the Software Repository reference is not set
+	 *           if the package can not be found in the Software Repository or the
+	 *           Software Repository reference is not set
 	 */
 	public synchronized void extractPackage(String packageName,
-			String packageVersion, String path, PackageType packageType)
-			throws IOException, HostRuntimeException {
+			String packageVersion, String path, PackageType packageType) throws IOException, HostRuntimeException {
 
 		/* ask software repository for filename of file we want */
-		PackageMetadata metadata = findPackageByNameVersion(packageName,
-				packageVersion, packageType);
+		PackageMetadata metadata = findPackageByNameVersion(packageName, packageVersion, packageType);
 
 		/* build filename from packageName and packageVersion */
 		String packageFilename = metadata.getFilename();
 
 		Package pakkage = findPackage(packageFilename);
 		if (pakkage == null) {
-			pakkage = tryDownloadPackage(packageName, packageVersion,
-					packageType);
+			pakkage = tryDownloadPackage(packageName, packageVersion, packageType);
 		}
 
 		if (pakkage != null) {
@@ -751,15 +711,15 @@ public class PackageCacheManager {
 	 * reference to the Software Repository (using
 	 * <code>setSoftwareRepository</code> method) and limit of the cache size
 	 * (using <code>setMaxCacheSize</code> method). Those two attributes are not
-	 * set in the constructor, because it is assumed that user (Host Runtime)
-	 * does not know them in the time of the construction.
+	 * set in the constructor, because it is assumed that user (Host Runtime) does
+	 * not know them in the time of the construction.
 	 * 
 	 * @param cacheDir
-	 *            cache directory
+	 *          cache directory
 	 * @param bootPackagesDir
-	 *            directory with boot packages
+	 *          directory with boot packages
 	 * @throws IOException
-	 *             if the list of boot packages can't be retrieved
+	 *           if the list of boot packages can't be retrieved
 	 */
 	public PackageCacheManager(String cacheDir, String bootPackagesDir)
 			throws IOException {
@@ -773,8 +733,7 @@ public class PackageCacheManager {
 		}
 
 		for (File f : files) {
-			packages.add(new Package(f.getPath(), f.length(), now,
-					Package.Type.BOOT));
+			packages.add(new Package(f.getPath(), f.length(), now, Package.Type.BOOT));
 		}
 	}
 }
