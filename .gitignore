@@ -1,13 +1,16 @@
-#Intellij IDEA files
+# Intellij IDEA files
 *.iml
-*/*.iml
+**/*.iml
 .idea
-*/.idea
+**/.idea
+# Eclipse project files
 .classpath
-*/.classpath
+**/.classpath
 .project
-*/.project
-target
-*/target
+**/.project
 .settings
 **/.settings
+# Compiled binaries
+target
+**/target
+data
