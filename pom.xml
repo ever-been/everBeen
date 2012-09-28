@@ -4,39 +4,28 @@
 
 	<groupId>cz.cuni.mff.d3s.been</groupId>
 	<artifactId>parent</artifactId>
-	<version>0.0.1</version>
+	<version>2.1.0</version>
 	<packaging>pom</packaging>
 	<name>parent</name>
 
-	<!-- When running "mvn {phase}" without specifying "buildAllModules" profile, only modules specified below will be included.
-		If you want to build all modules, run "mvn {phase} -P buildAllModules". See profiles section for more details. -->
+	<!--
+	When running "mvn {phase}" without specifying "allModules" profile, only modules specified in the buildCore profile will be included.
+	If you want to build all modules, run "mvn {phase} -P buildAllModules". See profiles section for more details.
+	-->
 		
-	<modules>
-		<module>service_interfaces</module>
-		<module>core</module>
-		<module>host_runtime</module>
-		<module>taskmanager</module>
-		<module>cline_interface</module>
-		<module>softwarerepository</module>
-		<module>hostmanager</module>
-		<module>resultsrepository</module>
-		<module>benchmarkmanager</module>
-		<module>pluggablemodule</module>
-		<module>pluggablemodule-fileagent</module>
-		<module>pluggablemodule-fileagent-implementation</module>
-		<module>web_interface</module>
-	</modules>
-
 	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		
-		<!-- lib versions !!! DO NOT INCREASE WHILE SYSTEM DEPENDENCIES EXISTS -->
+
+		<!-- DEPENDENCY VERSION CONTROL -->
+		<ant.version>1.8.4</ant.version>
 		<antlr.version>2.7.6</antlr.version>
 		<avalon-framework.version>4.3.1</avalon-framework.version>
 		<avalon-logkit.version>2.2.1</avalon-logkit.version>
+		<collections.version>4.01</collections.version>
 		<commons-fileupload.version>1.2.1</commons-fileupload.version>
-		<commons-io.version>1.4</commons-io.version>
+		<commons-io.version>2.4</commons-io.version>
 		<commons-logging.version>1.1.1</commons-logging.version>
+		<derby.version>10.5.3.0_1</derby.version>
+		<hibernate.version>3.3.1.GA</hibernate.version>
 		<javax.version>1.1</javax.version>
 		<jaxb-impl.version>2.2</jaxb-impl.version>
 		<jaxb-api.version>2.2</jaxb-api.version>
@@ -45,10 +34,24 @@
 		<jython.version>2.2.1</jython.version>
 		<log4j.version>1.2.12</log4j.version>
 		<logback.version>1.0.6</logback.version>
+		<maven.version>2.0</maven.version>
 		<opencsv.version>2.0</opencsv.version>
 		<rmiio.version>2.0.2</rmiio.version>
 		<servlet-api.version>2.4</servlet-api.version>
 		<slf4j.version>1.6.4</slf4j.version>
+
+
+		<!-- PLUGIN VERSION CONTROL -->
+		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
+		<maven-jar-plugin.version>2.4</maven-jar-plugin.version>
+
+
+		<!-- SOURCE LEVEL CONTROL -->
+		<java-source.version>1.6</java-source.version>
+		<java-target.version>1.6</java-target.version>
+
+		<!-- ENCODING -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<!--
@@ -110,7 +113,6 @@
 
 
 
-
 		<!-- TESTING -->
 		<dependency> <!-- NEEDED -->
 			<groupId>junit</groupId>
@@ -121,14 +123,13 @@
 
 
 
-
 		<!-- AVALON -->
 		<dependency>
 			<groupId>org.apache.avalon.framework</groupId>
 			<artifactId>avalon-framework-impl</artifactId>
 			<version>${avalon-framework.version}</version>
 		</dependency>
-            
+
 		<dependency>
 			<groupId>org.apache.avalon.framework</groupId>
 			<artifactId>avalon-framework-api</artifactId>
@@ -143,21 +144,12 @@
 
 
 
-
 		<!-- JAXB -->
 		<dependency> <!-- NEEDED -->
 			<groupId>com.sun.xml.bind</groupId>
 			<artifactId>jaxb-impl</artifactId>
 			<version>${jaxb-impl.version}</version>
 		</dependency>
-			    
-		<!--<dependency>
-			<groupId>javax.xml.bind</groupId>
-			<artifactId>jaxb-api</artifactId>
-			<version>${jaxb-api.version}</version>
-		</dependency>-->
-
-
 
 
 
@@ -165,58 +157,33 @@
 		<dependency> <!-- NEEDED -->
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-annotations</artifactId>
-			<version>3.3.1.GA</version>
+			<version>${hibernate.version}</version>
 		</dependency>
 
-		<!--
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate</artifactId>
-			<version>3.2.6.ga</version>
-		</dependency>
-		-->
-
-		<!--
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-entitymanager</artifactId>
-			<version>3.3.2.GA</version>
-		</dependency>
-		-->
-            
-		<!--
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>ejb3-persistence</artifactId>
-			<version>1.0.1.GA</version>
-		</dependency>
-		-->
-            
 
 
 		<!-- DERBY -->
 		<dependency> <!-- NEEDED -->
 			<groupId>org.apache.derby</groupId>
 			<artifactId>derbynet</artifactId>
-			<version>10.5.3.0_1</version>
+			<version>${derby.version}</version>
 		</dependency>
 
 		<dependency> <!-- NEEDED -->
 			<groupId>org.apache.derby</groupId>
 			<artifactId>derbytools</artifactId>
-			<version>10.5.3.0_1</version>
+			<version>${derby.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.derby</groupId>
 			<artifactId>derby</artifactId>
-			<version>10.5.3.0_1</version>
+			<version>${derby.version}</version>
 		</dependency>
-            
 
 
 
-		<!-- OTHER MAVEN MANAGED DEPENDENCIES -->
+		<!-- OTHER -->
 		<dependency> <!-- NEEDED -->
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
@@ -262,337 +229,23 @@
 		<dependency> <!-- NEEDED -->
 			<groupId>net.sourceforge.collections</groupId>
 			<artifactId>collections-generic</artifactId>
-			<version>4.01</version>
+			<version>${collections.version}</version>
 		</dependency>
-            
+
 		<dependency> <!-- NEEDED -->
 			<groupId>org.apache.ant</groupId>
 			<artifactId>ant</artifactId>
-			<version>1.8.4</version>
+			<version>${ant.version}</version>
 		</dependency>
-            
-		<!--<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>${commons-io.version}</version>
-		</dependency>-->
-		
-		<!--            
-		<dependency>
-			<groupId>antlr</groupId>
-			<artifactId>antlr</artifactId>
-			<version>${antlr.version}</version>
-		</dependency>
-		-->
-
-		<!--
-		<dependency>
-			<groupId>org.apache.xmlgraphics</groupId>
-			<artifactId>xmlgraphics-commons</artifactId>
-			<version>1.3.1</version>
-		</dependency>
-		-->
-
-
-
-		<!-- NON MAVEN MAGED DEPENDENCIES -->
-		<dependency> <!-- NEEDED -->
-			<groupId>javasvn</groupId>
-			<artifactId>javasvn.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/javasvn/javasvn.jar</systemPath>
-		</dependency>
-
-		<!--
-		<dependency>
-			<groupId>sjava</groupId>
-			<artifactId>jhall.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/sjava/jhall.jar</systemPath>
-		</dependency>
-		-->
-
-		<!--
-		<dependency>
-			<groupId>sjava</groupId>
-			<artifactId>JRI.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/sjava/JRI.jar</systemPath>
-		</dependency>
-		-->
-
-		<!--
-		<dependency>
-			<groupId>fop</groupId>
-			<artifactId>fop-hyph.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/fop/fop-hyph.jar</systemPath>
-		</dependency>
-		-->
-		
-		<!--
-		<dependency>
-			<groupId>fop</groupId>
-			<artifactId>fop.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/fop/fop.jar</systemPath>
-		</dependency>
-		-->
-
-		<!--
-		<dependency>
-			<groupId>sjava</groupId>
-			<artifactId>jas.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/sjava/jas.jar</systemPath>
-		</dependency>
-		-->
-
-		<!--
-		<dependency>
-			<groupId>derby</groupId>
-			<artifactId>derbyclient.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/derby/derbyclient.jar</systemPath>
-		</dependency>
-		-->
-
-		<!--
-		<dependency>
-			<groupId>jpda</groupId>
-			<artifactId>tools.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/jpda/tools.jar</systemPath>
-		</dependency>
-		-->
-
-		<!--
-		<dependency>
-			<groupId>examples</groupId>
-			<artifactId>hello.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/examples/hello.jar</systemPath>
-		</dependency>
-		-->
-
-		<!--
-		<dependency>
-			<groupId>batik</groupId>
-			<artifactId>batik-all-1.7.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/batik/batik-all-1.7.jar</systemPath>
-		</dependency>
-		-->
-
-		<!--
-		<dependency>
-			<groupId>batik</groupId>
-			<artifactId>batik-ext-1.6.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/batik/batik-ext-1.6.jar</systemPath>
-		</dependency>
-		-->
-
-		<!--
-		<dependency>
-			<groupId>saxon</groupId>
-			<artifactId>saxon9he.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/saxon/saxon9he.jar</systemPath>
-		</dependency>
-		-->
-
-		<!--
-		<dependency>
-			<groupId>jaxb</groupId>
-			<artifactId>jaxb-xjc.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/jaxb/jaxb-xjc.jar</systemPath>
-		</dependency>
-		-->		
-
-		<!--
-		<dependency>
-			<groupId>jaxb</groupId>
-			<artifactId>activation.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/jaxb/activation.jar</systemPath>
-		</dependency>
-		-->
-
-		<!--
-		<dependency>
-			<groupId>jaxb</groupId>
-			<artifactId>jaxb1-impl.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/jaxb/jaxb1-impl.jar</systemPath>
-		</dependency>
-		-->
-
-		<!--
-		<dependency>
-			<groupId>jaxb</groupId>
-			<artifactId>jsr173_1.0_api.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/jaxb/jsr173_1.0_api.jar</systemPath>
-		</dependency>
-		-->
-
-		<!--<dependency>
-			<groupId>hibernate</groupId>
-			<artifactId>hibernate-tools.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/hibernate/hibernate-tools.jar</systemPath>
-		</dependency>-->  
-
-		<!--
-		<dependency>
-			<groupId>hibernate</groupId>
-			<artifactId>javassist.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/hibernate/javassist.jar</systemPath>
-		</dependency>
-		-->
-
-		<!--
-		<dependency>
-			<groupId>hibernate</groupId>
-			<artifactId>jdbc2_0-stdext.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/hibernate/jdbc2_0-stdext.jar</systemPath>
-		</dependency>
-		-->
-
-		<!--
-		<dependency>
-			<groupId>hibernate</groupId>
-			<artifactId>dom4j.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/hibernate/dom4j.jar</systemPath>
-		</dependency>
-		-->
-
-		<!--
-		<dependency>
-			<groupId>hibernate</groupId>
-			<artifactId>cglib.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/hibernate/cglib.jar</systemPath>
-		</dependency>
-		-->
-
-		<!--
-		<dependency>
-			<groupId>hibernate</groupId>
-			<artifactId>jta.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/hibernate/jta.jar</systemPath>
-		</dependency>
-		-->
-
-		<!--
-		<dependency>
-			<groupId>hibernate</groupId>
-			<artifactId>asm-attrs.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/hibernate/asm-attrs.jar</systemPath>
-		</dependency>
-		-->
-		
-		<!--
-		<dependency>
-			<groupId>hibernate</groupId>
-			<artifactId>asm.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/hibernate/asm.jar</systemPath>
-		</dependency>
-		-->
-		
-		<!--
-		<dependency>
-			<groupId>hibernate</groupId>
-			<artifactId>ehcache.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/hibernate/ehcache.jar</systemPath>
-		</dependency>
-		-->
-
-		<!--
-		<dependency>
-			<groupId>hibernate</groupId>
-			<artifactId>hibernate-commons-annotations.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/hibernate/hibernate-commons-annotations.jar</systemPath>
-		</dependency>
-		-->
-
-		<!--
-		<dependency>
-			<groupId>hibernate</groupId>
-			<artifactId>commons-collections.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/hibernate/commons-collections.jar</systemPath>
-		</dependency>
-		-->
-
-		<!--
-		<dependency>
-			<groupId>xerces</groupId>
-			<artifactId>xercesImpl.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/xerces/xercesImpl.jar</systemPath>
-		</dependency>
-		-->
-		
-		<!--
-		<dependency>
-			<groupId>javacc</groupId>
-			<artifactId>javacc.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/javacc/javacc.jar</systemPath>
-		</dependency>
-		-->
-            
 	</dependencies>
 
 
 	<profiles>
 		<profile>
-			<id>buildAllModules</id>
+			<id>buildCore</id>
+
 			<activation>
-				<property>
-					<name>buildAllModules</name>
-					<value>true</value>
-				</property>
+				<activeByDefault>true</activeByDefault>
 			</activation>
 
 			<modules>
@@ -609,15 +262,22 @@
 				<module>pluggablemodule-fileagent</module>
 				<module>pluggablemodule-fileagent-implementation</module>
 				<module>web_interface</module>
-
 				<module>bpk-plugin</module>
 				<module>debug_assistant</module>
 				<module>bcmd</module>
-				<module>obsolete_jar_installer</module>
+				<module>detectors</module>
+			</modules>
+		</profile>
+
+		<profile>
+			<id>buildBenchmarks</id>
+
+			<modules>
 				<module>xampler</module>
 				<module>generators</module>
 				<module>evaluators</module>
 				<module>tasks</module>
+				<module>examples</module>
 			</modules>
 		</profile>
 	</profiles>

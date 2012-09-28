@@ -1,33 +1,33 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>cz.cuni.mff.d3s.been</groupId>
-    <artifactId>evaluator-generic-r</artifactId>
-    <packaging>jar</packaging>
-    <version>2.1.0</version>
-    <name>evaluator-generic-r</name>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>cz.cuni.mff.d3s.been</groupId>
+	<artifactId>evaluator-generic-r</artifactId>
+	<packaging>jar</packaging>
+	<version>2.1.0</version>
+	<name>evaluator-generic-r</name>
 
-    <parent>
-        <groupId>cz.cuni.mff.d3s.been</groupId>
-        <artifactId>evaluators</artifactId>
-        <version>2.1.0</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
+	<parent>
+		<groupId>cz.cuni.mff.d3s.been.evaluators</groupId>
+		<artifactId>evaluators</artifactId>
+		<version>2.1.0</version>
+	</parent>
 
-    <dependencies>
-        <!-- BEEN DEPENDENCIES -->
-        <dependency>
-            <groupId>cz.cuni.mff.d3s.been</groupId>
-            <artifactId>benchmarkmanager</artifactId>
-            <version>2.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>cz.cuni.mff.d3s.been</groupId>
-            <artifactId>resultsrepository</artifactId>
-            <version>2.1.0</version>
-        </dependency>
-    </dependencies>
+	<dependencies>
+		<!-- BEEN DEPENDENCIES -->
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>benchmarkmanager</artifactId>
+			<version>${been.version}</version>
+		</dependency>
 
-    <build>
-        <finalName>evaluator-generic-r</finalName>
-    </build>
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>resultsrepository</artifactId>
+			<version>${been.version}</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<finalName>evaluator-generic-r</finalName>
+	</build>
 </project>

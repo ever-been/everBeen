@@ -1,11 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>cz.cuni.mff.d3s.been</groupId>
 	<artifactId>bcmd</artifactId>
-	<version>2.1.0</version>
 	<packaging>uexe</packaging>
 	<name>bcmd</name>
+
+	<parent>
+		<groupId>cz.cuni.mff.d3s.been</groupId>
+		<artifactId>parent</artifactId>
+		<version>2.1.0</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
 
 	<build>
 		<finalName>bcmd</finalName>
@@ -26,19 +31,17 @@
 						</source>
 					</sources>
 
-
 					<compilerProvider>generic-classic</compilerProvider>
 					<compilerExecutable>gcc</compilerExecutable>
 
-                    <compilerStartOptions>
-                        <compilerStartOption>-std=c99 -O2 -pipe -Wall -pedantic</compilerStartOption>
-                    </compilerStartOptions>
+					<compilerStartOptions>
+					<compilerStartOption>-std=c99 -O2 -pipe -Wall -pedantic</compilerStartOption>
+					</compilerStartOptions>
 
-                    <!-- does NOT create the bin directory resulting in build failure -->
-                    <!--
-                    <linkerOutputDirectory>${project.build.directory}/bin</linkerOutputDirectory>
-                    -->
-
+					<!-- does NOT create the bin directory resulting in build failure -->
+					<!--
+					<linkerOutputDirectory>${project.build.directory}/bin</linkerOutputDirectory>
+					-->
 				</configuration>
 			</plugin>
 		</plugins>

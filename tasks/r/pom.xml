@@ -1,16 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>cz.cuni.mff.d3s.been</groupId>
     <artifactId>task-evaluator-r</artifactId>
     <packaging>jar</packaging>
-    <version>2.1.0</version>
     <name>task-evaluator-r</name>
 
     <parent>
-        <groupId>cz.cuni.mff.d3s.been</groupId>
+        <groupId>cz.cuni.mff.d3s.been.tasks</groupId>
         <artifactId>tasks</artifactId>
         <version>2.1.0</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <dependencies>
@@ -18,12 +15,12 @@
         <dependency>
             <groupId>cz.cuni.mff.d3s.been</groupId>
             <artifactId>benchmarkmanager</artifactId>
-            <version>2.1.0</version>
+            <version>${been.version}</version>
         </dependency>
         <dependency>
             <groupId>cz.cuni.mff.d3s.been</groupId>
             <artifactId>resultsrepository</artifactId>
-            <version>2.1.0</version>
+            <version>${been.version}</version>
         </dependency>
 
     </dependencies>

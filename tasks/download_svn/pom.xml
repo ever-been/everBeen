@@ -1,25 +1,27 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>cz.cuni.mff.d3s.been</groupId>
-    <artifactId>task-download-svn</artifactId>
-    <packaging>jar</packaging>
-    <version>2.1.0</version>
-    <name>task-download-svn</name>
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>task-download-svn</artifactId>
+	<packaging>jar</packaging>
+	<name>task-download-svn</name>
 
-    <parent>
-        <groupId>cz.cuni.mff.d3s.been</groupId>
-        <artifactId>tasks</artifactId>
-        <version>2.1.0</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
+	<parent>
+		<groupId>cz.cuni.mff.d3s.been.tasks</groupId>
+		<artifactId>tasks</artifactId>
+		<version>2.1.0</version>
+	</parent>
 
-    <dependencies>
-        <!-- BEEN DEPENDENCIES -->
-        <dependency>
-            <groupId>cz.cuni.mff.d3s.been</groupId>
-            <artifactId>pluggablemodule-fileagent</artifactId>
-            <version>2.1.0</version>
-        </dependency>
-    </dependencies>
+	<dependencies>
+		<!-- BEEN DEPENDENCIES -->
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>pluggablemodule-fileagent</artifactId>
+			<version>${been.version}</version>
+		</dependency>
 
+		<dependency>
+			<groupId>org.tmate</groupId>
+			<artifactId>javasvn</artifactId>
+			<version>${javasvn.version}</version>
+		</dependency>
+	</dependencies>
 </project>

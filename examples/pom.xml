@@ -1,20 +1,20 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>evaluators</artifactId>
-	<groupId>cz.cuni.mff.d3s.been.evaluators</groupId>
+	<artifactId>examples</artifactId>
+	<groupId>cz.cuni.mff.d3s.been.examples</groupId>
 	<version>2.1.0</version>
 	<packaging>pom</packaging>
-	<name>evaluators</name>
+	<name>examples</name>
 
 	<modules>
-		<module>simpletest</module>
-		<module>genericr</module>
 	</modules>
 
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<been.version>2.1.0</been.version>
+		<java-source.version>1.6</java-source.version>
+		<java-target.version>1.6</java-target.version>
 		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
 	</properties>
 
@@ -26,18 +26,4 @@
 			<version>${been.version}</version>
 		</dependency>
 	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${maven-compiler-plugin.version}</version>
-				<configuration>
-					<source>${java-source.version}</source>
-					<target>${java-target.version}</target>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 </project>

@@ -2,16 +2,14 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>cz.cuni.mff.d3s.been</groupId>
 	<artifactId>obsolete_jar_installer</artifactId>
-	<version>0.0.1</version>
 	<packaging>pom</packaging>
 	<name>obsolete_jar_installer</name>
 
 	<parent>
 		<groupId>cz.cuni.mff.d3s.been</groupId>
 		<artifactId>parent</artifactId>
-		<version>0.0.1</version>
+		<version>2.1.0</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
