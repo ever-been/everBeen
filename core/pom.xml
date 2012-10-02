@@ -16,10 +16,6 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<dependencies>
-
-	</dependencies>
-
 	<build>
 		<finalName>core</finalName>
 		<plugins>

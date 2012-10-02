@@ -19,11 +19,57 @@
 			<artifactId>core</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
-        <dependency>
-            <groupId>cz.cuni.mff.d3s.been</groupId>
-            <artifactId>service_interfaces</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
+
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>service_interfaces</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+
+
+
+		<!-- OTHER DEPENDENCIES -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>${log4j.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-annotations</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.derby</groupId>
+			<artifactId>derbynet</artifactId>
+			<version>${derby.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.derby</groupId>
+			<artifactId>derby</artifactId>
+			<version>${derby.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.derby</groupId>
+			<artifactId>derbytools</artifactId>
+			<version>${derby.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sf.opencsv</groupId>
+			<artifactId>opencsv</artifactId>
+			<version>${opencsv.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.transaction</groupId>
+			<artifactId>jta</artifactId>
+			<version>${javax.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>

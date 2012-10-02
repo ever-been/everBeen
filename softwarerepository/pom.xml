@@ -19,11 +19,18 @@
 			<artifactId>core</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
-        <dependency>
-            <groupId>cz.cuni.mff.d3s.been</groupId>
-            <artifactId>service_interfaces</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>service_interfaces</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+
+		<!-- EXTERNAL DEPENDENCIES -->
+		<dependency>
+			<groupId>com.healthmarketscience.rmiio</groupId>
+			<artifactId>rmiio</artifactId>
+			<version>${rmiio.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>

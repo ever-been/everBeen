@@ -86,32 +86,24 @@
 
 	<dependencies>
 		<!-- LOGGING -->
-		<dependency> <!-- NEEDED -->
+		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>${slf4j.version}</version>
 		</dependency>
 
-		<dependency> <!-- NEEDED -->
+		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
 			<version>${slf4j.version}</version>
 		</dependency>
 
-		<dependency> <!-- NEEDED -->
+		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 			<scope>runtime</scope>
 			<version>${logback.version}</version>
 		</dependency>
-
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>${log4j.version}</version>
-		</dependency>
-
-
 
 		<!-- TESTING -->
 		<dependency> <!-- NEEDED -->
@@ -119,123 +111,6 @@
 			<artifactId>junit</artifactId>
 			<version>${junit.version}</version>
 			<scope>test</scope>
-		</dependency>
-
-
-
-		<!-- AVALON -->
-		<dependency>
-			<groupId>org.apache.avalon.framework</groupId>
-			<artifactId>avalon-framework-impl</artifactId>
-			<version>${avalon-framework.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.avalon.framework</groupId>
-			<artifactId>avalon-framework-api</artifactId>
-			<version>${avalon-framework.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.avalon.logkit</groupId>
-			<artifactId>avalon-logkit</artifactId>
-			<version>${avalon-logkit.version}</version>
-		</dependency>
-
-
-
-		<!-- JAXB -->
-		<dependency> <!-- NEEDED -->
-			<groupId>com.sun.xml.bind</groupId>
-			<artifactId>jaxb-impl</artifactId>
-			<version>${jaxb-impl.version}</version>
-		</dependency>
-
-
-
-		<!-- HIBERNATE -->
-		<dependency> <!-- NEEDED -->
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-annotations</artifactId>
-			<version>${hibernate.version}</version>
-		</dependency>
-
-
-
-		<!-- DERBY -->
-		<dependency> <!-- NEEDED -->
-			<groupId>org.apache.derby</groupId>
-			<artifactId>derbynet</artifactId>
-			<version>${derby.version}</version>
-		</dependency>
-
-		<dependency> <!-- NEEDED -->
-			<groupId>org.apache.derby</groupId>
-			<artifactId>derbytools</artifactId>
-			<version>${derby.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.derby</groupId>
-			<artifactId>derby</artifactId>
-			<version>${derby.version}</version>
-		</dependency>
-
-
-
-		<!-- OTHER -->
-		<dependency> <!-- NEEDED -->
-			<groupId>commons-fileupload</groupId>
-			<artifactId>commons-fileupload</artifactId>
-			<version>${commons-fileupload.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.healthmarketscience.rmiio</groupId>
-			<artifactId>rmiio</artifactId>
-			<version>${rmiio.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>net.sf.opencsv</groupId>
-			<artifactId>opencsv</artifactId>
-			<version>${opencsv.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.python</groupId>
-			<artifactId>jython</artifactId>
-			<version>${jython.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>jsp-api</artifactId>
-			<version>${jsp-api.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.transaction</groupId>
-			<artifactId>jta</artifactId>
-			<version>${javax.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>${servlet-api.version}</version>
-		</dependency>
-
-		<dependency> <!-- NEEDED -->
-			<groupId>net.sourceforge.collections</groupId>
-			<artifactId>collections-generic</artifactId>
-			<version>${collections.version}</version>
-		</dependency>
-
-		<dependency> <!-- NEEDED -->
-			<groupId>org.apache.ant</groupId>
-			<artifactId>ant</artifactId>
-			<version>${ant.version}</version>
 		</dependency>
 	</dependencies>
 

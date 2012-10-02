@@ -19,20 +19,35 @@
 			<artifactId>core</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
+
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
 			<artifactId>service_interfaces</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
+
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
 			<artifactId>pluggablemodule</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
+
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
 			<artifactId>pluggablemodule-fileagent</artifactId>
 			<version>${project.parent.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sourceforge.collections</groupId>
+			<artifactId>collections-generic</artifactId>
+			<version>${collections.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.healthmarketscience.rmiio</groupId>
+			<artifactId>rmiio</artifactId>
+			<version>${rmiio.version}</version>
 		</dependency>
 	</dependencies>
 
