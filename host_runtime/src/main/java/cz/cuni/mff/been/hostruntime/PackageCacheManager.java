@@ -27,7 +27,6 @@ package cz.cuni.mff.been.hostruntime;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.Closeable;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -39,11 +38,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.rmi.RemoteException;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +50,8 @@ import cz.cuni.mff.been.softwarerepository.PackageMetadata;
 import cz.cuni.mff.been.softwarerepository.PackageQueryCallbackInterface;
 import cz.cuni.mff.been.softwarerepository.PackageType;
 import cz.cuni.mff.been.softwarerepository.SoftwareRepositoryInterface;
+import cz.cuni.mff.been.utils.FileUtils;
+import cz.cuni.mff.been.utils.ZipUtils;
 
 /**
  * Manages the Host Runtime's package cache.
@@ -168,8 +166,10 @@ public class PackageCacheManager {
 	private static class PackageFilenameQueryCallback implements PackageQueryCallbackInterface, Serializable {
 
 		private static final long serialVersionUID = -4917724355368780085L;
+
 		/** Package file name to check. */
 		private final String packageFilename;
+
 		/** Package type to check */
 		private final PackageType packageType;
 
@@ -206,10 +206,13 @@ public class PackageCacheManager {
 	private static class PackageNameVersionQueryCallback implements PackageQueryCallbackInterface, Serializable {
 
 		private static final long serialVersionUID = -4917724355368780085L;
+
 		/** Package name to check. */
 		private final String packageName;
+
 		/** Package version to check. */
 		private final String packageVersion;
+
 		/** Package type to check */
 		private final PackageType packageType;
 
@@ -238,16 +241,18 @@ public class PackageCacheManager {
 		}
 	}
 
-	/** Size of the buffer used when extracting the packages. */
-	private static final int PACKAGE_EXTRACTION_BUFFER_SIZE = 4096;
 	/** Cache directory. */
 	private final String cacheDir;
+
 	/** Directory with boot packages. */
 	private final String bootPackagesDir;
+
 	/** Limit of the cache size. */
 	private long maxCacheSize;
+
 	/** RMI reference to the Software Repository. */
 	private SoftwareRepositoryInterface softwareRepository;
+
 	/** List of packages in the cache. */
 	private final List<Package> packages = new LinkedList<Package>();
 
@@ -302,7 +307,7 @@ public class PackageCacheManager {
 	 */
 	private Package findPackage(String packageFilename) {
 		for (Package p : packages) {
-			if (p.getFilename().equals(cacheDir + File.separator + packageFilename) || p.getFilename().equals(bootPackagesDir + File.separator + packageFilename)) {
+			if (p.getFilename().equals(FileUtils.constructPath(cacheDir, packageFilename)) || p.getFilename().equals(FileUtils.constructPath(bootPackagesDir, packageFilename))) {
 				return p;
 			}
 		}
@@ -337,9 +342,9 @@ public class PackageCacheManager {
 		if (new File(pakkage.getFilename()).delete()) {
 			packages.remove(pakkage);
 			return true;
-		} else {
-			return false;
 		}
+
+		return false;
 	}
 
 	/**
@@ -411,7 +416,7 @@ public class PackageCacheManager {
 		long packageSize = metadata.getSize();
 		ensureSize(maxCacheSize - packageSize);
 
-		String saveTo = cacheDir + File.separator + packageFilename;
+		String saveTo = FileUtils.constructPath(cacheDir, packageFilename);
 		downloadPackage(metadata.getFilename(), saveTo);
 
 		/* Add package to internal data structues. */
@@ -456,7 +461,7 @@ public class PackageCacheManager {
 		long packageSize = metadata.getSize();
 		ensureSize(maxCacheSize - packageSize);
 
-		String saveTo = cacheDir + File.separator + metadata.getFilename();
+		String saveTo = FileUtils.constructPath(cacheDir, metadata.getFilename());
 		downloadPackage(metadata.getFilename(), saveTo);
 
 		/* Add package to internal data structues. */
@@ -548,74 +553,9 @@ public class PackageCacheManager {
 				return metadata[0];
 			}
 		} catch (MatchException e) {
-			assert false : "MatchException should be never thrown here.";
-			return null;
-		}
-	}
-
-	/**
-	 * Extract contents of the ZIP file to given path.
-	 * 
-	 * @param zipFilename
-	 *          ZIP file to extract
-	 * @param path
-	 *          path to extract the files
-	 * @throws IOException
-	 *           if the extraction fails
-	 */
-	private void extractZipFile(String zipFilename, String path) throws IOException {
-		ZipFile zipFile = null;
-		InputStream inputStream = null;
-		OutputStream outputStream = null;
-
-		try {
-			zipFile = new ZipFile(zipFilename);
-			Enumeration<? extends ZipEntry> entries = zipFile.entries();
-			while (entries.hasMoreElements()) {
-				ZipEntry entry = entries.nextElement();
-
-				if (entry.isDirectory()) {
-					new File(path, entry.getName()).mkdirs();
-				} else {
-					// assemble zip entry path and ensure directories are created
-					String fName = path + File.separator + entry.getName();
-					String dirName = fName.substring(0, fName.lastIndexOf(File.separator));
-					File dir = new File(dirName);
-					if (!dir.exists()) {
-						dir.mkdirs();
-					}
-
-					inputStream = new BufferedInputStream(zipFile.getInputStream(entry), PACKAGE_EXTRACTION_BUFFER_SIZE);
-					outputStream = new BufferedOutputStream(new FileOutputStream(fName), PACKAGE_EXTRACTION_BUFFER_SIZE);
-					byte[] buffer = new byte[PACKAGE_EXTRACTION_BUFFER_SIZE];
-					for (int bytesRead = inputStream.read(buffer); bytesRead != -1; bytesRead = inputStream.read(buffer)) {
-						outputStream.write(buffer, 0, bytesRead);
-					}
-					closeCloseableQuitely(outputStream);
-					closeCloseableQuitely(inputStream);
-				}
-			}
-		} catch (IOException e) {
-			throw e;
-		} finally {
-			closeCloseableQuitely(zipFile);
-			closeCloseableQuitely(inputStream);
-			closeCloseableQuitely(outputStream);
-		}
-	}
-	/**
-	 * close {@link Closeable} object quietly (exception is not thrown on failure)
-	 * 
-	 * @param closeable
-	 *          object implementing {@link Closeable} interface
-	 */
-	private void closeCloseableQuitely(Closeable closeable) {
-		if (closeable != null) {
-			try {
-				closeable.close();
-			} catch (IOException e) {
-				logger.error("Could not close closeable object.", e);
-			}
+			String message = "MatchException should be never thrown here.";
+			logger.error(message, e);
+			throw new AssertionError(message);
 		}
 	}
 
@@ -651,7 +591,7 @@ public class PackageCacheManager {
 		}
 
 		if (pakkage != null) {
-			extractZipFile(pakkage.getFilename(), path);
+			ZipUtils.extractZipFile(pakkage.getFilename(), path);
 		} else {
 			throw new HostRuntimeException("Can't find package: " + packageName);
 		}
@@ -698,7 +638,7 @@ public class PackageCacheManager {
 		}
 
 		if (pakkage != null) {
-			extractZipFile(pakkage.getFilename(), path);
+			ZipUtils.extractZipFile(pakkage.getFilename(), path);
 		} else {
 			throw new HostRuntimeException("Can't find package: " + packageName);
 		}
@@ -726,12 +666,12 @@ public class PackageCacheManager {
 		this.cacheDir = cacheDir;
 		this.bootPackagesDir = bootPackagesDir;
 
-		Date now = new Date();
 		File[] files = new File(bootPackagesDir).listFiles();
 		if (files == null) {
 			throw new IOException("Error getting list of boot packages.");
 		}
 
+		Date now = new Date();
 		for (File f : files) {
 			packages.add(new Package(f.getPath(), f.length(), now, Package.Type.BOOT));
 		}

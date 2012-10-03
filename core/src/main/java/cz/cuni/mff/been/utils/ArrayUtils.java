@@ -23,7 +23,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston,
  *  MA  02111-1307  USA
  */
-package cz.cuni.mff.been.common;
+package cz.cuni.mff.been.utils;
 
 /**
  * Provides some miscelaneous utility methods for arrays.
@@ -31,23 +31,23 @@ package cz.cuni.mff.been.common;
  * @author Jaroslav Urban
  */
 public class ArrayUtils {
-	
+
 	private ArrayUtils() {
 		// instantiation not available
 	}
-	
-	
+
 	/**
-	 * Creates assembles String representations of members of an array into
-	 * one big String, separated by a token.
+	 * Creates assembles String representations of members of an array into one
+	 * big String, separated by a token.
+	 * 
 	 * @param token
 	 * @param objects
-	 * @return one big string containing String representations of the members
-	 * of the array separated by the token.
+	 * @return one big string containing String representations of the members of
+	 *         the array separated by the token.
 	 */
-	public static String join( String token, Object[] objects ) {
+	public static String join(String token, Object[] objects) {
 		StringBuilder sb = new StringBuilder();
-		
+
 		if (objects.length > 0) {
 			sb.append(objects[0]);
 			for (int i = 1; i < objects.length; ++i) {
@@ -60,16 +60,17 @@ public class ArrayUtils {
 
 	/**
 	 * Reverts order of arrays elements
+	 * 
 	 * @param <T>
 	 * @param b
 	 */
 	public static <T> void reverse(T[] b) {
-		T	temp;
+		T temp;
 		int left = 0;
 		int right = 0;
 		for (left = 0, right = b.length - 1; left < right; ++left, --right) {
-			temp = b[left]; 
-			b[left] = b[right]; 
+			temp = b[left];
+			b[left] = b[right];
 			b[right] = temp;
 		}
 	}

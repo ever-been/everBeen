@@ -1,7 +1,9 @@
-package cz.cuni.mff.been.common;
+package cz.cuni.mff.been.utils;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import cz.cuni.mff.been.utils.ArrayUtils;
 
 /**
  * 
