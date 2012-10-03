@@ -7,11 +7,15 @@
 	<version>2.1.0</version>
 	<packaging>pom</packaging>
 	<name>parent</name>
+	<description><![CDATA[
+	When running "mvn {phase}" without specifying build profile, "buildCore" is used by default. 
+	Use "buildBenchmarks" profile to build benchmark modules. 
+	See profiles section for more information.
+	]]>
+	
+	</description>
 
-	<!--
-	When running "mvn {phase}" without specifying "allModules" profile, only modules specified in the buildCore profile will be included.
-	If you want to build all modules, run "mvn {phase} -P buildAllModules". See profiles section for more details.
-	-->
+	
 		
 	<properties>
 
