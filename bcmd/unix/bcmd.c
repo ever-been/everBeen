@@ -950,7 +950,14 @@ open_file( const char * path, int * fd ) {
  */
 static result_idx
 set_sig( void ) {
-	const int signals[] = { SIGPWR, SIGWINCH, SIGURG, SIGCHLD };									// List of ignored signals.
+
+	#ifdef __APPLE__
+		// SIGPWR and SIGWINCH not defined on MAC OS X
+		const int signals[] = { SIGURG, SIGCHLD };													// List of ignored signals.
+	#else
+    	const int signals[] = { SIGPWR, SIGWINCH, SIGURG, SIGCHLD };								// List of ignored signals.
+	#endif
+
 	const int * const end_sig = signals + sizeof( signals ) / sizeof( int );
 	const int * cur_sig;
 	struct sigaction action;
