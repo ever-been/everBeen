@@ -94,9 +94,9 @@
 					</execution>
 				</executions>
 				<configuration>
-					<humanName>Software Repository</humanName>
+					<humanName>Results Repository</humanName>
 					<packageJarFile>${project.build.directory}/${project.build.finalName}.one-jar.jar</packageJarFile>
-					<mainClassName>cz.cuni.mff.been.softwarerepository.SoftwareRepositoryService</mainClassName>
+					<mainClassName>cz.cuni.mff.been.resultsrepositoryng.ResultsRepositoryService</mainClassName>
 					<finalName>${project.build.finalName}</finalName>
 					<filesToArchive />
 				</configuration>
