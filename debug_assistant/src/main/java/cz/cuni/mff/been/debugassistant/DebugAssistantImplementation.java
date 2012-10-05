@@ -31,6 +31,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sun.jdi.Bootstrap;
 import com.sun.jdi.VirtualMachine;
 import com.sun.jdi.connect.AttachingConnector;
@@ -38,7 +41,6 @@ import com.sun.jdi.connect.Connector.Argument;
 import com.sun.jdi.connect.IllegalConnectorArgumentsException;
 
 import cz.cuni.mff.been.task.CurrentTaskSingleton;
-import cz.cuni.mff.been.task.Task;
 
 /**
  * Debug Assistant implementation
@@ -48,6 +50,8 @@ import cz.cuni.mff.been.task.Task;
  */
 public class DebugAssistantImplementation extends UnicastRemoteObject implements
 		DebugAssistantInterface {
+	
+	private static final Logger logger = LoggerFactory.getLogger(DebugAssistantImplementation.class);
 
 	/**
 	 * registered tasks
@@ -132,11 +136,15 @@ public class DebugAssistantImplementation extends UnicastRemoteObject implements
 					"Suspended task " + suspendedTask
 							+ " successfully enabled.");
 		} catch (IOException e) {
-			throw new DebugAssistantException("Error enabling task on host "
-					+ host + ":" + port + " to run.", e);
+			String message = "Error enabling task on host "
+					+ host + ":" + port + " to run.";
+			logger.error(message, e);
+			throw new DebugAssistantException(message, e);
 		} catch (IllegalConnectorArgumentsException e) {
-			throw new DebugAssistantException("Error enabling task on host "
-					+ host + ":" + port + " to run.", e);
+			String message = "Error enabling task on host "
+					+ host + ":" + port + " to run.";
+			logger.error(message, e);
+			throw new DebugAssistantException(message, e);
 		}
 
 	}
@@ -190,8 +198,9 @@ public class DebugAssistantImplementation extends UnicastRemoteObject implements
 		}
 
 		if (suspendedTask == null) {
-			throw new DebugAssistantException(
-					"Suspended task with given UUID not found.");
+			String message = "Suspended task with given UUID not found.";
+			logger.error(message);
+			throw new DebugAssistantException(message);
 		}
 
 		suspendedTasks.remove(suspendedTask);

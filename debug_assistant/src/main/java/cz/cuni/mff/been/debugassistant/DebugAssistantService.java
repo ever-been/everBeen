@@ -27,6 +27,10 @@ package cz.cuni.mff.been.debugassistant;
 
 import java.rmi.RemoteException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import com.sun.org.apache.bcel.internal.generic.DASTORE;
+
 import cz.cuni.mff.been.services.Service;
 import cz.cuni.mff.been.task.TaskException;
 import cz.cuni.mff.been.task.TaskInitializationException;
@@ -39,6 +43,8 @@ import static cz.cuni.mff.been.services.Names.DEBUG_ASSISTANT_SERVICE_NAME;
  * @author Jan Tattermusch
  */
 public class DebugAssistantService extends Service {
+	
+	private static final Logger logger = LoggerFactory.getLogger(DebugAssistantService.class);
 
 	private DebugAssistantImplementation implementation;
 
@@ -48,7 +54,6 @@ public class DebugAssistantService extends Service {
 	 */
 	public DebugAssistantService() throws TaskInitializationException {
 		super();
-		
 	}
 
 	/**
@@ -68,7 +73,9 @@ public class DebugAssistantService extends Service {
 		try {
 			implementation = new DebugAssistantImplementation();
 		} catch (RemoteException e) {
-			throw new TaskException("Error constructing Debug assistant instance.", e);
+			String message = "Error constructing Debug assistant instance.";
+			logger.error(message, e);
+			throw new TaskException(message, e);
 		}
 		/* Register implemented interface. */
 		addRemoteInterface(RMI_MAIN_IFACE, implementation);
