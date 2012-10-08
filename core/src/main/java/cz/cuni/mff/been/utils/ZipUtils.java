@@ -31,22 +31,22 @@ public class ZipUtils {
 	 * @throws IOException
 	 *           if the extraction fails
 	 */
-	public static void extractZipFile(String zipFilename, String path) throws IOException {
+	public static void extractZipFile(File zippedFile, File destination) throws IOException {
 		ZipFile zipFile = null;
 		InputStream inputStream = null;
 		OutputStream outputStream = null;
 
 		try {
-			zipFile = new ZipFile(zipFilename);
+			zipFile = new ZipFile(zippedFile);
 			Enumeration<? extends ZipEntry> entries = zipFile.entries();
 			while (entries.hasMoreElements()) {
 				ZipEntry entry = entries.nextElement();
 
 				if (entry.isDirectory()) {
-					new File(path, entry.getName()).mkdirs();
+					new File(destination, entry.getName()).mkdirs();
 				} else {
 					// assemble zip entry path and ensure directories are created
-					String fName = FileUtils.constructPath(path, entry.getName());
+					String fName = FileUtils.constructPath(destination.getAbsolutePath(), entry.getName());
 					String dirName = fName.substring(0, fName.lastIndexOf(File.separator));
 					File dir = new File(dirName);
 					if (!dir.exists()) {

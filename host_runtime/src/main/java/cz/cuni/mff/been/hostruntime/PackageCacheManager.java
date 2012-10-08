@@ -591,7 +591,7 @@ public class PackageCacheManager {
 		}
 
 		if (pakkage != null) {
-			ZipUtils.extractZipFile(pakkage.getFilename(), path);
+			ZipUtils.extractZipFile(new File(pakkage.getFilename()), new File(path));
 		} else {
 			throw new HostRuntimeException("Can't find package: " + packageName);
 		}
@@ -638,7 +638,7 @@ public class PackageCacheManager {
 		}
 
 		if (pakkage != null) {
-			ZipUtils.extractZipFile(pakkage.getFilename(), path);
+			ZipUtils.extractZipFile(new File(pakkage.getFilename()), new File(path));
 		} else {
 			throw new HostRuntimeException("Can't find package: " + packageName);
 		}
