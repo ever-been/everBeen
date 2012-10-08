@@ -30,6 +30,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 
+import org.apache.tools.ant.taskdefs.Length.When;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,15 +46,13 @@ import cz.cuni.mff.been.hostmanager.load.LoadMonitorException;
  */
 public class HostRuntimeRunner {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(HostRuntimeRunner.class);
+	private static final Logger logger = LoggerFactory.getLogger(HostRuntimeRunner.class);
 
 	/**
 	 * Writes the usage information and exits.
 	 */
 	private static void writeUsageAndExit() {
-		System.out
-				.println("Usage: java cz.cuni.mff.been.hostruntime.HostRuntimeRunner task_manager_host_name root_directory");
+		System.out.println("Usage: java cz.cuni.mff.been.hostruntime.HostRuntimeRunner task_manager_host_name root_directory");
 		System.exit(1);
 	}
 
@@ -61,7 +60,7 @@ public class HostRuntimeRunner {
 	 * Checks command-line parameters.
 	 * 
 	 * @param args
-	 *            command-line parameters
+	 *          command-line parameters
 	 */
 	private static void checkParams(String[] args) {
 		if (args.length != 2) {
@@ -71,14 +70,16 @@ public class HostRuntimeRunner {
 
 	/**
 	 * Initializes the RMI Registry.
+	 * 
+	 * @throws When
+	 *           RMI registry initialization fails.
 	 */
-	private static void initializeRMIRegistry() {
-		try {
+	private static void initializeRMIRegistry() throws RemoteException {
+		if (LocateRegistry.getRegistry(RMI.REGISTRY_PORT) != null) {
+			logger.info("A running RMI registry instance detected. Using it.");
+		} else {
+			logger.info("Creating a new RMI registry instance.");
 			LocateRegistry.createRegistry(RMI.REGISTRY_PORT);
-		} catch (RemoteException e) {
-			logger.error(
-					"Note: Can't start the RMI registry - another instance is probably running.",
-					e);
 		}
 	}
 
@@ -86,11 +87,15 @@ public class HostRuntimeRunner {
 	 * Main method, which runs the Host Runtime.
 	 * 
 	 * @param args
-	 *            command-line parameters
+	 *          command-line parameters
 	 */
 	public static void main(String[] args) {
 		checkParams(args);
-		initializeRMIRegistry();
+		try {
+			initializeRMIRegistry();
+		} catch (RemoteException e) {
+			logger.error("Failed to obtain RMI registry.", e);
+		}
 		try {
 			new HostRuntimeImplementation(args[0], args[1]);
 		} catch (RemoteException e) {
@@ -103,9 +108,7 @@ public class HostRuntimeRunner {
 			logger.error("Error constructiong HostRuntime.", e);
 			System.exit(1);
 		} catch (NotBoundException e) {
-			logger.error(String.format(
-					"Can't connect to the Task Manager on host \"%s\".",
-					args[0]), e);
+			logger.error(String.format("Can't connect to the Task Manager on host \"%s\".", args[0]), e);
 			System.exit(1);
 		}
 		logger.info("Host Runtime started...");
@@ -114,6 +117,5 @@ public class HostRuntimeRunner {
 	/**
 	 * Disallow default construction.
 	 */
-	private HostRuntimeRunner() {
-	}
+	private HostRuntimeRunner() {}
 }
