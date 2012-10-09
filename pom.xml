@@ -123,8 +123,6 @@
 				<module>hostmanager</module>
 				<module>resultsrepository</module>
 				<module>benchmarkmanager</module>
-				<module>pluggablemodule-fileagent</module>
-				<module>pluggablemodule-fileagent-implementation</module>
 				<module>web_interface</module>
 				<module>bpk-plugin</module>
 				<module>debug_assistant</module>

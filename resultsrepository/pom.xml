@@ -39,7 +39,7 @@
 		</dependency>
 
 		<dependency>
-			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<groupId>cz.cuni.mff.d3s.been.pluggablemodules</groupId>
 			<artifactId>pluggablemodule-fileagent</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>

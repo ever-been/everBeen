@@ -12,6 +12,8 @@
 		<module>derby_client</module>
 		<module>hibernate</module>
 		<module>csvfiles</module>
+		<module>fileagent_impl</module>
+		<module>fileagent</module>
 	</modules>
 
 	<dependencies>
