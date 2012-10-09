@@ -309,7 +309,7 @@ public class PluggableModuleManagerImpl implements PluggableModuleManager {
      */
     private void chmodFilesRecursively(String dir) throws PluggableModuleException {
         try {
-        	FileUtils.recursiveChmod(new File(dir), "-rwxr--r--");
+        	FileUtils.recursiveChmod(new File(dir), "rwxr--r--");
         } catch (IOException e) {
             throw new PluggableModuleException("Error setting access rights on pluggable module files.", e);
         }

@@ -2448,6 +2448,7 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements Ta
 
 			logTrace("[" + taskData.getTaskDescriptor().getContextId() + ":" + taskData.getTaskDescriptor().getTaskId() + "] " + "Started.");
 		} catch (Exception e) {
+			log.error("exc", e);
 			throw new TaskManagerException(e);
 		}
 	}

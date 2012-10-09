@@ -196,7 +196,7 @@ public class ScriptLauncher {
 	 */
 	private void chmodExecutable(File file) throws ScriptException {
 		try {
-			FileUtils.chmod(file, "-rwxr-xr-x");
+			FileUtils.chmod(file, "rwxr-xr-x");
 		} catch (IOException e) {
 			throw new ScriptException("Error chmod-ing script (" + e.getMessage() + ")");
 		}

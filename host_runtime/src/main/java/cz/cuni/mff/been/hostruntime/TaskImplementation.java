@@ -938,7 +938,7 @@ public class TaskImplementation extends UnicastRemoteObject implements TaskInter
 
 			// Set the access rights as necessary.
 			// TODO Does everything need to be executable ?
-			FileUtils.recursiveChmod(new File(taskDirectory), "-rwxr--r--");
+			FileUtils.recursiveChmod(new File(taskDirectory), "rwxr--r--");
 		} catch (IOException e) {
 			throw new TaskException(e);
 		}
