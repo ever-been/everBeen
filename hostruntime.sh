@@ -44,7 +44,7 @@ echo "BEEN_HOME=$BEEN_HOME"
 
 HOSTRUNTIME_JAR="${BEEN_HOME}/host_runtime/target/host_runtime.one-jar.jar"
 
-DATA_DIRECTORY="${BEEN_HOME}/been/dist/full/data/hostruntime"
+DATA_DIRECTORY="${BEEN_HOME}/data/hostruntime"
 
 if [ ! -d "${DATA_DIRECTORY}" ]; then
   echo "Fatal error: Host Runtime data directory not found: ${DATA_DIRECTORY}."
