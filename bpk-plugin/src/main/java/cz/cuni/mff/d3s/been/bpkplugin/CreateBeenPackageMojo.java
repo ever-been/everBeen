@@ -5,6 +5,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static cz.cuni.mff.been.jaxb.Factory.PMC;
+
+
+import cz.cuni.mff.been.jaxb.BindingComposer;
+import cz.cuni.mff.been.jaxb.XSD;
+import cz.cuni.mff.been.jaxb.pmc.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -149,6 +155,14 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 	 */
 	private String humanName;
 
+
+	/**
+	 *
+	 * @parameter
+	 *
+	 */
+	private BpkModuleConfig module;
+
 	/**
 	 * This is the plugin main method. All generation logic starts here.
 	 */
@@ -178,7 +192,21 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 
 	private FileToArchive generateConfigXmlFile() {
 		String nameInBpk = "config.xml";
-		log.info("    WILL BE GENERATED: with:mainClass='" + mainClassName
+
+		if (type.equals("task")) {
+			return generateTaskConfigXmlFile(nameInBpk);
+		} else if (type.equals("module")) {
+			return generateModuleConfigXmlFile(nameInBpk);
+		} else {
+			log.error("Cannot create config.xml for unknown type '" + type + "'");
+			return null;
+		}
+	}
+
+
+	private FileToArchive generateTaskConfigXmlFile(String nameInBpk) {
+
+		log.info("    TASK WILL BE GENERATED: with:mainClass='" + mainClassName
 				+ "' -> '" + nameInBpk + "'");
 		try {
 			File config = File.createTempFile("tmp_generated_config", ".xml");
@@ -195,9 +223,76 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 		}
 	}
 
+	private FileToArchive generateModuleConfigXmlFile(String nameInBpk) {
+		log.info("    MODULE WILL BE GENERATED: with:mainClass='" + mainClassName
+				+ "' -> '" + nameInBpk + "'");
+		try {
+			File config = File.createTempFile("tmp_generated_config", ".xml");
+
+			if (module == null) {
+				log.error("CANNOT CREATE MODULE config.xml, module section not specified");
+			}
+
+			PluggableModuleConfiguration jaxbModuleConfig = PMC.createPluggableModuleConfiguration();
+
+			//Main implementation
+			Java jaxbJava =  PMC.createJava();
+			jaxbJava.setMainClass(mainClassName);
+
+			//Classpath
+			ClassPathItems jaxbPathItems = PMC.createClassPathItems();
+			jaxbPathItems.getClasspathItem().add(packageJarFile.getName());
+			jaxbJava.setClasspathItems(jaxbPathItems);
+
+
+			//Dependencies
+			Dependencies jaxbDependecies = PMC.createDependencies();
+
+			if (module.dependencies != null) {
+				for (BpkModuleDependency bpkDependency : module.dependencies) {
+					log.info("    ADDING DEPENDENCY ON " + bpkDependency.getName() + ", VERSION=" + bpkDependency.getVersion());
+					Dependency jaxbDependency = PMC.createDependency();
+					jaxbDependency.setModuleName(bpkDependency.getName());
+					jaxbDependency.setModuleVersion(bpkDependency.getVersion());
+					jaxbDependecies.getDependency().add(jaxbDependency);
+				}
+			}
+
+
+			//TODO: Ugly hack, figure out better way to set been.directory.jaxb
+			// Probably will not work on Windows
+			System.setProperty("been.directory.jaxb", "service_interfaces/src/main/xsd/");
+
+			jaxbModuleConfig.setJava(jaxbJava);
+			jaxbModuleConfig.setDependencies(jaxbDependecies);
+
+
+			BindingComposer<PluggableModuleConfiguration> composer = XSD.PMC.createComposer(PluggableModuleConfiguration.class);
+			composer.compose(jaxbModuleConfig, config);
+
+			return new FileToArchive(nameInBpk, config);
+		} catch (Exception e) {
+			log.error(e);
+			return null;
+		}
+	}
+
 	private FileToArchive generateMetadataXmlFile() {
 		String nameInBpk = "metadata.xml";
-		log.info("    WILL BE GENERATED: with:name='" + name + "', version='"
+
+		if (type.equals("task")) {
+			return generateTaskMetadataXmlFile(nameInBpk);
+		} else if (type.equals("module")) {
+			return generateModuleMetadataXmlFile(nameInBpk);
+		} else {
+			log.error("Cannot create config.xml for unknown type '" + type + "'");
+			return null;
+		}
+	}
+
+
+	private FileToArchive generateTaskMetadataXmlFile(String nameInBpk) {
+		log.info("    TASK WILL BE GENERATED: with:name='" + name + "', version='"
 				+ version + "', type='" + type + "', humanName='" + humanName
 				+ "' -> '" + nameInBpk + "'");
 		try {
@@ -207,6 +302,42 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 					+ "  <version>%s</version>\n" + "  <type>%s</type>\n"
 					+ "  <humanName>%s</humanName>\n" + "</package>\n", name,
 					version, type, humanName);
+			FileUtils.write(config, content);
+			return new FileToArchive(nameInBpk, config);
+		} catch (Exception e) {
+			log.error(e);
+			return null;
+		}
+	}
+
+	private FileToArchive generateModuleMetadataXmlFile(String nameInBpk) {
+		log.info("    MODULE WILL BE GENERATED: with:name='" + name + "', version='"
+				+ version + "', type='" + type + "', humanName='" + humanName
+				+ "' -> '" + nameInBpk + "'");
+		try {
+			File config = File.createTempFile("tmp_generated_config", ".xml");
+			StringBuilder builder = new StringBuilder();
+
+			if (module != null && !module.interfaces.isEmpty()) {
+				builder.append("\n\t<providedInterfaces>\n");
+				for (String iface: module.interfaces) {
+					log.info("    PROVIDES INTERFACE " + iface);
+					builder.append("\t\t<providedInterface>");
+					builder.append(iface);
+					builder.append("<providedInterface>");
+				}
+				builder.append("\n\t</providedInterfaces>\n");
+			} else {
+				log.error("MODULE MUST EXPORT AN INTERFACE!");
+			}
+
+
+			String content = String.format("<?xml version=\"1.0\"?>\n"
+					+ "<package>\n" + "  <name>%s</name>\n"
+					+ "  <version>%s</version>\n" + "  <type>%s</type>\n"
+					+ "  <humanName>%s</humanName>\n" + "%s" + "</package>\n", name,
+					version, type, humanName, builder.toString());
+
 			FileUtils.write(config, content);
 			return new FileToArchive(nameInBpk, config);
 		} catch (Exception e) {
