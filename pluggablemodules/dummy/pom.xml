@@ -17,8 +17,6 @@
 
 
 	<build>
-		<finalName>pluggablemodule-dummy</finalName>
-
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -49,7 +47,7 @@
 					<humanName>Dummy Pluggable Module</humanName>
 					<packageJarFile>${project.build.directory}/${project.build.finalName}.jar</packageJarFile>
 					<mainClassName>cz.cuni.mff.been.pluggablemodule.dummy.implementation.DummyPluggableModuleImpl</mainClassName>
-					<finalName>${project.build.finalName}</finalName>
+					<name>dummy</name>
 					<filesToArchive>
 					</filesToArchive>
 

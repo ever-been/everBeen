@@ -27,8 +27,6 @@
 
 
 	<build>
-		<finalName>hibernate</finalName>
-
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -76,7 +74,7 @@
 					<humanName>Hibernate pluggable module</humanName>
 					<packageJarFile>${project.build.directory}/${project.build.finalName}.one-jar.jar</packageJarFile>
 					<mainClassName>cz.cuni.mff.been.pluggablemodule.hibernate.implementation.HibernatePluggableModuleImpl</mainClassName>
-					<finalName>${project.build.finalName}</finalName>
+					<name>hibernate</name>
 					<filesToArchive>
 					</filesToArchive>
 

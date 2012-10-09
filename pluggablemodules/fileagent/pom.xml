@@ -17,8 +17,6 @@
 
 
 	<build>
-		<finalName>fileagent</finalName>
-
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -66,7 +64,7 @@
 					<humanName>File Agent pluggable module</humanName>
 					<packageJarFile>${project.build.directory}/${project.build.finalName}.one-jar.jar</packageJarFile>
 					<mainClassName>cz.cuni.mff.been.pluggablemodule.fileagent.implementation.FileAgentPluggableModuleImpl</mainClassName>
-					<finalName>${project.build.finalName}</finalName>
+					<name>fileagent</name>
 					<filesToArchive>
 					</filesToArchive>
 

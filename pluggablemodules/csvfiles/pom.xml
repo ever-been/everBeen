@@ -20,8 +20,6 @@
 
 
 	<build>
-		<finalName>csvfiles</finalName>
-
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -69,7 +67,7 @@
 					<humanName>CSV Files pluggable module</humanName>
 					<packageJarFile>${project.build.directory}/${project.build.finalName}.one-jar.jar</packageJarFile>
 					<mainClassName>cz.cuni.mff.been.pluggablemodule.csvfiles.implementation.CSVFilesPluggableModuleImpl</mainClassName>
-					<finalName>${project.build.finalName}</finalName>
+					<name>csvfiles</name>
 					<filesToArchive>
 					</filesToArchive>
 

@@ -32,8 +32,6 @@
 
 
 	<build>
-		<finalName>derby</finalName>
-
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -81,7 +79,7 @@
 					<humanName>Apache Derby DB pluggable module</humanName>
 					<packageJarFile>${project.build.directory}/${project.build.finalName}.one-jar.jar</packageJarFile>
 					<mainClassName>cz.cuni.mff.been.pluggablemodule.derby.implementation.DerbyPluggableModuleImpl</mainClassName>
-					<finalName>${project.build.finalName}</finalName>
+					<name>derby</name>
 					<filesToArchive>
 					</filesToArchive>
 
