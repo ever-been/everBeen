@@ -26,13 +26,6 @@
 			<version>${project.parent.version}</version>
 		</dependency>
 
-		<dependency>
-			<groupId>jpda</groupId>
-			<artifactId>tools.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/jpda/tools.jar</systemPath>
-		</dependency>
 	</dependencies>
 
 	<build>
