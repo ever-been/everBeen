@@ -15,6 +15,11 @@
 		<!-- BEEN DEPENDENCIES -->
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>service_interfaces</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
 			<artifactId>hostmanager</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
@@ -29,6 +34,27 @@
 				<configuration>
 					<source>${java-source.version}</source>
 					<target>${java-target.version}</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>cz.cuni.mff.d3s.been</groupId>
+				<artifactId>bpk-plugin</artifactId>
+				<version>${project.parent.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>buildpackage</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<humanName>Hardware and Software detector</humanName>
+					<packageJarFile>${project.build.directory}/${project.build.finalName}.jar</packageJarFile>
+					<mainClassName>cz.cuni.mff.been.task.detector.DetectorTask</mainClassName>
+					<name>detectors</name>
+					<filesToArchive>
+					</filesToArchive>
 				</configuration>
 			</plugin>
 		</plugins>
