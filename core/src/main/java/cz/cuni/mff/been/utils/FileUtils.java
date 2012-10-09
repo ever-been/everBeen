@@ -1,6 +1,8 @@
 package cz.cuni.mff.been.utils;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 
 public class FileUtils {
 
@@ -22,23 +24,103 @@ public class FileUtils {
 	}
 
 	/**
-	 * Delete directory recursively
+	 * Delete file (no matter if file or directory) recursively. If you want
+	 * file/directory check, see {@link FileUtils#deleteDirectory(File)} or
+	 * {@link FileUtils#deleteFile(File)}
 	 * 
 	 * @param file
 	 *          file or directory to delete
-	 * @return true if file has been deleted, false otherwise
+	 * @throws IOException
+	 *           when file cannot be deleted from some reason
 	 */
-	public static boolean delete(File file) {
+	public static void delete(File file) throws IOException {
 		if (file.exists() && file.isDirectory()) {
 			for (File childFile : file.listFiles()) {
 				if (childFile.isDirectory()) {
 					delete(childFile);
 				} else {
-					childFile.delete();
+					Files.delete(childFile.toPath());
 				}
 			}
 		}
-		return (file.delete());
+		Files.delete(file.toPath());
+	}
+
+	/**
+	 * 
+	 * Deletes the directory recursively (that is including its content).
+	 * 
+	 * @param dir
+	 *          directory to be deleted
+	 * @throws IOException
+	 *           if given file is not directory or cannot be deleted from some
+	 *           reason
+	 */
+	public static void deleteDirectory(File dir) throws IOException {
+		if (!dir.isDirectory()) {
+			throw new IOException(String.format("The dir argument '%s' does not refer to an existing directory.", dir != null
+					? dir.getAbsolutePath() : "null"));
+		}
+		delete(dir);
+	}
+
+	/**
+	 * 
+	 * Deletes file.
+	 * 
+	 * @param file
+	 *          file to be deleted
+	 * @throws IOException
+	 *           if given file is not file (is directory) or cannot be deleted
+	 *           from some reason
+	 */
+	public static void deleteFile(File file) throws IOException {
+		if (file.isDirectory()) {
+			throw new IOException(String.format("The file argument '%s' does not refer to an existing file.", file != null
+					? file.getAbsolutePath() : "null"));
+		}
+		delete(file);
+	}
+
+	/**
+	 * Change file mode recursively in posix unix-like style (eg. rwxr-x---).
+	 * 
+	 * Ignored on operating systems, where chmod is not supported.
+	 * 
+	 * @param file
+	 *          file or directory which should be chmoded
+	 * @param perms
+	 *          posix unix-like permissions
+	 * @throws IOException
+	 *           if something goes wrong
+	 */
+	public static void recursiveChmod(File file, String perms) throws IOException {
+		if (file.isDirectory()) {
+			for (File f : file.listFiles()) {
+				recursiveChmod(f, perms);
+			}
+		}
+		chmod(file, perms);
+	}
+
+	/**
+	 * Change file mode in posix unix-like style (eg. rwxr-x---).
+	 * 
+	 * Ignored on operating systems, where chmod is not supported.
+	 * 
+	 * @param targetFile
+	 *          file or directory which should be chmoded
+	 * @param perms
+	 *          posix unix-like permissions
+	 * @throws IOException
+	 *           if something goes wrong
+	 */
+	public static void chmod(File targetFile, String perms) throws IOException {
+		try {
+			Files.setPosixFilePermissions(targetFile.toPath(), java.nio.file.attribute.PosixFilePermissions.fromString(perms));
+		} catch (UnsupportedOperationException e) {
+			/* on windows-like systems - ignore */
+		}
 	}
 
 }

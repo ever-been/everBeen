@@ -25,6 +25,8 @@
  */
 package cz.cuni.mff.been.hostruntime;
 
+import static cz.cuni.mff.been.services.Names.DEBUG_ASSISTANT_SERVICE_NAME;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -49,9 +51,6 @@ import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.been.common.Debug;
 import cz.cuni.mff.been.common.RMI;
-import cz.cuni.mff.been.common.anttasks.AntTaskException;
-import cz.cuni.mff.been.common.anttasks.Chmod;
-import cz.cuni.mff.been.common.anttasks.Delete;
 import cz.cuni.mff.been.common.serialize.Deserialize;
 import cz.cuni.mff.been.common.serialize.DeserializeException;
 import cz.cuni.mff.been.debugassistant.DebugAssistantInterface;
@@ -76,8 +75,7 @@ import cz.cuni.mff.been.task.TaskException;
 import cz.cuni.mff.been.taskmanager.CheckPoint;
 import cz.cuni.mff.been.taskmanager.HostRuntimesPortInterface;
 import cz.cuni.mff.been.taskmanager.data.TaskState;
-
-import static cz.cuni.mff.been.services.Names.DEBUG_ASSISTANT_SERVICE_NAME;
+import cz.cuni.mff.been.utils.FileUtils;
 
 /**
  * The class representing a task instance in the host runtime.
@@ -88,11 +86,9 @@ import static cz.cuni.mff.been.services.Names.DEBUG_ASSISTANT_SERVICE_NAME;
  * @author Antonin Tomecek
  * @author David Majda
  */
-public class TaskImplementation extends UnicastRemoteObject implements
-		TaskInterface {
+public class TaskImplementation extends UnicastRemoteObject implements TaskInterface {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(TaskImplementation.class);
+	private static final Logger logger = LoggerFactory.getLogger(TaskImplementation.class);
 
 	private static final long serialVersionUID = -2011676092980850313L;
 
@@ -130,9 +126,8 @@ public class TaskImplementation extends UnicastRemoteObject implements
 	 */
 	private String temporaryDirectory;
 	/**
-	 * Service directory. For arbitrary use by the host but not the task.
-	 * Assigned by host runtime, cached here for ease of use. Deleted on task
-	 * execution.
+	 * Service directory. For arbitrary use by the host but not the task. Assigned
+	 * by host runtime, cached here for ease of use. Deleted on task execution.
 	 */
 	private String serviceDirectory;
 
@@ -197,16 +192,15 @@ public class TaskImplementation extends UnicastRemoteObject implements
 	 * utility class !
 	 * 
 	 * @param dirName
-	 *            The directory to create.
+	 *          The directory to create.
 	 * @throws IOException
-	 *             Whatever can happen if the directory could not be created.
+	 *           Whatever can happen if the directory could not be created.
 	 */
 	private static void safeCreateDirectory(String dirName) throws IOException {
 		File dirPath = new File(dirName);
 		if (!dirPath.exists()) {
 			if (!dirPath.mkdirs()) {
-				throw new IOException(String.format(
-						"Failed to create directory %s.", dirName));
+				throw new IOException(String.format("Failed to create directory %s.", dirName));
 			}
 		}
 	}
@@ -219,12 +213,10 @@ public class TaskImplementation extends UnicastRemoteObject implements
 	 */
 	public void signalCheckPoint(String name, Serializable value) {
 		try {
-			CheckPoint checkPoint = new CheckPoint(taskId, contextId, name,
-					value);
+			CheckPoint checkPoint = new CheckPoint(taskId, contextId, name, value);
 			checkPoint.setHostName(hostRuntimeName);
 			taskManagerRuntimePort.checkPointReached(checkPoint);
-			displayMessage(String.format("Checkpoint \"%s\" set to \"%s\".",
-					name, value));
+			displayMessage(String.format("Checkpoint \"%s\" set to \"%s\".", name, value));
 		} catch (RemoteException e) {
 			logger.error("Error reporting the checkpoint value.", e);
 			fatalError();
@@ -263,19 +255,17 @@ public class TaskImplementation extends UnicastRemoteObject implements
 	 * messages straight to the host runtime.
 	 * 
 	 * @param level
-	 *            Log level of the message.
+	 *          Log level of the message.
 	 * @param timestamp
-	 *            Timestamp of the log event.
+	 *          Timestamp of the log event.
 	 * @param message
-	 *            The potentially multiline log message.
+	 *          The potentially multiline log message.
 	 * 
 	 * @throws RemoteException
 	 */
-	public void log(LogLevel level, Date timestamp, String message)
-			throws RemoteException {
+	public void log(LogLevel level, Date timestamp, String message) throws RemoteException {
 		if (taskDescriptor.getExclusive() == TaskExclusivity.NON_EXCLUSIVE) {
-			taskManagerRuntimePort.log(contextId, taskId, level, timestamp,
-					message);
+			taskManagerRuntimePort.log(contextId, taskId, level, timestamp, message);
 		} else {
 			localLogStorage.add(new LogRecord(level, timestamp, message));
 		}
@@ -287,8 +277,7 @@ public class TaskImplementation extends UnicastRemoteObject implements
 	private void flushLocalLogStorage() {
 		try {
 			for (LogRecord logRecord : localLogStorage) {
-				taskManagerRuntimePort.log(contextId, taskId, logRecord.level,
-						logRecord.timestamp, logRecord.message);
+				taskManagerRuntimePort.log(contextId, taskId, logRecord.level, logRecord.timestamp, logRecord.message);
 			}
 		} catch (RemoteException e) {
 			logger.error("Error forwarding log messages to storage.", e);
@@ -300,16 +289,15 @@ public class TaskImplementation extends UnicastRemoteObject implements
 
 	/**
 	 * The standard output and the error output of the executing task are
-	 * collected by a pair of process output processors. The processors write
-	 * the output to a file and send it to the host runtime (which sends it
-	 * further to the Task Manager).
+	 * collected by a pair of process output processors. The processors write the
+	 * output to a file and send it to the host runtime (which sends it further to
+	 * the Task Manager).
 	 * 
-	 * Communication with host runtime can be postponed for sensitive tasks.
-	 * When that is the case, the output file is used as the temporary storage.
+	 * Communication with host runtime can be postponed for sensitive tasks. When
+	 * that is the case, the output file is used as the temporary storage.
 	 * 
-	 * The class relies on being an inner class of the task implementation.
-	 * Among other, the host runtime reference and the task directories are
-	 * used.
+	 * The class relies on being an inner class of the task implementation. Among
+	 * other, the host runtime reference and the task directories are used.
 	 * 
 	 * @author David Majda
 	 */
@@ -334,30 +322,28 @@ public class TaskImplementation extends UnicastRemoteObject implements
 		/**
 		 * Constructs the output processor.
 		 * 
-		 * The output processor takes care of closing the input stream on
-		 * reaching its end.
+		 * The output processor takes care of closing the input stream on reaching
+		 * its end.
 		 * 
 		 * @param inputStream
-		 *            The stream to read the logs from.
+		 *          The stream to read the logs from.
 		 * @param outputType
-		 *            The type of output being recorded.
+		 *          The type of output being recorded.
 		 * @param forwardingType
-		 *            The mode of output forwarding to use.
+		 *          The mode of output forwarding to use.
 		 */
-		public ProcessOutputProcessor(InputStream inputStream,
-				ProcessOutputType outputType,
-				OutputForwardingType forwardingType) {
+		public ProcessOutputProcessor(InputStream inputStream, ProcessOutputType outputType, OutputForwardingType forwardingType) {
 			this.inputStream = inputStream;
 
 			// The output file name is determined by the output type.
 			String outputSuffix = null;
 			switch (outputType) {
-			case STANDARD:
-				outputSuffix = STANDARD_OUTPUT_FILE;
-				break;
-			case ERROR:
-				outputSuffix = ERROR_OUTPUT_FILE;
-				break;
+				case STANDARD:
+					outputSuffix = STANDARD_OUTPUT_FILE;
+					break;
+				case ERROR:
+					outputSuffix = ERROR_OUTPUT_FILE;
+					break;
 			}
 			outputFile = workingDirectory + File.separator + outputSuffix;
 
@@ -372,20 +358,17 @@ public class TaskImplementation extends UnicastRemoteObject implements
 		 * TODO The host runtime API should accept both output types with one
 		 * parametrized method.
 		 */
-		private void forwardOutput(byte[] buffer, int bytesRead)
-				throws LogStorageException, RemoteException {
+		private void forwardOutput(byte[] buffer, int bytesRead) throws LogStorageException, RemoteException {
 			String output = new String(buffer, 0, bytesRead);
 
 			try {
 				switch (outputType) {
-				case STANDARD:
-					taskManagerRuntimePort.addStandardOutput(contextId, taskId,
-							output);
-					break;
-				case ERROR:
-					taskManagerRuntimePort.addErrorOutput(contextId, taskId,
-							output);
-					break;
+					case STANDARD:
+						taskManagerRuntimePort.addStandardOutput(contextId, taskId, output);
+						break;
+					case ERROR:
+						taskManagerRuntimePort.addErrorOutput(contextId, taskId, output);
+						break;
 				}
 			} catch (LogStorageException e) {
 				logger.error("Failed to forward task output.", e);
@@ -430,12 +413,9 @@ public class TaskImplementation extends UnicastRemoteObject implements
 
 				if (forwardingType == OutputForwardingType.ON_TERMINATION) {
 					try {
-						forwardStream = new BufferedInputStream(
-								new FileInputStream(outputFile));
+						forwardStream = new BufferedInputStream(new FileInputStream(outputFile));
 					} catch (FileNotFoundException e) {
-						logger.error(
-								"Failed to open task output during forwarding.",
-								e);
+						logger.error("Failed to open task output during forwarding.", e);
 						throw (e);
 					}
 
@@ -497,9 +477,9 @@ public class TaskImplementation extends UnicastRemoteObject implements
 		private boolean processRunSuspended = false;
 
 		/**
-		 * A utility thread which is created when a task has specified timeout
-		 * for its run. It simply sleeps through the timeout and kills the task
-		 * process afterwards.
+		 * A utility thread which is created when a task has specified timeout for
+		 * its run. It simply sleeps through the timeout and kills the task process
+		 * afterwards.
 		 * 
 		 * @author David Majda
 		 */
@@ -521,8 +501,7 @@ public class TaskImplementation extends UnicastRemoteObject implements
 					processTimedOut = true;
 					process.destroy();
 
-					displayMessage("Task killed after a timeout of " + timeout
-							+ " milliseconds.");
+					displayMessage("Task killed after a timeout of " + timeout + " milliseconds.");
 				} catch (InterruptedException e) {
 					// This is where we end up when the killer thread is
 					// interrupted prematurely.
@@ -533,39 +512,29 @@ public class TaskImplementation extends UnicastRemoteObject implements
 		private void prepareForDebugging() {
 			if (Debug.isDebugModeOn()) {
 				processDebugPort = hostRuntime.getNextTaskDebugPort();
-				displayMessage("Task can be debugged on port "
-						+ processDebugPort + ".");
+				displayMessage("Task can be debugged on port " + processDebugPort + ".");
 
 				try {
-					DebugAssistantInterface da = (DebugAssistantInterface) hostRuntime
-							.getTaskManager().serviceFind(
-									DEBUG_ASSISTANT_SERVICE_NAME,
-									Service.RMI_MAIN_IFACE);
+					DebugAssistantInterface da = (DebugAssistantInterface) hostRuntime.getTaskManager().serviceFind(DEBUG_ASSISTANT_SERVICE_NAME, Service.RMI_MAIN_IFACE);
 					if (da == null) {
 						displayMessage("Debug assistant is not online, task will be run normally.");
 					} else {
-						String hostName = InetAddress.getLocalHost()
-								.getCanonicalHostName();
+						String hostName = InetAddress.getLocalHost().getCanonicalHostName();
 						String taskName = taskDescriptor.getName();
-						SuspendedTask suspendedTask = new SuspendedTask(
-								contextId, taskId, taskName, hostName,
-								processDebugPort);
+						SuspendedTask suspendedTask = new SuspendedTask(contextId, taskId, taskName, hostName, processDebugPort);
 						da.registerSuspendedTask(suspendedTask);
 						processRunSuspended = true;
 
 						displayMessage("The task will be suspended, resume it in the debug assistant console.");
 					}
 				} catch (Exception e) {
-					logger.error(
-							"An error occured while submitting the task for debugging.",
-							e);
+					logger.error("An error occured while submitting the task for debugging.", e);
 				}
 			}
 		}
 
 		/**
-		 * Constructs the command line of the task based on the task
-		 * configuration.
+		 * Constructs the command line of the task based on the task configuration.
 		 * 
 		 */
 		private List<String> buildCommandLine() {
@@ -589,9 +558,8 @@ public class TaskImplementation extends UnicastRemoteObject implements
 			// Add the debugging options if debugging is enabled.
 			if (processDebugPort != 0) {
 				result.add("-Xdebug");
-				result.add("-Xrunjdwp:transport=dt_socket,address="
-						+ processDebugPort + ",server=y,suspend="
-						+ (processRunSuspended ? "y" : "n"));
+				result.add("-Xrunjdwp:transport=dt_socket,address=" + processDebugPort + ",server=y,suspend=" + (processRunSuspended
+						? "y" : "n"));
 			}
 
 			// Add the property that tells the task where its task port is.
@@ -600,13 +568,11 @@ public class TaskImplementation extends UnicastRemoteObject implements
 			// Add the properties that tell the task where its directories are.
 			result.add("-Dhostruntime.directory.task=" + taskDirectory);
 			result.add("-Dhostruntime.directory.working=" + workingDirectory);
-			result.add("-Dhostruntime.directory.temporary="
-					+ temporaryDirectory);
+			result.add("-Dhostruntime.directory.temporary=" + temporaryDirectory);
 
 			// If we have been run with some system package overrides, let the
 			// child inherit those.
-			result.add("-Djava.endorsed.dirs="
-					+ System.getProperty("java.endorsed.dirs"));
+			result.add("-Djava.endorsed.dirs=" + System.getProperty("java.endorsed.dirs"));
 
 			// Define the directory for the XSD files used by JAXB.
 			result.add("-D" + XSDRoot.XSD_ROOT + '=' + taskDirectory);
@@ -618,11 +584,9 @@ public class TaskImplementation extends UnicastRemoteObject implements
 			taskClassPath += File.pathSeparatorChar + taskDirectory;
 			// The task configuration contains class path as well.
 			if (taskPackageConfiguration.getTaskLanguage() == PackageConfiguration.TaskLanguage.JAVA) {
-				taskClassPath += File.pathSeparatorChar
-						+ taskPackageConfiguration.getJavaClassPath();
+				taskClassPath += File.pathSeparatorChar + taskPackageConfiguration.getJavaClassPath();
 			} else if (taskPackageConfiguration.getTaskLanguage() == PackageConfiguration.TaskLanguage.JYTHON) {
-				taskClassPath += File.pathSeparatorChar
-						+ taskPackageConfiguration.getJythonClassPath();
+				taskClassPath += File.pathSeparatorChar + taskPackageConfiguration.getJythonClassPath();
 			}
 			result.add("-cp");
 			result.add(taskClassPath);
@@ -635,16 +599,13 @@ public class TaskImplementation extends UnicastRemoteObject implements
 			String taskLoaderArgument = null;
 			if (taskPackageConfiguration.getTaskLanguage() == PackageConfiguration.TaskLanguage.JAVA) {
 				taskLoaderClass = TaskLoader.class.getName();
-				taskLoaderArgument = taskPackageConfiguration
-						.getJavaMainClass();
+				taskLoaderArgument = taskPackageConfiguration.getJavaMainClass();
 			} else if (taskPackageConfiguration.getTaskLanguage() == PackageConfiguration.TaskLanguage.SHELL) {
 				taskLoaderClass = ShellTaskLoader.class.getName();
-				taskLoaderArgument = taskPackageConfiguration
-						.getShellScriptFile();
+				taskLoaderArgument = taskPackageConfiguration.getShellScriptFile();
 			} else if (taskPackageConfiguration.getTaskLanguage() == PackageConfiguration.TaskLanguage.JYTHON) {
 				taskLoaderClass = JythonTaskLoader.class.getName();
-				taskLoaderArgument = taskPackageConfiguration
-						.getJythonScriptFile();
+				taskLoaderArgument = taskPackageConfiguration.getJythonScriptFile();
 			}
 			result.add(taskLoaderClass);
 			result.add(taskLoaderArgument);
@@ -670,12 +631,10 @@ public class TaskImplementation extends UnicastRemoteObject implements
 				try {
 					long interval = 0;
 					if (taskDescriptor.isSetLoadMonitoring())
-						interval = taskDescriptor.getLoadMonitoring()
-								.getDetailedLoadInterval();
+						interval = taskDescriptor.getLoadMonitoring().getDetailedLoadInterval();
 
 					if (interval > 0)
-						loadMonitor.startDetailedMode(contextId, taskId,
-								interval);
+						loadMonitor.startDetailedMode(contextId, taskId, interval);
 					else
 						loadMonitor.startDetailedMode(contextId, taskId);
 				} catch (IllegalOperationException e) {
@@ -720,8 +679,7 @@ public class TaskImplementation extends UnicastRemoteObject implements
 		 */
 		private void initializeTimeoutMonitor() {
 			if (taskDescriptor.isSetFailurePolicy()) {
-				long timeout = taskDescriptor.getFailurePolicy()
-						.getTimeoutRun();
+				long timeout = taskDescriptor.getFailurePolicy().getTimeoutRun();
 				if (timeout > 0) {
 					killer = new TaskProcessKiller(timeout);
 					killer.start();
@@ -742,9 +700,7 @@ public class TaskImplementation extends UnicastRemoteObject implements
 				try {
 					killer.join();
 				} catch (InterruptedException e) {
-					logger.error(
-							"Unexpected interruption while shutting down the timeout monitor.",
-							e);
+					logger.error("Unexpected interruption while shutting down the timeout monitor.", e);
 				}
 
 				// Conserve memory.
@@ -768,9 +724,7 @@ public class TaskImplementation extends UnicastRemoteObject implements
 			try {
 				process.waitFor();
 			} catch (InterruptedException e) {
-				logger.error(
-						"Unexpected interruption while shutting down the timeout monitor.",
-						e);
+				logger.error("Unexpected interruption while shutting down the timeout monitor.", e);
 			}
 		}
 
@@ -792,8 +746,7 @@ public class TaskImplementation extends UnicastRemoteObject implements
 				prepareForDebugging();
 				// Construct the task command line.
 				List<String> commandLineList = buildCommandLine();
-				String[] commandLineArray = commandLineList
-						.toArray(new String[commandLineList.size()]);
+				String[] commandLineArray = commandLineList.toArray(new String[commandLineList.size()]);
 
 				// TODO Before rewrite, the load monitor was initialized and
 				// terminated for each execution.
@@ -812,8 +765,7 @@ public class TaskImplementation extends UnicastRemoteObject implements
 					try {
 						// The process working directory must be set to the task
 						// directory otherwise class path does not work.
-						process = Runtime.getRuntime().exec(commandLineArray,
-								null, new File(taskDirectory));
+						process = Runtime.getRuntime().exec(commandLineArray, null, new File(taskDirectory));
 					} catch (IOException e) {
 						logger.error("Error executing the task process.", e);
 						// TODO A forced system exit was here. This should not
@@ -830,15 +782,11 @@ public class TaskImplementation extends UnicastRemoteObject implements
 					// immediately.
 					// For exclusive tasks, the output is forwarded on
 					// termination.
-					OutputForwardingType forwardingType = (taskDescriptor
-							.getExclusive() == TaskExclusivity.NON_EXCLUSIVE) ? OutputForwardingType.CONTINUOUSLY
+					OutputForwardingType forwardingType = (taskDescriptor.getExclusive() == TaskExclusivity.NON_EXCLUSIVE)
+							? OutputForwardingType.CONTINUOUSLY
 							: OutputForwardingType.ON_TERMINATION;
-					ProcessOutputProcessor outputProcessor = new ProcessOutputProcessor(
-							process.getInputStream(),
-							ProcessOutputType.STANDARD, forwardingType);
-					ProcessOutputProcessor errorProcessor = new ProcessOutputProcessor(
-							process.getErrorStream(), ProcessOutputType.ERROR,
-							forwardingType);
+					ProcessOutputProcessor outputProcessor = new ProcessOutputProcessor(process.getInputStream(), ProcessOutputType.STANDARD, forwardingType);
+					ProcessOutputProcessor errorProcessor = new ProcessOutputProcessor(process.getErrorStream(), ProcessOutputType.ERROR, forwardingType);
 					outputProcessor.start();
 					errorProcessor.start();
 
@@ -856,9 +804,7 @@ public class TaskImplementation extends UnicastRemoteObject implements
 					try {
 						process.waitFor();
 					} catch (InterruptedException e) {
-						logger.error(
-								"Unexpected interruption while waiting for task process.",
-								e);
+						logger.error("Unexpected interruption while waiting for task process.", e);
 					}
 					shutdownTimeoutMonitor();
 
@@ -869,8 +815,7 @@ public class TaskImplementation extends UnicastRemoteObject implements
 					exitValue = process.exitValue();
 					process = null;
 
-					displayMessage("Task process terminated with exit code "
-							+ exitValue + ".");
+					displayMessage("Task process terminated with exit code " + exitValue + ".");
 
 					// Join the process output processors, thus closing the
 					// streams as well.
@@ -882,11 +827,10 @@ public class TaskImplementation extends UnicastRemoteObject implements
 					errorProcessor = null;
 
 					// The task temporary directory is deleted immediately.
-					Delete.deleteDirectory(temporaryDirectory);
+					FileUtils.deleteDirectory(new File(temporaryDirectory));
 
 					// See whether the task was executed successfully.
-					wasSuccessful = (exitValue == 0) && (!processTimedOut)
-							&& (!processKilled);
+					wasSuccessful = (exitValue == 0) && (!processTimedOut) && (!processKilled);
 					executeTask = (!wasSuccessful) && (runCount < runMax);
 					runCount++;
 				}
@@ -895,7 +839,7 @@ public class TaskImplementation extends UnicastRemoteObject implements
 				flushLocalLogStorage();
 
 				// The task directory is deleted when the task will not execute.
-				Delete.deleteDirectory(taskDirectory);
+				FileUtils.deleteDirectory(new File(taskDirectory));
 
 				// The ordering of the final notifications is tricky !
 				// First, the task has to be marked as no longer running to
@@ -908,8 +852,8 @@ public class TaskImplementation extends UnicastRemoteObject implements
 				isRunning = false;
 				if (!processKilled)
 					signalCheckPoint(Task.CHECKPOINT_NAME_FINISHED, exitValue);
-				hostRuntime.notifyTaskFinished(TaskImplementation.this,
-						processKilled ? TaskState.ABORTED : TaskState.FINISHED);
+				hostRuntime.notifyTaskFinished(TaskImplementation.this, processKilled
+						? TaskState.ABORTED : TaskState.FINISHED);
 
 				displayMessage("Task execution finished.");
 
@@ -946,8 +890,10 @@ public class TaskImplementation extends UnicastRemoteObject implements
 			// It must be deleted so that it does not interfere with package
 			// installation.
 			try {
-				Delete.deleteDirectory(taskDirectory);
-			} catch (AntTaskException e) {
+				FileUtils.deleteDirectory(new File(taskDirectory));
+			} catch (IOException e) {
+				// this exception has been ignored in original BEEN? SO it is possible that it can be expected... ???
+				logger.error("Exception occured while deleting taskdirectoru '" + taskDirectory + "'", e);
 			}
 		} catch (IOException e) {
 			throw new TaskException(e);
@@ -960,8 +906,7 @@ public class TaskImplementation extends UnicastRemoteObject implements
 	private void extractTaskPackage() throws TaskException {
 		try {
 			String packageName = taskDescriptor.getPackage().getName();
-			hostRuntime.getPackageCacheManager().extractPackage(packageName,
-					serviceDirectory, PackageType.TASK);
+			hostRuntime.getPackageCacheManager().extractPackage(packageName, serviceDirectory, PackageType.TASK);
 		} catch (HostRuntimeException e) {
 			throw new TaskException(e);
 		} catch (IOException e) {
@@ -973,9 +918,7 @@ public class TaskImplementation extends UnicastRemoteObject implements
 	 * Reads the package configuration from the extracted package files.
 	 */
 	private void readPackageConfiguration() throws TaskException {
-		taskPackageConfiguration = new PackageConfiguration(serviceDirectory
-				+ File.separator + "config.xml", hostRuntime.getRootDirectory()
-				+ File.separator + "package-configuration.dtd");
+		taskPackageConfiguration = new PackageConfiguration(serviceDirectory + File.separator + "config.xml", hostRuntime.getRootDirectory() + File.separator + "package-configuration.dtd");
 	}
 
 	/**
@@ -995,8 +938,8 @@ public class TaskImplementation extends UnicastRemoteObject implements
 
 			// Set the access rights as necessary.
 			// TODO Does everything need to be executable ?
-			Chmod.recursiveDirectoryChmod(taskDirectory, "u+rwx");
-		} catch (AntTaskException e) {
+			FileUtils.recursiveChmod(new File(taskDirectory), "-rwxr--r--");
+		} catch (IOException e) {
 			throw new TaskException(e);
 		}
 	}
@@ -1010,20 +953,13 @@ public class TaskImplementation extends UnicastRemoteObject implements
 		taskPropertyObjects = new TreeMap<String, Serializable>();
 		try {
 			if (taskDescriptor.isSetTaskPropertyObjects()) {
-				TaskPropertyObjects propertyObjects = taskDescriptor
-						.getTaskPropertyObjects();
+				TaskPropertyObjects propertyObjects = taskDescriptor.getTaskPropertyObjects();
 				if (propertyObjects.isSetTaskPropertyObject()) {
-					for (TaskPropertyObject propertyObject : propertyObjects
-							.getTaskPropertyObject()) {
-						taskPropertyObjects
-								.put(propertyObject.getKey(),
-										propertyObject.isSetStrVal() ? Deserialize
-												.fromString(propertyObject
-														.getStrVal())
-												: propertyObject.isSetBinVal() ? Deserialize
-														.fromBase64(propertyObject
-																.getBinVal())
-														: null);
+					for (TaskPropertyObject propertyObject : propertyObjects.getTaskPropertyObject()) {
+						taskPropertyObjects.put(propertyObject.getKey(), propertyObject.isSetStrVal()
+								? Deserialize.fromString(propertyObject.getStrVal())
+								: propertyObject.isSetBinVal()
+										? Deserialize.fromBase64(propertyObject.getBinVal()) : null);
 					}
 				}
 			}
@@ -1038,17 +974,16 @@ public class TaskImplementation extends UnicastRemoteObject implements
 	 * The task has to be cleaned afterwards using its destroy method !
 	 * 
 	 * @param taskDescriptor
-	 *            The task descriptor of this task.
+	 *          The task descriptor of this task.
 	 * @param hostRuntime
-	 *            The host runtime in which to run this task.
+	 *          The host runtime in which to run this task.
 	 * @param measureDetailedLoad
-	 *            Whether to measure detailed load for this task.
+	 *          Whether to measure detailed load for this task.
 	 * 
 	 * @throws TaskException
 	 * @throws RemoteException
 	 */
-	protected TaskImplementation(TaskDescriptor taskDescriptor,
-			HostRuntimeImplementation hostRuntime, boolean measureDetailedLoad)
+	protected TaskImplementation(TaskDescriptor taskDescriptor, HostRuntimeImplementation hostRuntime, boolean measureDetailedLoad)
 			throws TaskException, RemoteException {
 		this.taskDescriptor = taskDescriptor;
 		this.hostRuntime = hostRuntime;
@@ -1066,12 +1001,9 @@ public class TaskImplementation extends UnicastRemoteObject implements
 
 		baseDirectory = hostRuntime.getBaseDirectoryForTask(contextId, taskId);
 		taskDirectory = hostRuntime.getTaskDirectoryForTask(contextId, taskId);
-		workingDirectory = hostRuntime.getWorkingDirectoryForTask(contextId,
-				taskId);
-		temporaryDirectory = hostRuntime.getTemporaryDirectoryForTask(
-				contextId, taskId);
-		serviceDirectory = hostRuntime.getServiceDirectoryForTask(contextId,
-				taskId);
+		workingDirectory = hostRuntime.getWorkingDirectoryForTask(contextId, taskId);
+		temporaryDirectory = hostRuntime.getTemporaryDirectoryForTask(contextId, taskId);
+		serviceDirectory = hostRuntime.getServiceDirectoryForTask(contextId, taskId);
 
 		displayMessage("Task starting.");
 
@@ -1094,8 +1026,8 @@ public class TaskImplementation extends UnicastRemoteObject implements
 		installPackageFiles();
 
 		try {
-			Delete.deleteDirectory(serviceDirectory);
-		} catch (AntTaskException e) {
+			FileUtils.deleteDirectory(new File(serviceDirectory));
+		} catch (IOException e) {
 			logger.error(String.format("Some exception occured while deleting file \"%s\"", serviceDirectory), e);
 			throw new TaskException(e);
 		}
@@ -1153,15 +1085,14 @@ public class TaskImplementation extends UnicastRemoteObject implements
 	 */
 	public void destroy() throws TaskException {
 		if (isRunning)
-			throw new IllegalStateException(
-					"You must call this method only on tasks that are not running.");
+			throw new IllegalStateException("You must call this method only on tasks that are not running.");
 
 		// Note that the executor thread can still be running at this time,
 		// but it is in the final execution phase and does not need
 		// either the directory or the registration.
 
 		try {
-			Delete.deleteDirectory(baseDirectory);
+			FileUtils.deleteDirectory(new File(baseDirectory));
 			Naming.unbind(taskPortUri);
 		} catch (Exception e) {
 			logger.error("Error destroying task.", e);

@@ -37,8 +37,6 @@ import javax.xml.bind.JAXBException;
 
 import org.apache.log4j.Logger;
 
-import cz.cuni.mff.been.common.anttasks.AntTaskException;
-import cz.cuni.mff.been.common.anttasks.Chmod;
 import cz.cuni.mff.been.hostruntime.TasksPortInterface;
 import cz.cuni.mff.been.jaxb.BindingParser;
 import cz.cuni.mff.been.jaxb.pmc.ClassPathItems;
@@ -48,6 +46,7 @@ import cz.cuni.mff.been.jaxb.pmc.Java;
 import cz.cuni.mff.been.jaxb.pmc.PluggableModuleConfiguration;
 import cz.cuni.mff.been.pluggablemodule.jaxb.SelfContainedParser;
 import cz.cuni.mff.been.softwarerepository.PackageType;
+import cz.cuni.mff.been.utils.FileUtils;
 
 /**
  * Provides the pluggable module functionality (basic work with pluggable 
@@ -303,15 +302,15 @@ public class PluggableModuleManagerImpl implements PluggableModuleManager {
     }
 
     /**
-     * Sets unix mode u+rwx for directory and all its descendants recursively
+     * Sets unix mode -rwxr--r-- for directory and all its descendants recursively
      * 
      * @param dir directory
      * @throws cz.cuni.mff.been.pluggablemodule.PluggableModuleException if error occurs.
      */
     private void chmodFilesRecursively(String dir) throws PluggableModuleException {
         try {
-            Chmod.recursiveDirectoryChmod(dir, "u+rwx");
-        } catch (AntTaskException e) {
+        	FileUtils.recursiveChmod(new File(dir), "-rwxr--r--");
+        } catch (IOException e) {
             throw new PluggableModuleException("Error setting access rights on pluggable module files.", e);
         }
     }

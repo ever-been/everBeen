@@ -26,12 +26,6 @@
 
 package cz.cuni.mff.been.pluggablemodule.derby.implementation;
 
-import cz.cuni.mff.been.common.anttasks.AntTaskException;
-import cz.cuni.mff.been.common.anttasks.Delete;
-import cz.cuni.mff.been.pluggablemodule.PluggableModule;
-import cz.cuni.mff.been.pluggablemodule.PluggableModuleManager;
-import cz.cuni.mff.been.pluggablemodule.derby.DerbyPluggableModule;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -44,9 +38,15 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
-import org.apache.log4j.Logger;
+
 import org.apache.derby.drda.NetworkServerControl;
 import org.apache.derby.tools.ij;
+import org.apache.log4j.Logger;
+
+import cz.cuni.mff.been.pluggablemodule.PluggableModule;
+import cz.cuni.mff.been.pluggablemodule.PluggableModuleManager;
+import cz.cuni.mff.been.pluggablemodule.derby.DerbyPluggableModule;
+import cz.cuni.mff.been.utils.FileUtils;
 
 /**
  * BEEN's pluggable module which provides Derby functionality (starting and
@@ -56,12 +56,11 @@ import org.apache.derby.tools.ij;
  * @author Jan Tattermusch
  */
 public class DerbyPluggableModuleImpl extends PluggableModule implements DerbyPluggableModule {
-	
+
 	public static final int DERBY_PORT_NUMBER = 1527;
 
 	/** Sets up a class logger */
-	private Logger logger = Logger.getLogger("task.derbypluggablemodule."
-			+ this.getClass().getCanonicalName());
+	private Logger logger = Logger.getLogger("task.derbypluggablemodule." + this.getClass().getCanonicalName());
 
 	/** Properties of running Derby instance */
 	private DerbyProperties properties = null;
@@ -78,17 +77,18 @@ public class DerbyPluggableModuleImpl extends PluggableModule implements DerbyPl
 
 	/**
 	 * Creates new instance of derby pluggable module.
-	 * @param manager pluggable module manager used for loading this pluggable module.
+	 * 
+	 * @param manager
+	 *          pluggable module manager used for loading this pluggable module.
 	 */
 	public DerbyPluggableModuleImpl(PluggableModuleManager manager) {
 		super(manager);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see cz.cuni.mff.been.pluggablemodule.derby.DerbyPluggableModuleInterface#startEngine(DerbyProperties)
 	 */
-	public void startEngine(DerbyProperties derbyProperties)
-			throws DerbyPluggableModuleException {
+	public void startEngine(DerbyProperties derbyProperties) throws DerbyPluggableModuleException {
 		/* set derby home directory */
 		System.setProperty("derby.system.home", derbyProperties.getHome());
 
@@ -96,16 +96,15 @@ public class DerbyPluggableModuleImpl extends PluggableModule implements DerbyPl
 		//System.setProperty("derby.database.forceDatabaseLock", "true");
 
 		/* set whether derby should be network accessible */
-		System.setProperty("derby.drda.startNetworkServer",
-					(derbyProperties.isNetworkAccessible() ? "true" : "false"));
+		System.setProperty("derby.drda.startNetworkServer", (derbyProperties.isNetworkAccessible()
+				? "true" : "false"));
 
 		/* set network port */
 		System.setProperty("derby.drda.portNumber", Integer.toString(derbyProperties.getNetworkPort()));
-		
+
 		/* this option prevents derby from getting deadlocks and lock timeouts all the time */
 		System.setProperty("derby.storage.rowLocking", "false");
-		
-		
+
 		/* redirect derby's error output */
 		//System
 		//		.setProperty("derby.stream.error.method",
@@ -113,8 +112,7 @@ public class DerbyPluggableModuleImpl extends PluggableModule implements DerbyPl
 		try {
 			loadDriver();
 		} catch (Exception ex) {
-			throw new DerbyPluggableModuleException(
-					"Could not load Derby embedded driver", ex);
+			throw new DerbyPluggableModuleException("Could not load Derby embedded driver", ex);
 		}
 		logger.info("Derby embedded driver loaded.");
 
@@ -123,32 +121,28 @@ public class DerbyPluggableModuleImpl extends PluggableModule implements DerbyPl
 				waitForStart();
 				logger.debug("Derby network server started.");
 			} catch (Exception ex) {
-				throw new DerbyPluggableModuleException(
-						"Attempt to ping Derby network server failed", ex);
+				throw new DerbyPluggableModuleException("Attempt to ping Derby network server failed", ex);
 			}
 		}
 		this.properties = derbyProperties;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see cz.cuni.mff.been.pluggablemodule.derby.DerbyPluggableModuleInterface#startEngine(String, boolean)
 	 */
-	public void startEngine(String home, boolean networkAccessible)
-			throws DerbyPluggableModuleException {
-		
-		startEngine( new DerbyProperties(home, networkAccessible) );
+	public void startEngine(String home, boolean networkAccessible) throws DerbyPluggableModuleException {
+
+		startEngine(new DerbyProperties(home, networkAccessible));
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see cz.cuni.mff.been.pluggablemodule.derby.DerbyPluggableModuleInterface#startEngine(String, boolean, int)
 	 */
-	public void startEngine(String home, boolean networkAccessible, int networkPort)
-			throws DerbyPluggableModuleException {
-		
-		startEngine( new DerbyProperties(home, networkAccessible, networkPort) );
+	public void startEngine(String home, boolean networkAccessible,
+			int networkPort) throws DerbyPluggableModuleException {
+
+		startEngine(new DerbyProperties(home, networkAccessible, networkPort));
 	}
-	
-	
 
 	/* (non-Javadoc)
 	 * @see cz.cuni.mff.been.pluggablemodule.derby.DerbyPluggableModuleInterface#stopEngine()
@@ -159,8 +153,7 @@ public class DerbyPluggableModuleImpl extends PluggableModule implements DerbyPl
 			this.properties = null;
 			logger.info("Derby engine successfully stopped.");
 		} catch (SQLException ex) {
-			throw new DerbyPluggableModuleException(
-					"Failed shutting down Derby.", ex);
+			throw new DerbyPluggableModuleException("Failed shutting down Derby.", ex);
 		}
 
 	}
@@ -169,17 +162,14 @@ public class DerbyPluggableModuleImpl extends PluggableModule implements DerbyPl
 	 * @see cz.cuni.mff.been.pluggablemodule.derby.DerbyPluggableModuleInterface#getConnection(java.lang.String)
 	 */
 	public Connection getConnection(String databaseName) throws SQLException {
-		return DriverManager.getConnection(derbyProtocol + databaseName
-				+ ";create=true");
+		return DriverManager.getConnection(derbyProtocol + databaseName + ";create=true");
 	}
 
 	/* (non-Javadoc)
 	 * @see cz.cuni.mff.been.pluggablemodule.derby.DerbyPluggableModuleInterface#getConnection(java.lang.String, java.util.Properties)
 	 */
-	public Connection getConnection(String databaseName, Properties properties)
-			throws SQLException {
-		return DriverManager.getConnection(derbyProtocol + databaseName
-				+ ";create=true", properties);
+	public Connection getConnection(String databaseName, Properties properties) throws SQLException {
+		return DriverManager.getConnection(derbyProtocol + databaseName + ";create=true", properties);
 	}
 
 	/* (non-Javadoc)
@@ -208,33 +198,25 @@ public class DerbyPluggableModuleImpl extends PluggableModule implements DerbyPl
 		try {
 			connection = getConnection(databaseName);
 		} catch (SQLException ex) {
-			throw new DerbyPluggableModuleException(
-					"Cannot connect to database \"" + databaseName + "\"", ex);
+			throw new DerbyPluggableModuleException("Cannot connect to database \"" + databaseName + "\"", ex);
 		}
 
 		String inputEncoding = "UTF-8";
 		String outputEncoding = "UTF-8";
 
 		try {
-			logger.debug("Launching setup script for database \"" + databaseName
-					+ "\"");
-			OutputStream ijOutput = new IjOutputStream(); 
-			int sqlExceptionCount = ij.runScript(connection, setupScriptStream,
-					inputEncoding, ijOutput, outputEncoding);
+			logger.debug("Launching setup script for database \"" + databaseName + "\"");
+			OutputStream ijOutput = new IjOutputStream();
+			int sqlExceptionCount = ij.runScript(connection, setupScriptStream, inputEncoding, ijOutput, outputEncoding);
 			if (sqlExceptionCount == 0) {
-				logger.debug("Setup for database \"" + databaseName
-						+ "\" finished successfully.");
+				logger.debug("Setup for database \"" + databaseName + "\" finished successfully.");
 				return connection;
 			} else {
-				throw new DerbyPluggableModuleException(
-						sqlExceptionCount
-								+ " SQL exceptions occured when running database setup script for DB \""
-								+ databaseName + "\"");
+				throw new DerbyPluggableModuleException(sqlExceptionCount + " SQL exceptions occured when running database setup script for DB \"" + databaseName + "\"");
 			}
 
 		} catch (UnsupportedEncodingException ex) {
-			throw new DerbyPluggableModuleException(
-					"Unsupported encoding of setup script or error output.", ex);
+			throw new DerbyPluggableModuleException("Unsupported encoding of setup script or error output.", ex);
 		}
 
 	}
@@ -242,8 +224,7 @@ public class DerbyPluggableModuleImpl extends PluggableModule implements DerbyPl
 	/* (non-Javadoc)
 	 * @see cz.cuni.mff.been.pluggablemodule.derby.DerbyPluggableModuleInterface#setupDatabase(java.lang.String, java.io.File)
 	 */
-	public Connection setupDatabase(String databaseName, File setupScriptFile)
-			throws FileNotFoundException, DerbyPluggableModuleException {
+	public Connection setupDatabase(String databaseName, File setupScriptFile) throws FileNotFoundException, DerbyPluggableModuleException {
 		InputStream setupScriptStream = new FileInputStream(setupScriptFile);
 		return setupDatabase(databaseName, setupScriptStream);
 	}
@@ -256,14 +237,11 @@ public class DerbyPluggableModuleImpl extends PluggableModule implements DerbyPl
 
 		dropDatabase(databaseName);
 		try {
-			Connection connection = DriverManager.getConnection(derbyProtocol
-					+ databaseName + ";restoreFrom=" + backupFile.getPath());
-			logger.debug("Database \"" + databaseName
-					+ "\" successfully restored.");
+			Connection connection = DriverManager.getConnection(derbyProtocol + databaseName + ";restoreFrom=" + backupFile.getPath());
+			logger.debug("Database \"" + databaseName + "\" successfully restored.");
 			return connection;
 		} catch (SQLException ex) {
-			throw new DerbyPluggableModuleException(
-					"Failed to restore database \"" + databaseName + "\"", ex);
+			throw new DerbyPluggableModuleException("Failed to restore database \"" + databaseName + "\"", ex);
 		}
 
 	}
@@ -276,32 +254,27 @@ public class DerbyPluggableModuleImpl extends PluggableModule implements DerbyPl
 	 * path.
 	 * 
 	 * @param databaseName
-	 *            name of database to restore.
+	 *          name of database to restore.
 	 * @param backupDirectory
-	 *            Derby's backup file to backup to.
+	 *          Derby's backup file to backup to.
 	 */
-	public void backupDatabase(String databaseName, File backupDirectory)
-			throws DerbyPluggableModuleException {
+	public void backupDatabase(String databaseName, File backupDirectory) throws DerbyPluggableModuleException {
 		try {
 			Connection conn = getConnection(databaseName);
-			CallableStatement cs = conn
-					.prepareCall("CALL SYSCS_UTIL.SYSCS_BACKUP_DATABASE(?)");
+			CallableStatement cs = conn.prepareCall("CALL SYSCS_UTIL.SYSCS_BACKUP_DATABASE(?)");
 			cs.setString(1, backupDirectory.getAbsolutePath());
 			cs.execute();
 			cs.close();
 			conn.close();
-			logger.debug("State of database \"" + databaseName
-					+ "\" successfully stored to directory \""
-					+ backupDirectory.getAbsolutePath() + "\"");
+			logger.debug("State of database \"" + databaseName + "\" successfully stored to directory \"" + backupDirectory.getAbsolutePath() + "\"");
 		} catch (SQLException ex) {
-			throw new DerbyPluggableModuleException(
-					"Error occured when trying to backup database \""
-							+ databaseName + "\"", ex);
+			throw new DerbyPluggableModuleException("Error occured when trying to backup database \"" + databaseName + "\"", ex);
 		}
 	}
 
 	/**
-	 * Loads the appropriate JDBC driver for embedded framework (<code>org.apache.derby.jdbc.EmbeddedDriver</code>).
+	 * Loads the appropriate JDBC driver for embedded framework (
+	 * <code>org.apache.derby.jdbc.EmbeddedDriver</code>).
 	 */
 	private void loadDriver() throws DerbyPluggableModuleException {
 		/*
@@ -314,27 +287,24 @@ public class DerbyPluggableModuleImpl extends PluggableModule implements DerbyPl
 		 */
 		try {
 			this.getPluggableModuleManager().getClassLoader().loadClass(driverName).newInstance();
-			
+
 		} catch (ClassNotFoundException cnfe) {
-			throw new DerbyPluggableModuleException(
-					"Unable to load the JDBC driver " + driverName);
+			throw new DerbyPluggableModuleException("Unable to load the JDBC driver " + driverName);
 		} catch (InstantiationException ie) {
-			throw new DerbyPluggableModuleException(
-					"Unable to instantiate the JDBC driver " + driverName);
+			throw new DerbyPluggableModuleException("Unable to instantiate the JDBC driver " + driverName);
 		} catch (IllegalAccessException iae) {
-			throw new DerbyPluggableModuleException(
-					"Unable to access the JDBC driver " + driverName);
+			throw new DerbyPluggableModuleException("Unable to access the JDBC driver " + driverName);
 		}
 	}
 
 	/**
 	 * Tries to check if the Network Server is up and running by calling ping If
-	 * successful, then it returns else tries for 50 seconds before giving up
-	 * and throwing an exception.
+	 * successful, then it returns else tries for 50 seconds before giving up and
+	 * throwing an exception.
 	 * 
 	 * @throws Exception
-	 *             when there is a problem with testing if the Network Server is
-	 *             up and running
+	 *           when there is a problem with testing if the Network Server is up
+	 *           and running
 	 */
 	private static void waitForStart() throws Exception {
 		// Server instance for testing connection
@@ -365,7 +335,7 @@ public class DerbyPluggableModuleImpl extends PluggableModule implements DerbyPl
 	 * Shuts down Derby.
 	 * 
 	 * @throws java.sql.SQLException
-	 *             if shutdown fails.
+	 *           if shutdown fails.
 	 */
 	private void shutdownDerby() throws SQLException {
 		try {
@@ -378,8 +348,7 @@ public class DerbyPluggableModuleImpl extends PluggableModule implements DerbyPl
 			// DriverManager.getConnection("jdbc:derby:" + dbName +
 			// ";shutdown=true");
 		} catch (SQLException se) {
-			if (((se.getErrorCode() == 50000) && ("XJ015".equals(se
-					.getSQLState())))) {
+			if (((se.getErrorCode() == 50000) && ("XJ015".equals(se.getSQLState())))) {
 				// we got the expected exception
 			} else {
 				throw se;
@@ -392,15 +361,14 @@ public class DerbyPluggableModuleImpl extends PluggableModule implements DerbyPl
 	 * running.
 	 * 
 	 * @param databaseName
-	 *            name of datbase to shutdown.
+	 *          name of datbase to shutdown.
 	 * @throws java.sql.SQLException
-	 *             if shutdown fails.
+	 *           if shutdown fails.
 	 */
 	private void shutdownDatabase(String databaseName) throws SQLException {
 		try {
 			/* the shutdown=true attribute shuts down Derby */
-			DriverManager.getConnection("jdbc:derby:" + databaseName
-					+ ";shutdown=true");
+			DriverManager.getConnection("jdbc:derby:" + databaseName + ";shutdown=true");
 
 			// To shut down a specific database only, but keeep the
 			// engine running (for example for connecting to other
@@ -408,8 +376,7 @@ public class DerbyPluggableModuleImpl extends PluggableModule implements DerbyPl
 			// DriverManager.getConnection("jdbc:derby:" + dbName +
 			// ";shutdown=true");
 		} catch (SQLException se) {
-			if (((se.getErrorCode() == 45000) && ("08006".equals(se
-					.getSQLState())))) {
+			if (((se.getErrorCode() == 45000) && ("08006".equals(se.getSQLState())))) {
 				// we got the expected exception for single database shutdown
 			} else {
 				throw se;
@@ -420,8 +387,7 @@ public class DerbyPluggableModuleImpl extends PluggableModule implements DerbyPl
 	/* (non-Javadoc)
 	 * @see cz.cuni.mff.been.pluggablemodule.derby.DerbyPluggableModuleInterface#dropDatabase(java.lang.String)
 	 */
-	public void dropDatabase(String databaseName)
-			throws DerbyPluggableModuleException {
+	public void dropDatabase(String databaseName) throws DerbyPluggableModuleException {
 		/*
 		 * Derby has no drop database command, database must be deleted by
 		 * removing its directory from filesystem. Database must not be booted
@@ -430,25 +396,20 @@ public class DerbyPluggableModuleImpl extends PluggableModule implements DerbyPl
 
 		try {
 			shutdownDatabase(databaseName);
-			logger.debug("Database \"" + databaseName
-					+ "\" shutdown succeeded.");
+			logger.debug("Database \"" + databaseName + "\" shutdown succeeded.");
 		} catch (SQLException ex) {
-			if (((ex.getErrorCode() == 40000) && ("XJ004".equals(ex
-					.getSQLState())))) {
+			if (((ex.getErrorCode() == 40000) && ("XJ004".equals(ex.getSQLState())))) {
 				// database is not booted and that is okay
 			} else {
-				throw new DerbyPluggableModuleException(
-						"Failed to drop database \"" + databaseName + "\"", ex);
+				throw new DerbyPluggableModuleException("Failed to drop database \"" + databaseName + "\"", ex);
 			}
 		}
 
 		try {
 			deleteDatabaseDirectory(databaseName);
-			logger.debug("Database \"" + databaseName
-					+ "\" successfully deleted.");
+			logger.debug("Database \"" + databaseName + "\" successfully deleted.");
 		} catch (IOException ex) {
-			throw new DerbyPluggableModuleException(
-					"Failed to delete database \"" + databaseName + "\"", ex);
+			throw new DerbyPluggableModuleException("Failed to delete database \"" + databaseName + "\"", ex);
 		}
 
 		logger.debug("Database \"" + databaseName + "\" successfully deleted.");
@@ -489,27 +450,23 @@ public class DerbyPluggableModuleImpl extends PluggableModule implements DerbyPl
 	 * Deletes database directory if it exists. Does nothing otherwise.
 	 * 
 	 * @param databaseName
-	 *            name of database
+	 *          name of database
 	 */
-	private void deleteDatabaseDirectory(String databaseName)
-			throws IOException {
+	private void deleteDatabaseDirectory(String databaseName) throws IOException {
 		String path = getDatabasePath(databaseName);
 		File dir = new File(path);
 		if (dir.exists()) {
 			if (dir.isDirectory()) {
 				try {
-					Delete.deleteDirectory(path);
-					logger.debug("Directory \"" + path
-							+ "\" was successfully deleted");
-				} catch (AntTaskException ex) {
-					IOException ioex = new IOException(
-							"Could not delete directory of database \"databaseName\"");
+					FileUtils.deleteDirectory(new File(path));
+					logger.debug("Directory \"" + path + "\" was successfully deleted");
+				} catch (IOException ex) {
+					IOException ioex = new IOException("Could not delete directory of database \"databaseName\"");
 					ioex.initCause(ex);
 					throw ioex;
 				}
 			} else {
-				throw new IOException("Given database name \"" + databaseName
-						+ "\"references file, not directory.");
+				throw new IOException("Given database name \"" + databaseName + "\"references file, not directory.");
 			}
 
 		}
@@ -520,7 +477,7 @@ public class DerbyPluggableModuleImpl extends PluggableModule implements DerbyPl
 	 * Builds path from databaseName
 	 * 
 	 * @param databaseName
-	 *            name of database
+	 *          name of database
 	 * @return path of database's directory
 	 */
 	private String getDatabasePath(String databaseName) {
@@ -533,8 +490,8 @@ public class DerbyPluggableModuleImpl extends PluggableModule implements DerbyPl
 	}
 
 	/**
-	 * @return Properties of running derby instance or null, if Derby was
-	 *         stopped or it wasn't started at all.
+	 * @return Properties of running derby instance or null, if Derby was stopped
+	 *         or it wasn't started at all.
 	 */
 	public DerbyProperties getProperties() {
 		return properties;

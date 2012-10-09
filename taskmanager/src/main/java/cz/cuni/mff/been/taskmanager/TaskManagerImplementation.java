@@ -76,8 +76,6 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 import cz.cuni.mff.been.common.RMI;
-import cz.cuni.mff.been.common.anttasks.AntTaskException;
-import cz.cuni.mff.been.common.anttasks.Delete;
 import cz.cuni.mff.been.common.serialize.Deserialize;
 import cz.cuni.mff.been.common.serialize.DeserializeException;
 import cz.cuni.mff.been.common.util.MiscUtils;
@@ -134,6 +132,7 @@ import cz.cuni.mff.been.taskmanager.tasktree.TaskTreeInput;
 import cz.cuni.mff.been.taskmanager.tasktree.TaskTreeQuery;
 import cz.cuni.mff.been.taskmanager.tasktree.TaskTreeReader;
 import cz.cuni.mff.been.taskmanager.tasktree.TaskTreeRecord;
+import cz.cuni.mff.been.utils.FileUtils;
 
 /**
  * Implementation of Task Manager (main class).
@@ -460,14 +459,14 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements Ta
 			String logDirPath = rootDirectory + File.separator + "logs";
 			File logDir = new File(logDirPath);
 			if (logDir.exists()) {
-				Delete.deleteDirectory(logDirPath);
+				FileUtils.deleteDirectory(logDir);
 			}
 
 			logStorage = new FilesystemLogStorage(rootDirectory + File.separator + "logs");
 		} catch (LogStorageException e) {
 			System.err.println("Cannot create the log storage: " + e.getMessage());
 			System.exit(1);
-		} catch (AntTaskException e) {
+		} catch (IOException e) {
 			System.err.println("Cannot delete the log directory: " + e.getMessage());
 			System.exit(1);
 		}

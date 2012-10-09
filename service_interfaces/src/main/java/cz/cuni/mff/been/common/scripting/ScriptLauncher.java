@@ -32,10 +32,9 @@ import java.util.UUID;
 
 import cz.cuni.mff.been.common.OutputReader;
 import cz.cuni.mff.been.common.OutputType;
-import cz.cuni.mff.been.common.anttasks.AntTaskException;
-import cz.cuni.mff.been.common.anttasks.Chmod;
 import cz.cuni.mff.been.task.CurrentTaskSingleton;
 import cz.cuni.mff.been.task.Task;
+import cz.cuni.mff.been.utils.FileUtils;
 
 /**
  * Utility class for launching shell script (on both windows and linux).
@@ -47,21 +46,19 @@ public class ScriptLauncher {
 	/**
 	 * Creates new instance of class.
 	 */
-	public ScriptLauncher() {
-	}
+	public ScriptLauncher() {}
 
 	/**
 	 * Runs file with shell script in given environment
 	 * 
 	 * @param scriptFile
-	 *            file to run
+	 *          file to run
 	 * @param environment
-	 *            script's environment
+	 *          script's environment
 	 * @return script's exitcode
 	 * @throws ScriptException
 	 */
-	public int runShellScript(File scriptFile, ScriptEnvironment environment)
-			throws ScriptException {
+	public int runShellScript(File scriptFile, ScriptEnvironment environment) throws ScriptException {
 
 		chmodExecutable(scriptFile);
 
@@ -82,9 +79,7 @@ public class ScriptLauncher {
 			String[] cmdArray = new String[] { scriptFile.getAbsolutePath() };
 
 			for (String variable : environment.variables()) {
-				procBuilder.environment().put(
-						variable,
-						environment.getEnv(variable));
+				procBuilder.environment().put(variable, environment.getEnv(variable));
 			}
 
 			procBuilder.command(cmdArray);
@@ -94,14 +89,10 @@ public class ScriptLauncher {
 			/* this needs to be closed otherwise JVM keeps the pipe open */
 			p.getOutputStream().close();
 
-			OutputReader stdOutReader = new OutputReader(
-					p.getInputStream(),
-					OutputType.STDOUT);
+			OutputReader stdOutReader = new OutputReader(p.getInputStream(), OutputType.STDOUT);
 			stdOutReader.setOutputStream(System.out);
 			stdOutReader.start();
-			OutputReader stdErrReader = new OutputReader(
-					p.getErrorStream(),
-					OutputType.STDERR);
+			OutputReader stdErrReader = new OutputReader(p.getErrorStream(), OutputType.STDERR);
 			stdErrReader.setOutputStream(System.err);
 			stdErrReader.start();
 
@@ -139,15 +130,14 @@ public class ScriptLauncher {
 	 * Runs shell script in given environment
 	 * 
 	 * @param script
-	 *            lines of script to run
+	 *          lines of script to run
 	 * @param environment
-	 *            script's environment
+	 *          script's environment
 	 * @return script's exitcode
 	 * @throws ScriptException
 	 */
 
-	public int runShellScript(String[] script, ScriptEnvironment environment)
-			throws ScriptException {
+	public int runShellScript(String[] script, ScriptEnvironment environment) throws ScriptException {
 
 		File scriptFile;
 		try {
@@ -170,7 +160,7 @@ public class ScriptLauncher {
 	 * name
 	 * 
 	 * @param script
-	 *            script lines
+	 *          script lines
 	 * @return temporary file with script
 	 * @throws IOException
 	 */
@@ -201,15 +191,14 @@ public class ScriptLauncher {
 	 * Adds execute permission to file
 	 * 
 	 * @param file
-	 *            file to chmod
+	 *          file to chmod
 	 * @throws ScriptException
 	 */
 	private void chmodExecutable(File file) throws ScriptException {
 		try {
-			Chmod.chmod(file.getAbsolutePath(), "ugo+rx");
-		} catch (AntTaskException e) {
-			throw new ScriptException("Error chmod-ing script ("
-					+ e.getMessage() + ")");
+			FileUtils.chmod(file, "-rwxr-xr-x");
+		} catch (IOException e) {
+			throw new ScriptException("Error chmod-ing script (" + e.getMessage() + ")");
 		}
 	}
 

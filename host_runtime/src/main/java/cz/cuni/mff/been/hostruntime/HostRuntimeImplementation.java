@@ -42,8 +42,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.been.common.RMI;
-import cz.cuni.mff.been.common.anttasks.AntTaskException;
-import cz.cuni.mff.been.common.anttasks.Delete;
 import cz.cuni.mff.been.hostmanager.IllegalOperationException;
 import cz.cuni.mff.been.hostmanager.ValueNotFoundException;
 import cz.cuni.mff.been.hostmanager.load.LoadMonitorException;
@@ -57,6 +55,7 @@ import cz.cuni.mff.been.task.TaskException;
 import cz.cuni.mff.been.taskmanager.HostRuntimesPortInterface;
 import cz.cuni.mff.been.taskmanager.TaskManagerInterface;
 import cz.cuni.mff.been.taskmanager.data.TaskState;
+import cz.cuni.mff.been.utils.FileUtils;
 
 /**
  * Implementation of Host Runtime.
@@ -64,11 +63,9 @@ import cz.cuni.mff.been.taskmanager.data.TaskState;
  * @author Antonin Tomecek
  * @author David Majda
  */
-public class HostRuntimeImplementation extends UnicastRemoteObject implements
-		HostRuntimeInterface {
+public class HostRuntimeImplementation extends UnicastRemoteObject implements HostRuntimeInterface {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(HostRuntimeImplementation.class);
+	private static final Logger logger = LoggerFactory.getLogger(HostRuntimeImplementation.class);
 
 	private static final long serialVersionUID = 1765181516998265721L;
 
@@ -103,8 +100,8 @@ public class HostRuntimeImplementation extends UnicastRemoteObject implements
 	private static final String LOAD_DIR = "load";
 
 	/**
-	 * Debug port that will be assigned to first task run by hostruntime (when
-	 * in debug mode)
+	 * Debug port that will be assigned to first task run by hostruntime (when in
+	 * debug mode)
 	 */
 	private static final int FIRST_TASK_DEBUG_PORT = 8200;
 
@@ -157,16 +154,13 @@ public class HostRuntimeImplementation extends UnicastRemoteObject implements
 	private void checkDirectory(String directoryName) throws IOException {
 		File directory = new File(directoryName);
 		if (!directory.exists()) {
-			throw new FileNotFoundException(String.format(
-					"Error: '%s' does not exist.", directory));
+			throw new FileNotFoundException(String.format("Error: '%s' does not exist.", directory));
 		}
 		if (!directory.isDirectory()) {
-			throw new FileNotFoundException(String.format(
-					"Error: '%s' is not directory.", directory));
+			throw new FileNotFoundException(String.format("Error: '%s' is not directory.", directory));
 		}
 		if (!directory.canWrite()) {
-			throw new IOException(String.format("Error: '%s' is not writable.",
-					directory));
+			throw new IOException(String.format("Error: '%s' is not writable.", directory));
 		}
 	}
 
@@ -191,28 +185,26 @@ public class HostRuntimeImplementation extends UnicastRemoteObject implements
 	 * Allocates a new <code>HostRuntimeImplementation</code> object.
 	 * 
 	 * @param taskManagerHostname
-	 *            host where the Task Manager is running
+	 *          host where the Task Manager is running
 	 * @param rootDirectory
-	 *            root directory of this Host Runtime
+	 *          root directory of this Host Runtime
 	 * @throws RemoteException
-	 *             if failed to export object
+	 *           if failed to export object
 	 * @throws IOException
-	 *             if the root direcotry or one of its required subdirectories (
-	 *             <tt>cache</tt>, <tt>boot</tt> and <tt>tasks</tt>) does not
-	 *             exist, is not a directory, or is not writable
+	 *           if the root direcotry or one of its required subdirectories (
+	 *           <tt>cache</tt>, <tt>boot</tt> and <tt>tasks</tt>) does not exist,
+	 *           is not a directory, or is not writable
 	 * @throws NotBoundException
-	 *             if the Host Runtime can not connect to the Task Manager
+	 *           if the Host Runtime can not connect to the Task Manager
 	 * @throws LoadMonitorException
-	 *             if the Load Monitor can not be created
+	 *           if the Load Monitor can not be created
 	 */
-	public HostRuntimeImplementation(String taskManagerHostname,
-			String rootDirectory) throws IOException, LoadMonitorException,
-			NotBoundException {
+	public HostRuntimeImplementation(String taskManagerHostname, String rootDirectory)
+			throws IOException, LoadMonitorException, NotBoundException {
 		this.rootDirectory = rootDirectory;
 		checkDirectory(rootDirectory);
 		String cacheDir = getDirInRootDir(rootDirectory, CACHE_DIR);
-		String bootPackagesDir = getDirInRootDir(rootDirectory,
-				BOOT_PACKAGES_DIR);
+		String bootPackagesDir = getDirInRootDir(rootDirectory, BOOT_PACKAGES_DIR);
 		String nativeLibDir = getDirInRootDir(rootDirectory, NATIVE_LIB_DIR);
 		String loadDir = getDirInRootDir(rootDirectory, LOAD_DIR);
 
@@ -223,15 +215,10 @@ public class HostRuntimeImplementation extends UnicastRemoteObject implements
 
 		/* Initialize the Task Manager reference and register the Host Runtime. */
 		try {
-			taskManagerRuntimePort = (HostRuntimesPortInterface) Naming
-					.lookup("//" + taskManagerHostname + ":"
-							+ RMI.REGISTRY_PORT + TaskManagerInterface.URL);
+			taskManagerRuntimePort = (HostRuntimesPortInterface) Naming.lookup("//" + taskManagerHostname + ":" + RMI.REGISTRY_PORT + TaskManagerInterface.URL);
 		} catch (MalformedURLException e) {
-			logger.error(String.format(
-					"Fatal: unexpected exception '%s' thrown.", e.getClass()
-							.getSimpleName()), e);
-			throw new AssertionError(
-					"MalformedURLException could not be thrown.");
+			logger.error(String.format("Fatal: unexpected exception '%s' thrown.", e.getClass().getSimpleName()), e);
+			throw new AssertionError("MalformedURLException could not be thrown.");
 		}
 
 		taskManager = taskManagerRuntimePort.getTaskManager();
@@ -240,8 +227,7 @@ public class HostRuntimeImplementation extends UnicastRemoteObject implements
 		}
 		String hostName = InetAddress.getLocalHost().getCanonicalHostName();
 		if (hostName == null) {
-			throw new NotBoundException(
-					"Canonical host name for localhost is null!");
+			throw new NotBoundException("Canonical host name for localhost is null!");
 		}
 		taskManager.registerHostRuntime(hostName);
 
@@ -271,14 +257,13 @@ public class HostRuntimeImplementation extends UnicastRemoteObject implements
 				}
 
 				try {
-					taskManager.unregisterHostRuntime(InetAddress
-							.getLocalHost().getCanonicalHostName());
+					taskManager.unregisterHostRuntime(InetAddress.getLocalHost().getCanonicalHostName());
 				} catch (RemoteException e) {
 					logger.error("Error executing remote call from the Host Runtime to the Task Manager.");
 				} catch (UnknownHostException e) {
 					logger.error("Unknown host.", e);
 				} catch (IllegalArgumentException e) { // TODO: remove this when
-														// possible!
+					// possible!
 					// it's sometimes thrown instead of UnknownHostException
 					logger.error("Unknown host.", e);
 				}
@@ -292,14 +277,13 @@ public class HostRuntimeImplementation extends UnicastRemoteObject implements
 	 * task (identified by the context and task ID).
 	 * 
 	 * @param contextID
-	 *            context ID
+	 *          context ID
 	 * @param taskID
-	 *            task ID
+	 *          task ID
 	 * @return directory that contains directories with task data
 	 */
 	public String getBaseDirectoryForTask(String contextID, String taskID) {
-		return rootDirectory + File.separator + TASKS_BASE_DIR + File.separator
-				+ contextID + File.separator + taskID;
+		return rootDirectory + File.separator + TASKS_BASE_DIR + File.separator + contextID + File.separator + taskID;
 	}
 
 	/**
@@ -307,14 +291,13 @@ public class HostRuntimeImplementation extends UnicastRemoteObject implements
 	 * (identified by the context and task ID).
 	 * 
 	 * @param contextID
-	 *            context ID
+	 *          context ID
 	 * @param taskID
-	 *            task ID
+	 *          task ID
 	 * @return task directory (task's JAR is extracted there)
 	 */
 	public String getTaskDirectoryForTask(String contextID, String taskID) {
-		return getBaseDirectoryForTask(contextID, taskID) + File.separator
-				+ TASK_DIR;
+		return getBaseDirectoryForTask(contextID, taskID) + File.separator + TASK_DIR;
 	}
 
 	/**
@@ -323,30 +306,28 @@ public class HostRuntimeImplementation extends UnicastRemoteObject implements
 	 * task ID).
 	 * 
 	 * @param contextID
-	 *            context ID
+	 *          context ID
 	 * @param taskID
-	 *            task ID
+	 *          task ID
 	 * @return wokring directory (results of task's work are stored there,
 	 *         surviving task's death)
 	 */
 	public String getWorkingDirectoryForTask(String contextID, String taskID) {
-		return getBaseDirectoryForTask(contextID, taskID) + File.separator
-				+ WORKING_DIR;
+		return getBaseDirectoryForTask(contextID, taskID) + File.separator + WORKING_DIR;
 	}
 
 	/**
-	 * Returns temporary directory (deleted after the task's death) for
-	 * specified task (identified by the context and task ID).
+	 * Returns temporary directory (deleted after the task's death) for specified
+	 * task (identified by the context and task ID).
 	 * 
 	 * @param contextID
-	 *            context ID
+	 *          context ID
 	 * @param taskID
-	 *            task ID
+	 *          task ID
 	 * @return temporary directory (deleted after the task's death)
 	 */
 	public String getTemporaryDirectoryForTask(String contextID, String taskID) {
-		return getBaseDirectoryForTask(contextID, taskID) + File.separator
-				+ TEMPORARY_DIR;
+		return getBaseDirectoryForTask(contextID, taskID) + File.separator + TEMPORARY_DIR;
 	}
 
 	/**
@@ -354,30 +335,27 @@ public class HostRuntimeImplementation extends UnicastRemoteObject implements
 	 * specified task (identified by the context and task ID).
 	 * 
 	 * @param contextID
-	 *            context ID
+	 *          context ID
 	 * @param taskID
-	 *            task ID
+	 *          task ID
 	 * @return service directory (package contents are extracted there)
 	 */
 	public String getServiceDirectoryForTask(String contextID, String taskID) {
-		return getBaseDirectoryForTask(contextID, taskID) + File.separator
-				+ SERVICE_DIR;
+		return getBaseDirectoryForTask(contextID, taskID) + File.separator + SERVICE_DIR;
 	}
 
 	/**
 	 * Notifies the Host Runtime that the task has finished.
 	 * 
 	 * @param task
-	 *            task that finished
+	 *          task that finished
 	 */
-	public void notifyTaskFinished(TaskInterface task, TaskState state)
-			throws RemoteException {
+	public void notifyTaskFinished(TaskInterface task, TaskState state) throws RemoteException {
 		synchronized (runningTasksSync) {
 			runningTasksSync.remove(task);
 		}
 
-		taskManagerRuntimePort.taskReachedEnd(task.getTaskID(),
-				task.getContextID(), state);
+		taskManagerRuntimePort.taskReachedEnd(task.getTaskID(), task.getContextID(), state);
 	}
 
 	/**
@@ -433,12 +411,10 @@ public class HostRuntimeImplementation extends UnicastRemoteObject implements
 	/**
 	 * @see cz.cuni.mff.been.hostruntime.HostRuntimeInterface#createTask(TaskDescriptor)
 	 */
-	public TaskInterface createTask(TaskDescriptor taskDescriptor)
-			throws HostRuntimeException, RemoteException {
+	public TaskInterface createTask(TaskDescriptor taskDescriptor) throws HostRuntimeException, RemoteException {
 		/* Check if we are initialized properly. */
 		if (taskManager == null) {
-			throw new IllegalStateException(
-					"Call \"initialize\" method before creating any task.");
+			throw new IllegalStateException("Call \"initialize\" method before creating any task.");
 		}
 
 		/*
@@ -446,9 +422,7 @@ public class HostRuntimeImplementation extends UnicastRemoteObject implements
 		 * TODO Maybe we should be more clever here and not try to locate the
 		 * reference every time...
 		 */
-		SoftwareRepositoryInterface softwareRepository = (SoftwareRepositoryInterface) taskManager
-				.serviceFind(SoftwareRepositoryService.SERVICE_NAME,
-						Service.RMI_MAIN_IFACE);
+		SoftwareRepositoryInterface softwareRepository = (SoftwareRepositoryInterface) taskManager.serviceFind(SoftwareRepositoryService.SERVICE_NAME, Service.RMI_MAIN_IFACE);
 		packageCacheManager.setSoftwareRepository(softwareRepository);
 
 		/* Create the task instance. */
@@ -459,13 +433,10 @@ public class HostRuntimeImplementation extends UnicastRemoteObject implements
 			// The other one is making sure only one running task does detailed
 			// load monitoring.
 			synchronized (runningTasksSync) {
-				boolean wantsDetailedLoad = taskDescriptor
-						.isSetLoadMonitoring() ? taskDescriptor
-						.getLoadMonitoring().isDetailedLoad() : false;
-				boolean measureDetailedLoad = wantsDetailedLoad
-						&& !runningTaskDoesDetailedMonitoring();
-				task = new TaskImplementation(taskDescriptor, this,
-						measureDetailedLoad);
+				boolean wantsDetailedLoad = taskDescriptor.isSetLoadMonitoring()
+						? taskDescriptor.getLoadMonitoring().isDetailedLoad() : false;
+				boolean measureDetailedLoad = wantsDetailedLoad && !runningTaskDoesDetailedMonitoring();
+				task = new TaskImplementation(taskDescriptor, this, measureDetailedLoad);
 				runningTasksSync.add(task);
 			}
 		} catch (TaskException e) {
@@ -478,34 +449,26 @@ public class HostRuntimeImplementation extends UnicastRemoteObject implements
 	/**
 	 * @see cz.cuni.mff.been.hostruntime.HostRuntimeInterface#deleteContext(java.lang.String)
 	 */
-	public void deleteContext(String contextID) throws HostRuntimeException,
-			RemoteException {
+	public void deleteContext(String contextID) throws HostRuntimeException, RemoteException {
 		// Check if there is a directory for given context.
-		String contextDir = rootDirectory + File.separator + TASKS_BASE_DIR
-				+ File.separator + contextID;
+		String contextDir = rootDirectory + File.separator + TASKS_BASE_DIR + File.separator + contextID;
 		if (!new File(contextDir).exists()) {
-			throw new IllegalArgumentException(
-					String.format(
-							"No task from context \"%s\" was run on this Host Runtime.",
-							contextID));
+			throw new IllegalArgumentException(String.format("No task from context \"%s\" was run on this Host Runtime.", contextID));
 		}
 
 		// Check if there is no task running from given context.
 		synchronized (runningTasksSync) {
 			for (TaskInterface task : runningTasksSync) {
 				if (task.getContextID().equals(contextID)) {
-					throw new IllegalArgumentException(String.format(
-							"Task \"%s\" from context \"%s\" is still running.",
-							task.getTaskID(), task.getContextID()));
+					throw new IllegalArgumentException(String.format("Task \"%s\" from context \"%s\" is still running.", task.getTaskID(), task.getContextID()));
 				}
 			}
 		}
 
 		// Just delete the closed context straight away.
 		try {
-			Delete.deleteDirectory(rootDirectory + File.separator
-					+ TASKS_BASE_DIR + File.separator + contextID);
-		} catch (AntTaskException e) {
+			FileUtils.deleteDirectory(new File(rootDirectory + File.separator + TASKS_BASE_DIR + File.separator + contextID));
+		} catch (IOException e) {
 			throw new HostRuntimeException(e);
 		}
 
@@ -525,8 +488,7 @@ public class HostRuntimeImplementation extends UnicastRemoteObject implements
 	/**
 	 * @see cz.cuni.mff.been.hostruntime.HostRuntimeInterface#setMaxPackageCacheSize(long)
 	 */
-	public void setMaxPackageCacheSize(long maxPackageCacheSize)
-			throws RemoteException {
+	public void setMaxPackageCacheSize(long maxPackageCacheSize) throws RemoteException {
 		packageCacheManager.setMaxCacheSize(maxPackageCacheSize);
 	}
 }

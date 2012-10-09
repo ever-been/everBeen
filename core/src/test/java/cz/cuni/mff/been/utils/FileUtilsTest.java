@@ -2,6 +2,7 @@ package cz.cuni.mff.been.utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.NoSuchFileException;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -29,21 +30,21 @@ public class FileUtilsTest extends Assert {
 	@Test
 	public void testDeleteExistingFile() throws Exception {
 		File f = File.createTempFile("test", null);
-		assertTrue(FileUtils.delete(f));
+		FileUtils.delete(f);
 		assertFalse(f.exists());
 	}
 
-	@Test
+	@Test(expected = NoSuchFileException.class)
 	public void testDeleteNonExistingFile() throws Exception {
 		File f = new File("non/existing/file");
-		assertFalse(FileUtils.delete(f));
+		FileUtils.delete(f);
 		assertFalse(f.exists());
 	}
 
 	@Test
 	public void testDeleteExistingEmptyFolder() throws Exception {
 		File dir = createTmpDir();
-		assertTrue(FileUtils.delete(dir));
+		FileUtils.delete(dir);
 		assertFalse(dir.exists());
 	}
 
@@ -52,12 +53,22 @@ public class FileUtilsTest extends Assert {
 		File dir = createTmpDir();
 		new File(dir, "subfolder/sobfolder2/subfolder3").mkdirs();
 		new File(dir, "subfolder/sobfolder2/subfolder3/file.txt").createNewFile();
-		assertTrue(FileUtils.delete(dir));
+		FileUtils.delete(dir);
 		assertFalse(dir.exists());
 	}
 
+	@Test(expected = IOException.class)
+	public void testDeleteFileThrowsFNFExceptionIfThePathDoesNotReferToAFile() throws Exception {
+		FileUtils.deleteFile(createTmpDir());
+	}
+	
+	@Test(expected = IOException.class)
+	public void testDeleteDirectoryThrowsFNFExceptionIfThePathDoesNotReferToAFolder() throws Exception {
+		FileUtils.deleteDirectory(File.createTempFile("testFile", null));
+	}
+
 	private File createTmpDir() throws IOException {
-		File unzipDestination = File.createTempFile("testExtractZipFile_", "_tmp");
+		File unzipDestination = File.createTempFile("testFile_", "_tmp");
 		unzipDestination.delete();
 		unzipDestination.mkdir();
 		return unzipDestination;
