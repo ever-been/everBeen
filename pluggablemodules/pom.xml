@@ -8,14 +8,42 @@
 
 	<modules>
 		<module>dummy</module>
+		<module>derby</module>
+		<module>derby_client</module>
 	</modules>
+
+	<dependencies>
+		<!-- LOGGING -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<scope>runtime</scope>
+			<version>${logback.version}</version>
+		</dependency>
+	</dependencies>
 
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- DEPENDENCY VERSION CONTROL -->
+		<derby.version>10.5.3.0_1</derby.version>
 		<been.version>2.1.0</been.version>
+		<log4j.version>1.2.12</log4j.version>
+		<logback.version>1.0.6</logback.version>
+		<slf4j.version>1.6.4</slf4j.version>
 
 		<!-- JAVA COMPILER VERSION CONTROL -->
 		<java-source.version>1.6</java-source.version>
@@ -24,15 +52,6 @@
 		<!-- PLUGIN VERSION CONTROL -->
 		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
 	</properties>
-
-	<dependencies>
-		<!-- BEEN DEPENDENCIES -->
-		<dependency>
-			<groupId>cz.cuni.mff.d3s.been</groupId>
-			<artifactId>service_interfaces</artifactId>
-			<version>${been.version}</version>
-		</dependency>
-	</dependencies>
 
 	<build>
 		<plugins>

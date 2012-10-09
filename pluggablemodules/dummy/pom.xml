@@ -50,7 +50,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<humanName>Command Line Interface</humanName>
+					<humanName>Dummy Pluggable Module</humanName>
 					<packageJarFile>${project.build.directory}/${project.build.finalName}.jar</packageJarFile>
 					<mainClassName>cz.cuni.mff.been.pluggablemodule.dummy.implementation.DummyPluggableModuleImpl</mainClassName>
 					<finalName>${project.build.finalName}</finalName>
@@ -67,7 +67,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
-
-
 </project>

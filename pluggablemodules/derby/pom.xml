@@ -1,0 +1,119 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>pluggablemodule-derby</artifactId>
+	<packaging>jar</packaging>
+	<name>pluggablemodule-derby</name>
+
+	<parent>
+		<groupId>cz.cuni.mff.d3s.been.pluggablemodules</groupId>
+		<artifactId>pluggablemodules</artifactId>
+		<version>2.1.0</version>
+	</parent>
+
+	<dependencies>
+		<!-- BEEN DEPENDENCIES -->
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>service_interfaces</artifactId>
+			<version>${been.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>core</artifactId>
+			<version>${been.version}</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.apache.derby</groupId>
+			<artifactId>derbynet</artifactId>
+			<version>${derby.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.derby</groupId>
+			<artifactId>derby</artifactId>
+			<version>${derby.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.derby</groupId>
+			<artifactId>derbytools</artifactId>
+			<version>${derby.version}</version>
+		</dependency>
+	</dependencies>
+
+
+	<build>
+		<finalName>pluggablemodule-derby</finalName>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.5.1</version>
+				<configuration>
+					<source>${java-source.version}</source>
+					<target>${java-target.version}</target>
+				</configuration>
+			</plugin>
+
+			<!-- CREATE STANDALONE ONE-JAR -->
+			<plugin>
+				<groupId>org.dstovall</groupId>
+				<artifactId>onejar-maven-plugin</artifactId>
+				<version>1.4.4</version>
+				<executions>
+					<execution>
+						<configuration>
+							<onejarVersion>0.97</onejarVersion>
+							<attachToBuild>true</attachToBuild>
+							<classifier>onejar</classifier>
+						</configuration>
+						<goals>
+							<goal>one-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+
+			<!-- AND NOW WE WANT TO CREATE BPK PACKAGE -->
+			<plugin>
+				<groupId>cz.cuni.mff.d3s.been</groupId>
+				<artifactId>bpk-plugin</artifactId>
+				<version>${project.parent.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>buildpackage</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<humanName>Apache Derby DB pluggable module</humanName>
+					<packageJarFile>${project.build.directory}/${project.build.finalName}.one-jar.jar</packageJarFile>
+					<mainClassName>cz.cuni.mff.been.pluggablemodule.derby.implementation.DerbyPluggableModuleImpl</mainClassName>
+					<finalName>${project.build.finalName}</finalName>
+					<filesToArchive>
+					</filesToArchive>
+
+					<type>module</type>
+					<module>
+						<interfaces>
+							<interface>cz.cuni.mff.been.pluggablemodule.derby.DerbyPluggableModule</interface>
+						</interfaces>
+					</module>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>onejar-maven-plugin.googlecode.com</id>
+			<url>http://onejar-maven-plugin.googlecode.com/svn/mavenrepo</url>
+		</pluginRepository>
+	</pluginRepositories>
+
+</project>
