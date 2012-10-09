@@ -27,8 +27,14 @@
 		</dependency>
 
 		<dependency>
-			<groupId>cz.cuni.mff.d3s.been</groupId>
-			<artifactId>pluggablemodule</artifactId>
+			<groupId>cz.cuni.mff.d3s.been.pluggablemodules</groupId>
+			<artifactId>pluggablemodule-hibernate</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been.pluggablemodules</groupId>
+			<artifactId>pluggablemodule-derby</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 
