@@ -40,7 +40,7 @@
 
 
 	<build>
-		<finalName>pluggablemodule-derby_client</finalName>
+		<finalName>derbyclient</finalName>
 
 		<plugins>
 			<plugin>
