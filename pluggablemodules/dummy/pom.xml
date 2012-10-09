@@ -11,12 +11,8 @@
 	</parent>
 
 	<dependencies>
-		<!-- BEEN DEPENDENCIES -->
-		<dependency>
-			<groupId>cz.cuni.mff.d3s.been</groupId>
-			<artifactId>service_interfaces</artifactId>
-			<version>${been.version}</version>
-		</dependency>
+
+
 	</dependencies>
 
 

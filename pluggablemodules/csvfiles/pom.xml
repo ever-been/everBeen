@@ -1,8 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>pluggablemodule-hibernate</artifactId>
+	<artifactId>pluggablemodule-csvfiles</artifactId>
 	<packaging>jar</packaging>
-	<name>pluggablemodule-hibernate</name>
+	<name>pluggablemodule-csvfiles</name>
 
 	<parent>
 		<groupId>cz.cuni.mff.d3s.been.pluggablemodules</groupId>
@@ -12,22 +12,15 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-annotations</artifactId>
-			<version>${hibernate.version}</version>
+			<groupId>net.sf.opencsv</groupId>
+			<artifactId>opencsv</artifactId>
+			<version>${opencsv.version}</version>
 		</dependency>
-
-		<dependency>
-			<groupId>javax.transaction</groupId>
-			<artifactId>jta</artifactId>
-			<version>${javax.version}</version>
-		</dependency>
-
 	</dependencies>
 
 
 	<build>
-		<finalName>hibernate</finalName>
+		<finalName>csvfiles</finalName>
 
 		<plugins>
 			<plugin>
@@ -73,9 +66,9 @@
 					</execution>
 				</executions>
 				<configuration>
-					<humanName>Hibernate pluggable module</humanName>
+					<humanName>CSV Files pluggable module</humanName>
 					<packageJarFile>${project.build.directory}/${project.build.finalName}.one-jar.jar</packageJarFile>
-					<mainClassName>cz.cuni.mff.been.pluggablemodule.hibernate.implementation.HibernatePluggableModuleImpl</mainClassName>
+					<mainClassName>cz.cuni.mff.been.pluggablemodule.csvfiles.implementation.CSVFilesPluggableModuleImpl</mainClassName>
 					<finalName>${project.build.finalName}</finalName>
 					<filesToArchive>
 					</filesToArchive>
@@ -83,14 +76,8 @@
 					<type>module</type>
 					<module>
 						<interfaces>
-							<interface>cz.cuni.mff.been.pluggablemodule.hibernate.HibernatePluggableModule</interface>
+							<interface>cz.cuni.mff.been.pluggablemodule.csvfiles.CSVFilesPluggableModule</interface>
 						</interfaces>
-						<dependencies>
-							<dependency>
-								<name>derby</name>
-								<version>${project.parent.version}</version>
-							</dependency>
-						</dependencies>
 					</module>
 				</configuration>
 			</plugin>
@@ -103,4 +90,5 @@
 			<url>http://onejar-maven-plugin.googlecode.com/svn/mavenrepo</url>
 		</pluginRepository>
 	</pluginRepositories>
+
 </project>

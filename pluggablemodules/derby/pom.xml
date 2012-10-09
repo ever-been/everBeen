@@ -11,19 +11,6 @@
 	</parent>
 
 	<dependencies>
-		<!-- BEEN DEPENDENCIES -->
-		<dependency>
-			<groupId>cz.cuni.mff.d3s.been</groupId>
-			<artifactId>service_interfaces</artifactId>
-			<version>${been.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>cz.cuni.mff.d3s.been</groupId>
-			<artifactId>core</artifactId>
-			<version>${been.version}</version>
-		</dependency>
-
-
 		<dependency>
 			<groupId>org.apache.derby</groupId>
 			<artifactId>derbynet</artifactId>

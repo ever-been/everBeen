@@ -38,11 +38,6 @@
             <artifactId>softwarerepository</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
-        <dependency>
-            <groupId>cz.cuni.mff.d3s.been</groupId>
-            <artifactId>pluggablemodule</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
 	</dependencies>
 
 	<build>
