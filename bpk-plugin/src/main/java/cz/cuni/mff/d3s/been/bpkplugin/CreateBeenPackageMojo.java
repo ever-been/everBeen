@@ -324,7 +324,7 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 					log.info("    PROVIDES INTERFACE " + iface);
 					builder.append("\t\t<providedInterface>");
 					builder.append(iface);
-					builder.append("<providedInterface>");
+					builder.append("</providedInterface>");
 				}
 				builder.append("\n\t</providedInterfaces>\n");
 			} else {
