@@ -39,11 +39,7 @@
             <artifactId>resultsrepository</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
-        <dependency>
-            <groupId>cz.cuni.mff.d3s.been</groupId>
-            <artifactId>cline_interface</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
+
         <dependency>
             <groupId>cz.cuni.mff.d3s.been</groupId>
             <artifactId>debug_assistant</artifactId>
@@ -54,6 +50,11 @@
             <artifactId>benchmarkmanager</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>cline_interface</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>

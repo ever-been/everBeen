@@ -64,6 +64,7 @@
 					<target>${java-target.version}</target>
 				</configuration>
 			</plugin>
+
 			<!-- CREATE STANDALONE ONE-JAR -->
 			<plugin>
 				<groupId>org.dstovall</groupId>
@@ -96,7 +97,7 @@
 				</executions>
 				<configuration>
 					<humanName>Command Line Interface</humanName>
-					<packageJarFile>${project.build.directory}/${project.build.finalName}.one-jar.jar</packageJarFile>
+					<packageJarFile>${project.build.directory}/${project.build.finalName}.jar</packageJarFile>
 					<mainClassName>cz.cuni.mff.been.clinterface.CommandLineService</mainClassName>
 					<finalName>${project.build.finalName}</finalName>
 					<filesToArchive>

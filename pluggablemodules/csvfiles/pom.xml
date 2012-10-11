@@ -79,6 +79,32 @@
 					</module>
 				</configuration>
 			</plugin>
+
+			<!-- NOW COPY THE BPK TO SOFTWARE REPOSITORY BOOTSTRAP FOLDER -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>${maven-resources-plugin.version}</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.parent.basedir}/../data/softwarerepository</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${project.basedir}/target/</directory>
+									<includes>
+										<include>*.bpk</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 

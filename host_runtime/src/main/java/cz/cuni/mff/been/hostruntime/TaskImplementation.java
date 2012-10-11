@@ -577,19 +577,61 @@ public class TaskImplementation extends UnicastRemoteObject implements TaskInter
 			// Define the directory for the XSD files used by JAXB.
 			result.add("-D" + XSDRoot.XSD_ROOT + '=' + taskDirectory);
 
+
+			result.add("-Done-jar.main.class=cz.cuni.mff.been.hostruntime.TaskLoader");
+
+
+
 			// Now comes constructing the class path.
 			// We start with our class path.
 			String taskClassPath = System.getProperty("java.class.path");
+
+
 			// The task directory can contain additional classes.
 			taskClassPath += File.pathSeparatorChar + taskDirectory;
+
+
+
 			// The task configuration contains class path as well.
 			if (taskPackageConfiguration.getTaskLanguage() == PackageConfiguration.TaskLanguage.JAVA) {
 				taskClassPath += File.pathSeparatorChar + taskPackageConfiguration.getJavaClassPath();
 			} else if (taskPackageConfiguration.getTaskLanguage() == PackageConfiguration.TaskLanguage.JYTHON) {
 				taskClassPath += File.pathSeparatorChar + taskPackageConfiguration.getJythonClassPath();
 			}
-			result.add("-cp");
-			result.add(taskClassPath);
+
+
+			StringBuilder onePaths = new StringBuilder();
+			onePaths.append("-Done-jar.class.path=");
+
+			String[] paths = taskClassPath.split(":");
+			int hostruntimeOneJarIndex = -1;
+
+			for (int i = 0; i < paths.length; ++i) {
+				if (paths[i].contains("host_runtime.one-jar.jar") && i != -1) {
+					hostruntimeOneJarIndex = i;
+				}
+				if (i != 0) {
+					onePaths.append("|");
+				}
+				onePaths.append(paths[i]);
+
+			}
+
+			result.add(onePaths.toString());
+
+
+			//result.add("-cp");
+			//result.add(taskClassPath);
+
+			//result.add("-Done-jar.verbose=true");
+			//result.add("-Done-jar.info=true");
+
+			if (hostruntimeOneJarIndex != -1) {
+				result.add("-jar");
+				result.add(paths[hostruntimeOneJarIndex]);
+			} else {
+				logger.error("Cannot find one-jar of the hostruntime!");
+			}
 
 			// The class that is started inside the virtual machine depends on
 			// what code we want to start.
@@ -607,7 +649,11 @@ public class TaskImplementation extends UnicastRemoteObject implements TaskInter
 				taskLoaderClass = JythonTaskLoader.class.getName();
 				taskLoaderArgument = taskPackageConfiguration.getJythonScriptFile();
 			}
-			result.add(taskLoaderClass);
+
+
+
+
+			//result.add(taskLoaderClass);
 			result.add(taskLoaderArgument);
 
 			// Finally, any additional command line arguments that the task
@@ -748,6 +794,12 @@ public class TaskImplementation extends UnicastRemoteObject implements TaskInter
 				List<String> commandLineList = buildCommandLine();
 				String[] commandLineArray = commandLineList.toArray(new String[commandLineList.size()]);
 
+				System.out.println("COMMAND LINE IS: ");
+				for (String token: commandLineArray) {
+					System.out.println("\t" + token);
+				}
+
+
 				// TODO Before rewrite, the load monitor was initialized and
 				// terminated for each execution.
 				// There did not seem to be any particular reason for that, so
@@ -827,7 +879,7 @@ public class TaskImplementation extends UnicastRemoteObject implements TaskInter
 					errorProcessor = null;
 
 					// The task temporary directory is deleted immediately.
-					FileUtils.deleteDirectory(new File(temporaryDirectory));
+					FileUtils.safeDeleteDirectory(new File(temporaryDirectory));
 
 					// See whether the task was executed successfully.
 					wasSuccessful = (exitValue == 0) && (!processTimedOut) && (!processKilled);
@@ -839,7 +891,7 @@ public class TaskImplementation extends UnicastRemoteObject implements TaskInter
 				flushLocalLogStorage();
 
 				// The task directory is deleted when the task will not execute.
-				FileUtils.deleteDirectory(new File(taskDirectory));
+				FileUtils.safeDeleteDirectory(new File(taskDirectory));
 
 				// The ordering of the final notifications is tricky !
 				// First, the task has to be marked as no longer running to
@@ -889,12 +941,8 @@ public class TaskImplementation extends UnicastRemoteObject implements TaskInter
 			// of the same task.
 			// It must be deleted so that it does not interfere with package
 			// installation.
-			try {
-				FileUtils.deleteDirectory(new File(taskDirectory));
-			} catch (IOException e) {
-				// this exception has been ignored in original BEEN? SO it is possible that it can be expected... ???
-				logger.error("Exception occured while deleting taskdirectoru '" + taskDirectory + "'", e);
-			}
+			FileUtils.safeDeleteDirectory(new File(taskDirectory));
+
 		} catch (IOException e) {
 			throw new TaskException(e);
 		}

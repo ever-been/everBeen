@@ -87,12 +87,12 @@ public class ResultsRepositoryService extends Service {
 		try {
 			derbyPluggableModule = (DerbyPluggableModule) CurrentTaskSingleton
 					.getTaskHandle().getPluggableModuleManager()
-					.getModule(new PluggableModuleDescriptor("derby", "1.0"));
+					.getModule(new PluggableModuleDescriptor("derby", "2.1.0"));
 			hibernatePluggableModule = (HibernatePluggableModule) CurrentTaskSingleton
 					.getTaskHandle()
 					.getPluggableModuleManager()
 					.getModule(
-							new PluggableModuleDescriptor("hibernate", "1.0"));
+							new PluggableModuleDescriptor("hibernate", "2.1.0"));
 		} catch (PluggableModuleException e) {
 			logError("Error during Results Repository startup: "
 					+ e.getMessage());

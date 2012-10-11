@@ -939,7 +939,7 @@ public final class BenchmarkManagerImplementation extends UnicastRemoteObject
 		}
 
 		String moduleName = "hibernate";
-		String moduleVersion = "1.0";
+		String moduleVersion = "2.1.0";
 		PluggableModule m;
 		HibernatePluggableModule hibernateModule = null;
 
@@ -997,7 +997,7 @@ public final class BenchmarkManagerImplementation extends UnicastRemoteObject
 		}
 
 		String moduleName = "derby";
-		String moduleVersion = "1.0";
+		String moduleVersion = "2.1.0";
 		PluggableModule m;
 
 		logInfo("Initialising database...");

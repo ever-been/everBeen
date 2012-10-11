@@ -48,6 +48,8 @@ import cz.cuni.mff.been.pluggablemodule.jaxb.SelfContainedParser;
 import cz.cuni.mff.been.softwarerepository.PackageType;
 import cz.cuni.mff.been.utils.FileUtils;
 
+import cz.cuni.mff.been.softwarerepository.PackageNames;
+
 /**
  * Provides the pluggable module functionality (basic work with pluggable 
  * modules - retrieving & instantiating).
@@ -55,9 +57,6 @@ import cz.cuni.mff.been.utils.FileUtils;
  * @author Jan Tattermusch
  */
 public class PluggableModuleManagerImpl implements PluggableModuleManager {
-
-    /** Name of pluggable module's config file. */
-    public static final String CONFIG_FILE_NAME = "config.xml";
     
     /** An XML parser for pluggable module configuration files. */
     private final BindingParser<PluggableModuleConfiguration> parser;
@@ -192,7 +191,9 @@ public class PluggableModuleManagerImpl implements PluggableModuleManager {
     			ClassPathItems classPathItems = java.getClasspathItems();
     			if (classPathItems.isSetClasspathItem()) {
     				for (String filename : classPathItems.getClasspathItem()) {
-    					File file = new File(getModulePath(moduleDescriptor) + File.separator + filename);
+
+						//TODO after migartion to bpk-plugin "files/" mysteriously disappeared ...
+    					File file = new File(getModulePath(moduleDescriptor) + File.separator + PackageNames.FILES_DIR + File.separator + filename);
     					if (!file.exists()) {
     						throw new PluggableModuleException(
     							"Tried to add nonexistent file to system classpath."
@@ -225,7 +226,7 @@ public class PluggableModuleManagerImpl implements PluggableModuleManager {
     private void loadJarFile(File file) throws MalformedURLException {
     	
     		String fileURL = "file:" + file.getAbsolutePath();
-    		classLoader.addURL( new URL(fileURL) );	
+    		classLoader.addURL( new URL(fileURL) );
         
     }
 
@@ -281,7 +282,7 @@ public class PluggableModuleManagerImpl implements PluggableModuleManager {
      * @return file with module's configuration.
      */
     private File getModuleConfigFile(PluggableModuleDescriptor moduleDescriptor) {
-        String path = getModulePath(moduleDescriptor) + File.separator + CONFIG_FILE_NAME;
+        String path = getModulePath(moduleDescriptor) + File.separator + PackageNames.CONFIG_FILE;
         return new File(path);
     }
 
