@@ -15,6 +15,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
+import static cz.cuni.mff.been.softwarerepository.PackageNames.*;
 
 /*
  * Mojo plugin development is comment-annotation driven. 
@@ -191,7 +192,7 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 	}
 
 	private FileToArchive generateConfigXmlFile() {
-		String nameInBpk = "config.xml";
+		String nameInBpk = CONFIG_FILE;
 
 		if (type.equals("task")) {
 			return generateTaskConfigXmlFile(nameInBpk);
@@ -278,7 +279,7 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 	}
 
 	private FileToArchive generateMetadataXmlFile() {
-		String nameInBpk = "metadata.xml";
+		String nameInBpk = METADATA_FILE;
 
 		if (type.equals("task")) {
 			return generateTaskMetadataXmlFile(nameInBpk);
@@ -324,7 +325,7 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 					log.info("    PROVIDES INTERFACE " + iface);
 					builder.append("\t\t<providedInterface>");
 					builder.append(iface);
-					builder.append("<providedInterface>");
+					builder.append("</providedInterface>");
 				}
 				builder.append("\n\t</providedInterfaces>\n");
 			} else {
@@ -347,14 +348,14 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 	}
 
 	private FileToArchive createFileToArchiveFromPackageJar() {
-		String nameInBpk = "files/" + packageJarFile.getName();
+		String nameInBpk = FILES_DIR + "/" + packageJarFile.getName();
 		log.info("    WILL BE ADDED: '" + packageJarFile.getAbsolutePath()
 				+ "' -> '" + nameInBpk + "'");
 		return new FileToArchive(nameInBpk, packageJarFile);
 	}
 
 	private File createEmptyBpkFile() {
-		return new File(buildDirectory, finalName + ".bpk");
+		return new File(buildDirectory, finalName + FILE_SUFFIX);
 	}
 
 	private void logStart() {

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import static cz.cuni.mff.been.softwarerepository.PackageNames.FILES_DIR;
 
 /**
  * This util is designed onaly and only to create simple Zip archive of
@@ -32,7 +33,10 @@ final class ZipUtil {
 	public void createZip(List<FileToArchive> files, File output) throws IOException {
 		// initialize 
 		ZipOutputStream out = new ZipOutputStream(new FileOutputStream(output));
-		
+
+		// The directory entry must be present in the zip file
+		out.putNextEntry(new ZipEntry(FILES_DIR + "/"));
+
 		// fill archive
 		addFilesToZip(files, out);
 		
