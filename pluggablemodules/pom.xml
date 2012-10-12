@@ -54,8 +54,8 @@
 		<opencsv.version>2.0</opencsv.version>
 
 		<!-- JAVA COMPILER VERSION CONTROL -->
-		<java-source.version>1.6</java-source.version>
-		<java-target.version>1.6</java-target.version>
+		<java-source.version>1.7</java-source.version>
+		<java-target.version>1.7</java-target.version>
 
 		<!-- PLUGIN VERSION CONTROL -->
 		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>

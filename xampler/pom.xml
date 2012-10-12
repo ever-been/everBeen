@@ -22,6 +22,8 @@
 		<been.version>2.1.0</been.version>
 		<xampler.version>2.1.0</xampler.version>
 		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
+		<java-source.version>1.7</java-source.version>
+		<java-target.version>1.7</java-target.version>
 	</properties>
 
 	<dependencies>
