@@ -11,7 +11,10 @@
 		<module>generator</module>
 		<module>generator-svn</module>
 		<module>generator-swrep</module>
-		<module>task-execute</module>
+
+		<!-- missing chmod -->
+		<!-- <module>task-execute</module> -->
+
 		<module>task-deploy</module>
 		<module>task-collectresults</module>
 		<module>task-build-linux</module>
@@ -41,11 +44,6 @@
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
 			<artifactId>resultsrepository</artifactId>
-			<version>${been.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>cz.cuni.mff.d3s.been</groupId>
-			<artifactId>pluggablemodule-fileagent</artifactId>
 			<version>${been.version}</version>
 		</dependency>
 	</dependencies>

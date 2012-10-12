@@ -11,13 +11,20 @@
 		<module>fileexport</module>
 		<module>r</module>
 		<module>simple_test</module>
-		<module>download_cvs</module>
-		<module>download_svn</module>
+
+		<!-- missing ant.cvs -->
+		<!-- <module>download_cvs</module> -->
+
+		<!-- missing tar -->
+		<!-- <module>download_svn</module> -->
+
+		<!-- missing tar, untar -->
+		<!-- <module>omniorb</module> -->
+
+		<module>logtester</module>
 		<module>jythonscript</module>
 		<module>shellscript</module>
-		<module>logtester</module>
 		<module>testworker</module>
-		<module>omniorb</module>
 	</modules>
 
 
@@ -27,6 +34,7 @@
 		<!-- DEPENDENCY VERSION CONTROL -->
 		<been.version>2.1.0</been.version>
 		<javasvn.version>1.0.4</javasvn.version>
+		<opencsv.version>2.0</opencsv.version>
 
 		<!-- JAVA COMPILER VERSION CONTROL -->
 		<java-source.version>1.7</java-source.version>

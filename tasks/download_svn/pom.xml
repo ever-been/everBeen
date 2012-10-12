@@ -13,7 +13,7 @@
 	<dependencies>
 		<!-- BEEN DEPENDENCIES -->
 		<dependency>
-			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<groupId>cz.cuni.mff.d3s.been.pluggablemodules</groupId>
 			<artifactId>pluggablemodule-fileagent</artifactId>
 			<version>${been.version}</version>
 		</dependency>
