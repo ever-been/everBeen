@@ -8,6 +8,7 @@
 
 	<modules>
 		<module>context_monitor</module>
+		<module>generator_runner</module>
 		<module>fileexport</module>
 		<module>r</module>
 		<module>simple_test</module>
@@ -42,6 +43,7 @@
 
 		<!-- PLUGIN VERSION CONTROL -->
 		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
+		<maven-resources-plugin.version>2.6</maven-resources-plugin.version>
 	</properties>
 
 	<dependencies>
