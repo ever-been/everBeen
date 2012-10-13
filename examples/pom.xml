@@ -23,6 +23,7 @@
 		<java-source.version>1.7</java-source.version>
 		<java-target.version>1.7</java-target.version>
 		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
+		<maven-resources-plugin.version>2.6</maven-resources-plugin.version>
 	</properties>
 
 	<dependencies>
