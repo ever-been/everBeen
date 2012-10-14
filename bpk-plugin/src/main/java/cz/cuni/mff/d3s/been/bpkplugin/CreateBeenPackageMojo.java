@@ -3,6 +3,7 @@ package cz.cuni.mff.d3s.been.bpkplugin;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static cz.cuni.mff.been.jaxb.Factory.PMC;
@@ -174,10 +175,13 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 
 		try {
 			List<FileToArchive> files = new ArrayList<FileToArchive>();
-			// generace
+			// generate
 			files.add(createFileToArchiveFromPackageJar());
 			files.add(generateConfigXmlFile());
 			files.add(generateMetadataXmlFile());
+
+			generateModuleModuleConfigXmlFile(files);
+
 
 			for (FileItem fitem : filesToArchive) {
 				files.addAll(fitem.getFilesToArchive(log));
@@ -276,6 +280,18 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 			log.error(e);
 			return null;
 		}
+	}
+
+	private void generateModuleModuleConfigXmlFile(Collection<FileToArchive> collection) {
+		String nameInBpk = "module-config.xml";
+		if (type.equals("module") && module.config != null) {
+			collection.add(new FileToArchive(nameInBpk, new File(module.config)));
+		} else {
+			log.info("MODULE DOES NOT INCLUDE module-config.xml");
+
+		}
+
+
 	}
 
 	private FileToArchive generateMetadataXmlFile() {

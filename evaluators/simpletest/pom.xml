@@ -27,4 +27,68 @@
 		</dependency>
 	</dependencies>
 
+
+	<build>
+		<plugins>
+			<!-- AND NOW WE WANT TO CREATE BPK PACKAGE -->
+			<plugin>
+				<groupId>cz.cuni.mff.d3s.been</groupId>
+				<artifactId>bpk-plugin</artifactId>
+				<version>${been.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>buildpackage</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<humanName>SimpleTest Evaluator Pluggable Module</humanName>
+					<packageJarFile>${project.build.directory}/${project.build.finalName}.jar</packageJarFile>
+					<mainClassName>cz.cuni.mff.been.benchmarkmanagerng.module.evaluator.simpletest.SimpleTestEvaluator</mainClassName>
+					<name>evaluator-simpletest</name>
+					<filesToArchive>
+					</filesToArchive>
+
+					<type>module</type>
+					<module>
+						<config>${pom.basedir}/src/main/resources/module-config.xml</config>
+						<interfaces>
+							<interface>cz.cuni.mff.been.benchmarkmanagerng.module.ModuleInterface</interface>
+							<interface>cz.cuni.mff.been.benchmarkmanagerng.module.EvaluatorInterface</interface>
+						</interfaces>
+					</module>
+
+				</configuration>
+			</plugin>
+
+			<!-- NOW COPY THE BPK TO SOFTWARE REPOSITORY BOOTSTRAP FOLDER -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>${maven-resources-plugin.version}</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.parent.basedir}/../data/softwarerepository</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${project.basedir}/target/</directory>
+									<includes>
+										<include>*.bpk</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+	</build>
+
 </project>

@@ -27,6 +27,7 @@ package cz.cuni.mff.been.resultsrepositoryng.implementation;
 
 import java.util.UUID;
 
+import cz.cuni.mff.been.task.CurrentTaskSingleton;
 import org.objectweb.asm.Attribute;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.CodeVisitor;
@@ -288,6 +289,10 @@ class EntityClassFactory {
 	 *
 	 */
 	private static class EntityClassLoader extends ClassLoader {
+
+		public EntityClassLoader() {
+			super(EntityClassLoader.class.getClassLoader());
+		}
 		
 		public Class<?> loadClass(byte[] bytecode) {
 			Class<?> result = this.defineClass(null, bytecode, 0, bytecode.length, null);
