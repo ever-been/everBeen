@@ -55,7 +55,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<humanName>Demo Shell Task (linux)</humanName>
+					<humanName>Example task</humanName>
 					<packageJarFile>${project.build.directory}/${project.build.finalName}.one-jar.jar</packageJarFile>
 					<mainClassName>cz.cuni.mff.been.task.example.task1.Example1Task</mainClassName>
 					<name>example-task</name>

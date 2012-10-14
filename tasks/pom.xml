@@ -9,9 +9,14 @@
 	<modules>
 		<module>context_monitor</module>
 		<module>generator_runner</module>
+		<module>shellscript</module>
 		<module>fileexport</module>
 		<module>r</module>
 		<module>simple_test</module>
+		<module>logtester</module>
+		<module>jythonscript</module>
+		<module>testworker</module>
+
 
 		<!-- missing ant.cvs -->
 		<!-- <module>download_cvs</module> -->
@@ -22,10 +27,6 @@
 		<!-- missing tar, untar -->
 		<!-- <module>omniorb</module> -->
 
-		<module>logtester</module>
-		<module>jythonscript</module>
-		<module>shellscript</module>
-		<module>testworker</module>
 	</modules>
 
 
