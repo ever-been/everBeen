@@ -73,9 +73,9 @@ public class HibernateDemoTask extends Job {
         
         try {
         	derbyModule = 
-        		(DerbyPluggableModule) manager.getModule( new PluggableModuleDescriptor( "derby", "1.0") );
+        		(DerbyPluggableModule) manager.getModule( new PluggableModuleDescriptor( "derby", "2.1.0") );
         	hibernateModule = 
-        		(HibernatePluggableModule) manager.getModule( new PluggableModuleDescriptor( "hibernate", "1.0") );
+        		(HibernatePluggableModule) manager.getModule( new PluggableModuleDescriptor( "hibernate", "2.1.0") );
         	
         } catch (PluggableModuleException ex) {
             throw new TaskException("Error loading pluggable module.", ex);

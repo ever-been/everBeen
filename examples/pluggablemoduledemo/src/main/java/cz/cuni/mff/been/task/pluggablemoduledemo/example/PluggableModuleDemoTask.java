@@ -63,7 +63,7 @@ public class PluggableModuleDemoTask extends Job {
     protected void run() throws TaskException {
 
         String moduleName = "derby";
-        String moduleVersion = "1.0";
+        String moduleVersion = "2.1.0";
 
         logInfo("Loading module \"" + moduleName + "\"...");
 

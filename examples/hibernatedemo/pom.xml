@@ -23,5 +23,59 @@
 		</dependency>
     </dependencies>
 
+	<build>
+		<plugins>
+			<!-- AND NOW WE WANT TO CREATE BPK PACKAGE -->
+			<plugin>
+				<groupId>cz.cuni.mff.d3s.been</groupId>
+				<artifactId>bpk-plugin</artifactId>
+				<version>${been.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>buildpackage</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<humanName>Hibernate demonstration task</humanName>
+					<packageJarFile>${project.build.directory}/${project.build.finalName}.jar</packageJarFile>
+					<mainClassName>cz.cuni.mff.been.task.example.hibernatedemo.HibernateDemoTask</mainClassName>
+					<name>demo-hibernate</name>
+
+					<filesToArchive>
+					</filesToArchive>
+
+				</configuration>
+			</plugin>
+
+			<!-- NOW COPY THE BPK TO SOFTWARE REPOSITORY BOOTSTRAP FOLDER -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>${maven-resources-plugin.version}</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.parent.basedir}/../data/softwarerepository</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${project.basedir}/target/</directory>
+									<includes>
+										<include>*.bpk</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
 
 </project>
