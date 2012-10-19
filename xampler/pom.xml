@@ -11,7 +11,10 @@
 		<module>generator</module>
 		<module>generator-svn</module>
 		<module>generator-swrep</module>
-		<module>task-execute</module>
+
+		<!-- missing chmod -->
+		<!-- <module>task-execute</module> -->
+
 		<module>task-deploy</module>
 		<module>task-collectresults</module>
 		<module>task-build-linux</module>
@@ -22,6 +25,8 @@
 		<been.version>2.1.0</been.version>
 		<xampler.version>2.1.0</xampler.version>
 		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
+		<java-source.version>1.7</java-source.version>
+		<java-target.version>1.7</java-target.version>
 	</properties>
 
 	<dependencies>
@@ -39,11 +44,6 @@
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
 			<artifactId>resultsrepository</artifactId>
-			<version>${been.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>cz.cuni.mff.d3s.been</groupId>
-			<artifactId>pluggablemodule-fileagent</artifactId>
 			<version>${been.version}</version>
 		</dependency>
 	</dependencies>

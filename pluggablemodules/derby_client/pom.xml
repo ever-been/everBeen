@@ -11,14 +11,6 @@
 	</parent>
 
 	<dependencies>
-		<!-- BEEN DEPENDENCIES -->
-		<dependency>
-			<groupId>cz.cuni.mff.d3s.been</groupId>
-			<artifactId>service_interfaces</artifactId>
-			<version>${been.version}</version>
-		</dependency>
-
-
 		<dependency>
 			<groupId>org.apache.derby</groupId>
 			<artifactId>derbynet</artifactId>
@@ -40,8 +32,6 @@
 
 
 	<build>
-		<finalName>derbyclient</finalName>
-
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -89,7 +79,7 @@
 					<humanName>Apache Derby DB client pluggable module</humanName>
 					<packageJarFile>${project.build.directory}/${project.build.finalName}.one-jar.jar</packageJarFile>
 					<mainClassName>cz.cuni.mff.been.pluggablemodule.derby.client.implementation.DerbyPluggableModuleClientImpl</mainClassName>
-					<finalName>${project.build.finalName}</finalName>
+					<name>derbyclient</name>
 					<filesToArchive>
 					</filesToArchive>
 
@@ -100,6 +90,32 @@
 						</interfaces>
 					</module>
 				</configuration>
+			</plugin>
+
+			<!-- NOW COPY THE BPK TO SOFTWARE REPOSITORY BOOTSTRAP FOLDER -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>${maven-resources-plugin.version}</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.parent.basedir}/../data/softwarerepository</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${project.basedir}/target/</directory>
+									<includes>
+										<include>*.bpk</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

@@ -28,6 +28,14 @@ public final class BpkModuleConfig {
 	public List<BpkModuleDependency> dependencies;
 
 
+	/**
+	 * Contentet of the file will be in module-config.xml
+	 *
+	 * @parameter
+	 */
+	public String config;
+
+
 
 
 

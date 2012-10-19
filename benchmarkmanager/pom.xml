@@ -38,11 +38,17 @@
             <artifactId>softwarerepository</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
-        <dependency>
-            <groupId>cz.cuni.mff.d3s.been</groupId>
-            <artifactId>pluggablemodule</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
+
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been.pluggablemodules</groupId>
+			<artifactId>pluggablemodule-derby</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been.pluggablemodules</groupId>
+			<artifactId>pluggablemodule-hibernate</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -89,7 +95,7 @@
 				</executions>
 				<configuration>
 					<humanName>Benchmark Manager</humanName>
-					<packageJarFile>${project.build.directory}/${project.build.finalName}.one-jar.jar</packageJarFile>
+					<packageJarFile>${project.build.directory}/${project.build.finalName}.jar</packageJarFile>
 					<mainClassName>cz.cuni.mff.been.benchmarkmanagerng.BenchmarkManagerService</mainClassName>
 					<finalName>${project.build.finalName}</finalName>
 					<filesToArchive>
@@ -111,6 +117,32 @@
 						</fileItem>
 					</filesToArchive>
 				</configuration>
+			</plugin>
+
+			<!-- NOW COPY THE BPK TO HOST RUNTIME'S BOOT TASK FOLDER -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>${maven-resources-plugin.version}</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.parent.basedir}/data/hostruntime/boot</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${project.basedir}/target/</directory>
+									<includes>
+										<include>*.bpk</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

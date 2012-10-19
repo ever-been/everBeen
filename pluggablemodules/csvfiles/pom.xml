@@ -1,0 +1,118 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>pluggablemodule-csvfiles</artifactId>
+	<packaging>jar</packaging>
+	<name>pluggablemodule-csvfiles</name>
+
+	<parent>
+		<groupId>cz.cuni.mff.d3s.been.pluggablemodules</groupId>
+		<artifactId>pluggablemodules</artifactId>
+		<version>2.1.0</version>
+	</parent>
+
+	<dependencies>
+		<dependency>
+			<groupId>net.sf.opencsv</groupId>
+			<artifactId>opencsv</artifactId>
+			<version>${opencsv.version}</version>
+		</dependency>
+	</dependencies>
+
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.5.1</version>
+				<configuration>
+					<source>${java-source.version}</source>
+					<target>${java-target.version}</target>
+				</configuration>
+			</plugin>
+
+			<!-- CREATE STANDALONE ONE-JAR -->
+			<plugin>
+				<groupId>org.dstovall</groupId>
+				<artifactId>onejar-maven-plugin</artifactId>
+				<version>1.4.4</version>
+				<executions>
+					<execution>
+						<configuration>
+							<onejarVersion>0.97</onejarVersion>
+							<attachToBuild>true</attachToBuild>
+							<classifier>onejar</classifier>
+						</configuration>
+						<goals>
+							<goal>one-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+
+			<!-- AND NOW WE WANT TO CREATE BPK PACKAGE -->
+			<plugin>
+				<groupId>cz.cuni.mff.d3s.been</groupId>
+				<artifactId>bpk-plugin</artifactId>
+				<version>${project.parent.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>buildpackage</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<humanName>CSV Files pluggable module</humanName>
+					<packageJarFile>${project.build.directory}/${project.build.finalName}.one-jar.jar</packageJarFile>
+					<mainClassName>cz.cuni.mff.been.pluggablemodule.csvfiles.implementation.CSVFilesPluggableModuleImpl</mainClassName>
+					<name>csvfiles</name>
+					<filesToArchive>
+					</filesToArchive>
+
+					<type>module</type>
+					<module>
+						<interfaces>
+							<interface>cz.cuni.mff.been.pluggablemodule.csvfiles.CSVFilesPluggableModule</interface>
+						</interfaces>
+					</module>
+				</configuration>
+			</plugin>
+
+			<!-- NOW COPY THE BPK TO SOFTWARE REPOSITORY BOOTSTRAP FOLDER -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>${maven-resources-plugin.version}</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.parent.basedir}/../data/softwarerepository</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${project.basedir}/target/</directory>
+									<includes>
+										<include>*.bpk</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>onejar-maven-plugin.googlecode.com</id>
+			<url>http://onejar-maven-plugin.googlecode.com/svn/mavenrepo</url>
+		</pluginRepository>
+	</pluginRepositories>
+
+</project>

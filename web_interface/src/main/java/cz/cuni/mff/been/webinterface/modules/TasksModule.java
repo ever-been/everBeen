@@ -25,7 +25,6 @@ package cz.cuni.mff.been.webinterface.modules;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.rmi.ConnectException;
 import java.rmi.RemoteException;
@@ -61,8 +60,6 @@ import cz.cuni.mff.been.logging.OutputHandle;
 import cz.cuni.mff.been.services.Service;
 import cz.cuni.mff.been.softwarerepository.MatchException;
 import cz.cuni.mff.been.softwarerepository.PackageMetadata;
-import cz.cuni.mff.been.softwarerepository.PackageQueryCallbackInterface;
-import cz.cuni.mff.been.softwarerepository.PackageType;
 import cz.cuni.mff.been.softwarerepository.SoftwareRepositoryInterface;
 import cz.cuni.mff.been.softwarerepository.SoftwareRepositoryService;
 import cz.cuni.mff.been.task.TaskUtils;
@@ -114,16 +111,6 @@ public class TasksModule extends Module implements EventListener {
 
 	private long idIndex = 0;
 
-	private static class TasksQuery implements PackageQueryCallbackInterface,
-			Serializable {
-
-		private static final long serialVersionUID = -3720817515690864148L;
-
-		@Override
-		public boolean match(PackageMetadata metadata) throws MatchException {
-			return metadata.getType() == PackageType.TASK;
-		}
-	}
 
 	/**
 	 * Allocates a new <code>TasksModule</code> object. Construcor is private so

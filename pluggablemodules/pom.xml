@@ -11,16 +11,31 @@
 		<module>derby</module>
 		<module>derby_client</module>
 		<module>hibernate</module>
+		<module>csvfiles</module>
+		<module>fileagent_impl</module>
+		<module>fileagent</module>
 	</modules>
 
 	<dependencies>
-		<!-- LOGGING -->
+		<!-- BEEN DEPENDENCIES -->
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>core</artifactId>
+			<version>${been.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>service_interfaces</artifactId>
+			<version>${been.version}</version>
+		</dependency>
+
+		<!-- OTHER DEPENDENCIES -->
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>${log4j.version}</version>
 		</dependency>
-
 	</dependencies>
 
 
@@ -36,13 +51,15 @@
 		<derby.version>10.5.3.0_1</derby.version>
 		<hibernate.version>3.3.1.GA</hibernate.version>
 		<javax.version>1.1</javax.version>
+		<opencsv.version>2.0</opencsv.version>
 
 		<!-- JAVA COMPILER VERSION CONTROL -->
-		<java-source.version>1.6</java-source.version>
-		<java-target.version>1.6</java-target.version>
+		<java-source.version>1.7</java-source.version>
+		<java-target.version>1.7</java-target.version>
 
 		<!-- PLUGIN VERSION CONTROL -->
 		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
+		<maven-resources-plugin.version>2.6</maven-resources-plugin.version>
 	</properties>
 
 	<build>

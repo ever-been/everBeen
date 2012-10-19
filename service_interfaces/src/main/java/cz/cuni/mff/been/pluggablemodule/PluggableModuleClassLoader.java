@@ -44,7 +44,11 @@ public class PluggableModuleClassLoader extends URLClassLoader {
 	 *
 	 */
 	public PluggableModuleClassLoader() {
-		super(new URL[] {});
+		//Use the class loader we actually use (might be one-jar's loader)
+		//not the system one
+
+		//TODO check if this is what we actually want to do
+		super(new URL[] {}, PluggableModuleClassLoader.class.getClassLoader());
 	}
 
 	/**

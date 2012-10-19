@@ -47,6 +47,29 @@ public class FileUtils {
 	}
 
 	/**
+	 *
+	 * This is similiar to deleteDirectory but does not throws IOException when
+	 * the dir parameter does not exist or is not a directory ...
+	 *
+	 * TODO: review/rewrite this function
+	 *
+	 * @param dir
+	 *          directory to be deleted
+	 * @throws IOException
+	 *           if given file is cannot be deleted from some reason
+	 */
+	public static void safeDeleteDirectory(File dir) throws IOException {
+		if (!dir.exists()) {
+			return;
+		} else if (!dir.isDirectory()) {
+			deleteFile(dir);
+			return;
+		} else {
+			delete(dir);
+		}
+	}
+
+	/**
 	 * 
 	 * Deletes the directory recursively (that is including its content).
 	 * 

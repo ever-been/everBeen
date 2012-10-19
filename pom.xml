@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>cz.cuni.mff.d3s.been</groupId>
@@ -12,9 +12,8 @@
 	Use "buildBenchmarks" profile to build benchmark modules. 
 	See profiles section for more information.
 	]]>
-	
-	</description>
 
+	</description>
 
 
 	<properties>
@@ -34,12 +33,11 @@
 		<jaxb-api.version>2.2</jaxb-api.version>
 		<junit.version>4.4</junit.version>
 		<jsp-api.version>2.0</jsp-api.version>
-		<jython.version>2.2.1</jython.version>
+		<jython.version>2.5.3</jython.version>
 		<log4j.version>1.2.12</log4j.version>
 		<logback.version>1.0.6</logback.version>
 		<maven.version>2.0</maven.version>
 		<mockito.version>1.9.0</mockito.version>
-		<opencsv.version>2.0</opencsv.version>
 		<rmiio.version>2.0.2</rmiio.version>
 		<servlet-api.version>2.4</servlet-api.version>
 		<slf4j.version>1.6.4</slf4j.version>
@@ -94,7 +92,7 @@
 			<artifactId>mockito-all</artifactId>
 			<version>${mockito.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>jpda</groupId>
 			<artifactId>tools.jar</artifactId>
@@ -124,9 +122,6 @@
 				<module>hostmanager</module>
 				<module>resultsrepository</module>
 				<module>benchmarkmanager</module>
-				<module>pluggablemodule</module>
-				<module>pluggablemodule-fileagent</module>
-				<module>pluggablemodule-fileagent-implementation</module>
 				<module>web_interface</module>
 				<module>bpk-plugin</module>
 				<module>debug_assistant</module>
@@ -140,7 +135,9 @@
 			<id>buildBenchmarks</id>
 
 			<modules>
-				<module>xampler</module>
+
+				<!-- too many errors, ignore for now -->
+				<!-- <module>xampler</module> -->
 				<module>generators</module>
 				<module>evaluators</module>
 				<module>tasks</module>
@@ -148,5 +145,4 @@
 			</modules>
 		</profile>
 	</profiles>
-
 </project>

@@ -261,7 +261,6 @@ public class ResultsRepositoryImplementation extends UnicastRemoteObject
 				long serial = trigger.getLastProcessedSerial();
 				serialNumberCounter.raise(serial);
 			}
-
 		} catch (Exception e) {
 			throw new ResultsRepositoryException(
 					"Error initializing results repository.",
@@ -780,7 +779,12 @@ public class ResultsRepositoryImplementation extends UnicastRemoteObject
 			datasetSessionFactories.put(
 					qname,
 					createDatasetSessionFactory(newDataset));
-
+		} catch (org.hibernate.HibernateException e) {
+			CurrentTaskSingleton.getTaskHandle().logError("org.hibernate.HibernateException");
+			for (String msg: e.getMessages()) {
+				CurrentTaskSingleton.getTaskHandle().logError(msg);
+			}
+			throw new ResultsRepositoryException("Cannot create dataset! probably class loader problem");
 		} catch (Exception e) {
 			if (t != null)
 				t.rollback();
@@ -788,8 +792,12 @@ public class ResultsRepositoryImplementation extends UnicastRemoteObject
 					+ name + "\".", e);
 		} finally {
 
-			if (session != null)
-				session.close();
+			try {
+				if (session != null)
+					session.close();
+			} catch (Exception e) {
+				// quell the exception
+			}
 		}
 
 	}

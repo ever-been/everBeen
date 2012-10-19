@@ -7,15 +7,23 @@
 	<name>examples</name>
 
 	<modules>
+		<module>hibernatedemo</module>
+		<module>jythontaskdemo</module>
+		<module>pluggablemoduledemo</module>
+		<module>service1</module>
+		<module>shelltaskdemo-linux</module>
+		<module>shelltaskdemo-windows</module>
+		<module>task1</module>
 	</modules>
 
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<been.version>2.1.0</been.version>
-		<java-source.version>1.6</java-source.version>
-		<java-target.version>1.6</java-target.version>
+		<java-source.version>1.7</java-source.version>
+		<java-target.version>1.7</java-target.version>
 		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
+		<maven-resources-plugin.version>2.6</maven-resources-plugin.version>
 	</properties>
 
 	<dependencies>
@@ -26,4 +34,19 @@
 			<version>${been.version}</version>
 		</dependency>
 	</dependencies>
+
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin.version}</version>
+				<configuration>
+					<source>${java-source.version}</source>
+					<target>${java-target.version}</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>

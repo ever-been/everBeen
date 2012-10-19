@@ -18,7 +18,7 @@
 			<version>${xampler.version}</version>
 		</dependency>
 
-		<!--
+
 		<dependency>
 			<groupId>collections-generic</groupId>
 			<artifactId>collections-generic-4.01.jar</artifactId>
@@ -26,6 +26,6 @@
 			<scope>system</scope>
 			<systemPath>${project.basedir}/../../been/lib/collections-generic/collections-generic-4.01.jar</systemPath>
 		</dependency>
-		-->
+
 	</dependencies>
 </project>

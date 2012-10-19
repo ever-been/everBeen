@@ -70,6 +70,7 @@ import cz.cuni.mff.been.hostruntime.PackageConfiguration;
 import cz.cuni.mff.been.task.CurrentTaskSingleton;
 import cz.cuni.mff.been.task.Task;
 import cz.cuni.mff.been.task.TaskException;
+import static cz.cuni.mff.been.softwarerepository.PackageNames.*;
 
 /**
  * Implementation of the main Software Repository interface.
@@ -83,15 +84,6 @@ public class SoftwareRepositoryImplementation extends UnicastRemoteObject
 
 	/** Class instance (singleton pattern). */
 	private static SoftwareRepositoryImplementation instance;
-
-	/** Name of the directory with real content in packages. */
-	public static final String PACKAGE_FILES_DIR = "files";
-	/** Name of the file with metadata in packages. */
-	public static final String PACKAGE_METADATA_FILE = "metadata.xml";
-	/** Name of the file with configuration information in packages. */
-	public static final String PACKAGE_CONFIG_FILE = "config.xml";
-	/** Suffix of the package files. Case sensitive, with leading ".". */
-	private static final String PACKAGE_FILE_SUFFIX = ".bpk";
 
 	/** Prefix for temporary files used by Software Repository. */
 	private static final String TEMPFILE_PREFIX = "been-software-repository";
@@ -331,12 +323,12 @@ public class SoftwareRepositoryImplementation extends UnicastRemoteObject
 				document,
 				info.getName());
 		if (attributeElement == null) {
-			return PACKAGE_METADATA_FILE + ": Missing <" + info.getName()
+			return METADATA_FILE + ": Missing <" + info.getName()
 					+ "> element.";
 		}
 		String validationResult = info.getHelper().validateInXML(
 				attributeElement);
-		return validationResult != null ? PACKAGE_METADATA_FILE + ": "
+		return validationResult != null ? METADATA_FILE + ": "
 				+ validationResult : null;
 	}
 
@@ -396,14 +388,14 @@ public class SoftwareRepositoryImplementation extends UnicastRemoteObject
 			throws IOException, ParserConfigurationException {
 		Document document = readXMLDocumentFromZippedFile(
 				zipFile,
-				PACKAGE_METADATA_FILE);
+				METADATA_FILE);
 
 		/*
 		 * Check that document is not null. If it is, it means it isn't valid
 		 * XML file, so report error.
 		 */
 		if (document == null) {
-			return new String[] { PACKAGE_METADATA_FILE
+			return new String[] { METADATA_FILE
 					+ ": Not valid XML file." };
 		}
 
@@ -411,14 +403,14 @@ public class SoftwareRepositoryImplementation extends UnicastRemoteObject
 
 		/* Check that root element is <package>. */
 		if (!documentElement.getNodeName().equals("package")) {
-			return new String[] { PACKAGE_METADATA_FILE
+			return new String[] { METADATA_FILE
 					+ ": Root element must be <package>." };
 		}
 
 		/* Determine package type. */
 		PackageType packageType = getDocumentPackageType(document);
 		if (packageType == null) {
-			return new String[] { PACKAGE_METADATA_FILE
+			return new String[] {METADATA_FILE
 					+ ": Missing <type> element or invalid value of element <type>." };
 		}
 
@@ -445,7 +437,7 @@ public class SoftwareRepositoryImplementation extends UnicastRemoteObject
 			throws IOException, ParserConfigurationException {
 		Document document = readXMLDocumentFromZippedFile(
 				zipFile,
-				PACKAGE_CONFIG_FILE);
+				CONFIG_FILE);
 
 		try {
 			PackageConfiguration.validate(document);
@@ -484,14 +476,14 @@ public class SoftwareRepositoryImplementation extends UnicastRemoteObject
 			List<String> result = new LinkedList<String>();
 
 			/* Check, if directory "files" and file "metadata.xml" are present. */
-			ZipEntry filesDirEntry = zipFile.getEntry(PACKAGE_FILES_DIR + "/");
+			ZipEntry filesDirEntry = zipFile.getEntry(FILES_DIR + "/");
 			if (filesDirEntry == null) {
-				result.add("Missing \"" + PACKAGE_FILES_DIR + "\" directory.");
+				result.add("Missing \"" + FILES_DIR + "\" directory.");
 			}
 			ZipEntry metadataFileEntry = zipFile
-					.getEntry(PACKAGE_METADATA_FILE);
+					.getEntry(METADATA_FILE);
 			if (metadataFileEntry == null) {
-				result.add("Missing \"" + PACKAGE_METADATA_FILE + "\" file.");
+				result.add("Missing \"" + METADATA_FILE + "\" file.");
 			}
 			if (!result.isEmpty()) {
 				return result.toArray(new String[result.size()]);
@@ -532,9 +524,9 @@ public class SoftwareRepositoryImplementation extends UnicastRemoteObject
 			 */
 			if (metadata.getType().equals(PackageType.TASK)) {
 				ZipEntry configFileEntry = zipFile
-						.getEntry(PACKAGE_CONFIG_FILE);
+						.getEntry(CONFIG_FILE);
 				if (configFileEntry == null) {
-					return new String[] { "Missing \"" + PACKAGE_CONFIG_FILE
+					return new String[] { "Missing \"" + CONFIG_FILE
 							+ "\" file." };
 				}
 				return validatePackageConfigFile(zipFile);
@@ -568,7 +560,7 @@ public class SoftwareRepositoryImplementation extends UnicastRemoteObject
 			PackageMetadata metadata) {
 		String name = metadata.getName();
 		String version = metadata.getVersion().toString();
-		String expectedFilename = name + "-" + version + PACKAGE_FILE_SUFFIX;
+		String expectedFilename = name + "-" + version + FILE_SUFFIX;
 		File file = new File(filename);
 		if (!file.getName().equals(expectedFilename)) {
 			return new String[] { "Package file \"" + filename
@@ -608,7 +600,7 @@ public class SoftwareRepositoryImplementation extends UnicastRemoteObject
 			 */
 			Document document = readXMLDocumentFromZippedFile(
 					zipFile,
-					PACKAGE_METADATA_FILE);
+					METADATA_FILE);
 
 			Element nameElement = getAttributeElementByName(document, "name");
 			Element versionElement = getAttributeElementByName(
@@ -768,7 +760,7 @@ public class SoftwareRepositoryImplementation extends UnicastRemoteObject
 		synchronized (this) {
 			String result = metadata.getName() + "-" + hardwarePlatforms + "-"
 					+ softwarePlatforms + "-" + metadata.getType().getSuffix()
-					+ "." + autoIncrementedCounter + PACKAGE_FILE_SUFFIX;
+					+ "." + autoIncrementedCounter + FILE_SUFFIX;
 			autoIncrementedCounter++;
 			return result;
 		}
@@ -789,7 +781,7 @@ public class SoftwareRepositoryImplementation extends UnicastRemoteObject
 			File[] packages = new File(dataDir).listFiles(new FilenameFilter() {
 				@Override
 				public boolean accept(File dir, String name) {
-					return (name.endsWith(PACKAGE_FILE_SUFFIX));
+					return (name.endsWith(FILE_SUFFIX));
 				}
 			});
 
