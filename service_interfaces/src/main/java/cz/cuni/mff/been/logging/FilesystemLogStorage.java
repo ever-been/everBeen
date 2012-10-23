@@ -40,7 +40,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import cz.cuni.mff.been.utils.FileUtils;
+import cz.cuni.mff.been.core.utils.FileUtils;
 
 /**
  * Log storage which stores the logs in files in a directory structure.

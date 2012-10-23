@@ -43,10 +43,10 @@ import org.apache.derby.drda.NetworkServerControl;
 import org.apache.derby.tools.ij;
 import org.apache.log4j.Logger;
 
+import cz.cuni.mff.been.core.utils.FileUtils;
 import cz.cuni.mff.been.pluggablemodule.PluggableModule;
 import cz.cuni.mff.been.pluggablemodule.PluggableModuleManager;
 import cz.cuni.mff.been.pluggablemodule.derby.DerbyPluggableModule;
-import cz.cuni.mff.been.utils.FileUtils;
 
 /**
  * BEEN's pluggable module which provides Derby functionality (starting and

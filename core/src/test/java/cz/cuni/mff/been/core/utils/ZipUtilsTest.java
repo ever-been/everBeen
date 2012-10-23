@@ -1,4 +1,4 @@
-package cz.cuni.mff.been.utils;
+package cz.cuni.mff.been.core.utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -10,6 +10,9 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import cz.cuni.mff.been.core.utils.FileUtils;
+import cz.cuni.mff.been.core.utils.ZipUtils;
 
 public class ZipUtilsTest extends Assert {
 

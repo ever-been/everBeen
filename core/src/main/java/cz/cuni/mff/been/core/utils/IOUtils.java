@@ -1,4 +1,4 @@
-package cz.cuni.mff.been.utils;
+package cz.cuni.mff.been.core.utils;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -6,7 +6,7 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class IOUtils {
+public class IOUtils extends org.apache.commons.io.IOUtils {
 
 	private static final Logger logger = LoggerFactory.getLogger(IOUtils.class);
 

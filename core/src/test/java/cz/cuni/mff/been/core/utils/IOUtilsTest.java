@@ -1,4 +1,4 @@
-package cz.cuni.mff.been.utils;
+package cz.cuni.mff.been.core.utils;
 
 import java.io.ByteArrayInputStream;
 import java.io.Closeable;
@@ -7,6 +7,8 @@ import java.io.InputStream;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import cz.cuni.mff.been.core.utils.IOUtils;
 import static org.mockito.Mockito.*;
 
 /**

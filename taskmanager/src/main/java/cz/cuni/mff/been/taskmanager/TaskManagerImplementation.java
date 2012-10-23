@@ -80,6 +80,7 @@ import cz.cuni.mff.been.common.serialize.Deserialize;
 import cz.cuni.mff.been.common.serialize.DeserializeException;
 import cz.cuni.mff.been.common.util.MiscUtils;
 import cz.cuni.mff.been.common.value.ValueInteger;
+import cz.cuni.mff.been.core.utils.FileUtils;
 import cz.cuni.mff.been.hostmanager.HostManagerException;
 import cz.cuni.mff.been.hostmanager.HostManagerInterface;
 import cz.cuni.mff.been.hostmanager.ValueNotFoundException;
@@ -132,7 +133,6 @@ import cz.cuni.mff.been.taskmanager.tasktree.TaskTreeInput;
 import cz.cuni.mff.been.taskmanager.tasktree.TaskTreeQuery;
 import cz.cuni.mff.been.taskmanager.tasktree.TaskTreeReader;
 import cz.cuni.mff.been.taskmanager.tasktree.TaskTreeRecord;
-import cz.cuni.mff.been.utils.FileUtils;
 
 /**
  * Implementation of Task Manager (main class).

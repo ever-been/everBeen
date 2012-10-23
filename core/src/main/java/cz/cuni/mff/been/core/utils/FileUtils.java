@@ -1,10 +1,16 @@
-package cz.cuni.mff.been.utils;
+package cz.cuni.mff.been.core.utils;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-public class FileUtils {
+/**
+ * Utility facade for advanced file operations.
+ * 
+ * @author Tadeáš Palusga
+ * 
+ */
+public final class FileUtils extends org.apache.commons.io.FileUtils {
 
 	private FileUtils() {
 		// instantiation not available
@@ -47,12 +53,12 @@ public class FileUtils {
 	}
 
 	/**
-	 *
+	 * 
 	 * This is similiar to deleteDirectory but does not throws IOException when
 	 * the dir parameter does not exist or is not a directory ...
-	 *
+	 * 
 	 * TODO: review/rewrite this function
-	 *
+	 * 
 	 * @param dir
 	 *          directory to be deleted
 	 * @throws IOException

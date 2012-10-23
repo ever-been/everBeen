@@ -27,7 +27,7 @@ package cz.cuni.mff.been.common;
 
 import java.io.Serializable;
 
-import cz.cuni.mff.been.utils.ArrayUtils;
+import cz.cuni.mff.been.core.utils.ArrayUtils;
 
 /**
  * Class representing a version of something. It allows parsing the version

@@ -1,22 +1,25 @@
 package cz.cuni.mff.d3s.been.bpkplugin;
 
+import static cz.cuni.mff.been.jaxb.Factory.PMC;
+import static cz.cuni.mff.been.softwarerepository.PackageNames.CONFIG_FILE;
+import static cz.cuni.mff.been.softwarerepository.PackageNames.FILES_DIR;
+import static cz.cuni.mff.been.softwarerepository.PackageNames.FILE_SUFFIX;
+import static cz.cuni.mff.been.softwarerepository.PackageNames.METADATA_FILE;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static cz.cuni.mff.been.jaxb.Factory.PMC;
-
-
-import cz.cuni.mff.been.jaxb.BindingComposer;
-import cz.cuni.mff.been.jaxb.XSD;
-import cz.cuni.mff.been.jaxb.pmc.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
-import static cz.cuni.mff.been.softwarerepository.PackageNames.*;
+
+import cz.cuni.mff.been.jaxb.BindingComposer;
+import cz.cuni.mff.been.jaxb.XSD;
+import cz.cuni.mff.been.jaxb.pmc.*;
 
 /*
  * Mojo plugin development is comment-annotation driven. 
@@ -68,8 +71,8 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 	private final Log log = getLog();
 
 	/**
-	 * Files specified here will be added to bpk archive. All files will be
-	 * placed in "files" folder in root folder of generated bpk package.
+	 * Files specified here will be added to bpk archive. All files will be placed
+	 * in "files" folder in root folder of generated bpk package.
 	 * 
 	 * @parameter
 	 * 
@@ -108,8 +111,8 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 	private File packageJarFile;
 
 	/**
-	 * Fully qualified class name in jar file for this bpk package. (Will be
-	 * used in generated config.xml)
+	 * Fully qualified class name in jar file for this bpk package. (Will be used
+	 * in generated config.xml)
 	 * 
 	 * @parameter
 	 * 
@@ -128,8 +131,8 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 	private String name;
 
 	/**
-	 * Version of bpk package. <b>${project.version}</b> by default. (Will be
-	 * used in generated metadata.xml)
+	 * Version of bpk package. <b>${project.version}</b> by default. (Will be used
+	 * in generated metadata.xml)
 	 * 
 	 * @parameter expression="${project.version}"
 	 * 
@@ -157,17 +160,17 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 	 */
 	private String humanName;
 
-
 	/**
-	 *
+	 * 
 	 * @parameter
-	 *
+	 * 
 	 */
 	private BpkModuleConfig module;
 
 	/**
 	 * This is the plugin main method. All generation logic starts here.
 	 */
+	@Override
 	public void execute() throws MojoExecutionException {
 		logStart();
 
@@ -181,7 +184,6 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 			files.add(generateMetadataXmlFile());
 
 			generateModuleModuleConfigXmlFile(files);
-
 
 			for (FileItem fitem : filesToArchive) {
 				files.addAll(fitem.getFilesToArchive(log));
@@ -208,18 +210,12 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 		}
 	}
 
-
 	private FileToArchive generateTaskConfigXmlFile(String nameInBpk) {
 
-		log.info("    TASK WILL BE GENERATED: with:mainClass='" + mainClassName
-				+ "' -> '" + nameInBpk + "'");
+		log.info("    TASK WILL BE GENERATED: with:mainClass='" + mainClassName + "' -> '" + nameInBpk + "'");
 		try {
 			File config = File.createTempFile("tmp_generated_config", ".xml");
-			String content = String.format("<?xml version=\"1.0\"?>\n"
-					+ "<packageConfiguration>\n"
-					+ "	<java classPath=\".:%s\" mainClass=\"%s\" />\n"
-					+ "</packageConfiguration>\n", packageJarFile.getName(),
-					mainClassName);
+			String content = String.format("<?xml version=\"1.0\"?>\n" + "<packageConfiguration>\n" + "	<java classPath=\".:%s\" mainClass=\"%s\" />\n" + "</packageConfiguration>\n", packageJarFile.getName(), mainClassName);
 			FileUtils.write(config, content);
 			return new FileToArchive(nameInBpk, config);
 		} catch (Exception e) {
@@ -229,8 +225,7 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 	}
 
 	private FileToArchive generateModuleConfigXmlFile(String nameInBpk) {
-		log.info("    MODULE WILL BE GENERATED: with:mainClass='" + mainClassName
-				+ "' -> '" + nameInBpk + "'");
+		log.info("    MODULE WILL BE GENERATED: with:mainClass='" + mainClassName + "' -> '" + nameInBpk + "'");
 		try {
 			File config = File.createTempFile("tmp_generated_config", ".xml");
 
@@ -241,14 +236,13 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 			PluggableModuleConfiguration jaxbModuleConfig = PMC.createPluggableModuleConfiguration();
 
 			//Main implementation
-			Java jaxbJava =  PMC.createJava();
+			Java jaxbJava = PMC.createJava();
 			jaxbJava.setMainClass(mainClassName);
 
 			//Classpath
 			ClassPathItems jaxbPathItems = PMC.createClassPathItems();
 			jaxbPathItems.getClasspathItem().add(packageJarFile.getName());
 			jaxbJava.setClasspathItems(jaxbPathItems);
-
 
 			//Dependencies
 			Dependencies jaxbDependecies = PMC.createDependencies();
@@ -263,14 +257,12 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 				}
 			}
 
-
 			//TODO: Ugly hack, figure out better way to set been.directory.jaxb
 			// Probably will not work on Windows
 			System.setProperty("been.directory.jaxb", "service_interfaces/src/main/xsd/");
 
 			jaxbModuleConfig.setJava(jaxbJava);
 			jaxbModuleConfig.setDependencies(jaxbDependecies);
-
 
 			BindingComposer<PluggableModuleConfiguration> composer = XSD.PMC.createComposer(PluggableModuleConfiguration.class);
 			composer.compose(jaxbModuleConfig, config);
@@ -282,7 +274,8 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 		}
 	}
 
-	private void generateModuleModuleConfigXmlFile(Collection<FileToArchive> collection) {
+	private void generateModuleModuleConfigXmlFile(
+			Collection<FileToArchive> collection) {
 		String nameInBpk = "module-config.xml";
 		if (type.equals("module") && module.config != null) {
 			collection.add(new FileToArchive(nameInBpk, new File(module.config)));
@@ -290,7 +283,6 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 			log.info("MODULE DOES NOT INCLUDE module-config.xml");
 
 		}
-
 
 	}
 
@@ -307,18 +299,11 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 		}
 	}
 
-
 	private FileToArchive generateTaskMetadataXmlFile(String nameInBpk) {
-		log.info("    TASK WILL BE GENERATED: with:name='" + name + "', version='"
-				+ version + "', type='" + type + "', humanName='" + humanName
-				+ "' -> '" + nameInBpk + "'");
+		log.info("    TASK WILL BE GENERATED: with:name='" + name + "', version='" + version + "', type='" + type + "', humanName='" + humanName + "' -> '" + nameInBpk + "'");
 		try {
 			File config = File.createTempFile("tmp_generated_config", ".xml");
-			String content = String.format("<?xml version=\"1.0\"?>\n"
-					+ "<package>\n" + "  <name>%s</name>\n"
-					+ "  <version>%s</version>\n" + "  <type>%s</type>\n"
-					+ "  <humanName>%s</humanName>\n" + "</package>\n", name,
-					version, type, humanName);
+			String content = String.format("<?xml version=\"1.0\"?>\n" + "<package>\n" + "  <name>%s</name>\n" + "  <version>%s</version>\n" + "  <type>%s</type>\n" + "  <humanName>%s</humanName>\n" + "</package>\n", name, version, type, humanName);
 			FileUtils.write(config, content);
 			return new FileToArchive(nameInBpk, config);
 		} catch (Exception e) {
@@ -328,16 +313,14 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 	}
 
 	private FileToArchive generateModuleMetadataXmlFile(String nameInBpk) {
-		log.info("    MODULE WILL BE GENERATED: with:name='" + name + "', version='"
-				+ version + "', type='" + type + "', humanName='" + humanName
-				+ "' -> '" + nameInBpk + "'");
+		log.info("    MODULE WILL BE GENERATED: with:name='" + name + "', version='" + version + "', type='" + type + "', humanName='" + humanName + "' -> '" + nameInBpk + "'");
 		try {
 			File config = File.createTempFile("tmp_generated_config", ".xml");
 			StringBuilder builder = new StringBuilder();
 
 			if (module != null && !module.interfaces.isEmpty()) {
 				builder.append("\n\t<providedInterfaces>\n");
-				for (String iface: module.interfaces) {
+				for (String iface : module.interfaces) {
 					log.info("    PROVIDES INTERFACE " + iface);
 					builder.append("\t\t<providedInterface>");
 					builder.append(iface);
@@ -348,12 +331,7 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 				log.error("MODULE MUST EXPORT AN INTERFACE!");
 			}
 
-
-			String content = String.format("<?xml version=\"1.0\"?>\n"
-					+ "<package>\n" + "  <name>%s</name>\n"
-					+ "  <version>%s</version>\n" + "  <type>%s</type>\n"
-					+ "  <humanName>%s</humanName>\n" + "%s" + "</package>\n", name,
-					version, type, humanName, builder.toString());
+			String content = String.format("<?xml version=\"1.0\"?>\n" + "<package>\n" + "  <name>%s</name>\n" + "  <version>%s</version>\n" + "  <type>%s</type>\n" + "  <humanName>%s</humanName>\n" + "%s" + "</package>\n", name, version, type, humanName, builder.toString());
 
 			FileUtils.write(config, content);
 			return new FileToArchive(nameInBpk, config);
@@ -365,8 +343,7 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 
 	private FileToArchive createFileToArchiveFromPackageJar() {
 		String nameInBpk = FILES_DIR + "/" + packageJarFile.getName();
-		log.info("    WILL BE ADDED: '" + packageJarFile.getAbsolutePath()
-				+ "' -> '" + nameInBpk + "'");
+		log.info("    WILL BE ADDED: '" + packageJarFile.getAbsolutePath() + "' -> '" + nameInBpk + "'");
 		return new FileToArchive(nameInBpk, packageJarFile);
 	}
 

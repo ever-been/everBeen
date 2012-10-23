@@ -33,7 +33,10 @@ import java.util.HashMap;
 import cz.cuni.mff.been.pluggablemodule.PluggableModuleException;
 import cz.cuni.mff.been.pluggablemodule.fileagent.FileAgent;
 import cz.cuni.mff.been.pluggablemodule.fileagent.FileAgentPluggableModule;
-import cz.cuni.mff.been.task.*;
+import cz.cuni.mff.been.task.CurrentTaskSingleton;
+import cz.cuni.mff.been.task.Job;
+import cz.cuni.mff.been.task.TaskException;
+import cz.cuni.mff.been.task.TaskInitializationException;
 
 public class XamplerCollectResults extends Job {
     

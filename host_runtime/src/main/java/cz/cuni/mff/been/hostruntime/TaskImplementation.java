@@ -53,6 +53,7 @@ import cz.cuni.mff.been.common.Debug;
 import cz.cuni.mff.been.common.RMI;
 import cz.cuni.mff.been.common.serialize.Deserialize;
 import cz.cuni.mff.been.common.serialize.DeserializeException;
+import cz.cuni.mff.been.core.utils.FileUtils;
 import cz.cuni.mff.been.debugassistant.DebugAssistantInterface;
 import cz.cuni.mff.been.debugassistant.SuspendedTask;
 import cz.cuni.mff.been.hostmanager.IllegalOperationException;
@@ -75,7 +76,6 @@ import cz.cuni.mff.been.task.TaskException;
 import cz.cuni.mff.been.taskmanager.CheckPoint;
 import cz.cuni.mff.been.taskmanager.HostRuntimesPortInterface;
 import cz.cuni.mff.been.taskmanager.data.TaskState;
-import cz.cuni.mff.been.utils.FileUtils;
 
 /**
  * The class representing a task instance in the host runtime.

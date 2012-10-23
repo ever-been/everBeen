@@ -37,6 +37,7 @@ import javax.xml.bind.JAXBException;
 
 import org.apache.log4j.Logger;
 
+import cz.cuni.mff.been.core.utils.FileUtils;
 import cz.cuni.mff.been.hostruntime.TasksPortInterface;
 import cz.cuni.mff.been.jaxb.BindingParser;
 import cz.cuni.mff.been.jaxb.pmc.ClassPathItems;
@@ -46,7 +47,6 @@ import cz.cuni.mff.been.jaxb.pmc.Java;
 import cz.cuni.mff.been.jaxb.pmc.PluggableModuleConfiguration;
 import cz.cuni.mff.been.pluggablemodule.jaxb.SelfContainedParser;
 import cz.cuni.mff.been.softwarerepository.PackageType;
-import cz.cuni.mff.been.utils.FileUtils;
 
 import cz.cuni.mff.been.softwarerepository.PackageNames;
 

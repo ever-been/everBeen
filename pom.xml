@@ -23,6 +23,7 @@
 		<avalon-framework.version>4.3.1</avalon-framework.version>
 		<avalon-logkit.version>2.2.1</avalon-logkit.version>
 		<collections.version>4.01</collections.version>
+		<commons-compress.version>1.4.1</commons-compress.version>
 		<commons-fileupload.version>1.2.1</commons-fileupload.version>
 		<commons-io.version>2.4</commons-io.version>
 		<commons-logging.version>1.1.1</commons-logging.version>

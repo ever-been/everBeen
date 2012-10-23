@@ -1,4 +1,4 @@
-package cz.cuni.mff.been.utils;
+package cz.cuni.mff.been.core.utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,7 +7,11 @@ import java.nio.file.NoSuchFileException;
 import org.junit.Assert;
 import org.junit.Test;
 
+import cz.cuni.mff.been.core.utils.FileUtils;
+
 /**
+ * Tests for custom {@link FileUtils} methods.
+ * 
  * @author Tadeáš Palusga
  * 
  */
@@ -61,7 +65,7 @@ public class FileUtilsTest extends Assert {
 	public void testDeleteFileThrowsFNFExceptionIfThePathDoesNotReferToAFile() throws Exception {
 		FileUtils.deleteFile(createTmpDir());
 	}
-	
+
 	@Test(expected = IOException.class)
 	public void testDeleteDirectoryThrowsFNFExceptionIfThePathDoesNotReferToAFolder() throws Exception {
 		FileUtils.deleteDirectory(File.createTempFile("testFile", null));

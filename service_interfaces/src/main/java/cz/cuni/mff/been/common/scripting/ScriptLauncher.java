@@ -32,9 +32,9 @@ import java.util.UUID;
 
 import cz.cuni.mff.been.common.OutputReader;
 import cz.cuni.mff.been.common.OutputType;
+import cz.cuni.mff.been.core.utils.FileUtils;
 import cz.cuni.mff.been.task.CurrentTaskSingleton;
 import cz.cuni.mff.been.task.Task;
-import cz.cuni.mff.been.utils.FileUtils;
 
 /**
  * Utility class for launching shell script (on both windows and linux).

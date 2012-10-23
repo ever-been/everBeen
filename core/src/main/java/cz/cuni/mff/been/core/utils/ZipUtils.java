@@ -1,4 +1,4 @@
-package cz.cuni.mff.been.utils;
+package cz.cuni.mff.been.core.utils;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
