@@ -23,7 +23,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston,
  *  MA  02111-1307  USA
  */
-package cz.cuni.mff.been.core.utils;
+package cz.cuni.mff.been.utils;
 
 /**
  * Provides some miscelaneous utility methods for arrays.

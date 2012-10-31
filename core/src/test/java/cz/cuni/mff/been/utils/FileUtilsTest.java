@@ -1,4 +1,4 @@
-package cz.cuni.mff.been.core.utils;
+package cz.cuni.mff.been.utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import java.nio.file.NoSuchFileException;
 import org.junit.Assert;
 import org.junit.Test;
 
-import cz.cuni.mff.been.core.utils.FileUtils;
+import cz.cuni.mff.been.utils.FileUtils;
 
 /**
  * Tests for custom {@link FileUtils} methods.

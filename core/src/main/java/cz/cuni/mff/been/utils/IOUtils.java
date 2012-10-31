@@ -1,4 +1,4 @@
-package cz.cuni.mff.been.core.utils;
+package cz.cuni.mff.been.utils;
 
 import java.io.Closeable;
 import java.io.IOException;

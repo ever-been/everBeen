@@ -1,4 +1,4 @@
-package cz.cuni.mff.been.core.utils;
+package cz.cuni.mff.been.utils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -34,12 +34,12 @@ public class TarUtilsTest extends Assert {
 			FileUtils.delete(targetFolder);
 		}
 	}
-	
+
 	@Test
 	public void testPackage() throws FileNotFoundException, IOException {
-		File fileToPackage = new File(sourceFolder, "loremIpsum.txt");
+		File fileToPackage = new File(sourceFolder, "li.txt");
 		TarUtils.compress(fileToPackage, targetFolder);
-		File packedFile = new File(targetFolder, "loremIpsum.txt.tgz");
+		File packedFile = new File(targetFolder, "li.txt.tgz");
 		assertTrue(packedFile.exists());
 		assertTrue(packedFile.length() > 0);
 	}
@@ -51,7 +51,7 @@ public class TarUtilsTest extends Assert {
 
 	@Test(expected = NullPointerException.class)
 	public void testPackageTargetNull() throws FileNotFoundException, IOException {
-		File fileToPackage = new File(sourceFolder, "loremIpsum.txt");
+		File fileToPackage = new File(sourceFolder, "li.txt");
 		TarUtils.compress(fileToPackage, null);
 	}
 
@@ -63,7 +63,7 @@ public class TarUtilsTest extends Assert {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testPackageTargetFolderIsAFile() throws IOException {
-		File fileToPackage = new File(sourceFolder, "loremIpsum.txt");
+		File fileToPackage = new File(sourceFolder, "li.txt");
 		targetFolder.mkdirs();
 		File tempFile = File.createTempFile("TarUtilsTest_testPackageTargetFolderIsAFile_", "_tmp", targetFolder);
 		TarUtils.compress(fileToPackage, tempFile);
@@ -71,21 +71,21 @@ public class TarUtilsTest extends Assert {
 
 	@Test
 	public void testPackageExplicitNamingFileExists() throws IOException {
-		File fileToPackage = new File(sourceFolder, "loremIpsum.txt");
-		File sourcePackageFile = new File(sourceFolder, "loremIpsum.tgz");
-		File targetPackageFile = new File(targetFolder, "loremIpsum.tgz");
+		File fileToPackage = new File(sourceFolder, "li.txt");
+		File sourcePackageFile = new File(sourceFolder, "li.tgz");
+		File targetPackageFile = new File(targetFolder, "li.tgz");
 		targetFolder.mkdirs();
 		Date copyTime = Calendar.getInstance().getTime();
 		FileUtils.copyFile(sourcePackageFile, targetPackageFile);
-		TarUtils.compress(fileToPackage, targetFolder, "loremIpsum.tgz");
+		TarUtils.compress(fileToPackage, targetFolder, "li.tgz");
 		assertTrue(FileUtils.isFileNewer(targetPackageFile, sourcePackageFile.lastModified()));
 	}
 
 	@Test
 	public void testPackageDefaultNamingFileImplicitlyExists() throws IOException {
-		File fileToPackage = new File(sourceFolder, "loremIpsum.txt");
-		File sourcePackageFile = new File(sourceFolder, "loremIpsum.tgz");
-		File targetPackageFile = new File(targetFolder, "loremIpsum.txt.tgz");
+		File fileToPackage = new File(sourceFolder, "li.txt");
+		File sourcePackageFile = new File(sourceFolder, "li.tgz");
+		File targetPackageFile = new File(targetFolder, "li.txt.tgz");
 		targetFolder.mkdirs();
 		FileUtils.copyFile(sourcePackageFile, targetPackageFile);
 		TarUtils.compress(fileToPackage, targetFolder);
@@ -94,9 +94,9 @@ public class TarUtilsTest extends Assert {
 
 	@Test
 	public void testExtract() throws FileNotFoundException, IOException {
-		File archive = new File(sourceFolder, "loremIpsum.tgz");
+		File archive = new File(sourceFolder, "li.tgz");
 		TarUtils.extract(archive, targetFolder);
-		File targetFile = new File(targetFolder, "loremIpsum.txt");
+		File targetFile = new File(targetFolder, "li.txt");
 		assertTrue(targetFile.exists());
 		assertFalse(targetFile.isDirectory());
 		assertTrue(targetFile.length() > 0);
@@ -109,7 +109,7 @@ public class TarUtilsTest extends Assert {
 
 	@Test(expected = NullPointerException.class)
 	public void testExtractTargetNull() throws FileNotFoundException, IOException {
-		File archive = new File(sourceFolder, "loremIpsum.tgz");
+		File archive = new File(sourceFolder, "li.tgz");
 		TarUtils.extract(archive, null);
 	}
 
@@ -122,16 +122,16 @@ public class TarUtilsTest extends Assert {
 
 	@Test(expected = ZipException.class)
 	public void testExtractSourceIsNotAnArchive() throws FileNotFoundException, IOException, ZipException {
-		File notAnArchive = new File(sourceFolder, "loremIpsum.txt");
+		File notAnArchive = new File(sourceFolder, "li.txt");
 		assertTrue(notAnArchive.exists());
 		TarUtils.extract(notAnArchive, targetFolder);
 	}
 
 	@Test
 	public void testExtractFileExists() throws IOException {
-		File archive = new File(sourceFolder, "loremIpsum.tgz");
-		File sourceFile = new File(sourceFolder, "loremIpsum.txt");
-		File copyOfSourceFile = new File(targetFolder, "loremIpsum.txt");
+		File archive = new File(sourceFolder, "li.tgz");
+		File sourceFile = new File(sourceFolder, "li.txt");
+		File copyOfSourceFile = new File(targetFolder, "li.txt");
 		FileUtils.copyFile(sourceFile, copyOfSourceFile);
 		assertTrue(copyOfSourceFile.exists());
 		Date dateModified = new Date(copyOfSourceFile.lastModified());
@@ -141,28 +141,40 @@ public class TarUtilsTest extends Assert {
 
 	@Test
 	public void testExtractDir() throws FileNotFoundException, ZipException, IOException {
-		File packedFolder = new File(sourceFolder, "loremIpsumFolder.tgz");
+		File packedFolder = new File(sourceFolder, "folder.tgz");
 		TarUtils.extract(packedFolder, targetFolder);
-		File unpackedFolder = new File(targetFolder, "loremIpsumFolder");
+		File unpackedFolder = new File(targetFolder, "folder");
 		assertTrue(unpackedFolder.isDirectory());
-		File unpackedFolderContents = new File(unpackedFolder, "loremIpsum.txt");
+		File unpackedFolderContents = new File(unpackedFolder, "li.txt");
 		assertTrue(unpackedFolderContents.exists());
 		assertTrue(unpackedFolderContents.length() > 0);
 	}
 
 	@Test
 	public void testExtractdirExists() throws FileNotFoundException, ZipException, IOException {
-		File packedDir = new File(sourceFolder, "loremIpsumFolder.tgz");
-		File folderInTarget = new File(targetFolder, "loremIpsumFolder");
+		File packedDir = new File(sourceFolder, "folder.tgz");
+		File folderInTarget = new File(targetFolder, "folder");
 		folderInTarget.mkdirs();
 		assertTrue(folderInTarget.isDirectory());
 		assertTrue(folderInTarget.list().length == 0);
 		TarUtils.extract(packedDir, targetFolder);
-		File extractedTextFile = new File(folderInTarget, "loremIpsum.txt");
+		File extractedTextFile = new File(folderInTarget, "li.txt");
 		assertTrue(extractedTextFile.exists());
 		assertTrue(extractedTextFile.length() > 0);
 	}
 
 	@Test
-	public void testExtractDirContentExists() {}
+	public void testExtractDirContentExists() throws IOException {
+		File packedDir = new File(sourceFolder, "folder.tgz");
+		File folderInTarget = new File(targetFolder, "folder");
+		folderInTarget.mkdirs();
+		File sourceFile = new File(sourceFolder, "li.txt");
+		File copyOfSourceFile = new File(folderInTarget, "li.txt");
+		FileUtils.copyFile(sourceFile, copyOfSourceFile);
+		assertTrue(copyOfSourceFile.exists());
+		Date copyDate = new Date(copyOfSourceFile.lastModified());
+		TarUtils.extract(packedDir, targetFolder);
+		assertTrue(copyOfSourceFile.exists());
+		assertTrue(FileUtils.isFileNewer(copyOfSourceFile, copyDate));
+	}
 }
