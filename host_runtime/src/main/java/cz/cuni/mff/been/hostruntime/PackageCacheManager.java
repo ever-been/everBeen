@@ -45,13 +45,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.been.common.DownloadHandle;
-import cz.cuni.mff.been.core.utils.FileUtils;
-import cz.cuni.mff.been.core.utils.ZipUtils;
 import cz.cuni.mff.been.softwarerepository.MatchException;
 import cz.cuni.mff.been.softwarerepository.PackageMetadata;
 import cz.cuni.mff.been.softwarerepository.PackageQueryCallbackInterface;
 import cz.cuni.mff.been.softwarerepository.PackageType;
 import cz.cuni.mff.been.softwarerepository.SoftwareRepositoryInterface;
+import cz.cuni.mff.been.utils.FileUtils;
+import cz.cuni.mff.been.utils.ZipUtils;
 
 /**
  * Manages the Host Runtime's package cache.

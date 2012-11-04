@@ -42,7 +42,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.been.common.RMI;
-import cz.cuni.mff.been.core.utils.FileUtils;
 import cz.cuni.mff.been.hostmanager.IllegalOperationException;
 import cz.cuni.mff.been.hostmanager.ValueNotFoundException;
 import cz.cuni.mff.been.hostmanager.load.LoadMonitorException;
@@ -56,6 +55,7 @@ import cz.cuni.mff.been.task.TaskException;
 import cz.cuni.mff.been.taskmanager.HostRuntimesPortInterface;
 import cz.cuni.mff.been.taskmanager.TaskManagerInterface;
 import cz.cuni.mff.been.taskmanager.data.TaskState;
+import cz.cuni.mff.been.utils.FileUtils;
 
 /**
  * Implementation of Host Runtime.
@@ -115,16 +115,16 @@ public class HostRuntimeImplementation extends UnicastRemoteObject implements Ho
 	private HostRuntimesPortInterface taskManagerRuntimePort;
 
 	/** Package cache manager. */
-	private PackageCacheManager packageCacheManager;
+	private final PackageCacheManager packageCacheManager;
 
 	/** List of tasks running in this Host Runtime. */
 	private final List<TaskInterface> runningTasksSync = new LinkedList<TaskInterface>();
 
 	/** Load monitor instance. */
-	private LoadMonitorImplementation loadMonitor;
+	private final LoadMonitorImplementation loadMonitor;
 
 	/** Root directory of this Host Runtime. */
-	private String rootDirectory;
+	private final String rootDirectory;
 
 	/** @return root directory of this Host Runtime */
 	public String getRootDirectory() {
@@ -362,6 +362,7 @@ public class HostRuntimeImplementation extends UnicastRemoteObject implements Ho
 	 * @see cz.cuni.mff.been.hostruntime.HostRuntimeInterface#initialize(HostRuntimesPortInterface,
 	 *      long)
 	 */
+	@Override
 	public void initialize(HostRuntimesPortInterface hostRuntimesPort,
 			long maxPackageCacheSize) throws RemoteException {
 		this.taskManagerRuntimePort = hostRuntimesPort;
@@ -374,6 +375,7 @@ public class HostRuntimeImplementation extends UnicastRemoteObject implements Ho
 	/**
 	 * @see cz.cuni.mff.been.hostruntime.HostRuntimeInterface#terminate()
 	 */
+	@Override
 	public void terminate() throws RemoteException {
 		System.exit(0);
 
@@ -411,6 +413,7 @@ public class HostRuntimeImplementation extends UnicastRemoteObject implements Ho
 	/**
 	 * @see cz.cuni.mff.been.hostruntime.HostRuntimeInterface#createTask(TaskDescriptor)
 	 */
+	@Override
 	public TaskInterface createTask(TaskDescriptor taskDescriptor) throws HostRuntimeException, RemoteException {
 		/* Check if we are initialized properly. */
 		if (taskManager == null) {
@@ -449,6 +452,7 @@ public class HostRuntimeImplementation extends UnicastRemoteObject implements Ho
 	/**
 	 * @see cz.cuni.mff.been.hostruntime.HostRuntimeInterface#deleteContext(java.lang.String)
 	 */
+	@Override
 	public void deleteContext(String contextID) throws HostRuntimeException, RemoteException {
 		// Check if there is a directory for given context.
 		String contextDir = rootDirectory + File.separator + TASKS_BASE_DIR + File.separator + contextID;
@@ -488,6 +492,7 @@ public class HostRuntimeImplementation extends UnicastRemoteObject implements Ho
 	/**
 	 * @see cz.cuni.mff.been.hostruntime.HostRuntimeInterface#setMaxPackageCacheSize(long)
 	 */
+	@Override
 	public void setMaxPackageCacheSize(long maxPackageCacheSize) throws RemoteException {
 		packageCacheManager.setMaxCacheSize(maxPackageCacheSize);
 	}

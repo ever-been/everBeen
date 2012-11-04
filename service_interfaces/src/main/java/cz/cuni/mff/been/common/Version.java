@@ -27,22 +27,21 @@ package cz.cuni.mff.been.common;
 
 import java.io.Serializable;
 
-import cz.cuni.mff.been.core.utils.ArrayUtils;
+import cz.cuni.mff.been.utils.ArrayUtils;
 
 /**
- * Class representing a version of something. It allows parsing the version
- * from string, intelligent manipulation with versions (especially comparing)
- * and writing them out as strings.
+ * Class representing a version of something. It allows parsing the version from
+ * string, intelligent manipulation with versions (especially comparing) and
+ * writing them out as strings.
  * 
- * Internally, versions are stored as array of strings representing
- * version parts (e.g. "5.1" is stored as array containing elements "5"
- * and "1").  
- *
+ * Internally, versions are stored as array of strings representing version
+ * parts (e.g. "5.1" is stored as array containing elements "5" and "1").
+ * 
  * @author David Majda
  */
-public class Version implements Cloneable, Comparable< Object >, Serializable {
-	
-	private static final long	serialVersionUID	= 6215665807083287584L;
+public class Version implements Cloneable, Comparable<Object>, Serializable {
+
+	private static final long serialVersionUID = 6215665807083287584L;
 
 	/**
 	 * Separator of the version parts.
@@ -57,84 +56,87 @@ public class Version implements Cloneable, Comparable< Object >, Serializable {
 	 * compared versions.
 	 */
 	private static final String ZERO_PART = "0";
-	
+
 	/**
 	 * Version parts.
 	 */
 	private String[] parts = {};
-	
+
 	/**
 	 * Allocates a new <code>Version</code> object, without any version
-	 * represented. Shoulnd't be used. 
+	 * represented. Shoulnd't be used.
 	 */
 	public Version() {
 		super();
 	}
-	
+
 	/**
-	 * Allocates a new <code>Version</code> object, representing a version
-	 * given in the <code>s</code> parameter.
-	 *  
-	 * @param s version to represent 
+	 * Allocates a new <code>Version</code> object, representing a version given
+	 * in the <code>s</code> parameter.
+	 * 
+	 * @param s
+	 *          version to represent
 	 */
 	public Version(String s) {
 		super();
 		valueOf(s);
 	}
-	
+
 	/** @return part count */
 	public int partCount() {
 		return parts.length;
 	}
-	
+
 	/**
-	 * @param index part index
+	 * @param index
+	 *          part index
 	 * @return index-th part
 	 */
 	public String getPart(int index) {
 		return parts[index];
 	}
-	
+
 	/**
-	 * Compares this Version to another Object. If the Object is a Version,
-	 * this function behaves like <code>compareTo(Version)</code>. Otherwise,
-	 * it throws a <code>ClassCastException</code> (as <code>Versions</code>
-	 * are comparable only to other <code>Versions</code>).
-	 *       
-	 * @param o the <code>Object</code> to be compared.
-	 * @return the value <code>0</code> if the argument is a version equal
-	 *          to this version; a value less than <code>0</code>
-	 *          if the argument is a version greater than this version;
-	 *          and a value greater than <code>0</code> if the argument 
-	 *          is a version less than this version.
-	 * @throws ClassCastException if the argument is not a <code>Version</code>.
-	 *
+	 * Compares this Version to another Object. If the Object is a Version, this
+	 * function behaves like <code>compareTo(Version)</code>. Otherwise, it throws
+	 * a <code>ClassCastException</code> (as <code>Versions</code> are comparable
+	 * only to other <code>Versions</code>).
+	 * 
+	 * @param o
+	 *          the <code>Object</code> to be compared.
+	 * @return the value <code>0</code> if the argument is a version equal to this
+	 *         version; a value less than <code>0</code> if the argument is a
+	 *         version greater than this version; and a value greater than
+	 *         <code>0</code> if the argument is a version less than this version.
+	 * @throws ClassCastException
+	 *           if the argument is not a <code>Version</code>.
+	 * 
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 */
+	@Override
 	public int compareTo(Object o) {
-		
+
 		return compareTo((Version) o);
 	}
-	
+
 	/**
 	 * Compares two versions. Comparison algorithm is this:
 	 * <ol>
-	 *   <li>If number of parts in one of the compared versions is smaller than
-	 *       in the other version, add necessary number of parts containing
-	 *       string "0" to the end of one version, so the number of parts
-	 *       in both versions is equal.</li>
-	 *   <li>Compare version parts form the left as strings. If they aren't equal,
-	 *       return the string comparison return value, otherwise continue with
-	 *       the next part.</li>
-	 *   <li>If all parts are equal, return <code>0</code>.</li> 
-	 * </ol>      
-	 *       
-	 * @param anotherVersion the <code>Version</code> to be compared.
-	 * @return the value <code>0</code> if the argument is a version equal
-	 *          to this version; a value less than <code>0</code>
-	 *          if the argument is a version greater than this version;
-	 *          and a value greater than <code>0</code> if the argument 
-	 *          is a version less than this version.
+	 * <li>If number of parts in one of the compared versions is smaller than in
+	 * the other version, add necessary number of parts containing string "0" to
+	 * the end of one version, so the number of parts in both versions is equal.</li>
+	 * <li>Compare version parts form the left as strings. If they aren't equal,
+	 * return the string comparison return value, otherwise continue with the next
+	 * part.</li>
+	 * <li>If all parts are equal, return <code>0</code>.</li>
+	 * </ol>
+	 * 
+	 * @param anotherVersion
+	 *          the <code>Version</code> to be compared.
+	 * @return the value <code>0</code> if the argument is a version equal to this
+	 *         version; a value less than <code>0</code> if the argument is a
+	 *         version greater than this version; and a value greater than
+	 *         <code>0</code> if the argument is a version less than this version.
 	 */
 	public int compareTo(Version anotherVersion) {
 		int maxPartCount = Math.max(parts.length, anotherVersion.parts.length);
@@ -146,13 +148,15 @@ public class Version implements Cloneable, Comparable< Object >, Serializable {
 		}
 		return 0;
 	}
-	
-	/** 
-	 * Compares this version to the specified object. The result is <code>true</code>
-	 * if and only if the argument is not <code>null</code> and is a <code>Version</code>
-	 * object that represents the same version as this object.
+
+	/**
+	 * Compares this version to the specified object. The result is
+	 * <code>true</code> if and only if the argument is not <code>null</code> and
+	 * is a <code>Version</code> object that represents the same version as this
+	 * object.
 	 * 
-	 * @throws ClassCastException if the argument is not a <code>Version</code>.
+	 * @throws ClassCastException
+	 *           if the argument is not a <code>Version</code>.
 	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
@@ -160,23 +164,23 @@ public class Version implements Cloneable, Comparable< Object >, Serializable {
 	public boolean equals(Object o) {
 		return o instanceof Version && compareTo(o) == 0;
 	}
-	
+
 	/**
-	 * Returns a hash code value for this object. Because comparing version
-	 * is a bit tricky (versions like "1.5", "1.5.0" and "1.5.0.0" are all
-	 * equal), we use following algorithm to compute a hash code:
+	 * Returns a hash code value for this object. Because comparing version is a
+	 * bit tricky (versions like "1.5", "1.5.0" and "1.5.0.0" are all equal), we
+	 * use following algorithm to compute a hash code:
 	 * <ol>
-	 *   <li>Strip all parts with value <code>ZERO_PART</code> ("0") from the end
-	 *       of the version.
-	 *   <li>Set the initial hash code to <code>0</code> and iterate remaining
-	 *       parts of the version. In each step, xor current hash code with the
-	 *       hash code of current part.</li>
-	 *   <li>Return final hash code.</li> 
+	 * <li>Strip all parts with value <code>ZERO_PART</code> ("0") from the end of
+	 * the version.
+	 * <li>Set the initial hash code to <code>0</code> and iterate remaining parts
+	 * of the version. In each step, xor current hash code with the hash code of
+	 * current part.</li>
+	 * <li>Return final hash code.</li>
 	 * </ol>
-	 *       
-	 * Hash code computed by this algorithm maintains the general contract
-	 * for the <code>hashCode</code> method, which states that equal objects
-	 * must have equal hash codes.
+	 * 
+	 * Hash code computed by this algorithm maintains the general contract for the
+	 * <code>hashCode</code> method, which states that equal objects must have
+	 * equal hash codes.
 	 * 
 	 * @return a hash code value for this object
 	 * 
@@ -195,17 +199,18 @@ public class Version implements Cloneable, Comparable< Object >, Serializable {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Parses the version from a string.
-	 *  
-	 * @param s string to parse the version from
+	 * 
+	 * @param s
+	 *          string to parse the version from
 	 */
 	public void valueOf(String s) {
 		parts = s.split(PART_SEPARATOR_REGEX);
 	}
-	
-	/** 
+
+	/**
 	 * @return string representation of the version
 	 * @see java.lang.Object#toString()
 	 */
@@ -213,14 +218,15 @@ public class Version implements Cloneable, Comparable< Object >, Serializable {
 	public String toString() {
 		return ArrayUtils.join(PART_SEPARATOR, parts);
 	}
-	
+
 	/**
-	 * Returns version part with specified index. If the index is too large, returns
-	 * string "0". This behaviour is useful for comparing versions.
+	 * Returns version part with specified index. If the index is too large,
+	 * returns string "0". This behaviour is useful for comparing versions.
 	 * 
-	 * @param index part index
-	 * @return version part with specified index or string "0" if the index is
-	 *          too large
+	 * @param index
+	 *          part index
+	 * @return version part with specified index or string "0" if the index is too
+	 *         large
 	 */
 	private String getPartOrZero(int index) {
 		if (index < parts.length) {

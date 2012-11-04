@@ -40,7 +40,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import cz.cuni.mff.been.core.utils.FileUtils;
+import cz.cuni.mff.been.utils.FileUtils;
 
 /**
  * Log storage which stores the logs in files in a directory structure.
@@ -62,7 +62,7 @@ public class FilesystemLogStorage implements LogStorage {
 	 */
 	private static final long ALL_MESSAGES = -1;
 	/** The root directory for the log storage's data */
-	private String basedir;
+	private final String basedir;
 
 	/**
 	 * Handle to the files with standard output and error output.
@@ -73,8 +73,8 @@ public class FilesystemLogStorage implements LogStorage {
 
 		private static final long serialVersionUID = -4270082151611203333L;
 
-		private BufferedReader reader;
-		private String file;
+		private final BufferedReader reader;
+		private final String file;
 
 		/**
 		 * 
@@ -134,9 +134,9 @@ public class FilesystemLogStorage implements LogStorage {
 	 * @author Jaroslav Urban
 	 */
 	private class LogMessagePart {
-		private String timestamp;
-		private String level;
-		private String message;
+		private final String timestamp;
+		private final String level;
+		private final String message;
 
 		/**
 		 * 
@@ -203,6 +203,7 @@ public class FilesystemLogStorage implements LogStorage {
 	 * 
 	 * @see cz.cuni.mff.been.logging.LogStorage#addContext(java.lang.String)
 	 */
+	@Override
 	public void addContext(String name) throws LogStorageException, IllegalArgumentException, NullPointerException {
 		if (name == null) {
 			throw new NullPointerException("Context name is null");
@@ -227,6 +228,7 @@ public class FilesystemLogStorage implements LogStorage {
 	 * @see cz.cuni.mff.been.logging.LogStorage#addTask(java.lang.String,
 	 * java.lang.String)
 	 */
+	@Override
 	public void addTask(String context, String taskID) throws LogStorageException, IllegalArgumentException, NullPointerException {
 		checkTaskAndContextId(context, taskID);
 
@@ -284,6 +286,7 @@ public class FilesystemLogStorage implements LogStorage {
 	 * @see cz.cuni.mff.been.logging.LogStorage#getLogsForTask(java.lang.String,
 	 * java.lang.String)
 	 */
+	@Override
 	public LogRecord[] getLogsForTask(String context, String taskID) throws LogStorageException, IllegalArgumentException, NullPointerException {
 		return getLogsForTask(context, taskID, ALL_MESSAGES, ALL_MESSAGES);
 	}
@@ -295,6 +298,7 @@ public class FilesystemLogStorage implements LogStorage {
 	 * java.lang.String, java.util.Date, cz.cuni.mff.been.logging.LogLevel,
 	 * java.lang.String)
 	 */
+	@Override
 	public void log(String context, String taskID, Date timestamp,
 			LogLevel level, String message) throws LogStorageException, IllegalArgumentException, NullPointerException {
 		checkTaskAndContextId(context, taskID);
@@ -338,6 +342,7 @@ public class FilesystemLogStorage implements LogStorage {
 	 * 
 	 * @see cz.cuni.mff.been.logging.LogStorage#removeContext(java.lang.String)
 	 */
+	@Override
 	public void removeContext(String name) throws LogStorageException, IllegalArgumentException, NullPointerException {
 		if (name == null) {
 			throw new NullPointerException("Context name is null");
@@ -365,6 +370,7 @@ public class FilesystemLogStorage implements LogStorage {
 	 * cz.cuni.mff.been.logging.LogStorage#setTaskHostname(java.lang.String,
 	 * java.lang.String, java.lang.String)
 	 */
+	@Override
 	public void setTaskHostname(String context, String taskID, String hostname) throws LogStorageException, IllegalArgumentException, NullPointerException {
 		checkTaskAndContextId(context, taskID);
 
@@ -401,6 +407,7 @@ public class FilesystemLogStorage implements LogStorage {
 	 * @see
 	 * cz.cuni.mff.been.logging.LogStorage#isContextRegistered(java.lang.String)
 	 */
+	@Override
 	public boolean isContextRegistered(String name) throws LogStorageException, IllegalArgumentException, NullPointerException {
 		if (name == null) {
 			throw new NullPointerException("Context name is null");
@@ -420,6 +427,7 @@ public class FilesystemLogStorage implements LogStorage {
 	 * cz.cuni.mff.been.logging.LogStorage#isTaskRegistered(java.lang.String,
 	 * java.lang.String)
 	 */
+	@Override
 	public boolean isTaskRegistered(String context, String taskID) throws LogStorageException, IllegalArgumentException, NullPointerException {
 		checkTaskAndContextId(context, taskID);
 
@@ -438,6 +446,7 @@ public class FilesystemLogStorage implements LogStorage {
 	 * @see cz.cuni.mff.been.logging.LogStorage#addErrorOutput(java.lang.String,
 	 * java.lang.String, java.lang.String)
 	 */
+	@Override
 	public void addErrorOutput(String context, String taskID, String output) throws LogStorageException, IllegalArgumentException, NullPointerException {
 		checkTaskAndContextId(context, taskID);
 
@@ -472,6 +481,7 @@ public class FilesystemLogStorage implements LogStorage {
 	 * cz.cuni.mff.been.logging.LogStorage#addStandardOutput(java.lang.String,
 	 * java.lang.String, java.lang.String)
 	 */
+	@Override
 	public void addStandardOutput(String context, String taskID, String output) throws LogStorageException, IllegalArgumentException, NullPointerException {
 		checkTaskAndContextId(context, taskID);
 
@@ -506,6 +516,7 @@ public class FilesystemLogStorage implements LogStorage {
 	 * cz.cuni.mff.been.logging.LogStorage#getStandardOutput(java.lang.String,
 	 * java.lang.String)
 	 */
+	@Override
 	public OutputHandle getStandardOutput(String context, String taskID) throws LogStorageException, IllegalArgumentException, NullPointerException {
 		checkTaskAndContextId(context, taskID);
 
@@ -532,6 +543,7 @@ public class FilesystemLogStorage implements LogStorage {
 	 * @see cz.cuni.mff.been.logging.LogStorage#getErrorOutput(java.lang.String,
 	 * java.lang.String)
 	 */
+	@Override
 	public OutputHandle getErrorOutput(String context, String taskID) throws LogStorageException, IllegalArgumentException, NullPointerException {
 		checkTaskAndContextId(context, taskID);
 
@@ -559,6 +571,7 @@ public class FilesystemLogStorage implements LogStorage {
 	 * cz.cuni.mff.been.logging.LogStorage#getLogCountForTask(java.lang.String,
 	 * java.lang.String)
 	 */
+	@Override
 	public long getLogCountForTask(String context, String taskID) throws LogStorageException, IllegalArgumentException, NullPointerException {
 		checkTaskAndContextId(context, taskID);
 
@@ -603,6 +616,7 @@ public class FilesystemLogStorage implements LogStorage {
 	 * @see cz.cuni.mff.been.logging.LogStorage#getLogsForTask(java.lang.String,
 	 * java.lang.String, long, long)
 	 */
+	@Override
 	public LogRecord[] getLogsForTask(String context, String taskID, long first,
 			long last) throws LogStorageException, IllegalArgumentException, NullPointerException {
 		checkTaskAndContextId(context, taskID);

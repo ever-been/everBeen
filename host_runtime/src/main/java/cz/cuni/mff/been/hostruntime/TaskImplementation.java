@@ -53,7 +53,6 @@ import cz.cuni.mff.been.common.Debug;
 import cz.cuni.mff.been.common.RMI;
 import cz.cuni.mff.been.common.serialize.Deserialize;
 import cz.cuni.mff.been.common.serialize.DeserializeException;
-import cz.cuni.mff.been.core.utils.FileUtils;
 import cz.cuni.mff.been.debugassistant.DebugAssistantInterface;
 import cz.cuni.mff.been.debugassistant.SuspendedTask;
 import cz.cuni.mff.been.hostmanager.IllegalOperationException;
@@ -76,6 +75,7 @@ import cz.cuni.mff.been.task.TaskException;
 import cz.cuni.mff.been.taskmanager.CheckPoint;
 import cz.cuni.mff.been.taskmanager.HostRuntimesPortInterface;
 import cz.cuni.mff.been.taskmanager.data.TaskState;
+import cz.cuni.mff.been.utils.FileUtils;
 
 /**
  * The class representing a task instance in the host runtime.
@@ -93,46 +93,46 @@ public class TaskImplementation extends UnicastRemoteObject implements TaskInter
 	private static final long serialVersionUID = -2011676092980850313L;
 
 	/** Task descriptor of this task. */
-	private TaskDescriptor taskDescriptor;
+	private final TaskDescriptor taskDescriptor;
 	/** Task property objects as read from the task descriptor. */
 	private Map<String, Serializable> taskPropertyObjects;
 	/** Task configuration as read from the task package. */
 	private PackageConfiguration taskPackageConfiguration;
 
 	/** Host Runtime in which this task is running. */
-	private HostRuntimeImplementation hostRuntime;
+	private final HostRuntimeImplementation hostRuntime;
 
 	/**
 	 * The base directory of the task. Assigned by host runtime, cached here for
 	 * ease of use. Survives until explicit task destruction during context
 	 * cleanup.
 	 */
-	private String baseDirectory;
+	private final String baseDirectory;
 	/**
 	 * Task directory. The files from the task package are available here.
 	 * Assigned by host runtime, cached here for ease of use. Deleted on task
 	 * termination.
 	 */
-	private String taskDirectory;
+	private final String taskDirectory;
 	/**
 	 * Working directory. The results of task work are stored there. Assigned by
 	 * host runtime, cached here for ease of use. Survives until explicit task
 	 * destruction during context cleanup.
 	 */
-	private String workingDirectory;
+	private final String workingDirectory;
 	/**
 	 * Temporary directory. For arbitrary use by the task. Assigned by host
 	 * runtime, cached here for ease of use. Deleted on task termination.
 	 */
-	private String temporaryDirectory;
+	private final String temporaryDirectory;
 	/**
 	 * Service directory. For arbitrary use by the host but not the task. Assigned
 	 * by host runtime, cached here for ease of use. Deleted on task execution.
 	 */
-	private String serviceDirectory;
+	private final String serviceDirectory;
 
 	/** Determines whether we want to measure detailed load for this task. */
-	private boolean measureDetailedLoad;
+	private final boolean measureDetailedLoad;
 
 	/** Thread object which executes the task process. */
 	private TaskProcessExecutor executor;
@@ -154,11 +154,11 @@ public class TaskImplementation extends UnicastRemoteObject implements TaskInter
 
 	// Shortcuts to values that are used multiple times.
 
-	private String taskId;
-	private String contextId;
-	private String taskPortUri;
-	private String hostRuntimeName;
-	private HostRuntimesPortInterface taskManagerRuntimePort;
+	private final String taskId;
+	private final String contextId;
+	private final String taskPortUri;
+	private final String hostRuntimeName;
+	private final HostRuntimesPortInterface taskManagerRuntimePort;
 
 	// ----------------------------------------------------------------------
 	// Utility Functions
@@ -233,11 +233,11 @@ public class TaskImplementation extends UnicastRemoteObject implements TaskInter
 	 */
 	private static class LogRecord {
 		/** Level of the log event. */
-		private LogLevel level;
+		private final LogLevel level;
 		/** Time of the log event. */
-		private Date timestamp;
+		private final Date timestamp;
 		/** Text of the message. */
-		private String message;
+		private final String message;
 
 		public LogRecord(LogLevel level, Date timestamp, String message) {
 			this.level = level;
@@ -247,7 +247,7 @@ public class TaskImplementation extends UnicastRemoteObject implements TaskInter
 	}
 
 	/** The buffer for temporary local storage of log records. */
-	private List<LogRecord> localLogStorage = new LinkedList<LogRecord>();
+	private final List<LogRecord> localLogStorage = new LinkedList<LogRecord>();
 
 	/**
 	 * For tasks that are sensitive to disruptions, log messages are stored
@@ -311,13 +311,13 @@ public class TaskImplementation extends UnicastRemoteObject implements TaskInter
 		private static final int BUFFER_SIZE = 4096;
 
 		/** Stream to read the logs from. */
-		private InputStream inputStream;
+		private final InputStream inputStream;
 		/** File to write the logs to. */
-		private String outputFile;
+		private final String outputFile;
 		/** Selection of the process output type. */
-		private ProcessOutputType outputType;
+		private final ProcessOutputType outputType;
 		/** Selection of the output forwarding type. */
-		private OutputForwardingType forwardingType;
+		private final OutputForwardingType forwardingType;
 
 		/**
 		 * Constructs the output processor.
@@ -485,7 +485,7 @@ public class TaskImplementation extends UnicastRemoteObject implements TaskInter
 		 */
 		private class TaskProcessKiller extends Thread {
 			/** Task process timeout in milliseconds. */
-			private long timeout;
+			private final long timeout;
 
 			public TaskProcessKiller(long timeout) {
 				this.timeout = timeout;
@@ -577,20 +577,14 @@ public class TaskImplementation extends UnicastRemoteObject implements TaskInter
 			// Define the directory for the XSD files used by JAXB.
 			result.add("-D" + XSDRoot.XSD_ROOT + '=' + taskDirectory);
 
-
 			result.add("-Done-jar.main.class=cz.cuni.mff.been.hostruntime.TaskLoader");
-
-
 
 			// Now comes constructing the class path.
 			// We start with our class path.
 			String taskClassPath = System.getProperty("java.class.path");
 
-
 			// The task directory can contain additional classes.
 			taskClassPath += File.pathSeparatorChar + taskDirectory;
-
-
 
 			// The task configuration contains class path as well.
 			if (taskPackageConfiguration.getTaskLanguage() == PackageConfiguration.TaskLanguage.JAVA) {
@@ -598,7 +592,6 @@ public class TaskImplementation extends UnicastRemoteObject implements TaskInter
 			} else if (taskPackageConfiguration.getTaskLanguage() == PackageConfiguration.TaskLanguage.JYTHON) {
 				taskClassPath += File.pathSeparatorChar + taskPackageConfiguration.getJythonClassPath();
 			}
-
 
 			StringBuilder onePaths = new StringBuilder();
 			onePaths.append("-Done-jar.class.path=");
@@ -618,7 +611,6 @@ public class TaskImplementation extends UnicastRemoteObject implements TaskInter
 			}
 
 			result.add(onePaths.toString());
-
 
 			//result.add("-cp");
 			//result.add(taskClassPath);
@@ -649,9 +641,6 @@ public class TaskImplementation extends UnicastRemoteObject implements TaskInter
 				taskLoaderClass = JythonTaskLoader.class.getName();
 				taskLoaderArgument = taskPackageConfiguration.getJythonScriptFile();
 			}
-
-
-
 
 			//result.add(taskLoaderClass);
 			result.add(taskLoaderArgument);
@@ -795,10 +784,9 @@ public class TaskImplementation extends UnicastRemoteObject implements TaskInter
 				String[] commandLineArray = commandLineList.toArray(new String[commandLineList.size()]);
 
 				System.out.println("COMMAND LINE IS: ");
-				for (String token: commandLineArray) {
+				for (String token : commandLineArray) {
 					System.out.println("\t" + token);
 				}
-
 
 				// TODO Before rewrite, the load monitor was initialized and
 				// terminated for each execution.
@@ -1097,6 +1085,7 @@ public class TaskImplementation extends UnicastRemoteObject implements TaskInter
 	/**
 	 * @see cz.cuni.mff.been.hostruntime.TaskInterface#isRunning()
 	 */
+	@Override
 	public boolean isRunning() {
 		return (isRunning);
 	}
@@ -1106,6 +1095,7 @@ public class TaskImplementation extends UnicastRemoteObject implements TaskInter
 	 * 
 	 * @see cz.cuni.mff.been.hostruntime.TaskInterface#kill()
 	 */
+	@Override
 	public void kill() {
 		if (isRunning) {
 			executor.killTask();
@@ -1115,6 +1105,7 @@ public class TaskImplementation extends UnicastRemoteObject implements TaskInter
 	/**
 	 * @see cz.cuni.mff.been.hostruntime.TaskInterface#waitFor()
 	 */
+	@Override
 	public void waitFor() {
 		if (isRunning) {
 			executor.waitForTask();
@@ -1124,6 +1115,7 @@ public class TaskImplementation extends UnicastRemoteObject implements TaskInter
 	/**
 	 * @see cz.cuni.mff.been.hostruntime.TaskInterface#getExitValue()
 	 */
+	@Override
 	public int getExitValue() {
 		return (exitValue);
 	}
@@ -1131,6 +1123,7 @@ public class TaskImplementation extends UnicastRemoteObject implements TaskInter
 	/**
 	 * @see cz.cuni.mff.been.hostruntime.TaskInterface#destroy()
 	 */
+	@Override
 	public void destroy() throws TaskException {
 		if (isRunning)
 			throw new IllegalStateException("You must call this method only on tasks that are not running.");
@@ -1152,31 +1145,37 @@ public class TaskImplementation extends UnicastRemoteObject implements TaskInter
 	// Dumb Getters And Setters
 
 	/** @see cz.cuni.mff.been.hostruntime.TaskInterface#getTaskDirectory() */
+	@Override
 	public String getTaskDirectory() throws RemoteException {
 		return taskDirectory;
 	}
 
 	/** @see cz.cuni.mff.been.hostruntime.TaskInterface#getWorkingDirectory() */
+	@Override
 	public String getWorkingDirectory() throws RuntimeException {
 		return workingDirectory;
 	}
 
 	/** @see cz.cuni.mff.been.hostruntime.TaskInterface#getTemporaryDirectory() */
+	@Override
 	public String getTemporaryDirectory() throws RuntimeException {
 		return temporaryDirectory;
 	}
 
 	/** @see cz.cuni.mff.been.hostruntime.TaskInterface#getTaskID() */
+	@Override
 	public String getTaskID() throws RemoteException {
 		return taskDescriptor.getTaskId();
 	}
 
 	/** @see cz.cuni.mff.been.hostruntime.TaskInterface#getContextID() */
+	@Override
 	public String getContextID() throws RemoteException {
 		return taskDescriptor.getContextId();
 	}
 
 	/** @see cz.cuni.mff.been.hostruntime.TaskInterface#isDetailedLoad() */
+	@Override
 	public boolean isDetailedLoad() throws RemoteException {
 		return measureDetailedLoad;
 	}
