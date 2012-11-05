@@ -43,7 +43,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.UnmarshalException;
 
-import cz.cuni.mff.been.services.Names;
 import org.xml.sax.SAXException;
 
 import cz.cuni.mff.been.common.ComponentInitializationException;
@@ -52,11 +51,13 @@ import cz.cuni.mff.been.hostmanager.HostManagerInterface;
 import cz.cuni.mff.been.jaxb.BindingParser;
 import cz.cuni.mff.been.jaxb.ConvertorException;
 import cz.cuni.mff.been.jaxb.XSD;
+import cz.cuni.mff.been.jaxb.XSDRoot;
 import cz.cuni.mff.been.jaxb.td.TaskDescriptor;
 import cz.cuni.mff.been.logging.LogRecord;
 import cz.cuni.mff.been.logging.LogStorageException;
 import cz.cuni.mff.been.logging.LogUtils;
 import cz.cuni.mff.been.logging.OutputHandle;
+import cz.cuni.mff.been.services.Names;
 import cz.cuni.mff.been.services.Service;
 import cz.cuni.mff.been.softwarerepository.MatchException;
 import cz.cuni.mff.been.softwarerepository.PackageMetadata;
@@ -82,8 +83,6 @@ import cz.cuni.mff.been.webinterface.event.EventListener;
 import cz.cuni.mff.been.webinterface.ref.ServiceReference;
 import cz.cuni.mff.been.webinterface.ref.TaskManagerReference;
 
-import static cz.cuni.mff.been.services.Names.*;
-
 /**
  * Web interface module for the Execution Environment.
  * 
@@ -98,24 +97,15 @@ public class TasksModule extends Module implements EventListener {
 	private static final String TASK_TREE_PREFIX = "/webui/";
 
 	private final TaskManagerReference taskManager = new TaskManagerReference();
-	private final ServiceReference<SoftwareRepositoryInterface> softwareRepository = new ServiceReference<SoftwareRepositoryInterface>(
-			taskManager,
-			SoftwareRepositoryService.SERVICE_NAME,
-			Service.RMI_MAIN_IFACE,
-			SoftwareRepositoryService.SERVICE_HUMAN_NAME);
-	private final ServiceReference<HostManagerInterface> hostManager = new ServiceReference<HostManagerInterface>(
-			taskManager,
-			Names.HOST_MANAGER_SERVICE_NAME,
-			Names.HOST_MANAGER_REMOTE_INTERFACE_MAIN,
-			Names.HOST_MANAGER_SERVICE_HUMAN_NAME);
+	private final ServiceReference<SoftwareRepositoryInterface> softwareRepository = new ServiceReference<SoftwareRepositoryInterface>(taskManager, SoftwareRepositoryService.SERVICE_NAME, Service.RMI_MAIN_IFACE, SoftwareRepositoryService.SERVICE_HUMAN_NAME);
+	private final ServiceReference<HostManagerInterface> hostManager = new ServiceReference<HostManagerInterface>(taskManager, Names.HOST_MANAGER_SERVICE_NAME, Names.HOST_MANAGER_REMOTE_INTERFACE_MAIN, Names.HOST_MANAGER_SERVICE_HUMAN_NAME);
 
 	private long idIndex = 0;
 
-
 	/**
 	 * Allocates a new <code>TasksModule</code> object. Construcor is private so
-	 * only instance in <code>instance</code> field can be constructed
-	 * (singleton pattern).
+	 * only instance in <code>instance</code> field can be constructed (singleton
+	 * pattern).
 	 */
 	private TasksModule() {
 		super();
@@ -125,8 +115,7 @@ public class TasksModule extends Module implements EventListener {
 		name = "Tasks";
 		defaultAction = "context-list";
 
-		menu = new MenuItem[] {
-				new MenuItem("context-list", "Contexts & Tasks"),
+		menu = new MenuItem[] { new MenuItem("context-list", "Contexts & Tasks"),
 				new MenuItem("task-run", "Run task"),
 				new MenuItem("task-logs", "Task logs"),
 				new MenuItem("task-manager-logs", "Task Manager logs"),
@@ -154,7 +143,7 @@ public class TasksModule extends Module implements EventListener {
 	 * We invalidate remote reference because they could be meaningless now.
 	 * 
 	 * @param event
-	 *            sent event
+	 *          sent event
 	 */
 	@Override
 	public void receiveEvent(Event event) {
@@ -171,40 +160,29 @@ public class TasksModule extends Module implements EventListener {
 	 * <code>try { ... } catch { ... }</code> is needed in each method).
 	 * 
 	 * @param request
-	 *            HTTP request
+	 *          HTTP request
 	 * @param response
-	 *            HTTP response
+	 *          HTTP response
 	 * @param action
-	 *            action to invoke
+	 *          action to invoke
 	 * @throws IOException
-	 *             if some I/O error occurs
+	 *           if some I/O error occurs
 	 * @throws ServletException
-	 *             if some kind of methode invocation error occurs
+	 *           if some kind of methode invocation error occurs
 	 * @throws InvocationTargetException
-	 *             wraps an exception thrown by the invoked method
+	 *           wraps an exception thrown by the invoked method
 	 * 
 	 * @see cz.cuni.mff.been.webinterface.modules.Module#invokeMethodForAction(javax.servlet.http.HttpServletRequest,
 	 *      javax.servlet.http.HttpServletResponse, java.lang.String)
 	 */
 	@Override
-	public void invokeMethodForAction(
-			HttpServletRequest request,
-			HttpServletResponse response,
-			String action) throws ServletException, IOException,
-			InvocationTargetException {
+	public void invokeMethodForAction(HttpServletRequest request,
+			HttpServletResponse response, String action) throws ServletException, IOException, InvocationTargetException {
 		try {
 			super.invokeMethodForAction(request, response, action);
 		} catch (InvocationTargetException e) {
 			if (e.getCause() instanceof ConnectException) {
-				throw new InvocationTargetException(
-						new ConnectException(
-								"<strong>Can't execute remote call to the Task Manager."
-										+ "</strong><br /><br />"
-										+ "Try to reload the page. If the error persists after multiple reloads, "
-										+ "make sure the Task Manager is running.<br /><br/>"
-										+ "Most probale causes of this error are network-related problems or "
-										+ "crash of the Task Manager."),
-						e.getMessage());
+				throw new InvocationTargetException(new ConnectException("<strong>Can't execute remote call to the Task Manager." + "</strong><br /><br />" + "Try to reload the page. If the error persists after multiple reloads, " + "make sure the Task Manager is running.<br /><br/>" + "Most probale causes of this error are network-related problems or " + "crash of the Task Manager."), e.getMessage());
 			} else {
 				throw e;
 			}
@@ -215,34 +193,30 @@ public class TasksModule extends Module implements EventListener {
 	 * Handles the "context-list" action.
 	 * 
 	 * @param request
-	 *            HTTP request
+	 *          HTTP request
 	 * @param response
-	 *            HTTP response
+	 *          HTTP response
 	 * @throws IOException
-	 *             if some I/O error occurs
+	 *           if some I/O error occurs
 	 * @throws ServletException
-	 *             if including the template file fails
+	 *           if including the template file fails
 	 * @throws InvalidParamValueException
-	 *             if required parameter contains invalid value
+	 *           if required parameter contains invalid value
 	 * @throws ComponentInitializationException
-	 *             if the Task Manager can't be initialized
+	 *           if the Task Manager can't be initialized
 	 */
-	public void contextList(
-			HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException,
-			ComponentInitializationException, InvalidParamValueException {
+	public void contextList(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException, ComponentInitializationException, InvalidParamValueException {
 		if (params.exists("action")) {
 			String action = request.getParameter("action");
 			if (action.equals("context-killed")) {
-				infoMessages
-						.addTextMessage("All tasks in the context killed successfully.");
+				infoMessages.addTextMessage("All tasks in the context killed successfully.");
 			} else if (action.equals("context-deleted")) {
 				infoMessages.addTextMessage("Context deleted successfully.");
 			} else if (action.equals("task-killed")) {
 				infoMessages.addTextMessage("Task killed successfully.");
 			} else {
-				throw new InvalidParamValueException(
-						"Parameter \"action\" has invalid value.");
+				throw new InvalidParamValueException("Parameter \"action\" has invalid value.");
 			}
 		}
 		ContextEntry[] contexts = taskManager.get().getContexts();
@@ -260,49 +234,41 @@ public class TasksModule extends Module implements EventListener {
 	 * Handles the "context-details" action.
 	 * 
 	 * @param request
-	 *            HTTP request
+	 *          HTTP request
 	 * @param response
-	 *            HTTP response
+	 *          HTTP response
 	 * @throws IOException
-	 *             if some I/O error occurs
+	 *           if some I/O error occurs
 	 * @throws ServletException
-	 *             if including the template file fails
+	 *           if including the template file fails
 	 * @throws MissingParamException
-	 *             if some required parameter is missing
+	 *           if some required parameter is missing
 	 * @throws InvalidParamValueException
-	 *             if required parameter contains invalid value
+	 *           if required parameter contains invalid value
 	 * @throws ComponentInitializationException
-	 *             if the Task Manager can't be initialized
+	 *           if the Task Manager can't be initialized
 	 */
-	public void contextDetails(
-			HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException,
-			MissingParamException, InvalidParamValueException,
-			ComponentInitializationException {
+	public void contextDetails(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException, MissingParamException, InvalidParamValueException, ComponentInitializationException {
 		if (params.exists("action")) {
 			String action = request.getParameter("action");
 			if (action.equals("task-runned")) {
 				infoMessages.addTextMessage("Task runned successfully.");
 			} else {
-				throw new InvalidParamValueException(
-						"Parameter \"action\" has invalid value.");
+				throw new InvalidParamValueException("Parameter \"action\" has invalid value.");
 			}
 		}
 		params.ensureExists("cid");
 
 		ContextEntry context = null;
 		try {
-			context = taskManager.get().getContextById(
-					request.getParameter("cid"));
+			context = taskManager.get().getContextById(request.getParameter("cid"));
 		} catch (IllegalArgumentException e) {
-			throw new InvalidParamValueException(
-					"Parameter \"cid\" has invalid value.");
+			throw new InvalidParamValueException("Parameter \"cid\" has invalid value.");
 		}
 
-		TaskEntry[] tasks = taskManager.get().getTasksInContext(
-				context.getContextId());
-		Map<TaskEntry, CheckPoint[]> checkpoints = TaskUtils
-				.getCheckPointsForTasks(taskManager.get(), tasks);
+		TaskEntry[] tasks = taskManager.get().getTasksInContext(context.getContextId());
+		Map<TaskEntry, CheckPoint[]> checkpoints = TaskUtils.getCheckPointsForTasks(taskManager.get(), tasks);
 
 		HashMap<String, Object> data = new HashMap<String, Object>();
 		data.put("context", context);
@@ -319,32 +285,28 @@ public class TasksModule extends Module implements EventListener {
 	 * Handles the "context-kill" action.
 	 * 
 	 * @param request
-	 *            HTTP request
+	 *          HTTP request
 	 * @param response
-	 *            HTTP response
+	 *          HTTP response
 	 * @throws IOException
-	 *             if some I/O error occurs
+	 *           if some I/O error occurs
 	 * @throws ServletException
-	 *             if including the template file fails
+	 *           if including the template file fails
 	 * @throws MissingParamException
-	 *             if some required parameter is missing
+	 *           if some required parameter is missing
 	 * @throws InvalidParamValueException
-	 *             if required parameter contains invalid value
+	 *           if required parameter contains invalid value
 	 * @throws ComponentInitializationException
-	 *             if the Task Manager can't be initialized
+	 *           if the Task Manager can't be initialized
 	 */
-	public void contextKill(
-			HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException,
-			MissingParamException, InvalidParamValueException,
-			ComponentInitializationException {
+	public void contextKill(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException, MissingParamException, InvalidParamValueException, ComponentInitializationException {
 		params.ensureExists("cid");
 
 		try {
 			taskManager.get().killContextById(request.getParameter("cid"));
 		} catch (IllegalArgumentException e) {
-			throw new InvalidParamValueException(
-					"Parameter \"cid\" has invalid value.");
+			throw new InvalidParamValueException("Parameter \"cid\" has invalid value.");
 		}
 
 		HashMap<String, String> actionParams = new HashMap<String, String>();
@@ -356,30 +318,24 @@ public class TasksModule extends Module implements EventListener {
 	 * Handles the "context-delete" action.
 	 * 
 	 * @param request
-	 *            HTTP request
+	 *          HTTP request
 	 * @param response
-	 *            HTTP response
+	 *          HTTP response
 	 * @throws IOException
-	 *             if some I/O error occurs
+	 *           if some I/O error occurs
 	 * @throws ServletException
-	 *             if including the template file fails
+	 *           if including the template file fails
 	 * @throws MissingParamException
-	 *             if some required parameter is missing
+	 *           if some required parameter is missing
 	 * @throws InvalidParamValueException
-	 *             if required parameter contains invalid value
+	 *           if required parameter contains invalid value
 	 * @throws ComponentInitializationException
-	 *             if the Task Manager can't be initialized
+	 *           if the Task Manager can't be initialized
 	 */
-	public void contextDelete(
-			HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException,
-			MissingParamException, InvalidParamValueException,
-			ComponentInitializationException {
+	public void contextDelete(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException, MissingParamException, InvalidParamValueException, ComponentInitializationException {
 		params.ensureExists("cid");
-		params.ensureCondition(
-				"cid",
-				!request.getParameter("cid").equals(
-						TaskManagerInterface.SYSTEM_CONTEXT_ID));
+		params.ensureCondition("cid", !request.getParameter("cid").equals(TaskManagerInterface.SYSTEM_CONTEXT_ID));
 
 		try {
 			String contextID = request.getParameter("cid");
@@ -397,25 +353,22 @@ public class TasksModule extends Module implements EventListener {
 	 * Handles the "task-details" action.
 	 * 
 	 * @param request
-	 *            HTTP request
+	 *          HTTP request
 	 * @param response
-	 *            HTTP response
+	 *          HTTP response
 	 * @throws IOException
-	 *             if some I/O error occurs
+	 *           if some I/O error occurs
 	 * @throws ServletException
-	 *             if including the template file fails
+	 *           if including the template file fails
 	 * @throws MissingParamException
-	 *             if some required parameter is missing
+	 *           if some required parameter is missing
 	 * @throws InvalidParamValueException
-	 *             if required parameter contains invalid value
+	 *           if required parameter contains invalid value
 	 * @throws ComponentInitializationException
-	 *             if the Task Manager can't be initialized
+	 *           if the Task Manager can't be initialized
 	 */
-	public void taskDetails(
-			HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException,
-			MissingParamException, InvalidParamValueException,
-			ComponentInitializationException {
+	public void taskDetails(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException, MissingParamException, InvalidParamValueException, ComponentInitializationException {
 		params.ensureExist("tid", "cid");
 
 		TaskEntry task = null;
@@ -424,51 +377,30 @@ public class TasksModule extends Module implements EventListener {
 		OutputHandle standardOutputHandle = null;
 		OutputHandle errorOutputHandle = null;
 		try {
-			task = taskManager.get().getTaskById(
-					request.getParameter("tid"),
-					request.getParameter("cid"));
+			task = taskManager.get().getTaskById(request.getParameter("tid"), request.getParameter("cid"));
 			try {
-				checkpoints = taskManager.get().checkPointLook(
-						new CheckPoint(
-								task.getTaskId(),
-								task.getContextId(),
-								null,
-								null),
-						0);
+				checkpoints = taskManager.get().checkPointLook(new CheckPoint(task.getTaskId(), task.getContextId(), null, null), 0);
 			} catch (TaskManagerException e) {
-				errorMessages.addTextMessage("Error retrieving checkpoints: "
-						+ e.getMessage());
+				errorMessages.addTextMessage("Error retrieving checkpoints: " + e.getMessage());
 				checkpoints = new CheckPoint[0];
 			}
 
 			try {
-				logRecords = taskManager.get().getLogsForTask(
-						task.getContextId(),
-						task.getTaskId());
-				standardOutputHandle = taskManager.get().getStandardOutput(
-						task.getContextId(),
-						task.getTaskId());
-				errorOutputHandle = taskManager.get().getErrorOutput(
-						task.getContextId(),
-						task.getTaskId());
+				logRecords = taskManager.get().getLogsForTask(task.getContextId(), task.getTaskId());
+				standardOutputHandle = taskManager.get().getStandardOutput(task.getContextId(), task.getTaskId());
+				errorOutputHandle = taskManager.get().getErrorOutput(task.getContextId(), task.getTaskId());
 			} catch (LogStorageException e) {
-				errorMessages.addTextMessage("Error retrieving logs: "
-						+ e.getMessage());
+				errorMessages.addTextMessage("Error retrieving logs: " + e.getMessage());
 			}
 		} catch (IllegalArgumentException e) {
-			throw new InvalidParamValueException(
-					"Parameter \"cid\" or \"tid\" has invalid value ("
-							+ e.getMessage() + ")");
+			throw new InvalidParamValueException("Parameter \"cid\" or \"tid\" has invalid value (" + e.getMessage() + ")");
 		}
 
 		HashMap<String, Object> data = new HashMap<String, Object>();
 		data.put("task", task);
 		data.put("checkpoints", checkpoints);
 		data.put("logRecords", logRecords);
-		data.put("logFields", EnumSet.of(
-				LogRecord.Fields.TIMESTAMP,
-				LogRecord.Fields.LEVEL,
-				LogRecord.Fields.MESSAGE));
+		data.put("logFields", EnumSet.of(LogRecord.Fields.TIMESTAMP, LogRecord.Fields.LEVEL, LogRecord.Fields.MESSAGE));
 		data.put("standardOutputHandle", standardOutputHandle);
 		data.put("errorOutputHandle", errorOutputHandle);
 
@@ -482,34 +414,27 @@ public class TasksModule extends Module implements EventListener {
 	 * Handles the "task-kill" action.
 	 * 
 	 * @param request
-	 *            HTTP request
+	 *          HTTP request
 	 * @param response
-	 *            HTTP response
+	 *          HTTP response
 	 * @throws IOException
-	 *             if some I/O error occurs
+	 *           if some I/O error occurs
 	 * @throws ServletException
-	 *             if including the template file fails
+	 *           if including the template file fails
 	 * @throws MissingParamException
-	 *             if some required parameter is missing
+	 *           if some required parameter is missing
 	 * @throws InvalidParamValueException
-	 *             if required parameter contains invalid value
+	 *           if required parameter contains invalid value
 	 * @throws ComponentInitializationException
-	 *             if the Task Manager can't be initialized
+	 *           if the Task Manager can't be initialized
 	 */
-	public void taskKill(
-			HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException,
-			MissingParamException, InvalidParamValueException,
-			ComponentInitializationException {
+	public void taskKill(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, MissingParamException, InvalidParamValueException, ComponentInitializationException {
 		params.ensureExist("cid", "tid");
 
 		try {
-			taskManager.get().killTaskById(
-					request.getParameter("tid"),
-					request.getParameter("cid"));
+			taskManager.get().killTaskById(request.getParameter("tid"), request.getParameter("cid"));
 		} catch (IllegalArgumentException e) {
-			throw new InvalidParamValueException(
-					"Parameter \"cid\" or \"tid\" has " + "invalid value.");
+			throw new InvalidParamValueException("Parameter \"cid\" or \"tid\" has " + "invalid value.");
 		}
 
 		HashMap<String, String> actionParams = new HashMap<String, String>();
@@ -532,9 +457,7 @@ public class TasksModule extends Module implements EventListener {
 				wasError = true;
 			}
 		}
-		params.checkCondition(
-				!wasError,
-				"Properties must be formatted correctly.");
+		params.checkCondition(!wasError, "Properties must be formatted correctly.");
 	}
 
 	private Map<String, String> getProperties(HttpServletRequest request) {
@@ -547,9 +470,7 @@ public class TasksModule extends Module implements EventListener {
 				continue;
 			}
 			String[] propertyParts = property.split("=");
-			result.put(
-					Routines.trim(propertyParts[0]),
-					Routines.trim(propertyParts[1]));
+			result.put(Routines.trim(propertyParts[0]), Routines.trim(propertyParts[1]));
 		}
 		return result;
 	}
@@ -558,25 +479,21 @@ public class TasksModule extends Module implements EventListener {
 	 * Handles the "task-run" action.
 	 * 
 	 * @param request
-	 *            HTTP request
+	 *          HTTP request
 	 * @param response
-	 *            HTTP response
+	 *          HTTP response
 	 * @throws IOException
-	 *             if some I/O error occurs
+	 *           if some I/O error occurs
 	 * @throws ServletException
-	 *             if including the template file fails
+	 *           if including the template file fails
 	 * @throws MissingParamException
-	 *             if some required parameter is missing
+	 *           if some required parameter is missing
 	 * @throws InvalidParamValueException
-	 *             if required parameter contains invalid value
+	 *           if required parameter contains invalid value
 	 * @throws ComponentInitializationException
-	 *             if the Task Manager can't be initialized
+	 *           if the Task Manager can't be initialized
 	 */
-	public void
-			taskRun(HttpServletRequest request, HttpServletResponse response)
-					throws ServletException, IOException,
-					MissingParamException, InvalidParamValueException,
-					ComponentInitializationException {
+	public void taskRun(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, MissingParamException, InvalidParamValueException, ComponentInitializationException {
 		HashMap<String, Object> data = new HashMap<String, Object>();
 
 		if (params.exists("run")) {
@@ -585,14 +502,11 @@ public class TasksModule extends Module implements EventListener {
 			Set<String> taskRunTypes = new HashSet<String>();
 			taskRunTypes.add(TASK_RUN_TYPE_GUI);
 			taskRunTypes.add(TASK_RUN_TYPE_XML);
-			params.ensureCondition(
-					"task-run-type",
-					params.isInSet("task-run-type", taskRunTypes));
+			params.ensureCondition("task-run-type", params.isInSet("task-run-type", taskRunTypes));
 
 			if (request.getParameter("task-run-type").equals(TASK_RUN_TYPE_GUI)) {
 				params.ensureExist("properties");
-			} else if (request.getParameter("task-run-type").equals(
-					TASK_RUN_TYPE_XML)) {
+			} else if (request.getParameter("task-run-type").equals(TASK_RUN_TYPE_XML)) {
 				params.ensureExist("xml");
 			} else {
 				assert false : "Impossible things happen sometimes :-)";
@@ -601,63 +515,38 @@ public class TasksModule extends Module implements EventListener {
 			TaskDescriptor taskDescriptor = null;
 
 			if (request.getParameter("task-run-type").equals(TASK_RUN_TYPE_GUI)) {
-				params.checkCondition(
-						params.exists("task-name"),
-						"Select task name.");
+				params.checkCondition(params.exists("task-name"), "Select task name.");
 				params.checkCondition(params.exists("host"), "Select host.");
-				params.checkCondition(
-						params.exists("context-id"),
-						"Select context ID.");
+				params.checkCondition(params.exists("context-id"), "Select context ID.");
 				checkProperties(request);
-			} else if (request.getParameter("task-run-type").equals(
-					TASK_RUN_TYPE_XML)) {
-				params.checkCondition(
-						params.notEmpty("xml"),
-						"Enter non-empty task descriptor.");
+			} else if (request.getParameter("task-run-type").equals(TASK_RUN_TYPE_XML)) {
+				params.checkCondition(params.notEmpty("xml"), "Enter non-empty task descriptor.");
 				if (params.notEmpty("xml")) {
 					BindingParser<TaskDescriptor> parser; // Must be a local var
-															// here!!!
+					// here!!!
 					try {
 						/*
 						 * this is fix for issue that webUI cannot find the .xsd
 						 * files
 						 */
-						System.setProperty("been.directory.jaxb", page
-								.getContext().getRealPath("/WEB-INF/work"));
+						System.setProperty(XSDRoot.XSD_ROOT, page.getContext().getRealPath("/WEB-INF/work"));
 						parser = XSD.TD.createParser(TaskDescriptor.class);
 						try {
-							taskDescriptor = parser
-									.parse(new ByteArrayInputStream(request
-											.getParameter("xml").getBytes()));
+							taskDescriptor = parser.parse(new ByteArrayInputStream(request.getParameter("xml").getBytes()));
 						} catch (UnmarshalException e) { // Thrown from parser
-															// run.
-							params.checkCondition(
-									false,
-									"XML descriptor validation error: "
-											+ e.getMessage());
+							// run.
+							params.checkCondition(false, "XML descriptor validation error: " + e.getMessage());
 						} catch (JAXBException e) { // Thrown from parser run.
-							params.checkCondition(
-									false,
-									"XML descriptor parser error: "
-											+ e.getMessage());
+							params.checkCondition(false, "XML descriptor parser error: " + e.getMessage());
 						} catch (ConvertorException e) { // Thrown from parser
-															// run.
-							params.checkCondition(
-									false,
-									"XML descriptor data conversion error: "
-											+ e.getMessage());
+							// run.
+							params.checkCondition(false, "XML descriptor data conversion error: " + e.getMessage());
 						}
 					} catch (SAXException e) { // Thrown from parser init.
-						params.checkCondition(
-								false,
-								"Fatal failure when initializing XML schema: "
-										+ e.getMessage());
+						params.checkCondition(false, "Fatal failure when initializing XML schema: " + e.getMessage());
 						parser = null;
 					} catch (JAXBException e) { // Thrown from parser init.
-						params.checkCondition(
-								false,
-								"Fatal failure when initializing XML binding: "
-										+ e.getMessage());
+						params.checkCondition(false, "Fatal failure when initializing XML binding: " + e.getMessage());
 						parser = null;
 					}
 				}
@@ -666,24 +555,11 @@ public class TasksModule extends Module implements EventListener {
 			}
 
 			if (errorMessages.isEmpty()) {
-				if (request.getParameter("task-run-type").equals(
-						TASK_RUN_TYPE_GUI)) {
-					taskDescriptor = TaskDescriptorHelper.createTask(
-							"task-" + Long.toString(idIndex++),
-							request.getParameter("task-name"),
-							request.getParameter("context-id"),
-							new EqualsCondition<String>("name", request
-									.getParameter("host")),
-							TASK_TREE_PREFIX
-									+ request.getParameter("context-id") + "/"
-									+ request.getParameter("task-name"));
+				if (request.getParameter("task-run-type").equals(TASK_RUN_TYPE_GUI)) {
+					taskDescriptor = TaskDescriptorHelper.createTask("task-" + Long.toString(idIndex++), request.getParameter("task-name"), request.getParameter("context-id"), new EqualsCondition<String>("name", request.getParameter("host")), TASK_TREE_PREFIX + request.getParameter("context-id") + "/" + request.getParameter("task-name"));
 					Map<String, String> properties = getProperties(request);
-					TaskDescriptorHelper.addTaskProperties(
-							taskDescriptor,
-							properties.entrySet().toArray(
-									new Entry<?, ?>[properties.size()]));
-				} else if (request.getParameter("task-run-type").equals(
-						TASK_RUN_TYPE_XML)) { // OK, nothing to be done.
+					TaskDescriptorHelper.addTaskProperties(taskDescriptor, properties.entrySet().toArray(new Entry<?, ?>[properties.size()]));
+				} else if (request.getParameter("task-run-type").equals(TASK_RUN_TYPE_XML)) { // OK, nothing to be done.
 				} else {
 					assert false : "Impossible things happen sometimes :-)";
 				}
@@ -697,31 +573,25 @@ public class TasksModule extends Module implements EventListener {
 			}
 
 			if (errorMessages.isEmpty() && taskDescriptor != null) { // '!=
-																		// null'
-																		// avoids
-																		// a
-																		// warning.
+				// null'
+				// avoids
+				// a
+				// warning.
 				HashMap<String, String> actionParams = new HashMap<String, String>();
 				actionParams.put("action", "task-runned");
 				actionParams.put("cid", taskDescriptor.getContextId());
 				page.redirectToAction("context-details", actionParams);
 				return;
 			} else {
-				if (request.getParameter("task-run-type").equals(
-						TASK_RUN_TYPE_GUI)) {
-					data.put(
-							"taskRunType",
-							request.getParameter("task-run-type"));
+				if (request.getParameter("task-run-type").equals(TASK_RUN_TYPE_GUI)) {
+					data.put("taskRunType", request.getParameter("task-run-type"));
 					data.put("taskName", request.getParameter("taskName"));
 					data.put("host", request.getParameter("host"));
 					data.put("contextId", request.getParameter("context-id"));
 					data.put("properties", request.getParameter("properties"));
 					data.put("xml", "");
-				} else if (request.getParameter("task-run-type").equals(
-						TASK_RUN_TYPE_XML)) {
-					data.put(
-							"taskRunType",
-							request.getParameter("task-run-type"));
+				} else if (request.getParameter("task-run-type").equals(TASK_RUN_TYPE_XML)) {
+					data.put("taskRunType", request.getParameter("task-run-type"));
 					data.put("taskName", "");
 					data.put("host", "");
 					data.put("contextId", "");
@@ -771,45 +641,32 @@ public class TasksModule extends Module implements EventListener {
 	 * Handles the "task-logs" action.
 	 * 
 	 * @param request
-	 *            HTTP request
+	 *          HTTP request
 	 * @param response
-	 *            HTTP response
+	 *          HTTP response
 	 * @throws MissingParamException
-	 *             if some required parameter is missing
+	 *           if some required parameter is missing
 	 * @throws IOException
-	 *             if some I/O error occurs
+	 *           if some I/O error occurs
 	 * @throws ServletException
-	 *             if including the template file fails
+	 *           if including the template file fails
 	 * @throws InvalidParamValueException
-	 *             if required parameter contains invalid value
+	 *           if required parameter contains invalid value
 	 * @throws ComponentInitializationException
-	 *             if the Task Manager can't be initialized
+	 *           if the Task Manager can't be initialized
 	 */
-	public void taskLogs(
-			HttpServletRequest request,
-			HttpServletResponse response) throws MissingParamException,
-			ServletException, IOException, InvalidParamValueException,
-			ComponentInitializationException {
+	public void taskLogs(HttpServletRequest request, HttpServletResponse response) throws MissingParamException, ServletException, IOException, InvalidParamValueException, ComponentInitializationException {
 
 		LogRecord[] logRecords = null;
 		try {
-			logRecords = LogUtils.getLogRecordsForTasks(
-					taskManager.get(),
-					taskManager.get().getTasks());
+			logRecords = LogUtils.getLogRecordsForTasks(taskManager.get(), taskManager.get().getTasks());
 		} catch (LogStorageException e) {
-			errorMessages.addTextMessage("Error retrieving logs: "
-					+ e.getMessage());
+			errorMessages.addTextMessage("Error retrieving logs: " + e.getMessage());
 		}
 
 		HashMap<String, Object> data = new HashMap<String, Object>();
 		data.put("logRecords", logRecords);
-		data.put("logFields", EnumSet.of(
-				LogRecord.Fields.CONTEXT,
-				LogRecord.Fields.TASK_ID,
-				LogRecord.Fields.HOSTNAME,
-				LogRecord.Fields.TIMESTAMP,
-				LogRecord.Fields.LEVEL,
-				LogRecord.Fields.MESSAGE));
+		data.put("logFields", EnumSet.of(LogRecord.Fields.CONTEXT, LogRecord.Fields.TASK_ID, LogRecord.Fields.HOSTNAME, LogRecord.Fields.TIMESTAMP, LogRecord.Fields.LEVEL, LogRecord.Fields.MESSAGE));
 
 		page.setTitle("Task logs");
 		page.writeHeader();
@@ -821,43 +678,33 @@ public class TasksModule extends Module implements EventListener {
 	 * Handles the "task-manager-logs" action.
 	 * 
 	 * @param request
-	 *            HTTP request
+	 *          HTTP request
 	 * @param response
-	 *            HTTP response
+	 *          HTTP response
 	 * @throws MissingParamException
-	 *             if some required parameter is missing
+	 *           if some required parameter is missing
 	 * @throws IOException
-	 *             if some I/O error occurs
+	 *           if some I/O error occurs
 	 * @throws ServletException
-	 *             if including the template file fails
+	 *           if including the template file fails
 	 * @throws InvalidParamValueException
-	 *             if required parameter contains invalid value
+	 *           if required parameter contains invalid value
 	 * @throws ComponentInitializationException
-	 *             if the Task Manager can't be initialized
+	 *           if the Task Manager can't be initialized
 	 */
-	public void taskManagerLogs(
-			HttpServletRequest request,
-			HttpServletResponse response) throws MissingParamException,
-			ServletException, IOException, InvalidParamValueException,
-			ComponentInitializationException {
+	public void taskManagerLogs(HttpServletRequest request,
+			HttpServletResponse response) throws MissingParamException, ServletException, IOException, InvalidParamValueException, ComponentInitializationException {
 
 		LogRecord[] logRecords = null;
 		try {
-			logRecords = taskManager.get().getLogsForTask(
-					TaskManagerInterface.SYSTEM_CONTEXT_ID,
-					TaskManagerInterface.TASKMANAGER_TASKNAME);
+			logRecords = taskManager.get().getLogsForTask(TaskManagerInterface.SYSTEM_CONTEXT_ID, TaskManagerInterface.TASKMANAGER_TASKNAME);
 		} catch (LogStorageException e) {
-			errorMessages.addTextMessage("Error retrieving logs: "
-					+ e.getMessage());
+			errorMessages.addTextMessage("Error retrieving logs: " + e.getMessage());
 		}
 
 		HashMap<String, Object> data = new HashMap<String, Object>();
 		data.put("logRecords", logRecords);
-		data.put("logFields", EnumSet.of(
-				LogRecord.Fields.HOSTNAME,
-				LogRecord.Fields.TIMESTAMP,
-				LogRecord.Fields.LEVEL,
-				LogRecord.Fields.MESSAGE));
+		data.put("logFields", EnumSet.of(LogRecord.Fields.HOSTNAME, LogRecord.Fields.TIMESTAMP, LogRecord.Fields.LEVEL, LogRecord.Fields.MESSAGE));
 
 		page.setTitle("Task Manager logs");
 		page.writeHeader();
@@ -866,8 +713,8 @@ public class TasksModule extends Module implements EventListener {
 	}
 
 	/**
-	 * Handles the task-tree action. Shows the task tree view starting at the
-	 * root node.
+	 * Handles the task-tree action. Shows the task tree view starting at the root
+	 * node.
 	 * 
 	 * @param request
 	 * @param response
@@ -875,10 +722,7 @@ public class TasksModule extends Module implements EventListener {
 	 * @throws IOException
 	 * @throws ComponentInitializationException
 	 */
-	public void taskTree(
-			HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException,
-			ComponentInitializationException {
+	public void taskTree(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ComponentInitializationException {
 		page.setTitle("Task Tree View");
 
 		HashMap<String, Object> data = new HashMap<String, Object>();
@@ -890,12 +734,8 @@ public class TasksModule extends Module implements EventListener {
 		try {
 			TaskTreeQuery query = taskManager.get().getTaskTreeQuery();
 			TaskTreeAddress address = query.addressFromPath(""); // get the root
-																	// address
-			TaskTreeRecord nodeRecord = query.getRecordAt(
-					address,
-					true,
-					true,
-					true);
+			// address
+			TaskTreeRecord nodeRecord = query.getRecordAt(address, true, true, true);
 			saveTaskTreeNodeData(nodeRecord, query, data);
 		} catch (MalformedAddressException e) {
 			// Should never happen
@@ -911,8 +751,8 @@ public class TasksModule extends Module implements EventListener {
 	}
 
 	/**
-	 * Outputs page fragment (no header or footer) that contains information
-	 * about TaskTree node. Sets the following keys in data: <br>
+	 * Outputs page fragment (no header or footer) that contains information about
+	 * TaskTree node. Sets the following keys in data: <br>
 	 * <b>path</b> - the requested node path</li>
 	 * 
 	 * @see #saveTaskTreeNodeData(TaskTreeRecord, TaskTreeQuery, HashMap)
@@ -922,8 +762,7 @@ public class TasksModule extends Module implements EventListener {
 	 * @throws IOException
 	 * @throws ServletException
 	 */
-	public void AJAXtaskTreeNode(
-			HttpServletRequest request,
+	public void AJAXtaskTreeNode(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		HashMap<String, Object> data = new HashMap<String, Object>();
 
@@ -957,16 +796,14 @@ public class TasksModule extends Module implements EventListener {
 	 * <li><b>name</b> - name of the node</li>
 	 * <li><b>task</b> - if node is leaf, this contains taskEntry, {@code null}
 	 * otherwise</li>
-	 * <li><b>children</b> - if node is inner node, this contains list of
-	 * children names</li>
+	 * <li><b>children</b> - if node is inner node, this contains list of children
+	 * names</li>
 	 * </ul>
 	 * 
 	 * @param record
 	 * @param data
 	 */
-	private void saveTaskTreeNodeData(
-			TaskTreeRecord record,
-			TaskTreeQuery query,
+	private void saveTaskTreeNodeData(TaskTreeRecord record, TaskTreeQuery query,
 			HashMap<String, Object> data) {
 		/*
 		 * TODO: resolve the flags for( Pair<TaskTreeFlag, TreeFlagValue> pair :

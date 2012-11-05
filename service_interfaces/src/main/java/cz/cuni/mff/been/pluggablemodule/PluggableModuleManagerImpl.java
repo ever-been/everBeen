@@ -45,9 +45,9 @@ import cz.cuni.mff.been.jaxb.pmc.Dependency;
 import cz.cuni.mff.been.jaxb.pmc.Java;
 import cz.cuni.mff.been.jaxb.pmc.PluggableModuleConfiguration;
 import cz.cuni.mff.been.pluggablemodule.jaxb.SelfContainedParser;
-import cz.cuni.mff.been.softwarerepository.PackageNames;
 import cz.cuni.mff.been.softwarerepository.PackageType;
 import cz.cuni.mff.been.utils.FileUtils;
+import cz.cuni.mff.d3s.been.bpk.PackageNames;
 
 /**
  * Provides the pluggable module functionality (basic work with pluggable

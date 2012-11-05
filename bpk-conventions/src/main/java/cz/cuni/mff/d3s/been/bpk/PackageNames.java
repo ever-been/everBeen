@@ -1,4 +1,4 @@
-package cz.cuni.mff.been.softwarerepository;
+package cz.cuni.mff.d3s.been.bpk;
 
 /**
  * The class should hold all constants related to SR Packages.

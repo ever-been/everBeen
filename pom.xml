@@ -114,8 +114,10 @@
 			</activation>
 
 			<modules>
-				<module>service_interfaces</module>
+				<module>bpk-conventions</module>
+				<module>bpk-plugin</module>
 				<module>core</module>
+				<module>service_interfaces</module>
 				<module>host_runtime</module>
 				<module>taskmanager</module>
 				<module>cline_interface</module>
@@ -124,7 +126,6 @@
 				<module>resultsrepository</module>
 				<module>benchmarkmanager</module>
 				<module>web_interface</module>
-				<module>bpk-plugin</module>
 				<module>debug_assistant</module>
 				<module>bcmd</module>
 				<module>detectors</module>

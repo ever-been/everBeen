@@ -70,7 +70,7 @@ import cz.cuni.mff.been.hostruntime.PackageConfiguration;
 import cz.cuni.mff.been.task.CurrentTaskSingleton;
 import cz.cuni.mff.been.task.Task;
 import cz.cuni.mff.been.task.TaskException;
-import static cz.cuni.mff.been.softwarerepository.PackageNames.*;
+import static cz.cuni.mff.d3s.been.bpk.PackageNames.*;
 
 /**
  * Implementation of the main Software Repository interface.

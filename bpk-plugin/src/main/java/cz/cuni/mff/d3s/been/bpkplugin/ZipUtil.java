@@ -7,7 +7,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-import static cz.cuni.mff.been.softwarerepository.PackageNames.FILES_DIR;
+
+import static cz.cuni.mff.d3s.been.bpk.PackageNames.FILES_DIR;
 
 /**
  * This util is designed onaly and only to create simple Zip archive of
