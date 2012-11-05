@@ -246,8 +246,10 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 			ps.println(indent(2, "</classpathItems>"));
 			ps.println(indent(1, "</java>"));
 			ps.println(indent(1, "<dependencies>"));
-			for (BpkModuleDependency dependency : this.module.dependencies) {
-				ps.println(indent(2, "<dependency moduleName=\"%s\" moduleVersion=\"%s\"/>", dependency.name, dependency.version));
+			if (this.module.dependencies != null) {
+				for (BpkModuleDependency dependency : this.module.dependencies) {
+					ps.println(indent(2, "<dependency moduleName=\"%s\" moduleVersion=\"%s\"/>", dependency.name, dependency.version));
+				}
 			}
 			ps.println(indent(1, "</dependencies>", XML_INDENT_SEQUENCE));
 			ps.println(indent(0, "</pluggableModuleConfiguration>"));
