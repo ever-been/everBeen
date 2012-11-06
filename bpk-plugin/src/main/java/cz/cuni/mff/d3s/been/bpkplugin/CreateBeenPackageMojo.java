@@ -224,10 +224,6 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 	}
 
 	FileToArchive generateModuleConfigXmlFile(String nameInBpk) {
-		// TODO: Ugly hack, figure out better way to set been.directory.jaxb
-		// Probably will not work on Windows
-		// FIXME: It's nice to recognize this is an ugly hack, but it'd be nicer to explain what is it trying to acomplish
-		System.setProperty("been.directory.jaxb", "service_interfaces/src/main/xsd/");
 
 		log.info("    MODULE WILL BE GENERATED: with:mainClass='" + mainClassName + "' -> '" + nameInBpk + "'");
 		try {
