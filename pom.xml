@@ -9,10 +9,9 @@
 	<name>parent</name>
 	<description><![CDATA[
 	When running "mvn {phase}" without specifying build profile, "buildCore" is used by default. 
-	Use "buildBenchmarks" profile to build benchmark modules. 
+	Use "buildBenchmarks" profile to build benchmark modules. Use "buildBpkPlugin" to rebuild the packaging plugin.
 	See profiles section for more information.
 	]]>
-
 	</description>
 
 
@@ -115,8 +114,6 @@
 			</activation>
 
 			<modules>
-				<module>bpk-conventions</module>
-				<module>bpk-plugin</module>
 				<module>core</module>
 				<module>service_interfaces</module>
 				<module>host_runtime</module>
@@ -131,6 +128,15 @@
 				<module>bcmd</module>
 				<module>detectors</module>
 				<module>pluggablemodules</module>
+			</modules>
+		</profile>
+
+		<profile>
+			<id>buildBpkPlugin</id>
+
+			<modules>
+				<module>bpk-conventions</module>
+				<module>bpk-plugin</module>
 			</modules>
 		</profile>
 
