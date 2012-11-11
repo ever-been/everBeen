@@ -83,11 +83,11 @@
 			<%
 				/* Needs to be sorted alphabetically. */
 				String[] bootPackages = new String[] {
-					"benchmarkmanagerng-1.0.bpk",
-					"detectortask-1.0.bpk",
-					"hostmanager-1.0.bpk",
-					"resultsrepositoryng-1.0.bpk",
-					"softwarerepository-1.0.bpk",
+					"benchmarkmanagerng.bpk",
+					"detectortask.bpk",
+					"hostmanager.bpk",
+					"resultsrepositoryng.bpk",
+					"softwarerepository.bpk",
 				};
 				
 				if (Arrays.binarySearch(bootPackages, task.getPackageName()) < 0) {
