@@ -93,15 +93,6 @@
 			<artifactId>mockito-all</artifactId>
 			<version>${mockito.version}</version>
 		</dependency>
-
-		<dependency>
-			<groupId>jpda</groupId>
-			<artifactId>tools.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/jpda/tools.jar</systemPath>
-		</dependency>
-
 	</dependencies>
 
 
@@ -114,6 +105,7 @@
 			</activation>
 
 			<modules>
+				<module>bpk-conventions</module>
 				<module>core</module>
 				<module>service_interfaces</module>
 				<module>host_runtime</module>
@@ -146,7 +138,7 @@
 			<modules>
 
 				<!-- too many errors, ignore for now -->
-				<!-- <module>xampler</module> -->
+				<module>xampler</module>
 				<module>generators</module>
 				<module>evaluators</module>
 				<module>tasks</module>

@@ -16,17 +16,9 @@
 		<module>logtester</module>
 		<module>jythonscript</module>
 		<module>testworker</module>
-
-
-		<!-- missing ant.cvs -->
-		<!-- <module>download_cvs</module> -->
-
-		<!-- missing tar -->
-		<!-- <module>download_svn</module> -->
-
-		<!-- missing tar, untar -->
-		<!-- <module>omniorb</module> -->
-
+		<module>download_cvs</module> 
+		<module>download_svn</module>
+		<module>omniorb</module>
 	</modules>
 
 

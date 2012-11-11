@@ -9,7 +9,6 @@
 		<groupId>cz.cuni.mff.d3s.been</groupId>
 		<artifactId>parent</artifactId>
 		<version>2.1.0</version>
-		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<dependencies>
@@ -25,7 +24,6 @@
 			<artifactId>core</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
-
 	</dependencies>
 
 	<build>
