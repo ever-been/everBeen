@@ -56,6 +56,9 @@
 
 		<!-- ENCODING -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<!-- JAVA SYSTEM SETTINGS -->
+		<jdk.home>${java.home}/../</jdk.home>
 	</properties>
 
 

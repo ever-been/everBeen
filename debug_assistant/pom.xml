@@ -24,6 +24,15 @@
 			<artifactId>core</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
+
+		<!-- SYSTEM DEPENDENCIES -->
+		<dependency>
+			<groupId>com.sun</groupId>
+			<artifactId>tools</artifactId>
+			<version>0</version>
+			<scope>system</scope>
+			<systemPath>${jdk.home}/lib/tools.jar</systemPath>
+		</dependency>
 	</dependencies>
 
 	<build>
