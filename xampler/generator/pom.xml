@@ -11,21 +11,18 @@
 	</parent>
 
 	<dependencies>
-		<!-- XAMPLER DEPENDENCIES -->
+		<!-- BEEN XAMPLER DEPENDENCIES -->
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been.xampler</groupId>
 			<artifactId>xampler-task-execute</artifactId>
 			<version>${xampler.version}</version>
 		</dependency>
 
-
+		<!-- BEEN DEPENDENCIES -->
 		<dependency>
-			<groupId>collections-generic</groupId>
-			<artifactId>collections-generic-4.01.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../../been/lib/collections-generic/collections-generic-4.01.jar</systemPath>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>cvs</artifactId>
+			<version>${been.version}</version>
 		</dependency>
-
 	</dependencies>
 </project>

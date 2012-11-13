@@ -111,6 +111,7 @@
 				<module>bpk-conventions</module>
 				<module>core</module>
 				<module>service_interfaces</module>
+				<module>cvs</module>
 				<module>host_runtime</module>
 				<module>taskmanager</module>
 				<module>cline_interface</module>

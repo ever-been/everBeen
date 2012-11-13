@@ -37,11 +37,10 @@ import java.util.Map;
 
 import cz.cuni.mff.been.common.OutputReader;
 import cz.cuni.mff.been.common.StringUtils;
-import cz.cuni.mff.been.common.anttasks.AntTaskException;
-import cz.cuni.mff.been.common.anttasks.Chmod;
 import cz.cuni.mff.been.task.Job;
 import cz.cuni.mff.been.task.TaskException;
 import cz.cuni.mff.been.task.TaskInitializationException;
+import cz.cuni.mff.been.utils.FileUtils;
 
 /**
  * Runs the Xampler benchmark.
@@ -52,7 +51,7 @@ public class XamplerExecute extends Job {
 
 	/**
 	 * Execution role
-	 *
+	 * 
 	 */
 	private enum TaskRole {
 		/* run as client */
@@ -62,10 +61,9 @@ public class XamplerExecute extends Job {
 		/* run as both client and server */
 		BOTH;
 	}
-	
-	
+
 	/**
-	 * Name of Xampler file with IOR reference 
+	 * Name of Xampler file with IOR reference
 	 */
 	private static final String XAMPLER_IOR_FILE = "Xampler.IOR";
 
@@ -73,92 +71,88 @@ public class XamplerExecute extends Job {
 	 * Directory with installed omniORB
 	 */
 	private static final String PROPERTY_OMNIORB_ROOT = "omniorb.root";
-	
+
 	/**
-	 * Complete path to Xampler suite 
-	 * (e.g Marshal_Type_Array/omniORB_4.0.X/Short_512_IN)
+	 * Complete path to Xampler suite (e.g
+	 * Marshal_Type_Array/omniORB_4.0.X/Short_512_IN)
 	 */
 	private static final String PROPERTY_SUITE_PATH = "xampler.suite.path";
-	
+
 	/**
-	 * Role of the process
-	 * Property value is one of "server" or "client"
+	 * Role of the process Property value is one of "server" or "client"
 	 */
 	private static final String PROPERTY_XAMPLER_ROLE = "xampler.role";
-	
+
 	/**
-	 * Directory with compiled Xampler 
+	 * Directory with compiled Xampler
 	 */
 	private static final String PROPERTY_XAMPLER_ROOT = "xampler.root";
-	
+
 	/**
 	 * TID of Xampler server exec task
 	 */
 	private static final String PROPERTY_SERVER_TID = "server.tid";
-	
+
 	/**
 	 * Property carrying runtime parameters that will be passed to server process
 	 */
 	private static final String PROPERTY_SERVER_PARAMS = "xampler.server.params";
-	
+
 	/**
-	 *  Property carrying runtime parameters that will be passed to server process
+	 * Property carrying runtime parameters that will be passed to server process
 	 */
 	private static final String PROPERTY_CLIENT_PARAMS = "xampler.client.params";
-	
+
 	/** If set, Xampler will be not executed for real */
-    public static final String SIMULATE = "simulate";
-	
-	
+	public static final String SIMULATE = "simulate";
+
 	/**
 	 * Name of checkpoint to reach when Xampler server starts
 	 */
 	public static final String CHECKPOINT_SERVER_STARTED = "server.started";
-	
+
 	/**
 	 * Time in seconds to wait for Xampler server creates IOR reference file
 	 */
 	private static final int IOR_WAIT_DELAY = 60;
-	
+
 	// full path to client executable
 	private String clientExecutable;
-	
+
 	// full path to server executable
-	private String serverExecutable;	
-	
+	private String serverExecutable;
+
 	// value of LD_LIBRARY_PATH to use when executing
 	private String ldLibraryPath;
-	
+
 	// client/server
 	private String roleName;
-	
+
 	private TaskRole taskRole;
-	
-	
+
 	// full path to suite directory
 	private String suiteDir;
-	
+
 	// runtime parameters of client process
 	private String[] clientRuntimeParams;
-	
+
 	//runtime parameters of server process
 	private String[] serverRuntimeParams;
 
 	// stdout reader
 	private final OutputReader clientStdOutReader = new OutputReader();
 	private final OutputReader serverStdOutReader = new OutputReader();
-	
+
 	// stderr reader
 	private final OutputReader clientStdErrReader = new OutputReader();
 	private final OutputReader serverStdErrReader = new OutputReader();
 
 	private boolean simulate = false;
 
-	
 	public XamplerExecute() throws TaskInitializationException {
 		super();
 	}
-	
+
 	private TaskRole parseTaskRole(String roleName) throws TaskException {
 		if ("client".equals(roleName)) {
 			return TaskRole.CLIENT;
@@ -169,41 +163,42 @@ public class XamplerExecute extends Job {
 		if ("both".equals(roleName)) {
 			return TaskRole.BOTH;
 		}
-		
-		throw new TaskException("Error parsing task role \"" + roleName +"\"");
+
+		throw new TaskException("Error parsing task role \"" + roleName + "\"");
 	}
-	
+
 	private void setup() throws TaskException {
 		roleName = getTaskProperty(PROPERTY_XAMPLER_ROLE).toLowerCase();
 		File omniorbRoot = new File(getTaskProperty(PROPERTY_OMNIORB_ROOT));
-		ldLibraryPath = new File(omniorbRoot,"lib").getAbsolutePath();
+		ldLibraryPath = new File(omniorbRoot, "lib").getAbsolutePath();
 		taskRole = parseTaskRole(roleName);
 		File xamplerRoot = new File(getTaskProperty(PROPERTY_XAMPLER_ROOT));
-		suiteDir = new File(xamplerRoot,"C++/_Suites/" + getTaskProperty(PROPERTY_SUITE_PATH)).getAbsolutePath();
-		
-		clientExecutable = new File(suiteDir, "Client").getAbsolutePath();
-		serverExecutable = new File(suiteDir, "Server").getAbsolutePath();
-		
+		suiteDir = new File(xamplerRoot, "C++/_Suites/" + getTaskProperty(PROPERTY_SUITE_PATH)).getAbsolutePath();
+
+		File clientExecutableFile = new File(suiteDir, "Client");
+		File serverExecutableFile = new File(suiteDir, "Server");
+		clientExecutable = clientExecutableFile.getAbsolutePath();
+		serverExecutable = serverExecutableFile.getAbsolutePath();
+
 		/* chmod executable */
 		try {
-			if (new File(clientExecutable).exists()) {
-				Chmod.chmod(clientExecutable, "ugo+rx");
+			if (clientExecutableFile.exists()) {
+				FileUtils.chmod(clientExecutableFile, "ugo+rx");
 			}
-			if (new File(serverExecutable).exists()) {
-				Chmod.chmod(serverExecutable, "ugo+rx");
+			if (serverExecutableFile.exists()) {
+				FileUtils.chmod(serverExecutableFile, "ugo+rx");
 			}
-		} catch (AntTaskException e) {
+		} catch (IOException e) {
 			throw new TaskException("Error chmoding Xampler executable", e);
 		}
-		 
+
 		// parse command line arguments
 		serverRuntimeParams = StringUtils.split(getTaskProperty(PROPERTY_SERVER_PARAMS), " ");
 		clientRuntimeParams = StringUtils.split(getTaskProperty(PROPERTY_CLIENT_PARAMS), " ");
 	}
-	
 	private void waitForIOR() throws TaskException {
 		File iorFile = new File(getTempDirectory(), XAMPLER_IOR_FILE);
-		 
+
 		// wait until the IOR file is created by the server process
 		int i = 0;
 		for (i = 0; i < IOR_WAIT_DELAY; i++) {
@@ -218,22 +213,22 @@ public class XamplerExecute extends Job {
 				}
 			}
 		}
-		
+
 		if (i >= IOR_WAIT_DELAY) {
 			throw new TaskException("Xampler server didn't start in allowed interval (" + IOR_WAIT_DELAY + "s)");
 		}
 	}
-	
+
 	private void reportIOR() throws TaskException {
 		File iorFile = new File(getTempDirectory(), XAMPLER_IOR_FILE);
-	
+
 		waitForIOR();
-		
+
 		try {
 			BufferedReader rd = new BufferedReader(new FileReader(iorFile));
 			String iorValue = rd.readLine();
 			rd.close();
-			if (iorValue.length() == 0){
+			if (iorValue.length() == 0) {
 				logFatal("Corrupted IOR file encountered");
 				throw new TaskException("Corrupted IOR file encountered");
 			}
@@ -242,18 +237,16 @@ public class XamplerExecute extends Job {
 			logFatal("I/O error occured when reading " + XAMPLER_IOR_FILE);
 			throw new TaskException(XAMPLER_IOR_FILE + " not found", e);
 		}
-		
+
 	}
-	
+
 	private void createIOR() throws TaskException {
 		try {
-			String ior = (String) getTasksPort().checkPointWait(
-					null, // we are waiting for server in current context
-					getTaskProperty(PROPERTY_SERVER_TID), 
-					CHECKPOINT_SERVER_STARTED, 0 );
+			String ior = (String) getTasksPort().checkPointWait(null, // we are waiting for server in current context
+			getTaskProperty(PROPERTY_SERVER_TID), CHECKPOINT_SERVER_STARTED, 0);
 			File iorFile = new File(getTempDirectory(), XAMPLER_IOR_FILE);
 			BufferedWriter wr = new BufferedWriter(new FileWriter(iorFile));
-			
+
 			if (ior == null) {
 				throw new TaskException("Waiting for IOR reference timed out.");
 			}
@@ -265,21 +258,21 @@ public class XamplerExecute extends Job {
 			throw new TaskException("Can't create IOR reference file", e);
 		}
 	}
-	
 
 	@Override
 	protected void run() throws TaskException {
-		
+
 		setup();
-		
+
 		if (!simulate) {
 			if (taskRole.equals(TaskRole.SERVER) || taskRole.equals(TaskRole.CLIENT)) {
 				/* we are running in SERVER or CLIENT mode */
 				boolean isServer = taskRole.equals(TaskRole.SERVER);
-				
-				logInfo("Starting executable: " + (isServer ? serverExecutable : clientExecutable));
+
+				logInfo("Starting executable: " + (isServer ? serverExecutable
+						: clientExecutable));
 				logInfo("Suite: " + getTaskProperty(PROPERTY_SUITE_PATH));
-				
+
 				Process proc = null;
 				try {
 					// create file with IOR iff running as client
@@ -301,15 +294,15 @@ public class XamplerExecute extends Job {
 
 					int result = proc.waitFor();
 					if (isServer) {
-						serverStdOutReader.join ();
-						serverStdErrReader.join ();
+						serverStdOutReader.join();
+						serverStdErrReader.join();
 					} else {
-						clientStdOutReader.join ();
-						clientStdErrReader.join ();
+						clientStdOutReader.join();
+						clientStdErrReader.join();
 					}
-					
+
 					if (result != 0) {
-						purgeClientOutFile();	// make sure client.out file is gone
+						purgeClientOutFile(); // make sure client.out file is gone
 						throw new TaskException("Xampler process exited with exitcode " + result);
 					}
 
@@ -335,7 +328,7 @@ public class XamplerExecute extends Job {
 					if (clientStdErrReader.isAlive()) {
 						clientStdErrReader.interrupt();
 					}
-					
+
 					if (serverStdOutReader.isAlive()) {
 						serverStdOutReader.interrupt();
 					}
@@ -343,48 +336,51 @@ public class XamplerExecute extends Job {
 						serverStdErrReader.interrupt();
 					}
 				}
-				
-				
+
 			} else {
 				/* we are running in BOTH mode */
-				
+
 				Process serverProc = null;
 				Process clientProc = null;
 				try {
 					// fire xampler server
 					serverProc = fireXamplerServer();
-					
+
 					/* wait for IOR here */
 					waitForIOR();
-					
+
 					// fire xampler client
 					clientProc = fireXamplerClient();
 
 					int serverResult = serverProc.waitFor();
 					int clientResult = clientProc.waitFor();
-					
-					serverStdOutReader.join ();
-					serverStdErrReader.join ();
 
-					clientStdOutReader.join ();
-					clientStdErrReader.join ();
-					
-					if (serverResult != 0 ) {
-						logFatal("Xampler server process exited with exitcode " + serverResult);	
-					}					
-					if (clientResult != 0 ) {
-						logFatal("Xampler client process exited with exitcode " + clientResult);	
+					serverStdOutReader.join();
+					serverStdErrReader.join();
+
+					clientStdOutReader.join();
+					clientStdErrReader.join();
+
+					if (serverResult != 0) {
+						logFatal("Xampler server process exited with exitcode " + serverResult);
 					}
-				
+					if (clientResult != 0) {
+						logFatal("Xampler client process exited with exitcode " + clientResult);
+					}
+
 					if (serverResult != 0 || clientResult != 0) {
-						purgeClientOutFile();	// make sure client.out file is gone
+						purgeClientOutFile(); // make sure client.out file is gone
 						throw new TaskException("Xampler server or client exited with nonzero exitcode.");
 					}
 
 				} catch (InterruptedException e) {
 					logFatal("Interrupted by external process - killing Xampler processes");
-					if (serverProc != null) { serverProc.destroy(); }								// 'if' avoids stupid warnings.
-					if (clientProc != null) { clientProc.destroy(); }								// 'if' avoids stupid warnings.
+					if (serverProc != null) {
+						serverProc.destroy();
+					} // 'if' avoids stupid warnings.
+					if (clientProc != null) {
+						clientProc.destroy();
+					} // 'if' avoids stupid warnings.
 					throw new TaskException("Interrupted by external signal");
 				} catch (TaskException e) {
 					logFatal("Xampler execution failed: " + e.getMessage());
@@ -405,7 +401,7 @@ public class XamplerExecute extends Job {
 					if (clientStdErrReader.isAlive()) {
 						clientStdErrReader.interrupt();
 					}
-					
+
 					if (serverStdOutReader.isAlive()) {
 						serverStdOutReader.interrupt();
 					}
@@ -413,7 +409,7 @@ public class XamplerExecute extends Job {
 						serverStdErrReader.interrupt();
 					}
 				}
-				
+
 			}
 		} else {
 			if (!taskRole.equals(TaskRole.SERVER)) {
@@ -430,7 +426,7 @@ public class XamplerExecute extends Job {
 	}
 
 	/**
-	 * Deletes client.out file, if it exists. 
+	 * Deletes client.out file, if it exists.
 	 */
 	private void purgeClientOutFile() {
 		File clientOut = new File(getWorkingDirectory(), "client.out");
@@ -442,41 +438,36 @@ public class XamplerExecute extends Job {
 	@Override
 	protected void checkRequiredProperties() throws TaskException {
 		// required properties
-		final String requiredProperties[] = new String[] {
-				PROPERTY_XAMPLER_ROLE,
-				PROPERTY_XAMPLER_ROOT,
-				PROPERTY_OMNIORB_ROOT,
-				PROPERTY_SUITE_PATH,
-		};
-		
+		final String requiredProperties[] = new String[] { PROPERTY_XAMPLER_ROLE,
+				PROPERTY_XAMPLER_ROOT, PROPERTY_OMNIORB_ROOT, PROPERTY_SUITE_PATH, };
+
 		checkRequiredProperties(requiredProperties);
-		
+
 		// role : client or server
 		String role = getTaskProperty(PROPERTY_XAMPLER_ROLE).toLowerCase();
-		
-		
+
 		if (!"server".equals(role) && !"client".equals(role) && !"both".equals(role)) {
 			throw new TaskException("Property '" + PROPERTY_XAMPLER_ROLE + "' must be one of  'client' or 'server' or 'both'");
 		}
-		
+
 		// when running as client, server TID must be specified 
 		if ("client".equals(role)) {
 			if (StringUtils.isEmpty(getTaskProperty(PROPERTY_SERVER_TID))) {
 				throw new TaskException("Required property '" + PROPERTY_SERVER_TID + "' not set");
 			}
 		}
-		
-		simulate = ( getTaskProperty(SIMULATE) != null);
-		
+
+		simulate = (getTaskProperty(SIMULATE) != null);
+
 	}
-	
+
 	private Process fireXamplerServer() throws TaskException {
-		
+
 		Process proc = null;
 
 		ProcessBuilder pb = new ProcessBuilder();
 		if (serverRuntimeParams.length == 0) {
-			pb.command(new String[]{serverExecutable});
+			pb.command(new String[] { serverExecutable });
 		} else {
 			String[] cmd = new String[serverRuntimeParams.length + 1];
 			System.arraycopy(serverRuntimeParams, 0, cmd, 1, serverRuntimeParams.length);
@@ -486,16 +477,14 @@ public class XamplerExecute extends Job {
 			}
 			pb.command(cmd);
 		}
-		Map <String, String> env = pb.environment();
+		Map<String, String> env = pb.environment();
 		String LD_LIBPATH = env.get("LD_LIBRARY_PATH");
 		env.put("LD_LIBRARY_PATH", ldLibraryPath + ":" + LD_LIBPATH);
 		pb.directory(new File(getTempDirectory()));
 
 		try {
-			serverStdOutReader.setOutputStream(
-					new FileOutputStream(new File(getWorkingDirectory(), "server.out")));
-			serverStdErrReader.setOutputStream(
-					new FileOutputStream(new File(getWorkingDirectory(), "server.err")));
+			serverStdOutReader.setOutputStream(new FileOutputStream(new File(getWorkingDirectory(), "server.out")));
+			serverStdErrReader.setOutputStream(new FileOutputStream(new File(getWorkingDirectory(), "server.err")));
 			proc = pb.start();
 		} catch (FileNotFoundException e) {
 			throw new TaskException("Can't create output file", e);
@@ -505,20 +494,20 @@ public class XamplerExecute extends Job {
 
 		serverStdOutReader.setInputStream(proc.getInputStream());
 		serverStdOutReader.start();
-		
+
 		serverStdErrReader.setInputStream(proc.getErrorStream());
 		serverStdErrReader.start();
 
 		return proc;
 	}
-	
+
 	private Process fireXamplerClient() throws TaskException {
-		
+
 		Process proc = null;
 
 		ProcessBuilder pb = new ProcessBuilder();
 		if (clientRuntimeParams.length == 0) {
-			pb.command(new String[]{clientExecutable});
+			pb.command(new String[] { clientExecutable });
 		} else {
 			String[] cmd = new String[clientRuntimeParams.length + 1];
 			System.arraycopy(clientRuntimeParams, 0, cmd, 1, clientRuntimeParams.length);
@@ -528,16 +517,14 @@ public class XamplerExecute extends Job {
 			}
 			pb.command(cmd);
 		}
-		Map <String, String> env = pb.environment();
+		Map<String, String> env = pb.environment();
 		String LD_LIBPATH = env.get("LD_LIBRARY_PATH");
 		env.put("LD_LIBRARY_PATH", ldLibraryPath + ":" + LD_LIBPATH);
 		pb.directory(new File(getTempDirectory()));
 
 		try {
-			clientStdOutReader.setOutputStream(
-					new FileOutputStream(new File(getWorkingDirectory(), "client.out")));
-			clientStdErrReader.setOutputStream(
-					new FileOutputStream(new File(getWorkingDirectory(), "client.err")));
+			clientStdOutReader.setOutputStream(new FileOutputStream(new File(getWorkingDirectory(), "client.out")));
+			clientStdErrReader.setOutputStream(new FileOutputStream(new File(getWorkingDirectory(), "client.err")));
 			proc = pb.start();
 		} catch (FileNotFoundException e) {
 			throw new TaskException("Can't create output file", e);
@@ -547,15 +534,11 @@ public class XamplerExecute extends Job {
 
 		clientStdOutReader.setInputStream(proc.getInputStream());
 		clientStdOutReader.start();
-		
+
 		clientStdErrReader.setInputStream(proc.getErrorStream());
 		clientStdErrReader.start();
 
 		return proc;
 	}
-	
+
 }
-
-
-
-

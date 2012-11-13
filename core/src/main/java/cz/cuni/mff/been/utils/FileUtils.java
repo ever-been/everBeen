@@ -1,8 +1,13 @@
 package cz.cuni.mff.been.utils;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Stack;
+import java.util.regex.Pattern;
 
 /**
  * Utility facade for advanced file operations.
@@ -152,4 +157,62 @@ public final class FileUtils extends org.apache.commons.io.FileUtils {
 		}
 	}
 
+	/**
+	 * Find all files/folders whose name matches the specified regex. The search
+	 * proceeds depth-first.
+	 * 
+	 * @param searchRoot
+	 *          The root of the search.
+	 * @param nameRegex
+	 *          Matcher regex for the file name.
+	 * 
+	 * @return All files whose name matched the regex. The ordering is kept as
+	 *         returned by the DFS.
+	 */
+	public static Iterable<File> findFilesRecursivelyByName(File searchRoot,
+			String nameRegex) {
+		if (searchRoot == null) {
+			throw new NullPointerException("Provided search root was null.");
+		}
+		if (nameRegex == null) {
+			throw new NullPointerException("Provided filter regex was null.");
+		}
+
+		Stack<File> pathsToSearch = new Stack<File>();
+		List<File> result = new LinkedList<File>();
+		FilenameFilter filter = new RegexFilter(nameRegex);
+
+		if (!searchRoot.isDirectory()) {
+			if (filter.accept(searchRoot.getParentFile(), searchRoot.getName())) {
+				result.add(searchRoot);
+			}
+			return result;
+		}
+
+		for (pathsToSearch.push(searchRoot); !pathsToSearch.isEmpty();) {
+			File currentDir = pathsToSearch.pop();
+			for (File f : currentDir.listFiles(filter)) {
+				result.add(f);
+			}
+			for (File f : currentDir.listFiles()) {
+				if (f.isDirectory()) {
+					pathsToSearch.push(f);
+				}
+			}
+		}
+		return result;
+	}
+
+	static class RegexFilter implements FilenameFilter {
+		final Pattern nameMatcher;
+
+		RegexFilter(String nameRegex) {
+			nameMatcher = Pattern.compile(nameRegex);
+		}
+
+		@Override
+		public boolean accept(File dir, String name) {
+			return nameMatcher.matcher(name).matches();
+		}
+	}
 }
