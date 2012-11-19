@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>hazelcast</artifactId>
+	<packaging>jar</packaging>
+	<name>hazelcast</name>
+
+	<parent>
+		<groupId>cz.cuni.mff.d3s.been</groupId>
+		<artifactId>parent</artifactId>
+		<version>2.1.0</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+
+	<dependencies>
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>cluster</artifactId>
+			<version>${parent.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.hazelcast</groupId>
+			<artifactId>hazelcast</artifactId>
+			<version>2.4</version>
+		</dependency>
+	</dependencies>
+
+
+</project>
