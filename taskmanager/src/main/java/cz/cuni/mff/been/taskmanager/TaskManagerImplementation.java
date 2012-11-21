@@ -134,6 +134,10 @@ import cz.cuni.mff.been.taskmanager.tasktree.TaskTreeReader;
 import cz.cuni.mff.been.taskmanager.tasktree.TaskTreeRecord;
 import cz.cuni.mff.been.utils.FileUtils;
 
+
+import cz.cuni.mff.d3s.been.cluster.Factory;
+import cz.cuni.mff.d3s.been.cluster.Member;
+
 /**
  * Implementation of Task Manager (main class).
  * 
@@ -205,6 +209,7 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements Ta
 
 	/** Listeners on Task events */
 	private final ArrayList<TaskEventListener> taskListeners;
+	private Member clusterMember;
 
 	// /**
 	// * Delete file or directory (recursively) specified by <code>file</code>.
@@ -490,6 +495,9 @@ public class TaskManagerImplementation extends UnicastRemoteObject implements Ta
 		// // deleteRecursive(data.getRescueRootDir());
 		// }
 		// });
+
+		clusterMember = Factory.createMember("hazelcast", true);
+		clusterMember.connect();
 	}
 
 	/**
