@@ -59,6 +59,9 @@
 
 		<!-- ENCODING -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<!-- JAVA SYSTEM SETTINGS -->
+		<jdk.home>${java.home}/../</jdk.home>
 	</properties>
 
 
@@ -96,15 +99,6 @@
 			<artifactId>mockito-all</artifactId>
 			<version>${mockito.version}</version>
 		</dependency>
-
-		<dependency>
-			<groupId>jpda</groupId>
-			<artifactId>tools.jar</artifactId>
-			<version>none</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../been/lib/jpda/tools.jar</systemPath>
-		</dependency>
-
 	</dependencies>
 
 	<build>
@@ -131,8 +125,10 @@
 			</activation>
 
 			<modules>
+				<module>bpk-conventions</module>
 				<module>core</module>
 				<module>service_interfaces</module>
+				<module>cvs</module>
 				<module>host_runtime</module>
 				<module>taskmanager</module>
 				<module>cline_interface</module>
@@ -169,7 +165,7 @@
 			<modules>
 
 				<!-- too many errors, ignore for now -->
-				<!-- <module>xampler</module> -->
+				<module>xampler</module>
 				<module>generators</module>
 				<module>evaluators</module>
 				<module>tasks</module>

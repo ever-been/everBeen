@@ -11,9 +11,6 @@
 		<version>2.1.0</version>
 	</parent>
 
-	<dependencies>
-	</dependencies>
-
 	<build>
 		<plugins>
 			<plugin>

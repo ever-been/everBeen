@@ -1,8 +1,16 @@
 package cz.cuni.mff.been.utils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.DirectoryStream.Filter;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Iterator;
+import java.util.SortedSet;
+import java.util.Stack;
+import java.util.TreeSet;
+import java.util.regex.Pattern;
 
 /**
  * Utility facade for advanced file operations.
@@ -149,6 +157,79 @@ public final class FileUtils extends org.apache.commons.io.FileUtils {
 			Files.setPosixFilePermissions(targetFile.toPath(), java.nio.file.attribute.PosixFilePermissions.fromString(perms));
 		} catch (UnsupportedOperationException e) {
 			/* on windows-like systems - ignore */
+		}
+	}
+
+	/**
+	 * Find all files/folders whose name matches the specified regex. The search
+	 * proceeds depth-first.
+	 * 
+	 * @param searchRoot
+	 *          The root of the search.
+	 * @param nameRegex
+	 *          Matcher regex for the file name.
+	 * 
+	 * @return All files whose name matched the regex. The ordering is kept as
+	 *         returned by the DFS.
+	 * 
+	 * @throws NullPointerException
+	 *           When the search root or the filter regex is null
+	 * @throws IOException
+	 *           On I/O error or if the search root cannot be found.
+	 */
+	public static Iterable<File> findFilesRecursivelyByName(File searchRoot,
+			String nameRegex) throws NullPointerException, IOException {
+		if (searchRoot == null) {
+			throw new NullPointerException("Provided search root was null.");
+		}
+		if (nameRegex == null) {
+			throw new NullPointerException("Provided filter regex was null.");
+		}
+		if (!searchRoot.exists()) {
+			throw new FileNotFoundException("Provided search root doesn't exist.");
+		}
+
+		Stack<File> pathsToSearch = new Stack<File>();
+		SortedSet<File> result = new TreeSet<File>();
+		Filter<Path> filter = new RegexNameFilter(nameRegex);
+
+		if (!searchRoot.isDirectory()) {
+			if (filter.accept(searchRoot.toPath())) {
+				result.add(searchRoot);
+			}
+			return result;
+		}
+
+		for (pathsToSearch.push(searchRoot); !pathsToSearch.isEmpty();) {
+			File currentDir = pathsToSearch.pop();
+			Iterator<Path> fi = Files.newDirectoryStream(currentDir.toPath(), filter).iterator();
+			while (fi.hasNext()) {
+				result.add(fi.next().toFile());
+			}
+			Iterator<Path> di = Files.newDirectoryStream(currentDir.toPath(), new DirectoryFilter()).iterator();
+			while (di.hasNext()) {
+				pathsToSearch.push(di.next().toFile());
+			}
+		}
+		return result;
+	}
+	static class RegexNameFilter implements Filter<Path> {
+		final Pattern nameMatcher;
+
+		RegexNameFilter(String nameRegex) {
+			nameMatcher = Pattern.compile(nameRegex);
+		}
+
+		@Override
+		public boolean accept(Path file) {
+			return nameMatcher.matcher(file.toFile().getName()).matches();
+		}
+	}
+
+	static class DirectoryFilter implements Filter<Path> {
+		@Override
+		public boolean accept(Path entry) throws IOException {
+			return entry.toFile().isDirectory();
 		}
 	}
 

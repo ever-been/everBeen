@@ -25,184 +25,171 @@
  */
 package cz.cuni.mff.been.task.download.cvs;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
 
-import cz.cuni.mff.been.common.anttasks.AntTaskException;
-import cz.cuni.mff.been.common.anttasks.Cvs;
-import cz.cuni.mff.been.common.anttasks.Tar;
 import cz.cuni.mff.been.pluggablemodule.PluggableModuleException;
 import cz.cuni.mff.been.pluggablemodule.fileagent.FileAgent;
 import cz.cuni.mff.been.pluggablemodule.fileagent.FileAgentPluggableModule;
-import cz.cuni.mff.been.task.*;
+import cz.cuni.mff.been.task.CurrentTaskSingleton;
+import cz.cuni.mff.been.task.Job;
+import cz.cuni.mff.been.task.TaskException;
+import cz.cuni.mff.been.task.TaskInitializationException;
+import cz.cuni.mff.been.utils.TarUtils;
+import cz.cuni.mff.d3s.been.cvs.Cvs;
 
 public class CVSCheckout extends Job {
 
 	public CVSCheckout() throws TaskInitializationException {
 		super();
 	}
-	
+
 	/** Property for remote CVS repository */
 	public static final String CVS_REPOSITORY = "cvs.repository";
 	/** Property for CVS module */
 	public static final String CVS_MODULE = "cvs.module";
 	/** Property for CVS password */
-    public static final String CVS_PASSWORD = "cvs.password";
-    /** Property for CVS revision (tag/revision) */
-    public static final String CVS_BRANCH = "cvs.branch";
-    
-    /** Version timestamp */
-    public static final String TIMESTAMP = "timestamp";
-    
-    /** Name of analysis of target dataset */
-    public static final String RR_ANALYSIS_NAME = "rr.analysis";
-    
-    /** Target dataset to which file reference will be saved */
-    public static final String RR_DATASET_NAME = "rr.dataset";
-    
-    /** If set, task will be run in dry mode (not downloading anything) */
-    public static final String SIMULATE = "simulate";
-   
-    
-    /** CVS_REPOSITORY property value */ 
-    private String cvsRepository;
-    
-    /** CVS_BRANCH property value */
+	public static final String CVS_PASSWORD = "cvs.password";
+	/** Property for CVS revision (tag/revision) */
+	public static final String CVS_BRANCH = "cvs.branch";
+
+	/** Version timestamp */
+	public static final String TIMESTAMP = "timestamp";
+
+	/** Name of analysis of target dataset */
+	public static final String RR_ANALYSIS_NAME = "rr.analysis";
+
+	/** Target dataset to which file reference will be saved */
+	public static final String RR_DATASET_NAME = "rr.dataset";
+
+	/** If set, task will be run in dry mode (not downloading anything) */
+	public static final String SIMULATE = "simulate";
+
+	/** CVS_REPOSITORY property value */
+	private String cvsRepository;
+
+	/** CVS_BRANCH property value */
 	private String cvsBranch;
-	
+
 	/** CVS_MODULE property value */
 	private String cvsModule;
-	
+
 	/** CVS_PASSWORD property value */
 	private String cvsPassword;
-	
+
 	/** RR_ANALYSIS_NAME property value */
 	private String analysisName;
-	
+
 	/** RR_DATASET_NAME property value */
 	private String datasetName;
-	
-	/** TIMESTAMP property value (YYYY-MM-dd HH:mm:ss in UTC)*/
+
+	/** TIMESTAMP property value (YYYY-MM-dd HH:mm:ss in UTC) */
 	private String timestamp;
-	
+
 	/** file agent pluggable module */
 	private FileAgentPluggableModule fileAgentModule;
-	
+
 	private boolean simulate;
-    
-    /** name of resulting archive */
-    private static final String SOURCE_ARCHIVE_NAME = "source-code.tar.gz";
-    
-    /** dataset's field for storing timestamp */
-    private static final String TIMESTAMP_FIELD_NAME = "timestamp";
-    
-    /** dataset's field for storing file id */
-    private static final String FILE_ID_FIELD_NAME = "fileid";
-    
+
+	/** name of resulting archive */
+	private static final String SOURCE_ARCHIVE_NAME = "source-code.tar.gz";
+
+	/** dataset's field for storing timestamp */
+	private static final String TIMESTAMP_FIELD_NAME = "timestamp";
+
+	/** dataset's field for storing file id */
+	private static final String FILE_ID_FIELD_NAME = "fileid";
+
 	@Override
 	protected void run() throws TaskException {
 		loadPluggableModules();
-		
+
 		/* files */
 		File omniorbSrc = new File(getTempDirectory(), cvsModule);
-		File omniorbArchive = new File(getWorkingDirectory(),SOURCE_ARCHIVE_NAME);
-		
+		File omniorbArchive = new File(getWorkingDirectory(), SOURCE_ARCHIVE_NAME);
+
 		/* do CVS checkout */
 		try {
 			String checkoutDate = timestamp + " GMT";
-			
-			logInfo("Checking out version from " + checkoutDate );
-			
+
+			logInfo("Checking out version from " + checkoutDate);
+
 			if (!simulate) {
 				/* download from cvs */
-				Cvs.checkout(cvsRepository,
-						cvsPassword,
-						null,
-						cvsModule,
-						cvsBranch,
-						checkoutDate,
-						getTempDirectory());
+				Cvs.checkout(cvsRepository, cvsPassword, null, cvsModule, cvsBranch, checkoutDate, getTempDirectory());
 			} else {
 				/* we are simulating, just create empty module directory */
-				File moduleDir = new File(getTempDirectory(), cvsModule); 
+				File moduleDir = new File(getTempDirectory(), cvsModule);
 				moduleDir.mkdirs();
 			}
-			
-		} catch (AntTaskException e) {
-			
-			throw new TaskException("Can't checkout sources",e);
+
+		} catch (IOException e) {
+			throw new TaskException("Can't checkout sources", e);
 		}
-		
+
 		logInfo("Tarring sources.");
-		/* tar downloaded files */		
+		/* tar downloaded files */
 		try {
-			Tar.tar(omniorbSrc.getAbsolutePath(),omniorbArchive.getAbsolutePath(),"gzip");
-		} catch (AntTaskException e) {
-			throw new TaskException("Can't create source archive",e);
+			TarUtils.compress(omniorbSrc, omniorbArchive);
+		} catch (IOException e) {
+			throw new TaskException("Can't create source archive", e);
 		}
-		
+
 		logInfo("Saving sources to RR.");
-		
+
 		/* save tarred sources to RR */
-		try {			
-			
+		try {
+
 			FileAgent agent = fileAgentModule.createRRFileAgent(analysisName, datasetName, FILE_ID_FIELD_NAME);
-			
+
 			HashMap<String, Serializable> tags = new HashMap<String, Serializable>();
 			tags.put(TIMESTAMP_FIELD_NAME, timestamp);
-			
+
 			agent.storeFile(omniorbArchive, tags);
 		} catch (IOException e) {
-			throw new TaskException("Error storing sources",e);
+			throw new TaskException("Error storing sources", e);
 		} catch (PluggableModuleException e) {
-			throw new TaskException("Error storing sources",e);
-		}  
+			throw new TaskException("Error storing sources", e);
+		}
 	}
-	
+
 	@Override
 	protected void checkRequiredProperties() throws TaskException {
-		
+
 		checkRequiredProperties(new String[] {
-			//CVS_REPOSITORY,
-			CVS_MODULE,
-			CVS_BRANCH,
-			TIMESTAMP,
-			RR_ANALYSIS_NAME,
-			RR_DATASET_NAME
-		});
-		
+				//CVS_REPOSITORY,
+				CVS_MODULE, CVS_BRANCH, TIMESTAMP, RR_ANALYSIS_NAME, RR_DATASET_NAME });
+
 		cvsRepository = getTaskProperty(CVS_REPOSITORY);
 		if (cvsRepository == null) {
 			cvsRepository = ":pserver:anonymous@omniorb.cvs.sourceforge.net:/cvsroot/omniorb";
 			logInfo("Using default CVS repository");
 		}
-		
+
 		cvsModule = getTaskProperty(CVS_MODULE);
 		cvsBranch = getTaskProperty(CVS_BRANCH);
 		cvsPassword = getTaskProperty(CVS_PASSWORD);
-		
-		analysisName = getTaskProperty(RR_ANALYSIS_NAME); 
+
+		analysisName = getTaskProperty(RR_ANALYSIS_NAME);
 		datasetName = getTaskProperty(RR_DATASET_NAME);
-		
+
 		timestamp = getTaskProperty(TIMESTAMP);
-		
-		simulate = ( getTaskProperty(SIMULATE) != null);
-		
+
+		simulate = (getTaskProperty(SIMULATE) != null);
+
 	}
-	
+
 	private void loadPluggableModules() throws TaskException {
 		logInfo("Loading pluggable modules...");
-		
+
 		try {
-			fileAgentModule = CurrentTaskSingleton.getTaskHandle().getPluggableModule(
-					FileAgentPluggableModule.class, "fileagent", "1.0");
-			
+			fileAgentModule = CurrentTaskSingleton.getTaskHandle().getPluggableModule(FileAgentPluggableModule.class, "fileagent", "1.0");
+
 		} catch (PluggableModuleException e) {
 			throw new TaskException("Error loading pluggable module", e);
-		} 
+		}
 	}
 
 }
