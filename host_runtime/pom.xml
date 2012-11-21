@@ -60,6 +60,21 @@
 			<artifactId>taskmanager</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
+
+
+		<!-- cluster dependecies -->
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>cluster</artifactId>
+			<version>${parent.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>hazelcast</artifactId>
+			<version>${parent.version}</version>
+			<scope>runtime</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
