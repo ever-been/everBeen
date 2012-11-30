@@ -2,7 +2,7 @@ package cz.cuni.mff.d3s.been.cluster.cshell.rest;
 
 import cz.mff.dpp.args.Option;
 
-class URIFactory {
+public class URIFactory {
 
 	@Option(name = "-h", aliases = {"--host"}, defaultValues = {"localhost"})
 	private String host = "localhost";

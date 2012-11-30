@@ -1,4 +1,4 @@
-package cz.cuni.mff.d3s.been.cluster.cshell.memcached;
+package cz.cuni.mff.d3s.been.cluster.cshell.rest;
 
 /**
  *
@@ -8,19 +8,35 @@ package cz.cuni.mff.d3s.been.cluster.cshell.memcached;
 import jline.console.ConsoleReader;
 import jline.console.completer.Completer;
 import jline.console.completer.StringsCompleter;
-import net.spy.memcached.MemcachedClient;
 
-import java.io.IOException;
+
 import java.io.PrintWriter;
-import java.net.InetSocketAddress;
 import java.util.LinkedList;
 import java.util.List;
+
+
 
 
 public class ClusterShell {
 
 
-	public static void main(String[] args) throws IOException {
+
+
+
+	public static void main(String[] args) {
+		/*
+		URIFactory factory = new URIFactory();
+
+		Parser parser = new Parser(factory);
+
+		try {
+			parser.parse(args);
+		} catch (ParseException e) {
+			parser.usage();
+			System.exit(1);
+		}
+
+
 		try {
 			Character mask = null;
 			String trigger = null;
@@ -31,16 +47,17 @@ public class ClusterShell {
 
 
 			List<Completer> completors = new LinkedList<Completer>();
-			completors.add(new StringsCompleter("connect", "disconnect", "set", "get"));
+			completors.add(new StringsCompleter("connect", "map", "queue"));
 
 
 			for (Completer c : completors) {
 				reader.addCompleter(c);
 			}
 
-			MemcachedClient client = null;
 			String line;
 			PrintWriter out = new PrintWriter(reader.getOutput());
+
+			out.println(factory.getHost() + ":" + factory.getPort());
 
 
 			while ((line = reader.readLine()) != null) {
@@ -48,30 +65,32 @@ public class ClusterShell {
 
 				if (tokens.length > 0) {
 					if (tokens[0].equals("connect")) {
-						if (tokens.length != 3) {
-							out.println("connect host port");
-						} else {
-							client = new MemcachedClient(new InetSocketAddress(tokens[1], Integer.valueOf(tokens[2])));
-						}
-
-					} else if (tokens[0].equals("disconnect")) {
-						if (client != null) {
-							client.shutdown();
-						}
-					} else if (tokens[0].equalsIgnoreCase("set")) {
 						if (tokens.length == 3) {
-							client.set(tokens[1], 0, tokens[2]);
-						} else {
-							out.println("set key value");
-						}
-					} else if (tokens[0].equalsIgnoreCase("get")) {
-						if (tokens.length == 2) {
-							out.println(client.get(tokens[1]));
-						} else {
-							out.println("get key");
+							factory.setHost(tokens[1]);
+							factory.setPort(Integer.valueOf(tokens[2]));
 						}
 
-					} else {
+					} else if (tokens[0].equalsIgnoreCase("map")) {
+						MapCommand cmd = new MapCommand(factory, out);
+						Parser mapParser = new Parser(cmd);
+
+						try {
+							mapParser.parse(tokens);
+							cmd.execute();
+						} catch (ParseException e) {
+							mapParser.usage();
+						}
+
+					} else if (tokens[0].equalsIgnoreCase("queue")) {
+						QueueCommand cmd = new QueueCommand(factory, out);
+						Parser mapParser = new Parser(cmd);
+
+						try {
+							mapParser.parse(tokens);
+							cmd.execute();
+						} catch (ParseException e) {
+							mapParser.usage();
+						}
 					}
 
 				}
@@ -91,6 +110,7 @@ public class ClusterShell {
 		catch (Throwable t) {
 			t.printStackTrace();
 		}
+		*/
 	}
 }
 

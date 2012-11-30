@@ -8,8 +8,7 @@ import org.javalite.http.Http;
 import org.javalite.http.Request;
 
 import java.io.PrintWriter;
-
-class MapCommand {
+public class MapCommand {
 
 	private URIFactory factory;
 	private PrintWriter out;
@@ -33,9 +32,11 @@ class MapCommand {
 	private String value;
 
 
-	void execute() {
+	public void execute() {
 		String uri = factory.getMapKey(name, key);
 		Request response = null;
+
+		out.println(uri);
 
 		switch (action) {
 			case GET:

@@ -5,9 +5,6 @@
 	<groupId>cz.cuni.mff.d3s.been</groupId>
 	<artifactId>parent</artifactId>
 	<version>2.1.0</version>
-	<modules>
-		<module>cshell-memcached</module>
-	</modules>
 	<packaging>pom</packaging>
 	<name>parent</name>
 	<description><![CDATA[
@@ -145,8 +142,6 @@
 				<module>hazelcast</module>
 				<module>hostruntime</module>
 				<module>cshell</module>
-				<module>cshell-memcached</module>
-				<module>cshell-rest</module>
 			</modules>
 		</profile>
 

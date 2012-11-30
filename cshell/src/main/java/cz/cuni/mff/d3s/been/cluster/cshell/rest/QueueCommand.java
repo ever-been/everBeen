@@ -9,7 +9,7 @@ import org.javalite.http.Request;
 
 import java.io.PrintWriter;
 
-class QueueCommand {
+public class QueueCommand {
 	private URIFactory factory;
 	private PrintWriter out;
 
@@ -33,7 +33,7 @@ class QueueCommand {
 	private String value;
 
 
-	void execute() {
+	public void execute() {
 
 		Request response = null;
 		String uri = null;
@@ -46,12 +46,14 @@ class QueueCommand {
 				}
 
 				uri = factory.getQueue(name);
+				out.println(uri);
 				response = Http.post(uri, value);
 
 				break;
 			case POLL:
 
 				uri = factory.getQueuePoll(name, poll);
+				out.println(uri);
 				response = Http.delete(uri);
 
 				break;
