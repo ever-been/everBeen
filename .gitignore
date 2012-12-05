@@ -13,3 +13,4 @@
 # Compiled binaries
 target
 **/target
+**/bin
