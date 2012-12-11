@@ -2,12 +2,14 @@ package cz.cuni.mff.d3s.been.bpk;
 
 /**
  * The class should hold all constants related to SR Packages.
- *
+ * 
  * @author Martin Sixta
  */
 public class PackageNames {
 	/** Name of the directory with real content in packages. */
-	public static String FILES_DIR = "files";
+	public static final String FILES_DIR = "files";
+
+	public static final String LIB_DIR = "lib";
 
 	/** Name of the file with metadata in packages. */
 	public static final String METADATA_FILE = "metadata.xml";

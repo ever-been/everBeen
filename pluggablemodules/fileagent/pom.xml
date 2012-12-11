@@ -10,6 +10,14 @@
 		<version>2.1.0</version>
 	</parent>
 
+	<dependencies>
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been.pluggablemodules</groupId>
+			<artifactId>pluggablemodule-derby</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+	</dependencies>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -67,12 +75,6 @@
 						<interfaces>
 							<interface>cz.cuni.mff.been.pluggablemodule.fileagent.FileAgentPluggableModule</interface>
 						</interfaces>
-						<dependencies>
-							<dependency>
-								<name>derby</name>
-								<version>${project.parent.version}</version>
-							</dependency>
-						</dependencies>
 					</module>
 				</configuration>
 			</plugin>

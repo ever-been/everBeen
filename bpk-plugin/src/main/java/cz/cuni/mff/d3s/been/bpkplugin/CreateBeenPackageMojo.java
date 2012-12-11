@@ -13,9 +13,12 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
+
+import cz.cuni.mff.d3s.been.bpk.PackageNames;
 
 /*
  * Mojo plugin development is comment-annotation driven. 
@@ -60,6 +63,7 @@ import org.apache.maven.plugin.logging.Log;
  * 
  * @goal buildpackage
  * @phase package
+ * @requiresDependencyResolution runtime
  */
 public class CreateBeenPackageMojo extends AbstractMojo {
 
@@ -167,6 +171,13 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 	BpkModuleConfig module;
 
 	/**
+	 * @parameter default-value="${project.artifacts}"
+	 * @required
+	 * @readonly
+	 */
+	Collection<Artifact> artifacts;
+
+	/**
 	 * This is the plugin main method. All generation logic starts here.
 	 */
 	@Override
@@ -181,12 +192,14 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 			files.add(createFileToArchiveFromPackageJar());
 			files.add(generateConfigXmlFile());
 			files.add(generateMetadataXmlFile());
+			files.addAll(getLibsToArchive());
 
 			generateModuleModuleConfigXmlFile(files);
 
 			for (FileItem fitem : filesToArchive) {
 				files.addAll(fitem.getFilesToArchive(log));
 			}
+
 			new ZipUtil().createZip(files, bpkFile);
 			log.info("BPK exported to '" + bpkFile.getAbsolutePath() + "'");
 		} catch (IOException e) {
@@ -242,10 +255,9 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 			ps.println(indent(2, "</classpathItems>"));
 			ps.println(indent(1, "</java>"));
 			ps.println(indent(1, "<dependencies>"));
-			if (this.module.dependencies != null) {
-				for (BpkModuleDependency dependency : this.module.dependencies) {
-					ps.println(indent(2, "<dependency moduleName=\"%s\" moduleVersion=\"%s\"/>", dependency.name, dependency.version));
-				}
+
+			for (Artifact artifact : artifacts) {
+				ps.println(indent(2, "<dependency groupId=\"%s\" artifactId=\"%s\" version=\"%s\" />", artifact.getGroupId(), artifact.getArtifactId(), artifact.getVersion()));
 			}
 			ps.println(indent(1, "</dependencies>", XML_INDENT_SEQUENCE));
 			ps.println(indent(0, "</pluggableModuleConfiguration>"));
@@ -268,6 +280,22 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 		}
 	}
 
+	/**
+	 * Get maven dependency artifacts.
+	 * 
+	 * @return A list of {@link FileToArchive} for the project's maven
+	 *         dependencies.
+	 */
+	List<FileToArchive> getLibsToArchive() {
+		List<FileToArchive> libs = new ArrayList<FileToArchive>();
+		for (Artifact artifact : artifacts) {
+			File artifactFile = artifact.getFile();
+			File destinationFile = new File(PackageNames.LIB_DIR, artifactFile.getName());
+			libs.add(new FileToArchive(destinationFile.getPath(), artifactFile));
+		}
+		return libs;
+	}
+
 	String indent(int indentLevel, String format, Object... args) {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < indentLevel; ++i) {
@@ -276,6 +304,7 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 		sb.append(format);
 		return String.format(sb.toString(), args);
 	}
+
 	FileToArchive generateMetadataXmlFile() {
 		String nameInBpk = METADATA_FILE;
 

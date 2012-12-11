@@ -23,6 +23,12 @@
 			<version>${javax.version}</version>
 		</dependency>
 
+		<!-- DEPENDENCIES TRANSFERED FROM MODULE CONFIG -->
+		<dependency>
+			<groupId>${project.parent.groupId}</groupId>
+			<artifactId>pluggablemodule-derby</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
 	</dependencies>
 
 
@@ -83,12 +89,14 @@
 						<interfaces>
 							<interface>cz.cuni.mff.been.pluggablemodule.hibernate.HibernatePluggableModule</interface>
 						</interfaces>
+						<!--
 						<dependencies>
 							<dependency>
 								<name>derby</name>
 								<version>${project.parent.version}</version>
 							</dependency>
 						</dependencies>
+						-->
 					</module>
 				</configuration>
 			</plugin>
