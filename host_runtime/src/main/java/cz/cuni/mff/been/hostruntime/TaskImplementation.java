@@ -954,7 +954,7 @@ public class TaskImplementation extends UnicastRemoteObject implements TaskInter
 	 * Reads the package configuration from the extracted package files.
 	 */
 	private void readPackageConfiguration() throws TaskException {
-		taskPackageConfiguration = new PackageConfiguration(serviceDirectory + File.separator + "config.xml", hostRuntime.getRootDirectory() + File.separator + "package-configuration.dtd");
+		taskPackageConfiguration = new PackageConfiguration(serviceDirectory + File.separator + "config.xml");
 	}
 
 	/**

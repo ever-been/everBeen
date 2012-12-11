@@ -26,7 +26,6 @@
 package cz.cuni.mff.been.hostruntime;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -43,27 +42,26 @@ import org.xml.sax.SAXException;
 import cz.cuni.mff.been.task.TaskException;
 
 /**
- * Stores package configuration of a task, which is read from the "config.xml" file in the
- * package.
+ * Stores package configuration of a task, which is read from the "config.xml"
+ * file in the package.
  * 
  * @author Antonin Tomecek
  * @author David Majda
  */
 public class PackageConfiguration {
-	
+
 	/**
 	 * Specifies in which language is given task implemented.
+	 * 
 	 * @author Jan Tattermusch
 	 */
 	enum TaskLanguage {
-		JAVA,
-		JYTHON,
-		SHELL
+		JAVA, JYTHON, SHELL
 	}
-	
+
 	/** Language of this task */
-	private TaskLanguage taskLanguage;
-	
+	private final TaskLanguage taskLanguage;
+
 	/** List of directories or JAR files to append to the Java's class path. */
 	private String javaClassPath;
 
@@ -72,38 +70,36 @@ public class PackageConfiguration {
 
 	/** List of directories or JAR files to append to the Jython's class path. */
 	private String jythonClassPath;
-	
+
 	/** Name of Jython script to be executed */
 	private String jythonScriptFile;
-	
+
 	/** Name of shell script to be executed */
 	private String shellScriptFile;
-	
+
 	/**
-	 * Returns language of task's implementation.
-	 * According to returned language, different task execution detail fields should
-	 * be read. 
+	 * Returns language of task's implementation. According to returned language,
+	 * different task execution detail fields should be read.
 	 * 
 	 * @return language of task's implementation.
 	 */
 	public TaskLanguage getTaskLanguage() {
 		return taskLanguage;
 	}
-	
+
 	/**
 	 * Returns the list of directories or JAR files to append to the Java's class
 	 * path. If called with taskLanguage != JAVA, should return null.
 	 * 
-	 * @return list of directories or JAR files to append to the Java's class
-	 *          path
+	 * @return list of directories or JAR files to append to the Java's class path
 	 */
 	public String getJavaClassPath() {
 		return javaClassPath;
 	}
 
 	/**
-	 * Returns the name of the class to execute.
-	 * If called with taskLanguage != JAVA, should return null.
+	 * Returns the name of the class to execute. If called with taskLanguage !=
+	 * JAVA, should return null.
 	 * 
 	 * @return name of the class to execute.
 	 */
@@ -113,7 +109,8 @@ public class PackageConfiguration {
 
 	/**
 	 * 
-	 * @return name of shell script file to be executed or null if taskLanguage != SHELL
+	 * @return name of shell script file to be executed or null if taskLanguage !=
+	 *         SHELL
 	 */
 	public String getShellScriptFile() {
 		return shellScriptFile;
@@ -121,7 +118,8 @@ public class PackageConfiguration {
 
 	/**
 	 * 
-	 * @return name of shell script file to be executed or null if taskLanguage != JYTHON
+	 * @return name of shell script file to be executed or null if taskLanguage !=
+	 *         JYTHON
 	 */
 	public String getJythonScriptFile() {
 		return jythonScriptFile;
@@ -141,27 +139,16 @@ public class PackageConfiguration {
 	 * @author Antonin Tomecek
 	 * @author David Majda
 	 */
-	private static class PackageConfigurationEntityResolver
-			implements EntityResolver {
-		/** Package configuration DTD file location. */
-		private String dtdFile;
+	private static class PackageConfigurationEntityResolver implements EntityResolver {
 
 		/**
-		 * Allocates a new <code>PackageConfiguration</code> object.
-		 * 
-		 * @param dtdFile package configuration DTD file location
+		 * @see org.xml.sax.EntityResolver#resolveEntity(java.lang.String,
+		 *      java.lang.String)
 		 */
-		public PackageConfigurationEntityResolver(String dtdFile) {
-			this.dtdFile = dtdFile;
-		}
-
-		/**
-		 * @see org.xml.sax.EntityResolver#resolveEntity(java.lang.String, java.lang.String)
-		 */
-		public InputSource resolveEntity(String publicId, String systemId)
-				throws SAXException, IOException {
+		@Override
+		public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
 			if (systemId.endsWith("package-configuration.dtd")) {
-				return new InputSource(new FileInputStream(dtdFile));
+				return new InputSource(getClass().getResourceAsStream("package-configuration.dtd"));
 			} else {
 				return null;
 			}
@@ -169,16 +156,16 @@ public class PackageConfiguration {
 	}
 
 	/**
-	 * Parses the package configuration XML file and builds a DOM document.
-	 * Sets taskLanguage property according to document's element structure.
+	 * Parses the package configuration XML file and builds a DOM document. Sets
+	 * taskLanguage property according to document's element structure.
 	 * 
-	 * @param configFile package configuration file
-	 * @param dtdFile package configuration DTD file
+	 * @param configFile
+	 *          package configuration file
 	 * @return document built form the parsed package configuration file
-	 * @throws TaskException if the package configuration file parsing fails 
+	 * @throws TaskException
+	 *           if the package configuration file parsing fails
 	 */
-	private Document parseConfigFile(String configFile, String dtdFile)
-			throws TaskException {
+	private Document parseConfigFile(String configFile) throws TaskException {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
 		DocumentBuilder builder;
@@ -187,9 +174,9 @@ public class PackageConfiguration {
 		} catch (ParserConfigurationException e) {
 			throw new TaskException(e);
 		}
-		builder.setEntityResolver(new PackageConfigurationEntityResolver(dtdFile));
-		
-		Document document; 
+		builder.setEntityResolver(new PackageConfigurationEntityResolver());
+
+		Document document;
 		try {
 			document = builder.parse(configFile);
 		} catch (SAXException e) {
@@ -197,21 +184,21 @@ public class PackageConfiguration {
 		} catch (IOException e) {
 			throw new TaskException(e);
 		}
-		
+
 		return document;
 	}
-	
+
 	private final static String CONFIG_FILE_NAME = "config.xml";
-	
+
 	public static TaskLanguage validate(Document document) throws TaskException {
 		TaskLanguage language = null;
-		
-		String configFile = CONFIG_FILE_NAME; 
+
+		String configFile = CONFIG_FILE_NAME;
 		/* Check that document is not null. If it is, it means it isn't valid XML
 		 * file, so report error.
 		 */
 		if (document == null) {
-			throw new TaskException(configFile  + ": not valid XML file.");
+			throw new TaskException(configFile + ": not valid XML file.");
 		}
 
 		Element documentElement = document.getDocumentElement();
@@ -221,37 +208,36 @@ public class PackageConfiguration {
 			throw new TaskException(configFile + ": Root element must be <packageConfiguration>.");
 		}
 
-		/* Check presence of the <java>, <jython> or <shell> element. */ 
+		/* Check presence of the <java>, <jython> or <shell> element. */
 		NodeList javaElements = documentElement.getElementsByTagName("java");
 		NodeList jythonElements = documentElement.getElementsByTagName("jython");
 		NodeList shellElements = documentElement.getElementsByTagName("shell");
-		
+
 		Element javaElement = null;
 		Element jythonElement = null;
 		Element shellElement = null;
-		
+
 		if (javaElements.getLength() >= 1) {
-			javaElement = (Element) javaElements.item(0);   
+			javaElement = (Element) javaElements.item(0);
 		} else {
 			if (javaElements.getLength() > 1)
-				throw new TaskException(configFile + ": There must be maximum one <java> element present."); 
-		}	
-		
+				throw new TaskException(configFile + ": There must be maximum one <java> element present.");
+		}
+
 		if (jythonElements.getLength() >= 1) {
-			jythonElement = (Element) jythonElements.item(0);   
+			jythonElement = (Element) jythonElements.item(0);
 		} else {
-			if (jythonElements.getLength() > 1) 
-				throw new TaskException(configFile + ": There must be maximum one <jython> element present."); 
+			if (jythonElements.getLength() > 1)
+				throw new TaskException(configFile + ": There must be maximum one <jython> element present.");
 		}
 
 		if (shellElements.getLength() >= 1) {
-			shellElement = (Element) shellElements.item(0);   
+			shellElement = (Element) shellElements.item(0);
 		} else {
 			if (shellElements.getLength() > 1)
-				throw new TaskException(configFile + ": There must be maximum one <shell> element present."); 
+				throw new TaskException(configFile + ": There must be maximum one <shell> element present.");
 		}
-		
-		
+
 		if (javaElement != null) {
 			if (jythonElement != null || shellElement != null) {
 				throw new TaskException(configFile + ": Only one of <java>, <jython> and <shell> elements allowed.");
@@ -264,9 +250,8 @@ public class PackageConfiguration {
 				throw new TaskException(configFile + ": Missing \"mainClass\" attribute of the <java> element.");
 			}
 			language = TaskLanguage.JAVA;
-		} else 
-		if (jythonElement != null) {
-			if (/* javaElement != null ||*/ shellElement != null) {
+		} else if (jythonElement != null) {
+			if (/* javaElement != null ||*/shellElement != null) {
 				throw new TaskException(configFile + ": Only one of <java>, <jython> and <shell> elements allowed.");
 			}
 			/* Check presence of the <jython> element's attributes. */
@@ -277,8 +262,7 @@ public class PackageConfiguration {
 				throw new TaskException(configFile + ": Missing \"scriptFile\" attribute of the <jython> element.");
 			}
 			language = TaskLanguage.JYTHON;
-		} else 
-		if (shellElement != null) {
+		} else if (shellElement != null) {
 			//if (javaElement != null || jythonElement != null) {
 			//	throw new TaskException(configFile + ": Only one of <java>, <jython> and <shell> elements allowed.");
 			//}
@@ -291,7 +275,7 @@ public class PackageConfiguration {
 		/* We've passed all the tests now. */
 		return language;
 	}
-	
+
 	/**
 	 * Reads the configuration data from DOM document of the XML configuration
 	 * file.
@@ -301,16 +285,13 @@ public class PackageConfiguration {
 
 		if (taskLanguage.equals(TaskLanguage.JAVA)) {
 			NodeList javaElements = packageElement.getElementsByTagName("java");
-			assert javaElements.getLength() == 1 : "There should be only one \"java\" "
-					+ "element in the configuration file.";
+			assert javaElements.getLength() == 1 : "There should be only one \"java\" " + "element in the configuration file.";
 			Element javaElement = (Element) javaElements.item(0);
 
 			if (File.pathSeparatorChar == ';') {
-				javaClassPath = javaElement.getAttribute("classPath").replace(
-						':', File.pathSeparatorChar);
+				javaClassPath = javaElement.getAttribute("classPath").replace(':', File.pathSeparatorChar);
 			} else {
-				javaClassPath = javaElement.getAttribute("classPath").replace(
-						';', File.pathSeparatorChar);
+				javaClassPath = javaElement.getAttribute("classPath").replace(';', File.pathSeparatorChar);
 			}
 			javaMainClass = javaElement.getAttribute("mainClass");
 
@@ -318,30 +299,25 @@ public class PackageConfiguration {
 			jythonScriptFile = null;
 			shellScriptFile = null;
 		} else if (taskLanguage.equals(TaskLanguage.JYTHON)) {
-			NodeList jythonElements = packageElement
-					.getElementsByTagName("jython");
-			assert jythonElements.getLength() == 1 : "There should be only one \"jython\" "
-					+ "element in the configuration file.";
+			NodeList jythonElements = packageElement.getElementsByTagName("jython");
+			assert jythonElements.getLength() == 1 : "There should be only one \"jython\" " + "element in the configuration file.";
 			Element jythonElement = (Element) jythonElements.item(0);
 			if (File.pathSeparatorChar == ';') {
-				jythonClassPath = jythonElement.getAttribute("classPath")
-						.replace(':', File.pathSeparatorChar);
+				jythonClassPath = jythonElement.getAttribute("classPath").replace(':', File.pathSeparatorChar);
 			} else {
-				jythonClassPath = jythonElement.getAttribute("classPath").replace(
-						';', File.pathSeparatorChar);
+				jythonClassPath = jythonElement.getAttribute("classPath").replace(';', File.pathSeparatorChar);
 			}
 			jythonScriptFile = jythonElement.getAttribute("scriptFile");
-			
+
 			javaClassPath = null;
 			javaMainClass = null;
 			shellScriptFile = null;
 		} else if (taskLanguage.equals(TaskLanguage.SHELL)) {
 			NodeList shellElements = packageElement.getElementsByTagName("shell");
-			assert shellElements.getLength() == 1 : "There should be only one \"shell\" "
-					+ "element in the configuration file.";
+			assert shellElements.getLength() == 1 : "There should be only one \"shell\" " + "element in the configuration file.";
 			Element shellElement = (Element) shellElements.item(0);
 			shellScriptFile = shellElement.getAttribute("scriptFile");
-			
+
 			jythonClassPath = null;
 			jythonScriptFile = null;
 			javaClassPath = null;
@@ -353,17 +329,16 @@ public class PackageConfiguration {
 	 * Allocates a new <code>PackageConfiguration</code> object. The data in the
 	 * object is read from specified XML file.
 	 * 
-	 * @param configFile package configuration file
-	 * @param dtdFile package configuration DTD file
-	 * @throws TaskException if the package configuration file parsing fails
-	 *  
+	 * @param configFile
+	 *          package configuration file
+	 * @throws TaskException
+	 *           if the package configuration file parsing fails
+	 * 
 	 */
-	public PackageConfiguration(String configFile, String dtdFile)
-			throws TaskException {
-		Document document = parseConfigFile(configFile, dtdFile);
+	public PackageConfiguration(String configFile) throws TaskException {
+		Document document = parseConfigFile(configFile);
 		taskLanguage = validate(document);
 		readData(document);
 	}
 
-	
 }
