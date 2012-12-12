@@ -7,6 +7,7 @@ package cz.cuni.mff.d3s.been.core.protocol.messages;
  * @author donarus
  * 
  */
+@SuppressWarnings("serial")
 public final class ErrorMessage extends BaseMessage {
 
 	/**

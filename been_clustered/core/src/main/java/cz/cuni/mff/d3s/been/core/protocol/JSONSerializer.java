@@ -29,12 +29,8 @@ public class JSONSerializer {
 		return deserialized;
 	}
 
+	@SuppressWarnings("serial")
 	public static class JSONSerializerException extends Exception {
-
-		/**
-		 * SERIAL VERSION UID
-		 */
-		private static final long serialVersionUID = 1L;
 
 		private JSONSerializerException(String message, Throwable cause) {
 			super(message, cause);

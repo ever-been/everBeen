@@ -39,7 +39,6 @@ final class HazelcastMember implements Member {
 		}
 
 		return hcDataPersistence;
-
 	}
 
 	@Override

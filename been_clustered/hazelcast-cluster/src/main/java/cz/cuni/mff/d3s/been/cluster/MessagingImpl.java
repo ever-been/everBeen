@@ -9,6 +9,7 @@ import com.hazelcast.core.ItemEvent;
 import com.hazelcast.core.ItemListener;
 import com.hazelcast.impl.ascii.rest.RestValue;
 
+import cz.cuni.mff.d3s.been.core.protocol.Context;
 import cz.cuni.mff.d3s.been.core.protocol.JSONSerializer;
 import cz.cuni.mff.d3s.been.core.protocol.JSONSerializer.JSONSerializerException;
 import cz.cuni.mff.d3s.been.core.protocol.cluster.MessageListener;
@@ -37,7 +38,8 @@ public class MessagingImpl implements Messaging {
 	}
 
 	private void addRestBridgeListener() {
-		final IQueue<RestValue> q = hcInstance.getQueue("BEEN_TOPIC_BRIDGE");
+		String mapName = Context.GLOBAL_TOPIC_BRIDGE.getName();
+		final IQueue<RestValue> q = hcInstance.getQueue(mapName);
 		q.addItemListener(new ItemListener<RestValue>() {
 			@Override
 			public void itemRemoved(ItemEvent<RestValue> item) {
@@ -49,12 +51,6 @@ public class MessagingImpl implements Messaging {
 				if (rv != null) {
 					String text = new String(rv.getValue());
 					int hashIndex = text.indexOf("#");
-					String topicName = null;
-					if (hashIndex >= 0) {
-						topicName = text.substring(0, hashIndex);
-						text = text.substring(hashIndex + 1, text.length());
-						hashIndex = text.indexOf("#");
-					}
 
 					String messageType = null;
 					if (hashIndex >= 0) {
@@ -66,7 +62,7 @@ public class MessagingImpl implements Messaging {
 					try {
 						messageClass = Class.forName(messageType);
 						BaseMessage messageValue = (BaseMessage) JSONSerializer.deserialize(text, messageClass);
-						send(topicName, messageValue);
+						send(Context.GLOBAL_TOPIC, messageValue);
 					} catch (ClassNotFoundException e) {
 						// FIXME logging
 						e.printStackTrace();
@@ -81,21 +77,21 @@ public class MessagingImpl implements Messaging {
 	}
 
 	@Override
-	public void addMessageListener(String source, MessageListener listener) {
+	public void addMessageListener(Context source, MessageListener listener) {
 		HCMessageListener hcListener = new HCMessageListener(listener);
 		listeners.put(listener, hcListener);
-		hcInstance.<BaseMessage> getTopic(source).addMessageListener((hcListener));
+		hcInstance.<BaseMessage> getTopic(source.getName()).addMessageListener((hcListener));
 	}
 
 	@Override
-	public void removeMessageListener(String source, MessageListener listener) {
+	public void removeMessageListener(Context source, MessageListener listener) {
 		HCMessageListener hcListener = listeners.get(listener);
-		hcInstance.<BaseMessage> getTopic(source).removeMessageListener(hcListener);
+		hcInstance.<BaseMessage> getTopic(source.getName()).removeMessageListener(hcListener);
 	}
 
 	@Override
-	public void send(String context, BaseMessage message) {
-		hcInstance.getTopic(context).publish(message);
+	public void send(Context context, BaseMessage message) {
+		hcInstance.getTopic(context.getName()).publish(message);
 	}
 
 }

@@ -1,39 +1,56 @@
 package cz.cuni.mff.d3s.been.hostruntime;
 
-import cz.cuni.mff.d3s.been.core.protocol.Contexts;
+import cz.cuni.mff.d3s.been.core.protocol.Context;
 import cz.cuni.mff.d3s.been.core.protocol.JSONSerializer.JSONSerializerException;
-import cz.cuni.mff.d3s.been.core.protocol.api.BaseApi;
+import cz.cuni.mff.d3s.been.core.protocol.api.AbstractNode;
+import cz.cuni.mff.d3s.been.core.protocol.cluster.DataPersistence;
 import cz.cuni.mff.d3s.been.core.protocol.cluster.MessageListener;
 import cz.cuni.mff.d3s.been.core.protocol.cluster.Messaging;
 import cz.cuni.mff.d3s.been.core.protocol.messages.BaseMessage;
-import cz.cuni.mff.d3s.been.core.protocol.messages.KillAllTasksMessage;
 import cz.cuni.mff.d3s.been.core.protocol.messages.KillTaskMessage;
 import cz.cuni.mff.d3s.been.core.protocol.messages.RunTaskMessage;
 import cz.cuni.mff.d3s.been.core.protocol.messages.TaskFinishedMessage;
 import cz.cuni.mff.d3s.been.core.protocol.messages.TaskKilledMessage;
 import cz.cuni.mff.d3s.been.core.protocol.messages.TaskStartedMessage;
+import cz.cuni.mff.d3s.been.core.protocol.pojo.BaseNodeInfo;
+import cz.cuni.mff.d3s.been.core.protocol.pojo.BaseNodeInfo.HostRuntimeNodeInfo;
 
-public class HostRuntime extends BaseApi {
+public class HostRuntime extends AbstractNode {
 
 	private TaskRunner taskRunner;
 
-	public HostRuntime(Messaging messaging, TaskRunner taskRunner, String nodeId) {
-		super(messaging);
+	private BaseNodeInfo nodeInfo;
+
+	private String nodeId;
+
+	public HostRuntime(Messaging messaging, DataPersistence dataPersistence, TaskRunner taskRunner, String nodeId) {
+		super(messaging, dataPersistence);
 		this.taskRunner = taskRunner;
-		registerListeners(nodeId);
+		this.nodeId = nodeId;
 	}
 
-	private void registerListeners(String nodeId) {
-		String context = Contexts.nodeContext(nodeId);
-		messaging.addMessageListener(context, new MessageListener() {
+	@Override
+	public void start() {
+		registerListeners(nodeId);
+		nodeInfo = new HostRuntimeNodeInfo(nodeId);
+		storeNodeInfo();
+	}
+
+	private void storeNodeInfo() {
+		getDataPersistence().<BaseNodeInfo> getList(Context.NODE_INFO_LIST).add(nodeInfo);
+	}
+
+	private void registerListeners(final String nodeId) {
+		getMessaging().addMessageListener(Context.GLOBAL_TOPIC, new MessageListener() {
 			@Override
 			public void onMessage(BaseMessage message) {
-				if (message instanceof RunTaskMessage) {
-					onRunTask((RunTaskMessage) message);
-				} else if (message instanceof KillTaskMessage) {
-					onKillTask((KillTaskMessage) message);
-				} else if (message instanceof KillAllTasksMessage) {
-					onKillAllTasks((KillAllTasksMessage) message);
+				String recieverId = message.recieverId;
+				if (recieverId == null || nodeId.equals(recieverId)) {
+					if (message instanceof RunTaskMessage) {
+						onRunTask((RunTaskMessage) message);
+					} else if (message instanceof KillTaskMessage) {
+						onKillTask((KillTaskMessage) message);
+					}
 				}
 			}
 		});
@@ -66,7 +83,4 @@ public class HostRuntime extends BaseApi {
 		}
 	}
 
-	protected void onKillAllTasks(KillAllTasksMessage message) {
-
-	}
 }

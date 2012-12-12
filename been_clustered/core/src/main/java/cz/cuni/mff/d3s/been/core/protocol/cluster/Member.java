@@ -16,5 +16,5 @@ public interface Member {
 	public void disconnect();
 
 	public String getNodeId();
-
+	
 }

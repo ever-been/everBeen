@@ -6,6 +6,7 @@ package cz.cuni.mff.d3s.been.core.protocol.messages;
  * @author donarus
  * 
  */
+@SuppressWarnings("serial")
 public final class KillTaskMessage extends BaseMessage {
 
 	/**
@@ -16,7 +17,6 @@ public final class KillTaskMessage extends BaseMessage {
 	/**
 	 * Task which should be terminated
 	 */
-	// FIXME ?? maybe taskId instead of taskName
 	public String taskName;
 
 }

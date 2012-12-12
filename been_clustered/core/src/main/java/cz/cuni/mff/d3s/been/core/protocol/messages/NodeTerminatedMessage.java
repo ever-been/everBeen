@@ -6,10 +6,12 @@ package cz.cuni.mff.d3s.been.core.protocol.messages;
  * @author donarus
  * 
  */
+@SuppressWarnings("serial")
 public final class NodeTerminatedMessage extends BaseMessage {
 
-	/** 
+	/**
 	 * Reason for node termination
 	 */
 	public String reason;
+
 }
