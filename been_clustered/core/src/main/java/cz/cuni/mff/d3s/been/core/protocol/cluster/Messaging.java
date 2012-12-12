@@ -1,14 +1,15 @@
 package cz.cuni.mff.d3s.been.core.protocol.cluster;
 
+import cz.cuni.mff.d3s.been.core.protocol.Context;
 import cz.cuni.mff.d3s.been.core.protocol.messages.BaseMessage;
 
 
 public interface Messaging {
 
-	public void addMessageListener(String source, MessageListener listener);
+	public void addMessageListener(Context source, MessageListener listener);
 
-	public void removeMessageListener(String source, MessageListener listener);
+	public void removeMessageListener(Context source, MessageListener listener);
 
-	public void send(String context, BaseMessage message);
+	public void send(Context ctx, BaseMessage message);
 
 }

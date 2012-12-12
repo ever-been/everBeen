@@ -2,6 +2,7 @@ package cz.cuni.mff.d3s.been.core.protocol.messages;
 
 import java.util.List;
 
+@SuppressWarnings("serial")
 public final class RunTaskMessage extends BaseMessage {
 
 	/**
@@ -39,5 +40,5 @@ public final class RunTaskMessage extends BaseMessage {
 	 * Name of BPK task package.
 	 */
 	public String packageName;
-	
+
 }

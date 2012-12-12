@@ -1,46 +1,35 @@
-package cz.cuni.mff.d3s.been.hostruntime;
+package cz.cuni.mff.d3s.been.core.protocol.api;
 
 import cz.cuni.mff.d3s.been.core.protocol.cluster.ClusterMemberFactory;
+import cz.cuni.mff.d3s.been.core.protocol.cluster.DataPersistence;
 import cz.cuni.mff.d3s.been.core.protocol.cluster.IClusterMemberFactory.ClusterMemberFactoryException;
 import cz.cuni.mff.d3s.been.core.protocol.cluster.Member;
+import cz.cuni.mff.d3s.been.core.protocol.cluster.Messaging;
 
-/**
- * 
- * @author donarus
- * 
- */
-public class HostRuntimeRunner {
+public abstract class AbstractNodeRunner {
 
-	public static final int EC_CREATE_MEMBER_ERROR = 500;
-	public static final int EC_CREATE_HOST_RUNTIME_ERROR = 501;
-
-	/**
-	 * Host runtime main method. Tries to create new cluster {@link Member},
-	 * connect it into the cluster and start {@link HostRuntime2} over this
-	 * {@link Member}.
-	 * 
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// PREPARE CLUSTER MEMBER FOR NEW HOSTRUNTIME
+	public void start() {
 		Member member = null;
 		try {
 			member = createMemberAndConnect();
 		} catch (Throwable t) {
 			// FIXME log
-			System.exit(EC_CREATE_MEMBER_ERROR);
+			t.printStackTrace();
+			System.exit(0);
 		}
 
 		try {
-			new HostRuntime(member.getMessaging(), member.getDataPersistence(), new TaskRunner(), member.getNodeId());
+			createAndStartService(member.getMessaging(), member.getDataPersistence());
 		} catch (Throwable e) {
 			// FIXME log
 			e.printStackTrace();
-			System.exit(EC_CREATE_HOST_RUNTIME_ERROR);
+			System.exit(0);
 		}
 	}
 
-	private static Member createMemberAndConnect()
+	protected abstract void createAndStartService(Messaging messaging, DataPersistence dataPersistence);
+
+	private Member createMemberAndConnect()
 			throws ClusterMemberFactoryException {
 		Member member = null;
 		try {
@@ -69,5 +58,4 @@ public class HostRuntimeRunner {
 		}
 
 	}
-
 }
