@@ -22,6 +22,27 @@
 					<target>${java-target.version}</target>
 				</configuration>
 			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jaxb2-maven-plugin</artifactId>
+				<version>${jaxb2-maven-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>packageConfig-xjc</id>
+						<goals>
+							<goal>xjc</goal>
+						</goals>
+						<configuration>
+							<staleFile>${project.build.directory}/jaxb2/.benchmarkXjcStaleFlag</staleFile>
+							<clearOutputDir>true</clearOutputDir>
+							<schemaFiles>bpk-config.xsd</schemaFiles>
+							<packageName>cz.cuni.mff.d3s.been.bpk</packageName>
+							<extension>true</extension>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 </project>

@@ -44,6 +44,7 @@
 
 
 		<!-- PLUGIN VERSION CONTROL -->
+		<jaxb2-maven-plugin.version>1.4</jaxb2-maven-plugin.version>
 		<maven-assembly-plugin.version>2.3</maven-assembly-plugin.version>
 		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
 		<maven-jar-plugin.version>2.4</maven-jar-plugin.version>

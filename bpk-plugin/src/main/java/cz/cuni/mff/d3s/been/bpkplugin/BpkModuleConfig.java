@@ -24,4 +24,11 @@ public final class BpkModuleConfig {
 	 */
 	public String config;
 
+	/**
+	 * List of module dependencies.
+	 * 
+	 * @parameter
+	 */
+	public List<BpkModuleDependency> dependencies;
+
 }
