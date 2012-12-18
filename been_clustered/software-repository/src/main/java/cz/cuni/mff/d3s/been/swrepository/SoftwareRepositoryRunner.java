@@ -18,10 +18,10 @@ public class SoftwareRepositoryRunner extends AbstractNodeRunner {
 	}
 
 	@Override
-	protected void createAndStartService(Messaging messaging, DataPersistence dataPersistence) {
+	protected void createAndStartService(Messaging messaging, DataPersistence dataPersistence, String nodeId) {
 		// FIXME host and port configuration
 		HttpServer httpServer = new HttpServer("localhost", 8000);
-		AbstractNode node = new SoftwareRepository(messaging, dataPersistence, httpServer);
+		AbstractNode node = new SoftwareRepository(messaging, dataPersistence, nodeId, httpServer);
 		node.start();
 	}
 

@@ -11,8 +11,8 @@ public class SoftwareRepository extends AbstractNode {
 
 	private final HttpServer httpServer;
 
-	public SoftwareRepository(Messaging messaging, DataPersistence dataPersistence, HttpServer httpServer) {
-		super(messaging, dataPersistence);
+	public SoftwareRepository(Messaging messaging, DataPersistence dataPersistence, String nodeId, HttpServer httpServer) {
+		super(messaging, dataPersistence, nodeId);
 		this.httpServer = httpServer;
 	}
 

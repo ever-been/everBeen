@@ -19,7 +19,7 @@ public abstract class AbstractNodeRunner {
 		}
 
 		try {
-			createAndStartService(member.getMessaging(), member.getDataPersistence());
+			createAndStartService(member.getMessaging(), member.getDataPersistence(), member.getNodeId());
 		} catch (Throwable e) {
 			// FIXME log
 			e.printStackTrace();
@@ -27,7 +27,7 @@ public abstract class AbstractNodeRunner {
 		}
 	}
 
-	protected abstract void createAndStartService(Messaging messaging, DataPersistence dataPersistence);
+	protected abstract void createAndStartService(Messaging messaging, DataPersistence dataPersistence, String nodeId);
 
 	private Member createMemberAndConnect()
 			throws ClusterMemberFactoryException {

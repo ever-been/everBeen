@@ -14,7 +14,10 @@ public abstract class AbstractNode {
 
 	private final DataPersistence dataPersistence;
 
-	public AbstractNode(final Messaging messaging, final DataPersistence dataPersistence) {
+	private final String nodeId;
+
+	public AbstractNode(final Messaging messaging, final DataPersistence dataPersistence, final String nodeId) {
+		this.nodeId = nodeId;
 		this.messaging = messaging;
 		this.dataPersistence = dataPersistence;
 	}
@@ -37,6 +40,10 @@ public abstract class AbstractNode {
 
 	protected final Messaging getMessaging() {
 		return messaging;
+	}
+
+	public String getNodeId() {
+		return nodeId;
 	}
 
 	public abstract void start();
