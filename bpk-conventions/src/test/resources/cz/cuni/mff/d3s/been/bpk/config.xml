@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpkConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="bpk-config.xsd">
+  <metaInf>
+    <groupId>groupId</groupId>
+    <bpkId>bpkId</bpkId>
+    <version>version</version>
+  </metaInf>
+
+  <runtime />
+  
+  <!-- 
+  <java xsi:type="BpkRuntime">
+    <bpkDependencies/>
+    <bpkArtifacts>
+    	<artifact>
+    		<groupId>org.apache.commons</groupId>
+    		<artifactId>commons-compress</artifactId>
+    		<version>1.4</version>
+    	</artifact>
+    </bpkArtifacts>
+    <jarFile>myCreepyStupidCrazyArchive.jar</jarFile>
+  </java>
+   -->
+  <bpkDependencies>
+    <dependency>
+      <groupId>groupId</groupId>
+      <bpkId>bpkId</bpkId>
+      <version>version</version>
+    </dependency>
+  </bpkDependencies>
+</bpkConfiguration>

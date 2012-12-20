@@ -13,6 +13,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -49,6 +50,13 @@ public class HostRuntimeTest extends Assert {
 		nodeId = "node identifier";
 
 		hostRuntime = new HostRuntime(messaging, dataPersistence, taskRunner, nodeId);
+	}
+	
+	@Test
+	public void testNodeInfoIsPassedToTaskRunnerInConstructor() throws Exception {
+		ArgumentCaptor<HostRuntimeNodeInfo> captor = ArgumentCaptor.forClass(HostRuntimeNodeInfo.class);
+		verify(taskRunner).setNodeInfo(captor.capture());
+		assertEquals(nodeId,  captor.getValue().nodeId);
 	}
 
 	@Test

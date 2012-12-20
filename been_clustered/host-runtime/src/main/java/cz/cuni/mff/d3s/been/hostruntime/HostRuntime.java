@@ -17,12 +17,13 @@ public class HostRuntime extends AbstractNode {
 
 	private final TaskRunner taskRunner;
 
-	private final BaseNodeInfo nodeInfo;
+	private final HostRuntimeNodeInfo nodeInfo;
 
 	public HostRuntime(Messaging messaging, DataPersistence dataPersistence, TaskRunner taskRunner, String nodeId) {
 		super(messaging, dataPersistence, nodeId);
 		this.taskRunner = taskRunner;
 		this.nodeInfo = new HostRuntimeNodeInfo(nodeId);
+		taskRunner.setNodeInfo(this.nodeInfo);
 	}
 
 	@Override

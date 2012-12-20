@@ -1,0 +1,1 @@
+Stalo by za uvahu BPK-conventions dat do core - alespon vygenerovane classy 

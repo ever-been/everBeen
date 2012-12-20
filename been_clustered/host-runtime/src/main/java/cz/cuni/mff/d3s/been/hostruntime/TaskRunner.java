@@ -6,17 +6,21 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import cz.cuni.mff.d3s.been.core.protocol.messages.KillTaskMessage;
 import cz.cuni.mff.d3s.been.core.protocol.messages.RunTaskMessage;
+import cz.cuni.mff.d3s.been.core.protocol.pojo.BaseNodeInfo.HostRuntimeNodeInfo;
 
 public class TaskRunner {
 
 	/**
-	 * THREAD SAFE
+	 * SHOULD BE THREAD SAFE
+	 * TODO verify if it is true :)
 	 */
-	private Map<String, Process> runningTasks = new ConcurrentHashMap<>();
+	private final Map<String, Process> runningTasks = new ConcurrentHashMap<>();
+	
+	private HostRuntimeNodeInfo nodeInfo;
 
-	public boolean tryRunTask(final RunTaskMessage message) {
+	public final boolean tryRunTask(final RunTaskMessage runTaskMessage) {
 
-		if (runningTasks.containsKey(message.name)) {
+		if (runningTasks.containsKey(runTaskMessage.name)) {
 			// already running ... FIXME
 			return false;
 		}
@@ -25,8 +29,7 @@ public class TaskRunner {
 			public void run() {
 				try {
 					// 0. add tasks in node info 
-					
-					
+					nodeInfo.addRunningTask(runTaskMessage.name);
 					
 					// extract files from bpk
 					// determine task type (java/python/shell)
@@ -55,7 +58,7 @@ public class TaskRunner {
 					 */
 					// ATOMIC OP END
 
-					String pName = new String(message.name);
+					String pName = new String(runTaskMessage.name);
 					Process p = Runtime.getRuntime().exec("sleep 1000");
 					runningTasks.put(pName, p);
 					Thread taskShutdownHook = createTaskShutdownHook(p);
@@ -67,6 +70,7 @@ public class TaskRunner {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+
 			}
 
 			private Thread createTaskShutdownHook(final Process p) {
@@ -74,6 +78,7 @@ public class TaskRunner {
 					@Override
 					public void run() {
 						p.destroy();
+						nodeInfo.removeRunningTask(runTaskMessage.name);
 					}
 				};
 			}
@@ -82,7 +87,7 @@ public class TaskRunner {
 		return true;
 	}
 
-	public void killTask(KillTaskMessage message) {
+	public final void killTask(final KillTaskMessage message) {
 		Process p = runningTasks.get(message.taskName);
 		try {
 			p.destroy();
@@ -92,6 +97,10 @@ public class TaskRunner {
 		}
 		runningTasks.remove(message.taskName);
 
+	}
+
+	public final void setNodeInfo(final HostRuntimeNodeInfo nodeInfo) {
+		this.nodeInfo = nodeInfo;		
 	}
 
 }
