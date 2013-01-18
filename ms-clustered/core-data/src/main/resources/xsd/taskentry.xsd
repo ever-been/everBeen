@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema
+		xmlns="http://been.d3s.mff.cuni.cz/taskentry"
+		targetNamespace="http://been.d3s.mff.cuni.cz/taskentry"
+		elementFormDefault="unqualified"
+		attributeFormDefault="unqualified"
+		xmlns:taskentry="http://been.d3s.mff.cuni.cz/taskentry"
+		xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+		xmlns:common="http://been.d3s.mff.cuni.cz/common"
+		xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+		jaxb:extensionBindingPrefixes="xjc"
+		jaxb:version="2.0">
+
+	<xs:import schemaLocation="common.xsd" namespace="http://been.d3s.mff.cuni.cz/common"/>
+
+	<xs:element name="id" type="xs:string"/>
+	<xs:element name="runtime" type="xs:string"/>
+	<xs:element name="state" type="xs:string" />
+
+
+
+
+
+	<xs:element name="taskEntryInfo">
+		<xs:complexType>
+			<xs:all>
+				<xs:element ref="taskentry:id" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="taskentry:runtime" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="taskentry:state" minOccurs="1" maxOccurs="1"/>
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+
+</xs:schema>

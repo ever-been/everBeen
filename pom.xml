@@ -5,6 +5,10 @@
 	<groupId>cz.cuni.mff.d3s.been</groupId>
 	<artifactId>parent</artifactId>
 	<version>2.1.0</version>
+	<modules>
+		<module>ms-clustered</module>
+	</modules>
+
 	<packaging>pom</packaging>
 	<name>parent</name>
 	<description><![CDATA[
@@ -41,6 +45,7 @@
 		<rmiio.version>2.0.2</rmiio.version>
 		<servlet-api.version>2.4</servlet-api.version>
 		<slf4j.version>1.6.4</slf4j.version>
+		<hazelcast.version>2.4</hazelcast.version>
 
 
 		<!-- PLUGIN VERSION CONTROL -->
@@ -139,10 +144,6 @@
 				<module>bcmd</module>
 				<module>detectors</module>
 				<module>pluggablemodules</module>
-				<module>cluster</module>
-				<module>hazelcast</module>
-				<module>hostruntime</module>
-				<module>cshell</module>
 			</modules>
 		</profile>
 

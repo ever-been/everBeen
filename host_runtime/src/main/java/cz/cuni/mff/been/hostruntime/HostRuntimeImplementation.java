@@ -38,9 +38,6 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.LinkedList;
 import java.util.List;
 
-import cz.cuni.mff.d3s.been.cluster.Member;
-import cz.cuni.mff.d3s.been.cluster.Factory;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,8 +64,6 @@ import cz.cuni.mff.been.utils.FileUtils;
  * @author David Majda
  */
 public class HostRuntimeImplementation extends UnicastRemoteObject implements HostRuntimeInterface {
-
-	private HostRuntimeMember hostRuntimeMember;
 
 
 	private static final Logger logger = LoggerFactory.getLogger(HostRuntimeImplementation.class);
@@ -275,8 +270,6 @@ public class HostRuntimeImplementation extends UnicastRemoteObject implements Ho
 				}
 			}
 		});
-
-		hostRuntimeMember = new HostRuntimeMember(this);
 
 	}
 

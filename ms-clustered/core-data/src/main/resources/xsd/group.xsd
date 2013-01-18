@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema
+		targetNamespace="http://been.d3s.mff.cuni.cz/hostmanager/group"
+		elementFormDefault="qualified"
+		xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+		xmlns:group="http://been.d3s.mff.cuni.cz/hostmanager/group"
+		xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+		jaxb:extensionBindingPrefixes="xjc"
+		jaxb:version="2.0">
+
+	<xs:import schemaLocation="common.xsd" namespace="http://been.d3s.mff.cuni.cz/common"/>
+	<xs:include schemaLocation="attrtypes.xsd"/>
+
+	<xs:element name="rsl" type="xs:string">
+		<xs:annotation>
+			<xs:appinfo>
+				<jaxb:property name="RSL">
+					<jaxb:baseType>
+						<jaxb:javaType
+							name="cz.cuni.mff.been.common.rsl.Condition"
+							parseMethod="cz.cuni.mff.been.jaxb.Convertor.parseRSL"
+							printMethod="String.valueOf"
+						/>
+					</jaxb:baseType>
+				</jaxb:property>
+			</xs:appinfo>
+		</xs:annotation>
+	</xs:element>
+	
+	<xs:complexType name="Host">
+		<xs:attributeGroup ref="group:nameAttrGroup"/>
+	</xs:complexType>
+	
+	<xs:element name="host" type="group:Host"/>
+
+	<xs:complexType name="Hosts">
+		<xs:choice>
+			<xs:element ref="group:rsl"/>
+			<xs:sequence>
+				<xs:element ref="group:host" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:choice>
+		<xs:attributeGroup ref="group:changedAttrGroup"/>
+	</xs:complexType>
+	
+	<xs:element name="hosts" type="group:Hosts">
+		<xs:unique name="hostUniqueInGroup">
+			<xs:selector xpath="group:host"/>
+			<xs:field xpath="@name"/>
+		</xs:unique>
+	</xs:element>
+	
+	<xs:complexType name="MetaDesc">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attributeGroup ref="group:changedAttrGroup"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:element name="meta" type="group:MetaDesc"/>
+	
+	<xs:element name="desc" type="group:MetaDesc"/>
+	
+	<xs:element name="group">
+		<xs:complexType>
+			<xs:all>
+				<xs:element ref="group:hosts" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="group:meta" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="group:desc" minOccurs="0" maxOccurs="1"/>
+			</xs:all>
+			<xs:attributeGroup ref="group:freeNameAttrGroup"/>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

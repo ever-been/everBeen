@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema
+		targetNamespace="http://been.d3s.mff.cuni.cz/benchmarkmanagerng/benchmark"
+		elementFormDefault="qualified"
+		xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+		xmlns:benchmark="http://been.d3s.mff.cuni.cz/benchmarkmanagerng/benchmark"
+		xmlns:common="http://been.d3s.mff.cuni.cz/common"
+		xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+		jaxb:extensionBindingPrefixes="xjc"
+		jaxb:version="2.0">
+
+	<xs:import schemaLocation="common.xsd" namespace="http://been.d3s.mff.cuni.cz/common"/>
+	<xs:include schemaLocation="attrtypes.xsd"/>
+
+	<xs:element name="value" type="xs:string"/>
+	
+	<xs:complexType name="Values">
+		<xs:sequence>
+			<xs:element ref="benchmark:value" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="benchmark:nameAttrGroup"/>
+	</xs:complexType>
+	
+	<xs:element name="values" type="benchmark:Values"/>
+	
+	<xs:attributeGroup name="genEvalAttrGroup">
+		<xs:attributeGroup ref="benchmark:nameAttrGroup"/>
+		<xs:attribute name="version" type="xs:string" use="required"/>
+	</xs:attributeGroup>
+	
+	<xs:complexType name="GenEval">
+		<xs:sequence>
+			<xs:element ref="benchmark:values" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="benchmark:genEvalAttrGroup"/>
+	</xs:complexType>
+	
+	<xs:complexType name="Generator">
+		<xs:complexContent>
+			<xs:extension base="benchmark:GenEval">
+				<xs:attributeGroup ref="benchmark:changedAttrGroup"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:element name="generator" type="benchmark:Generator">
+		<xs:unique name="generatorValueNamesUnique">
+			<xs:selector xpath="benchmark:values"/>
+			<xs:field xpath="@name"/>
+		</xs:unique>
+	</xs:element>
+	
+	<xs:element name="evaluator" type="benchmark:GenEval">
+		<xs:unique name="evaluatorValueNamesUnique">
+			<xs:selector xpath="benchmark:values"/>
+			<xs:field xpath="@name"/>
+		</xs:unique>
+	</xs:element>
+	
+	<xs:complexType name="Evaluators">
+		<xs:sequence>
+			<xs:element ref="benchmark:evaluator" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="benchmark:changedAttrGroup"/>
+	</xs:complexType>
+	
+	<xs:element name="evaluators" type="benchmark:Evaluators"/>
+	
+	<xs:complexType name="RSL">
+		<xs:annotation>
+			<xs:appinfo>
+				<jaxb:property>
+					<jaxb:baseType>
+						<jaxb:javaType
+							name="cz.cuni.mff.been.common.rsl.Condition"
+							parseMethod="cz.cuni.mff.been.jaxb.Convertor.parseRSL"
+							printMethod="String.valueOf"
+						/>
+					</jaxb:baseType>
+				</jaxb:property>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attributeGroup ref="benchmark:changedAttrGroup"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:element name="rsl" type="benchmark:RSL">
+		<xs:annotation>
+			<xs:appinfo>
+				<jaxb:property name="RSL"/>
+			</xs:appinfo>
+		</xs:annotation>
+	</xs:element>
+	
+	<xs:complexType name="Desc">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attributeGroup ref="benchmark:changedAttrGroup"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:element name="desc" type="benchmark:Desc"/>
+	
+	<xs:complexType name="Period">
+		<xs:simpleContent>
+			<xs:extension base="common:positiveInt">												<!-- 0 doesn't make sense. -->
+				<xs:attributeGroup ref="benchmark:changedAttrGroup"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:element name="period" type="benchmark:Period"/>
+	
+	<xs:group name="benchmarkGroup">
+		<xs:all>
+			<xs:element ref="benchmark:desc" minOccurs="0" maxOccurs="1"/>
+			<xs:element ref="benchmark:rsl" minOccurs="1" maxOccurs="1"/>
+			<xs:element ref="benchmark:period" minOccurs="0" maxOccurs="1"/>
+			<xs:element ref="benchmark:generator" minOccurs="1" maxOccurs="1"/>
+			<xs:element ref="benchmark:evaluators" minOccurs="0" maxOccurs="1"/>			
+		</xs:all>
+	</xs:group>
+	
+	<xs:element name="benchmark">
+		<xs:complexType>
+			<xs:group ref="benchmark:benchmarkGroup"/>
+			<xs:attributeGroup ref="benchmark:nameAttrGroup"/>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

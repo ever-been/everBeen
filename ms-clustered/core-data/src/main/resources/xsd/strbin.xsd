@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema
+		targetNamespace="http://been.d3s.mff.cuni.cz/taskmanager/td"
+		elementFormDefault="unqualified"
+		attributeFormDefault="unqualified"
+		xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+		xmlns:strbin="http://been.d3s.mff.cuni.cz/taskmanager/td"
+		xmlns:common="http://been.d3s.mff.cuni.cz/common"
+		xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+		jaxb:extensionBindingPrefixes="xjc"
+		jaxb:version="2.0">
+	
+	<xs:import schemaLocation="common.xsd" namespace="http://been.d3s.mff.cuni.cz/common"/>
+	
+	<xs:attributeGroup name="strValAttrGroup">
+		<xs:attribute name="class" type="common:IDStringClass" use="required"/>
+	</xs:attributeGroup>
+
+	<xs:complexType name="StrVal">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attributeGroup ref="strbin:strValAttrGroup"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:element name="strval" type="strbin:StrVal">
+		<xs:annotation>
+			<xs:appinfo>
+				<jaxb:property name="strVal"/>
+			</xs:appinfo>
+		</xs:annotation>
+	</xs:element>
+
+	<xs:element name="binval" type="xs:base64Binary">
+		<xs:annotation>
+			<xs:appinfo>
+				<jaxb:property name="binVal"/>
+			</xs:appinfo>
+		</xs:annotation>
+	</xs:element>
+</xs:schema>
