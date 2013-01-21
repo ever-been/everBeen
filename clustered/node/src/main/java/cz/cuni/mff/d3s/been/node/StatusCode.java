@@ -7,7 +7,8 @@ package cz.cuni.mff.d3s.been.node;
  */
 enum StatusCode {
 
-	EX_USAGE(67);
+	EX_USAGE(67),
+	EX_OK(0);
 
 	private int code;
 

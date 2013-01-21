@@ -2,9 +2,9 @@ package cz.cuni.mff.d3s.been.node;
 
 import com.hazelcast.core.HazelcastInstance;
 
+import cz.cuni.mff.d3s.been.cluster.IClusterService;
 import cz.cuni.mff.d3s.been.cluster.Instance;
 import cz.cuni.mff.d3s.been.cluster.NodeType;
-import cz.cuni.mff.d3s.been.task.IManager;
 import cz.cuni.mff.d3s.been.task.Managers;
 
 import org.kohsuke.args4j.CmdLineException;
@@ -14,6 +14,7 @@ import org.kohsuke.args4j.Option;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static cz.cuni.mff.d3s.been.node.StatusCode.EX_OK;
 import static cz.cuni.mff.d3s.been.node.StatusCode.EX_USAGE;
 
 
@@ -40,13 +41,16 @@ import static cz.cuni.mff.d3s.been.node.StatusCode.EX_USAGE;
 public class Runner {
 
 	// ------------------------------------------------------------------------
-	// EXIT STATUS CODES
+	// LOGGING
 	// ------------------------------------------------------------------------
+
+	private static final Logger log = LoggerFactory.getLogger(Runner.class);
+
 
 	// ------------------------------------------------------------------------
 	// COMMAND LINE ARGUMENTS
 	// ------------------------------------------------------------------------
-	private static final Logger log = LoggerFactory.getLogger(Runner.class);
+
 	/**
 	 * Type of the node.
 	 */
@@ -58,13 +62,15 @@ public class Runner {
 	 * Whether to run Host Runtime on this node.
 	 *
 	 */
-	@Option(name = "-r", aliases = {"--host-runtime"}, usage = "Whether to run Host runtime on this node.")
+	@Option(name = "-r", aliases = {"--host-runtime"}, usage = "Whether to run Host runtime on this node")
 	private boolean runHostRuntime = false;
 
+	@Option(name = "-ehl", aliases = {"--enable-hazelcast-logging"}, usage = "Turns on Hazelcast logging")
+	private boolean enableHazelcastLogging = false;
 
-	// ------------------------------------------------------------------------
-	// LOGGING
-	// ------------------------------------------------------------------------
+	@Option(name = "-h", aliases = {"--help"}, usage = "Prints help")
+	private boolean printHelp = false;
+
 
 
 	public static void main(String[] args) {
@@ -79,6 +85,13 @@ public class Runner {
 	public void doMain(final String[] args) {
 
 		parseCmdLineArguments(args);
+
+		if (printHelp) {
+			printUsage();
+			System.exit(EX_OK.getCode());
+		}
+
+		configureLogging(enableHazelcastLogging);
 
 
 		// Join the cluster
@@ -100,6 +113,11 @@ public class Runner {
 			startHostRuntime(instance);
 			log.info("Host Runtime Started");
 		}
+	}
+
+	private void printUsage() {
+		CmdLineParser parser = new CmdLineParser(this);
+		parser.printUsage(System.out);
 	}
 
 
@@ -134,7 +152,7 @@ public class Runner {
 	}
 
 	private void startTaskManager(final HazelcastInstance instance) {
-		IManager taskManager = Managers.getManager(instance);
+		IClusterService taskManager = Managers.getManager(instance);
 		taskManager.start();
 	}
 
@@ -142,7 +160,15 @@ public class Runner {
 
 	}
 
-	private HazelcastInstance getInstance(NodeType nodeType) {
+	private HazelcastInstance getInstance(final NodeType nodeType) {
 		return Instance.newInstance(nodeType);
+	}
+
+	private void configureLogging(final boolean enableHazelcastLogging) {
+		if (enableHazelcastLogging) {
+			System.setProperty("hazelcast.logging.type", "slf4j");
+		} else {
+			System.setProperty("hazelcast.logging.type", "none");
+		}
 	}
 }

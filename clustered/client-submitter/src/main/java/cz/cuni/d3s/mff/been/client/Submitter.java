@@ -3,7 +3,8 @@ package cz.cuni.d3s.mff.been.client;
 import com.hazelcast.client.ClientConfig;
 import com.hazelcast.client.HazelcastClient;
 
-
+import cz.cuni.mff.d3s.been.cluster.Instance;
+import cz.cuni.mff.d3s.been.cluster.NodeType;
 import cz.cuni.mff.d3s.been.core.ClusterUtils;
 import cz.cuni.mff.d3s.been.core.TasksUtils;
 import cz.cuni.mff.d3s.been.core.jaxb.BindingParser;
@@ -46,6 +47,10 @@ public class Submitter {
 	@Option(name = "-gp", aliases = {"--group-password"}, usage = "Group Password")
 	private String groupPassword = "dev-pass";
 
+	@Option(name = "-ehl", aliases = {"--enable-hazelcast-logging"}, usage = "Turns on Hazelcast logging.")
+	private boolean debug = false;
+
+
 
 	public static void main(String[] args) {
 
@@ -53,6 +58,7 @@ public class Submitter {
 	}
 
 	private void doMain(String[] args) {
+
 
 
 
@@ -71,19 +77,30 @@ public class Submitter {
 			TaskDescriptor td = bindingComposer.parse(new java.io.File(tdPath));
 
 			// connect to the cluster
+
+			if (debug) {
+				System.setProperty("hazelcast.logging.type", "slf4j");
+			} else {
+				System.setProperty("hazelcast.logging.type", "none");
+			}
+
 			InetSocketAddress socketAddress = new InetSocketAddress(host, port);
 
 			ClientConfig clientConfig = new ClientConfig();
 			clientConfig.getGroupConfig().setName(groupName).setPassword(groupPassword);
 			clientConfig.addInetSocketAddress(socketAddress);
+
 			hazelcastClient = HazelcastClient.newHazelcastClient(clientConfig);
 
 
 
-
+			Instance.registerInstance(hazelcastClient, NodeType.NATIVE);
 
 			// submit
 			String taskId = TasksUtils.submit(td);
+
+			System.out.println("Task was submitter with id: " + taskId);
+
 
 
 

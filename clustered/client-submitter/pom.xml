@@ -27,6 +27,12 @@
 			<version>${project.parent.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>core-cluster</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+
 		<!-- EXTERNAL -->
 
 		<!--<dependency>

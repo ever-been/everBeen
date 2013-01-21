@@ -1,21 +1,22 @@
 package cz.cuni.mff.d3s.been.task;
 
 import com.hazelcast.core.HazelcastInstance;
+import cz.cuni.mff.d3s.been.cluster.IClusterService;
 
 /**
  * @author Martin Sixta
  */
-final class ClusterManager implements IManager {
+final class ClusterManager implements IClusterService {
 	private final HazelcastInstance hazelcastInstance;
 	private final LocalTaskListener localTaskListener;
 	private final MembershipListener membershipListener;
 
-	public ClusterManager(final HazelcastInstance hazelcastInstance) {
+
+	public ClusterManager(HazelcastInstance hazelcastInstance) {
 		this.hazelcastInstance = hazelcastInstance;
 		localTaskListener = new LocalTaskListener();
 		membershipListener = new MembershipListener(hazelcastInstance);
 	}
-
 
 	@Override
 	public void start() {

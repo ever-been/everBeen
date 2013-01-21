@@ -15,13 +15,13 @@ import java.net.URL;
  * The NodeType must be set before attempt to obtain a HazelcastInstance.
  * <p/>
  *
- * WARNING: this class is not thread-safe! The instance should be created
+ * WARNING: this class is not thread-safe! The hazelcastInstance should be created
  * by calling getInstance() in the main thread!
  *
  * @author Martin Sixta
  */
 public final class Instance {
-	private static HazelcastInstance instance;
+	private static HazelcastInstance hazelcastInstance;
 	private static NodeType nodeType = null;
 
 	public static NodeType getNodeType() {
@@ -32,7 +32,7 @@ public final class Instance {
 	 *
 	 * Creates new HazelcastInstance according to supplied type.
 	 *
-	 * The function can be called only once! If you need the instance
+	 * The function can be called only once! If you need the hazelcastInstance
 	 * call getInstance().
 	 *
 	 * @param type
@@ -40,7 +40,7 @@ public final class Instance {
 	 */
 	public static HazelcastInstance newInstance(NodeType type) {
 		if (nodeType != null) {
-			throw new IllegalArgumentException("Only one instance allowed!");
+			throw new IllegalArgumentException("Only one hazelcastInstance allowed!");
 		}
 
 		nodeType = type;
@@ -48,17 +48,26 @@ public final class Instance {
 		return getInstance();
 	}
 
+	public static void registerInstance(HazelcastInstance instance, NodeType type) {
+		if (nodeType != null) {
+			throw new IllegalArgumentException("Only one instance allowed!");
+		}
+		nodeType = type;
+		hazelcastInstance = instance;
+
+	}
+
 	public static HazelcastInstance getInstance() {
 		if (nodeType == null) {
 			throw new IllegalStateException("Must call Instance.setNodeType first!");
 		}
 
-		if (instance == null) {
+		if (hazelcastInstance == null) {
 			join();
 		}
 
-		assert (instance != null);
-		return instance;
+		assert (hazelcastInstance != null);
+		return hazelcastInstance;
 	}
 
 	private static void join() {
@@ -87,6 +96,6 @@ public final class Instance {
 			config = null;
 		}
 
-		instance = Hazelcast.newHazelcastInstance(config);
+		hazelcastInstance = Hazelcast.newHazelcastInstance(config);
 	}
 }

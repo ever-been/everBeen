@@ -1,6 +1,7 @@
 package cz.cuni.mff.d3s.been.task;
 
 import com.hazelcast.core.HazelcastInstance;
+import cz.cuni.mff.d3s.been.cluster.IClusterService;
 
 /**
  * Static factory for the IManager implementation.
@@ -14,9 +15,9 @@ import com.hazelcast.core.HazelcastInstance;
  * @author Martin Sixta
  */
 public final class Managers {
-	private static IManager clusterManager;
+	private static IClusterService clusterManager;
 
-	public static IManager getManager(HazelcastInstance instance) {
+	public static IClusterService getManager(HazelcastInstance instance) {
 		if (clusterManager == null) {
 			clusterManager = new ClusterManager(instance);
 		}
