@@ -19,7 +19,6 @@
 		<module>task-manager</module>
 		<module>node</module>
 		<module>client-submitter</module>
-		<module>software-repository</module>
 		<module>host-runtime</module>
 	</modules>
 

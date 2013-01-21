@@ -32,6 +32,7 @@ public abstract class BaseNodeInfo implements Serializable {
 		public String host;
 	}
 
+
 	public static class HostRuntimeNodeInfo extends BaseNodeInfo {
 
 		private List<String> runningTaskNames = new ArrayList<>();
@@ -52,7 +53,7 @@ public abstract class BaseNodeInfo implements Serializable {
 		 * return unmodifiable copy of running tasks list - for adding/ removing
 		 * tasks call {@link HostRuntimeNodeInfo#addRunningTask(String)} and
 		 * {@link HostRuntimeNodeInfo#removeRunningTask(String)}
-		 * 
+		 *
 		 * @param taskName
 		 * @return
 		 */

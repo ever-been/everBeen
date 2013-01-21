@@ -31,9 +31,12 @@ public class MapUtils {
 		return values;
 	}
 
-	public static Object getValue(String mapName, Object key) {
+	public static <K, V> V getValue(String mapName, K key) {
 
-		return getMap(mapName).get(key);
+		IMap<String, V> map = getMap(mapName);
+
+		return map.get(key);
+
 	}
 
 	public static void setValue(String mapName, Object key, Object value) {
@@ -41,7 +44,7 @@ public class MapUtils {
 
 	}
 
-	public static IMap getMap(String mapName) {
+	public static <K, V> IMap<K, V> getMap(String mapName) {
 		return ClusterUtils.getInstance().getMap(mapName);
 	}
 }

@@ -26,7 +26,9 @@ public class TasksUtils {
 
 	public static Collection<TaskEntry> getTasks(TaskState state) {
 		SqlPredicate predicate = new SqlPredicate("state = '" + state.toString() + "'");
-		return MapUtils.getMap(TASKS_MAP_NAME).values(predicate);
+		IMap<String, TaskEntry> map = MapUtils.getMap(TASKS_MAP_NAME);
+
+		return map.values(predicate);
 	}
 
 	public static TaskEntry getTask(String key) {

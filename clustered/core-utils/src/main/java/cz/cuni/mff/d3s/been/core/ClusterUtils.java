@@ -56,5 +56,21 @@ public class ClusterUtils {
 		return getInstance().getCluster().getLocalMember();
 	}
 
+	public static <E> IQueue<E> getQueue(String name) {
+		return getInstance().getQueue(name);
+	}
+
+	public static <E> ITopic<E> getTopic(String name) {
+		return getInstance().getTopic(name);
+	}
+
+	public static <K, V> IMap<K, V> getMap(String name) {
+		return getInstance().getMap(name);
+	}
+
+	public static <E> IList<E> getList(String name) {
+		return getInstance().getList(name);
+	}
+
 
 }

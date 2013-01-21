@@ -5,6 +5,7 @@ import com.hazelcast.core.HazelcastInstance;
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
 import cz.cuni.mff.d3s.been.cluster.Instance;
 import cz.cuni.mff.d3s.been.cluster.NodeType;
+import cz.cuni.mff.d3s.been.hostruntime.HostRuntimes;
 import cz.cuni.mff.d3s.been.task.Managers;
 
 import org.kohsuke.args4j.CmdLineException;
@@ -157,7 +158,8 @@ public class Runner {
 	}
 
 	private void startHostRuntime(final HazelcastInstance instance) {
-
+		IClusterService hostRuntime = HostRuntimes.getRuntime(instance);
+		hostRuntime.start();
 	}
 
 	private HazelcastInstance getInstance(final NodeType nodeType) {

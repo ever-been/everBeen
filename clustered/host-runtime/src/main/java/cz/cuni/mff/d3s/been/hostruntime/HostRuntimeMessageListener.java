@@ -1,26 +1,47 @@
 package cz.cuni.mff.d3s.been.hostruntime;
 
-import cz.cuni.mff.d3s.been.core.protocol.cluster.MessageListener;
+
+import com.hazelcast.core.ITopic;
+import com.hazelcast.core.Message;
+import com.hazelcast.core.MessageListener;
+import cz.cuni.mff.d3s.been.cluster.IClusterService;
+import cz.cuni.mff.d3s.been.core.ClusterUtils;
+import cz.cuni.mff.d3s.been.core.TopicUtils;
+import cz.cuni.mff.d3s.been.core.protocol.Context;
 import cz.cuni.mff.d3s.been.core.protocol.messages.BaseMessage;
 import cz.cuni.mff.d3s.been.core.protocol.messages.KillTaskMessage;
 import cz.cuni.mff.d3s.been.core.protocol.messages.RunTaskMessage;
 
-public class HostRuntimeMessageListener implements MessageListener {
+final class HostRuntimeMessageListener implements MessageListener<BaseMessage>, IClusterService {
 
 	private HostRuntime hostRuntime;
+	final ITopic<BaseMessage> globalTopic;
+
 
 	public HostRuntimeMessageListener(final HostRuntime hostRuntime) {
 		this.hostRuntime = hostRuntime;
+		globalTopic = ClusterUtils.getTopic(Context.GLOBAL_TOPIC.getName());
 	}
 
+	public void start() {
+		globalTopic.addMessageListener(this);
+	}
+
+	public void stop() {
+		globalTopic.removeMessageListener(this);
+	}
+
+
 	@Override
-	public void onMessage(final BaseMessage message) {
-		String recieverId = message.recieverId;
+	public void onMessage(Message<BaseMessage> message) {
+		final BaseMessage messageObject = message.getMessageObject();
+
+		String recieverId = messageObject.recieverId;
 		if (recieverId == null || hostRuntime.getNodeId().equals(recieverId)) {
-			if (message instanceof RunTaskMessage) {
-				hostRuntime.onRunTask((RunTaskMessage) message);
-			} else if (message instanceof KillTaskMessage) {
-				hostRuntime.onKillTask((KillTaskMessage) message);
+			if (messageObject instanceof RunTaskMessage) {
+				hostRuntime.onRunTask((RunTaskMessage) messageObject);
+			} else if (messageObject instanceof KillTaskMessage) {
+				hostRuntime.onKillTask((KillTaskMessage) messageObject);
 			}
 		}
 	}

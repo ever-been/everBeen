@@ -1,29 +1,29 @@
 package cz.cuni.mff.d3s.been.hostruntime;
 
+import cz.cuni.mff.d3s.been.cluster.IClusterService;
+import cz.cuni.mff.d3s.been.core.TopicUtils;
 import cz.cuni.mff.d3s.been.core.protocol.Context;
 import cz.cuni.mff.d3s.been.core.protocol.JSONSerializer.JSONSerializerException;
-import cz.cuni.mff.d3s.been.core.protocol.api.AbstractNode;
-import cz.cuni.mff.d3s.been.core.protocol.cluster.DataPersistence;
-import cz.cuni.mff.d3s.been.core.protocol.cluster.Messaging;
-import cz.cuni.mff.d3s.been.core.protocol.messages.KillTaskMessage;
-import cz.cuni.mff.d3s.been.core.protocol.messages.RunTaskMessage;
-import cz.cuni.mff.d3s.been.core.protocol.messages.TaskFinishedMessage;
-import cz.cuni.mff.d3s.been.core.protocol.messages.TaskKilledMessage;
-import cz.cuni.mff.d3s.been.core.protocol.messages.TaskStartedMessage;
-import cz.cuni.mff.d3s.been.core.protocol.pojo.BaseNodeInfo;
-import cz.cuni.mff.d3s.been.core.protocol.pojo.BaseNodeInfo.HostRuntimeNodeInfo;
 
-public class HostRuntime extends AbstractNode {
+import cz.cuni.mff.d3s.been.core.protocol.messages.*;
+import cz.cuni.mff.d3s.been.task.TaskRunner;
+
+
+final class HostRuntime implements IClusterService {
 
 	private final TaskRunner taskRunner;
+	private final String nodeId;
+	private HostRuntimeMessageListener messageListener;
+	private RestBridgeListener restBridgeListener;
 
-	private final HostRuntimeNodeInfo nodeInfo;
 
-	public HostRuntime(Messaging messaging, DataPersistence dataPersistence, TaskRunner taskRunner, String nodeId) {
-		super(messaging, dataPersistence, nodeId);
+
+	public HostRuntime(TaskRunner taskRunner, String nodeId) {
+
 		this.taskRunner = taskRunner;
-		this.nodeInfo = new HostRuntimeNodeInfo(nodeId);
-		taskRunner.setNodeInfo(this.nodeInfo);
+		this.nodeId = nodeId;
+
+
 	}
 
 	@Override
@@ -32,12 +32,34 @@ public class HostRuntime extends AbstractNode {
 		storeNodeInfo();
 	}
 
-	private void storeNodeInfo() {
-		getDataPersistence().<BaseNodeInfo> getList(Context.NODE_INFO_LIST).add(nodeInfo);
+	@Override
+	public void stop() {
+		unregisterListeners();
+
+		//TODO: delete node info, when we figure out what the info should be
 	}
 
+	private void unregisterListeners() {
+		restBridgeListener.stop();
+		messageListener.stop();
+	}
+
+
 	private void registerListeners() {
-		getMessaging().addMessageListener(Context.GLOBAL_TOPIC, new HostRuntimeMessageListener(this));
+		messageListener =  new HostRuntimeMessageListener(this);
+		restBridgeListener = new RestBridgeListener();
+
+		messageListener.start();
+
+		// TODO: unlike messageListener, here is race condition. But do we care?
+		restBridgeListener.start();
+	}
+
+
+	private void storeNodeInfo() {
+		// TODO: FIXME this should be map
+		// ClusterUtils.getList(Context.NODE_INFO_LIST.getName()).add(nodeInfo);
+
 	}
 
 	void sendTaskStartedMessage(TaskStartedMessage message) throws JSONSerializerException {
@@ -62,6 +84,14 @@ public class HostRuntime extends AbstractNode {
 		synchronized (taskRunner) {
 			taskRunner.killTask(message);
 		}
+	}
+
+	public String getNodeId() {
+		return nodeId;
+	}
+
+	private void sendMessage(final BaseMessage message) {
+		TopicUtils.publish(Context.GLOBAL_TOPIC.getName(), message);
 	}
 
 }
