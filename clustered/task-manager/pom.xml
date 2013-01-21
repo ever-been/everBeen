@@ -4,12 +4,10 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>task-manager</artifactId>
-	<packaging>jar</packaging>
-	<name>task-manager</name>
 
 	<parent>
 		<groupId>cz.cuni.mff.d3s.been</groupId>
-		<artifactId>ms-clustered</artifactId>
+		<artifactId>clustered</artifactId>
 		<version>3.0.0</version>
 	</parent>
 

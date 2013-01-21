@@ -33,7 +33,7 @@ import cz.cuni.mff.been.common.util.TimeUtils;
  *
  * @author Branislav Repcek
  */
-class LoadMonitorNative {
+public class LoadMonitorNative {
 
 	/**
 	 * Initialise native library.

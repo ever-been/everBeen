@@ -6,7 +6,7 @@
 	<artifactId>parent</artifactId>
 	<version>2.1.0</version>
 	<modules>
-		<module>ms-clustered</module>
+		<module>clustered</module>
 	</modules>
 
 	<packaging>pom</packaging>

@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>cz.cuni.mff.d3s.been</groupId>
-	<artifactId>ms-clustered</artifactId>
+	<artifactId>clustered</artifactId>
 	<version>3.0.0</version>
 	<packaging>pom</packaging>
 
@@ -13,11 +13,14 @@
 	<modules>
 		<module>core-data</module>
 		<module>core-utils</module>
+		<module>core-protocol</module>
+		<module>core-cluster</module>
 		<module>task-runner</module>
 		<module>task-manager</module>
 		<module>node</module>
 		<module>client-submitter</module>
-
+		<module>software-repository</module>
+		<module>host-runtime</module>
 	</modules>
 
 

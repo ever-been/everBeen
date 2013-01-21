@@ -6,7 +6,7 @@
 	<artifactId>core-data</artifactId>
 
 	<parent>
-		<artifactId>ms-clustered</artifactId>
+		<artifactId>clustered</artifactId>
 		<groupId>cz.cuni.mff.d3s.been</groupId>
 		<version>3.0.0</version>
 	</parent>
