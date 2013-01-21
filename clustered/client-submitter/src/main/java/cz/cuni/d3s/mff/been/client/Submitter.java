@@ -77,7 +77,7 @@ public class Submitter {
 			clientConfig.getGroupConfig().setName(groupName).setPassword(groupPassword);
 			clientConfig.addInetSocketAddress(socketAddress);
 			hazelcastClient = HazelcastClient.newHazelcastClient(clientConfig);
-			ClusterUtils.registerHazelcastInstance(hazelcastClient);
+
 
 
 

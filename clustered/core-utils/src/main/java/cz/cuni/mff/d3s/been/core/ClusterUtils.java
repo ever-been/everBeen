@@ -11,14 +11,8 @@ import java.util.Set;
  */
 public class ClusterUtils {
 
-	private static HazelcastInstance hazelcastInstance;
-
-	public static void registerHazelcastInstance(HazelcastInstance instance) {
-		hazelcastInstance = instance;
-	}
-
 	public static HazelcastInstance getInstance() {
-		  return hazelcastInstance;
+		  return cz.cuni.mff.d3s.been.cluster.Instance.getInstance();
 	}
 
 	public static Set<Member> getMembers() {

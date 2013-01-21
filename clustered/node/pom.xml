@@ -13,6 +13,7 @@
 
 
 	<dependencies>
+		<!-- BEEN DEPENDENCIES -->
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
 			<artifactId>task-manager</artifactId>
@@ -30,11 +31,23 @@
 			<artifactId>core-utils</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>core-cluster</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
 
+		<!-- EXTERNAL DEPENDENCIES -->
 		<dependency>
 			<groupId>com.hazelcast</groupId>
 			<artifactId>hazelcast</artifactId>
 			<version>${hazelcast.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>args4j</groupId>
+			<artifactId>args4j</artifactId>
+			<version>${args4j.version}</version>
 		</dependency>
 
 

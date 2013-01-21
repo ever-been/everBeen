@@ -40,6 +40,7 @@
 		<maven-jar-plugin.version>2.4</maven-jar-plugin.version>
 		<maven-resources-plugin.version>2.6</maven-resources-plugin.version>
 		<one.jar.version>0.97</one.jar.version>
+		<args4j.version>2.0.16</args4j.version>
 
 
 		<!-- SOURCE LEVEL CONTROL -->
