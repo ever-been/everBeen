@@ -15,8 +15,8 @@ import java.net.URL;
  * The NodeType must be set before attempt to obtain a HazelcastInstance.
  * <p/>
  *
- * WARNING: this class is not thread-safe! The hazelcastInstance should be created
- * by calling getInstance() in the main thread!
+ * TODO: WARNING: this class is not thread-safe!
+ * The hazelcastInstance should be created by calling getInstance() in the main thread!
  *
  * @author Martin Sixta
  */

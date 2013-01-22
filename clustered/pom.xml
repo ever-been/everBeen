@@ -29,7 +29,7 @@
 		<been.task.version>3.0.0</been.task.version>
 
 		<!-- 3RD PARTY DEPENDENCIES -->
-		<hazelcast.version>2.4</hazelcast.version>
+		<hazelcast.version>2.5</hazelcast.version>
 
 
 		<!-- PLUGIN VERSION CONTROL -->

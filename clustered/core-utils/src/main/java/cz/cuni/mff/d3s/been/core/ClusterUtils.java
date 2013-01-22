@@ -53,7 +53,15 @@ public class ClusterUtils {
 
 
 	public static Member getLocalMember() {
-		return getInstance().getCluster().getLocalMember();
+		return getCluster().getLocalMember();
+	}
+
+	public static Cluster getCluster() {
+		return getInstance().getCluster();
+	}
+
+	public static ClientService getClientService() {
+		return getInstance().getClientService();
 	}
 
 	public static <E> IQueue<E> getQueue(String name) {
@@ -70,6 +78,10 @@ public class ClusterUtils {
 
 	public static <E> IList<E> getList(String name) {
 		return getInstance().getList(name);
+	}
+
+	public static Transaction getTransaction() {
+		return getInstance().getTransaction();
 	}
 
 

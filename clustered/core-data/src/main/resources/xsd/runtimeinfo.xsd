@@ -16,12 +16,14 @@
 	<xs:import schemaLocation="common.xsd" namespace="http://been.d3s.mff.cuni.cz/common"/>
 
 	<xs:element name="name" type="xs:string"/>
-	<xs:element name="os" type="xs:string"/>
-	<xs:element name="memory" type="common:positiveLong"/>
-	<xs:element name="cpu" type="xs:string"/>
+
 	<xs:element name="id" type="xs:string" />
 	<xs:element name="port" type="common:positiveInt" />
 	<xs:element name="host" type="xs:string" />
+
+	<xs:element name="os" type="xs:string"/>
+	<xs:element name="memory" type="common:positiveLong"/>
+	<xs:element name="cpu" type="xs:string"/>
 
 	<xs:complexType name="java">
 		<xs:all>
@@ -30,15 +32,21 @@
 		</xs:all>
 	</xs:complexType>
 
+
 	<xs:element name="runtimeInfo">
 		<xs:complexType>
 			<xs:all>
-				<xs:element ref="runtimeinfo:name" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="runtimeinfo:name" minOccurs="0" maxOccurs="1" />
+				<xs:element ref="runtimeinfo:id" minOccurs="1" maxOccurs="1" />
+				<xs:element ref="runtimeinfo:port" minOccurs="1" maxOccurs="1" />
+				<xs:element ref="runtimeinfo:host" minOccurs="1" maxOccurs="1" />
+
+				<!-- just a hint ... -->
 				<xs:element ref="runtimeinfo:os" minOccurs="0" maxOccurs="1"/>
 				<xs:element ref="runtimeinfo:memory" minOccurs="0" maxOccurs="1"/>
 				<xs:element ref="runtimeinfo:cpu" minOccurs="0" maxOccurs="1"/>
-				<xs:element ref="runtimeinfo:id" minOccurs="0" maxOccurs="1"/>
 				<xs:element name="javaInfo" type="runtimeinfo:java" minOccurs="1" maxOccurs="1" />
+
 			</xs:all>
 		</xs:complexType>
 	</xs:element>

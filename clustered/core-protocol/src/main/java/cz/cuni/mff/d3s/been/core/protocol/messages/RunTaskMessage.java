@@ -6,6 +6,11 @@ import java.util.List;
 public final class RunTaskMessage extends BaseMessage {
 
 	/**
+	 * ID of the tusk to run;
+	 */
+	public String taskId;
+
+	/**
 	 * Name of the task
 	 */
 	public String name;

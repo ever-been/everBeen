@@ -2,26 +2,24 @@ package cz.cuni.mff.d3s.been.task;
 
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.MembershipEvent;
+import cz.cuni.mff.d3s.been.cluster.IClusterService;
+import cz.cuni.mff.d3s.been.core.ClusterUtils;
 
 /**
  * Listens for cluster membership events.
  *
  * @author Martin Sixta
  */
-final class MembershipListener implements com.hazelcast.core.MembershipListener {
-	private final HazelcastInstance hazelcastInstance;
+final class MembershipListener implements com.hazelcast.core.MembershipListener, IClusterService {
 
-	public MembershipListener(final HazelcastInstance hazelcastInstance) {
-		this.hazelcastInstance = hazelcastInstance;
-	}
-
+	@Override
 	public void start() {
-		hazelcastInstance.getCluster().addMembershipListener(this);
-
+		ClusterUtils.getCluster().addMembershipListener(this);
 	}
 
+	@Override
 	public void stop() {
-		hazelcastInstance.getCluster().removeMembershipListener(this);
+		ClusterUtils.getCluster().removeMembershipListener(this);
 	}
 
 	@Override
