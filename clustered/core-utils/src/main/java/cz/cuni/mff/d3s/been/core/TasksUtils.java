@@ -2,8 +2,10 @@ package cz.cuni.mff.d3s.been.core;
 
 import com.hazelcast.core.IMap;
 import com.hazelcast.query.SqlPredicate;
+import cz.cuni.mff.d3s.been.core.task.TaskEntries;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
+import cz.cuni.mff.d3s.been.core.td.TaskDescriptor;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -26,9 +28,7 @@ public class TasksUtils {
 
 	public static Collection<TaskEntry> getTasks(TaskState state) {
 		SqlPredicate predicate = new SqlPredicate("state = '" + state.toString() + "'");
-		IMap<String, TaskEntry> map = MapUtils.getMap(TASKS_MAP_NAME);
-
-		return map.values(predicate);
+		return getTasksMap().values(predicate);
 	}
 
 	public static TaskEntry getTask(String key) {
@@ -39,18 +39,16 @@ public class TasksUtils {
 		getTasksMap().put(taskEntry.getId(), taskEntry);
 	}
 
-	public static String submit(cz.cuni.mff.d3s.been.core.td.TaskDescriptor taskDescriptor) {
-
+	public static String submit(TaskDescriptor taskDescriptor) {
 		// create task entry
 		String id = UUID.randomUUID().toString();
-		TaskEntry taskEntry = new TaskEntry(id, taskDescriptor);
+		TaskEntry taskEntry = TaskEntries.create(id, taskDescriptor);
 
 		getTasksMap().put(id, taskEntry);
 
 		return id;
 
 	}
-
 
 
 }

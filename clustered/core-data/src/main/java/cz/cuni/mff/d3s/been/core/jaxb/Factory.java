@@ -61,12 +61,12 @@ public final class Factory {
 	/** A factory to produce instances from the {@code cz.cuni.mff.been.jaxb.td} package. */
 	public static final cz.cuni.mff.d3s.been.core.ri.ObjectFactory RUNTIME;
 
-	public static final cz.cuni.mff.d3s.been.core.taskentry.ObjectFactory TASKENTRY;
+	//public static final cz.cuni.mff.d3s.been.core.task.ObjectFactory TASKENTRY;
 	
 	static {
 		TD = new cz.cuni.mff.d3s.been.core.td.ObjectFactory();
 		RUNTIME = new cz.cuni.mff.d3s.been.core.ri.ObjectFactory();
-		TASKENTRY = new  cz.cuni.mff.d3s.been.core.taskentry.ObjectFactory();
+		//TASKENTRY = new  cz.cuni.mff.d3s.been.core.task.ObjectFactory();
 
 		//BENCHMARK = new cz.cuni.mff.d3s.been.core.benchmark.ObjectFactory();
 		//CONFIG = new cz.cuni.mff.d3s.been.core.config.ObjectFactory();

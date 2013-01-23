@@ -17,13 +17,28 @@
 
 	<xs:element name="id" type="xs:string"/>
 	<xs:element name="runtime" type="xs:string"/>
-	<xs:element name="state" type="xs:string" />
+	<xs:element name="state" type="xs:string">
+		<xs:annotation>
+			<xs:appinfo>
+				<jaxb:property name="state">
+					<jaxb:baseType>
+						<jaxb:javaType
+								name="cz.cuni.mff.d3s.been.core.task.TaskState"
+								parseMethod="cz.cuni.mff.d3s.been.core.task.TaskState.valueOf"
+								printMethod="String.valueOf"
+								/>
+					</jaxb:baseType>
+				</jaxb:property>
+			</xs:appinfo>
+		</xs:annotation>
+
+	</xs:element>
 
 
 
 
 
-	<xs:element name="taskEntryInfo">
+	<xs:element name="taskEntry">
 		<xs:complexType>
 			<xs:all>
 				<xs:element ref="taskentry:id" minOccurs="1" maxOccurs="1"/>

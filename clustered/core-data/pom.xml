@@ -149,6 +149,7 @@
 
 					-->
 
+					<!--
 					<execution>
 						<id>taskentry-xjc</id>
 						<goals>
@@ -159,10 +160,11 @@
 							<staleFile>${project.build.directory}/jaxb2/.taskentryinforXjcStaleFlag</staleFile>
 							<clearOutputDir>false</clearOutputDir>
 							<schemaFiles>taskentry.xsd, common.xsd</schemaFiles>
-							<packageName>cz.cuni.mff.d3s.been.core.taskentry</packageName>
+							<packageName>cz.cuni.mff.d3s.been.core.task</packageName>
 							<extension>true</extension>
 						</configuration>
 					</execution>
+					-->
 
 					<execution>
 						<id>runtimeinfo-xjc</id>
@@ -185,7 +187,7 @@
 							<goal>xjc</goal>
 						</goals>
 						<configuration>
-							<schemaDirectory> ${project.basedir}/src/main/resources/xsd</schemaDirectory>
+							<schemaDirectory>${project.basedir}/src/main/resources/xsd</schemaDirectory>
 							<staleFile>${project.build.directory}/jaxb2/.tdXjcStaleFlag</staleFile>
 							<clearOutputDir>false</clearOutputDir>
 							<schemaFiles>td.xsd, common.xsd</schemaFiles>
@@ -199,6 +201,7 @@
 
 
 			</plugin>
+
 
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>

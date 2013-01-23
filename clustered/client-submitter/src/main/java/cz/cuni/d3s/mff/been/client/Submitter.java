@@ -114,7 +114,7 @@ public class Submitter {
 			parser.printUsage(System.err);
 
 			return;
-		} catch (SAXException  | JAXBException | ConvertorException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			if (hazelcastClient != null) {

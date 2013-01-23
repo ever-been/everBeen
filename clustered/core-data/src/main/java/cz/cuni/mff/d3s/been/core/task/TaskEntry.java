@@ -1,40 +1,40 @@
 package cz.cuni.mff.d3s.been.core.task;
 
-import cz.cuni.mff.d3s.been.core.jaxb.BindingComposer;
-import cz.cuni.mff.d3s.been.core.jaxb.Factory;
-import cz.cuni.mff.d3s.been.core.jaxb.XSD;
-import cz.cuni.mff.d3s.been.core.td.TaskDescriptor;
-import cz.cuni.mff.d3s.been.core.taskentry.TaskEntryInfo;
-import org.xml.sax.SAXException;
 
-import javax.xml.bind.JAXBException;
-import java.io.StringWriter;
+import cz.cuni.mff.d3s.been.core.td.TaskDescriptor;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
 
 import cz.cuni.mff.d3s.been.core.entry.IEntry;
 
 /**
  * BEEN entry describing a task.
  *
- *
+ * TODO:
+ * JAXB backing ... if we figure out how to reference TD
+ * Consider moving all logic to a utility class (__^__)
  *
  * @author Martin Sixta
  */
-public class TaskEntry implements IEntry {
+public final class TaskEntry implements IEntry {
 
 	private TaskState state;
 	private final String id;
+	private String ownerId;
+	private String runtimeId;
 	private final TaskDescriptor descriptor;
-	private String runtime;
-
-	// TODO: Idea
-	// History of task state changes along with a message ("Scheduled to some host",
-	// "Aborted because it rains", etc)
 
 
-	public TaskEntry(String id, TaskDescriptor descriptor) {
+	private final LinkedList<StateChangeEntry> stateChangeLog;
+
+
+
+	protected TaskEntry(String id, TaskDescriptor descriptor) {
 		this.id = id;
 		this.descriptor = descriptor;
 		this.state = TaskState.CREATED;
+		stateChangeLog = new LinkedList<>();
 	}
 
 
@@ -42,12 +42,24 @@ public class TaskEntry implements IEntry {
 		return state;
 	}
 
-	public void setState(TaskState newState, /*ignored*/ String message) {
-		// TODO
-		// if ( ! isAlloweTransition(oldState, newState)) {
-		// 	throw new IllegalArgumentException("State change not permitted")
-		// }
+	public void setState(TaskState newState, String message) throws IllegalStateException {
+		if (!state.canChangeTo(newState)) {
+			throw new IllegalStateException("Cannot change state from " + state + " to " + state);
+		}
+
+		stateChangeLog.add(new StateChangeEntry(newState, message));
+
 		this.state = newState;
+	}
+
+	public Collection<StateChangeEntry> getStateChangeLog() {
+		// return defense copy
+		// stored objects are immutable, so we need to return just different collection
+		return new ArrayList<>(stateChangeLog);
+	}
+
+	public String getStateChangeReason() {
+		return stateChangeLog.getLast().reason;
 	}
 
 
@@ -67,34 +79,19 @@ public class TaskEntry implements IEntry {
 		return id;
 	}
 
-	public String toXml() {
-		TaskEntryInfo info = Factory.TASKENTRY.createTaskEntryInfo();
-		info.setId(getId());
-
-		if (getRuntime() != null) {
-			info.setRuntime(getRuntime());
-		} else {
-			info.setRuntime("");
-		}
-
-		info.setState(getState().toString());
-		StringWriter sw = new StringWriter();
-		try {
-			BindingComposer<TaskEntryInfo> bindingComposer = XSD.TASKENTRY.createComposer(TaskEntryInfo.class);
-			bindingComposer.compose(info, sw);
-		} catch (JAXBException | SAXException e) {
-			e.printStackTrace();
-		}
-		return sw.toString();
+	public String getOwnerId() {
+		return ownerId;
 	}
 
-	public String getRuntime() {
-		return runtime;
+	public void setOwnerId(String ownerId) {
+		this.ownerId = ownerId;
 	}
 
-	public void setRuntime(String runtime) {
-		this.runtime = runtime;
+	public String getRuntimeId() {
+		return runtimeId;
 	}
 
-
+	public void setRuntimeId(String runtimeId) {
+		this.runtimeId = runtimeId;
+	}
 }
