@@ -13,6 +13,7 @@ public enum TaskState {
 	ABORTED;
 
 	public boolean canChangeTo(TaskState state) {
+
 		// can abort in any state
 		if (this != TaskState.ABORTED && state == TaskState.ABORTED) {
 			return true;

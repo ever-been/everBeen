@@ -8,7 +8,6 @@ import cz.cuni.mff.d3s.been.core.task.TaskState;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 
 import java.util.Collection;
-import java.util.UUID;
 
 import static cz.cuni.mff.d3s.been.core.Names.*;
 
@@ -35,18 +34,20 @@ public class TasksUtils {
 		return getTasksMap().get(key);
 	}
 
-	public static void setTask(TaskEntry taskEntry) {
+	public static void putTask(TaskEntry taskEntry) {
 		getTasksMap().put(taskEntry.getId(), taskEntry);
 	}
 
 	public static String submit(TaskDescriptor taskDescriptor) {
 		// create task entry
-		String id = UUID.randomUUID().toString();
-		TaskEntry taskEntry = TaskEntries.create(id, taskDescriptor);
+		TaskEntry taskEntry = TaskEntries.create(taskDescriptor);
 
-		getTasksMap().put(id, taskEntry);
+		// TODO
+		TaskEntries.setState(taskEntry, TaskState.SUBMITTED, "Submitted by ...");
 
-		return id;
+		getTasksMap().put(taskEntry.getId(), taskEntry);
+
+		return taskEntry.getId();
 
 	}
 

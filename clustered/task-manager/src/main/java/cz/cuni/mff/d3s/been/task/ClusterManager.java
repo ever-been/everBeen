@@ -1,7 +1,14 @@
 package cz.cuni.mff.d3s.been.task;
 
+
 import com.hazelcast.core.HazelcastInstance;
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
+import cz.cuni.mff.d3s.been.core.ClusterUtils;
+
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -19,22 +26,30 @@ final class ClusterManager implements IClusterService {
 	private final MembershipListener membershipListener;
 	private final ClientListener clientListener;
 
+	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
+
 
 	public ClusterManager(HazelcastInstance hazelcastInstance) {
 		this.hazelcastInstance = hazelcastInstance;
 		localTaskListener = new LocalTaskListener();
 		membershipListener = new MembershipListener();
 		clientListener = new ClientListener();
+
+
+
 	}
 
 	@Override
 	public void start() {
 		localTaskListener.start();
 		membershipListener.start();
-		clientListener.stop();
+		clientListener.start();
 
+		scheduler.scheduleAtFixedRate(new LocalKeyScanner(), 5, 5, TimeUnit.SECONDS);
 
-		rescanLocalKeys();
+		System.out.println("My ID is: " + ClusterUtils.getId());
+
 	}
 
 	@Override
@@ -42,16 +57,7 @@ final class ClusterManager implements IClusterService {
 		clientListener.stop();
 		membershipListener.stop();
 		localTaskListener.stop();
+		scheduler.shutdown();
 	}
 
-	/**
-	 * Goes through the local keys looking for orphaned objects.
-	 *
-	 * These can be:
-	 * 	- unowned
-	 * 	- migrated
-	 */
-	private void rescanLocalKeys() {
-
-	}
 }

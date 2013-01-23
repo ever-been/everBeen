@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
  */
 final class LocalTaskListener implements EntryListener<String, TaskEntry>, IClusterService {
 	private static final Logger log = LoggerFactory.getLogger(LocalTaskListener.class);
+	private static final String RUNTIME_TOPIC = Context.GLOBAL_TOPIC.getName();
 
 	private IRuntimeSelection runtimeSelection;
 
@@ -50,7 +51,8 @@ final class LocalTaskListener implements EntryListener<String, TaskEntry>, IClus
 
 	@Override
 	public void entryAdded(EntryEvent<String, TaskEntry> event) {
-		TaskEntry taskEntry = event.getValue();
+
+		TaskEntry entry = event.getValue();
 		String taskId = event.getKey();
 
 		log.info("Received new task " + taskId);
@@ -63,8 +65,13 @@ final class LocalTaskListener implements EntryListener<String, TaskEntry>, IClus
 
 
 		try {
+
+			// 0) Claim ownership of the node
+			// TODO: too much going on , schduling/claiming ownership should be split-up
+			entry.setOwnerId(nodeId);
+
 			// 1) Find suitable Host Runtime
-			receiverId = runtimeSelection.select(taskEntry);
+			receiverId = runtimeSelection.select(entry);
 
 			// 2) Change task state to SCHEDULED and send message to the Host Runtime
 			txn = ClusterUtils.getTransaction();
@@ -72,12 +79,15 @@ final class LocalTaskListener implements EntryListener<String, TaskEntry>, IClus
 			{
 				txn.begin(); // BEGIN TRANSACTION -----------------------------
 
-				TaskEntries.setState(taskEntry, TaskState.SCHEDULED, "Task sheduled on " + nodeId);
-				TasksUtils.setTask(taskEntry);
+				// Update content of the entry
+				TaskEntries.setState(entry, TaskState.SCHEDULED, "Task sheduled on " + nodeId);
+				entry.setRuntimeId(receiverId);
 
-				RunTaskMessage msg = newRunTaskMessage(taskId, nodeId, receiverId);
+				// Update entry
+				TasksUtils.putTask(entry);
 
-				TopicUtils.publish(Context.GLOBAL_TOPIC.getName(), msg);
+				 // Send a message to the runtime
+				TopicUtils.publish(RUNTIME_TOPIC, newRunTaskMessage(entry));
 
 				txn.commit(); // END TRANSACTION ------------------------------
 			}
@@ -87,37 +97,54 @@ final class LocalTaskListener implements EntryListener<String, TaskEntry>, IClus
 
 			return;
 		} catch (Throwable e) {
+			log.error("Will rollback the transaction", e);
+			e.printStackTrace();
+			// TODO: try again or abort the task!
 			if (txn != null) {
 				try {
+					log.info("Rollback on " + taskId);
 					txn.rollback();
-				} catch (Throwable t) {/*quell*/};
+				} catch (Throwable t) {
+					//quell
+				};
 			}
 		}
 
 		log.info("Task " + taskId + " scheduled on " + receiverId);
 
+
+
 	}
 
-	private RunTaskMessage newRunTaskMessage(String taskId, String nodeId, String receiverId) {
+	private RunTaskMessage newRunTaskMessage(TaskEntry taskEntry) {
 		RunTaskMessage msg = new RunTaskMessage();
-		msg.senderId = nodeId;
-		msg.recieverId = receiverId;
-		msg.taskId = taskId;
+		msg.senderId = taskEntry.getOwnerId();
+		msg.recieverId = taskEntry.getRuntimeId();
+		msg.taskId = taskEntry.getId();
 		return msg;
 	}
 
 	@Override
 	public void entryRemoved(EntryEvent<String, TaskEntry> event) {
-		//To change body of implemented methods use File | Settings | File Templates.
+		TaskEntry entry = event.getValue();
+		String taskId = event.getKey();
+
+		log.info("Entry removed " + taskId);
 	}
 
 	@Override
 	public void entryUpdated(EntryEvent<String, TaskEntry> event) {
-		//To change body of implemented methods use File | Settings | File Templates.
+		TaskEntry entry = event.getValue();
+		String taskId = event.getKey();
+
+		log.info("Entry updated " + taskId);
 	}
 
 	@Override
 	public void entryEvicted(EntryEvent<String, TaskEntry> event) {
-		//To change body of implemented methods use File | Settings | File Templates.
+		TaskEntry entry = event.getValue();
+		String taskId = event.getKey();
+
+		log.info("Entry evicted " + taskId);
 	}
 }

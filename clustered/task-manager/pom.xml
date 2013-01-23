@@ -32,11 +32,20 @@
 			<version>${project.parent.version}</version>
 		</dependency>
 
+		<!-- EXTERNAL DEPENDENCIES -->
 		<dependency>
 			<groupId>com.hazelcast</groupId>
 			<artifactId>hazelcast</artifactId>
 			<version>${hazelcast.version}</version>
 		</dependency>
+
+		<!--
+		<dependency>
+			<groupId>com.typesafe.akka</groupId>
+			<artifactId>akka-actor_2.10</artifactId>
+			<version>2.1.0</version>
+		</dependency>
+		-->
 
 
 	</dependencies>

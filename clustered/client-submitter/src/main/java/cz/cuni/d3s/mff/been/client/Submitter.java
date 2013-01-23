@@ -11,6 +11,7 @@ import cz.cuni.mff.d3s.been.core.jaxb.BindingParser;
 import cz.cuni.mff.d3s.been.core.jaxb.XSD;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
+import cz.cuni.mff.d3s.been.core.task.TaskState;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -47,6 +48,9 @@ public class Submitter {
 
 	@Option(name = "-ehl", aliases = {"--enable-hazelcast-logging"}, usage = "Turns on Hazelcast logging.")
 	private boolean debug = false;
+
+	@Option(name = "-pe", aliases = {"--print-entry"}, usage = "Print the created Task Entry")
+	private boolean  printEntry = false;
 
 
 
@@ -99,16 +103,12 @@ public class Submitter {
 
 			System.out.println("Task was submitter with id: " + taskId);
 
+			if (printEntry) {
+				TaskEntry entry = TasksUtils.getTask(taskId);
 
-			TaskEntry entry = TasksUtils.getTask(taskId);
-
-			BindingComposer<TaskEntry> composer = XSD.TASKENTRY.createComposer(TaskEntry.class);
-			composer.compose(entry, System.out);
-
-
-
-
-
+				BindingComposer<TaskEntry> composer = XSD.TASKENTRY.createComposer(TaskEntry.class);
+				composer.compose(entry, System.out);
+			}
 
 
 		} catch (CmdLineException e) {

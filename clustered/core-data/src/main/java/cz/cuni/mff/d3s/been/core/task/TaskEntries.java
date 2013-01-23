@@ -8,6 +8,7 @@ import org.xml.sax.SAXException;
 import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.util.List;
+import java.util.UUID;
 
 import static cz.cuni.mff.d3s.been.core.jaxb.Factory.TASK;
 
@@ -20,23 +21,28 @@ import static cz.cuni.mff.d3s.been.core.jaxb.Factory.TASK;
  */
 public class TaskEntries {
 
-	public static TaskEntry create(String id, TaskDescriptor taskDescriptor) {
+	public static TaskEntry create(TaskDescriptor taskDescriptor) {
 		TaskEntry entry = TASK.createTaskEntry();
+
 		entry.setState(TaskState.CREATED);
-		entry.setId(id);
+		entry.setId(UUID.randomUUID().toString());
 		entry.setTaskDescriptor(taskDescriptor);
+
+		entry.setOwnerId("0");
+		entry.setRuntimeId("0");
+
 
 		return entry;
 	}
 
-	public static TaskEntry create(String id, String pathToTaskDescriptor) {
+	public static TaskEntry create(String pathToTaskDescriptor) {
 		BindingParser<TaskDescriptor> bindingComposer = null;
 		try {
 			bindingComposer = XSD.TD.createParser(TaskDescriptor.class);
 			File file = new File(pathToTaskDescriptor);
 			TaskDescriptor td = bindingComposer.parse(file);
 
-			return create(id, td);
+			return create(td);
 
 		} catch (SAXException | JAXBException | ConvertorException e) {
 
@@ -48,7 +54,8 @@ public class TaskEntries {
 	public static void setState(TaskEntry entry, TaskState newState, String reason) throws IllegalArgumentException {
 		TaskState oldState = entry.getState();
 
-		if (!oldState.canChangeTo(newState)) {
+
+		if (oldState == null || !oldState.canChangeTo(newState)) {
 			throw new IllegalStateException("Cannot change state from " + oldState + " to " + newState);
 		}
 
