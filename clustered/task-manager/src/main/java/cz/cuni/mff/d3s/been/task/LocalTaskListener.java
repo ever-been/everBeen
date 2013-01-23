@@ -11,6 +11,7 @@ import cz.cuni.mff.d3s.been.core.TasksUtils;
 import cz.cuni.mff.d3s.been.core.TopicUtils;
 import cz.cuni.mff.d3s.been.core.protocol.Context;
 import cz.cuni.mff.d3s.been.core.protocol.messages.RunTaskMessage;
+import cz.cuni.mff.d3s.been.core.task.TaskEntries;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
 import org.slf4j.Logger;
@@ -71,7 +72,7 @@ final class LocalTaskListener implements EntryListener<String, TaskEntry>, IClus
 			{
 				txn.begin(); // BEGIN TRANSACTION -----------------------------
 
-				taskEntry.setState(TaskState.SCHEDULED, "Task sheduled on " + nodeId);
+				TaskEntries.setState(taskEntry, TaskState.SCHEDULED, "Task sheduled on " + nodeId);
 				TasksUtils.setTask(taskEntry);
 
 				RunTaskMessage msg = newRunTaskMessage(taskId, nodeId, receiverId);

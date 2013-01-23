@@ -5,7 +5,7 @@ import com.hazelcast.query.SqlPredicate;
 import cz.cuni.mff.d3s.been.core.task.TaskEntries;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
-import cz.cuni.mff.d3s.been.core.td.TaskDescriptor;
+import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 
 import java.util.Collection;
 import java.util.UUID;

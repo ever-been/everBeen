@@ -7,6 +7,7 @@
 		attributeFormDefault="unqualified"
 		xmlns:taskentry="http://been.d3s.mff.cuni.cz/taskentry"
 		xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		xmlns:td="http://been.d3s.mff.cuni.cz/taskmanager/td"
 		xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
 		xmlns:common="http://been.d3s.mff.cuni.cz/common"
 		xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
@@ -14,9 +15,12 @@
 		jaxb:version="2.0">
 
 	<xs:import schemaLocation="common.xsd" namespace="http://been.d3s.mff.cuni.cz/common"/>
+	<xs:import schemaLocation="td.xsd" namespace="http://been.d3s.mff.cuni.cz/taskmanager/td"/>
 
 	<xs:element name="id" type="xs:string"/>
-	<xs:element name="runtime" type="xs:string"/>
+	<xs:element name="ownerId" type="xs:string"/>
+	<xs:element name="runtimeId" type="xs:string" />
+
 	<xs:element name="state" type="xs:string">
 		<xs:annotation>
 			<xs:appinfo>
@@ -34,16 +38,43 @@
 
 	</xs:element>
 
+	<xs:element name="stateChangeEntry">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="taskentry:state" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="reason" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
 
 
+	<xs:element name="stateChangeLog">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="taskentry:stateChangeEntry" minOccurs="0" maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:appinfo>
+							<jaxb:property name="logEntries">
+
+							</jaxb:property>
+						</xs:appinfo>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
 
 
 	<xs:element name="taskEntry">
 		<xs:complexType>
 			<xs:all>
 				<xs:element ref="taskentry:id" minOccurs="1" maxOccurs="1"/>
-				<xs:element ref="taskentry:runtime" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="taskentry:ownerId" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="taskentry:runtimeId" minOccurs="0" maxOccurs="1"/>
 				<xs:element ref="taskentry:state" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="td:taskDescriptor" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="taskentry:stateChangeLog"  minOccurs="0" maxOccurs="1" />
+
 			</xs:all>
 		</xs:complexType>
 	</xs:element>

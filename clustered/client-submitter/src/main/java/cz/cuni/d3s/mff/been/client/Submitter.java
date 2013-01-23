@@ -5,18 +5,16 @@ import com.hazelcast.client.HazelcastClient;
 
 import cz.cuni.mff.d3s.been.cluster.Instance;
 import cz.cuni.mff.d3s.been.cluster.NodeType;
-import cz.cuni.mff.d3s.been.core.ClusterUtils;
 import cz.cuni.mff.d3s.been.core.TasksUtils;
+import cz.cuni.mff.d3s.been.core.jaxb.BindingComposer;
 import cz.cuni.mff.d3s.been.core.jaxb.BindingParser;
-import cz.cuni.mff.d3s.been.core.jaxb.ConvertorException;
 import cz.cuni.mff.d3s.been.core.jaxb.XSD;
-import cz.cuni.mff.d3s.been.core.td.TaskDescriptor;
+import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
+import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
-import org.xml.sax.SAXException;
 
-import javax.xml.bind.JAXBException;
 import java.net.InetSocketAddress;
 
 
@@ -100,6 +98,12 @@ public class Submitter {
 			String taskId = TasksUtils.submit(td);
 
 			System.out.println("Task was submitter with id: " + taskId);
+
+
+			TaskEntry entry = TasksUtils.getTask(taskId);
+
+			BindingComposer<TaskEntry> composer = XSD.TASKENTRY.createComposer(TaskEntry.class);
+			composer.compose(entry, System.out);
 
 
 

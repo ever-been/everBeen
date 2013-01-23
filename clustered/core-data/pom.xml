@@ -190,8 +190,8 @@
 							<schemaDirectory>${project.basedir}/src/main/resources/xsd</schemaDirectory>
 							<staleFile>${project.build.directory}/jaxb2/.tdXjcStaleFlag</staleFile>
 							<clearOutputDir>false</clearOutputDir>
-							<schemaFiles>td.xsd, common.xsd</schemaFiles>
-							<packageName>cz.cuni.mff.d3s.been.core.td</packageName>
+							<schemaFiles>td.xsd,  taskentry.xsd, common.xsd</schemaFiles>
+							<packageName>cz.cuni.mff.d3s.been.core.task</packageName>
 							<extension>true</extension>
 						</configuration>
 					</execution>

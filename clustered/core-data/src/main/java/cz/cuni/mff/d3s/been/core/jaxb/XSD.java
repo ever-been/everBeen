@@ -129,6 +129,7 @@ public enum XSD {
 	TASKENTRY(
 			"http://been.d3s.mff.cuni.cz/taskentry",
 			XSDFile.COMMON.FILE,
+			XSDFile.TD.FILE,
 			XSDFile.TASKENTRY.FILE
 	),
 	TD(

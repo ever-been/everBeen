@@ -35,7 +35,7 @@ package cz.cuni.mff.d3s.been.core.jaxb;
 public final class Factory {
 
 	/** A factory to produce instances from the {@code cz.cuni.mff.been.jaxb.td} package. */
-	public static final cz.cuni.mff.d3s.been.core.td.ObjectFactory TD;
+	public static final cz.cuni.mff.d3s.been.core.task.ObjectFactory TASK;
 	
 	/** A factory to produce instances from the {@code cz.cuni.mff.been.jaxb.benchmark} package. */
 	//public static final cz.cuni.mff.d3s.been.core.benchmark.ObjectFactory BENCHMARK;
@@ -64,7 +64,7 @@ public final class Factory {
 	//public static final cz.cuni.mff.d3s.been.core.task.ObjectFactory TASKENTRY;
 	
 	static {
-		TD = new cz.cuni.mff.d3s.been.core.td.ObjectFactory();
+		TASK = new cz.cuni.mff.d3s.been.core.task.ObjectFactory();
 		RUNTIME = new cz.cuni.mff.d3s.been.core.ri.ObjectFactory();
 		//TASKENTRY = new  cz.cuni.mff.d3s.been.core.task.ObjectFactory();
 
