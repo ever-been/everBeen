@@ -20,6 +20,7 @@
 		<module>node</module>
 		<module>client-submitter</module>
 		<module>host-runtime</module>
+		<module>software-repository</module>
 	</modules>
 
 

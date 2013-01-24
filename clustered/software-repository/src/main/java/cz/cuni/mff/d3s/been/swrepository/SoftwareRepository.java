@@ -1,18 +1,15 @@
 package cz.cuni.mff.d3s.been.swrepository;
 
+import cz.cuni.mff.d3s.been.cluster.IClusterService;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 
-import cz.cuni.mff.d3s.been.core.protocol.api.AbstractNode;
-import cz.cuni.mff.d3s.been.core.protocol.cluster.DataPersistence;
-import cz.cuni.mff.d3s.been.core.protocol.cluster.Messaging;
 
-public class SoftwareRepository extends AbstractNode {
+public class SoftwareRepository implements IClusterService {
 
 	private final HttpServer httpServer;
 
-	public SoftwareRepository(Messaging messaging, DataPersistence dataPersistence, String nodeId, HttpServer httpServer) {
-		super(messaging, dataPersistence, nodeId);
+	public SoftwareRepository(HttpServer httpServer) {
 		this.httpServer = httpServer;
 	}
 
@@ -25,6 +22,11 @@ public class SoftwareRepository extends AbstractNode {
 			}
 		});
 		httpServer.start();
+	}
+
+	@Override
+	public void stop() {
+		httpServer.stop();
 	}
 
 	void handle(Request request, Response response) {
