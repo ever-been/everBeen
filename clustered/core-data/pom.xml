@@ -35,7 +35,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jaxb2-maven-plugin</artifactId>
-				<version>1.4</version>
+				<version>${jaxb2-maven-plugin.version}</version>
 
 				<executions>
 					<!--
@@ -182,11 +182,12 @@
 					</execution>
 
 					<execution>
-						<id>td-xjc</id>
+						<id>task-xjc</id>
 						<goals>
 							<goal>xjc</goal>
 						</goals>
 						<configuration>
+							<arguments></arguments>
 							<schemaDirectory>${project.basedir}/src/main/resources/xsd</schemaDirectory>
 							<staleFile>${project.build.directory}/jaxb2/.tdXjcStaleFlag</staleFile>
 							<clearOutputDir>false</clearOutputDir>
@@ -195,10 +196,7 @@
 							<extension>true</extension>
 						</configuration>
 					</execution>
-
-
 				</executions>
-
 
 			</plugin>
 

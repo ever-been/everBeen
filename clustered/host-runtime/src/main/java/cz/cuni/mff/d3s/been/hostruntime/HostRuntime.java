@@ -5,7 +5,7 @@ import cz.cuni.mff.d3s.been.core.RuntimeInfoUtils;
 import cz.cuni.mff.d3s.been.core.RuntimesUtils;
 import cz.cuni.mff.d3s.been.core.TopicUtils;
 import cz.cuni.mff.d3s.been.core.protocol.Context;
-import cz.cuni.mff.d3s.been.core.protocol.JSONSerializer.JSONSerializerException;
+import cz.cuni.mff.d3s.been.core.JSONUtils.JSONSerializerException;
 
 import cz.cuni.mff.d3s.been.core.protocol.messages.*;
 import cz.cuni.mff.d3s.been.task.TaskRunner;

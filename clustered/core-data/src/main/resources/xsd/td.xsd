@@ -178,7 +178,7 @@
 	
 	<xs:element name="name" type="common:IDStringRelaxed"/>
 	
-	<xs:element name="rsl" type="xs:string">
+	<xs:element name="xpath" type="xs:string">
 		<!--
 		<xs:annotation>
 			<xs:appinfo>
@@ -200,7 +200,7 @@
 	<xs:complexType name="Package">
 		<xs:all>	<!-- Temporary hack. This should be <choice>. -->
 			<xs:element ref="td:name" minOccurs="0" maxOccurs="1"/>
-			<xs:element ref="td:rsl" minOccurs="0" maxOccurs="1"/>
+			<xs:element ref="td:xpath" minOccurs="0" maxOccurs="1"/>
 		</xs:all>
 	</xs:complexType>
 	
@@ -209,7 +209,7 @@
 	<xs:complexType name="HostRuntimes">
 		<xs:sequence>	<!-- Temporary hack. <asTask> and <rsl> are exclusive. -->
 			<xs:element ref="td:asTask" minOccurs="0" maxOccurs="1"/>
-			<xs:element ref="td:rsl" minOccurs="0" maxOccurs="1"/>
+			<xs:element ref="td:xpath" minOccurs="0" maxOccurs="1"/>
 			<xs:element ref="td:name" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>

@@ -37,15 +37,15 @@
 		<xs:complexType>
 			<xs:all>
 				<xs:element ref="runtimeinfo:name" minOccurs="0" maxOccurs="1" />
-				<xs:element ref="runtimeinfo:id" minOccurs="1" maxOccurs="1" />
-				<xs:element ref="runtimeinfo:port" minOccurs="1" maxOccurs="1" />
-				<xs:element ref="runtimeinfo:host" minOccurs="1" maxOccurs="1" />
+				<xs:element ref="runtimeinfo:id" minOccurs="0" maxOccurs="1" />
+				<xs:element ref="runtimeinfo:port" minOccurs="0" maxOccurs="1" />
+				<xs:element ref="runtimeinfo:host" minOccurs="0" maxOccurs="1" />
 
 				<!-- just a hint ... -->
 				<xs:element ref="runtimeinfo:os" minOccurs="0" maxOccurs="1"/>
 				<xs:element ref="runtimeinfo:memory" minOccurs="0" maxOccurs="1"/>
 				<xs:element ref="runtimeinfo:cpu" minOccurs="0" maxOccurs="1"/>
-				<xs:element name="javaInfo" type="runtimeinfo:java" minOccurs="1" maxOccurs="1" />
+				<xs:element name="javaInfo" type="runtimeinfo:java" minOccurs="0" maxOccurs="1" />
 
 			</xs:all>
 		</xs:complexType>

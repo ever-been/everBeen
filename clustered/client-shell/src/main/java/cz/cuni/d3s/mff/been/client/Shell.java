@@ -2,43 +2,28 @@ package cz.cuni.d3s.mff.been.client;
 
 import com.hazelcast.client.ClientConfig;
 import com.hazelcast.client.HazelcastClient;
-
 import cz.cuni.mff.d3s.been.cluster.Instance;
 import cz.cuni.mff.d3s.been.cluster.NodeType;
-import cz.cuni.mff.d3s.been.core.TasksUtils;
-import cz.cuni.mff.d3s.been.core.jaxb.BindingComposer;
-import cz.cuni.mff.d3s.been.core.jaxb.BindingParser;
-import cz.cuni.mff.d3s.been.core.jaxb.XSD;
-import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
-import cz.cuni.mff.d3s.been.core.task.TaskEntry;
-import cz.cuni.mff.d3s.been.core.task.TaskState;
+import jline.console.ConsoleReader;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
+import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 
-
-
 /**
- *
- * Simple client which submits tasks to the cluster.
- *
- *
- * For debugging purposes!
- *
- *
  * @author Martin Sixta
  */
-public class Submitter {
+public class Shell {
 	@Option(name = "-h", aliases = {"--host"}, usage = "Hostname of a cluster member to connect to")
 	private String host = "localhost";
 
 	@Option(name = "-p", aliases = {"--port"}, usage = "Port of the host")
 	private int port = 5701;
 
-	@Option(name = "-td", aliases = {"--task-descriptor"}, required = true, usage = "TaskDescriptor to submit")
-	private String tdPath;
+	@Option(name = "-ehl", aliases = {"--enable-hazelcast-logging"}, usage = "Turns on Hazelcast logging.")
+	private boolean debug = false;
 
 	@Option(name = "-gn", aliases = {"--group-name"}, usage = "Group Name")
 	private String groupName = "dev";
@@ -46,21 +31,58 @@ public class Submitter {
 	@Option(name = "-gp", aliases = {"--group-password"}, usage = "Group Password")
 	private String groupPassword = "dev-pass";
 
-	@Option(name = "-ehl", aliases = {"--enable-hazelcast-logging"}, usage = "Turns on Hazelcast logging.")
-	private boolean debug = false;
-
-	@Option(name = "-pe", aliases = {"--print-entry"}, usage = "Print the created Task Entry")
-	private boolean  printEntry = false;
-
-
 
 	public static void main(String[] args) {
 
-		new Submitter().doMain(args);
+		new Shell().doMain(args);
 	}
 
 	private void doMain(String[] args) {
+		connectClient(args);
 
+
+		try {
+
+			ConsoleReader reader = new ConsoleReader();
+
+			IMode mode = new ClusterMode(reader);
+
+			mode.setup(reader);
+
+
+			String line;
+			PrintWriter out = new PrintWriter(reader.getOutput());
+
+
+
+			while ((line = reader.readLine()) != null) {
+				line = line.trim();
+				if (line.isEmpty()) {
+					continue;
+				}
+				String[] tokens = line.trim().split(" ");
+
+
+				try {
+					mode = mode.takeAction(tokens);
+				} catch (IllegalArgumentException ex) {
+					out.println(ex.getMessage());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+				out.flush();
+
+			}
+		}
+		catch (Throwable t) {
+			t.printStackTrace();
+		}
+
+
+	}
+
+	private void connectClient(String[] args) {
 		CmdLineParser parser = new CmdLineParser(this);
 
 		HazelcastClient hazelcastClient = null;
@@ -68,11 +90,6 @@ public class Submitter {
 		try {
 			// parse the arguments.
 			parser.parseArgument(args);
-
-			// parse task descriptor
-			BindingParser<TaskDescriptor> bindingComposer = XSD.TD.createParser(TaskDescriptor.class);
-			System.out.println(tdPath);
-			TaskDescriptor td = bindingComposer.parse(new java.io.File(tdPath));
 
 			// connect to the cluster
 
@@ -94,17 +111,6 @@ public class Submitter {
 
 			Instance.registerInstance(hazelcastClient, NodeType.NATIVE);
 
-			// submit
-			String taskId = TasksUtils.submit(td);
-
-			System.out.println("Task was submitter with id: " + taskId);
-
-			if (printEntry) {
-				TaskEntry entry = TasksUtils.getTask(taskId);
-
-				BindingComposer<TaskEntry> composer = XSD.TASKENTRY.createComposer(TaskEntry.class);
-				composer.compose(entry, System.out);
-			}
 
 
 		} catch (CmdLineException e) {
@@ -113,13 +119,10 @@ public class Submitter {
 			System.err.println("\nUsage:");
 			parser.printUsage(System.err);
 
-			return;
+			System.exit(1);
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			if (hazelcastClient != null) {
-				hazelcastClient.shutdown();
-			}
+			System.exit(1);
 		}
 
 	}

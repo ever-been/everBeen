@@ -1,10 +1,10 @@
-package cz.cuni.mff.d3s.been.core.protocol;
+package cz.cuni.mff.d3s.been.core;
 
 import java.io.IOException;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
-public class JSONSerializer {
+public class JSONUtils {
 
 	public static String serialize(Object obj) throws JSONSerializerException {
 		ObjectMapper mapper = new ObjectMapper();
