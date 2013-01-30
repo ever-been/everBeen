@@ -1,10 +1,13 @@
 package cz.cuni.mff.d3s.been.hostruntime;
 
-import com.hazelcast.core.*;
+import com.hazelcast.core.IQueue;
+import com.hazelcast.core.ITopic;
+import com.hazelcast.core.ItemEvent;
+import com.hazelcast.core.ItemListener;
 import com.hazelcast.impl.ascii.rest.RestValue;
+
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
 import cz.cuni.mff.d3s.been.core.ClusterUtils;
-import cz.cuni.mff.d3s.been.core.TopicUtils;
 import cz.cuni.mff.d3s.been.core.protocol.Context;
 import cz.cuni.mff.d3s.been.core.protocol.JSONSerializer;
 import cz.cuni.mff.d3s.been.core.protocol.messages.BaseMessage;

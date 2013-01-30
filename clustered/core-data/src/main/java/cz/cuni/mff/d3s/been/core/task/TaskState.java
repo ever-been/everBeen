@@ -10,7 +10,13 @@ public enum TaskState {
 	RUNNING,
 	SLEEPING,
 	FINISHED,
-	ABORTED;
+	ABORTED, 
+	/**
+	 * This state means that Task is accepted and being processing by HostRuntime but not started yet.
+	 * 
+	 * FIXME Martin Sixta: Just to be sure, none of the previous states is usable like this state
+	 */
+	PROCESSING_BY_HR;
 
 	public boolean canChangeTo(TaskState state) {
 

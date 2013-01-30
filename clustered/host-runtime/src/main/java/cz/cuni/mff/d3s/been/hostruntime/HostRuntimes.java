@@ -1,24 +1,28 @@
 package cz.cuni.mff.d3s.been.hostruntime;
 
-import com.hazelcast.core.HazelcastInstance;
-import cz.cuni.mff.d3s.been.cluster.IClusterService;
-import cz.cuni.mff.d3s.been.task.TaskRunner;
-
 import java.util.UUID;
+
+import com.hazelcast.core.HazelcastInstance;
 
 /**
  * @author Martin Sixta
  */
+// FIXME Martin Sixta .. why it is named HostRuntimes (name is misleading)
 public class HostRuntimes {
+	
 	private static HostRuntime hostRuntime = null;
-	private static TaskRunner taskRunner = null;
+	
 	private static String uuid = null;
 
-	public static synchronized IClusterService getRuntime(HazelcastInstance hazelcastInstance) {
+	/**
+	 * This method returns singleton instance of {@link HostRuntime}. If runtime doesn't exists, this method creates one.  
+	 * @param hazelcastInstance
+	 * @return
+	 */
+	public static synchronized HostRuntime getRuntime(HazelcastInstance hazelcastInstance) {
 		if (hostRuntime == null) {
-			taskRunner = new TaskRunner();
 			uuid = UUID.randomUUID().toString();
-			hostRuntime = new HostRuntime(taskRunner, uuid);
+			hostRuntime = new HostRuntime(uuid);
 		}
 		return hostRuntime;
 	}

@@ -180,6 +180,21 @@
 							<extension>true</extension>
 						</configuration>
 					</execution>
+					
+					<execution>
+						<id>swrepositoryinfo-xjc</id>
+						<goals>
+							<goal>xjc</goal>
+						</goals>
+						<configuration>
+							<schemaDirectory> ${project.basedir}/src/main/resources/xsd</schemaDirectory>
+							<staleFile>${project.build.directory}/jaxb2/.sriXjcStaleFlag</staleFile>
+							<clearOutputDir>false</clearOutputDir>
+							<schemaFiles>swrepositoryinfo.xsd, common.xsd</schemaFiles>
+							<packageName>cz.cuni.mff.d3s.been.core.sri</packageName>
+							<extension>true</extension>
+						</configuration>
+					</execution>
 
 					<execution>
 						<id>td-xjc</id>

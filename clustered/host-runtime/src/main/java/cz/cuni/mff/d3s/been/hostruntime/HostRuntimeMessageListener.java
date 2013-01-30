@@ -1,18 +1,19 @@
 package cz.cuni.mff.d3s.been.hostruntime;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.hazelcast.core.ITopic;
 import com.hazelcast.core.Message;
 import com.hazelcast.core.MessageListener;
+
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
 import cz.cuni.mff.d3s.been.core.ClusterUtils;
-import cz.cuni.mff.d3s.been.core.TopicUtils;
 import cz.cuni.mff.d3s.been.core.protocol.Context;
 import cz.cuni.mff.d3s.been.core.protocol.messages.BaseMessage;
 import cz.cuni.mff.d3s.been.core.protocol.messages.KillTaskMessage;
 import cz.cuni.mff.d3s.been.core.protocol.messages.RunTaskMessage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 final class HostRuntimeMessageListener implements MessageListener<BaseMessage>, IClusterService {
 

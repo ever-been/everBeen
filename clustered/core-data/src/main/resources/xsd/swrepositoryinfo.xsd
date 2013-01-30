@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema
+		xmlns="http://been.d3s.mff.cuni.cz/swrepositoryinfo"
+		targetNamespace="http://been.d3s.mff.cuni.cz/swrepositoryinfo"
+		elementFormDefault="unqualified"
+		attributeFormDefault="unqualified"
+		xmlns:swrepositoryinfo="http://been.d3s.mff.cuni.cz/swrepositoryinfo"
+		xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+		xmlns:common="http://been.d3s.mff.cuni.cz/common"
+		xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+		jaxb:extensionBindingPrefixes="xjc"
+		jaxb:version="2.0">
+
+	<xs:import schemaLocation="common.xsd" namespace="http://been.d3s.mff.cuni.cz/common"/>
+
+	<xs:element name="httpServerPort" type="common:positiveInt">
+		<xs:annotation>
+			<xs:appinfo>
+				<jaxb:property>
+					<jaxb:javadoc>
+Port on which the Software Repository HTTP Server is running.
+					</jaxb:javadoc>
+				</jaxb:property>
+			</xs:appinfo>
+		</xs:annotation>
+	</xs:element>
+	
+	<xs:element name="host" type="xs:string">
+		<xs:annotation>
+			<xs:appinfo>
+				<jaxb:property>
+					<jaxb:javadoc>
+Host(IP/FQDN) on which the Software Repository HTTP Server is running.
+					</jaxb:javadoc>
+				</jaxb:property>
+			</xs:appinfo>
+		</xs:annotation>
+	</xs:element>
+
+	<xs:element name="sWRepositoryInfo">
+		<xs:annotation>
+			<xs:appinfo>
+				<jaxb:class>
+					<jaxb:javadoc>
+Stores basic information about Software Repository (HTTP Server host and port).
+					</jaxb:javadoc>
+				</jaxb:class>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:all>
+				<xs:element ref="swrepositoryinfo:httpServerPort" minOccurs="1" maxOccurs="1" />
+				<xs:element ref="swrepositoryinfo:host" minOccurs="1" maxOccurs="1" />
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+
+</xs:schema>
