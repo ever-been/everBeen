@@ -8,8 +8,8 @@ import com.hazelcast.impl.ascii.rest.RestValue;
 
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
 import cz.cuni.mff.d3s.been.core.ClusterUtils;
+import cz.cuni.mff.d3s.been.core.JSONUtils;
 import cz.cuni.mff.d3s.been.core.protocol.Context;
-import cz.cuni.mff.d3s.been.core.protocol.JSONSerializer;
 import cz.cuni.mff.d3s.been.core.protocol.messages.BaseMessage;
 
 /**
@@ -50,12 +50,12 @@ final class RestBridgeListener implements ItemListener<RestValue>, IClusterServi
 			Class<?> messageClass;
 			try {
 				messageClass = Class.forName(messageType);
-				BaseMessage messageValue = (BaseMessage) JSONSerializer.deserialize(text, messageClass);
+				BaseMessage messageValue = (BaseMessage) JSONUtils.deserialize(text, messageClass);
 				globalTopic.publish(messageValue);
 			} catch (ClassNotFoundException e) {
 				// FIXME logging
 				e.printStackTrace();
-			} catch (JSONSerializer.JSONSerializerException e) {
+			} catch (JSONUtils.JSONSerializerException e) {
 				// FIXME logging
 				e.printStackTrace();
 			}

@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.task;
 
+import com.hazelcast.config.MapConfig;
 import com.hazelcast.core.EntryEvent;
 import com.hazelcast.core.EntryListener;
 import com.hazelcast.core.IMap;
@@ -33,9 +34,17 @@ final class LocalTaskListener implements EntryListener<String, TaskEntry>, IClus
 
 	public LocalTaskListener() {
 		taskMap = TasksUtils.getTasksMap();
+		MapConfig cfg = TasksUtils.getTasksMapConfig();
 
-		// TODO: does it belong here?
+		if (cfg == null) {
+			throw new RuntimeException("BEEN_MAP_TASKS! does not have a config!");
+		}
+		if (cfg.isCacheValue() == true) {
+			throw new RuntimeException("Cache value == true for BEEN_MAP_TASKS!");
+		}
+
 		runtimeSelection = new RandomRuntimeSelection();
+
 	}
 
 	@Override
@@ -58,17 +67,12 @@ final class LocalTaskListener implements EntryListener<String, TaskEntry>, IClus
 		log.info("Received new task " + taskId);
 
 
-
 		String nodeId = ClusterUtils.getId();
 		Transaction txn = null;
 		String receiverId = null;
 
 
 		try {
-
-			// 0) Claim ownership of the node
-			// TODO: too much going on , schduling/claiming ownership should be split-up
-			entry.setOwnerId(nodeId);
 
 			// 1) Find suitable Host Runtime
 			receiverId = runtimeSelection.select(entry);
@@ -78,6 +82,10 @@ final class LocalTaskListener implements EntryListener<String, TaskEntry>, IClus
 
 			{
 				txn.begin(); // BEGIN TRANSACTION -----------------------------
+				TasksUtils.assertEquals(entry);
+
+				// Claim ownership of the node
+				entry.setOwnerId(nodeId);
 
 				// Update content of the entry
 				TaskEntries.setState(entry, TaskState.SCHEDULED, "Task sheduled on " + nodeId);
@@ -89,11 +97,14 @@ final class LocalTaskListener implements EntryListener<String, TaskEntry>, IClus
 				 // Send a message to the runtime
 				TopicUtils.publish(RUNTIME_TOPIC, newRunTaskMessage(entry));
 
+				ClusterUtils.getInstance().getAtomicNumber(entry.getId()).set(5);
+
 				txn.commit(); // END TRANSACTION ------------------------------
 			}
 
 		} catch (NoRuntimeFoundException e) {
-			// Abort the task
+			// TODO: Abort the task?
+			log.warn("No runtime found for task " + entry.getId(), e);
 
 			return;
 		} catch (Throwable e) {
@@ -138,6 +149,7 @@ final class LocalTaskListener implements EntryListener<String, TaskEntry>, IClus
 		String taskId = event.getKey();
 
 		log.info("Entry updated " + taskId);
+		log.info(TasksUtils.toXml(entry));
 	}
 
 	@Override

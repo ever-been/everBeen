@@ -3,6 +3,7 @@ package cz.cuni.mff.d3s.been.core;
 import com.hazelcast.core.*;
 
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 
@@ -21,18 +22,6 @@ public class ClusterUtils {
 
 	}
 
-	public static boolean containsInstance(Instance.InstanceType instanceType, String name) {
-		Collection<Instance> instances = getInstance().getInstances();
-		for (Instance instance : instances) {
-			boolean isType = instanceType == null || instance.getInstanceType() == instanceType;
-			boolean isName = instance.getId().toString().endsWith(":" + name);
-			if (isType && isName) {
-				return true;
-			}
-		}
-
-		return false;
-	}
 
 	public static String getId() {
 		return getLocalMember().getUuid();
@@ -82,6 +71,38 @@ public class ClusterUtils {
 
 	public static Transaction getTransaction() {
 		return getInstance().getTransaction();
+	}
+
+	public static AtomicNumber getAtomicNumber(String name) {
+		return getInstance().getAtomicNumber(name);
+	}
+
+	public static Collection<Instance> getInstances() {
+		return getInstance().getInstances();
+	}
+
+	public static Collection<Instance> getInstances(Instance.InstanceType instanceType) {
+		Collection<Instance> instances = new ArrayList<>();
+
+		for (Instance instance: getInstances()) {
+			if (instance.getInstanceType() == instanceType) {
+				instances.add(instance);
+			}
+		}
+
+		return instances;
+	}
+
+	public static boolean containsInstance(Instance.InstanceType instanceType, String name) {
+
+		for (Instance instance : getInstances(instanceType)) {
+			boolean isName = instance.getId().toString().endsWith(":" + name);
+			if (isName) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 
