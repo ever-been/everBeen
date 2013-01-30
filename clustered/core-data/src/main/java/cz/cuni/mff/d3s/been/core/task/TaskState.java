@@ -1,22 +1,58 @@
 package cz.cuni.mff.d3s.been.core.task;
 
 /**
+ * Different states a BEEN task can happen to be in.
+ *
+ * To change the state of a {@link TaskEntry} use {@link TaskEntries.setState()}, as it will
+ * also create a log entry with the reason for the task state change.
+ *
  * @author Martin Sixta
+ *
  */
 public enum TaskState {
-	CREATED,
-	SUBMITTED,
-	SCHEDULED,
-	RUNNING,
-	SLEEPING,
-	FINISHED,
-	ABORTED, 
 	/**
-	 * This state means that Task is accepted and being processing by HostRuntime but not started yet.
-	 * 
-	 * FIXME Martin Sixta: Just to be sure, none of the previous states is usable like this state
+	 *  The initial state after creating a {@link TaskEntry}
 	 */
-	PROCESSING_BY_HR;
+	CREATED,
+
+	/**
+	 * The task is submitted to a task manager which will try to schedule it.
+	 */
+	SUBMITTED,
+
+	/**
+	 *  Indicates that a task has been scheduled on a Host Runtime. The Host Runtime needs to
+	 * accept the task before running it.
+	 */
+	SCHEDULED,
+
+	/**
+	 *  Indicates that a task has been accepted by a Host Runtime and will be run after creating
+	 * suitable environment for it .
+	 */
+	ACCEPTED,
+
+	/**
+	 * Indicates that a task is waiting for an asynchronous event.
+	 */
+	WAITING,
+
+	/**
+	 *  Indicates that a task is currently running.
+	 */
+	RUNNING,
+
+	/**
+	 * Indicates that a task normally finished.
+	 */
+	FINISHED,
+
+	/**
+	 * Indicates that a task has been aborted.
+	 */
+	ABORTED, 
+
+;
 
 	public boolean canChangeTo(TaskState state) {
 
@@ -27,6 +63,11 @@ public enum TaskState {
 
 		// can advance forward
 		if (this.ordinal() + 1 == state.ordinal()) {
+			return true;
+		}
+
+		// can skip WAITING
+		if (this == ACCEPTED && state == RUNNING) {
 			return true;
 		}
 

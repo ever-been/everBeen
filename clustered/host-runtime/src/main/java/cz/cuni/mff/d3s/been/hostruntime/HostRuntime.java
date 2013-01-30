@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.xml.bind.JAXBException;
 
+import cz.cuni.mff.d3s.been.core.task.TaskEntries;
 import org.apache.commons.io.FileUtils;
 
 import cz.cuni.mff.d3s.been.bpk.BpkConfiguration;
@@ -157,7 +158,7 @@ final class HostRuntime implements IClusterService {
 		// THIS IS NOT REAL IMPLEMENTATION YET ..
 		String taskId = runTaskMessage.taskId;
 		TaskEntry task = TasksUtils.getTask(taskId);
-		task.setState(TaskState.PROCESSING_BY_HR);
+		TaskEntries.setState(task, TaskState.ACCEPTED, "Task will be run");
 		try {
 
 
@@ -219,10 +220,10 @@ final class HostRuntime implements IClusterService {
 			}
 
 		} catch (Throwable e) {
-			task.setState(TaskState.ABORTED);
+			TaskEntries.setState(task, TaskState.ABORTED, e.getMessage());
 			// TODO: handle exception
 		}
-		task.setState(TaskState.FINISHED);
+		TaskEntries.setState(task, TaskState.FINISHED, "Task has finished normally");
 
 		// if (runningTasks.containsKey(runTaskMessage.name)) {
 		// // already running ... FIXME
