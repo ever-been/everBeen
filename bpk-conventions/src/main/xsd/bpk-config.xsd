@@ -27,7 +27,7 @@
 	<xs:element name="bpkDependencies">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="dependency" type="BpkDependency" minOccurs="0" maxOccurs="unbounded" />
+				<xs:element name="dependency" type="BpkIdentifier" minOccurs="0" maxOccurs="unbounded" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -49,7 +49,7 @@
 	</xs:element>
 	
 	<!-- Data holders -->
-	<xs:complexType name="BpkDependency">
+	<xs:complexType name="BpkIdentifier">
 		<xs:sequence>
 			<xs:element name="groupId" type="xs:string" />
 			<xs:element name="bpkId" type="xs:string"/>

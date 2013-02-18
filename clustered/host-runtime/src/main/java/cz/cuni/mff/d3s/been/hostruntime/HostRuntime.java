@@ -13,7 +13,7 @@ import org.apache.commons.io.FileUtils;
 
 import cz.cuni.mff.d3s.been.bpk.BpkConfiguration;
 import cz.cuni.mff.d3s.been.bpk.BpkDependencies;
-import cz.cuni.mff.d3s.been.bpk.BpkDependency;
+import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.bpk.BpkResolver;
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
 import cz.cuni.mff.d3s.been.core.JSONUtils.JSONSerializerException;
@@ -202,7 +202,7 @@ final class HostRuntime implements IClusterService {
 
 			BpkDependencies dependencies = resolvedConfiguration.getBpkDependencies();
 			List<File> downloadedDependencies = new ArrayList<>();
-			for (BpkDependency dependency : dependencies.getDependency()) {
+			for (BpkIdentifier dependency : dependencies.getDependency()) {
 				// FIXME Radek Macha: What is "bpkId" field on BpkDependency?
 				// where is the name of the BpkDependency?
 				File dependencyFile;

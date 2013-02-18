@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>software-repository</artifactId>
+	<artifactId>software-repository-client</artifactId>
 	<packaging>jar</packaging>
 
 	<parent>
@@ -25,12 +25,6 @@
 
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
-			<artifactId>software-repository-client</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>cz.cuni.mff.d3s.been</groupId>
 			<artifactId>software-repository-store</artifactId>
 			<version>${project.version}</version>
 		</dependency>
@@ -44,14 +38,13 @@
 
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
-			<artifactId>util</artifactId>
+			<artifactId>core-utils</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
-		<!-- CLUSTER DEPENDENCIES -->
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
-			<artifactId>core-cluster</artifactId>
+			<artifactId>util</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
@@ -63,18 +56,11 @@
 			<scope>test</scope>
 		</dependency>
 
-
-		<!-- HTTP SERVER LIBRARIES -->
+		<!-- HTTP LIBRARIES -->
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 			<version>${httpclient.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpcore</artifactId>
-			<version>${httpcore.version}</version>
 		</dependency>
 
 		<!-- MAVEN -->
@@ -83,6 +69,5 @@
 			<artifactId>maven-core</artifactId>
 			<version>${maven.version}</version>
 		</dependency>
-
 	</dependencies>
 </project>

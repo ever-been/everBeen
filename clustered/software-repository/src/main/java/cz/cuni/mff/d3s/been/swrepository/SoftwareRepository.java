@@ -1,36 +1,61 @@
 package cz.cuni.mff.d3s.been.swrepository;
 
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
-import org.simpleframework.http.Request;
-import org.simpleframework.http.Response;
+import cz.cuni.mff.d3s.been.swrepository.httpserver.HttpServer;
 
-
+/**
+ * A cluster node that can store and provide BPKs and Maven artifacts through a
+ * simple HTTP server.
+ * 
+ * @author darklight
+ * 
+ */
 public class SoftwareRepository implements IClusterService {
 
-	private final HttpServer httpServer;
+	private HttpServer httpServer;
+	private DataStore dataStore;
 
-	public SoftwareRepository(HttpServer httpServer) {
-		this.httpServer = httpServer;
+	SoftwareRepository() {
+	}
+	
+	/**
+	 * Initialize the repository. HTTP server and data store must be set.
+	 */
+	public void init() {
+		httpServer.getResolver().register("/bpk*",
+				new BpkRequestHandler(dataStore));
+		httpServer.getResolver().register("/artifact*",
+				new ArtifactRequestHandler(dataStore));
 	}
 
 	@Override
 	public void start() {
-		httpServer.setRequestHandler(new HttpRequestHandler() {
-			@Override
-			public void handle(Request request, Response response) {
-				SoftwareRepository.this.handle(request, response);
-			}
-		});
 		httpServer.start();
 	}
-
+	
 	@Override
 	public void stop() {
-		httpServer.stop();
+		// TODO Auto-generated method stub
+		
 	}
 
-	void handle(Request request, Response response) {
-		// FIXME process request and response
+	/**
+	 * Set the HTTP server
+	 * 
+	 * @param httpServer
+	 *            HTTP server to set
+	 */
+	public void setHttpServer(HttpServer httpServer) {
+		this.httpServer = httpServer;
 	}
 
+	/**
+	 * Set the persistence layer
+	 * 
+	 * @param dataStore
+	 *            Data store to set
+	 */
+	public void setDataStore(DataStore dataStore) {
+		this.dataStore = dataStore;
+	}
 }
