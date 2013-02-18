@@ -1,9 +1,0 @@
-class Example1Exception
-!!!633858.java!!!	Example1Exception()
-		super();
-!!!633986.java!!!	Example1Exception(in message : String)
-		super(message);
-!!!634114.java!!!	Example1Exception(inout cause : Throwable)
-		super(cause);
-!!!634242.java!!!	Example1Exception(in message : String, inout cause : Throwable)
-		super(message, cause);

@@ -1,4 +1,0 @@
-# ignore contents (just compiled native code)
-*
-# don't ignore this
-!.gitignore

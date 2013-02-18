@@ -1,3 +1,0 @@
-class SoftwarePlatform
-!!!203266.java!!!	toString() : String
-			return name().toLowerCase();

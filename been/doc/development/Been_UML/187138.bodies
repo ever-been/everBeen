@@ -1,3 +1,0 @@
-class MetadataRef
-!!!555138.java!!!	MetadataRef(inout metadata : Metadata)
-		this.metadata = metadata;

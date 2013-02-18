@@ -1,9 +1,0 @@
-class HostRuntimeException
-!!!473986.java!!!	HostRuntimeException()
-		super();
-!!!474114.java!!!	HostRuntimeException(in message : String)
-		super(message);
-!!!474242.java!!!	HostRuntimeException(inout cause : Throwable)
-		super(cause);
-!!!474370.java!!!	HostRuntimeException(in message : String, inout cause : Throwable)
-		super(message, cause);

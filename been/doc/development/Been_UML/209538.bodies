@@ -1,8 +1,0 @@
-class Message
-!!!734594.java!!!	getText() : String
-		return text;
-!!!734722.java!!!	getFormat() : Format
-		return format;
-!!!734850.java!!!	Message(in text : String, inout format : Format)
-		this.text = text;
-		this.format = format;

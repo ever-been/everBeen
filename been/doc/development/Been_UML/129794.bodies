@@ -1,9 +1,0 @@
-class IntegrityErrorSeverity
-!!!135042.java!!!	toString() : String
-			switch (this) {
-				case OK: return "OK";
-				case ERROR: return "error";
-				default: 
-						assert false : "toString requested for an unknown enum value"; // can never get here
-						return null;
-			}

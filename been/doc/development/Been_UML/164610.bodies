@@ -1,7 +1,0 @@
-class Status
-!!!309890.java!!!	Status(in status : String)
-			
-			this.status = status;
-!!!310018.java!!!	toString() : String
-			
-			return status;

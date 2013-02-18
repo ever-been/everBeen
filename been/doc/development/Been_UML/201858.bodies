@@ -1,9 +1,0 @@
-class ResultsCollectionException
-!!!647554.java!!!	ResultsCollectionException()
-		super();
-!!!647682.java!!!	ResultsCollectionException(in message : String)
-		super(message);
-!!!647810.java!!!	ResultsCollectionException(inout cause : Throwable)
-		super(cause);
-!!!647938.java!!!	ResultsCollectionException(in message : String, inout cause : Throwable)
-		super(message, cause);

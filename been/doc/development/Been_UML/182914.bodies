@@ -1,9 +1,0 @@
-class PackageConfigurationEntityResolver
-!!!482306.java!!!	PackageConfigurationEntityResolver(in dtdFile : String)
-			this.dtdFile = dtdFile;
-!!!482434.java!!!	resolveEntity(in publicId : String, in systemId : String) : InputSource
-			if (systemId.endsWith("package-configuration.dtd")) {
-				return new InputSource(new FileInputStream(dtdFile));
-			} else {
-				return null;
-			}

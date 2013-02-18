@@ -1,9 +1,0 @@
-class SoftwareRepositoryException
-!!!609666.java!!!	SoftwareRepositoryException()
-		super();
-!!!609794.java!!!	SoftwareRepositoryException(in message : String)
-		super(message);
-!!!609922.java!!!	SoftwareRepositoryException(inout cause : Throwable)
-		super(cause);
-!!!610050.java!!!	SoftwareRepositoryException(in message : String, inout cause : Throwable)
-		super(message, cause);

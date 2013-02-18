@@ -1,9 +1,0 @@
-class TaskGeneratorException
-!!!219266.java!!!	TaskGeneratorException()
-		super();
-!!!219394.java!!!	TaskGeneratorException(in message : String)
-		super(message);
-!!!219522.java!!!	TaskGeneratorException(inout cause : Throwable)
-		super(cause);
-!!!219650.java!!!	TaskGeneratorException(in message : String, inout cause : Throwable)
-		super(message, cause);

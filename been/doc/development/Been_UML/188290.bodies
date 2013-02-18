@@ -1,9 +1,0 @@
-class DataFormat
-!!!599938.java!!!	getId() : String
-		return id;
-!!!600066.java!!!	getName() : String
-		return name;
-!!!600194.java!!!	DataFormat(in id : String, in name : String)
-		super();
-		this.id = id;
-		this.name = name;

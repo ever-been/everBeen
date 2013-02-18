@@ -1,9 +1,0 @@
-class InvalidValueUnitException
-!!!276738.java!!!	InvalidValueUnitException()
-		super();
-!!!276866.java!!!	InvalidValueUnitException(in message : String)
-		super(message);
-!!!276994.java!!!	InvalidValueUnitException(inout cause : Throwable)
-		super(cause);
-!!!277122.java!!!	InvalidValueUnitException(in message : String, inout cause : Throwable)
-		super(message, cause);

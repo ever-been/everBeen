@@ -1,7 +1,0 @@
-class ConfiguratorEntry
-!!!180098.java!!!	ConfiguratorEntry(inout c : Configurator)
-			this.configurator = c;
-!!!180226.java!!!	getConfigurator() : Configurator
-			return configurator;
-!!!180354.java!!!	getTimestamp() : long
-			return createdTimestamp;

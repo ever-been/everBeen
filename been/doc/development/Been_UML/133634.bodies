@@ -1,9 +1,0 @@
-class AntTaskException
-!!!256258.java!!!	AntTaskException()
-		super();
-!!!256386.java!!!	AntTaskException(in message : String)
-		super(message);
-!!!256514.java!!!	AntTaskException(inout cause : Throwable)
-		super(cause);
-!!!256642.java!!!	AntTaskException(in message : String, inout cause : Throwable)
-		super(message, cause);

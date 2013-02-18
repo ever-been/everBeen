@@ -1,8 +1,0 @@
-# ignore unwanted BPKs
-hostruntime/tasks
-
-# ignore logs
-taskmanager/logs
-
-# ignore software repository so far
-softwarerepository

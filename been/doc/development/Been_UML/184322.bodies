@@ -1,9 +1,0 @@
-class LogStorageException
-!!!507522.java!!!	LogStorageException()
-		super();
-!!!507650.java!!!	LogStorageException(in message : String)
-		super(message);
-!!!507778.java!!!	LogStorageException(inout cause : Throwable)
-		super(cause);
-!!!507906.java!!!	LogStorageException(in message : String, inout cause : Throwable)
-		super(message, cause);

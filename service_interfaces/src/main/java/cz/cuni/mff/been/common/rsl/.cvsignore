@@ -1,7 +1,0 @@
-SimpleCharStream.java
-Token.java
-TokenMgrError.java
-ParseException.java
-Parser.java
-ParserConstants.java
-ParserTokenManager.java

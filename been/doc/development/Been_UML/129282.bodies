@@ -1,9 +1,0 @@
-class Configurator
-!!!193154.java!!!	getBenchmarkExperiment() : ExperimentMetadata
-		return benchmarkExperiment;
-!!!193282.java!!!	setBenchmarkExperiment(inout benchmarkExperiment : ExperimentMetadata) : void
-		this.benchmarkExperiment = benchmarkExperiment;
-!!!193410.java!!!	setRegression(inout isRegression : boolean) : void
-		this.isRegression = isRegression;
-!!!193538.java!!!	isRegression() : boolean
-		return isRegression;

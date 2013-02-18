@@ -1,9 +1,0 @@
-class InvalidPropertyException
-!!!275714.java!!!	InvalidPropertyException()
-		super();
-!!!275842.java!!!	InvalidPropertyException(in message : String)
-		super(message);
-!!!275970.java!!!	InvalidPropertyException(inout cause : Throwable)
-		super(cause);
-!!!276098.java!!!	InvalidPropertyException(in message : String, inout cause : Throwable)
-		super(message, cause);

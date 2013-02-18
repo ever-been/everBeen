@@ -1,4 +1,0 @@
-class ParserWrapper
-!!!281218.java!!!	parseString(in s : String) : Condition
-		Parser p = new Parser(new BufferedReader(new StringReader(s)));
-		return p.Start(System.out);

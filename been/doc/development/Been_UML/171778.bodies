@@ -1,4 +1,0 @@
-class PropertyDescriptionComparator
-!!!380418.java!!!	compare(inout o1 : PropertyDescription, inout o2 : PropertyDescription) : int
-			
-			return o1.getPropertyPath().compareTo(o2.getPropertyPath());

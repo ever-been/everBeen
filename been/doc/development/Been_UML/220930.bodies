@@ -1,8 +1,0 @@
-class UploadResult
-!!!876930.java!!!	getStatus() : UploadStatus
-			return status;
-!!!877058.java!!!	getErrorMessages() : String
-			return errorMessages.clone();
-!!!877186.java!!!	UploadResult(inout status : UploadStatus, in errorMessages : String)
-			this.status = status;
-			this.errorMessages = errorMessages;

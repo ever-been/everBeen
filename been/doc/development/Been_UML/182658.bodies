@@ -1,9 +1,0 @@
-class MatchException
-!!!610178.java!!!	MatchException()
-		super();
-!!!610306.java!!!	MatchException(in message : String)
-		super(message);
-!!!610434.java!!!	MatchException(inout cause : Throwable)
-		super(cause);
-!!!610562.java!!!	MatchException(in message : String, inout cause : Throwable)
-		super(message, cause);

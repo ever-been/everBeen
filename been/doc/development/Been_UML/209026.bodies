@@ -1,9 +1,0 @@
-class InvalidRequestMethodException
-!!!732674.java!!!	InvalidRequestMethodException()
-        super();
-!!!732802.java!!!	InvalidRequestMethodException(in message : String)
-        super(message);
-!!!732930.java!!!	InvalidRequestMethodException(inout cause : Throwable)
-        super(cause);
-!!!733058.java!!!	InvalidRequestMethodException(in message : String, inout cause : Throwable)
-        super(message, cause);

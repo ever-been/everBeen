@@ -1,6 +1,0 @@
-class PackageUploadException
-!!!614786.java!!!	getErrorMessages() : String
-		return errorMessages.clone();
-!!!614914.java!!!	PackageUploadException(in message : String, in errorMessages : String)
-		super(message);
-		this.errorMessages = errorMessages;

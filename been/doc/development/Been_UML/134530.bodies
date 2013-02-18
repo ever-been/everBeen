@@ -1,9 +1,0 @@
-class IllegalScreenSequenceException
-!!!219778.java!!!	IllegalScreenSequenceException()
-		super();
-!!!219906.java!!!	IllegalScreenSequenceException(in message : String)
-		super(message);
-!!!220034.java!!!	IllegalScreenSequenceException(inout cause : Throwable)
-		super(cause);
-!!!220162.java!!!	IllegalScreenSequenceException(in message : String, inout cause : Throwable)
-		super(message, cause);

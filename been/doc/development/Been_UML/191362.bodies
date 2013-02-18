@@ -1,8 +1,0 @@
-class MetadataItem
-!!!602242.java!!!	getKey() : String
-		return key;
-!!!602370.java!!!	getValue() : String
-		return value;
-!!!602498.java!!!	MetadataItem(in key : String, in value : String)
-		this.key = key;
-		this.value = value;

@@ -1,7 +1,0 @@
-class EntryThread
-!!!232706.java!!!	EntryThread(inout entry : SchedulerEntry)
-			super("SchedulerThread");
-			this.entry = entry;
-			start();
-!!!232834.java!!!	run() : void
-			entry.startScheduledJob();

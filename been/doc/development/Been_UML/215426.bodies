@@ -1,3 +1,0 @@
-class TasksQuery
-!!!787842.java!!!	match(inout metadata : PackageMetadata) : boolean
-			return metadata.getType() == PackageType.TASK;

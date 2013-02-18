@@ -1,9 +1,0 @@
-class RSLSemanticException
-!!!274690.java!!!	RSLSemanticException()
-		super();
-!!!274818.java!!!	RSLSemanticException(in message : String)
-		super(message);
-!!!274946.java!!!	RSLSemanticException(inout cause : Throwable)
-		super(cause);
-!!!275074.java!!!	RSLSemanticException(in message : String, inout cause : Throwable)
-		super(message, cause);

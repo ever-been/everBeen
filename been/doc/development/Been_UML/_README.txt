@@ -1,1 +1,0 @@
-Project made in BoUML - http://bouml.free.fr/

@@ -1,5 +1,0 @@
-class BootTask
-!!!674818.java!!!	BootTask(in serviceName : String)
-			this.serviceName = serviceName;
-!!!674946.java!!!	getName() : String
-			return serviceName;

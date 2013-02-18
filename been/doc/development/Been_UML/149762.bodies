@@ -1,9 +1,0 @@
-class DownloadHandle
-!!!243330.java!!!	createDownloadHandle() : DownloadHandle
-		return new DownloadHandle(nextValue++);
-!!!243458.java!!!	DownloadHandle(in value : int)
-		this.value = value;
-!!!243586.java!!!	equals(inout o : Object) : boolean
-		return o instanceof DownloadHandle && value == ((DownloadHandle) o).value;
-!!!243714.java!!!	hashCode() : int
-		return value;

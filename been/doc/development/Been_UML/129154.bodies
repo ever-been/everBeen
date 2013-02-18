@@ -1,9 +1,0 @@
-class ComponentInitializationException
-!!!242818.java!!!	ComponentInitializationException()
-		super();
-!!!242946.java!!!	ComponentInitializationException(in message : String)
-		super(message);
-!!!243074.java!!!	ComponentInitializationException(inout cause : Throwable)
-		super(cause);
-!!!243202.java!!!	ComponentInitializationException(in message : String, inout cause : Throwable)
-		super(message, cause);

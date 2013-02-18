@@ -1,8 +1,0 @@
-class PackageDetailsQueryCallback
-!!!791554.java!!!	getPackageFilename() : String
-		return packageFilename;
-!!!791682.java!!!	PackageDetailsQueryCallback(in packageFilename : String)
-		super();
-		this.packageFilename = packageFilename;
-!!!791810.java!!!	match(inout metadata : PackageMetadata) : boolean
-		return metadata.getFilename().equals(packageFilename);

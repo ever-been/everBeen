@@ -1,9 +1,0 @@
-class InvalidParamValueException
-!!!732162.java!!!	InvalidParamValueException()
-        super();
-!!!732290.java!!!	InvalidParamValueException(in message : String)
-        super(message);
-!!!732418.java!!!	InvalidParamValueException(inout cause : Throwable)
-        super(cause);
-!!!732546.java!!!	InvalidParamValueException(in message : String, inout cause : Throwable)
-        super(message, cause);

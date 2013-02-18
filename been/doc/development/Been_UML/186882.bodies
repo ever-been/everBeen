@@ -1,9 +1,0 @@
-class ResultsRepositoryException
-!!!530818.java!!!	ResultsRepositoryException()
-		super();
-!!!530946.java!!!	ResultsRepositoryException(in message : String)
-		super(message);
-!!!531074.java!!!	ResultsRepositoryException(inout cause : Throwable)
-		super(cause);
-!!!531202.java!!!	ResultsRepositoryException(in message : String, inout cause : Throwable)
-		super(message, cause);

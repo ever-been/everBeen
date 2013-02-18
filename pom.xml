@@ -1,75 +1,51 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>cz.cuni.mff.d3s.been</groupId>
-	<artifactId>parent</artifactId>
-	<version>2.1.0</version>
-	<modules>
-		<module>clustered</module>
-	</modules>
-
+	<artifactId>clustered</artifactId>
+	<version>3.0.0</version>
 	<packaging>pom</packaging>
-	<name>parent</name>
-	<description><![CDATA[
-	When running "mvn {phase}" without specifying build profile, "buildCore" is used by default. 
-	Use "buildBenchmarks" profile to build benchmark modules. Use "buildBpkPlugin" to rebuild the packaging plugin.
-	See profiles section for more information.
-	]]>
-	</description>
-
 
 	<properties>
+		<!-- BEEN DEPENDENCIES -->
+		<been.cluster.version>3.0.0</been.cluster.version>
+		<been.task.version>3.0.0</been.task.version>
 
-		<!-- DEPENDENCY VERSION CONTROL -->
-		<antlr.version>2.7.6</antlr.version>
-		<avalon-framework.version>4.3.1</avalon-framework.version>
-		<avalon-logkit.version>2.2.1</avalon-logkit.version>
-		<collections.version>4.01</collections.version>
-		<commons-compress.version>1.4.1</commons-compress.version>
-		<commons-fileupload.version>1.2.1</commons-fileupload.version>
+		<!-- 3RD PARTY DEPENDENCIES -->
+		<hazelcast.version>2.5</hazelcast.version>
+		<httpclient.version>4.2.3</httpclient.version>
+		<httpcore.version>4.2.3</httpcore.version>
 		<commons-io.version>2.4</commons-io.version>
-		<commons-logging.version>1.1.1</commons-logging.version>
-		<derby.version>10.5.3.0_1</derby.version>
-		<hibernate.version>3.3.1.GA</hibernate.version>
-		<javax.version>1.1</javax.version>
-		<jaxb-impl.version>2.2</jaxb-impl.version>
-		<jaxb-api.version>2.2</jaxb-api.version>
-		<junit.version>4.4</junit.version>
-		<jsp-api.version>2.0</jsp-api.version>
-		<jython.version>2.5.3</jython.version>
-		<log4j.version>1.2.12</log4j.version>
-		<logback.version>1.0.6</logback.version>
-		<maven.version>2.0</maven.version>
-		<mockito.version>1.9.0</mockito.version>
-		<rmiio.version>2.0.2</rmiio.version>
-		<servlet-api.version>2.4</servlet-api.version>
-		<slf4j.version>1.6.4</slf4j.version>
-		<hazelcast.version>2.4</hazelcast.version>
+		<commons-compress.version>1.4.1</commons-compress.version>
 
 
 		<!-- PLUGIN VERSION CONTROL -->
-		<jaxb2-maven-plugin.version>1.4</jaxb2-maven-plugin.version>
+		<jaxb2-maven-plugin.version>1.5</jaxb2-maven-plugin.version>
 		<maven-assembly-plugin.version>2.3</maven-assembly-plugin.version>
 		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
 		<maven-jar-plugin.version>2.4</maven-jar-plugin.version>
 		<maven-resources-plugin.version>2.6</maven-resources-plugin.version>
+		<one.jar.version>0.97</one.jar.version>
+		<args4j.version>2.0.16</args4j.version>
 
 
 		<!-- SOURCE LEVEL CONTROL -->
 		<java-source.version>1.7</java-source.version>
 		<java-target.version>1.7</java-target.version>
 
+		<!-- LOGGING -->
+		<log4j.version>1.2.12</log4j.version>
+		<logback.version>1.0.6</logback.version>
+		<slf4j.version>1.6.4</slf4j.version>
+
 		<!-- ENCODING -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-		<!-- JAVA SYSTEM SETTINGS -->
-		<jdk.home>${java.home}/../</jdk.home>
 	</properties>
 
-
 	<dependencies>
-		<!-- LOGGING -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -88,21 +64,8 @@
 			<scope>runtime</scope>
 			<version>${logback.version}</version>
 		</dependency>
-
-		<!-- TESTING -->
-		<dependency> <!-- NEEDED -->
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${junit.version}</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<version>${mockito.version}</version>
-		</dependency>
 	</dependencies>
+
 
 	<build>
 		<plugins>
@@ -117,8 +80,7 @@
 			</plugin>
 		</plugins>
 	</build>
-
-
+	
 	<profiles>
 		<profile>
 			<id>buildCore</id>
@@ -128,22 +90,20 @@
 			</activation>
 
 			<modules>
-				<module>bpk-conventions</module>
-				<module>core</module>
-				<module>service_interfaces</module>
-				<module>cvs</module>
-				<module>host_runtime</module>
-				<module>taskmanager</module>
-				<module>cline_interface</module>
-				<module>softwarerepository</module>
-				<module>hostmanager</module>
-				<module>resultsrepository</module>
-				<module>benchmarkmanager</module>
-				<module>web_interface</module>
-				<module>debug_assistant</module>
-				<module>bcmd</module>
-				<module>detectors</module>
-				<module>pluggablemodules</module>
+				<module>core-data</module>
+				<module>core-utils</module>
+				<module>core-protocol</module>
+				<module>core-cluster</module>
+				<module>task-manager</module>
+				<module>node</module>
+				<module>client-submitter</module>
+				<module>client-shell</module>
+				<module>host-runtime</module>
+				<module>util</module>
+				<module>software-repository-store</module>
+				<module>software-repository-client</module>
+				<module>software-repository</module>
+				<module>software-repository-fsbasedstore</module>
 			</modules>
 		</profile>
 
@@ -156,18 +116,8 @@
 			</modules>
 		</profile>
 
-		<profile>
-			<id>buildBenchmarks</id>
 
-			<modules>
-
-				<!-- too many errors, ignore for now -->
-				<module>xampler</module>
-				<module>generators</module>
-				<module>evaluators</module>
-				<module>tasks</module>
-				<module>examples</module>
-			</modules>
-		</profile>
 	</profiles>
+
+
 </project>

@@ -1,9 +1,0 @@
-class UploadHandle
-!!!253570.java!!!	createUploadHandle() : UploadHandle
-        return new UploadHandle(nextValue++);
-!!!253698.java!!!	UploadHandle(in value : int)
-        this.value = value;
-!!!253826.java!!!	equals(inout o : Object) : boolean
-        return o instanceof UploadHandle && value == ((UploadHandle) o).value;
-!!!253954.java!!!	hashCode() : int
-        return value;

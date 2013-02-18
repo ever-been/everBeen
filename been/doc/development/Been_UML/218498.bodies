@@ -1,5 +1,0 @@
-class AgeSimpleProperty
-!!!846466.java!!!	getValue() : Object
- return new LongWithUnit(age, LongWithUnit.NO_UNIT_PREFIX, null);
-!!!846594.java!!!	getValueClass() : Class
- return LongWithUnit.class;

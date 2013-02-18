@@ -1,7 +1,0 @@
-class RID
-!!!268034.java!!!	RID(in value : long)
-		super(value);
-!!!268162.java!!!	RID()
-	
-!!!268290.java!!!	valueOf(in s : String) : RID
-		return new RID(Long.parseLong(s));

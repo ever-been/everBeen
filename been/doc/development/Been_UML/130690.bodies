@@ -1,3 +1,0 @@
-class ID
-!!!262274.java!!!	valueOf(in s : String) : ID
-		return null; // can't be static and abstract in one time

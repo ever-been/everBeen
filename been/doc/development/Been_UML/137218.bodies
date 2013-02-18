@@ -1,5 +1,0 @@
-class TaskInitializationException
-!!!626946.java!!!	TaskInitializationException(inout e : Exception)
-		super(e);
-!!!627074.java!!!	TaskInitializationException(in errorMessage : String)
-		super(errorMessage);

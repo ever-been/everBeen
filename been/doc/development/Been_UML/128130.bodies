@@ -1,9 +1,0 @@
-class BeenException
-!!!128002.java!!!	BeenException()
-		super();
-!!!128130.java!!!	BeenException(in message : String)
-		super(message);
-!!!128258.java!!!	BeenException(inout cause : Throwable)
-		super(cause);
-!!!128386.java!!!	BeenException(in message : String, inout cause : Throwable)
-		super(message, cause);

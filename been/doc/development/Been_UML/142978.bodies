@@ -1,5 +1,0 @@
-class TID
-!!!268802.java!!!	TID(in value : long)
-		super(value);
-!!!269058.java!!!	valueOf(in s : String) : TID
-		return new TID(Long.parseLong(s));

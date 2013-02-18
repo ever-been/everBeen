@@ -1,7 +1,0 @@
-class SID
-!!!268418.java!!!	SID(in value : long)
-		super(value);
-!!!268546.java!!!	SID()
-	
-!!!268674.java!!!	valueOf(in s : String) : SID
-		return new SID(Long.parseLong(s));

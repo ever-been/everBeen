@@ -1,7 +1,0 @@
-class BID
-!!!264194.java!!!	BID(in value : long)
-		super(value);
-!!!264322.java!!!	BID()
-	
-!!!264450.java!!!	valueOf(in s : String) : BID
-		return new BID(Long.parseLong(s));

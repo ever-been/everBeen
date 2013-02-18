@@ -1,9 +1,0 @@
-class Counter
-!!!267010.java!!!	Counter(in value : long)
-			this.count = value;
-!!!267138.java!!!	getNext() : long
-			return count++;
-!!!267266.java!!!	getCount() : long
-			return count;
-!!!267394.java!!!	toString() : String
-			return String.valueOf(count);

@@ -1,3 +1,0 @@
-class AliasListComparator
-!!!771714.java!!!	compare(inout o1 : SoftwareAliasDefinition, inout o2 : SoftwareAliasDefinition) : int
-			return o1.getAliasName().compareToIgnoreCase(o2.getAliasName());

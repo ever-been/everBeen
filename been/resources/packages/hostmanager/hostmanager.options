@@ -1,6 +1,0 @@
-activityMonitorInterval=5000
-deadHostTimeout=90000
-hostDetectionTimeout=300000
-pendingHostRefreshInterval=5000
-briefModeInterval=10000
-defaultDetailedModeInterval=1000

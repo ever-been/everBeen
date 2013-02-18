@@ -1,4 +1,0 @@
-# ignore everything in this directory (compiled native code)
-*
-# except this file
-!.gitignore

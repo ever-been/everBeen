@@ -1,8 +1,0 @@
-class NumberedItem
-!!!555266.java!!!	getKey() : long
-		return key;
-!!!555394.java!!!	getValue() : String
-		return value;
-!!!555522.java!!!	NumberedItem(in key : long, in value : String)
-		this.key = key;
-		this.value = value;

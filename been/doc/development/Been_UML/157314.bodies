@@ -1,9 +1,0 @@
-class InvalidValueTypeException
-!!!276226.java!!!	InvalidValueTypeException()
-		super();
-!!!276354.java!!!	InvalidValueTypeException(in message : String)
-		super(message);
-!!!276482.java!!!	InvalidValueTypeException(inout cause : Throwable)
-		super(cause);
-!!!276610.java!!!	InvalidValueTypeException(in message : String, inout cause : Throwable)
-		super(message, cause);

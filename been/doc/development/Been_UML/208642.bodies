@@ -1,9 +1,0 @@
-class IllegalWizardScreenSequenceException
-!!!731138.java!!!	IllegalWizardScreenSequenceException()
-		super();
-!!!731266.java!!!	IllegalWizardScreenSequenceException(in message : String)
-		super(message);
-!!!731394.java!!!	IllegalWizardScreenSequenceException(inout cause : Throwable)
-		super(cause);
-!!!731522.java!!!	IllegalWizardScreenSequenceException(in message : String, inout cause : Throwable)
-		super(message, cause);

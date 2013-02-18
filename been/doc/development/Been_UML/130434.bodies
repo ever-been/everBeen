@@ -1,9 +1,0 @@
-class AID
-!!!263682.java!!!	AID(in value : long)
-		super(value);
-!!!263810.java!!!	AID()
-	
-!!!263938.java!!!	valueOf(in s : String) : AID
-		return new AID(Long.parseLong(s));
-!!!264066.java!!!	toNamedString(inout id : AID) : String
-		return "AID(" + id + ")";

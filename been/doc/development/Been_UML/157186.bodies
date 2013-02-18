@@ -1,9 +1,0 @@
-class InvalidOperatorException
-!!!275202.java!!!	InvalidOperatorException()
-		super();
-!!!275330.java!!!	InvalidOperatorException(in message : String)
-		super(message);
-!!!275458.java!!!	InvalidOperatorException(inout cause : Throwable)
-		super(cause);
-!!!275586.java!!!	InvalidOperatorException(in message : String, inout cause : Throwable)
-		super(message, cause);

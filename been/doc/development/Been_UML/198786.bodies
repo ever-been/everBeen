@@ -1,5 +1,0 @@
-class ExampleRemoteInterfaceImplementation
-!!!633090.java!!!	ExampleRemoteInterfaceImplementation()
-		// empty because you have to create a contructor that throws RemoteException
-!!!633218.java!!!	foo() : void
-		Task.getTaskHandle().logInfo("foo() invoked");

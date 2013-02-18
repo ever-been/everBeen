@@ -1,4 +1,0 @@
-class ReversePairComparator
-!!!352386.java!!!	compare(inout a : Pair, inout b : Pair) : int
-			
-			return -a.getFirst().compareTo(b.getFirst());
