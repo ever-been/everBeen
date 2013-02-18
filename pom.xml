@@ -20,7 +20,8 @@
 		<httpcore.version>4.2.3</httpcore.version>
 		<commons-io.version>2.4</commons-io.version>
 		<commons-compress.version>1.4.1</commons-compress.version>
-
+		<junit.version>4.11</junit.version>
+		<maven.version>3.0.4</maven.version>
 
 		<!-- PLUGIN VERSION CONTROL -->
 		<jaxb2-maven-plugin.version>1.5</jaxb2-maven-plugin.version>
@@ -63,6 +64,13 @@
 			<artifactId>logback-classic</artifactId>
 			<scope>runtime</scope>
 			<version>${logback.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
