@@ -66,6 +66,8 @@ final class LocalTaskListener implements EntryListener<String, TaskEntry>, IClus
 
 		log.info("Received new task " + taskId);
 
+		// TODO: check that the entry is correct
+
 
 		String nodeId = ClusterUtils.getId();
 		Transaction txn = null;
@@ -82,7 +84,11 @@ final class LocalTaskListener implements EntryListener<String, TaskEntry>, IClus
 
 			{
 				txn.begin(); // BEGIN TRANSACTION -----------------------------
-				TasksUtils.assertEquals(entry);
+				// assert than nobody messed with the entry we are processing
+				// The reason we are doing it here is to get a lock
+				// on the entry (IMap.get under transaction) and make sure than
+				// nobody got the chance to modify the entry ...
+				TaskEntry entryCopy = TasksUtils.assertClusterEqualCopy(entry);
 
 				// Claim ownership of the node
 				entry.setOwnerId(nodeId);
@@ -92,12 +98,17 @@ final class LocalTaskListener implements EntryListener<String, TaskEntry>, IClus
 				entry.setRuntimeId(receiverId);
 
 				// Update entry
-				TasksUtils.putTask(entry);
+				TaskEntry oldEntry = TasksUtils.putTask(entry);
+
+				// Again, check that the entry did not change
+				// This SHOULD NOT be necessary ... but leave it here for now
+				TasksUtils.assertEqual(oldEntry, entryCopy);
+
 
 				 // Send a message to the runtime
 				TopicUtils.publish(RUNTIME_TOPIC, newRunTaskMessage(entry));
 
-				ClusterUtils.getInstance().getAtomicNumber(entry.getId()).set(5);
+				ClusterUtils.getAtomicNumber(entry.getId()).set(5);
 
 				txn.commit(); // END TRANSACTION ------------------------------
 			}
@@ -147,6 +158,24 @@ final class LocalTaskListener implements EntryListener<String, TaskEntry>, IClus
 	public void entryUpdated(EntryEvent<String, TaskEntry> event) {
 		TaskEntry entry = event.getValue();
 		String taskId = event.getKey();
+
+		switch (entry.getState()) {
+			case ABORTED:
+				log.info("Task has been ABORTED: " + taskId);
+				break;
+			case SUBMITTED:
+				if (!entry.getRuntimeId().equals("0")) {
+					//timeout exceeded, stale task
+					// what now?
+				} else {
+					//
+				}
+
+
+
+				break;
+
+		}
 
 		log.info("Entry updated " + taskId);
 		log.info(TasksUtils.toXml(entry));

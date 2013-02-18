@@ -4,6 +4,7 @@ import com.hazelcast.core.IMap;
 import com.hazelcast.core.Transaction;
 import cz.cuni.mff.d3s.been.core.ClusterUtils;
 import cz.cuni.mff.d3s.been.core.TasksUtils;
+import cz.cuni.mff.d3s.been.core.task.TaskEntries;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
 import org.slf4j.Logger;
@@ -22,6 +23,9 @@ import org.slf4j.LoggerFactory;
  * system.
  *
  * TODO: maybe add reference to discussion
+ * TODO: create a document describing all cases taken into account instead of inline comments
+ * TODO: reformat the code
+ * (after it stabilizes a bit)
  *
  * @author Martin Sixta
  */
@@ -38,50 +42,56 @@ public class LocalKeyScanner implements Runnable {
 
 
 			TaskEntry entry = map.get(taskId);
+
 			if (entry == null) {
 				continue;
 			}
 
+			String entryId = entry.getId();
 			String ownerId = entry.isSetOwnerId() ? entry.getOwnerId() : ZERO_ID;
 
-			if (ownerId.equals(ZERO_ID)) {
-				// TODO: this can happen when:
-				// 1) the Task Manager did no get the chance to schedule the task yet
-				// 2) the key migrated before - crash / normal migration
-				// -- we must handle the case when the original owner does not disconnect cleanly
+			if (ownerId.equals(ZERO_ID) || !ownerId.equals(nodeId)) {
+				// The owner of the key is different, reclaim it.
+				// This could be just a normal migration or something more
+				// serious, like a node crashing.
+				// In case of ZERE_ID it could ALSO just mean that this thread got
+				// lucky -> before entryAdded
 
-				log.info("ZERO ID found during local key scan: " + entry.getId());
-			} else if (!ownerId.equals(nodeId)) {
-				// Welcome to hell ...
 				Transaction txn = ClusterUtils.getTransaction();
-
 				try {
-					log.info("Task entry migrated: " + entry.getId());
+					txn.begin();
+					TasksUtils.assertClusterEqual(entry);
+					entry.setOwnerId(nodeId);
+					map.put(entry.getId(), entry);
 
-
-					{
-						txn.begin();
-
-						TasksUtils.assertEquals(entry);
-
-						entry.setOwnerId(nodeId);
-						map.put(entry.getId(), entry);
-						txn.commit();
-					}
 				} catch (Throwable e) {
-					log.warn("Unable to change owernship of ", e);
-					//quell, here it does not matter
-					txn.rollback();
+					log.warn("Unable to change ownership of the entry: ", e);
+					txn.rollback(); // OK, will get it next time if needed
 				}
-			} else {
-				if (entry.getState() == TaskState.SCHEDULED) {
-					long count = ClusterUtils.getInstance().getAtomicNumber(entry.getId()).decrementAndGet();
-					if (count < 1) {
-						log.info("Stale task " + entry.getId() + "detected! " + count);
-						// TODO: handle the situation
+
+			} else if (entry.getState() == TaskState.SCHEDULED) {
+				// Checks whether the task got response from a runtime in a timely fashion
+				long count = ClusterUtils.getInstance().getAtomicNumber(entry.getId()).decrementAndGet();
+				if (count < 1) {
+					log.info("Stale task " + entry.getId() + "detected! " + count);
+					Transaction txn = ClusterUtils.getTransaction();
+
+					try {
+						txn.begin();
+						TasksUtils.assertClusterEqual(entry);
+						TaskEntries.setState(entry, TaskState.SUBMITTED, entry.getRuntimeId() + "did not respond!");
+						TasksUtils.putTask(entry);
+						txn.commit();
+
+					} catch (Throwable e) {
+						log.warn("Unable to update stale task: " + taskId, e);
+						txn.rollback(); // OK, will get it next time if needed
+
 					}
 				}
 
+			} else if (entry.getState() == TaskState.ABORTED) {
+				// TODO: reclamation of the task entry
 			}
 		}
 

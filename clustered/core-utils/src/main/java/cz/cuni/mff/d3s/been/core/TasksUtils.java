@@ -40,8 +40,8 @@ public class TasksUtils {
 		return getTasksMap().get(key);
 	}
 
-	public static void putTask(TaskEntry taskEntry) {
-		getTasksMap().put(taskEntry.getId(), taskEntry);
+	public static TaskEntry putTask(TaskEntry taskEntry) {
+		return getTasksMap().put(taskEntry.getId(), taskEntry);
 	}
 
 	public static String submit(TaskDescriptor taskDescriptor) {
@@ -62,15 +62,37 @@ public class TasksUtils {
 	}
 
 
-	public static void assertEquals(TaskEntry entry) {
+	public static boolean isClusterEqual(TaskEntry entry) {
 
 		TaskEntry taskEntryCopy = getTasksMap().get(entry.getId());
 
-
 		if (taskEntryCopy == null || taskEntryCopy.equals(entry)) {
-			throw new IllegalStateException("Ufff ...");
+			return false;
+		} else {
+			return true;
 		}
+	}
 
+	public static void assertClusterEqual(TaskEntry entry) {
+		if (!isClusterEqual(entry)) {
+			throw new IllegalStateException("Entry has changed! " + entry.getId());
+		}
+	}
+
+	public static TaskEntry assertClusterEqualCopy(TaskEntry entry) {
+		TaskEntry copy = getTask(entry.getId());
+
+		if (entry.equals(copy)) {
+			return copy;
+		} else {
+			throw new IllegalStateException("Entry has changed! " + entry.getId());
+		}
+	}
+
+	public static void assertEqual(TaskEntry entry, TaskEntry copy) {
+		if (!entry.equals(copy)) {
+			throw new IllegalStateException("Entry has changed! " + entry.getId());
+		}
 	}
 
 
