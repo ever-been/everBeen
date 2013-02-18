@@ -16,7 +16,7 @@ public class Names {
 	 * In the map with this name should be stored information about important services (Software Repository, Results Repository etc..).
 	 */
 	public static final String SERVICES_MAP_NAME = "BEEN_SERVICES";
-	
+
 	/**
 	 * In the map with this name should be stored information about all Tasks (including their actual state).
 	 */
