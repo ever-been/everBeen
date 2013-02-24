@@ -13,8 +13,13 @@ import cz.cuni.mff.d3s.been.core.protocol.Context;
 import cz.cuni.mff.d3s.been.core.protocol.messages.BaseMessage;
 
 /**
- * @author Martin Sixta
+ * This class should not be used in real environment while not properly tested
+ * and refactored.
+ * 
+ * @author Tadeáš Palusga
+ * 
  */
+@Deprecated
 final class RestBridgeListener implements ItemListener<RestValue>, IClusterService {
 
 	final IQueue<RestValue> restQueue;
@@ -25,10 +30,12 @@ final class RestBridgeListener implements ItemListener<RestValue>, IClusterServi
 		globalTopic = ClusterUtils.getTopic(Context.GLOBAL_TOPIC.getName());
 	}
 
+	@Override
 	public void start() {
 		restQueue.addItemListener(this, false);
 	}
 
+	@Override
 	public void stop() {
 		restQueue.removeItemListener(this);
 	}

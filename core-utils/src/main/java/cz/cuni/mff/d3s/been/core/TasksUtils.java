@@ -19,6 +19,9 @@ import static cz.cuni.mff.d3s.been.core.Names.*;
 
 /**
  * @author Martin Sixta
+ * 
+ * FIXME see TaskEntries class and TaskUtils! Should be merged
+ * FIXME COMMENTS! COMMENTS! COMMENTS! :)
  */
 public class TasksUtils {
 
@@ -107,6 +110,7 @@ public class TasksUtils {
 			composer.compose(entry, writer);
 
 		} catch (SAXException | JAXBException e) {
+			// FIXME Martin Sixte comment please why exception is not handles or handle it :)
 			return "";
 		}
 
