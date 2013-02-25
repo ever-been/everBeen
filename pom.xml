@@ -102,6 +102,7 @@
 				<module>core-utils</module>
 				<module>core-protocol</module>
 				<module>core-cluster</module>
+                <module>detectors</module>
 				<module>task-manager</module>
 				<module>node</module>
 				<module>client-submitter</module>
