@@ -1,19 +1,23 @@
 package cz.cuni.d3s.mff.been.client;
 
+import java.util.Collection;
+
+import jline.console.ConsoleReader;
+
 import com.hazelcast.core.Instance;
+
 import cz.cuni.mff.d3s.been.core.ClusterUtils;
 import cz.cuni.mff.d3s.been.core.RuntimesUtils;
 import cz.cuni.mff.d3s.been.core.TasksUtils;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
-import jline.console.ConsoleReader;
-
-import java.util.Collection;
 
 /**
  * @author Martin Sixta
  */
 class ClusterMode extends AbstractMode {
+
+	private final TasksUtils tasksUtils;
 
 	private enum Action {
 		TASKS, RUNTIMES, BREAK, INSTANCES;
@@ -33,8 +37,9 @@ class ClusterMode extends AbstractMode {
 
 	}
 
-	public ClusterMode(ConsoleReader reader) {
+	public ClusterMode(ConsoleReader reader, TasksUtils tasksUtils) {
 		super(reader, "> ", getActionStrings());
+		this.tasksUtils = tasksUtils;
 
 	}
 
@@ -61,7 +66,6 @@ class ClusterMode extends AbstractMode {
 				break;
 		}
 
-
 		return this;
 
 	}
@@ -69,7 +73,7 @@ class ClusterMode extends AbstractMode {
 	private void handleRuntimes(String[] args) {
 		if (args.length == 1) {
 			Collection<RuntimeInfo> runtimes = RuntimesUtils.getRuntimes();
-			for (RuntimeInfo runtime: runtimes) {
+			for (RuntimeInfo runtime : runtimes) {
 				out.println(RuntimesUtils.toXml(runtime));
 			}
 		}
@@ -77,9 +81,9 @@ class ClusterMode extends AbstractMode {
 
 	private void handleTasks(String[] args) {
 		if (args.length == 1) {
-			Collection<TaskEntry> entries = TasksUtils.getTasks();
-			for (TaskEntry entry: entries) {
-				out.println(TasksUtils.toXml(entry));
+			Collection<TaskEntry> entries = tasksUtils.getTasks();
+			for (TaskEntry entry : entries) {
+				out.println(tasksUtils.toXml(entry));
 			}
 		}
 	}
@@ -103,7 +107,7 @@ class ClusterMode extends AbstractMode {
 			instances = ClusterUtils.getInstances(instanceType);
 		}
 
-		for (Instance instance: instances) {
+		for (Instance instance : instances) {
 			out.printf("%s [%s]\n", instance.getInstanceType().toString(), instance.getId());
 		}
 

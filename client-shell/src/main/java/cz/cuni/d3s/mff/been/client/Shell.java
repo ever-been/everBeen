@@ -1,59 +1,66 @@
 package cz.cuni.d3s.mff.been.client;
 
-import com.hazelcast.client.ClientConfig;
-import com.hazelcast.client.HazelcastClient;
-import cz.cuni.mff.d3s.been.cluster.Instance;
-import cz.cuni.mff.d3s.been.cluster.NodeType;
+import java.io.PrintWriter;
+import java.net.InetSocketAddress;
+
 import jline.console.ConsoleReader;
+
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import java.io.PrintWriter;
-import java.net.InetSocketAddress;
+import com.hazelcast.client.ClientConfig;
+import com.hazelcast.client.HazelcastClient;
+
+import cz.cuni.mff.d3s.been.cluster.Instance;
+import cz.cuni.mff.d3s.been.cluster.NodeType;
+import cz.cuni.mff.d3s.been.core.TasksUtils;
+import cz.cuni.mff.d3s.been.core.task.TaskEntries;
 
 /**
  * @author Martin Sixta
  */
 public class Shell {
-	@Option(name = "-h", aliases = {"--host"}, usage = "Hostname of a cluster member to connect to")
+	@Option(name = "-h", aliases = { "--host" }, usage = "Hostname of a cluster member to connect to")
 	private String host = "localhost";
 
-	@Option(name = "-p", aliases = {"--port"}, usage = "Port of the host")
+	@Option(name = "-p", aliases = { "--port" }, usage = "Port of the host")
 	private int port = 5701;
 
-	@Option(name = "-ehl", aliases = {"--enable-hazelcast-logging"}, usage = "Turns on Hazelcast logging.")
+	@Option(name = "-ehl", aliases = { "--enable-hazelcast-logging" }, usage = "Turns on Hazelcast logging.")
 	private boolean debug = false;
 
-	@Option(name = "-gn", aliases = {"--group-name"}, usage = "Group Name")
+	@Option(name = "-gn", aliases = { "--group-name" }, usage = "Group Name")
 	private String groupName = "dev";
 
-	@Option(name = "-gp", aliases = {"--group-password"}, usage = "Group Password")
+	@Option(name = "-gp", aliases = { "--group-password" }, usage = "Group Password")
 	private String groupPassword = "dev-pass";
 
+	private final TasksUtils tasksUtils;
 
 	public static void main(String[] args) {
+		TaskEntries taskEntries = new TaskEntries();
+		TasksUtils tasksUtils = new TasksUtils(taskEntries);
+		new Shell(tasksUtils).doMain(args);
+	}
 
-		new Shell().doMain(args);
+	public Shell(TasksUtils tasksUtils) {
+		this.tasksUtils = tasksUtils;
 	}
 
 	private void doMain(String[] args) {
 		connectClient(args);
 
-
 		try {
 
 			ConsoleReader reader = new ConsoleReader();
 
-			IMode mode = new ClusterMode(reader);
+			IMode mode = new ClusterMode(reader, tasksUtils);
 
 			mode.setup(reader);
 
-
 			String line;
 			PrintWriter out = new PrintWriter(reader.getOutput());
-
-
 
 			while ((line = reader.readLine()) != null) {
 				line = line.trim();
@@ -61,7 +68,6 @@ public class Shell {
 					continue;
 				}
 				String[] tokens = line.trim().split(" ");
-
 
 				try {
 					mode = mode.takeAction(tokens);
@@ -74,11 +80,9 @@ public class Shell {
 				out.flush();
 
 			}
-		}
-		catch (Throwable t) {
+		} catch (Throwable t) {
 			t.printStackTrace();
 		}
-
 
 	}
 
@@ -107,11 +111,7 @@ public class Shell {
 
 			hazelcastClient = HazelcastClient.newHazelcastClient(clientConfig);
 
-
-
 			Instance.registerInstance(hazelcastClient, NodeType.NATIVE);
-
-
 
 		} catch (CmdLineException e) {
 

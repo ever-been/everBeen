@@ -123,6 +123,37 @@
 				<module>bpk-plugin</module>
 			</modules>
 		</profile>
+		
+		
+		<profile>
+			<!--  this is helper profile used to build all modules in one cycle, so include paths
+			 are correctly set to other projects instead of .m2 repository - usable for eclipse:eclipse -->
+			<id>buildAll</id>
+
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+
+			<modules>
+				<module>core-data</module>
+				<module>core-utils</module>
+				<module>core-protocol</module>
+				<module>core-cluster</module>
+				<module>task-manager</module>
+				<module>node</module>
+				<module>client-submitter</module>
+				<module>client-shell</module>
+				<module>host-runtime</module>
+				<module>util</module>
+				<module>software-repository-store</module>
+				<module>software-repository-client</module>
+				<module>software-repository</module>
+				<module>software-repository-fsbasedstore</module>
+				
+				<module>bpk-conventions</module>
+				<module>bpk-plugin</module>
+			</modules>
+		</profile>
 
 
 	</profiles>

@@ -15,4 +15,9 @@ public final class ErrorMessage extends BaseMessage {
 	 */
 	public String message;
 
+	public ErrorMessage(String senderId, String recieverId, String message) {
+		super(senderId, recieverId);
+		this.message = message;
+	}
+
 }

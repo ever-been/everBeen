@@ -1,5 +1,8 @@
 package cz.cuni.mff.d3s.been.task;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.hazelcast.config.MapConfig;
 import com.hazelcast.core.EntryEvent;
 import com.hazelcast.core.EntryListener;
@@ -15,13 +18,11 @@ import cz.cuni.mff.d3s.been.core.protocol.messages.RunTaskMessage;
 import cz.cuni.mff.d3s.been.core.task.TaskEntries;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Listens for local key events of the Task Map.
- *
- *
+ * 
+ * 
  * @author Martin Sixta
  */
 final class LocalTaskListener implements EntryListener<String, TaskEntry>, IClusterService {
@@ -31,10 +32,14 @@ final class LocalTaskListener implements EntryListener<String, TaskEntry>, IClus
 	private IRuntimeSelection runtimeSelection;
 
 	private IMap<String, TaskEntry> taskMap;
+	private final TasksUtils tasksUtils;
+	private final TaskEntries taskEntries;
 
-	public LocalTaskListener() {
-		taskMap = TasksUtils.getTasksMap();
-		MapConfig cfg = TasksUtils.getTasksMapConfig();
+	public LocalTaskListener(TasksUtils tasksUtils, TaskEntries taskEntries) {
+		this.tasksUtils = tasksUtils;
+		this.taskEntries = taskEntries;
+		taskMap = tasksUtils.getTasksMap();
+		MapConfig cfg = tasksUtils.getTasksMapConfig();
 
 		if (cfg == null) {
 			throw new RuntimeException("BEEN_MAP_TASKS! does not have a config!");
@@ -57,7 +62,6 @@ final class LocalTaskListener implements EntryListener<String, TaskEntry>, IClus
 		taskMap.removeEntryListener(this);
 	}
 
-
 	@Override
 	public void entryAdded(EntryEvent<String, TaskEntry> event) {
 
@@ -68,11 +72,9 @@ final class LocalTaskListener implements EntryListener<String, TaskEntry>, IClus
 
 		// TODO: check that the entry is correct
 
-
 		String nodeId = ClusterUtils.getId();
 		Transaction txn = null;
 		String receiverId = null;
-
 
 		try {
 
@@ -88,24 +90,23 @@ final class LocalTaskListener implements EntryListener<String, TaskEntry>, IClus
 				// The reason we are doing it here is to get a lock
 				// on the entry (IMap.get under transaction) and make sure than
 				// nobody got the chance to modify the entry ...
-				TaskEntry entryCopy = TasksUtils.assertClusterEqualCopy(entry);
+				TaskEntry entryCopy = tasksUtils.assertClusterEqualCopy(entry);
 
 				// Claim ownership of the node
 				entry.setOwnerId(nodeId);
 
 				// Update content of the entry
-				TaskEntries.setState(entry, TaskState.SCHEDULED, "Task sheduled on " + nodeId);
+				taskEntries.setState(entry, TaskState.SCHEDULED, "Task sheduled on " + nodeId);
 				entry.setRuntimeId(receiverId);
 
 				// Update entry
-				TaskEntry oldEntry = TasksUtils.putTask(entry);
+				TaskEntry oldEntry = tasksUtils.putTask(entry);
 
 				// Again, check that the entry did not change
 				// This SHOULD NOT be necessary ... but leave it here for now
-				TasksUtils.assertEqual(oldEntry, entryCopy);
+				tasksUtils.assertEqual(oldEntry, entryCopy);
 
-
-				 // Send a message to the runtime
+				// Send a message to the runtime
 				TopicUtils.publish(RUNTIME_TOPIC, newRunTaskMessage(entry));
 
 				ClusterUtils.getAtomicNumber(entry.getId()).set(5);
@@ -133,22 +134,18 @@ final class LocalTaskListener implements EntryListener<String, TaskEntry>, IClus
 		}
 
 		log.info("Task " + taskId + " scheduled on " + receiverId);
-
-
-
 	}
 
 	private RunTaskMessage newRunTaskMessage(TaskEntry taskEntry) {
-		RunTaskMessage msg = new RunTaskMessage();
-		msg.senderId = taskEntry.getOwnerId();
-		msg.recieverId = taskEntry.getRuntimeId();
-		msg.taskId = taskEntry.getId();
-		return msg;
+		String senderId = taskEntry.getOwnerId();
+		String recieverId = taskEntry.getRuntimeId();
+		String taskId = taskEntry.getId();
+		return new RunTaskMessage(senderId, recieverId, taskId);
 	}
 
 	@Override
 	public void entryRemoved(EntryEvent<String, TaskEntry> event) {
-		TaskEntry entry = event.getValue();
+		event.getValue();
 		String taskId = event.getKey();
 
 		log.info("Entry removed " + taskId);
@@ -171,19 +168,17 @@ final class LocalTaskListener implements EntryListener<String, TaskEntry>, IClus
 					//
 				}
 
-
-
 				break;
 
 		}
 
 		log.info("Entry updated " + taskId);
-		log.info(TasksUtils.toXml(entry));
+		log.info(tasksUtils.toXml(entry));
 	}
 
 	@Override
 	public void entryEvicted(EntryEvent<String, TaskEntry> event) {
-		TaskEntry entry = event.getValue();
+		event.getValue();
 		String taskId = event.getKey();
 
 		log.info("Entry evicted " + taskId);

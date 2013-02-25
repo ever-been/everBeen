@@ -32,7 +32,7 @@ public class TaskEntries {
 	 *          for which the new entry is created
 	 * @return initialized entry
 	 */
-	public static TaskEntry create(TaskDescriptor taskDescriptor) {
+	public TaskEntry create(TaskDescriptor taskDescriptor) {
 		TaskEntry entry = TASK.createTaskEntry();
 
 		entry.setState(TaskState.CREATED);
@@ -46,8 +46,10 @@ public class TaskEntries {
 		return entry;
 	}
 
-	// FIXME Martin - comments please :) why we can use this method. We do not want to search usage if we do not understand what is this method :) If one of the "create" methods here 
-	public static TaskEntry create(String pathToTaskDescriptor) {
+	// FIXME Martin - comments please :) why we can use this method. We do not want to search usage 
+	// if we do not understand what is this method :) If one of the "create" methods here should
+	// be used internally, make it private please :)
+	public TaskEntry create(String pathToTaskDescriptor) {
 		BindingParser<TaskDescriptor> bindingComposer = null;
 		try {
 			bindingComposer = XSD.TD.createParser(TaskDescriptor.class);
@@ -63,7 +65,7 @@ public class TaskEntries {
 
 	}
 
-	public static void setState(TaskEntry entry, TaskState newState,
+	public void setState(TaskEntry entry, TaskState newState,
 			String reasonFormat, Object... reasonArgs) throws IllegalArgumentException {
 		TaskState oldState = entry.getState();
 
@@ -78,7 +80,7 @@ public class TaskEntries {
 		entry.setState(newState);
 	}
 
-	private static StateChangeEntry createStateChangeEntry(TaskState state,
+	private StateChangeEntry createStateChangeEntry(TaskState state,
 			String reasonFormat, Object... reasonArgs) {
 		StateChangeEntry logEntry = TASK.createStateChangeEntry();
 		logEntry.setState(state);
@@ -86,7 +88,7 @@ public class TaskEntries {
 		return logEntry;
 	}
 
-	public static List<StateChangeEntry> getStateChangeEntries(TaskEntry entry) {
+	public List<StateChangeEntry> getStateChangeEntries(TaskEntry entry) {
 		if (!entry.isSetStateChangeLog()) {
 			entry.setStateChangeLog(TASK.createStateChangeLog());
 		}

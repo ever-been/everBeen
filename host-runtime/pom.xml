@@ -17,6 +17,12 @@
 			<artifactId>core-protocol</artifactId>
 			<version>3.0.0</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>software-repository-client</artifactId>
+			<version>3.0.0</version>
+		</dependency>
 
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>

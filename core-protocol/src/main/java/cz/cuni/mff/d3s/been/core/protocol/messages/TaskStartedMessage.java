@@ -8,4 +8,9 @@ public final class TaskStartedMessage extends BaseMessage {
 	 */
 	public String taskName;
 
+	public TaskStartedMessage(String senderId, String receiverId, String taskName) {
+		super(senderId, receiverId);
+		this.taskName = taskName;
+	}
+
 }

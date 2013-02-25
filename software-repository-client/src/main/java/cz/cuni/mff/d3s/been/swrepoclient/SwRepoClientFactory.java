@@ -2,7 +2,7 @@ package cz.cuni.mff.d3s.been.swrepoclient;
 
 import java.io.File;
 
-public final class SwRepoClientFactory {
+public class SwRepoClientFactory {
 	/** Name of the HTTP header that contains the identifier of a requested/uploaded Maven Artifact */
 	public static final String ARTIFACT_IDENTIFIER_HEADER_NAME = "Artifact-Identifier";
 	/** Name of the HTTP header that contains the identifier of a requested/uploaded BEEN package */

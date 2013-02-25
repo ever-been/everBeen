@@ -8,4 +8,9 @@ public final class TaskKilledMessage extends BaseMessage {
 	 */
 	public String taskName;
 
+	public TaskKilledMessage(String senderId, String recieverId, String taskName) {
+		super(senderId, recieverId);
+		this.taskName = taskName;
+	}
+
 }

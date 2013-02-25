@@ -19,4 +19,10 @@ public final class KillTaskMessage extends BaseMessage {
 	 */
 	public String taskName;
 
+	public KillTaskMessage(String senderId, String recieverId, String reason, String taskName) {
+		super(senderId, recieverId);
+		this.reason = reason;
+		this.taskName = taskName;
+	}
+
 }

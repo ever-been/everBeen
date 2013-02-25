@@ -14,4 +14,9 @@ public final class NodeTerminatedMessage extends BaseMessage {
 	 */
 	public String reason;
 
+	public NodeTerminatedMessage(String senderId, String recieverId, String reason) {
+		super(senderId, recieverId);
+		this.reason = reason;
+	}
+
 }
