@@ -8,4 +8,9 @@ public final class TaskFinishedMessage extends BaseMessage {
 	 */
 	public String taskName;
 
+	public TaskFinishedMessage(String senderId, String recieverId, String taskName) {
+		super(senderId, recieverId);
+		this.taskName = taskName;
+	}
+
 }

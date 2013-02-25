@@ -1,125 +1,148 @@
 package cz.cuni.mff.d3s.been.hostruntime;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
+import java.util.Arrays;
 
+import org.apache.maven.artifact.Artifact;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import cz.cuni.mff.d3s.been.core.protocol.messages.NodeRegisteredMessage;
-import cz.cuni.mff.d3s.been.core.protocol.messages.NodeTerminatedMessage;
-import cz.cuni.mff.d3s.been.core.protocol.messages.TaskFinishedMessage;
-import cz.cuni.mff.d3s.been.core.protocol.messages.TaskKilledMessage;
-import cz.cuni.mff.d3s.been.core.protocol.messages.TaskStartedMessage;
-import cz.cuni.mff.d3s.been.core.protocol.pojo.BaseNodeInfo.HostRuntimeNodeInfo;
+import cz.cuni.mff.d3s.been.bpk.Bpk;
+import cz.cuni.mff.d3s.been.bpk.BpkArtifact;
+import cz.cuni.mff.d3s.been.bpk.BpkArtifacts;
+import cz.cuni.mff.d3s.been.bpk.BpkConfiguration;
+import cz.cuni.mff.d3s.been.bpk.BpkDependencies;
+import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
+import cz.cuni.mff.d3s.been.bpk.BpkResolver;
+import cz.cuni.mff.d3s.been.bpk.JavaRuntime;
+import cz.cuni.mff.d3s.been.core.ServicesUtils;
+import cz.cuni.mff.d3s.been.core.TasksUtils;
+import cz.cuni.mff.d3s.been.core.protocol.messages.RunTaskMessage;
+import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
+import cz.cuni.mff.d3s.been.core.sri.SWRepositoryInfo;
+import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
+import cz.cuni.mff.d3s.been.core.task.TaskEntries;
+import cz.cuni.mff.d3s.been.core.task.TaskEntry;
+import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
+import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
 
 public class HostRuntimeTest extends Assert {
 
-	private String nodeId;
+	private HostRuntime hostRuntime; // tested class
 
-	private HostRuntime hostRuntime;
+	@Rule
+	public TemporaryFolder tmp = new TemporaryFolder();
+
+	@Mock
+	private SwRepoClientFactory swRepoClientFactory;
+
+	@Mock
+	private TasksUtils taskUtils;
+
+	@Mock
+	private TaskEntries taskEntries;
+
+	@Mock
+	private ServicesUtils servicesUtils;
+
+	@Mock
+	private BpkResolver bpkResolver;
+
+	@Mock
+	private ProcessExecutor processExecutor;
+
+	@Mock
+	private ZipFileUtil zipFileUtil;
+
+	private RuntimeInfo runtimeInfo = new RuntimeInfo();
 
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
-
-		nodeId = "node identifier";
-
-		hostRuntime = new HostRuntime(nodeId);
+		hostRuntime = new HostRuntime(taskUtils, taskEntries, servicesUtils, bpkResolver, runtimeInfo, swRepoClientFactory, zipFileUtil, processExecutor);
 	}
 
-	@Ignore("?")
 	@Test
-	public void testNodeInfoIsPassedToTaskRunnerInConstructor() throws Exception {
-		ArgumentCaptor<HostRuntimeNodeInfo> captor = ArgumentCaptor.forClass(HostRuntimeNodeInfo.class);
-		// TODO: FIXME:
-		// verify(taskRunner).setNodeInfo(captor.capture());
-		assertEquals(nodeId, captor.getValue().nodeId);
+	public void testRunTask() throws Exception {
+		// why method tryRunTask starts, it knows only taskId from recieved message
+		String taskId = "taskId";
+		RunTaskMessage message = new RunTaskMessage("senderId", "recieverId", taskId);
+
+		// it will find correspondent taskEntry in hazelcastMap
+		TaskEntry taskEntry = new TaskEntry();
+		taskEntry.setTaskDescriptor(new TaskDescriptor());
+		when(taskUtils.getTask(taskId)).thenReturn(taskEntry);
+
+		// then, we need to construct sw repository. first, we need to find host:port
+		SWRepositoryInfo swRepInfo = new SWRepositoryInfo();
+		swRepInfo.setHost("host");
+		swRepInfo.setHttpServerPort(123456789);
+		when(servicesUtils.getSWRepositoryInfo()).thenReturn(swRepInfo);
+
+		// and then get instance for this host:port
+		SwRepoClient swRepClient = mock(SwRepoClient.class);
+		when(swRepoClientFactory.getClient(swRepInfo.getHost(), swRepInfo.getHttpServerPort())).thenReturn(swRepClient);
+
+		// now we can download BPK from swrepository
+		Bpk bpk = new Bpk();
+		File bpkFile = tmp.newFile();
+		bpk.setFile(bpkFile);
+		when(swRepClient.getBpk(any(BpkIdentifier.class))).thenReturn(bpk);
+
+		// we downloaded BPK file with java runtime, so we need to resolve BPK and Maven-like artifact dependencies
+		BpkConfiguration bpkConfiguration = new BpkConfiguration();
+		JavaRuntime javaRuntime = new JavaRuntime();;
+		// FIXME BPK dependencies are not resolved yet
+		bpkConfiguration.setBpkDependencies(new BpkDependencies());
+		BpkArtifacts bpkArtifacts = new BpkArtifacts();
+		BpkArtifact bpkArtifact1 = new BpkArtifact();
+		bpkArtifact1.setGroupId("artifactGroupId1");
+		bpkArtifact1.setArtifactId("artifactArtifactId1");
+		bpkArtifact1.setVersion("artifactVersionId1");
+		BpkArtifact bpkArtifact2 = new BpkArtifact();
+		bpkArtifact2.setGroupId("artifactGroupId2");
+		bpkArtifact2.setArtifactId("artifactArtifactId2");
+		bpkArtifact2.setVersion("artifactVersionId2");
+		bpkArtifacts.getArtifact().addAll(Arrays.<BpkArtifact> asList(bpkArtifact1, bpkArtifact2));
+		javaRuntime.setBpkArtifacts(bpkArtifacts);
+		String jarFileExpectedName = "jarFileExpectedName";
+		javaRuntime.setJarFile(jarFileExpectedName);
+		bpkConfiguration.setRuntime(javaRuntime);
+		when(bpkResolver.resolve(bpkFile)).thenReturn(bpkConfiguration);
+
+		// and now we want to download all these artifacts
+		Artifact artifact1 = mock(Artifact.class);
+		Artifact artifact2 = mock(Artifact.class);
+		File artifactFile1 = tmp.newFile();
+		File artifactFile2 = tmp.newFile();
+		when(artifact1.getFile()).thenReturn(artifactFile1);
+		when(artifact2.getFile()).thenReturn(artifactFile2);
+		when(swRepClient.getArtifact(bpkArtifact1.getGroupId(), bpkArtifact1.getArtifactId(), bpkArtifact1.getVersion())).thenReturn(artifact1);
+		when(swRepClient.getArtifact(bpkArtifact2.getGroupId(), bpkArtifact2.getArtifactId(), bpkArtifact2.getVersion())).thenReturn(artifact2);
+
+		// if process is started , processExecutor should return this process as its return value
+		when(processExecutor.execute(anyString())).thenReturn(mock(Process.class));
+
+		// NOW RUN THE BEAST
+		hostRuntime.tryRunTask(message);
+
+		// If everything is correct, verify that the task process has been started with correct command line
+		ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+		verify(processExecutor).execute(captor.capture());
+		assertTrue(captor.getValue().contains("java -jar"));
+		assertTrue(captor.getValue().contains("/" + jarFileExpectedName));
+		assertTrue(captor.getValue().contains("-cp \"" + artifactFile1.getAbsolutePath() + ";" + artifactFile2.getAbsolutePath() + "\""));
 	}
-
-	@Ignore("?")
-	@Test
-	public void testListenersAreRegisteredOnNodeStart() throws Exception {
-		hostRuntime.start();
-
-		// TODO: FIXME:
-		// verify(messaging).addMessageListener(same(Context.GLOBAL_TOPIC),
-		// any(HostRuntimeMessageListener.class));
-	}
-
-	@Ignore("?")
-	@Test
-	public void testNodeInfoIsRegisteredOnNodeStart() throws Exception {
-		List<Object> list = new ArrayList<>();
-		// when(dataPersistence.getList(Context.NODE_INFO_LIST)).thenReturn(list);
-
-		hostRuntime.start();
-
-		assertEquals(((HostRuntimeNodeInfo) list.get(0)).nodeId, nodeId);
-	}
-
-	@Ignore("?")
-	@Test
-	public void testListenerRegisteredBeforeNodeInfoStoredOnNodeStart() throws Exception {
-		// Ordering is very important, because if we register new host runtime
-		// and someone send us some message immediately, we have to have
-		// prepared all message dispatchers/listeners already
-		@SuppressWarnings("unchecked")
-		List<Object> list = mock(List.class);
-		// when(dataPersistence.getList(Context.NODE_INFO_LIST)).thenReturn(list);
-
-		hostRuntime.start();
-
-		// InOrder inOrder = inOrder(messaging, list);
-		// inOrder.verify(messaging).addMessageListener(any(Context.class),
-		// any(HostRuntimeMessageListener.class));
-		// inOrder.verify(list).add(any(HostRuntimeNodeInfo.class));
-	}
-
-	@Ignore("?")
-	@Test
-	public void testSendingNodeRegisteredMessage() throws Exception {
-		NodeRegisteredMessage msg = new NodeRegisteredMessage();
-		// hostRuntime.sendNodeRegisteredMessage(msg);
-		// verify(messaging).send(Context.GLOBAL_TOPIC, msg);
-	}
-
-	@Ignore("?")
-	@Test
-	public void testSendingNodeTerminatedMessage() throws Exception {
-		NodeTerminatedMessage msg = new NodeTerminatedMessage();
-		// hostRuntime.sendNodeTerminatedMessage(msg);
-		// verify(messaging).send(Context.GLOBAL_TOPIC, msg);
-	}
-
-	@Ignore("?")
-	@Test
-	public void testSendingTaskStartedMessage() throws Exception {
-		TaskStartedMessage msg = new TaskStartedMessage();
-		hostRuntime.sendTaskStartedMessage(msg);
-		// verify(messaging).send(Context.GLOBAL_TOPIC, msg);
-	}
-
-	@Ignore("?")
-	@Test
-	public void testSendingTaskFinisheddMessage() throws Exception {
-		TaskFinishedMessage msg = new TaskFinishedMessage();
-		hostRuntime.sendTaskFinishedMessage(msg);
-		// verify(messaging).send(Context.GLOBAL_TOPIC, msg);
-	}
-
-	@Ignore("?")
-	@Test
-	public void testSendingTaskKilledMessage() throws Exception {
-		TaskKilledMessage msg = new TaskKilledMessage();
-		hostRuntime.sendTaskKilledMessage(msg);
-		// verify(messaging).send(Context.GLOBAL_TOPIC, msg);
-	}
-
 }

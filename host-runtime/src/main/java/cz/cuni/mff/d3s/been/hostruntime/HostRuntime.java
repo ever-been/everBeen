@@ -2,22 +2,20 @@ package cz.cuni.mff.d3s.been.hostruntime;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.xml.bind.JAXBException;
 
-import cz.cuni.mff.d3s.been.core.task.TaskEntries;
-import org.apache.commons.io.FileUtils;
+import org.apache.maven.artifact.Artifact;
 
+import cz.cuni.mff.d3s.been.bpk.Bpk;
+import cz.cuni.mff.d3s.been.bpk.BpkArtifact;
+import cz.cuni.mff.d3s.been.bpk.BpkArtifacts;
 import cz.cuni.mff.d3s.been.bpk.BpkConfiguration;
-import cz.cuni.mff.d3s.been.bpk.BpkDependencies;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.bpk.BpkResolver;
+import cz.cuni.mff.d3s.been.bpk.JavaRuntime;
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
 import cz.cuni.mff.d3s.been.core.JSONUtils.JSONSerializerException;
-import cz.cuni.mff.d3s.been.core.RuntimeInfoUtils;
 import cz.cuni.mff.d3s.been.core.RuntimesUtils;
 import cz.cuni.mff.d3s.been.core.ServicesUtils;
 import cz.cuni.mff.d3s.been.core.TasksUtils;
@@ -32,10 +30,21 @@ import cz.cuni.mff.d3s.been.core.protocol.messages.TaskStartedMessage;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.sri.SWRepositoryInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
+import cz.cuni.mff.d3s.been.core.task.TaskEntries;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
+import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
+import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
 
 /**
+ * 
+ * This is the main implementation of Host Runtime.
+ * 
+ * Host runtime is responsible for launching new tasks trigged by appropriate
+ * message. It is also responsible for operating with already running tasks on
+ * parent machine. Operation are as follows: killing tasks, allowing and
+ * supporting communication between tasks and results repository, allowing
+ * logging).
  * 
  * @author Tadeáš Palusga
  * 
@@ -48,18 +57,48 @@ final class HostRuntime implements IClusterService {
 	 */
 	private final RuntimeInfo hostRuntimeInfo;
 
+	/**
+	 * Translates relevant messages sent via Hazelcast into corresponding method
+	 * calls.
+	 */
 	private HostRuntimeMessageListener messageListener;
 
-	private RestBridgeListener restBridgeListener;
+	/**
+	 * Factory for creating {@link SwRepoClient} instances from real-time obtained
+	 * IP:port
+	 */
+	private final SwRepoClientFactory swRepoClientFactory;
+
+	private final TasksUtils tasksUtils;
+
+	private final TaskEntries taskEntries;
+
+	private final ServicesUtils servicesUtils;
+
+	private final BpkResolver bpkResolver;
+
+	private final ProcessExecutor procesExecutor;
+
+	private final ZipFileUtil zipFileUtil;
 
 	/**
 	 * Creates new {@link HostRuntime} with cluster-unique id.
 	 * 
+	 * @param swRepoClientFactory
+	 *          factory for creating {@link SwRepoClient} instances from real-time
+	 *          obtained IP and port
 	 * @param nodeId
-	 *            cluster-unique id of {@link HostRuntime} node
+	 *          cluster-unique id of {@link HostRuntime} node
 	 */
-	public HostRuntime(String nodeId) {
-		this.hostRuntimeInfo = RuntimeInfoUtils.newInfo(nodeId);
+	public HostRuntime(TasksUtils tasksUtils, TaskEntries tasksEntries, ServicesUtils servicesUtils, BpkResolver bpkResolver, RuntimeInfo hostRuntimeInfo, SwRepoClientFactory swRepoClientFactory, ZipFileUtil zipFileUtil, ProcessExecutor procesExecutor) {
+		this.tasksUtils = tasksUtils;
+		this.taskEntries = tasksEntries;
+		this.servicesUtils = servicesUtils;
+		this.hostRuntimeInfo = hostRuntimeInfo;
+		this.bpkResolver = bpkResolver;
+		this.swRepoClientFactory = swRepoClientFactory;
+		this.zipFileUtil = zipFileUtil;
+		this.procesExecutor = procesExecutor;
 	}
 
 	/**
@@ -89,21 +128,12 @@ final class HostRuntime implements IClusterService {
 	}
 
 	private void unregisterListeners() {
-		restBridgeListener.stop();
 		messageListener.stop();
 	}
 
 	private void registerListeners() {
 		messageListener = new HostRuntimeMessageListener(this);
-		restBridgeListener = new RestBridgeListener();
-
 		messageListener.start();
-
-		// TODO: unlike messageListener, here is race condition. But do we care?
-		// FIXME: Martin Sixta: please make your comments more descriptive -
-		// could
-		// you describe the race condition you mentioned please?
-		restBridgeListener.start();
 	}
 
 	/**
@@ -144,54 +174,25 @@ final class HostRuntime implements IClusterService {
 		return hostRuntimeInfo.getId();
 	}
 
-	private void sendMessage(final BaseMessage message) {
+	void sendMessage(final BaseMessage message) {
 		TopicUtils.publish(Context.GLOBAL_TOPIC.getName(), message);
 	}
 
-	// /**
-	// * SHOULD BE THREAD SAFE TODO verify if it is true :)
-	// */
-	// private final Map<String, Process> runningTasks = new
-	// ConcurrentHashMap<>();
+	void tryRunTask(RunTaskMessage message) {
+		String taskId = message.taskId;
+		TaskEntry taskEntry = tasksUtils.getTask(taskId);
+		taskEntries.setState(taskEntry, TaskState.ACCEPTED, "Task '%s' has been accepted by HR '%s'.", taskId, getNodeId());
 
-	public final boolean tryRunTask(final RunTaskMessage runTaskMessage) {
-		// THIS IS NOT REAL IMPLEMENTATION YET ..
-		String taskId = runTaskMessage.taskId;
-		TaskEntry task = TasksUtils.getTask(taskId);
-		TaskEntries.setState(task, TaskState.ACCEPTED, "Task will be run");
 		try {
+			TaskDescriptor descriptor = taskEntry.getTaskDescriptor();
+			SwRepoClient sRClient = createSRClient();
 
+			BpkIdentifier bpkMetaInfo = createBpkMetaInfo(descriptor);
 
-			// FIXME main block ot this method should be in one big try-catch block
-			// FIXME do not forget to update state later
-
-			TaskDescriptor descriptor = task.getTaskDescriptor();
-
-			SWRepositoryInfo swRepositoryInfo = ServicesUtils.getSWRepositoryInfo();
-			String httpHost = swRepositoryInfo.getHost();
-			int httpPort = swRepositoryInfo.getHttpServerPort();
-
-			// FIXME Radek Macha, Tadeas Palusga: Radek, where is the library
-			// for
-			// downloading packages from Software Repository you mentioned?
-
-			// FIXME Temporary solution ......................
-			String baseAddress = httpHost + ":" + httpPort + "/";
-
-			File bpkFile = null;
-			// FIXME Temporary solution ... do not use tmp folders and files
+			Bpk bpk = sRClient.getBpk(bpkMetaInfo);
+			BpkConfiguration resolvedConf = null;
 			try {
-				bpkFile = File.createTempFile(descriptor.getName(), ".bpk");
-				FileUtils.copyURLToFile(new URL(baseAddress + "bpk/" + descriptor.getName()), bpkFile);
-			} catch (Exception e) {
-				// TODO: handle exception
-				// return or rethrow .......
-			}
-
-			BpkConfiguration resolvedConfiguration = null;
-			try {
-				// bpkFile should exist here
-				resolvedConfiguration = BpkResolver.resolve(bpkFile);
+				resolvedConf = bpkResolver.resolve(bpk.getFile());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -200,106 +201,81 @@ final class HostRuntime implements IClusterService {
 				e.printStackTrace();
 			}
 
-			BpkDependencies dependencies = resolvedConfiguration.getBpkDependencies();
-			List<File> downloadedDependencies = new ArrayList<>();
-			for (BpkIdentifier dependency : dependencies.getDependency()) {
-				// FIXME Radek Macha: What is "bpkId" field on BpkDependency?
-				// where is the name of the BpkDependency?
-				File dependencyFile;
-				try {
-					dependencyFile = File.createTempFile(dependency.getBpkId(), ".bpk");
-					FileUtils.copyURLToFile(
-							new URL(baseAddress + "bpk/" + dependency.getBpkId() + "/" + dependency.getGroupId() + "/" + dependency.getVersion()),
-							dependencyFile);
-					downloadedDependencies.add(dependencyFile);
-				} catch (IOException e) {
-					// should rethrow or return on first erro
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+			//BpkDependencies deps = resolvedConf.getBpkDependencies();
+			//for (BpkIdentifier bpkIdentifier : deps.getDependency()) {
+			//	// ... zatim neuvazujeme zadne dalsi BPK zavislosti, pouze parenti BPK a ostatni
+			//}
+
+			String cmd = "";
+
+			if (resolvedConf.getRuntime() instanceof JavaRuntime) {
+				JavaRuntime runtime = (JavaRuntime) resolvedConf.getRuntime();
+				// fixme delete on exit
+				File tmpFolder = createTmpDir();
+				zipFileUtil.unzipToDir(bpk.getFile(), tmpFolder);
+
+				cmd += "java -jar " + new File(tmpFolder, runtime.getJarFile()).getAbsolutePath();
+
+				BpkArtifacts arts = runtime.getBpkArtifacts();
+				// toto jsou javovske (mavenovske) zavislosti
+
+				if (!arts.getArtifact().isEmpty()) {
+					cmd += " -cp \"";
+					boolean first = true;
+					for (BpkArtifact art : arts.getArtifact()) {
+						if (!first) {
+							cmd += ";";
+						}
+						Artifact artifact = sRClient.getArtifact(art.getGroupId(), art.getArtifactId(), art.getVersion());
+						cmd += artifact.getFile().getAbsolutePath();
+						first = false;
+					}
+					cmd += "\"";
 				}
 			}
+			// FIXME radek - kde vezmu zdrojaky pro sfuj BPK ? asi
 
-		} catch (Throwable e) {
-			TaskEntries.setState(task, TaskState.ABORTED, e.getMessage());
-			// TODO: handle exception
+			try {
+				Process proc = procesExecutor.execute(cmd);
+				taskEntries.setState(taskEntry, TaskState.RUNNING, "The task '%s' has been started on HR '%s'.", taskId, getNodeId());
+				proc.waitFor(); // FIXME ?? shoud=ld we handle exit codes?
+				taskEntries.setState(taskEntry, TaskState.FINISHED, "The task '%s' has been successfully finished on HR '%s'.", taskId, getNodeId());
+			} catch (IOException | InterruptedException e) {
+				taskEntries.setState(taskEntry, TaskState.ABORTED, "The task '%s' has been aborted on HR '%s' due to underlaying exception '%s'.", taskId, getNodeId(), e.getMessage());
+				e.printStackTrace();
+				// TODO Auto-generated catch block
+			}
+		} catch (Throwable t) {
+			taskEntries.setState(taskEntry, TaskState.ABORTED, "The task '%s' has been aborted on HR '%s' due to unexpected exception '%s'.", taskId, getNodeId(), t.getMessage());
 		}
-		TaskEntries.setState(task, TaskState.FINISHED, "Task has finished normally");
-
-		// if (runningTasks.containsKey(runTaskMessage.name)) {
-		// // already running ... FIXME
-		// return false;
-		// }
-		//
-		// Thread thread = new Thread() {
-		// public void run() {
-		// try {
-		// // 0. add tasks in node info
-		//
-		// // extract files from bpk
-		// // determine task type (java/python/shell)
-		// // determine main class and dependencies
-		// // download dependencies
-		// // determine classpath from downloaded deps
-		// // prepare JVM args
-		// // prepare TASK args
-		//
-		// // prepare log interface in separate thread (rest hazelcast
-		// // queue on exact ip:port)
-		//
-		// // ... HOW TO DO THIS WITHOUT DEPENDENCY ON HC?
-		//
-		// // ATOMIC OP START
-		// /*
-		// * 1. set running tasks in node info
-		// *
-		// * 2. start task in apache executor wrapped in special
-		// * thread ... define retry count and timeouts
-		// *
-		// * 3. after task finish, remove from running tasks in node
-		// * info
-		// *
-		// * 4. send task finished info
-		// */
-		// // ATOMIC OP END
-		//
-		// String pName = new String(runTaskMessage.name);
-		// Process p = Runtime.getRuntime().exec("sleep 1000");
-		// runningTasks.put(pName, p);
-		// Thread taskShutdownHook = createTaskShutdownHook(p);
-		// Runtime.getRuntime().addShutdownHook(taskShutdownHook);
-		// p.waitFor();
-		// Runtime.getRuntime().removeShutdownHook(taskShutdownHook);
-		// runningTasks.remove(pName);
-		// } catch (IOException | InterruptedException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		//
-		// }
-		//
-		// private Thread createTaskShutdownHook(final Process p) {
-		// return new Thread() {
-		// @Override
-		// public void run() {
-		// p.destroy();
-		// }
-		// };
-		// }
-		// };
-		// thread.start();
-		// return true;
-		return true;
+	}
+	private BpkIdentifier createBpkMetaInfo(TaskDescriptor descriptor) {
+		BpkIdentifier bpkMetaInfo = new BpkIdentifier();
+		bpkMetaInfo.setGroupId(descriptor.getGroupId());
+		bpkMetaInfo.setBpkId(descriptor.getBpkId());
+		bpkMetaInfo.setVersion(descriptor.getVersion());
+		return bpkMetaInfo;
 	}
 
-	public final void killTask(final KillTaskMessage message) {
-		// Process p = runningTasks.get(message.taskName);
-		// try {
-		// p.destroy();
-		// } catch (Exception e) {
-		// // TODO: handle exception
-		// e.printStackTrace();
-		// }
-		// runningTasks.remove(message.taskName);
+	private SwRepoClient createSRClient() {
+		SWRepositoryInfo swRepositoryInfo = servicesUtils.getSWRepositoryInfo();
+
+		String host = swRepositoryInfo.getHost();
+		int port = swRepositoryInfo.getHttpServerPort();
+
+		SwRepoClient swRepoClient = swRepoClientFactory.getClient(host, port);
+		return swRepoClient;
+	}
+
+	void killTask(KillTaskMessage message) {
+		//FIXME
+	}
+
+	private File createTmpDir() throws IOException {
+		File file = File.createTempFile("unpacked", "bpk");
+		file.delete();
+		file.mkdir();
+		return file;
 	}
 
 }

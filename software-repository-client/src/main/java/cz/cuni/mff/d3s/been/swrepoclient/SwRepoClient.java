@@ -39,6 +39,7 @@ public interface SwRepoClient {
 	 * 
 	 *            The BPK, or <code>null</code> if it could not be retrieved
 	 */
+	// FIXME By my opinion this class should throws exception with corresponding description instead of returning NULL values... same in other methods
 	public Bpk getBpk(BpkIdentifier bpkMetaInfo);
 
 	/**

@@ -25,10 +25,10 @@ public class RuntimeInfoUtils {
 	 * Creates new {@link RuntimeInfo} and initializes all possible values.
 	 * 
 	 * @param id
-	 *            cluster-unique id of parent HostRuntime
+	 *          cluster-unique id of parent HostRuntime
 	 * @return initialized RuntimeInfo
 	 */
-	public static RuntimeInfo newInfo(String id) {
+	public RuntimeInfo newInfo(String id) {
 		RuntimeInfo ri = Factory.RUNTIME.createRuntimeInfo();
 
 		ri.setId(id);
@@ -49,12 +49,12 @@ public class RuntimeInfoUtils {
 	 * Serializes {@link RuntimeInfo} instance to XML string.
 	 * 
 	 * @param info
-	 *            to be serialized
+	 *          to be serialized
 	 * @return XML representation of given {@link RuntimeInfo}
 	 * @throws IllegalArgumentException
-	 *             when given {@link RuntimeInfo} cannot be converted.
+	 *           when given {@link RuntimeInfo} cannot be converted.
 	 */
-	public static String toXml(RuntimeInfo info) throws IllegalArgumentException {
+	public String toXml(RuntimeInfo info) throws IllegalArgumentException {
 
 		// TODO: better exception handling
 		StringWriter sw = new StringWriter();

@@ -74,9 +74,9 @@
 	</xs:simpleType>
 	
 	<xs:attributeGroup name="taskDescriptorAttrGroup">
-		<xs:attribute name="taskId" type="common:IDStringRelaxed" use="required"/>
-		<xs:attribute name="contextId" type="common:IDStringRelaxed" use="required"/>
-		<xs:attribute name="treeAddress" type="common:TreeAddressString" use="required"/>
+		<xs:attribute name="groupId" type="common:IDStringRelaxed" use="required"/>
+		<xs:attribute name="bpkId" type="common:IDStringRelaxed" use="required"/>
+		<xs:attribute name="version" type="common:IDStringRelaxed" use="required"/>
 		<xs:attribute name="name" type="common:IDStringRelaxed" use="optional" default="_NO_NAME_"/>
 		<xs:attribute name="description" type="xs:string" use="optional" default=""/>
 		<xs:attribute name="exclusive" type="td:ExclusiveString" use="optional" default="non-exclusive"/>

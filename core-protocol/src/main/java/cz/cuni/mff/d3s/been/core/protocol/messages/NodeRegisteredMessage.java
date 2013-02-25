@@ -9,4 +9,8 @@ package cz.cuni.mff.d3s.been.core.protocol.messages;
 @SuppressWarnings("serial")
 public final class NodeRegisteredMessage extends BaseMessage {
 
+	public NodeRegisteredMessage(String senderId, String recieverId) {
+		super(senderId, recieverId);
+	}
+
 }

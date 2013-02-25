@@ -1,6 +1,5 @@
 package cz.cuni.mff.d3s.been.core.protocol.messages;
 
-
 @SuppressWarnings("serial")
 public final class GetDependencyMessage extends BaseMessage {
 
@@ -8,5 +7,10 @@ public final class GetDependencyMessage extends BaseMessage {
 	 * fill relative path to dependency stored in software repository
 	 */
 	public String fullName;
+
+	public GetDependencyMessage(String senderId, String recieverId, String fullName) {
+		super(senderId, recieverId);
+		this.fullName = fullName;
+	}
 
 }

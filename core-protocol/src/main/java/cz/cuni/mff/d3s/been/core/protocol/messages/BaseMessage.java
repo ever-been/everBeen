@@ -9,4 +9,9 @@ public abstract class BaseMessage implements Serializable {
 
 	public String recieverId;
 
+	public BaseMessage(String senderId, String recieverId) {
+		this.recieverId = senderId;
+		this.recieverId = recieverId;
+	}
+
 }
