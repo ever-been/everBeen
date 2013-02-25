@@ -14,6 +14,13 @@ import cz.cuni.mff.d3s.been.core.sri.SWRepositoryInfo;
  */
 public class ServicesUtils {
 
+	private ClusterContext clusterCtx;
+
+	ServicesUtils(ClusterContext clusterCtx) {
+		// package private visibility prevents out-of-package instantiation
+		this.clusterCtx = clusterCtx;
+	}
+
 	/**
 	 * @return {@link SWRepositoryInfo} of registered
 	 *         {@link SoftwareRepositoryNodeInfo} Repository or null if Software
@@ -29,22 +36,11 @@ public class ServicesUtils {
 		}
 	}
 
-	public void storeSWRepositoryInfo(SWRepositoryInfo swRepositoryInfo) {
-		// FIXME Radek Macha:
-		// getServicesMap().put(Names.SWREPOSITORY_SERVICES_MAP_KEY, swRepositoryInfo)
-	}
-
-	public void removeSWRepositoryInfo() {
-		// FIXME Radek Macha:
-		// something like
-		// getServicesMap().remove(Names.SWREPOSITORY_SERVICES_MAP_KEY)
-	}
-
 	/**
 	 * @return modifiable map of all registered Services.
 	 */
 	private IMap<String, Object> getServicesMap() {
-		return MapUtils.getMap(Names.SERVICES_MAP_NAME);
+		return clusterCtx.getMap(Names.SERVICES_MAP_NAME);
 	}
 
 }
