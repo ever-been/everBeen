@@ -17,30 +17,149 @@
 
     <xs:complexType name="cpu">
         <xs:sequence>
-            <xs:element name="vendor" type="xs:string" />
-            <xs:element name="model" type="xs:string" />
-            <xs:element name="mhz" type="xs:int" />
-            <xs:element name="cacheSize" type="xs:long" />
+            <xs:element name="vendor" type="xs:string">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <jaxb:property>
+                            <jaxb:javadoc>Vendor name of the CPU.</jaxb:javadoc>
+                        </jaxb:property>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="model" type="xs:string">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <jaxb:property>
+                            <jaxb:javadoc>Model of the CPU.</jaxb:javadoc>
+                        </jaxb:property>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="mhz" type="xs:int">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <jaxb:property>
+                            <jaxb:javadoc>Frequency of the CPU in MHz.</jaxb:javadoc>
+                        </jaxb:property>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="cacheSize" type="xs:long">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <jaxb:property>
+                            <jaxb:javadoc>Size of L2 cache of the CPU in KiB.</jaxb:javadoc>
+                        </jaxb:property>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="networkInterface">
         <xs:sequence>
-            <xs:element name="name" type="xs:string" />
-            <xs:element name="hwaddr" type="xs:string" />
-            <xs:element name="type" type="xs:string" />
-            <xs:element name="mtu" type="xs:long" />
-            <xs:element name="address" type="xs:string" />
-            <xs:element name="netmask" type="xs:string" />
-            <xs:element name="broadcast" type="xs:string" />
+            <xs:element name="name" type="xs:string">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <jaxb:property>
+                            <jaxb:javadoc>Name of the network interface.</jaxb:javadoc>
+                        </jaxb:property>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="hwaddr" type="xs:string">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <jaxb:property>
+                            <jaxb:javadoc>Hardware address (MAC) of the interface.</jaxb:javadoc>
+                        </jaxb:property>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="type" type="xs:string">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <jaxb:property>
+                            <jaxb:javadoc>Type of the interface (e.g. Ethernet).</jaxb:javadoc>
+                        </jaxb:property>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="mtu" type="xs:long">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <jaxb:property>
+                            <jaxb:javadoc>MTU (maximal transmission unit) of the interface in bytes.</jaxb:javadoc>
+                        </jaxb:property>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="address" type="xs:string">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <jaxb:property>
+                            <jaxb:javadoc>IP address.</jaxb:javadoc>
+                        </jaxb:property>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="netmask" type="xs:string">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <jaxb:property>
+                            <jaxb:javadoc>Network mask (e.g. 255.255.255.0).</jaxb:javadoc>
+                        </jaxb:property>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="broadcast" type="xs:string">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <jaxb:property>
+                            <jaxb:javadoc>Broadcast IP address.</jaxb:javadoc>
+                        </jaxb:property>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="memory">
+        <xs:sequence>
+            <xs:element name="ram" type="xs:long">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <jaxb:property>
+                            <jaxb:javadoc>Size of RAM memory in bytes.</jaxb:javadoc>
+                        </jaxb:property>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="swap" type="xs:long">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <jaxb:property>
+                            <jaxb:javadoc>Size of swap space in bytes.</jaxb:javadoc>
+                        </jaxb:property>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
         </xs:sequence>
     </xs:complexType>
 
     <xs:element name="hardware">
+        <xs:annotation>
+            <xs:appinfo>
+                <jaxb:class>
+                    <jaxb:javadoc>Hardware description of the current machine.</jaxb:javadoc>
+                </jaxb:class>
+            </xs:appinfo>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="cpu" type="cpu" minOccurs="0" maxOccurs="unbounded" />
                 <xs:element name="networkInterface" type="networkInterface" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="memory" type="memory" minOccurs="1" maxOccurs="1" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>

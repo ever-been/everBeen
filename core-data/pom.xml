@@ -237,7 +237,7 @@
                         <configuration>
                             <arguments></arguments>
                             <schemaDirectory>${project.basedir}/src/main/resources/xsd</schemaDirectory>
-                            <staleFile>${project.build.directory}/jaxb2/.tdXjcStaleFlag</staleFile>
+                            <staleFile>${project.build.directory}/jaxb2/.hwiXjcStaleFlag</staleFile>
                             <clearOutputDir>false</clearOutputDir>
                             <schemaFiles>hardwareinfo.xsd, common.xsd</schemaFiles>
                             <packageName>cz.cuni.mff.d3s.been.core.hwi</packageName>

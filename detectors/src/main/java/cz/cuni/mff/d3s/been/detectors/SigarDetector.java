@@ -8,14 +8,12 @@ import java.nio.file.Path;
 
 import cz.cuni.mff.d3s.been.core.hwi.Cpu;
 import cz.cuni.mff.d3s.been.core.hwi.Hardware;
+import cz.cuni.mff.d3s.been.core.hwi.Memory;
 import cz.cuni.mff.d3s.been.core.hwi.NetworkInterface;
 import org.apache.commons.io.IOUtils;
 import org.hyperic.jni.ArchLoader;
 import org.hyperic.jni.ArchNotSupportedException;
-import org.hyperic.sigar.CpuInfo;
-import org.hyperic.sigar.NetInterfaceConfig;
-import org.hyperic.sigar.Sigar;
-import org.hyperic.sigar.SigarException;
+import org.hyperic.sigar.*;
 
 /**
  * Created with IntelliJ IDEA. User: Kuba Date: 24.02.13 Time: 13:46 To change
@@ -54,7 +52,7 @@ public class SigarDetector {
 						Files.delete(filePath);
 						Files.delete(dirPath);
 					} catch (IOException e) {
-						e.printStackTrace(); // TODO
+						e.printStackTrace();
 					}
 				}
 			});
@@ -86,6 +84,13 @@ public class SigarDetector {
             cpu.setCacheSize(i.getCacheSize());
             hw.getCpu().add(cpu);
         }
+
+        Mem mem = sigar.getMem();
+        Swap swap = sigar.getSwap();
+
+        hw.setMemory(new Memory());
+        hw.getMemory().setRam(mem.getTotal());
+        hw.getMemory().setSwap(swap.getTotal());
 
         for (String s : sigar.getNetInterfaceList()) {
             NetInterfaceConfig c = sigar.getNetInterfaceConfig(s);
