@@ -16,23 +16,25 @@ public class RuntimeInfos {
 		// prevents instantiation
 	}
 
-	public static String toXml(RuntimeInfo value) {
-		BindingComposer<RuntimeInfo> composer = null;
-		StringWriter writer = null;
+    /**
+     * Serializes {@link RuntimeInfo} instance to XML string.
+     *
+     * @param value
+     *          to be serialized
+     * @return XML representation of given {@link RuntimeInfo}
+     * @throws IllegalArgumentException
+     *           when given {@link RuntimeInfo} cannot be converted.
+     */
+	public static String toXml(RuntimeInfo value) throws IllegalArgumentException {
 		try {
-			composer = XSD.RUNTIME.createComposer(RuntimeInfo.class);
-
-			writer = new StringWriter();
-
+            BindingComposer<RuntimeInfo> composer = XSD.RUNTIME.createComposer(RuntimeInfo.class);
+			StringWriter writer = new StringWriter();
 			composer.compose(value, writer);
 
+            return writer.toString();
 		} catch (SAXException | JAXBException e) {
-			e.printStackTrace();
-			return "";
+            throw new IllegalArgumentException(String.format("Cannot serialize %s instance to XML", RuntimeInfo.class.getName()), e);
 		}
-
-		return writer.toString();
-
 	}
 
 }

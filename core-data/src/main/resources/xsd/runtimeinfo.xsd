@@ -6,6 +6,7 @@
 		elementFormDefault="unqualified"
 		attributeFormDefault="unqualified"
 		xmlns:runtimeinfo="http://been.d3s.mff.cuni.cz/runtimeinfo"
+        xmlns:hardwareinfo="http://been.d3s.mff.cuni.cz/hardwareinfo"
 		xmlns:xs="http://www.w3.org/2001/XMLSchema"
 		xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
 		xmlns:common="http://been.d3s.mff.cuni.cz/common"
@@ -14,18 +15,7 @@
 		jaxb:version="2.0">
 
 	<xs:import schemaLocation="common.xsd" namespace="http://been.d3s.mff.cuni.cz/common"/>
-
-	<xs:element name="name" type="xs:string">
-		<xs:annotation>
-			<xs:appinfo>
-				<jaxb:property>
-					<jaxb:javadoc>
-Name of this HostRuntime
-					</jaxb:javadoc>
-				</jaxb:property>
-			</xs:appinfo>
-		</xs:annotation>
-	</xs:element>
+    <xs:import schemaLocation="hardwareinfo.xsd" namespace="http://been.d3s.mff.cuni.cz/hardwareinfo"/>
 
 	<xs:element name="id" type="xs:string">
 		<xs:annotation>
@@ -63,42 +53,6 @@ Host(IP/FQDN) on which the hazelcast instance for this HostRuntime is running.
 		</xs:annotation>
 	</xs:element>
 
-	<xs:element name="os" type="xs:string">
-		<xs:annotation>
-			<xs:appinfo>
-				<jaxb:property>
-					<jaxb:javadoc>
-Stores information about OS.
-					</jaxb:javadoc>
-				</jaxb:property>
-			</xs:appinfo>
-		</xs:annotation>
-	</xs:element>
-	
-	<xs:element name="memory" type="common:positiveLong">
-		<xs:annotation>
-			<xs:appinfo>
-				<jaxb:property>
-					<jaxb:javadoc>
-Stores amount of available memory.
-					</jaxb:javadoc>
-				</jaxb:property>
-			</xs:appinfo>
-		</xs:annotation>
-	</xs:element>
-
-	<xs:element name="cpu" type="xs:string">
-		<xs:annotation>
-			<xs:appinfo>
-				<jaxb:property>
-					<jaxb:javadoc>
-Stores information about CPU.
-					</jaxb:javadoc>
-				</jaxb:property>
-			</xs:appinfo>
-		</xs:annotation>
-	</xs:element>
-
 	<xs:complexType name="java">
 		<xs:annotation>
 			<xs:appinfo>
@@ -112,6 +66,11 @@ A Java object stores information about vendor and version of JRE on target HostR
 		<xs:all>
 			<xs:element name="version" type="xs:string"/>
 			<xs:element name="vendor" type="xs:string"/>
+            <xs:element name="runtimeName" type="xs:string"/>
+            <xs:element name="VMVersion" type="xs:string"/>
+            <xs:element name="VMVendor" type="xs:string"/>
+            <xs:element name="runtimeVersion" type="xs:string"/>
+            <xs:element name="specificationVersion" type="xs:string"/>
 		</xs:all>
 	</xs:complexType>
 
@@ -128,16 +87,12 @@ Stores basic information about HostRuntime (name/id/host/port/os/memory/java ver
 		</xs:annotation>
 		<xs:complexType>
 			<xs:all>
-				<xs:element ref="runtimeinfo:name" minOccurs="0" maxOccurs="1" />
-				<xs:element ref="runtimeinfo:id" minOccurs="0" maxOccurs="1" />
-				<xs:element ref="runtimeinfo:port" minOccurs="0" maxOccurs="1" />
-				<xs:element ref="runtimeinfo:host" minOccurs="0" maxOccurs="1" />
+				<xs:element ref="runtimeinfo:id" minOccurs="1" maxOccurs="1" />
+				<xs:element ref="runtimeinfo:port" minOccurs="1" maxOccurs="1" />
+				<xs:element ref="runtimeinfo:host" minOccurs="1" maxOccurs="1" />
 
-				<!-- just a hint ... -->
-				<xs:element ref="runtimeinfo:os" minOccurs="0" maxOccurs="1"/>
-				<xs:element ref="runtimeinfo:memory" minOccurs="0" maxOccurs="1"/>
-				<xs:element ref="runtimeinfo:cpu" minOccurs="0" maxOccurs="1"/>
-				<xs:element name="javaInfo" type="runtimeinfo:java" minOccurs="0" maxOccurs="1" />
+                <xs:element ref="hardwareinfo:hardware" minOccurs="1" maxOccurs="1" />
+				<xs:element name="java" type="runtimeinfo:java" minOccurs="0" maxOccurs="1" />
 
 			</xs:all>
 		</xs:complexType>

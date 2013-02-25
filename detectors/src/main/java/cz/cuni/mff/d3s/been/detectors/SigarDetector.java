@@ -6,10 +6,10 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import cz.cuni.mff.d3s.been.core.hwi.Cpu;
-import cz.cuni.mff.d3s.been.core.hwi.Hardware;
-import cz.cuni.mff.d3s.been.core.hwi.Memory;
-import cz.cuni.mff.d3s.been.core.hwi.NetworkInterface;
+import cz.cuni.mff.d3s.been.core.ri.Cpu;
+import cz.cuni.mff.d3s.been.core.ri.Hardware;
+import cz.cuni.mff.d3s.been.core.ri.Memory;
+import cz.cuni.mff.d3s.been.core.ri.NetworkInterface;
 import org.apache.commons.io.IOUtils;
 import org.hyperic.jni.ArchLoader;
 import org.hyperic.jni.ArchNotSupportedException;
@@ -61,52 +61,54 @@ public class SigarDetector {
 
 			sigar = new Sigar();
 
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ArchNotSupportedException e) {
-			e.printStackTrace();
+		} catch (IOException | ArchNotSupportedException e) {
+			// cannot load sigar native lib, continue
 		}
-	}
+    }
 
-	public Hardware detectHardware() throws SigarException {
-		loadSigar();
+	public Hardware detectHardware() {
+        try {
+            loadSigar();
 
-		if (sigar == null)
-			return null;
+            if (sigar == null)
+                return null;
 
-        Hardware hw = new Hardware();
+            Hardware hw = new Hardware();
 
-        for (CpuInfo i : sigar.getCpuInfoList()) {
-            Cpu cpu = new Cpu();
-            cpu.setVendor(i.getVendor());
-            cpu.setModel(i.getModel());
-            cpu.setMhz(i.getMhz());
-            cpu.setCacheSize(i.getCacheSize());
-            hw.getCpu().add(cpu);
+            for (CpuInfo i : sigar.getCpuInfoList()) {
+                Cpu cpu = new Cpu();
+                cpu.setVendor(i.getVendor());
+                cpu.setModel(i.getModel());
+                cpu.setMhz(i.getMhz());
+                cpu.setCacheSize(i.getCacheSize());
+                hw.getCpu().add(cpu);
+            }
+
+            Mem mem = sigar.getMem();
+            Swap swap = sigar.getSwap();
+
+            hw.setMemory(new Memory());
+            hw.getMemory().setRam(mem.getTotal());
+            hw.getMemory().setSwap(swap.getTotal());
+
+            for (String s : sigar.getNetInterfaceList()) {
+                NetInterfaceConfig c = sigar.getNetInterfaceConfig(s);
+
+                NetworkInterface networkInterface = new NetworkInterface();
+                networkInterface.setName(c.getName());
+                networkInterface.setHwaddr(c.getHwaddr());
+                networkInterface.setType(c.getType());
+                networkInterface.setMtu(c.getMtu());
+                networkInterface.setAddress(c.getAddress());
+                networkInterface.setNetmask(c.getNetmask());
+                networkInterface.setBroadcast(c.getBroadcast());
+
+                hw.getNetworkInterface().add(networkInterface);
+            }
+
+            return hw;
+        } catch (SigarException e) {
+            return null;
         }
-
-        Mem mem = sigar.getMem();
-        Swap swap = sigar.getSwap();
-
-        hw.setMemory(new Memory());
-        hw.getMemory().setRam(mem.getTotal());
-        hw.getMemory().setSwap(swap.getTotal());
-
-        for (String s : sigar.getNetInterfaceList()) {
-            NetInterfaceConfig c = sigar.getNetInterfaceConfig(s);
-
-            NetworkInterface networkInterface = new NetworkInterface();
-            networkInterface.setName(c.getName());
-            networkInterface.setHwaddr(c.getHwaddr());
-            networkInterface.setType(c.getType());
-            networkInterface.setMtu(c.getMtu());
-            networkInterface.setAddress(c.getAddress());
-            networkInterface.setNetmask(c.getNetmask());
-            networkInterface.setBroadcast(c.getBroadcast());
-
-            hw.getNetworkInterface().add(networkInterface);
-        }
-
-		return hw;
 	}
 }

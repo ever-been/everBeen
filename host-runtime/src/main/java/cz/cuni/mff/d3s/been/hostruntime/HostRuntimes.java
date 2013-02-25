@@ -6,8 +6,8 @@ import java.util.UUID;
 import com.hazelcast.core.HazelcastInstance;
 
 import cz.cuni.mff.d3s.been.core.ClusterContext;
-import cz.cuni.mff.d3s.been.core.RuntimeInfoUtils;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
+import cz.cuni.mff.d3s.been.detectors.Detector;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
 
 /**
@@ -25,18 +25,36 @@ public class HostRuntimes {
 	 * @param hazelcastInstance
 	 * @return
 	 */
-	public static synchronized HostRuntime getRuntime(
-			HazelcastInstance hazelcastInstance) {
+	public static synchronized HostRuntime getRuntime(HazelcastInstance hazelcastInstance) {
 		if (hostRuntime == null) {
-			RuntimeInfoUtils runtimeInfoUtils = new RuntimeInfoUtils();
-			// FIXME Tadeas - temporary situated to /tmp/hostRuntime ... figure out later
-			File cepositoryCacheFolder = new File("/tmp/hostRuntime");
-			SwRepoClientFactory swRepoClientFactory = new SwRepoClientFactory(cepositoryCacheFolder);
-			String nodeId = UUID.randomUUID().toString();
-			RuntimeInfo info = runtimeInfoUtils.newInfo(nodeId);
-			ClusterContext clusterContext = new ClusterContext(hazelcastInstance);
+            ClusterContext clusterContext = new ClusterContext(hazelcastInstance);
+            // FIXME Tadeas - temporary situated to /tmp/hostRuntime ... figure out later
+            File cepositoryCacheFolder = new File("/tmp/hostRuntime");
+            SwRepoClientFactory swRepoClientFactory = new SwRepoClientFactory(cepositoryCacheFolder);
+
+			RuntimeInfo info = newRuntimeInfo(clusterContext);
 			hostRuntime = new HostRuntime(clusterContext, swRepoClientFactory, info);
 		}
 		return hostRuntime;
 	}
+
+    /**
+     * Creates new {@link RuntimeInfo} and initializes all possible values.
+     *
+     * @return initialized RuntimeInfo
+     */
+    public static RuntimeInfo newRuntimeInfo(ClusterContext clusterContext) {
+        RuntimeInfo ri = new RuntimeInfo();
+
+        String nodeId = UUID.randomUUID().toString();
+        ri.setId(nodeId);
+
+        ri.setPort(clusterContext.getPort());
+        ri.setHost(clusterContext.getHostName());
+
+        Detector detector = new Detector();
+        detector.detectAll(ri);
+
+        return ri;
+    }
 }

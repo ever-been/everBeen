@@ -1,8 +1,7 @@
 package cz.cuni.mff.d3s.been.detectors;
 
-import cz.cuni.mff.d3s.been.core.hwi.Hardware;
+import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import org.apache.commons.jxpath.JXPathContext;
-import org.hyperic.sigar.SigarException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -17,29 +16,27 @@ import javax.xml.bind.Marshaller;
  */
 public class DetectorRunner {
     public static void main(String[] args) {
-        SigarDetector detector = new SigarDetector();
+        RuntimeInfo ri = new RuntimeInfo();
+        ri.setId("FAKE ID");
+        ri.setHost("localhost");
+        ri.setPort(0);
 
-        // get HW info
-        Hardware hw = null;
-        try {
-            hw = detector.detectHardware();
-        } catch (SigarException e) {
-            e.printStackTrace();
-        }
+        Detector detector = new Detector();
+        detector.detectAll(ri);
 
         // show example XML output
         try {
-            JAXBContext context = JAXBContext.newInstance(Hardware.class);
+            JAXBContext context = JAXBContext.newInstance(RuntimeInfo.class);
             Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.marshal(hw, System.out);
+            marshaller.marshal(ri, System.out);
         } catch (JAXBException e) {
             e.printStackTrace();
         }
 
         // try some XPaths
-        JXPathContext context = JXPathContext.newContext(hw);
-        System.out.println(context.getValue("cpu/vendor"));
-        System.out.println(context.getValue("networkInterface[name='en0']/mtu"));
+        JXPathContext context = JXPathContext.newContext(ri);
+        System.out.println(context.getValue("//cpu/vendor"));
+        System.out.println(context.getValue("//networkInterface[name='en0']/mtu"));
     }
 }
