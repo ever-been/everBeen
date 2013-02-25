@@ -1,6 +1,12 @@
 package cz.cuni.mff.d3s.been.swrepository;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
+import cz.cuni.mff.d3s.been.core.ClusterUtils;
+import cz.cuni.mff.d3s.been.core.Names;
+import cz.cuni.mff.d3s.been.core.sri.SWRepositoryInfo;
 import cz.cuni.mff.d3s.been.swrepository.httpserver.HttpServer;
 
 /**
@@ -14,36 +20,51 @@ public class SoftwareRepository implements IClusterService {
 
 	private HttpServer httpServer;
 	private DataStore dataStore;
+	private SWRepositoryInfo info;
 
-	SoftwareRepository() {
-	}
-	
+	SoftwareRepository() {}
+
 	/**
 	 * Initialize the repository. HTTP server and data store must be set.
 	 */
 	public void init() {
-		httpServer.getResolver().register("/bpk*",
-				new BpkRequestHandler(dataStore));
-		httpServer.getResolver().register("/artifact*",
-				new ArtifactRequestHandler(dataStore));
+		httpServer.getResolver().register("/bpk*", new BpkRequestHandler(dataStore));
+		httpServer.getResolver().register("/artifact*", new ArtifactRequestHandler(dataStore));
 	}
 
 	@Override
 	public void start() {
+		if (httpServer == null) {
+			// TODO don't start
+			return;
+		}
+		if (dataStore == null) {
+			// TODO don't start
+			return;
+		}
+		info = new SWRepositoryInfo();
+		try {
+			info.setHost(InetAddress.getLocalHost().getHostAddress());
+		} catch (UnknownHostException e) {
+			// TODO don't start
+			return;
+		}
+		info.setHttpServerPort(httpServer.getPort());
 		httpServer.start();
+		ClusterUtils.registerService(Names.SWREPOSITORY_SERVICES_MAP_KEY, info);
 	}
-	
+
 	@Override
 	public void stop() {
-		// TODO Auto-generated method stub
-		
+		ClusterUtils.unregisterService(Names.SWREPOSITORY_SERVICES_MAP_KEY);
+		httpServer.stop();
 	}
 
 	/**
 	 * Set the HTTP server
 	 * 
 	 * @param httpServer
-	 *            HTTP server to set
+	 *          HTTP server to set
 	 */
 	public void setHttpServer(HttpServer httpServer) {
 		this.httpServer = httpServer;
@@ -53,7 +74,7 @@ public class SoftwareRepository implements IClusterService {
 	 * Set the persistence layer
 	 * 
 	 * @param dataStore
-	 *            Data store to set
+	 *          Data store to set
 	 */
 	public void setDataStore(DataStore dataStore) {
 		this.dataStore = dataStore;

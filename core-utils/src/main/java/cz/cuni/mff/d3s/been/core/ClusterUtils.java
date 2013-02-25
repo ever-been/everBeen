@@ -1,11 +1,21 @@
 package cz.cuni.mff.d3s.been.core;
 
-import com.hazelcast.core.*;
-
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
+
+import com.hazelcast.core.AtomicNumber;
+import com.hazelcast.core.ClientService;
+import com.hazelcast.core.Cluster;
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.IList;
+import com.hazelcast.core.IMap;
+import com.hazelcast.core.IQueue;
+import com.hazelcast.core.ITopic;
+import com.hazelcast.core.Instance;
+import com.hazelcast.core.Member;
+import com.hazelcast.core.Transaction;
 
 /**
  * @author Martin Sixta
@@ -13,7 +23,7 @@ import java.util.Set;
 public class ClusterUtils {
 
 	public static HazelcastInstance getInstance() {
-		  return cz.cuni.mff.d3s.been.cluster.Instance.getInstance();
+		return cz.cuni.mff.d3s.been.cluster.Instance.getInstance();
 	}
 
 	public static Set<Member> getMembers() {
@@ -21,7 +31,6 @@ public class ClusterUtils {
 		return getInstance().getCluster().getMembers();
 
 	}
-
 
 	public static String getId() {
 		return getLocalMember().getUuid();
@@ -39,7 +48,6 @@ public class ClusterUtils {
 	public static InetSocketAddress getInetSocketAddress() {
 		return getLocalMember().getInetSocketAddress();
 	}
-
 
 	public static Member getLocalMember() {
 		return getCluster().getLocalMember();
@@ -81,10 +89,11 @@ public class ClusterUtils {
 		return getInstance().getInstances();
 	}
 
-	public static Collection<Instance> getInstances(Instance.InstanceType instanceType) {
+	public static Collection<Instance> getInstances(
+			Instance.InstanceType instanceType) {
 		Collection<Instance> instances = new ArrayList<>();
 
-		for (Instance instance: getInstances()) {
+		for (Instance instance : getInstances()) {
 			if (instance.getInstanceType() == instanceType) {
 				instances.add(instance);
 			}
@@ -93,7 +102,8 @@ public class ClusterUtils {
 		return instances;
 	}
 
-	public static boolean containsInstance(Instance.InstanceType instanceType, String name) {
+	public static boolean containsInstance(Instance.InstanceType instanceType,
+			String name) {
 
 		for (Instance instance : getInstances(instanceType)) {
 			boolean isName = instance.getId().toString().endsWith(":" + name);
@@ -105,5 +115,12 @@ public class ClusterUtils {
 		return false;
 	}
 
+	public static void registerService(String serviceName, Object serviceInfo) {
+		getMap(Names.SERVICES_MAP_NAME).put(serviceName, serviceInfo);
+	}
+
+	public static void unregisterService(String serviceName) {
+		getMap(Names.SERVICES_MAP_NAME).remove(serviceName);
+	}
 
 }

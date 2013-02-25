@@ -1,6 +1,7 @@
 package cz.cuni.mff.d3s.been.swrepository.httpserver;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -29,8 +30,10 @@ public class HttpServer {
 
 	/** Class logger */
 	private static final Logger log = LoggerFactory.getLogger(HttpServer.class);
+	private static final int MAX_CONNECTIONS = 50;
 
 	private final int port;
+	private final InetAddress inetAddr;
 	private final HttpRequestHandlerRegistry handlerResolver;
 	private final HttpParams params;
 
@@ -40,12 +43,31 @@ public class HttpServer {
 	 * Create an HTTP server on a host/port
 	 * 
 	 * @param port
-	 *            Port on which the server listens
+	 *          Port on which the server listens
 	 */
-	public HttpServer(final int port) {
+	public HttpServer(final InetAddress inetAddr, final int port) {
+		this.inetAddr = inetAddr;
 		this.port = port;
 		this.handlerResolver = new HttpRequestHandlerRegistry();
 		this.params = new BasicHttpParams();
+	}
+
+	/**
+	 * Get the port registered by this server.
+	 * 
+	 * @return The port no
+	 */
+	public int getPort() {
+		return port;
+	}
+
+	/**
+	 * Get the host registered by this server.
+	 * 
+	 * @return The registered {@link InetAddress}
+	 */
+	public InetAddress getHost() {
+		return inetAddr;
 	}
 
 	/**
@@ -57,14 +79,10 @@ public class HttpServer {
 		HttpProcessor httpProc = new BasicHttpProcessor();
 
 		// TODO initialize the sub-services;
-		HttpService httpService = new HttpService(httpProc,
-				new DefaultConnectionReuseStrategy(),
-				new DefaultHttpResponseFactory(), handlerResolver, params);
+		HttpService httpService = new HttpService(httpProc, new DefaultConnectionReuseStrategy(), new DefaultHttpResponseFactory(), handlerResolver, params);
 
-		log.debug(String.format(
-				"Running listener thread on port %d with params %s", port,
-				params.toString()));
-		listenerThread = new ListenerThread(httpService, port, params);
+		log.debug(String.format("Running listener thread on port %d with params %s", port, params.toString()));
+		listenerThread = new ListenerThread(httpService, inetAddr, port, params);
 		listenerThread.start();
 	}
 
@@ -74,7 +92,6 @@ public class HttpServer {
 	 * @throws HttpServerException
 	 */
 	public void stop() throws HttpServerException {
-		// TODO find a way to close the serversocket
 		listenerThread.interrupt();
 	}
 
@@ -98,18 +115,19 @@ public class HttpServer {
 
 	private static class ListenerThread extends Thread {
 
-		private static final Logger log = LoggerFactory
-				.getLogger(ListenerThread.class);
+		private static final Logger log = LoggerFactory.getLogger(ListenerThread.class);
 
 		private final HttpService service;
 		private final HttpContext context;
 		private final int port;
+		private final InetAddress inetAddr;
 		private final HttpParams params;
 
-		ListenerThread(HttpService service, int port, HttpParams params) {
+		ListenerThread(HttpService service, InetAddress inetAddr, int port, HttpParams params) {
 			this.service = service;
 			this.context = new BasicHttpContext();
 			this.port = port;
+			this.inetAddr = inetAddr;
 			this.params = params;
 		}
 
@@ -119,16 +137,13 @@ public class HttpServer {
 
 			ServerSocket serverSocket;
 			try {
-				serverSocket = new ServerSocket(port);
+				serverSocket = new ServerSocket(port, MAX_CONNECTIONS, inetAddr);
 			} catch (IOException e) {
-				log.error(String.format(
-						"Unable to bind server socket on port %d - %s", port,
-						e.getMessage()));
+				log.error(String.format("Unable to bind server socket on port %d - %s", port, e.getMessage()));
 				return;
 			}
 
-			log.info(String.format("Listener thread bound to socket %s",
-					serverSocket.toString()));
+			log.info(String.format("Listener thread bound to socket %s", serverSocket.toString()));
 
 			Socket socket;
 			while (!Thread.interrupted()) {
@@ -136,9 +151,7 @@ public class HttpServer {
 				try {
 					socket = serverSocket.accept();
 				} catch (IOException e) {
-					log.error(String.format(
-							"Failed to accept incoming socket connection - %s",
-							e.getMessage()));
+					log.error(String.format("Failed to accept incoming socket connection - %s", e.getMessage()));
 					continue;
 				}
 
@@ -146,31 +159,30 @@ public class HttpServer {
 				try {
 					connection.bind(socket, params);
 				} catch (IOException e) {
-					log.error(String.format(
-							"Failed to bind incoming connection %s - %s",
-							connection.toString(), e.getMessage()));
+					log.error(String.format("Failed to bind incoming connection %s - %s", connection.toString(), e.getMessage()));
 					continue;
 				}
 
 				try {
 					service.handleRequest(connection, context);
 				} catch (HttpException e) {
-					log.error("Could not process incoming connection %s - %s",
-							connection.toString(), e.getMessage());
+					log.error("Could not process incoming connection %s - %s", connection.toString(), e.getMessage());
 					continue;
 				} catch (IOException e) {
-					log.error(String.format(
-							"I/O error when processing incoming connection %s - %s",
-							connection.toString(), e.getMessage()));
+					log.error(String.format("I/O error when processing incoming connection %s - %s", connection.toString(), e.getMessage()));
 					continue;
+				}
+				try {
+					connection.close();
+				} catch (IOException e) {
+					log.error(String.format("Leaked connection %s when attempting release after handling request", connection.toString()));
 				}
 				log.debug("Request processed.");
 			}
 
 			try {
 				serverSocket.close();
-				log.info(String.format("Socket %s released, listener is down.",
-						serverSocket.toString()));
+				log.info(String.format("Socket %s released, listener is down.", serverSocket.toString()));
 			} catch (IOException e) {
 				log.error(String.format("Failed to close listener socket - %s"));
 			}

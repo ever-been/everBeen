@@ -32,8 +32,7 @@ import cz.cuni.mff.d3s.been.util.CopyStream;
 
 class HttpSwRepoClient implements SwRepoClient {
 	/** HTTP implementation specific log for the sw repo client */
-	private static final Logger log = LoggerFactory
-			.getLogger(HttpSwRepoClient.class);
+	private static final Logger log = LoggerFactory.getLogger(HttpSwRepoClient.class);
 
 	/** Hostname where the software repository resides */
 	private final String hostname;
@@ -46,8 +45,7 @@ class HttpSwRepoClient implements SwRepoClient {
 	}
 
 	@Override
-	public Artifact getArtifact(String groupId, String artifactId,
-			String version) {
+	public Artifact getArtifact(String groupId, String artifactId, String version) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -58,18 +56,13 @@ class HttpSwRepoClient implements SwRepoClient {
 		try {
 			request = new HttpGet(createRepoUri() + "/bpk");
 		} catch (URISyntaxException e) {
-			log.error(String
-					.format("Failed to retrieve BKP %s - unable to synthesize get request URI",
-							bpkIdentifier.toString()));
+			log.error(String.format("Failed to retrieve BKP %s - unable to synthesize get request URI", bpkIdentifier.toString()));
 			return null;
 		}
 		try {
-			request.addHeader(SwRepoClientFactory.BPK_IDENTIFIER_HEADER_NAME,
-					JSONUtils.serialize(bpkIdentifier));
+			request.addHeader(SwRepoClientFactory.BPK_IDENTIFIER_HEADER_NAME, JSONUtils.serialize(bpkIdentifier));
 		} catch (JSONSerializerException e) {
-			log.error(String
-					.format("Failed to retrieve BPK %s - unable to serialize BPK identifier into request header",
-							bpkIdentifier.toString()));
+			log.error(String.format("Failed to retrieve BPK %s - unable to serialize BPK identifier into request header", bpkIdentifier.toString()));
 		}
 
 		HttpClient httpCli = new DefaultHttpClient();
@@ -77,22 +70,15 @@ class HttpSwRepoClient implements SwRepoClient {
 		try {
 			response = httpCli.execute(request);
 		} catch (ClientProtocolException e) {
-			log.error(String
-					.format("Failed to retrieve BKP %s - unable to synthesize get request URI",
-							bpkIdentifier.toString()));
+			log.error(String.format("Failed to retrieve BKP %s - unable to synthesize get request URI", bpkIdentifier.toString()));
 			return null;
 		} catch (IOException e) {
-			log.error(String
-					.format("Failed to retrieve BKP %s - I/O error or connection re-set",
-							bpkIdentifier.toString()));
+			log.error(String.format("Failed to retrieve BKP %s - I/O error or connection re-set", bpkIdentifier.toString()));
 			return null;
 		}
 
 		if (response.getStatusLine().getStatusCode() / 100 != 2) {
-			log.error(String.format(
-					"Failed to retrieve BPK %s - server refusal: \"%s\"",
-					bpkIdentifier.toString(), response.getStatusLine()
-							.getReasonPhrase()));
+			log.error(String.format("Failed to retrieve BPK %s - server refusal: \"%s\"", bpkIdentifier.toString(), response.getStatusLine().getReasonPhrase()));
 			return null;
 		}
 
@@ -100,28 +86,21 @@ class HttpSwRepoClient implements SwRepoClient {
 		try {
 			is = response.getEntity().getContent();
 		} catch (IOException e) {
-			log.error(String
-					.format("Failed to retrieve BKP %s - error opening SW repo response for reading",
-							bpkIdentifier.toString()));
+			log.error(String.format("Failed to retrieve BKP %s - error opening SW repo response for reading", bpkIdentifier.toString()));
 			return null;
 		}
 
 		OutputStream os = null;
 		File tempFile = null;
 		try {
-			tempFile = File
-					.createTempFile("repo_bpk", bpkIdentifier.getBpkId());
+			tempFile = File.createTempFile("repo_bpk", bpkIdentifier.getBpkId());
 			os = new FileOutputStream(tempFile);
 		} catch (IOException e) {
-			log.error(String
-					.format("Failed to retrieve BKP %s - error opening temp file for writing",
-							bpkIdentifier.toString()));
+			log.error(String.format("Failed to retrieve BKP %s - error opening temp file for writing", bpkIdentifier.toString()));
 			try {
 				is.close();
 			} catch (IOException ee) {
-				log.error(String
-						.format("Leaked stream descriptor to SW repo HTTP response for BPK %s",
-								bpkIdentifier.toString()));
+				log.error(String.format("Leaked stream descriptor to SW repo HTTP response for BPK %s", bpkIdentifier.toString()));
 			}
 			return null;
 		}
@@ -130,23 +109,17 @@ class HttpSwRepoClient implements SwRepoClient {
 		try {
 			copy.copy();
 		} catch (IOException e) {
-			log.error(String
-					.format("Failed to retrieve BKP %s - error dumping response content to local file",
-							bpkIdentifier.toString()));
+			log.error(String.format("Failed to retrieve BKP %s - error dumping response content to local file", bpkIdentifier.toString()));
 			try {
 				is.close();
 			} catch (IOException ee) {
-				log.error(String
-						.format("Leaked stream descriptor to SW repo HTTP response for BPK %s",
-								bpkIdentifier.toString()));
+				log.error(String.format("Leaked stream descriptor to SW repo HTTP response for BPK %s", bpkIdentifier.toString()));
 			}
 
 			try {
 				os.close();
 			} catch (IOException ee) {
-				log.error(String.format(
-						"Leaked stream descriptor to temp file for BPK %s",
-						bpkIdentifier.toString()));
+				log.error(String.format("Leaked stream descriptor to temp file for BPK %s", bpkIdentifier.toString()));
 			}
 		}
 
@@ -179,34 +152,25 @@ class HttpSwRepoClient implements SwRepoClient {
 		try {
 			request = new HttpPut(createRepoUri() + "/bpk");
 		} catch (URISyntaxException e) {
-			log.error(String
-					.format("Failed to upload BPK %s to repository - URI synthesis error.",
-							bpkMetaInfo.toString()));
+			log.error(String.format("Failed to upload BPK %s to repository - URI synthesis error.", bpkMetaInfo.toString()));
 			return false;
 		}
 
 		try {
-			request.setHeader(SwRepoClientFactory.BPK_IDENTIFIER_HEADER_NAME,
-					JSONUtils.serialize(bpkMetaInfo));
+			request.setHeader(SwRepoClientFactory.BPK_IDENTIFIER_HEADER_NAME, JSONUtils.serialize(bpkMetaInfo));
 		} catch (JSONSerializerException e) {
-			log.error(String
-					.format("Failed to upload BPK %s to repository - Identifier serialization error.",
-							bpkMetaInfo.toString()));
+			log.error(String.format("Failed to upload BPK %s to repository - Identifier serialization error.", bpkMetaInfo.toString()));
 			return false;
 		}
 
 		InputStream sentFileStream = null;
 		try {
-			sentFileStream = new BufferedInputStream(new FileInputStream(
-					bpkFile));
+			sentFileStream = new BufferedInputStream(new FileInputStream(bpkFile));
 		} catch (IOException e) {
-			log.error(String
-					.format("Failed to upload BPK %s to repository - error reading file %s",
-							bpkMetaInfo.toString(), bpkFile.getAbsolutePath()));
+			log.error(String.format("Failed to upload BPK %s to repository - error reading file %s", bpkMetaInfo.toString(), bpkFile.getAbsolutePath()));
 			return false;
 		}
-		InputStreamEntity sentEntity = new InputStreamEntity(sentFileStream,
-				bpkFile.length());
+		InputStreamEntity sentEntity = new InputStreamEntity(sentFileStream, bpkFile.length());
 		request.setEntity(sentEntity);
 
 		HttpClient cli = new DefaultHttpClient();
@@ -214,22 +178,15 @@ class HttpSwRepoClient implements SwRepoClient {
 		try {
 			response = cli.execute(request);
 		} catch (ClientProtocolException e) {
-			log.error(String
-					.format("Failed to upload BPK %s - transport protocol error: \"%s\"",
-							bpkMetaInfo.toString(), e.getMessage()));
+			log.error(String.format("Failed to upload BPK %s - transport protocol error: \"%s\"", bpkMetaInfo.toString(), e.getMessage()));
 			return false;
 		} catch (IOException e) {
-			log.error(String.format(
-					"Failed to upload BPK %s - transport I/O error: \"%s\"",
-					bpkMetaInfo.toString(), e.getMessage()));
+			log.error(String.format("Failed to upload BPK %s - transport I/O error: \"%s\"", bpkMetaInfo.toString(), e.getMessage()));
 			return false;
 		}
 
 		if ((response.getStatusLine().getStatusCode() / 100) != 2) {
-			log.error(String.format(
-					"Failed to upload BPK %s - server error: \"%s\"",
-					bpkMetaInfo.toString(), response.getStatusLine()
-							.getReasonPhrase()));
+			log.error(String.format("Failed to upload BPK %s - server error: \"%s\"", bpkMetaInfo.toString(), response.getStatusLine().getReasonPhrase()));
 			return false;
 		} else {
 			return true;
