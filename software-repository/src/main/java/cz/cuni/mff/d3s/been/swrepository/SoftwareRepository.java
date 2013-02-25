@@ -4,7 +4,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
-import cz.cuni.mff.d3s.been.core.ClusterUtils;
+import cz.cuni.mff.d3s.been.core.ClusterContext;
 import cz.cuni.mff.d3s.been.core.Names;
 import cz.cuni.mff.d3s.been.core.sri.SWRepositoryInfo;
 import cz.cuni.mff.d3s.been.swrepository.httpserver.HttpServer;
@@ -21,8 +21,11 @@ public class SoftwareRepository implements IClusterService {
 	private HttpServer httpServer;
 	private DataStore dataStore;
 	private SWRepositoryInfo info;
+	private final ClusterContext clusterCtx;
 
-	SoftwareRepository() {}
+	SoftwareRepository(ClusterContext clusterCtx) {
+		this.clusterCtx = clusterCtx;
+	}
 
 	/**
 	 * Initialize the repository. HTTP server and data store must be set.
@@ -51,12 +54,12 @@ public class SoftwareRepository implements IClusterService {
 		}
 		info.setHttpServerPort(httpServer.getPort());
 		httpServer.start();
-		ClusterUtils.registerService(Names.SWREPOSITORY_SERVICES_MAP_KEY, info);
+		clusterCtx.registerService(Names.SWREPOSITORY_SERVICES_MAP_KEY, info);
 	}
 
 	@Override
 	public void stop() {
-		ClusterUtils.unregisterService(Names.SWREPOSITORY_SERVICES_MAP_KEY);
+		clusterCtx.unregisterService(Names.SWREPOSITORY_SERVICES_MAP_KEY);
 		httpServer.stop();
 	}
 

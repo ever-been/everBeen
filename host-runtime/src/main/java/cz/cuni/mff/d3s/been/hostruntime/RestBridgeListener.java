@@ -7,7 +7,7 @@ import com.hazelcast.core.ItemListener;
 import com.hazelcast.impl.ascii.rest.RestValue;
 
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
-import cz.cuni.mff.d3s.been.core.ClusterUtils;
+import cz.cuni.mff.d3s.been.core.ClusterContext;
 import cz.cuni.mff.d3s.been.core.JSONUtils;
 import cz.cuni.mff.d3s.been.core.protocol.Context;
 import cz.cuni.mff.d3s.been.core.protocol.messages.BaseMessage;
@@ -25,9 +25,9 @@ final class RestBridgeListener implements ItemListener<RestValue>, IClusterServi
 	final IQueue<RestValue> restQueue;
 	final ITopic<BaseMessage> globalTopic;
 
-	public RestBridgeListener() {
-		restQueue = ClusterUtils.getQueue(Context.GLOBAL_TOPIC_BRIDGE.getName());
-		globalTopic = ClusterUtils.getTopic(Context.GLOBAL_TOPIC.getName());
+	public RestBridgeListener(ClusterContext clusterCtx) {
+		restQueue = clusterCtx.getQueue(Context.GLOBAL_TOPIC_BRIDGE.getName());
+		globalTopic = clusterCtx.getTopic(Context.GLOBAL_TOPIC.getName());
 	}
 
 	@Override

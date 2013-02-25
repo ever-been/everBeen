@@ -6,10 +6,10 @@ import jline.console.ConsoleReader;
 
 import com.hazelcast.core.Instance;
 
-import cz.cuni.mff.d3s.been.core.ClusterUtils;
-import cz.cuni.mff.d3s.been.core.RuntimesUtils;
-import cz.cuni.mff.d3s.been.core.TasksUtils;
+import cz.cuni.mff.d3s.been.core.ClusterContext;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
+import cz.cuni.mff.d3s.been.core.runtime.RuntimeInfos;
+import cz.cuni.mff.d3s.been.core.task.TaskEntries;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 
 /**
@@ -17,7 +17,7 @@ import cz.cuni.mff.d3s.been.core.task.TaskEntry;
  */
 class ClusterMode extends AbstractMode {
 
-	private final TasksUtils tasksUtils;
+	private final ClusterContext clusterContext;
 
 	private enum Action {
 		TASKS, RUNTIMES, BREAK, INSTANCES;
@@ -37,9 +37,9 @@ class ClusterMode extends AbstractMode {
 
 	}
 
-	public ClusterMode(ConsoleReader reader, TasksUtils tasksUtils) {
+	public ClusterMode(ConsoleReader reader, ClusterContext clusterContext) {
 		super(reader, "> ", getActionStrings());
-		this.tasksUtils = tasksUtils;
+		this.clusterContext = clusterContext;
 
 	}
 
@@ -72,18 +72,18 @@ class ClusterMode extends AbstractMode {
 
 	private void handleRuntimes(String[] args) {
 		if (args.length == 1) {
-			Collection<RuntimeInfo> runtimes = RuntimesUtils.getRuntimes();
+			Collection<RuntimeInfo> runtimes = clusterContext.getRuntimesUtils().getRuntimes();
 			for (RuntimeInfo runtime : runtimes) {
-				out.println(RuntimesUtils.toXml(runtime));
+				out.println(RuntimeInfos.toXml(runtime));
 			}
 		}
 	}
 
 	private void handleTasks(String[] args) {
 		if (args.length == 1) {
-			Collection<TaskEntry> entries = tasksUtils.getTasks();
+			Collection<TaskEntry> entries = clusterContext.getTasksUtils().getTasks();
 			for (TaskEntry entry : entries) {
-				out.println(tasksUtils.toXml(entry));
+				out.println(TaskEntries.toXml(entry));
 			}
 		}
 	}
@@ -102,9 +102,9 @@ class ClusterMode extends AbstractMode {
 
 		Collection<Instance> instances;
 		if (instanceType == null) {
-			instances = ClusterUtils.getInstances();
+			instances = clusterContext.getInstances();
 		} else {
-			instances = ClusterUtils.getInstances(instanceType);
+			instances = clusterContext.getInstances(instanceType);
 		}
 
 		for (Instance instance : instances) {
@@ -127,7 +127,7 @@ class ClusterMode extends AbstractMode {
 	}
 
 	private void printInstances(Instance.InstanceType instanceType) {
-		Collection<Instance> instances = ClusterUtils.getInstance().getInstances();
+		Collection<Instance> instances = clusterContext.getInstance().getInstances();
 		for (Instance instance : instances) {
 			if (instanceType == null || instance.getInstanceType() == instanceType) {
 				out.printf("%s [%s]\n", instance.getInstanceType().toString(), instance.getId());

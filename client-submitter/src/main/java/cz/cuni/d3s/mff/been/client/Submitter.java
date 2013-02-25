@@ -11,12 +11,11 @@ import com.hazelcast.client.HazelcastClient;
 
 import cz.cuni.mff.d3s.been.cluster.Instance;
 import cz.cuni.mff.d3s.been.cluster.NodeType;
-import cz.cuni.mff.d3s.been.core.TasksUtils;
+import cz.cuni.mff.d3s.been.core.ClusterContext;
 import cz.cuni.mff.d3s.been.core.jaxb.BindingComposer;
 import cz.cuni.mff.d3s.been.core.jaxb.BindingParser;
 import cz.cuni.mff.d3s.been.core.jaxb.XSD;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
-import cz.cuni.mff.d3s.been.core.task.TaskEntries;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 
 /**
@@ -51,16 +50,14 @@ public class Submitter {
 	@Option(name = "-pe", aliases = { "--print-entry" }, usage = "Print the created Task Entry")
 	private boolean printEntry = false;
 
-	private TasksUtils taskUtils;
+	private ClusterContext clusterContext;
 
 	public static void main(String[] args) {
-		TaskEntries taskEntries = new TaskEntries();
-		TasksUtils taskUtils = new TasksUtils(taskEntries);
-		new Submitter(taskUtils).doMain(args);
+		new Submitter(new ClusterContext(cz.cuni.mff.d3s.been.cluster.Instance.getInstance())).doMain(args);
 	}
 
-	public Submitter(TasksUtils taskUtils) {
-		this.taskUtils = taskUtils;
+	public Submitter(ClusterContext clusterContext) {
+		this.clusterContext = clusterContext;
 	}
 
 	private void doMain(String[] args) {
@@ -97,12 +94,12 @@ public class Submitter {
 			Instance.registerInstance(hazelcastClient, NodeType.NATIVE);
 
 			// submit
-			String taskId = taskUtils.submit(td);
+			String taskId = clusterContext.getTasksUtils().submit(td);
 
 			System.out.println("Task was submitter with id: " + taskId);
 
 			if (printEntry) {
-				TaskEntry entry = taskUtils.getTask(taskId);
+				TaskEntry entry = clusterContext.getTasksUtils().getTask(taskId);
 
 				BindingComposer<TaskEntry> composer = XSD.TASKENTRY.createComposer(TaskEntry.class);
 				composer.compose(entry, System.out);

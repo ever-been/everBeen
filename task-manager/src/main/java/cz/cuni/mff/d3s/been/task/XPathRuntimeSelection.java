@@ -1,22 +1,25 @@
 package cz.cuni.mff.d3s.been.task;
 
+import java.util.Collection;
+import java.util.Random;
+
 import com.hazelcast.query.Predicate;
-import cz.cuni.mff.d3s.been.core.RuntimesUtils;
+
+import cz.cuni.mff.d3s.been.core.ClusterContext;
 import cz.cuni.mff.d3s.been.core.query.XPathPredicate;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
-
-import java.util.Collection;
-import java.util.Random;
 
 /**
  * @author Martin Sixta
  */
 final class XPathRuntimeSelection implements IRuntimeSelection {
 	private final Random rnd;
+	private ClusterContext clusterCtx;
 
-	public XPathRuntimeSelection() {
+	public XPathRuntimeSelection(ClusterContext clusterCtx) {
+		this.clusterCtx = clusterCtx;
 		rnd = new Random();
 	}
 
@@ -31,10 +34,9 @@ final class XPathRuntimeSelection implements IRuntimeSelection {
 			xpath = "/";
 		}
 
+		Predicate<?, ?> predicate = new XPathPredicate(xpath);
 
-		Predicate predicate = new XPathPredicate(xpath);
-
-		Collection<RuntimeInfo> infos = RuntimesUtils.getRuntimeMap().values(predicate);
+		Collection<RuntimeInfo> infos = clusterCtx.getRuntimesUtils().getRuntimeMap().values(predicate);
 
 		if (infos.size() == 0) {
 			throw new NoRuntimeFoundException();
@@ -42,7 +44,6 @@ final class XPathRuntimeSelection implements IRuntimeSelection {
 
 		// Stupid Java
 		RuntimeInfo[] ids = infos.toArray(new RuntimeInfo[infos.size()]);
-
 
 		return (ids[rnd.nextInt(ids.length)].getId());
 	}

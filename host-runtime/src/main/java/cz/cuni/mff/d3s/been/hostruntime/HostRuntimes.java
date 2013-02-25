@@ -5,12 +5,9 @@ import java.util.UUID;
 
 import com.hazelcast.core.HazelcastInstance;
 
-import cz.cuni.mff.d3s.been.bpk.BpkResolver;
+import cz.cuni.mff.d3s.been.core.ClusterContext;
 import cz.cuni.mff.d3s.been.core.RuntimeInfoUtils;
-import cz.cuni.mff.d3s.been.core.ServicesUtils;
-import cz.cuni.mff.d3s.been.core.TasksUtils;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
-import cz.cuni.mff.d3s.been.core.task.TaskEntries;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
 
 /**
@@ -31,19 +28,14 @@ public class HostRuntimes {
 	public static synchronized HostRuntime getRuntime(
 			HazelcastInstance hazelcastInstance) {
 		if (hostRuntime == null) {
-
-			TaskEntries taskEntries = new TaskEntries();
-			TasksUtils tasksUtils = new TasksUtils(taskEntries);
 			RuntimeInfoUtils runtimeInfoUtils = new RuntimeInfoUtils();
-			ServicesUtils servicesUtils = new ServicesUtils();
-			ProcessExecutor processExecutor = new ProcessExecutor();
-			BpkResolver bpkResolver = new BpkResolver();
+			// FIXME Tadeas - temporary situated to /tmp/hostRuntime ... figure out later
 			File cepositoryCacheFolder = new File("/tmp/hostRuntime");
-			SwRepoClientFactory swRepoClientFactory = new SwRepoClientFactory(cepositoryCacheFolder);// FIXME Tadeas - temporary situated to /tmp/hostRuntime ... figure out later
+			SwRepoClientFactory swRepoClientFactory = new SwRepoClientFactory(cepositoryCacheFolder);
 			String nodeId = UUID.randomUUID().toString();
 			RuntimeInfo info = runtimeInfoUtils.newInfo(nodeId);
-			ZipFileUtil zipFileUtil = new ZipFileUtil();
-			hostRuntime = new HostRuntime(tasksUtils, taskEntries, servicesUtils, bpkResolver, info, swRepoClientFactory, zipFileUtil, processExecutor);
+			ClusterContext clusterContext = new ClusterContext(hazelcastInstance);
+			hostRuntime = new HostRuntime(clusterContext, swRepoClientFactory, info);
 		}
 		return hostRuntime;
 	}

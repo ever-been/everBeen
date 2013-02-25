@@ -15,11 +15,8 @@ import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.bpk.BpkResolver;
 import cz.cuni.mff.d3s.been.bpk.JavaRuntime;
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
+import cz.cuni.mff.d3s.been.core.ClusterContext;
 import cz.cuni.mff.d3s.been.core.JSONUtils.JSONSerializerException;
-import cz.cuni.mff.d3s.been.core.RuntimesUtils;
-import cz.cuni.mff.d3s.been.core.ServicesUtils;
-import cz.cuni.mff.d3s.been.core.TasksUtils;
-import cz.cuni.mff.d3s.been.core.TopicUtils;
 import cz.cuni.mff.d3s.been.core.protocol.Context;
 import cz.cuni.mff.d3s.been.core.protocol.messages.BaseMessage;
 import cz.cuni.mff.d3s.been.core.protocol.messages.KillTaskMessage;
@@ -49,7 +46,7 @@ import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
  * @author Tadeáš Palusga
  * 
  */
-final class HostRuntime implements IClusterService {
+class HostRuntime implements IClusterService {
 
 	/**
 	 * Stores basic information (name, id, host, port, OS, memory, Java) about
@@ -69,17 +66,7 @@ final class HostRuntime implements IClusterService {
 	 */
 	private final SwRepoClientFactory swRepoClientFactory;
 
-	private final TasksUtils tasksUtils;
-
-	private final TaskEntries taskEntries;
-
-	private final ServicesUtils servicesUtils;
-
-	private final BpkResolver bpkResolver;
-
-	private final ProcessExecutor procesExecutor;
-
-	private final ZipFileUtil zipFileUtil;
+	private final ClusterContext clusterContext;
 
 	/**
 	 * Creates new {@link HostRuntime} with cluster-unique id.
@@ -90,15 +77,10 @@ final class HostRuntime implements IClusterService {
 	 * @param nodeId
 	 *          cluster-unique id of {@link HostRuntime} node
 	 */
-	public HostRuntime(TasksUtils tasksUtils, TaskEntries tasksEntries, ServicesUtils servicesUtils, BpkResolver bpkResolver, RuntimeInfo hostRuntimeInfo, SwRepoClientFactory swRepoClientFactory, ZipFileUtil zipFileUtil, ProcessExecutor procesExecutor) {
-		this.tasksUtils = tasksUtils;
-		this.taskEntries = tasksEntries;
-		this.servicesUtils = servicesUtils;
+	public HostRuntime(ClusterContext clusterContext, SwRepoClientFactory swRepoClientFactory, RuntimeInfo hostRuntimeInfo) {
+		this.clusterContext = clusterContext;
 		this.hostRuntimeInfo = hostRuntimeInfo;
-		this.bpkResolver = bpkResolver;
 		this.swRepoClientFactory = swRepoClientFactory;
-		this.zipFileUtil = zipFileUtil;
-		this.procesExecutor = procesExecutor;
 	}
 
 	/**
@@ -132,7 +114,7 @@ final class HostRuntime implements IClusterService {
 	}
 
 	private void registerListeners() {
-		messageListener = new HostRuntimeMessageListener(this);
+		messageListener = new HostRuntimeMessageListener(this, clusterContext);
 		messageListener.start();
 	}
 
@@ -140,14 +122,14 @@ final class HostRuntime implements IClusterService {
 	 * Stores {@link RuntimeInfo} (created in constructor) in cluster.
 	 */
 	private void registerHostRuntime() {
-		RuntimesUtils.storeRuntimeInfo(hostRuntimeInfo);
+		clusterContext.getRuntimesUtils().storeRuntimeInfo(hostRuntimeInfo);
 	}
 
 	/**
 	 * Removes {@link RuntimeInfo} (created in constructor) from cluster.
 	 */
 	private void unregisterHostRuntime() {
-		RuntimesUtils.removeRuntimeInfo(hostRuntimeInfo.getId());
+		clusterContext.getRuntimesUtils().removeRuntimeInfo(hostRuntimeInfo.getId());
 	}
 
 	void sendTaskStartedMessage(TaskStartedMessage message) throws JSONSerializerException {
@@ -175,13 +157,13 @@ final class HostRuntime implements IClusterService {
 	}
 
 	void sendMessage(final BaseMessage message) {
-		TopicUtils.publish(Context.GLOBAL_TOPIC.getName(), message);
+		clusterContext.getTopicUtils().publish(Context.GLOBAL_TOPIC.getName(), message);
 	}
 
 	void tryRunTask(RunTaskMessage message) {
 		String taskId = message.taskId;
-		TaskEntry taskEntry = tasksUtils.getTask(taskId);
-		taskEntries.setState(taskEntry, TaskState.ACCEPTED, "Task '%s' has been accepted by HR '%s'.", taskId, getNodeId());
+		TaskEntry taskEntry = clusterContext.getTasksUtils().getTask(taskId);
+		TaskEntries.setState(taskEntry, TaskState.ACCEPTED, "Task '%s' has been accepted by HR '%s'.", taskId, getNodeId());
 
 		try {
 			TaskDescriptor descriptor = taskEntry.getTaskDescriptor();
@@ -192,7 +174,7 @@ final class HostRuntime implements IClusterService {
 			Bpk bpk = sRClient.getBpk(bpkMetaInfo);
 			BpkConfiguration resolvedConf = null;
 			try {
-				resolvedConf = bpkResolver.resolve(bpk.getFile());
+				resolvedConf = BpkResolver.resolve(bpk.getFile());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -212,7 +194,7 @@ final class HostRuntime implements IClusterService {
 				JavaRuntime runtime = (JavaRuntime) resolvedConf.getRuntime();
 				// fixme delete on exit
 				File tmpFolder = createTmpDir();
-				zipFileUtil.unzipToDir(bpk.getFile(), tmpFolder);
+				ZipFileUtil.unzipToDir(bpk.getFile(), tmpFolder);
 
 				cmd += "java -jar " + new File(tmpFolder, runtime.getJarFile()).getAbsolutePath();
 
@@ -236,19 +218,20 @@ final class HostRuntime implements IClusterService {
 			// FIXME radek - kde vezmu zdrojaky pro sfuj BPK ? asi
 
 			try {
-				Process proc = procesExecutor.execute(cmd);
-				taskEntries.setState(taskEntry, TaskState.RUNNING, "The task '%s' has been started on HR '%s'.", taskId, getNodeId());
+				Process proc = Runtime.getRuntime().exec(cmd);
+				TaskEntries.setState(taskEntry, TaskState.RUNNING, "The task '%s' has been started on HR '%s'.", taskId, getNodeId());
 				proc.waitFor(); // FIXME ?? shoud=ld we handle exit codes?
-				taskEntries.setState(taskEntry, TaskState.FINISHED, "The task '%s' has been successfully finished on HR '%s'.", taskId, getNodeId());
+				TaskEntries.setState(taskEntry, TaskState.FINISHED, "The task '%s' has been successfully finished on HR '%s'.", taskId, getNodeId());
 			} catch (IOException | InterruptedException e) {
-				taskEntries.setState(taskEntry, TaskState.ABORTED, "The task '%s' has been aborted on HR '%s' due to underlaying exception '%s'.", taskId, getNodeId(), e.getMessage());
+				TaskEntries.setState(taskEntry, TaskState.ABORTED, "The task '%s' has been aborted on HR '%s' due to underlaying exception '%s'.", taskId, getNodeId(), e.getMessage());
 				e.printStackTrace();
 				// TODO Auto-generated catch block
 			}
 		} catch (Throwable t) {
-			taskEntries.setState(taskEntry, TaskState.ABORTED, "The task '%s' has been aborted on HR '%s' due to unexpected exception '%s'.", taskId, getNodeId(), t.getMessage());
+			TaskEntries.setState(taskEntry, TaskState.ABORTED, "The task '%s' has been aborted on HR '%s' due to unexpected exception '%s'.", taskId, getNodeId(), t.getMessage());
 		}
 	}
+
 	private BpkIdentifier createBpkMetaInfo(TaskDescriptor descriptor) {
 		BpkIdentifier bpkMetaInfo = new BpkIdentifier();
 		bpkMetaInfo.setGroupId(descriptor.getGroupId());
@@ -258,7 +241,7 @@ final class HostRuntime implements IClusterService {
 	}
 
 	private SwRepoClient createSRClient() {
-		SWRepositoryInfo swRepositoryInfo = servicesUtils.getSWRepositoryInfo();
+		SWRepositoryInfo swRepositoryInfo = clusterContext.getServicesUtils().getSWRepositoryInfo();
 
 		String host = swRepositoryInfo.getHost();
 		int port = swRepositoryInfo.getHttpServerPort();

@@ -15,7 +15,7 @@ import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
 
 public class BpkResolver {
 
-	public BpkConfiguration resolve(File bpkFile) throws IOException, JAXBException {
+	public static BpkConfiguration resolve(File bpkFile) throws IOException, JAXBException {
 		BpkConfiguration config = null;
 		ZipArchiveInputStream bpkZipStream = new ZipArchiveInputStream(new BufferedInputStream(new FileInputStream(bpkFile)));
 		for (ArchiveEntry entry = bpkZipStream.getNextEntry(); entry != null; entry = bpkZipStream.getNextEntry()) {
@@ -27,7 +27,7 @@ public class BpkResolver {
 		return config;
 	}
 
-	private BpkConfiguration loadConfigWithJAXB(InputStream is) throws JAXBException {
+	private static BpkConfiguration loadConfigWithJAXB(InputStream is) throws JAXBException {
 		JAXBContext unmarshalContext = JAXBContext.newInstance(BpkConfiguration.class);
 		Unmarshaller configUnmarshaller = unmarshalContext.createUnmarshaller();
 		return (BpkConfiguration) configUnmarshaller.unmarshal(is);
