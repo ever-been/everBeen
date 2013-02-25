@@ -29,8 +29,8 @@ public class HostRuntimes {
 		if (hostRuntime == null) {
             ClusterContext clusterContext = new ClusterContext(hazelcastInstance);
             // FIXME Tadeas - temporary situated to /tmp/hostRuntime ... figure out later
-            File cepositoryCacheFolder = new File("/tmp/hostRuntime");
-            SwRepoClientFactory swRepoClientFactory = new SwRepoClientFactory(cepositoryCacheFolder);
+            File repositoryCacheFolder = new File("/tmp/hostRuntime");
+            SwRepoClientFactory swRepoClientFactory = new SwRepoClientFactory(repositoryCacheFolder);
 
 			RuntimeInfo info = newRuntimeInfo(clusterContext);
 			hostRuntime = new HostRuntime(clusterContext, swRepoClientFactory, info);
