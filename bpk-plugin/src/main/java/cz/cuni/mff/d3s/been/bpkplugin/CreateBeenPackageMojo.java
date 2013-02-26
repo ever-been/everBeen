@@ -8,10 +8,13 @@ import static cz.cuni.mff.d3s.been.bpk.PackageNames.METADATA_FILE;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.StringWriter;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.google.inject.name.Names;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
@@ -19,6 +22,16 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 
 import cz.cuni.mff.d3s.been.bpk.PackageNames;
+
+import cz.cuni.mff.d3s.been.bpk.*;
+import org.xml.sax.SAXException;
+
+import javax.xml.XMLConstants;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.validation.*;
 
 /*
  * Mojo plugin development is comment-annotation driven. 
@@ -103,25 +116,6 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 	 */
 	String finalName;
 
-	/**
-	 * Jar file with classes for this package. (Will be used in generated
-	 * config.xml)
-	 * 
-	 * @parameter
-	 * 
-	 * @required
-	 */
-	File packageJarFile;
-
-	/**
-	 * Fully qualified class name in jar file for this bpk package. (Will be used
-	 * in generated config.xml)
-	 * 
-	 * @parameter
-	 * 
-	 * @required
-	 */
-	String mainClassName;
 
 	/**
 	 * Name of the bpk package. <b>${project.build.finalName}</b> by default.
@@ -133,15 +127,7 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 	 */
 	String name;
 
-	/**
-	 * Version of bpk package. <b>${project.version}</b> by default. (Will be used
-	 * in generated metadata.xml)
-	 * 
-	 * @parameter expression="${project.version}"
-	 * 
-	 * @required
-	 */
-	String version;
+
 
 	/**
 	 * Type of bpk package. <b>task</b> by default. (Will be used in generated
@@ -151,7 +137,7 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 	 * 
 	 * @required
 	 */
-	String type;
+	//String type;
 
 	/**
 	 * Human readable name of this bpk package. (Will be used in generated
@@ -177,6 +163,75 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 	 */
 	Collection<Artifact> artifacts;
 
+	// *************************************************************************
+	// RUNTIME
+	// *************************************************************************
+	/**
+	 *
+	 *
+	 * @parameter default-value="java"
+	 *
+	 * @required
+	 */
+	String runtime;
+
+	/**
+	 * Jar file with classes for this package. (Will be used in generated
+	 * config.xml)
+	 *
+	 * @parameter expression="${project.build.directory}/${project.build.finalName}.jar"
+	 *
+	 */
+	File packageJarFile;
+
+
+	// *************************************************************************
+	// META-INF
+	// *************************************************************************
+	/**
+	 * Version of bpk package. <b>${project.version}</b> by default. (Will be used
+	 * in generated metadata.xml)
+	 *
+	 * @parameter expression="${project.groupId}"
+	 *
+	 * @required
+	 */
+	String groupId;
+
+	/**
+	 * Version of bpk package. <b>${project.artifactId}</b> by default. (Will be used
+	 * in generated metadata.xml)
+	 *
+	 * @parameter expression="${project.artifactId}"
+	 *
+	 * @required
+	 */
+	String bpkId;
+
+	/**
+	 * Version of bpk package. <b>${project.version}</b> by default. (Will be used
+	 * in generated metadata.xml)
+	 *
+	 * @parameter expression="${project.version}"
+	 *
+	 * @required
+	 */
+	String version;
+
+	// *************************************************************************
+	// BPK DEPENDENCIES
+	// *************************************************************************
+
+	/**
+	 * List of dependencies of this module on other (data) BPKs. You should not
+	 * include code dependencies here, but use runtime instead.
+	 *
+	 * @parameter
+	 */
+	List<BpkIdentifier> bpkDependencies;
+
+	// *************************************************************************
+
 	/**
 	 * This is the plugin main method. All generation logic starts here.
 	 */
@@ -187,20 +242,64 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 		File bpkFile = createEmptyBpkFile(); // output file
 
 		try {
+			ObjectFactory bpkFactory = new ObjectFactory();
+			BpkConfiguration bpkConfiguration = bpkFactory.createBpkConfiguration();
+
+			// META-INF
+			bpkConfiguration.setMetaInf(createMetaInf(bpkFactory));
+
+			// RUNTIME
+			RuntimeType runtimeType = RuntimeType.valueOf(runtime.toUpperCase());
+			BpkRuntime bpkRuntime = null;
+			switch (runtimeType) {
+				case JAVA:
+					bpkRuntime = createJavaRuntime(bpkFactory);
+					break;
+				default:
+					throw new UnsupportedOperationException("Don't know how to create '" + runtime + ", runtime");
+
+			}
+
+
+//			BpkDependencies dependencies = bpkRuntime.getBpkDependencies();
+//			// DEPENDENCIES
+//			if (bpkDependencies != null) {
+//				for(BpkIdentifier identifier: bpkDependencies) {
+//					//dependencies.getDependency().add(identifier);
+//				}
+//			}
+
+			bpkConfiguration.setRuntime(bpkRuntime);
+
+
 			List<FileToArchive> files = new ArrayList<FileToArchive>();
+
+			String configXml = null;
+			// add config
+			try {
+
+				configXml = BpkConfigUtils.toXml(bpkConfiguration);
+				FileToArchive configFileToArchive = createFileToArchive(PackageNames.CONFIG_FILE, configXml);
+
+				files.add(configFileToArchive);
+			} catch (Exception e) {
+				log.error(e);
+			}
+
+
+
 			// generate
 			files.add(createFileToArchiveFromPackageJar());
-			files.add(generateConfigXmlFile());
-			files.add(generateMetadataXmlFile());
 			files.addAll(getLibsToArchive());
 
-			generateModuleModuleConfigXmlFile(files);
+
 
 			for (FileItem fitem : filesToArchive) {
 				files.addAll(fitem.getFilesToArchive(log));
 			}
 
 			new ZipUtil().createZip(files, bpkFile);
+			log.info(configXml);
 			log.info("BPK exported to '" + bpkFile.getAbsolutePath() + "'");
 		} catch (IOException e) {
 			log.error("Cannot create BPK archive", e);
@@ -209,75 +308,36 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 		logEnd();
 	}
 
-	FileToArchive generateConfigXmlFile() {
-		String nameInBpk = CONFIG_FILE;
-
-		if (type.equals("task")) {
-			return generateTaskConfigXmlFile(nameInBpk);
-		} else if (type.equals("module")) {
-			return generateModuleConfigXmlFile(nameInBpk);
-		} else {
-			log.error("Cannot create config.xml for unknown type '" + type + "'");
-			return null;
-		}
+	private MetaInf createMetaInf(ObjectFactory bpkFactory) {
+		MetaInf metaInf = bpkFactory.createMetaInf();
+		metaInf.setGroupId(groupId);
+		metaInf.setBpkId(bpkId);
+		metaInf.setVersion(version);
+		return metaInf;
 	}
 
-	FileToArchive generateTaskConfigXmlFile(String nameInBpk) {
-
-		log.info("    TASK WILL BE GENERATED: with:mainClass='" + mainClassName + "' -> '" + nameInBpk + "'");
-		try {
-			File config = File.createTempFile("tmp_generated_config", ".xml");
-			String content = String.format("<?xml version=\"1.0\"?>\n" + "<packageConfiguration>\n" + "	<java classPath=\".:%s\" mainClass=\"%s\" />\n" + "</packageConfiguration>\n", packageJarFile.getName(), mainClassName);
-			FileUtils.write(config, content);
-			return new FileToArchive(nameInBpk, config);
-		} catch (Exception e) {
-			log.error(e);
-			return null;
+	private BpkRuntime createJavaRuntime(ObjectFactory bpkFactory) {
+		if (packageJarFile == null) {
+			throw new IllegalStateException("Java's jar file must be specified: missing packageJarFile");
 		}
-	}
+		JavaRuntime javaRuntime = bpkFactory.createJavaRuntime();
+		javaRuntime.setJarFile(packageJarFile.getName());
 
-	FileToArchive generateModuleConfigXmlFile(String nameInBpk) {
+		BpkArtifacts bpkArtifacts = bpkFactory.createBpkArtifacts();
 
-		log.info("    MODULE WILL BE GENERATED: with:mainClass='" + mainClassName + "' -> '" + nameInBpk + "'");
-		try {
-			File config = File.createTempFile("tmp_generated_config", ".xml");
+		for (Artifact artifact : artifacts) {
+			BpkArtifact bpkArtifact = bpkFactory.createBpkArtifact();
 
-			if (module == null) {
-				log.error("CANNOT CREATE MODULE config.xml, module section not specified");
-			}
+			bpkArtifact.setGroupId(artifact.getGroupId());
+			bpkArtifact.setArtifactId(artifact.getArtifactId());
+			bpkArtifact.setVersion(artifact.getVersion());
 
-			PrintStream ps = new PrintStream(config);
-			ps.println(indent(0, "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"));
-			ps.println(indent(0, "<pluggableModuleConfiguration xmlns=\"%s\">", "http://been.mff.cuni.cz/pluggablemodule/config"));
-			ps.println(indent(1, "<java mainClass=\"%s\">", this.mainClassName));
-			ps.println(indent(2, "<classpathItems>"));
-			ps.println(indent(3, "<classpathItem>%s</classpathItem>", packageJarFile.getName()));
-			ps.println(indent(2, "</classpathItems>"));
-			ps.println(indent(1, "</java>"));
-			ps.println(indent(1, "<dependencies>"));
-
-			for (Artifact artifact : artifacts) {
-				ps.println(indent(2, "<dependency groupId=\"%s\" artifactId=\"%s\" version=\"%s\" />", artifact.getGroupId(), artifact.getArtifactId(), artifact.getVersion()));
-			}
-			ps.println(indent(1, "</dependencies>", XML_INDENT_SEQUENCE));
-			ps.println(indent(0, "</pluggableModuleConfiguration>"));
-			ps.close();
-
-			return new FileToArchive(nameInBpk, config);
-		} catch (Exception e) {
-			log.error(e);
-			return null;
+			bpkArtifacts.getArtifact().add(bpkArtifact);
 		}
-	}
 
-	void generateModuleModuleConfigXmlFile(Collection<FileToArchive> collection) {
-		String nameInBpk = "module-config.xml";
-		if (type.equals("module") && module.config != null) {
-			collection.add(new FileToArchive(nameInBpk, new File(module.config)));
-		} else {
-			log.info("MODULE DOES NOT INCLUDE module-config.xml");
+		javaRuntime.setBpkArtifacts(bpkArtifacts);
 
-		}
+		return javaRuntime;
 	}
 
 	/**
@@ -296,69 +356,7 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 		return libs;
 	}
 
-	String indent(int indentLevel, String format, Object... args) {
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < indentLevel; ++i) {
-			sb.append(XML_INDENT_SEQUENCE);
-		}
-		sb.append(format);
-		return String.format(sb.toString(), args);
-	}
 
-	FileToArchive generateMetadataXmlFile() {
-		String nameInBpk = METADATA_FILE;
-
-		if (type.equals("task")) {
-			return generateTaskMetadataXmlFile(nameInBpk);
-		} else if (type.equals("module")) {
-			return generateModuleMetadataXmlFile(nameInBpk);
-		} else {
-			log.error("Cannot create config.xml for unknown type '" + type + "'");
-			return null;
-		}
-	}
-
-	FileToArchive generateTaskMetadataXmlFile(String nameInBpk) {
-		log.info("    TASK WILL BE GENERATED: with:name='" + name + "', version='" + version + "', type='" + type + "', humanName='" + humanName + "' -> '" + nameInBpk + "'");
-		try {
-			File config = File.createTempFile("tmp_generated_config", ".xml");
-			String content = String.format("<?xml version=\"1.0\"?>\n" + "<package>\n" + "  <name>%s</name>\n" + "  <version>%s</version>\n" + "  <type>%s</type>\n" + "  <humanName>%s</humanName>\n" + "</package>\n", name, version, type, humanName);
-			FileUtils.write(config, content);
-			return new FileToArchive(nameInBpk, config);
-		} catch (Exception e) {
-			log.error(e);
-			return null;
-		}
-	}
-
-	FileToArchive generateModuleMetadataXmlFile(String nameInBpk) {
-		log.info("    MODULE WILL BE GENERATED: with:name='" + name + "', version='" + version + "', type='" + type + "', humanName='" + humanName + "' -> '" + nameInBpk + "'");
-		try {
-			File config = File.createTempFile("tmp_generated_config", ".xml");
-			StringBuilder builder = new StringBuilder();
-
-			if (module != null && !module.interfaces.isEmpty()) {
-				builder.append("\n\t<providedInterfaces>\n");
-				for (String iface : module.interfaces) {
-					log.info("    PROVIDES INTERFACE " + iface);
-					builder.append("\t\t<providedInterface>");
-					builder.append(iface);
-					builder.append("</providedInterface>");
-				}
-				builder.append("\n\t</providedInterfaces>\n");
-			} else {
-				log.error("MODULE MUST EXPORT AN INTERFACE!");
-			}
-
-			String content = String.format("<?xml version=\"1.0\"?>\n" + "<package>\n" + "  <name>%s</name>\n" + "  <version>%s</version>\n" + "  <type>%s</type>\n" + "  <humanName>%s</humanName>\n" + "%s" + "</package>\n", name, version, type, humanName, builder.toString());
-
-			FileUtils.write(config, content);
-			return new FileToArchive(nameInBpk, config);
-		} catch (Exception e) {
-			log.error(e);
-			return null;
-		}
-	}
 
 	FileToArchive createFileToArchiveFromPackageJar() {
 		String nameInBpk = FILES_DIR + "/" + packageJarFile.getName();
@@ -380,6 +378,15 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 		log.info("===================================");
 		log.info("==  CREATING BEEN PACKAGE ENDED  ==");
 		log.info("===================================");
+	}
+
+
+
+	private FileToArchive createFileToArchive(String nameInBpk, String content) throws IOException {
+		File tmpFile = File.createTempFile("tmp_generated_config", ".xml");
+
+		FileUtils.write(tmpFile, content);
+		return new FileToArchive(nameInBpk, tmpFile);
 	}
 
 }
