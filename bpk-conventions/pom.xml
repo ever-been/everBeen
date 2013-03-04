@@ -43,6 +43,7 @@
 						</goals>
 						<configuration>
 							<staleFile>${project.build.directory}/jaxb2/.benchmarkXjcStaleFlag</staleFile>
+							<schemaDirectory>${project.basedir}/src/main/resources/xsd</schemaDirectory>
 							<clearOutputDir>true</clearOutputDir>
 							<schemaFiles>bpk-config.xsd</schemaFiles>
 							<packageName>cz.cuni.mff.d3s.been.bpk</packageName>

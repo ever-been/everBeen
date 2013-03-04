@@ -5,15 +5,9 @@ import java.io.IOException;
 
 import javax.xml.bind.JAXBException;
 
+import cz.cuni.mff.d3s.been.bpk.*;
 import org.apache.maven.artifact.Artifact;
 
-import cz.cuni.mff.d3s.been.bpk.Bpk;
-import cz.cuni.mff.d3s.been.bpk.BpkArtifact;
-import cz.cuni.mff.d3s.been.bpk.BpkArtifacts;
-import cz.cuni.mff.d3s.been.bpk.BpkConfiguration;
-import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
-import cz.cuni.mff.d3s.been.bpk.BpkResolver;
-import cz.cuni.mff.d3s.been.bpk.JavaRuntime;
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
 import cz.cuni.mff.d3s.been.core.ClusterContext;
 import cz.cuni.mff.d3s.been.core.JSONUtils.JSONSerializerException;
@@ -178,7 +172,7 @@ class HostRuntime implements IClusterService {
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (JAXBException e) {
+			} catch (BpkConfigurationException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
