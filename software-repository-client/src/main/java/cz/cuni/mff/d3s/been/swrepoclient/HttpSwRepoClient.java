@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -82,10 +83,12 @@ class HttpSwRepoClient implements SwRepoClient {
 				tmpFile = File.createTempFile("bpk", bpkIdentifier.toString());
 			} catch (IOException e) {
 				log.error("Failed to create temporary file for BPK {} because \"{}\"", bpkIdentifier.toString(), e.getMessage());
+			}
+			if (tmpFile == null) {
 				return getBpkByHTTP(bpkIdentifier);
 			}
-			if (
-			storeContentToFile(bpkContent, tmpFile)) {
+
+			if (storeContentToFile(bpkContent, tmpFile)) {
 				Bpk bpk = new Bpk();
 				bpk.setFile(tmpFile);
 				bpk.setIdentifier(bpkIdentifier);
@@ -94,7 +97,6 @@ class HttpSwRepoClient implements SwRepoClient {
 		}
 		return getBpkByHTTP(bpkIdentifier);
 	}
-
 
 	@Override
 	public boolean putArtifact(BpkArtifact artifactMetaInfo, File artifactFile) {
@@ -159,26 +161,26 @@ class HttpSwRepoClient implements SwRepoClient {
 			return true;
 		}
 	}
-	
+
 	private boolean storeContentToFile(InputStream content, File targetFile) {
 		if (targetFile == null) {
 			return false;
 		}
-			FileOutputStream fos = null;
-			try {
-				fos = new FileOutputStream(targetFile);
-			} catch (FileNotFoundException e) {
-				log.error("Could not open temporary file \"{}\" for writing - {}", targetFile.getAbsolutePath(), e.getMessage());
-				return false;
-			}
-			CopyStream copyStream = new CopyStream(content, true, fos, true, true);
-			try {
-				copyStream.copy();
-			} catch (IOException e) {
-				log.error("Could not copy content to File \"{}\" to cache - {}", targetFile.getAbsolutePath(), e.getMessage());
-				return false;
-			}
-			return true;
+		FileOutputStream fos = null;
+		try {
+			fos = new FileOutputStream(targetFile);
+		} catch (FileNotFoundException e) {
+			log.error("Could not open temporary file \"{}\" for writing - {}", targetFile.getAbsolutePath(), e.getMessage());
+			return false;
+		}
+		CopyStream copyStream = new CopyStream(content, true, fos, true, true);
+		try {
+			copyStream.copy();
+		} catch (IOException e) {
+			log.error("Could not copy content to File \"{}\" to cache - {}", targetFile.getAbsolutePath(), e.getMessage());
+			return false;
+		}
+		return true;
 	}
 
 	URI createRepoUri() throws URISyntaxException {
@@ -188,7 +190,7 @@ class HttpSwRepoClient implements SwRepoClient {
 		uriBuilder.setScheme("http");
 		return uriBuilder.build();
 	}
-	
+
 	private Bpk getBpkByHTTP(BpkIdentifier bpkIdentifier) {
 		HttpUriRequest request = null;
 		try {
@@ -228,16 +230,9 @@ class HttpSwRepoClient implements SwRepoClient {
 			return null;
 		}
 
-		File tempFile = null;
-		try {
-			tempFile = File.createTempFile("repo_bpk", bpkIdentifier.getBpkId());
-		} catch (IOException e) {
-			log.error(String.format("Failed to retrieve BKP %s - error opening temp file for writing", bpkIdentifier.toString()));
-			try {
-				is.close();
-			} catch (IOException ee) {
-				log.error(String.format("Leaked stream descriptor to SW repo HTTP response for BPK %s", bpkIdentifier.toString()));
-			}
+		File tempFile = createTmpFile();
+		if (tempFile == null) {
+			closeStream(is);
 			return null;
 		}
 
@@ -245,9 +240,58 @@ class HttpSwRepoClient implements SwRepoClient {
 			return null;
 		}
 
+		HttpEntity entity = response.getEntity();
+		storeEntity(entity, bpkIdentifier);
+
+		closeStream(is);
+
 		Bpk bpk = new Bpk();
 		bpk.setFile(tempFile);
 		bpk.setIdentifier(bpkIdentifier);
+
 		return bpk;
+	}
+	private boolean storeEntity(HttpEntity entity, BpkIdentifier bpkIdentifier) {
+		InputStream bpkIs = null;
+		try {
+			bpkIs = entity.getContent();
+		} catch (IllegalStateException e) {
+			log.error("Entity {} is not ready to give away its content - {}", entity.toString(), e.getMessage());
+			return false;
+		} catch (IOException e) {
+			log.error("I/O error when reading content from entity {} - {}", entity.toString(), e.getMessage());
+			return false;
+		}
+		try {
+			softwareCache.getBpkPersister(bpkIdentifier).dump(bpkIs);
+		} catch (IOException e) {
+			log.error("I/O error writing BPK {} - {}", bpkIdentifier.toString(), e.getMessage());
+			return false;
+		}
+		try {
+			bpkIs.close();
+		} catch (IOException e) {
+			log.error("Leaked descriptor (BPK {}): Couldn't close HTTP entity content stream - {}", bpkIdentifier.toString(), e.getMessage());
+		}
+		return true;
+	}
+
+	private File createTmpFile() {
+		File file = null;
+		try {
+			file = File.createTempFile("httpSwRepoClient", "bpk");
+		} catch (IOException e) {
+			log.error("Could not create temporary file.");
+			return null;
+		}
+		return file;
+	}
+
+	private void closeStream(InputStream is) {
+		try {
+			is.close();
+		} catch (IOException e) {
+			log.error("Leaked file descriptor on stream {}", is.toString());
+		}
 	}
 }
