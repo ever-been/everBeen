@@ -43,7 +43,7 @@
 				<version>${jaxb2-maven-plugin.version}</version>
 
                 <configuration>
-                    <arguments>-Xequals -XhashCode</arguments>
+                    <arguments>-Xequals -XhashCode -XtoString</arguments>
                 </configuration>
 
                 <dependencies>
