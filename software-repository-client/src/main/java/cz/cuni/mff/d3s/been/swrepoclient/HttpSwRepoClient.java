@@ -7,7 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -85,109 +84,17 @@ class HttpSwRepoClient implements SwRepoClient {
 				log.error("Failed to create temporary file for BPK {} because \"{}\"", bpkIdentifier.toString(), e.getMessage());
 				return getBpkByHTTP(bpkIdentifier);
 			}
-
-			// TODO unify this code with the other block where HTTP response is being copied 
-			if (tmpFile != null) {
-				FileOutputStream fos = null;
-				try {
-					fos = new FileOutputStream(tmpFile);
-				} catch (FileNotFoundException e) {
-					log.error("Could not open temporary file {} for writing because \"{}\"", tmpFile.getAbsolutePath(), e.getMessage());
-					return getBpkByHTTP(bpkIdentifier);
-				}
-				CopyStream copyStream = new CopyStream(bpkContent, true, fos, true, true);
-				try {
-					copyStream.copy();
-				} catch (IOException e) {
-					log.error("Could not copy content of BPK {} to cache because \"{}\"", bpkIdentifier.toString(), e.getMessage());
-					return getBpkByHTTP(bpkIdentifier);
-				}
-				Bpk cachedBpk = new Bpk();
-				cachedBpk.setFile(tmpFile);
-				cachedBpk.setIdentifier(bpkIdentifier);
-				return cachedBpk;
+			if (
+			storeContentToFile(bpkContent, tmpFile)) {
+				Bpk bpk = new Bpk();
+				bpk.setFile(tmpFile);
+				bpk.setIdentifier(bpkIdentifier);
+				return bpk;
 			}
 		}
 		return getBpkByHTTP(bpkIdentifier);
 	}
 
-	private Bpk getBpkByHTTP(BpkIdentifier bpkIdentifier) {
-		HttpUriRequest request = null;
-		try {
-			request = new HttpGet(createRepoUri() + "/bpk");
-		} catch (URISyntaxException e) {
-			log.error(String.format("Failed to retrieve BKP %s - unable to synthesize get request URI", bpkIdentifier.toString()));
-			return null;
-		}
-		try {
-			request.addHeader(SwRepoClientFactory.BPK_IDENTIFIER_HEADER_NAME, JSONUtils.serialize(bpkIdentifier));
-		} catch (JSONSerializerException e) {
-			log.error(String.format("Failed to retrieve BPK %s - unable to serialize BPK identifier into request header", bpkIdentifier.toString()));
-		}
-
-		HttpClient httpCli = new DefaultHttpClient();
-		HttpResponse response;
-		try {
-			response = httpCli.execute(request);
-		} catch (ClientProtocolException e) {
-			log.error(String.format("Failed to retrieve BKP %s - unable to synthesize get request URI", bpkIdentifier.toString()));
-			return null;
-		} catch (IOException e) {
-			log.error(String.format("Failed to retrieve BKP %s - I/O error or connection re-set", bpkIdentifier.toString()));
-			return null;
-		}
-
-		if (response.getStatusLine().getStatusCode() / 100 != 2) {
-			log.error(String.format("Failed to retrieve BPK %s - server refusal: \"%s\"", bpkIdentifier.toString(), response.getStatusLine().getReasonPhrase()));
-			return null;
-		}
-
-		InputStream is = null;
-		try {
-			is = response.getEntity().getContent();
-		} catch (IOException e) {
-			log.error(String.format("Failed to retrieve BKP %s - error opening SW repo response for reading", bpkIdentifier.toString()));
-			return null;
-		}
-
-		OutputStream os = null;
-		File tempFile = null;
-		try {
-			tempFile = File.createTempFile("repo_bpk", bpkIdentifier.getBpkId());
-			os = new FileOutputStream(tempFile);
-		} catch (IOException e) {
-			log.error(String.format("Failed to retrieve BKP %s - error opening temp file for writing", bpkIdentifier.toString()));
-			try {
-				is.close();
-			} catch (IOException ee) {
-				log.error(String.format("Leaked stream descriptor to SW repo HTTP response for BPK %s", bpkIdentifier.toString()));
-			}
-			return null;
-		}
-
-		final CopyStream copy = new CopyStream(is, true, os, true, true);
-		try {
-			copy.copy();
-		} catch (IOException e) {
-			log.error(String.format("Failed to retrieve BKP %s - error dumping response content to local file", bpkIdentifier.toString()));
-			try {
-				is.close();
-			} catch (IOException ee) {
-				log.error(String.format("Leaked stream descriptor to SW repo HTTP response for BPK %s", bpkIdentifier.toString()));
-			}
-
-			try {
-				os.close();
-			} catch (IOException ee) {
-				log.error(String.format("Leaked stream descriptor to temp file for BPK %s", bpkIdentifier.toString()));
-			}
-		}
-
-		Bpk bpk = new Bpk();
-		bpk.setFile(tempFile);
-		bpk.setIdentifier(bpkIdentifier);
-		return bpk;
-	}
 
 	@Override
 	public boolean putArtifact(BpkArtifact artifactMetaInfo, File artifactFile) {
@@ -252,6 +159,27 @@ class HttpSwRepoClient implements SwRepoClient {
 			return true;
 		}
 	}
+	
+	private boolean storeContentToFile(InputStream content, File targetFile) {
+		if (targetFile == null) {
+			return false;
+		}
+			FileOutputStream fos = null;
+			try {
+				fos = new FileOutputStream(targetFile);
+			} catch (FileNotFoundException e) {
+				log.error("Could not open temporary file \"{}\" for writing - {}", targetFile.getAbsolutePath(), e.getMessage());
+				return false;
+			}
+			CopyStream copyStream = new CopyStream(content, true, fos, true, true);
+			try {
+				copyStream.copy();
+			} catch (IOException e) {
+				log.error("Could not copy content to File \"{}\" to cache - {}", targetFile.getAbsolutePath(), e.getMessage());
+				return false;
+			}
+			return true;
+	}
 
 	URI createRepoUri() throws URISyntaxException {
 		URIBuilder uriBuilder = new URIBuilder();
@@ -259,5 +187,67 @@ class HttpSwRepoClient implements SwRepoClient {
 		uriBuilder.setPort(port);
 		uriBuilder.setScheme("http");
 		return uriBuilder.build();
+	}
+	
+	private Bpk getBpkByHTTP(BpkIdentifier bpkIdentifier) {
+		HttpUriRequest request = null;
+		try {
+			request = new HttpGet(createRepoUri() + "/bpk");
+		} catch (URISyntaxException e) {
+			log.error(String.format("Failed to retrieve BKP %s - unable to synthesize get request URI", bpkIdentifier.toString()));
+			return null;
+		}
+		try {
+			request.addHeader(SwRepoClientFactory.BPK_IDENTIFIER_HEADER_NAME, JSONUtils.serialize(bpkIdentifier));
+		} catch (JSONSerializerException e) {
+			log.error(String.format("Failed to retrieve BPK %s - unable to serialize BPK identifier into request header", bpkIdentifier.toString()));
+		}
+
+		HttpClient httpCli = new DefaultHttpClient();
+		HttpResponse response;
+		try {
+			response = httpCli.execute(request);
+		} catch (ClientProtocolException e) {
+			log.error(String.format("Failed to retrieve BKP %s - unable to synthesize get request URI", bpkIdentifier.toString()));
+			return null;
+		} catch (IOException e) {
+			log.error(String.format("Failed to retrieve BKP %s - I/O error or connection re-set", bpkIdentifier.toString()));
+			return null;
+		}
+
+		if (response.getStatusLine().getStatusCode() / 100 != 2) {
+			log.error(String.format("Failed to retrieve BPK %s - server refusal: \"%s\"", bpkIdentifier.toString(), response.getStatusLine().getReasonPhrase()));
+			return null;
+		}
+
+		InputStream is = null;
+		try {
+			is = response.getEntity().getContent();
+		} catch (IOException e) {
+			log.error(String.format("Failed to retrieve BKP %s - error opening SW repo response for reading", bpkIdentifier.toString()));
+			return null;
+		}
+
+		File tempFile = null;
+		try {
+			tempFile = File.createTempFile("repo_bpk", bpkIdentifier.getBpkId());
+		} catch (IOException e) {
+			log.error(String.format("Failed to retrieve BKP %s - error opening temp file for writing", bpkIdentifier.toString()));
+			try {
+				is.close();
+			} catch (IOException ee) {
+				log.error(String.format("Leaked stream descriptor to SW repo HTTP response for BPK %s", bpkIdentifier.toString()));
+			}
+			return null;
+		}
+
+		if (!storeContentToFile(is, tempFile)) {
+			return null;
+		}
+
+		Bpk bpk = new Bpk();
+		bpk.setFile(tempFile);
+		bpk.setIdentifier(bpkIdentifier);
+		return bpk;
 	}
 }
