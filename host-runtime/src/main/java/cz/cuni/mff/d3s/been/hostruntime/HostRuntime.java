@@ -2,20 +2,24 @@ package cz.cuni.mff.d3s.been.hostruntime;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 
-import javax.xml.bind.JAXBException;
-
-import cz.cuni.mff.d3s.been.bpk.*;
-import cz.cuni.mff.d3s.been.core.TaskUtils;
-import org.apache.commons.exec.DefaultExecutor;
-import org.apache.commons.exec.ExecuteStreamHandler;
 import org.apache.maven.artifact.Artifact;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import cz.cuni.mff.d3s.been.bpk.Bpk;
+import cz.cuni.mff.d3s.been.bpk.BpkArtifact;
+import cz.cuni.mff.d3s.been.bpk.BpkArtifacts;
+import cz.cuni.mff.d3s.been.bpk.BpkConfiguration;
+import cz.cuni.mff.d3s.been.bpk.BpkConfigurationException;
+import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
+import cz.cuni.mff.d3s.been.bpk.BpkResolver;
+import cz.cuni.mff.d3s.been.bpk.JavaRuntime;
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
 import cz.cuni.mff.d3s.been.core.ClusterContext;
 import cz.cuni.mff.d3s.been.core.JSONUtils.JSONSerializerException;
+import cz.cuni.mff.d3s.been.core.TaskUtils;
 import cz.cuni.mff.d3s.been.core.protocol.Context;
 import cz.cuni.mff.d3s.been.core.protocol.messages.BaseMessage;
 import cz.cuni.mff.d3s.been.core.protocol.messages.KillTaskMessage;
@@ -26,13 +30,10 @@ import cz.cuni.mff.d3s.been.core.protocol.messages.TaskStartedMessage;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.sri.SWRepositoryInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
-import cz.cuni.mff.d3s.been.core.task.TaskEntries;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 // FIXME logging
 
@@ -51,7 +52,7 @@ import org.slf4j.LoggerFactory;
  */
 class HostRuntime implements IClusterService {
 
-    private static final Logger log = LoggerFactory.getLogger(HostRuntime.class);
+	private static final Logger log = LoggerFactory.getLogger(HostRuntime.class);
 
 	/**
 	 * Stores basic information (name, id, host, port, OS, memory, Java) about
@@ -76,12 +77,12 @@ class HostRuntime implements IClusterService {
 	/**
 	 * Creates new {@link HostRuntime} with cluster-unique id.
 	 * 
-     * @param clusterContext
-     * @param swRepoClientFactory
-     *          factory for creating {@link SwRepoClient} instances from real-time
-     *          obtained IP and port
-     * @param hostRuntimeInfo
-     */
+	 * @param clusterContext
+	 * @param swRepoClientFactory
+	 *          factory for creating {@link SwRepoClient} instances from real-time
+	 *          obtained IP and port
+	 * @param hostRuntimeInfo
+	 */
 	public HostRuntime(ClusterContext clusterContext, SwRepoClientFactory swRepoClientFactory, RuntimeInfo hostRuntimeInfo) {
 		this.clusterContext = clusterContext;
 		this.hostRuntimeInfo = hostRuntimeInfo;
@@ -166,13 +167,13 @@ class HostRuntime implements IClusterService {
 	}
 
 	void tryRunTask(RunTaskMessage message) {
-        log.info("tryRunTask started");
+		log.info("tryRunTask started");
 
 		String taskId = message.taskId;
 		TaskEntry taskEntry = clusterContext.getTasksUtils().getTask(taskId);
 
-        final TaskUtils taskUtils = clusterContext.getTasksUtils();
-        taskUtils.setStateAndPut(taskEntry, TaskState.ACCEPTED, "Task '%s' has been accepted by HR '%s'.", taskId, getNodeId());
+		final TaskUtils taskUtils = clusterContext.getTasksUtils();
+		taskUtils.setStateAndPut(taskEntry, TaskState.ACCEPTED, "Task '%s' has been accepted by HR '%s'.", taskId, getNodeId());
 
 		try {
 			TaskDescriptor descriptor = taskEntry.getTaskDescriptor();
@@ -205,10 +206,10 @@ class HostRuntime implements IClusterService {
 				File tmpFolder = createTmpDir();
 				ZipFileUtil.unzipToDir(bpk.getFile(), tmpFolder);
 
-                cmd.add("java");
-                cmd.add("-jar");
-                File dirToBpk = new File(tmpFolder, "files");
-                cmd.add(new File(dirToBpk, runtime.getJarFile()).getAbsolutePath());
+				cmd.add("java");
+				cmd.add("-jar");
+				File dirToBpk = new File(tmpFolder, "files");
+				cmd.add(new File(dirToBpk, runtime.getJarFile()).getAbsolutePath());
 
 				BpkArtifacts arts = runtime.getBpkArtifacts();
 				// toto jsou javovske (mavenovske) zavislosti
@@ -216,7 +217,7 @@ class HostRuntime implements IClusterService {
 				if (!arts.getArtifact().isEmpty()) {
 					cmd.add("-cp");
 					boolean first = true;
-                    String cp = "";
+					String cp = "";
 					for (BpkArtifact art : arts.getArtifact()) {
 						if (!first) {
 							cp += ";";
@@ -231,21 +232,21 @@ class HostRuntime implements IClusterService {
 			// FIXME radek - kde vezmu zdrojaky pro sfuj BPK ? asi
 
 			try {
-                // FIXME zde je wait, zablokuje se a teda nejde pustit dalsi task
-                ProcessBuilder pb = new ProcessBuilder(cmd);
-                pb.inheritIO();
-                Process proc = pb.start();
-                taskUtils.setStateAndPut(taskEntry, TaskState.RUNNING, "The task '%s' has been started on HR '%s'.", taskId, getNodeId());
+				// FIXME zde je wait, zablokuje se a teda nejde pustit dalsi task
+				ProcessBuilder pb = new ProcessBuilder(cmd);
+				pb.inheritIO();
+				Process proc = pb.start();
+				taskUtils.setStateAndPut(taskEntry, TaskState.RUNNING, "The task '%s' has been started on HR '%s'.", taskId, getNodeId());
 				proc.waitFor(); // FIXME ?? shoud=ld we handle exit codes?
-                taskUtils.setStateAndPut(taskEntry, TaskState.FINISHED, "The task '%s' has been successfully finished on HR '%s'.", taskId, getNodeId());
+				taskUtils.setStateAndPut(taskEntry, TaskState.FINISHED, "The task '%s' has been successfully finished on HR '%s'.", taskId, getNodeId());
 			} catch (IOException | InterruptedException e) {
-                taskUtils.setStateAndPut(taskEntry, TaskState.ABORTED, "The task '%s' has been aborted on HR '%s' due to underlaying exception '%s'.", taskId, getNodeId(), e.getMessage());
+				taskUtils.setStateAndPut(taskEntry, TaskState.ABORTED, "The task '%s' has been aborted on HR '%s' due to underlaying exception '%s'.", taskId, getNodeId(), e.getMessage());
 				e.printStackTrace();
 				// TODO Auto-generated catch block
 			}
 		} catch (Throwable t) {
-            // FIXME logging
-            taskUtils.setStateAndPut(taskEntry, TaskState.ABORTED, "The task '%s' has been aborted on HR '%s' due to unexpected exception '%s'.", taskId, getNodeId(), t.getMessage());
+			// FIXME logging
+			taskUtils.setStateAndPut(taskEntry, TaskState.ABORTED, "The task '%s' has been aborted on HR '%s' due to unexpected exception '%s'.", taskId, getNodeId(), t.getMessage());
 		}
 	}
 
