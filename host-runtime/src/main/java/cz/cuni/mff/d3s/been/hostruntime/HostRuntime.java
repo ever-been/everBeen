@@ -6,6 +6,7 @@ import java.io.IOException;
 import javax.xml.bind.JAXBException;
 
 import cz.cuni.mff.d3s.been.bpk.*;
+import cz.cuni.mff.d3s.been.core.TaskUtils;
 import org.apache.maven.artifact.Artifact;
 
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
@@ -26,6 +27,10 @@ import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+// FIXME logging
 
 /**
  * 
@@ -41,6 +46,8 @@ import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
  * 
  */
 class HostRuntime implements IClusterService {
+
+    private static final Logger log = LoggerFactory.getLogger(HostRuntime.class);
 
 	/**
 	 * Stores basic information (name, id, host, port, OS, memory, Java) about
@@ -65,12 +72,12 @@ class HostRuntime implements IClusterService {
 	/**
 	 * Creates new {@link HostRuntime} with cluster-unique id.
 	 * 
-	 * @param swRepoClientFactory
-	 *          factory for creating {@link SwRepoClient} instances from real-time
-	 *          obtained IP and port
-	 * @param nodeId
-	 *          cluster-unique id of {@link HostRuntime} node
-	 */
+     * @param clusterContext
+     * @param swRepoClientFactory
+     *          factory for creating {@link SwRepoClient} instances from real-time
+     *          obtained IP and port
+     * @param hostRuntimeInfo
+     */
 	public HostRuntime(ClusterContext clusterContext, SwRepoClientFactory swRepoClientFactory, RuntimeInfo hostRuntimeInfo) {
 		this.clusterContext = clusterContext;
 		this.hostRuntimeInfo = hostRuntimeInfo;
@@ -155,9 +162,13 @@ class HostRuntime implements IClusterService {
 	}
 
 	void tryRunTask(RunTaskMessage message) {
+        log.info("tryRunTask started");
+
 		String taskId = message.taskId;
 		TaskEntry taskEntry = clusterContext.getTasksUtils().getTask(taskId);
-		TaskEntries.setState(taskEntry, TaskState.ACCEPTED, "Task '%s' has been accepted by HR '%s'.", taskId, getNodeId());
+
+        final TaskUtils taskUtils = clusterContext.getTasksUtils();
+        taskUtils.setStateAndPut(taskEntry, TaskState.ACCEPTED, "Task '%s' has been accepted by HR '%s'.", taskId, getNodeId());
 
 		try {
 			TaskDescriptor descriptor = taskEntry.getTaskDescriptor();
@@ -213,16 +224,17 @@ class HostRuntime implements IClusterService {
 
 			try {
 				Process proc = Runtime.getRuntime().exec(cmd);
-				TaskEntries.setState(taskEntry, TaskState.RUNNING, "The task '%s' has been started on HR '%s'.", taskId, getNodeId());
+                taskUtils.setStateAndPut(taskEntry, TaskState.RUNNING, "The task '%s' has been started on HR '%s'.", taskId, getNodeId());
 				proc.waitFor(); // FIXME ?? shoud=ld we handle exit codes?
-				TaskEntries.setState(taskEntry, TaskState.FINISHED, "The task '%s' has been successfully finished on HR '%s'.", taskId, getNodeId());
+                taskUtils.setStateAndPut(taskEntry, TaskState.FINISHED, "The task '%s' has been successfully finished on HR '%s'.", taskId, getNodeId());
 			} catch (IOException | InterruptedException e) {
-				TaskEntries.setState(taskEntry, TaskState.ABORTED, "The task '%s' has been aborted on HR '%s' due to underlaying exception '%s'.", taskId, getNodeId(), e.getMessage());
+                taskUtils.setStateAndPut(taskEntry, TaskState.ABORTED, "The task '%s' has been aborted on HR '%s' due to underlaying exception '%s'.", taskId, getNodeId(), e.getMessage());
 				e.printStackTrace();
 				// TODO Auto-generated catch block
 			}
 		} catch (Throwable t) {
-			TaskEntries.setState(taskEntry, TaskState.ABORTED, "The task '%s' has been aborted on HR '%s' due to unexpected exception '%s'.", taskId, getNodeId(), t.getMessage());
+            // FIXME logging
+            taskUtils.setStateAndPut(taskEntry, TaskState.ABORTED, "The task '%s' has been aborted on HR '%s' due to unexpected exception '%s'.", taskId, getNodeId(), t.getMessage());
 		}
 	}
 
