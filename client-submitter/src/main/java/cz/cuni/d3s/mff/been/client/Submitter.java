@@ -50,14 +50,12 @@ public class Submitter {
 	@Option(name = "-pe", aliases = { "--print-entry" }, usage = "Print the created Task Entry")
 	private boolean printEntry = false;
 
-	private ClusterContext clusterContext;
 
 	public static void main(String[] args) {
-		new Submitter(new ClusterContext(cz.cuni.mff.d3s.been.cluster.Instance.getInstance())).doMain(args);
+		new Submitter().doMain(args);
 	}
 
-	public Submitter(ClusterContext clusterContext) {
-		this.clusterContext = clusterContext;
+	public Submitter() {
 	}
 
 	private void doMain(String[] args) {
@@ -92,6 +90,9 @@ public class Submitter {
 			hazelcastClient = HazelcastClient.newHazelcastClient(clientConfig);
 
 			Instance.registerInstance(hazelcastClient, NodeType.NATIVE);
+
+
+			ClusterContext clusterContext =  new ClusterContext(hazelcastClient);
 
 			// submit
 			String taskId = clusterContext.getTasksUtils().submit(td);
