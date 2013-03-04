@@ -48,7 +48,14 @@
 			<version>3.0.0</version>
 		</dependency>
 
-		<dependency>
+        <dependency>
+            <groupId>cz.cuni.mff.d3s.been</groupId>
+            <artifactId>detectors</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+
+
+        <dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>1.3.2</version>

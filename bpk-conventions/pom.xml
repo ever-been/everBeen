@@ -17,6 +17,11 @@
 			<artifactId>commons-compress</artifactId>
 			<version>${commons-compress.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.jvnet.jaxb2_commons</groupId>
+			<artifactId>jaxb2-basics-runtime</artifactId>
+			<version>0.6.4</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -35,6 +40,19 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jaxb2-maven-plugin</artifactId>
 				<version>${jaxb2-maven-plugin.version}</version>
+
+				<configuration>
+					<arguments>-Xequals -XhashCode -XtoString</arguments>
+				</configuration>
+
+				<dependencies>
+					<dependency>
+						<groupId>org.jvnet.jaxb2_commons</groupId>
+						<artifactId>jaxb2-basics</artifactId>
+						<version>0.6.4</version>
+					</dependency>
+				</dependencies>
+
 				<executions>
 					<execution>
 						<id>packageConfig-xjc</id>
@@ -43,6 +61,7 @@
 						</goals>
 						<configuration>
 							<staleFile>${project.build.directory}/jaxb2/.benchmarkXjcStaleFlag</staleFile>
+							<schemaDirectory>${project.basedir}/src/main/resources/xsd</schemaDirectory>
 							<clearOutputDir>true</clearOutputDir>
 							<schemaFiles>bpk-config.xsd</schemaFiles>
 							<packageName>cz.cuni.mff.d3s.been.bpk</packageName>

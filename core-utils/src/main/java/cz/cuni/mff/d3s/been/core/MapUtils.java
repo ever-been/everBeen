@@ -11,13 +11,20 @@ import com.hazelcast.core.Instance;
  */
 public class MapUtils {
 
-	public static Collection<Object> getValues(String mapName) {
+	private final ClusterContext clusterCtx;
+
+	MapUtils(ClusterContext clusterCtx) {
+		// package private visibility prevents out-of-package instantiation
+		this.clusterCtx = clusterCtx;
+	}
+
+	public Collection<Object> getValues(String mapName) {
 		Collection<Object> values = new LinkedList<>();
 
-		if (ClusterUtils.containsInstance(Instance.InstanceType.MAP, mapName)) {
-			IMap<?,?> hrMap = ClusterUtils.getInstance().getMap(mapName);
+		if (clusterCtx.containsInstance(Instance.InstanceType.MAP, mapName)) {
+			IMap<?, ?> hrMap = clusterCtx.getInstance().getMap(mapName);
 
-			for (Object key: hrMap.keySet()) {
+			for (Object key : hrMap.keySet()) {
 				values.add(hrMap.get(key));
 			}
 		} else {
@@ -27,20 +34,13 @@ public class MapUtils {
 		return values;
 	}
 
-	public static <K, V> V getValue(String mapName, K key) {
-
-		IMap<String, V> map = getMap(mapName);
-
+	public <K, V> V getValue(String mapName, K key) {
+		IMap<String, V> map = clusterCtx.getMap(mapName);
 		return map.get(key);
-
 	}
 
-	public static void setValue(String mapName, Object key, Object value) {
-		getMap(mapName).put(key, value);
-
+	public void setValue(String mapName, Object key, Object value) {
+		clusterCtx.getMap(mapName).put(key, value);
 	}
 
-	public static <K, V> IMap<K, V> getMap(String mapName) {
-		return ClusterUtils.getInstance().getMap(mapName);
-	}
 }

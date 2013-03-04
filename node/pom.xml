@@ -44,6 +44,12 @@
 			<version>${project.parent.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>software-repository</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+
 		<!-- EXTERNAL DEPENDENCIES -->
 		<dependency>
 			<groupId>com.hazelcast</groupId>

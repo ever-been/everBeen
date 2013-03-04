@@ -1,14 +1,21 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xs:schema
-	xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	>
-	
+		targetNamespace="http://been.d3s.mff.cuni.cz/bpk/config"
+		elementFormDefault="unqualified"
+		attributeFormDefault="unqualified"
+		xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+		xmlns:bpk="http://been.d3s.mff.cuni.cz/bpk/config"
+		xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+		jaxb:extensionBindingPrefixes="xjc"
+		jaxb:version="2.0">
+
+
 	<xs:element name="bpkConfiguration">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element ref="metaInf" minOccurs="1" maxOccurs="1"/>
-				<xs:element ref="runtime" minOccurs="1" maxOccurs="1"/>
-				<xs:element ref="bpkDependencies" minOccurs="0" maxOccurs="1" />
+				<xs:element ref="bpk:metaInf" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="bpk:runtime" minOccurs="1" maxOccurs="1"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -27,7 +34,7 @@
 	<xs:element name="bpkDependencies">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="dependency" type="BpkIdentifier" minOccurs="0" maxOccurs="unbounded" />
+				<xs:element name="dependency" type="bpk:BpkIdentifier" minOccurs="0" maxOccurs="unbounded" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -35,7 +42,7 @@
 	<xs:element name="bpkArtifacts">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="artifact" type="BpkArtifact" minOccurs="0" maxOccurs="unbounded" />
+				<xs:element name="artifact" type="bpk:BpkArtifact" minOccurs="0" maxOccurs="unbounded" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -68,25 +75,25 @@
 	<!-- Possible package types -->
 	<xs:complexType name="BpkRuntime">
 		<xs:sequence>
-			<xs:element ref="bpkDependencies" minOccurs="0" />
+			<xs:element ref="bpk:bpkDependencies" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 	
 	<xs:complexType name="JavaBasedRuntime">
 		<xs:complexContent>
-			<xs:extension base="BpkRuntime">
+			<xs:extension base="bpk:BpkRuntime">
 				<xs:sequence>
-					<xs:element ref="bpkArtifacts"  minOccurs="0" />
+					<xs:element ref="bpk:bpkArtifacts"  minOccurs="0" />
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 	
-	<xs:element name="runtime" type="BpkRuntime" />
+	<xs:element name="runtime" type="bpk:BpkRuntime" />
 	
 	<xs:complexType name="JavaRuntime">
 		<xs:complexContent>
-			<xs:extension base="JavaBasedRuntime">
+			<xs:extension base="bpk:JavaBasedRuntime">
 				<xs:sequence>
 					<xs:element name="jarFile" type="xs:string" />
 				</xs:sequence>
@@ -94,11 +101,11 @@
 		</xs:complexContent>
 	</xs:complexType>
 	
-	<xs:element name="java" type="JavaRuntime" />
+	<xs:element name="java" type="bpk:JavaRuntime" />
 	
 	<xs:complexType name="JythonRuntime">
 		<xs:complexContent>
-			<xs:extension base="JavaBasedRuntime">
+			<xs:extension base="bpk:JavaBasedRuntime">
 				<xs:sequence>
 					<xs:element name="mainScript" type="xs:string" />
 				</xs:sequence>
@@ -106,11 +113,11 @@
 		</xs:complexContent>
 	</xs:complexType>
 	
-	<xs:element name="jython" type="JythonRuntime" />
+	<xs:element name="jython" type="bpk:JythonRuntime" />
 	
 	<xs:complexType name="NativeRuntime">
 		<xs:complexContent>
-			<xs:extension base="BpkRuntime">
+			<xs:extension base="bpk:BpkRuntime">
 				<xs:sequence>
 					<xs:element name="binary" type="xs:string" />
 				</xs:sequence>
@@ -118,17 +125,17 @@
 		</xs:complexContent>
 	</xs:complexType>
 	
-	<xs:element name="native" type="NativeRuntime" />
+	<xs:element name="native" type="bpk:NativeRuntime" />
 	
 	<xs:complexType name="Module">
 		<xs:complexContent>
-			<xs:extension base="BpkRuntime">
+			<xs:extension base="bpk:BpkRuntime">
 				<xs:sequence>
-					<xs:element ref="providedInterfaces" minOccurs="0" />
+					<xs:element ref="bpk:providedInterfaces" minOccurs="0" />
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 	
-	<xs:element name="module" type="Module" />
+	<xs:element name="module" type="bpk:Module" />
 </xs:schema>

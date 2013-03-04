@@ -7,7 +7,7 @@ import com.hazelcast.core.HazelcastInstance;
 
 import cz.cuni.mff.d3s.been.cluster.Instance;
 import cz.cuni.mff.d3s.been.cluster.NodeType;
-import cz.cuni.mff.d3s.been.core.ClusterUtils;
+import cz.cuni.mff.d3s.been.core.ClusterContext;
 import cz.cuni.mff.d3s.been.swrepository.httpserver.HttpServer;
 
 /**
@@ -25,13 +25,14 @@ public class SoftwareRepositoryRunner {
 	 *          None recognized
 	 */
 	public static void main(String[] args) {
-		SoftwareRepository swRepo = new SoftwareRepository();
 		HazelcastInstance inst = Instance.newInstance(NodeType.DATA); // TODO change to lite
-		DataStore dataStore = DataStoreFactory.getDataStore();
+		ClusterContext clusterCtx = new ClusterContext(inst);
+		SoftwareRepository swRepo = new SoftwareRepository(clusterCtx);
 
 		// FIXME port configuration
 		// FIXME store the instance somewhere
-		HttpServer httpServer = new HttpServer(ClusterUtils.getInetSocketAddress().getAddress(), 8000);
+		DataStore dataStore = DataStoreFactory.getDataStore();
+		HttpServer httpServer = new HttpServer(clusterCtx.getInetSocketAddress().getAddress(), 8000);
 		swRepo.setDataStore(dataStore);
 		swRepo.setHttpServer(httpServer);
 		swRepo.init();

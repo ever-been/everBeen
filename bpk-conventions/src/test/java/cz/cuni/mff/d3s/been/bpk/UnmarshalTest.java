@@ -12,7 +12,7 @@ public class UnmarshalTest extends Assert {
 	public void testUnmarshallingGeneratedXml() throws Exception {
 		URL bpkUrl = getClass().getResource("test.bpk");
 		File bpkFile = new File(bpkUrl.toURI());
-		new BpkResolver().resolve(bpkFile);
+		BpkResolver.resolve(bpkFile);
 		return;
 	}
 }

@@ -22,7 +22,7 @@ public class ZipFileUtil {
 	 * @throws IOException
 	 * @throws ZipException
 	 */
-	public void unzipToDir(File zipFile, File toDir) throws ZipException, IOException {
+	public static void unzipToDir(File zipFile, File toDir) throws ZipException, IOException {
 		ZipFile _zipFile = new ZipFile(zipFile);
 		Enumeration<?> files = _zipFile.entries();
 		File f = null;

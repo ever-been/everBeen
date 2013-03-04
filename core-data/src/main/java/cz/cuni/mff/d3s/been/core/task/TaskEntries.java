@@ -3,6 +3,7 @@ package cz.cuni.mff.d3s.been.core.task;
 import static cz.cuni.mff.d3s.been.core.jaxb.Factory.TASK;
 
 import java.io.File;
+import java.io.StringWriter;
 import java.util.List;
 import java.util.UUID;
 
@@ -10,6 +11,7 @@ import javax.xml.bind.JAXBException;
 
 import org.xml.sax.SAXException;
 
+import cz.cuni.mff.d3s.been.core.jaxb.BindingComposer;
 import cz.cuni.mff.d3s.been.core.jaxb.BindingParser;
 import cz.cuni.mff.d3s.been.core.jaxb.ConvertorException;
 import cz.cuni.mff.d3s.been.core.jaxb.XSD;
@@ -23,8 +25,12 @@ import cz.cuni.mff.d3s.been.core.jaxb.XSD;
  */
 public class TaskEntries {
 
+	private TaskEntries() {
+		// prevents initialization
+	}
+
 	/**
-	 * Creates a new {@link TaskEntry} from giten {@link TaskDescriptor}. Entry is
+	 * Creates a new {@link TaskEntry} from given {@link TaskDescriptor}. Entry is
 	 * created with state {@link TaskState#CREATED}, with random UUID and default
 	 * owner and runtime id.
 	 * 
@@ -32,7 +38,7 @@ public class TaskEntries {
 	 *          for which the new entry is created
 	 * @return initialized entry
 	 */
-	public TaskEntry create(TaskDescriptor taskDescriptor) {
+	public static TaskEntry create(TaskDescriptor taskDescriptor) {
 		TaskEntry entry = TASK.createTaskEntry();
 
 		entry.setState(TaskState.CREATED);
@@ -49,7 +55,7 @@ public class TaskEntries {
 	// FIXME Martin - comments please :) why we can use this method. We do not want to search usage 
 	// if we do not understand what is this method :) If one of the "create" methods here should
 	// be used internally, make it private please :)
-	public TaskEntry create(String pathToTaskDescriptor) {
+	public static TaskEntry create(String pathToTaskDescriptor) throws IllegalArgumentException {
 		BindingParser<TaskDescriptor> bindingComposer = null;
 		try {
 			bindingComposer = XSD.TD.createParser(TaskDescriptor.class);
@@ -59,13 +65,28 @@ public class TaskEntries {
 			return create(td);
 
 		} catch (SAXException | JAXBException | ConvertorException e) {
-
-			throw new IllegalArgumentException(e);
+			throw new IllegalArgumentException("TaskEntry can't be parsed from XML", e);
 		}
-
 	}
 
-	public void setState(TaskEntry entry, TaskState newState,
+	public static String toXml(TaskEntry entry) throws IllegalArgumentException {
+		BindingComposer<TaskEntry> composer = null;
+		StringWriter writer = null;
+		try {
+			composer = XSD.TASKENTRY.createComposer(TaskEntry.class);
+
+			writer = new StringWriter();
+
+			composer.compose(entry, writer);
+
+		} catch (SAXException | JAXBException e) {
+			throw new IllegalArgumentException("TaskEntry can't be converted to XML", e);
+		}
+
+		return writer.toString();
+
+	}
+	public static void setState(TaskEntry entry, TaskState newState,
 			String reasonFormat, Object... reasonArgs) throws IllegalArgumentException {
 		TaskState oldState = entry.getState();
 
@@ -80,7 +101,7 @@ public class TaskEntries {
 		entry.setState(newState);
 	}
 
-	private StateChangeEntry createStateChangeEntry(TaskState state,
+	private static StateChangeEntry createStateChangeEntry(TaskState state,
 			String reasonFormat, Object... reasonArgs) {
 		StateChangeEntry logEntry = TASK.createStateChangeEntry();
 		logEntry.setState(state);
@@ -88,7 +109,7 @@ public class TaskEntries {
 		return logEntry;
 	}
 
-	public List<StateChangeEntry> getStateChangeEntries(TaskEntry entry) {
+	public static List<StateChangeEntry> getStateChangeEntries(TaskEntry entry) {
 		if (!entry.isSetStateChangeLog()) {
 			entry.setStateChangeLog(TASK.createStateChangeLog());
 		}

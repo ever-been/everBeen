@@ -14,8 +14,7 @@ import com.hazelcast.client.HazelcastClient;
 
 import cz.cuni.mff.d3s.been.cluster.Instance;
 import cz.cuni.mff.d3s.been.cluster.NodeType;
-import cz.cuni.mff.d3s.been.core.TasksUtils;
-import cz.cuni.mff.d3s.been.core.task.TaskEntries;
+import cz.cuni.mff.d3s.been.core.ClusterContext;
 
 /**
  * @author Martin Sixta
@@ -36,16 +35,14 @@ public class Shell {
 	@Option(name = "-gp", aliases = { "--group-password" }, usage = "Group Password")
 	private String groupPassword = "dev-pass";
 
-	private final TasksUtils tasksUtils;
+	private final ClusterContext clusterContext;
 
 	public static void main(String[] args) {
-		TaskEntries taskEntries = new TaskEntries();
-		TasksUtils tasksUtils = new TasksUtils(taskEntries);
-		new Shell(tasksUtils).doMain(args);
+		new Shell(new ClusterContext(cz.cuni.mff.d3s.been.cluster.Instance.getInstance())).doMain(args);
 	}
 
-	public Shell(TasksUtils tasksUtils) {
-		this.tasksUtils = tasksUtils;
+	public Shell(ClusterContext clusterContext) {
+		this.clusterContext = clusterContext;
 	}
 
 	private void doMain(String[] args) {
@@ -55,7 +52,7 @@ public class Shell {
 
 			ConsoleReader reader = new ConsoleReader();
 
-			IMode mode = new ClusterMode(reader, tasksUtils);
+			IMode mode = new ClusterMode(reader, clusterContext);
 
 			mode.setup(reader);
 

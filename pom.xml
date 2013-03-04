@@ -7,6 +7,7 @@
 	<groupId>cz.cuni.mff.d3s.been</groupId>
 	<artifactId>clustered</artifactId>
 	<version>3.0.0</version>
+
 	<packaging>pom</packaging>
 
 	<properties>
@@ -129,6 +130,10 @@
 				<module>software-repository-client</module>
 				<module>software-repository</module>
 				<module>software-repository-fsbasedstore</module>
+
+                                <module>demo-srclient</module>
+				<module>task-test</module>
+
 			</modules>
 		</profile>
 
@@ -140,5 +145,6 @@
 				<module>bpk-plugin</module>
 			</modules>
 		</profile>
+
 	</profiles>
 </project>

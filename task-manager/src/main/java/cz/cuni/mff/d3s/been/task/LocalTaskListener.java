@@ -10,9 +10,7 @@ import com.hazelcast.core.IMap;
 import com.hazelcast.core.Transaction;
 
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
-import cz.cuni.mff.d3s.been.core.ClusterUtils;
-import cz.cuni.mff.d3s.been.core.TasksUtils;
-import cz.cuni.mff.d3s.been.core.TopicUtils;
+import cz.cuni.mff.d3s.been.core.ClusterContext;
 import cz.cuni.mff.d3s.been.core.protocol.Context;
 import cz.cuni.mff.d3s.been.core.protocol.messages.RunTaskMessage;
 import cz.cuni.mff.d3s.been.core.task.TaskEntries;
@@ -32,14 +30,12 @@ final class LocalTaskListener implements EntryListener<String, TaskEntry>, IClus
 	private IRuntimeSelection runtimeSelection;
 
 	private IMap<String, TaskEntry> taskMap;
-	private final TasksUtils tasksUtils;
-	private final TaskEntries taskEntries;
+	private ClusterContext clusterCtx;
 
-	public LocalTaskListener(TasksUtils tasksUtils, TaskEntries taskEntries) {
-		this.tasksUtils = tasksUtils;
-		this.taskEntries = taskEntries;
-		taskMap = tasksUtils.getTasksMap();
-		MapConfig cfg = tasksUtils.getTasksMapConfig();
+	public LocalTaskListener(ClusterContext clusterCtx) {
+		this.clusterCtx = clusterCtx;
+		taskMap = clusterCtx.getTasksUtils().getTasksMap();
+		MapConfig cfg = clusterCtx.getTasksUtils().getTasksMapConfig();
 
 		if (cfg == null) {
 			throw new RuntimeException("BEEN_MAP_TASKS! does not have a config!");
@@ -48,7 +44,7 @@ final class LocalTaskListener implements EntryListener<String, TaskEntry>, IClus
 			throw new RuntimeException("Cache value == true for BEEN_MAP_TASKS!");
 		}
 
-		runtimeSelection = new RandomRuntimeSelection();
+		runtimeSelection = new RandomRuntimeSelection(clusterCtx);
 
 	}
 
@@ -72,7 +68,7 @@ final class LocalTaskListener implements EntryListener<String, TaskEntry>, IClus
 
 		// TODO: check that the entry is correct
 
-		String nodeId = ClusterUtils.getId();
+		String nodeId = clusterCtx.getId();
 		Transaction txn = null;
 		String receiverId = null;
 
@@ -82,7 +78,7 @@ final class LocalTaskListener implements EntryListener<String, TaskEntry>, IClus
 			receiverId = runtimeSelection.select(entry);
 
 			// 2) Change task state to SCHEDULED and send message to the Host Runtime
-			txn = ClusterUtils.getTransaction();
+			txn = clusterCtx.getTransaction();
 
 			{
 				txn.begin(); // BEGIN TRANSACTION -----------------------------
@@ -90,26 +86,26 @@ final class LocalTaskListener implements EntryListener<String, TaskEntry>, IClus
 				// The reason we are doing it here is to get a lock
 				// on the entry (IMap.get under transaction) and make sure than
 				// nobody got the chance to modify the entry ...
-				TaskEntry entryCopy = tasksUtils.assertClusterEqualCopy(entry);
+				TaskEntry entryCopy = clusterCtx.getTasksUtils().assertClusterEqualCopy(entry);
 
 				// Claim ownership of the node
 				entry.setOwnerId(nodeId);
 
 				// Update content of the entry
-				taskEntries.setState(entry, TaskState.SCHEDULED, "Task sheduled on " + nodeId);
+				TaskEntries.setState(entry, TaskState.SCHEDULED, "Task sheduled on " + nodeId);
 				entry.setRuntimeId(receiverId);
 
 				// Update entry
-				TaskEntry oldEntry = tasksUtils.putTask(entry);
+				TaskEntry oldEntry = clusterCtx.getTasksUtils().putTask(entry);
 
 				// Again, check that the entry did not change
 				// This SHOULD NOT be necessary ... but leave it here for now
-				tasksUtils.assertEqual(oldEntry, entryCopy);
+				clusterCtx.getTasksUtils().assertEqual(oldEntry, entryCopy);
 
 				// Send a message to the runtime
-				TopicUtils.publish(RUNTIME_TOPIC, newRunTaskMessage(entry));
+				clusterCtx.getTopicUtils().publish(RUNTIME_TOPIC, newRunTaskMessage(entry));
 
-				ClusterUtils.getAtomicNumber(entry.getId()).set(5);
+				clusterCtx.getAtomicNumber(entry.getId()).set(5);
 
 				txn.commit(); // END TRANSACTION ------------------------------
 			}
@@ -173,7 +169,7 @@ final class LocalTaskListener implements EntryListener<String, TaskEntry>, IClus
 		}
 
 		log.info("Entry updated " + taskId);
-		log.info(tasksUtils.toXml(entry));
+		log.info(TaskEntries.toXml(entry));
 	}
 
 	@Override

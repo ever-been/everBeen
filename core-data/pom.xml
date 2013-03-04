@@ -43,7 +43,7 @@
 				<version>${jaxb2-maven-plugin.version}</version>
 
                 <configuration>
-                    <arguments>-Xequals -XhashCode</arguments>
+                    <arguments>-Xequals -XhashCode -XtoString</arguments>
                 </configuration>
 
                 <dependencies>
@@ -192,7 +192,7 @@
 							<schemaDirectory> ${project.basedir}/src/main/resources/xsd</schemaDirectory>
 							<staleFile>${project.build.directory}/jaxb2/.riXjcStaleFlag</staleFile>
 							<clearOutputDir>false</clearOutputDir>
-							<schemaFiles>runtimeinfo.xsd, common.xsd</schemaFiles>
+							<schemaFiles>runtimeinfo.xsd, hardwareinfo.xsd, common.xsd</schemaFiles>
 							<packageName>cz.cuni.mff.d3s.been.core.ri</packageName>
 							<extension>true</extension>
 						</configuration>
@@ -229,21 +229,6 @@
 						</configuration>
 					</execution>
 
-                    <execution>
-                        <id>hardwareinfo-xjc</id>
-                        <goals>
-                            <goal>xjc</goal>
-                        </goals>
-                        <configuration>
-                            <arguments></arguments>
-                            <schemaDirectory>${project.basedir}/src/main/resources/xsd</schemaDirectory>
-                            <staleFile>${project.build.directory}/jaxb2/.hwiXjcStaleFlag</staleFile>
-                            <clearOutputDir>false</clearOutputDir>
-                            <schemaFiles>hardwareinfo.xsd, common.xsd</schemaFiles>
-                            <packageName>cz.cuni.mff.d3s.been.core.hwi</packageName>
-                            <extension>true</extension>
-                        </configuration>
-                    </execution>
 				</executions>
 
 			</plugin>

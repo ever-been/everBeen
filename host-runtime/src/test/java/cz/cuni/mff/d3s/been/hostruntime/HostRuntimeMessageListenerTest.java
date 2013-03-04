@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import cz.cuni.mff.d3s.been.core.ClusterContext;
 import cz.cuni.mff.d3s.been.core.protocol.messages.KillTaskMessage;
 import cz.cuni.mff.d3s.been.core.protocol.messages.RunTaskMessage;
 
@@ -17,12 +18,16 @@ public class HostRuntimeMessageListenerTest extends Assert {
 
 	@Mock
 	private HostRuntime hostRuntime;
+
+	@Mock
+	private ClusterContext clusterContext;
+
 	private HostRuntimeMessageListener listener;
 
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
-		listener = new HostRuntimeMessageListener(hostRuntime);
+		listener = new HostRuntimeMessageListener(hostRuntime, clusterContext);
 	}
 
 	@Ignore

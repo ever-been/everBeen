@@ -1,11 +1,14 @@
 package cz.cuni.mff.d3s.been.cluster;
 
+import com.hazelcast.client.ClientConfig;
+import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.config.Config;
 import com.hazelcast.config.UrlXmlConfig;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.URL;
 
 /**
@@ -48,13 +51,26 @@ public final class Instance {
 		return getInstance();
 	}
 
+    public static HazelcastInstance newNativeInstance(String host, int port, String groupName, String groupPassword) {
+        InetSocketAddress socketAddress = new InetSocketAddress(host, port);
+
+        ClientConfig clientConfig = new ClientConfig();
+        clientConfig.getGroupConfig().setName(groupName).setPassword(groupPassword);
+        clientConfig.addInetSocketAddress(socketAddress);
+
+        HazelcastClient hazelcastClient = HazelcastClient.newHazelcastClient(clientConfig);
+
+        registerInstance(hazelcastClient, NodeType.NATIVE);
+
+        return hazelcastClient;
+    }
+
 	public static void registerInstance(HazelcastInstance instance, NodeType type) {
 		if (nodeType != null) {
 			throw new IllegalArgumentException("Only one instance allowed!");
 		}
 		nodeType = type;
 		hazelcastInstance = instance;
-
 	}
 
 	public static HazelcastInstance getInstance() {
@@ -69,6 +85,15 @@ public final class Instance {
 		assert (hazelcastInstance != null);
 		return hazelcastInstance;
 	}
+
+    public static void shutdown() {
+        if (hazelcastInstance == null) return;
+
+        getInstance().getLifecycleService().shutdown();
+
+        hazelcastInstance = null;
+        nodeType = null;
+    }
 
 	private static void join() {
 		switch (nodeType) {

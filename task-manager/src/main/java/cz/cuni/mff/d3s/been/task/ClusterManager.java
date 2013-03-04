@@ -4,12 +4,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import com.hazelcast.core.HazelcastInstance;
-
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
-import cz.cuni.mff.d3s.been.core.ClusterUtils;
-import cz.cuni.mff.d3s.been.core.TasksUtils;
-import cz.cuni.mff.d3s.been.core.task.TaskEntries;
+import cz.cuni.mff.d3s.been.core.ClusterContext;
 
 /**
  * 
@@ -20,22 +16,18 @@ import cz.cuni.mff.d3s.been.core.task.TaskEntries;
  * @author Martin Sixta
  */
 final class ClusterManager implements IClusterService {
-	private final HazelcastInstance hazelcastInstance;
 	private final LocalTaskListener localTaskListener;
 	private final MembershipListener membershipListener;
 	private final ClientListener clientListener;
-	private final TasksUtils tasksUtils;
-	private final TaskEntries taskEntries;
+	private final ClusterContext clusterCtx;
 
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-	public ClusterManager(HazelcastInstance hazelcastInstance, TasksUtils tasksUtils, TaskEntries taskEntries) {
-		this.hazelcastInstance = hazelcastInstance;
-		this.tasksUtils = tasksUtils;
-		this.taskEntries = taskEntries;
-		localTaskListener = new LocalTaskListener(tasksUtils, taskEntries);
-		membershipListener = new MembershipListener();
-		clientListener = new ClientListener();
+	public ClusterManager(ClusterContext clusterCtx) {
+		this.clusterCtx = clusterCtx;
+		localTaskListener = new LocalTaskListener(clusterCtx);
+		membershipListener = new MembershipListener(clusterCtx);
+		clientListener = new ClientListener(clusterCtx);
 
 	}
 
@@ -45,9 +37,9 @@ final class ClusterManager implements IClusterService {
 		membershipListener.start();
 		clientListener.start();
 
-		scheduler.scheduleAtFixedRate(new LocalKeyScanner(tasksUtils, taskEntries), 5, 5, TimeUnit.SECONDS);
+		scheduler.scheduleAtFixedRate(new LocalKeyScanner(clusterCtx), 5, 5, TimeUnit.SECONDS);
 
-		System.out.println("My ID is: " + ClusterUtils.getId());
+		System.out.println("My ID is: " + clusterCtx.getId());
 
 	}
 
