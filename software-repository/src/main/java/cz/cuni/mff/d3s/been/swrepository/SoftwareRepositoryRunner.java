@@ -28,9 +28,10 @@ public class SoftwareRepositoryRunner {
 	 *          None recognized
 	 */
 	public static void main(String[] args) {
+		HazelcastInstance inst = Instance.newInstance(NodeType.DATA); // TODO change to lite
 		ClusterContext clusterCtx = new ClusterContext(Instance.getInstance());
 		SoftwareRepository swRepo = new SoftwareRepository(clusterCtx);
-		HazelcastInstance inst = Instance.newInstance(NodeType.DATA); // TODO change to lite
+
 
 		ServiceLoader<DataStore> dataStoreLoader = ServiceLoader.load(DataStore.class);
 		Iterator<DataStore> dsit = dataStoreLoader.iterator();
