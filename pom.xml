@@ -130,6 +130,8 @@
 				<module>software-repository-client</module>
 				<module>software-repository</module>
 				<module>software-repository-fsbasedstore</module>
+
+                                <module>demo-srclient</module>
 				<module>task-test</module>
 
 			</modules>
@@ -143,5 +145,6 @@
 				<module>bpk-plugin</module>
 			</modules>
 		</profile>
+
 	</profiles>
 </project>
