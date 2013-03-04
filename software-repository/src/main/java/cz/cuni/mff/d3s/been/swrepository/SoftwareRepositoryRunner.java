@@ -1,5 +1,15 @@
 package cz.cuni.mff.d3s.been.swrepository;
 
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Iterator;
+import java.util.ServiceLoader;
+
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
+import org.kohsuke.args4j.Option;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +26,19 @@ import cz.cuni.mff.d3s.been.swrepository.httpserver.HttpServer;
  * 
  */
 public class SoftwareRepositoryRunner {
-	private static final Logger log = LoggerFactory.getLogger(SoftwareRepositoryRunner.class);
+    @Option(name = "-h", aliases = { "--host" }, usage = "Hostname of a cluster member to connect to")
+    private String host = "localhost";
+
+    @Option(name = "-p", aliases = { "--port" }, usage = "Port of the host")
+    private int port = 5701;
+
+    @Option(name = "-gn", aliases = { "--group-name" }, usage = "Group Name")
+    private String groupName = "dev";
+
+    @Option(name = "-gp", aliases = { "--group-password" }, usage = "Group Password")
+    private String groupPassword = "dev-pass";
+
+    private static final Logger log = LoggerFactory.getLogger(SoftwareRepositoryRunner.class);
 
 	/**
 	 * Run a software repository node from command-line.
@@ -25,15 +47,26 @@ public class SoftwareRepositoryRunner {
 	 *          None recognized
 	 */
 	public static void main(String[] args) {
-		HazelcastInstance inst = Instance.newInstance(NodeType.DATA); // TODO change to lite
-		ClusterContext clusterCtx = new ClusterContext(inst);
+        new SoftwareRepositoryRunner().doMain(args);
+    }
+
+    public void doMain(String[] args) {
+
+        Instance.newNativeInstance(host, port, groupName, groupPassword);
+		ClusterContext clusterCtx = new ClusterContext(Instance.getInstance());
 		SoftwareRepository swRepo = new SoftwareRepository(clusterCtx);
 
 		// FIXME port configuration
 		// FIXME store the instance somewhere
 		DataStore dataStore = DataStoreFactory.getDataStore();
-		HttpServer httpServer = new HttpServer(clusterCtx.getInetSocketAddress().getAddress(), 8000);
-		swRepo.setDataStore(dataStore);
+        HttpServer httpServer = null;
+        try {
+            httpServer = new HttpServer(InetAddress.getByName("localhost"), 8000);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+            // FIXME
+        }
+        swRepo.setDataStore(dataStore);
 		swRepo.setHttpServer(httpServer);
 		swRepo.init();
 		swRepo.start();

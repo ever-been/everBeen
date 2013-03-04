@@ -100,4 +100,10 @@ public class TaskUtils {
 		}
 	}
 
+    public void setStateAndPut(TaskEntry entry, TaskState newState,
+                               String reasonFormat, Object... reasonArgs) throws IllegalArgumentException {
+        TaskEntries.setState(entry, newState, reasonFormat, reasonArgs);
+        putTask(entry);
+    }
+
 }
