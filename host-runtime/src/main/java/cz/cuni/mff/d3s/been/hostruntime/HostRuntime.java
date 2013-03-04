@@ -2,11 +2,15 @@ package cz.cuni.mff.d3s.been.hostruntime;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.util.ArrayList;
 
 import javax.xml.bind.JAXBException;
 
 import cz.cuni.mff.d3s.been.bpk.*;
 import cz.cuni.mff.d3s.been.core.TaskUtils;
+import org.apache.commons.exec.DefaultExecutor;
+import org.apache.commons.exec.ExecuteStreamHandler;
 import org.apache.maven.artifact.Artifact;
 
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
@@ -193,7 +197,7 @@ class HostRuntime implements IClusterService {
 			//	// ... zatim neuvazujeme zadne dalsi BPK zavislosti, pouze parenti BPK a ostatni
 			//}
 
-			String cmd = "";
+			ArrayList<String> cmd = new ArrayList<String>();
 
 			if (resolvedConf.getRuntime() instanceof JavaRuntime) {
 				JavaRuntime runtime = (JavaRuntime) resolvedConf.getRuntime();
@@ -201,29 +205,36 @@ class HostRuntime implements IClusterService {
 				File tmpFolder = createTmpDir();
 				ZipFileUtil.unzipToDir(bpk.getFile(), tmpFolder);
 
-				cmd += "java -jar " + new File(tmpFolder, runtime.getJarFile()).getAbsolutePath();
+                cmd.add("java");
+                cmd.add("-jar");
+                File dirToBpk = new File(tmpFolder, "files");
+                cmd.add(new File(dirToBpk, runtime.getJarFile()).getAbsolutePath());
 
 				BpkArtifacts arts = runtime.getBpkArtifacts();
 				// toto jsou javovske (mavenovske) zavislosti
 
 				if (!arts.getArtifact().isEmpty()) {
-					cmd += " -cp \"";
+					cmd.add("-cp");
 					boolean first = true;
+                    String cp = "";
 					for (BpkArtifact art : arts.getArtifact()) {
 						if (!first) {
-							cmd += ";";
+							cp += ";";
 						}
 						Artifact artifact = sRClient.getArtifact(art.getGroupId(), art.getArtifactId(), art.getVersion());
-						cmd += artifact.getFile().getAbsolutePath();
+						cp += artifact.getFile().getAbsolutePath();
 						first = false;
 					}
-					cmd += "\"";
+					cmd.add(cp);
 				}
 			}
 			// FIXME radek - kde vezmu zdrojaky pro sfuj BPK ? asi
 
 			try {
-				Process proc = Runtime.getRuntime().exec(cmd);
+                // FIXME zde je wait, zablokuje se a teda nejde pustit dalsi task
+                ProcessBuilder pb = new ProcessBuilder(cmd);
+                pb.inheritIO();
+                Process proc = pb.start();
                 taskUtils.setStateAndPut(taskEntry, TaskState.RUNNING, "The task '%s' has been started on HR '%s'.", taskId, getNodeId());
 				proc.waitFor(); // FIXME ?? shoud=ld we handle exit codes?
                 taskUtils.setStateAndPut(taskEntry, TaskState.FINISHED, "The task '%s' has been successfully finished on HR '%s'.", taskId, getNodeId());

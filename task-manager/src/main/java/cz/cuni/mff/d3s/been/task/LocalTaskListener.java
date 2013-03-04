@@ -169,7 +169,6 @@ final class LocalTaskListener implements EntryListener<String, TaskEntry>, IClus
 		}
 
 		log.info("Entry updated " + taskId);
-		log.info(TaskEntries.toXml(entry));
 	}
 
 	@Override
