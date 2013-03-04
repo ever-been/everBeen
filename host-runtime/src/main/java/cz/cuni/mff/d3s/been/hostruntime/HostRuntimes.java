@@ -1,6 +1,5 @@
 package cz.cuni.mff.d3s.been.hostruntime;
 
-import java.io.File;
 import java.util.UUID;
 
 import com.hazelcast.core.HazelcastInstance;
@@ -12,6 +11,7 @@ import cz.cuni.mff.d3s.been.core.TasksUtils;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskEntries;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
+import cz.cuni.mff.d3s.been.swrepository.DataStoreFactory;
 
 /**
  * @author Martin Sixta
@@ -38,8 +38,7 @@ public class HostRuntimes {
 			ServicesUtils servicesUtils = new ServicesUtils();
 			ProcessExecutor processExecutor = new ProcessExecutor();
 			BpkResolver bpkResolver = new BpkResolver();
-			File cepositoryCacheFolder = new File("/tmp/hostRuntime");
-			SwRepoClientFactory swRepoClientFactory = new SwRepoClientFactory(cepositoryCacheFolder);// FIXME Tadeas - temporary situated to /tmp/hostRuntime ... figure out later
+			SwRepoClientFactory swRepoClientFactory = new SwRepoClientFactory(DataStoreFactory.getDataStore());// FIXME Tadeas - temporary situated to /tmp/hostRuntime ... figure out later
 			String nodeId = UUID.randomUUID().toString();
 			RuntimeInfo info = runtimeInfoUtils.newInfo(nodeId);
 			ZipFileUtil zipFileUtil = new ZipFileUtil();

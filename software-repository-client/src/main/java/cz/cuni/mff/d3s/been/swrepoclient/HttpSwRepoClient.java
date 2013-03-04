@@ -3,6 +3,7 @@ package cz.cuni.mff.d3s.been.swrepoclient;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,6 +29,8 @@ import cz.cuni.mff.d3s.been.bpk.BpkArtifact;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.core.JSONUtils;
 import cz.cuni.mff.d3s.been.core.JSONUtils.JSONSerializerException;
+import cz.cuni.mff.d3s.been.swrepository.DataStore;
+import cz.cuni.mff.d3s.been.swrepository.StoreReader;
 import cz.cuni.mff.d3s.been.util.CopyStream;
 
 class HttpSwRepoClient implements SwRepoClient {
@@ -38,10 +41,13 @@ class HttpSwRepoClient implements SwRepoClient {
 	private final String hostname;
 	/** Port on which the software repository listens */
 	private final Integer port;
+	/** Data store to use for caching. */
+	private final DataStore softwareCache;
 
-	HttpSwRepoClient(String hostname, Integer port) {
+	HttpSwRepoClient(String hostname, Integer port, DataStore softwareCache) {
 		this.hostname = hostname;
 		this.port = port;
+		this.softwareCache = softwareCache;
 	}
 
 	@Override
@@ -52,6 +58,60 @@ class HttpSwRepoClient implements SwRepoClient {
 
 	@Override
 	public Bpk getBpk(BpkIdentifier bpkIdentifier) {
+		StoreReader bpkReader = null;
+		try {
+			bpkReader = softwareCache.getBpkReader(bpkIdentifier);
+		} catch (IOException e) {
+			log.warn("Failed to retrieve BPK {} from cache because \"{}\". Will attempt re-download.", bpkIdentifier.toString(), e.getMessage());
+			return getBpkByHTTP(bpkIdentifier);
+		}
+
+		InputStream bpkContent = null;
+		if (bpkReader != null) {
+			try {
+				bpkContent = bpkReader.getContentStream();
+			} catch (IOException e) {
+				log.error("Failed to open cached BPK {} because \"{}\" - the cache is probably corrupt. Will attempt re-download.", bpkIdentifier.toString(), e.getMessage());
+				return getBpkByHTTP(bpkIdentifier);
+			}
+		}
+
+		if (bpkContent != null) {
+			// FIXME double caching (File -> Stream -> File) through TMP, consider adding an API method that works with files directly
+			File tmpFile = null;
+			try {
+				tmpFile = File.createTempFile("bpk", bpkIdentifier.toString());
+			} catch (IOException e) {
+				log.error("Failed to create temporary file for BPK {} because \"{}\"", bpkIdentifier.toString(), e.getMessage());
+				return getBpkByHTTP(bpkIdentifier);
+			}
+
+			// TODO unify this code with the other block where HTTP response is being copied 
+			if (tmpFile != null) {
+				FileOutputStream fos = null;
+				try {
+					fos = new FileOutputStream(tmpFile);
+				} catch (FileNotFoundException e) {
+					log.error("Could not open temporary file {} for writing because \"{}\"", tmpFile.getAbsolutePath(), e.getMessage());
+					return getBpkByHTTP(bpkIdentifier);
+				}
+				CopyStream copyStream = new CopyStream(bpkContent, true, fos, true, true);
+				try {
+					copyStream.copy();
+				} catch (IOException e) {
+					log.error("Could not copy content of BPK {} to cache because \"{}\"", bpkIdentifier.toString(), e.getMessage());
+					return getBpkByHTTP(bpkIdentifier);
+				}
+				Bpk cachedBpk = new Bpk();
+				cachedBpk.setFile(tmpFile);
+				cachedBpk.setIdentifier(bpkIdentifier);
+				return cachedBpk;
+			}
+		}
+		return getBpkByHTTP(bpkIdentifier);
+	}
+
+	private Bpk getBpkByHTTP(BpkIdentifier bpkIdentifier) {
 		HttpUriRequest request = null;
 		try {
 			request = new HttpGet(createRepoUri() + "/bpk");

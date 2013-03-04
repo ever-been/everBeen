@@ -1,8 +1,5 @@
 package cz.cuni.mff.d3s.been.swrepository;
 
-import java.util.Iterator;
-import java.util.ServiceLoader;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,16 +27,7 @@ public class SoftwareRepositoryRunner {
 	public static void main(String[] args) {
 		SoftwareRepository swRepo = new SoftwareRepository();
 		HazelcastInstance inst = Instance.newInstance(NodeType.DATA); // TODO change to lite
-
-		ServiceLoader<DataStore> dataStoreLoader = ServiceLoader.load(DataStore.class);
-		Iterator<DataStore> dsit = dataStoreLoader.iterator();
-
-		if (!dsit.hasNext()) {
-			log.error(String.format("Could not find implementation for %s. Software repository will not start.", DataStore.class.toString()));
-			inst.getLifecycleService().shutdown();
-			return;
-		}
-		DataStore dataStore = dsit.next();
+		DataStore dataStore = DataStoreFactory.getDataStore();
 
 		// FIXME port configuration
 		// FIXME store the instance somewhere

@@ -1,6 +1,6 @@
 package cz.cuni.mff.d3s.been.swrepoclient;
 
-import java.io.File;
+import cz.cuni.mff.d3s.been.swrepository.DataStore;
 
 public class SwRepoClientFactory {
 	/**
@@ -14,13 +14,13 @@ public class SwRepoClientFactory {
 	 */
 	public static final String BPK_IDENTIFIER_HEADER_NAME = "Bpk-Identifier";
 
-	final File persistenceRootDir;
+	final DataStore softwareCache;
 
-	public SwRepoClientFactory(File persistenceRootDir) {
-		this.persistenceRootDir = persistenceRootDir;
+	public SwRepoClientFactory(DataStore softwareCache) {
+		this.softwareCache = softwareCache;
 	}
 
 	public SwRepoClient getClient(String hostname, int port) {
-		return new HttpSwRepoClient(hostname, port);
+		return new HttpSwRepoClient(hostname, port, softwareCache);
 	}
 }
