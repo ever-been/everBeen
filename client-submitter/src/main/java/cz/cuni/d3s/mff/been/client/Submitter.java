@@ -2,6 +2,7 @@ package cz.cuni.d3s.mff.been.client;
 
 import java.net.InetSocketAddress;
 
+import com.hazelcast.core.HazelcastInstance;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -50,21 +51,17 @@ public class Submitter {
 	@Option(name = "-pe", aliases = { "--print-entry" }, usage = "Print the created Task Entry")
 	private boolean printEntry = false;
 
-	private ClusterContext clusterContext;
 
 	public static void main(String[] args) {
-		new Submitter(new ClusterContext(cz.cuni.mff.d3s.been.cluster.Instance.getInstance())).doMain(args);
+		new Submitter().doMain(args);
 	}
 
-	public Submitter(ClusterContext clusterContext) {
-		this.clusterContext = clusterContext;
+	public Submitter() {
 	}
 
 	private void doMain(String[] args) {
 
 		CmdLineParser parser = new CmdLineParser(this);
-
-		HazelcastClient hazelcastClient = null;
 
 		try {
 			// parse the arguments.
@@ -75,28 +72,20 @@ public class Submitter {
 			System.out.println(tdPath);
 			TaskDescriptor td = bindingComposer.parse(new java.io.File(tdPath));
 
-			// connect to the cluster
-
 			if (debug) {
 				System.setProperty("hazelcast.logging.type", "slf4j");
 			} else {
 				System.setProperty("hazelcast.logging.type", "none");
 			}
 
-			InetSocketAddress socketAddress = new InetSocketAddress(host, port);
-
-			ClientConfig clientConfig = new ClientConfig();
-			clientConfig.getGroupConfig().setName(groupName).setPassword(groupPassword);
-			clientConfig.addInetSocketAddress(socketAddress);
-
-			hazelcastClient = HazelcastClient.newHazelcastClient(clientConfig);
-
-			Instance.registerInstance(hazelcastClient, NodeType.NATIVE);
+            // connect to the cluster
+            HazelcastInstance instance = Instance.newNativeInstance(host, port, groupName, groupPassword);
+			ClusterContext clusterContext =  new ClusterContext(instance);
 
 			// submit
 			String taskId = clusterContext.getTasksUtils().submit(td);
 
-			System.out.println("Task was submitter with id: " + taskId);
+			System.out.println("Task was submitted with id: " + taskId);
 
 			if (printEntry) {
 				TaskEntry entry = clusterContext.getTasksUtils().getTask(taskId);
@@ -114,11 +103,8 @@ public class Submitter {
 			return;
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			if (hazelcastClient != null) {
-				hazelcastClient.shutdown();
-			}
+        } finally {
+            Instance.shutdown();
 		}
-
 	}
 }
