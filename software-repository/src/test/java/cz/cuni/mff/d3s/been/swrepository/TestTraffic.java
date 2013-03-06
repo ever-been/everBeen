@@ -49,6 +49,7 @@ public class TestTraffic {
 			this.base = base;
 			this.rule = rule;
 		}
+
 		@Override
 		public void evaluate() throws Throwable {
 			startServer();
@@ -67,7 +68,9 @@ public class TestTraffic {
 			server = new HttpServer(addr, port);
 			DataStore dataStore = new FSBasedStore(SERVER_PERSISTENCE_ROOT_FOLDER);
 			server.getResolver().register("/bpk*", new BpkRequestHandler(dataStore));
-			server.getResolver().register("/artifact*", new ArtifactRequestHandler(dataStore));
+			server.getResolver().register(
+					"/artifact*",
+					new ArtifactRequestHandler(dataStore));
 			server.start();
 			rule.host = server.getHost().getHostName();
 			rule.port = server.getPort();
@@ -94,7 +97,8 @@ public class TestTraffic {
 
 		@Override
 		public Statement apply(Statement base, Description description) {
-			if (description.getMethodName() != null && description.getMethodName().endsWith("_serverDown")) {
+			if (description.getMethodName() != null && description.getMethodName().endsWith(
+					"_serverDown")) {
 				host = "localhost";
 				port = 0; // markup for random free port allocation
 				return base;
@@ -131,7 +135,9 @@ public class TestTraffic {
 	 */
 	@Before
 	public void fillFields() throws IOException {
-		randomContentFile = File.createTempFile("testSwRepoTraffic", "randomContent");
+		randomContentFile = File.createTempFile(
+				"testSwRepoTraffic",
+				"randomContent");
 		bpkId = new BpkIdentifier();
 		bpkId.setBpkId("evil-package");
 		bpkId.setGroupId("cz.cuni.mff.d3s.been.swrepository.test");
@@ -141,7 +147,9 @@ public class TestTraffic {
 	@Before
 	public void setUpClient() throws UnknownHostException {
 		// assuming JUnit4 runner executes @Rules before @Before methods
-		client = clientFactory.getClient(serverAllocatorRule.getHost(), serverAllocatorRule.getPort());
+		client = clientFactory.getClient(
+				serverAllocatorRule.getHost(),
+				serverAllocatorRule.getPort());
 	}
 
 	/**
@@ -173,7 +181,14 @@ public class TestTraffic {
 	@Test
 	public void testUploadBpk() throws IOException {
 		assertTrue(client.putBpk(bpkId, randomContentFile));
-		assertFilePresent(SERVER_PERSISTENCE_ROOT_FOLDER, String.format("%s-%s.bpk", bpkId.getBpkId(), bpkId.getVersion()), "bpks", randomContentFile, bpkId.getGroupId(), bpkId.getBpkId(), bpkId.getVersion());
+		assertFilePresent(
+				SERVER_PERSISTENCE_ROOT_FOLDER,
+				String.format("%s-%s.bpk", bpkId.getBpkId(), bpkId.getVersion()),
+				"bpks",
+				randomContentFile,
+				bpkId.getGroupId(),
+				bpkId.getBpkId(),
+				bpkId.getVersion());
 	}
 
 	@Test
@@ -182,14 +197,27 @@ public class TestTraffic {
 		// reset fields - generates same identifier but different content
 		fillFields();
 		assertTrue(client.putBpk(bpkId, randomContentFile));
-		assertFilePresent(SERVER_PERSISTENCE_ROOT_FOLDER, String.format("%s-%s.bpk", bpkId.getBpkId(), bpkId.getVersion()), "bpks", randomContentFile, bpkId.getGroupId(), bpkId.getBpkId(), bpkId.getVersion());
+		assertFilePresent(
+				SERVER_PERSISTENCE_ROOT_FOLDER,
+				String.format("%s-%s.bpk", bpkId.getBpkId(), bpkId.getVersion()),
+				"bpks",
+				randomContentFile,
+				bpkId.getGroupId(),
+				bpkId.getBpkId(),
+				bpkId.getVersion());
 	}
 
 	@Test
 	public void testUploadBpk_fileDoesntExist() {
 		randomContentFile.delete();
 		assertFalse(client.putBpk(bpkId, randomContentFile));
-		assertFileAbsent(SERVER_PERSISTENCE_ROOT_FOLDER, String.format("%s-%s.bpk", bpkId.getBpkId(), bpkId.getVersion()), "bpks", bpkId.getGroupId(), bpkId.getBpkId(), bpkId.getVersion());
+		assertFileAbsent(
+				SERVER_PERSISTENCE_ROOT_FOLDER,
+				String.format("%s-%s.bpk", bpkId.getBpkId(), bpkId.getVersion()),
+				"bpks",
+				bpkId.getGroupId(),
+				bpkId.getBpkId(),
+				bpkId.getVersion());
 	}
 
 	@Test
@@ -201,7 +229,13 @@ public class TestTraffic {
 	@Test
 	public void testUploadBpk_serverDown() {
 		assertFalse(client.putBpk(bpkId, randomContentFile));
-		assertFileAbsent(SERVER_PERSISTENCE_ROOT_FOLDER, String.format("%s-%s.bpk", bpkId.getBpkId(), bpkId.getVersion()), "bpks", bpkId.getGroupId(), bpkId.getBpkId(), bpkId.getVersion());
+		assertFileAbsent(
+				SERVER_PERSISTENCE_ROOT_FOLDER,
+				String.format("%s-%s.bpk", bpkId.getBpkId(), bpkId.getVersion()),
+				"bpks",
+				bpkId.getGroupId(),
+				bpkId.getBpkId(),
+				bpkId.getVersion());
 	}
 
 	// test delete bpk that exists
@@ -209,7 +243,13 @@ public class TestTraffic {
 
 	@Test
 	public void testDownloadBpk() throws IOException {
-		File persistedFile = getFileFromPathAndName(SERVER_PERSISTENCE_ROOT_FOLDER, String.format("%s-%s.bpk", bpkId.getBpkId(), bpkId.getVersion()), "bpks", bpkId.getGroupId(), bpkId.getBpkId(), bpkId.getVersion());
+		File persistedFile = getFileFromPathAndName(
+				SERVER_PERSISTENCE_ROOT_FOLDER,
+				String.format("%s-%s.bpk", bpkId.getBpkId(), bpkId.getVersion()),
+				"bpks",
+				bpkId.getGroupId(),
+				bpkId.getBpkId(),
+				bpkId.getVersion());
 		persistedFile.getParentFile().mkdirs();
 		persistedFile.createNewFile();
 		FileWriter fw = new FileWriter(persistedFile);
@@ -236,7 +276,13 @@ public class TestTraffic {
 
 	@Test
 	public void testDownloadBpkInCache_serverDown() throws IOException {
-		File fileInCache = getFileFromPathAndName(CLIENT_PERSISTENCE_ROOT_FOLDER, String.format("%s-%s.bpk", bpkId.getBpkId(), bpkId.getVersion()), "bpks", bpkId.getGroupId(), bpkId.getBpkId(), bpkId.getVersion());
+		File fileInCache = getFileFromPathAndName(
+				CLIENT_PERSISTENCE_ROOT_FOLDER,
+				String.format("%s-%s.bpk", bpkId.getBpkId(), bpkId.getVersion()),
+				"bpks",
+				bpkId.getGroupId(),
+				bpkId.getBpkId(),
+				bpkId.getVersion());
 		fileInCache.getParentFile().mkdirs();
 		fileInCache.createNewFile();
 		FileWriter fw = new FileWriter(fileInCache);
@@ -251,6 +297,38 @@ public class TestTraffic {
 		assertEquals(cacheContent, FileUtils.fileRead(bpk.getFile()));
 	}
 
+	@Test
+	public void testDownloadedBpkCaching() throws IOException {
+		File serverFile = getFileFromPathAndName(
+				SERVER_PERSISTENCE_ROOT_FOLDER,
+				String.format("%s-%s.bpk", bpkId.getBpkId(), bpkId.getVersion()),
+				"bpks",
+				bpkId.getGroupId(),
+				bpkId.getBpkId(),
+				bpkId.getVersion());
+		serverFile.getParentFile().mkdirs();
+		serverFile.createNewFile();
+		FileWriter fw = new FileWriter(serverFile);
+		fw.write("I'm a server file and I'm proud of it.");
+		fw.close();
+
+		Bpk bpk = client.getBpk(bpkId);
+		assertNotNull(bpk);
+		assertNotNull(bpk.getFile());
+		File bpkFile = bpk.getFile();
+		assertTrue(bpkFile.exists());
+
+		File fileInCache = getFileFromPathAndName(
+				CLIENT_PERSISTENCE_ROOT_FOLDER,
+				String.format("%s-%s.bpk", bpkId.getBpkId(), bpkId.getVersion()),
+				"bpks",
+				bpkId.getGroupId(),
+				bpkId.getBpkId(),
+				bpkId.getVersion());
+		assertNotNull(fileInCache);
+		assertTrue(fileInCache.exists());
+		assertEquals(FileUtils.fileRead(bpkFile), FileUtils.fileRead(fileInCache));
+	}
 	// test download artifact
 	// test download artifact bad identifier
 	// test download artifact server down
@@ -279,9 +357,17 @@ public class TestTraffic {
 	 * @throws IOException
 	 *           On reference or actual file read error
 	 */
-	public void assertFilePresent(File root, String fileName, String storeName,
-			File referenceFile, String... pathItems) throws IOException {
-		final File file = getFileFromPathAndName(root, fileName, storeName, pathItems);
+	public void assertFilePresent(
+			File root,
+			String fileName,
+			String storeName,
+			File referenceFile,
+			String... pathItems) throws IOException {
+		final File file = getFileFromPathAndName(
+				root,
+				fileName,
+				storeName,
+				pathItems);
 		assertTrue(file.exists());
 		final String actualFileContent = FileUtils.fileRead(referenceFile);
 		final String referenceFileContent = FileUtils.fileRead(file);
@@ -300,15 +386,27 @@ public class TestTraffic {
 	 * @param pathItems
 	 *          Names of the file's path items within the persistence folder
 	 */
-	public void assertFileAbsent(File root, String fileName, String storeName,
+	public void assertFileAbsent(
+			File root,
+			String fileName,
+			String storeName,
 			String... pathItems) {
-		final File file = getFileFromPathAndName(root, fileName, storeName, pathItems);
+		final File file = getFileFromPathAndName(
+				root,
+				fileName,
+				storeName,
+				pathItems);
 		assertFalse(file.exists());
 	}
 
-	private File getFileFromPathAndName(File root, String fileName,
-			String storeName, String... pathItems) {
-		Path path = FileSystems.getDefault().getPath(root.getPath() + File.separator + storeName, pathItems);
+	private File getFileFromPathAndName(
+			File root,
+			String fileName,
+			String storeName,
+			String... pathItems) {
+		Path path = FileSystems.getDefault().getPath(
+				root.getPath() + File.separator + storeName,
+				pathItems);
 		return new File(path.toFile(), fileName);
 	}
 }

@@ -10,7 +10,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -62,7 +61,10 @@ class HttpSwRepoClient implements SwRepoClient {
 		try {
 			bpkReader = softwareCache.getBpkReader(bpkIdentifier);
 		} catch (IOException e) {
-			log.warn("Failed to retrieve BPK {} from cache because \"{}\". Will attempt re-download.", bpkIdentifier.toString(), e.getMessage());
+			log.warn(
+					"Failed to retrieve BPK {} from cache because \"{}\". Will attempt re-download.",
+					bpkIdentifier.toString(),
+					e.getMessage());
 			return getBpkByHTTP(bpkIdentifier);
 		}
 
@@ -71,7 +73,10 @@ class HttpSwRepoClient implements SwRepoClient {
 			try {
 				bpkContent = bpkReader.getContentStream();
 			} catch (IOException e) {
-				log.error("Failed to open cached BPK {} because \"{}\" - the cache is probably corrupt. Will attempt re-download.", bpkIdentifier.toString(), e.getMessage());
+				log.error(
+						"Failed to open cached BPK {} because \"{}\" - the cache is probably corrupt. Will attempt re-download.",
+						bpkIdentifier.toString(),
+						e.getMessage());
 				return getBpkByHTTP(bpkIdentifier);
 			}
 		}
@@ -82,7 +87,10 @@ class HttpSwRepoClient implements SwRepoClient {
 			try {
 				tmpFile = File.createTempFile("bpk", bpkIdentifier.toString());
 			} catch (IOException e) {
-				log.error("Failed to create temporary file for BPK {} because \"{}\"", bpkIdentifier.toString(), e.getMessage());
+				log.error(
+						"Failed to create temporary file for BPK {} because \"{}\"",
+						bpkIdentifier.toString(),
+						e.getMessage());
 			}
 			if (tmpFile == null) {
 				return getBpkByHTTP(bpkIdentifier);
@@ -121,14 +129,20 @@ class HttpSwRepoClient implements SwRepoClient {
 		try {
 			request = new HttpPut(createRepoUri() + "/bpk");
 		} catch (URISyntaxException e) {
-			log.error(String.format("Failed to upload BPK %s to repository - URI synthesis error.", bpkMetaInfo.toString()));
+			log.error(String.format(
+					"Failed to upload BPK %s to repository - URI synthesis error.",
+					bpkMetaInfo.toString()));
 			return false;
 		}
 
 		try {
-			request.setHeader(SwRepoClientFactory.BPK_IDENTIFIER_HEADER_NAME, JSONUtils.serialize(bpkMetaInfo));
+			request.setHeader(
+					SwRepoClientFactory.BPK_IDENTIFIER_HEADER_NAME,
+					JSONUtils.serialize(bpkMetaInfo));
 		} catch (JSONSerializerException e) {
-			log.error(String.format("Failed to upload BPK %s to repository - Identifier serialization error.", bpkMetaInfo.toString()));
+			log.error(String.format(
+					"Failed to upload BPK %s to repository - Identifier serialization error.",
+					bpkMetaInfo.toString()));
 			return false;
 		}
 
@@ -136,7 +150,10 @@ class HttpSwRepoClient implements SwRepoClient {
 		try {
 			sentFileStream = new BufferedInputStream(new FileInputStream(bpkFile));
 		} catch (IOException e) {
-			log.error(String.format("Failed to upload BPK %s to repository - error reading file %s", bpkMetaInfo.toString(), bpkFile.getAbsolutePath()));
+			log.error(String.format(
+					"Failed to upload BPK %s to repository - error reading file %s",
+					bpkMetaInfo.toString(),
+					bpkFile.getAbsolutePath()));
 			return false;
 		}
 		InputStreamEntity sentEntity = new InputStreamEntity(sentFileStream, bpkFile.length());
@@ -147,15 +164,24 @@ class HttpSwRepoClient implements SwRepoClient {
 		try {
 			response = cli.execute(request);
 		} catch (ClientProtocolException e) {
-			log.error(String.format("Failed to upload BPK %s - transport protocol error: \"%s\"", bpkMetaInfo.toString(), e.getMessage()));
+			log.error(String.format(
+					"Failed to upload BPK %s - transport protocol error: \"%s\"",
+					bpkMetaInfo.toString(),
+					e.getMessage()));
 			return false;
 		} catch (IOException e) {
-			log.error(String.format("Failed to upload BPK %s - transport I/O error: \"%s\"", bpkMetaInfo.toString(), e.getMessage()));
+			log.error(String.format(
+					"Failed to upload BPK %s - transport I/O error: \"%s\"",
+					bpkMetaInfo.toString(),
+					e.getMessage()));
 			return false;
 		}
 
 		if ((response.getStatusLine().getStatusCode() / 100) != 2) {
-			log.error(String.format("Failed to upload BPK %s - server error: \"%s\"", bpkMetaInfo.toString(), response.getStatusLine().getReasonPhrase()));
+			log.error(String.format(
+					"Failed to upload BPK %s - server error: \"%s\"",
+					bpkMetaInfo.toString(),
+					response.getStatusLine().getReasonPhrase()));
 			return false;
 		} else {
 			return true;
@@ -170,14 +196,20 @@ class HttpSwRepoClient implements SwRepoClient {
 		try {
 			fos = new FileOutputStream(targetFile);
 		} catch (FileNotFoundException e) {
-			log.error("Could not open temporary file \"{}\" for writing - {}", targetFile.getAbsolutePath(), e.getMessage());
+			log.error(
+					"Could not open temporary file \"{}\" for writing - {}",
+					targetFile.getAbsolutePath(),
+					e.getMessage());
 			return false;
 		}
 		CopyStream copyStream = new CopyStream(content, true, fos, true, true);
 		try {
 			copyStream.copy();
 		} catch (IOException e) {
-			log.error("Could not copy content to File \"{}\" to cache - {}", targetFile.getAbsolutePath(), e.getMessage());
+			log.error(
+					"Could not copy content to File \"{}\" to cache - {}",
+					targetFile.getAbsolutePath(),
+					e.getMessage());
 			return false;
 		}
 		return true;
@@ -196,13 +228,19 @@ class HttpSwRepoClient implements SwRepoClient {
 		try {
 			request = new HttpGet(createRepoUri() + "/bpk");
 		} catch (URISyntaxException e) {
-			log.error(String.format("Failed to retrieve BKP %s - unable to synthesize get request URI", bpkIdentifier.toString()));
+			log.error(String.format(
+					"Failed to retrieve BKP %s - unable to synthesize get request URI",
+					bpkIdentifier.toString()));
 			return null;
 		}
 		try {
-			request.addHeader(SwRepoClientFactory.BPK_IDENTIFIER_HEADER_NAME, JSONUtils.serialize(bpkIdentifier));
+			request.addHeader(
+					SwRepoClientFactory.BPK_IDENTIFIER_HEADER_NAME,
+					JSONUtils.serialize(bpkIdentifier));
 		} catch (JSONSerializerException e) {
-			log.error(String.format("Failed to retrieve BPK %s - unable to serialize BPK identifier into request header", bpkIdentifier.toString()));
+			log.error(String.format(
+					"Failed to retrieve BPK %s - unable to serialize BPK identifier into request header",
+					bpkIdentifier.toString()));
 		}
 
 		HttpClient httpCli = new DefaultHttpClient();
@@ -210,15 +248,22 @@ class HttpSwRepoClient implements SwRepoClient {
 		try {
 			response = httpCli.execute(request);
 		} catch (ClientProtocolException e) {
-			log.error(String.format("Failed to retrieve BKP %s - unable to synthesize get request URI", bpkIdentifier.toString()));
+			log.error(String.format(
+					"Failed to retrieve BKP %s - unable to synthesize get request URI",
+					bpkIdentifier.toString()));
 			return null;
 		} catch (IOException e) {
-			log.error(String.format("Failed to retrieve BKP %s - I/O error or connection re-set", bpkIdentifier.toString()));
+			log.error(String.format(
+					"Failed to retrieve BKP %s - I/O error or connection re-set",
+					bpkIdentifier.toString()));
 			return null;
 		}
 
 		if (response.getStatusLine().getStatusCode() / 100 != 2) {
-			log.error(String.format("Failed to retrieve BPK %s - server refusal: \"%s\"", bpkIdentifier.toString(), response.getStatusLine().getReasonPhrase()));
+			log.error(String.format(
+					"Failed to retrieve BPK %s - server refusal: \"%s\"",
+					bpkIdentifier.toString(),
+					response.getStatusLine().getReasonPhrase()));
 			return null;
 		}
 
@@ -226,7 +271,9 @@ class HttpSwRepoClient implements SwRepoClient {
 		try {
 			is = response.getEntity().getContent();
 		} catch (IOException e) {
-			log.error(String.format("Failed to retrieve BKP %s - error opening SW repo response for reading", bpkIdentifier.toString()));
+			log.error(String.format(
+					"Failed to retrieve BKP %s - error opening SW repo response for reading",
+					bpkIdentifier.toString()));
 			return null;
 		}
 
@@ -240,8 +287,8 @@ class HttpSwRepoClient implements SwRepoClient {
 			return null;
 		}
 
-		HttpEntity entity = response.getEntity();
-		storeEntity(entity, bpkIdentifier);
+		// have to use existing temp file - HTTP entity is not repeatable
+		storeBpkFileToCache(tempFile, bpkIdentifier);
 
 		closeStream(is);
 
@@ -251,27 +298,39 @@ class HttpSwRepoClient implements SwRepoClient {
 
 		return bpk;
 	}
-	private boolean storeEntity(HttpEntity entity, BpkIdentifier bpkIdentifier) {
+	private boolean storeBpkFileToCache(File file, BpkIdentifier bpkIdentifier) {
 		InputStream bpkIs = null;
 		try {
-			bpkIs = entity.getContent();
+			bpkIs = new FileInputStream(file);
 		} catch (IllegalStateException e) {
-			log.error("Entity {} is not ready to give away its content - {}", entity.toString(), e.getMessage());
+			log.error(
+					"Entity {} is not ready to give away its content - {}",
+					bpkIs.toString(),
+					e.getMessage());
 			return false;
 		} catch (IOException e) {
-			log.error("I/O error when reading content from entity {} - {}", entity.toString(), e.getMessage());
+			log.error(
+					"I/O error when reading content from entity {} - {}",
+					bpkIs.toString(),
+					e.getMessage());
 			return false;
 		}
 		try {
 			softwareCache.getBpkPersister(bpkIdentifier).dump(bpkIs);
 		} catch (IOException e) {
-			log.error("I/O error writing BPK {} - {}", bpkIdentifier.toString(), e.getMessage());
+			log.error(
+					"I/O error writing BPK {} - {}",
+					bpkIdentifier.toString(),
+					e.getMessage());
 			return false;
 		}
 		try {
 			bpkIs.close();
 		} catch (IOException e) {
-			log.error("Leaked descriptor (BPK {}): Couldn't close HTTP entity content stream - {}", bpkIdentifier.toString(), e.getMessage());
+			log.error(
+					"Leaked descriptor (BPK {}): Couldn't close HTTP entity content stream - {}",
+					bpkIdentifier.toString(),
+					e.getMessage());
 		}
 		return true;
 	}
