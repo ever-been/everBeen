@@ -72,13 +72,7 @@
 			<version>${project.version}</version>
 			<scope>runtime</scope>
 		</dependency>
-
-		<dependency>
-			<groupId>cz.cuni.mff.d3s.been</groupId>
-			<artifactId>util</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
+		
 		<!-- CLUSTER DEPENDENCIES -->
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
