@@ -47,9 +47,19 @@ final class HostRuntimeMessageListener implements MessageListener<BaseMessage>, 
 				RunTaskMessage runTaskMessage = (RunTaskMessage) messageObject;
 
 				log.info("Runtime: Received task to run " + runTaskMessage.taskId);
-				hostRuntime.onRunTask((RunTaskMessage) messageObject);
+				new Thread() {
+					@Override
+					public void run() {
+						hostRuntime.onRunTask((RunTaskMessage) messageObject);
+					}
+				}.start();
 			} else if (messageObject instanceof KillTaskMessage) {
-				hostRuntime.onKillTask((KillTaskMessage) messageObject);
+				new Thread() {
+					@Override
+					public void run() {
+						hostRuntime.onKillTask((KillTaskMessage) messageObject);
+					}
+				}.start();
 			}
 		}
 	}
