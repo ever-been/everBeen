@@ -8,7 +8,7 @@
 	<artifactId>clustered</artifactId>
 	<version>3.0.0</version>
 
-	<packaging>pom</packaging>
+    <packaging>pom</packaging>
 
 	<properties>
 		<!-- BEEN DEPENDENCIES -->
@@ -58,13 +58,6 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
 			<version>${slf4j.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<scope>runtime</scope>
-			<version>${logback.version}</version>
 		</dependency>
 
 		<dependency>
@@ -129,10 +122,9 @@
 				<module>software-repository-client</module>
 				<module>software-repository</module>
 				<module>software-repository-fsbasedstore</module>
-
-                                <module>demo-srclient</module>
+                <module>demo-srclient</module>
+                <module>task-api</module>
 				<module>task-test</module>
-
 			</modules>
 		</profile>
 
