@@ -5,19 +5,19 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import cz.cuni.mff.d3s.been.swrepository.StoreReader;
+import cz.cuni.mff.d3s.been.datastore.StoreReader;
 
 /**
  * A {@link FSBasedStore}-related implementation of {@link StoreReader}.
  * 
  * @author darklight
- *
+ * 
  */
-public class FSBasedStoreReader implements StoreReader {
-	
+class FSBasedStoreReader implements StoreReader {
+
 	/** The file this reader is reading */
 	private final File readFile;
-	
+
 	FSBasedStoreReader(File readFile) {
 		this.readFile = readFile;
 	}

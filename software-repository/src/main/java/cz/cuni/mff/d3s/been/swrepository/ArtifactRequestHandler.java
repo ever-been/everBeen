@@ -3,7 +3,7 @@ package cz.cuni.mff.d3s.been.swrepository;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 
-import cz.cuni.mff.d3s.been.swrepository.ArtifactStore;
+import cz.cuni.mff.d3s.been.datastore.ArtifactStore;
 import cz.cuni.mff.d3s.been.swrepository.httpserver.SkeletalRequestHandler;
 
 /**

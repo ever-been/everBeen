@@ -3,11 +3,16 @@ package cz.cuni.mff.d3s.been.hostruntime;
 import java.io.File;
 import java.io.IOException;
 
-import javax.xml.bind.JAXBException;
-
-import cz.cuni.mff.d3s.been.bpk.*;
 import org.apache.maven.artifact.Artifact;
 
+import cz.cuni.mff.d3s.been.bpk.Bpk;
+import cz.cuni.mff.d3s.been.bpk.BpkArtifact;
+import cz.cuni.mff.d3s.been.bpk.BpkArtifacts;
+import cz.cuni.mff.d3s.been.bpk.BpkConfiguration;
+import cz.cuni.mff.d3s.been.bpk.BpkConfigurationException;
+import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
+import cz.cuni.mff.d3s.been.bpk.BpkResolver;
+import cz.cuni.mff.d3s.been.bpk.JavaRuntime;
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
 import cz.cuni.mff.d3s.been.core.ClusterContext;
 import cz.cuni.mff.d3s.been.core.JSONUtils.JSONSerializerException;
@@ -71,7 +76,10 @@ class HostRuntime implements IClusterService {
 	 * @param nodeId
 	 *          cluster-unique id of {@link HostRuntime} node
 	 */
-	public HostRuntime(ClusterContext clusterContext, SwRepoClientFactory swRepoClientFactory, RuntimeInfo hostRuntimeInfo) {
+	public HostRuntime(
+			ClusterContext clusterContext,
+			SwRepoClientFactory swRepoClientFactory,
+			RuntimeInfo hostRuntimeInfo) {
 		this.clusterContext = clusterContext;
 		this.hostRuntimeInfo = hostRuntimeInfo;
 		this.swRepoClientFactory = swRepoClientFactory;
@@ -151,13 +159,20 @@ class HostRuntime implements IClusterService {
 	}
 
 	void sendMessage(final BaseMessage message) {
-		clusterContext.getTopicUtils().publish(Context.GLOBAL_TOPIC.getName(), message);
+		clusterContext.getTopicUtils().publish(
+				Context.GLOBAL_TOPIC.getName(),
+				message);
 	}
 
 	void tryRunTask(RunTaskMessage message) {
 		String taskId = message.taskId;
 		TaskEntry taskEntry = clusterContext.getTasksUtils().getTask(taskId);
-		TaskEntries.setState(taskEntry, TaskState.ACCEPTED, "Task '%s' has been accepted by HR '%s'.", taskId, getNodeId());
+		TaskEntries.setState(
+				taskEntry,
+				TaskState.ACCEPTED,
+				"Task '%s' has been accepted by HR '%s'.",
+				taskId,
+				getNodeId());
 
 		try {
 			TaskDescriptor descriptor = taskEntry.getTaskDescriptor();
@@ -168,7 +183,7 @@ class HostRuntime implements IClusterService {
 			Bpk bpk = sRClient.getBpk(bpkMetaInfo);
 			BpkConfiguration resolvedConf = null;
 			try {
-				resolvedConf = BpkResolver.resolve(bpk.getFile());
+				resolvedConf = BpkResolver.resolve(bpk.getInputStream());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -202,7 +217,10 @@ class HostRuntime implements IClusterService {
 						if (!first) {
 							cmd += ";";
 						}
-						Artifact artifact = sRClient.getArtifact(art.getGroupId(), art.getArtifactId(), art.getVersion());
+						Artifact artifact = sRClient.getArtifact(
+								art.getGroupId(),
+								art.getArtifactId(),
+								art.getVersion());
 						cmd += artifact.getFile().getAbsolutePath();
 						first = false;
 					}
@@ -213,16 +231,38 @@ class HostRuntime implements IClusterService {
 
 			try {
 				Process proc = Runtime.getRuntime().exec(cmd);
-				TaskEntries.setState(taskEntry, TaskState.RUNNING, "The task '%s' has been started on HR '%s'.", taskId, getNodeId());
+				TaskEntries.setState(
+						taskEntry,
+						TaskState.RUNNING,
+						"The task '%s' has been started on HR '%s'.",
+						taskId,
+						getNodeId());
 				proc.waitFor(); // FIXME ?? shoud=ld we handle exit codes?
-				TaskEntries.setState(taskEntry, TaskState.FINISHED, "The task '%s' has been successfully finished on HR '%s'.", taskId, getNodeId());
+				TaskEntries.setState(
+						taskEntry,
+						TaskState.FINISHED,
+						"The task '%s' has been successfully finished on HR '%s'.",
+						taskId,
+						getNodeId());
 			} catch (IOException | InterruptedException e) {
-				TaskEntries.setState(taskEntry, TaskState.ABORTED, "The task '%s' has been aborted on HR '%s' due to underlaying exception '%s'.", taskId, getNodeId(), e.getMessage());
+				TaskEntries.setState(
+						taskEntry,
+						TaskState.ABORTED,
+						"The task '%s' has been aborted on HR '%s' due to underlaying exception '%s'.",
+						taskId,
+						getNodeId(),
+						e.getMessage());
 				e.printStackTrace();
 				// TODO Auto-generated catch block
 			}
 		} catch (Throwable t) {
-			TaskEntries.setState(taskEntry, TaskState.ABORTED, "The task '%s' has been aborted on HR '%s' due to unexpected exception '%s'.", taskId, getNodeId(), t.getMessage());
+			TaskEntries.setState(
+					taskEntry,
+					TaskState.ABORTED,
+					"The task '%s' has been aborted on HR '%s' due to unexpected exception '%s'.",
+					taskId,
+					getNodeId(),
+					t.getMessage());
 		}
 	}
 

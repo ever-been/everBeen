@@ -125,7 +125,6 @@
 				<module>client-submitter</module>
 				<module>client-shell</module>
 				<module>host-runtime</module>
-				<module>util</module>
 				<module>software-repository-store</module>
 				<module>software-repository-client</module>
 				<module>software-repository</module>

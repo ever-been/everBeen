@@ -26,6 +26,7 @@ import org.junit.runners.model.Statement;
 
 import cz.cuni.mff.d3s.been.bpk.Bpk;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
+import cz.cuni.mff.d3s.been.datastore.DataStore;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
 import cz.cuni.mff.d3s.been.swrepository.httpserver.HttpServer;

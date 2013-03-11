@@ -1,4 +1,4 @@
-package cz.cuni.mff.d3s.been.swrepository;
+package cz.cuni.mff.d3s.been.datastore;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,19 +14,19 @@ public interface StoreReader {
 	/**
 	 * Get a r/o stream on this reader's targeted content
 	 * 
-	 * @return An open stream to the content; the user is responsible for
-	 *         closing it
+	 * @return An open stream to the content - the user is responsible for closing
+	 *         it; Returns <code>null</code> if operation fails
 	 * 
 	 * @throws IOException
-	 *             When the stream can not be opened
+	 *           When the stream cannot be opened
 	 */
 	InputStream getContentStream() throws IOException;
 
 	/**
 	 * Get the length (in bytes) of the content targeted by this reader.
 	 * 
-	 * @return The length of targeted content, or <code>-1</code> if the
-	 *         targeted content doesn't exist.
+	 * @return The length of targeted content, or <code>-1</code> if the targeted
+	 *         content doesn't exist.
 	 */
 	long getContentLength();
 }

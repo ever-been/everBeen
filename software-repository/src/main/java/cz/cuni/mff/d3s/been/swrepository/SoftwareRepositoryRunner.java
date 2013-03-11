@@ -8,6 +8,8 @@ import com.hazelcast.core.HazelcastInstance;
 import cz.cuni.mff.d3s.been.cluster.Instance;
 import cz.cuni.mff.d3s.been.cluster.NodeType;
 import cz.cuni.mff.d3s.been.core.ClusterContext;
+import cz.cuni.mff.d3s.been.datastore.DataStore;
+import cz.cuni.mff.d3s.been.datastore.DataStoreFactory;
 import cz.cuni.mff.d3s.been.swrepository.httpserver.HttpServer;
 
 /**

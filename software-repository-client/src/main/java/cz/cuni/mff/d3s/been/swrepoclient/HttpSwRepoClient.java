@@ -28,8 +28,10 @@ import cz.cuni.mff.d3s.been.bpk.BpkArtifact;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.core.JSONUtils;
 import cz.cuni.mff.d3s.been.core.JSONUtils.JSONSerializerException;
-import cz.cuni.mff.d3s.been.swrepository.DataStore;
-import cz.cuni.mff.d3s.been.swrepository.StoreReader;
+import cz.cuni.mff.d3s.been.datastore.BpkFromStore;
+import cz.cuni.mff.d3s.been.datastore.DataStore;
+import cz.cuni.mff.d3s.been.datastore.StorePersister;
+import cz.cuni.mff.d3s.been.datastore.StoreReader;
 import cz.cuni.mff.d3s.been.util.CopyStream;
 
 class HttpSwRepoClient implements SwRepoClient {
@@ -57,53 +59,12 @@ class HttpSwRepoClient implements SwRepoClient {
 
 	@Override
 	public Bpk getBpk(BpkIdentifier bpkIdentifier) {
-		StoreReader bpkReader = null;
-		try {
-			bpkReader = softwareCache.getBpkReader(bpkIdentifier);
-		} catch (IOException e) {
-			log.warn(
-					"Failed to retrieve BPK {} from cache because \"{}\". Will attempt re-download.",
-					bpkIdentifier.toString(),
-					e.getMessage());
+		StoreReader bpkReader = softwareCache.getBpkReader(bpkIdentifier);
+		if (bpkReader != null) {
+			return new BpkFromStore(bpkReader, bpkIdentifier);
+		} else {
 			return getBpkByHTTP(bpkIdentifier);
 		}
-
-		InputStream bpkContent = null;
-		if (bpkReader != null) {
-			try {
-				bpkContent = bpkReader.getContentStream();
-			} catch (IOException e) {
-				log.error(
-						"Failed to open cached BPK {} because \"{}\" - the cache is probably corrupt. Will attempt re-download.",
-						bpkIdentifier.toString(),
-						e.getMessage());
-				return getBpkByHTTP(bpkIdentifier);
-			}
-		}
-
-		if (bpkContent != null) {
-			// FIXME double caching (File -> Stream -> File) through TMP, consider adding an API method that works with files directly
-			File tmpFile = null;
-			try {
-				tmpFile = File.createTempFile("bpk", bpkIdentifier.toString());
-			} catch (IOException e) {
-				log.error(
-						"Failed to create temporary file for BPK {} because \"{}\"",
-						bpkIdentifier.toString(),
-						e.getMessage());
-			}
-			if (tmpFile == null) {
-				return getBpkByHTTP(bpkIdentifier);
-			}
-
-			if (storeContentToFile(bpkContent, tmpFile)) {
-				Bpk bpk = new Bpk();
-				bpk.setFile(tmpFile);
-				bpk.setIdentifier(bpkIdentifier);
-				return bpk;
-			}
-		}
-		return getBpkByHTTP(bpkIdentifier);
 	}
 
 	@Override
@@ -277,26 +238,18 @@ class HttpSwRepoClient implements SwRepoClient {
 			return null;
 		}
 
-		File tempFile = createTmpFile();
-		if (tempFile == null) {
-			closeStream(is);
-			return null;
+		StorePersister sp = softwareCache.getBpkPersister(bpkIdentifier);
+		try {
+			sp.dump(is);
+		} catch (IOException e) {
+			log.error(
+					"Failed to cache BPK {} locally - {}",
+					bpkIdentifier.toString(),
+					e.getMessage());
 		}
-
-		if (!storeContentToFile(is, tempFile)) {
-			return null;
-		}
-
-		// have to use existing temp file - HTTP entity is not repeatable
-		storeBpkFileToCache(tempFile, bpkIdentifier);
-
 		closeStream(is);
 
-		Bpk bpk = new Bpk();
-		bpk.setFile(tempFile);
-		bpk.setIdentifier(bpkIdentifier);
-
-		return bpk;
+		return new BpkFromStore(softwareCache.getBpkReader(bpkIdentifier), bpkIdentifier);
 	}
 	private boolean storeBpkFileToCache(File file, BpkIdentifier bpkIdentifier) {
 		InputStream bpkIs = null;
@@ -311,8 +264,9 @@ class HttpSwRepoClient implements SwRepoClient {
 		} catch (IOException e) {
 			log.error(
 					"I/O error when reading content from entity {} - {}",
-					bpkIs.toString(),
+					bpkIdentifier.toString(),
 					e.getMessage());
+			closeStream(bpkIs);
 			return false;
 		}
 		try {
@@ -322,6 +276,7 @@ class HttpSwRepoClient implements SwRepoClient {
 					"I/O error writing BPK {} - {}",
 					bpkIdentifier.toString(),
 					e.getMessage());
+			closeStream(bpkIs);
 			return false;
 		}
 		try {
