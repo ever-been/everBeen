@@ -9,6 +9,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
+import org.apache.commons.io.IOUtils;
+
 /**
  * 
  * @author Tadeáš Palusga
@@ -17,7 +19,7 @@ import java.util.zip.ZipFile;
 public class ZipFileUtil {
 
 	/**
-	 * @param file
+	 * @param zipFile
 	 * @param toDir
 	 * @throws IOException
 	 * @throws ZipException
@@ -54,15 +56,10 @@ public class ZipFileUtil {
 				e.printStackTrace();
 				continue;
 			} finally {
-				if (fos != null) {
-					try {
-						fos.close();
-					} catch (IOException e) {
-						// ignore
-					}
-				}
+				IOUtils.closeQuietly(fos);
 			}
 		}
+		_zipFile.close();
 	}
 
 }
