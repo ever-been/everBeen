@@ -17,12 +17,26 @@ public final class KillTaskMessage extends BaseMessage {
 	/**
 	 * Task which should be terminated
 	 */
-	public String taskName;
+	public String taskId;
 
-	public KillTaskMessage(String senderId, String recieverId, String reason, String taskName) {
+	/**
+	 * Constructs new message.
+	 * 
+	 * @param senderId
+	 *          id of message sender
+	 * @param recieverId
+	 *          id of message receiver
+	 * @param reason
+	 *          why the task should be killed (this text could be used for example
+	 *          for logging of another debug purposes)
+	 * @param taskId
+	 *          cluster-wide unique task identifier
+	 * 
+	 */
+	public KillTaskMessage(String senderId, String recieverId, String reason, String taskId) {
 		super(senderId, recieverId);
 		this.reason = reason;
-		this.taskName = taskName;
+		this.taskId = taskId;
 	}
 
 }

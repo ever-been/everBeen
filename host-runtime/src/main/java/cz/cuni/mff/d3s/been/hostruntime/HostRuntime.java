@@ -3,14 +3,20 @@ package cz.cuni.mff.d3s.been.hostruntime;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.zip.ZipException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.maven.artifact.Artifact;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.d3s.been.bpk.Bpk;
 import cz.cuni.mff.d3s.been.bpk.BpkArtifact;
-import cz.cuni.mff.d3s.been.bpk.BpkArtifacts;
 import cz.cuni.mff.d3s.been.bpk.BpkConfiguration;
 import cz.cuni.mff.d3s.been.bpk.BpkConfigurationException;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
@@ -18,17 +24,12 @@ import cz.cuni.mff.d3s.been.bpk.BpkResolver;
 import cz.cuni.mff.d3s.been.bpk.JavaRuntime;
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
 import cz.cuni.mff.d3s.been.core.ClusterContext;
-import cz.cuni.mff.d3s.been.core.JSONUtils.JSONSerializerException;
 import cz.cuni.mff.d3s.been.core.TaskUtils;
-import cz.cuni.mff.d3s.been.core.protocol.Context;
-import cz.cuni.mff.d3s.been.core.protocol.messages.BaseMessage;
 import cz.cuni.mff.d3s.been.core.protocol.messages.KillTaskMessage;
 import cz.cuni.mff.d3s.been.core.protocol.messages.RunTaskMessage;
-import cz.cuni.mff.d3s.been.core.protocol.messages.TaskFinishedMessage;
-import cz.cuni.mff.d3s.been.core.protocol.messages.TaskKilledMessage;
-import cz.cuni.mff.d3s.been.core.protocol.messages.TaskStartedMessage;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.sri.SWRepositoryInfo;
+import cz.cuni.mff.d3s.been.core.task.Arguments;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
@@ -72,16 +73,23 @@ class HostRuntime implements IClusterService {
 	 */
 	private final SwRepoClientFactory swRepoClientFactory;
 
+	/**
+	 * Grants access to all instantiated cluster-dependent utils.
+	 */
 	private final ClusterContext clusterContext;
+
+	private final Map<String, Process> runningTasks = Collections.synchronizedMap(new HashMap<String, Process>());
 
 	/**
 	 * Creates new {@link HostRuntime} with cluster-unique id.
 	 * 
 	 * @param clusterContext
+	 *          Grants access to all instantiated cluster-dependent utils.
 	 * @param swRepoClientFactory
 	 *          factory for creating {@link SwRepoClient} instances from real-time
 	 *          obtained IP and port
 	 * @param hostRuntimeInfo
+	 *          object which stores basic information about HostRuntime
 	 */
 	public HostRuntime(ClusterContext clusterContext, SwRepoClientFactory swRepoClientFactory, RuntimeInfo hostRuntimeInfo) {
 		this.clusterContext = clusterContext;
@@ -105,6 +113,9 @@ class HostRuntime implements IClusterService {
 		// HR is now prepared to consume all important messages.
 	}
 
+	/**
+	 * Causes clean hostruntime shutdown.
+	 */
 	@Override
 	public void stop() {
 		// Runtime must be unregistered first
@@ -138,119 +149,156 @@ class HostRuntime implements IClusterService {
 		clusterContext.getRuntimesUtils().removeRuntimeInfo(hostRuntimeInfo.getId());
 	}
 
-	void sendTaskStartedMessage(TaskStartedMessage message) throws JSONSerializerException {
-		sendMessage(message);
-	}
-
-	void sendTaskFinishedMessage(TaskFinishedMessage message) throws JSONSerializerException {
-		sendMessage(message);
-	}
-
-	void sendTaskKilledMessage(TaskKilledMessage message) throws JSONSerializerException {
-		sendMessage(message);
-	}
-
+	/**
+	 * This method should be called from outside when task should be started.
+	 * 
+	 * @param message
+	 */
 	synchronized void onRunTask(RunTaskMessage message) {
-		tryRunTask(message);
+		loadAndRunTask(message);
 	}
 
+	/**
+	 * This method should be called from outside when task should be killed.
+	 * 
+	 * @param message
+	 */
 	synchronized void onKillTask(KillTaskMessage message) {
-		killTask(message);
+		loadAndKillTask(message);
 	}
 
+	/**
+	 * Returns cluster-wide identifier of this hostruntime node.
+	 * 
+	 * @return node identifier
+	 */
 	public String getNodeId() {
 		return hostRuntimeInfo.getId();
 	}
 
-	void sendMessage(final BaseMessage message) {
-		clusterContext.getTopicUtils().publish(Context.GLOBAL_TOPIC.getName(), message);
-	}
-
-	void tryRunTask(RunTaskMessage message) {
-		log.info("tryRunTask started");
-
-		String taskId = message.taskId;
-		TaskEntry taskEntry = clusterContext.getTasksUtils().getTask(taskId);
-
-		final TaskUtils taskUtils = clusterContext.getTasksUtils();
-		taskUtils.setStateAndPut(taskEntry, TaskState.ACCEPTED, "Task '%s' has been accepted by HR '%s'.", taskId, getNodeId());
-
-		try {
-			TaskDescriptor descriptor = taskEntry.getTaskDescriptor();
-			SwRepoClient sRClient = createSRClient();
-
-			BpkIdentifier bpkMetaInfo = createBpkMetaInfo(descriptor);
-
-			Bpk bpk = sRClient.getBpk(bpkMetaInfo);
-			BpkConfiguration resolvedConf = null;
-			try {
-				resolvedConf = BpkResolver.resolve(bpk.getFile());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (BpkConfigurationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			//BpkDependencies deps = resolvedConf.getBpkDependencies();
-			//for (BpkIdentifier bpkIdentifier : deps.getDependency()) {
-			//	// ... zatim neuvazujeme zadne dalsi BPK zavislosti, pouze parenti BPK a ostatni
-			//}
-
-			ArrayList<String> cmd = new ArrayList<String>();
-
-			if (resolvedConf.getRuntime() instanceof JavaRuntime) {
-				JavaRuntime runtime = (JavaRuntime) resolvedConf.getRuntime();
-				// fixme delete on exit
-				File tmpFolder = createTmpDir();
-				ZipFileUtil.unzipToDir(bpk.getFile(), tmpFolder);
-
-				cmd.add("java");
-				cmd.add("-jar");
-				File dirToBpk = new File(tmpFolder, "files");
-				cmd.add(new File(dirToBpk, runtime.getJarFile()).getAbsolutePath());
-
-				BpkArtifacts arts = runtime.getBpkArtifacts();
-				// toto jsou javovske (mavenovske) zavislosti
-
-				if (!arts.getArtifact().isEmpty()) {
-					cmd.add("-cp");
-					boolean first = true;
-					String cp = "";
-					for (BpkArtifact art : arts.getArtifact()) {
-						if (!first) {
-							cp += ";";
-						}
-						Artifact artifact = sRClient.getArtifact(art.getGroupId(), art.getArtifactId(), art.getVersion());
-						cp += artifact.getFile().getAbsolutePath();
-						first = false;
-					}
-					cmd.add(cp);
-				}
-			}
-			// FIXME radek - kde vezmu zdrojaky pro sfuj BPK ? asi
-
-			try {
-				// FIXME zde je wait, zablokuje se a teda nejde pustit dalsi task
-				ProcessBuilder pb = new ProcessBuilder(cmd);
-				pb.inheritIO();
-				Process proc = pb.start();
-				taskUtils.setStateAndPut(taskEntry, TaskState.RUNNING, "The task '%s' has been started on HR '%s'.", taskId, getNodeId());
-				proc.waitFor(); // FIXME ?? shoud=ld we handle exit codes?
-				taskUtils.setStateAndPut(taskEntry, TaskState.FINISHED, "The task '%s' has been successfully finished on HR '%s'.", taskId, getNodeId());
-			} catch (IOException | InterruptedException e) {
-				taskUtils.setStateAndPut(taskEntry, TaskState.ABORTED, "The task '%s' has been aborted on HR '%s' due to underlaying exception '%s'.", taskId, getNodeId(), e.getMessage());
-				e.printStackTrace();
-				// TODO Auto-generated catch block
-			}
-		} catch (Throwable t) {
-			// FIXME logging
-			taskUtils.setStateAndPut(taskEntry, TaskState.ABORTED, "The task '%s' has been aborted on HR '%s' due to unexpected exception '%s'.", taskId, getNodeId(), t.getMessage());
+	/**
+	 * This method is responsible for task starting.
+	 * 
+	 * @param message
+	 */
+	private void loadAndRunTask(RunTaskMessage message) {
+		TaskEntry taskHandle = loadTask(message.taskId);
+		if (taskHandle == null) {
+			return;
+		} else {
+			runTask(taskHandle);
 		}
 	}
 
-	private BpkIdentifier createBpkMetaInfo(TaskDescriptor descriptor) {
+	private void runTask(TaskEntry taskHandle) {
+		// FIXME tadeas
+		changeTaskStateTo(taskHandle, TaskState.ACCEPTED);
+		File taskDirectory = createTaskDir(taskHandle);
+		try {
+			Process process = createAndStartTaskProcess(taskHandle, taskDirectory);
+			changeTaskStateTo(taskHandle, TaskState.RUNNING);
+			// FIXME martin, tadeas zpracovavat return kody - (napr. TaskState.FAILED)
+			runningTasks.put(taskHandle.getId(), process); // removed in finally
+
+			// we do not care if this method takes too long, because this method should be called 
+			// asynchronously from parental methods
+			process.waitFor();
+			changeTaskStateTo(taskHandle, TaskState.FINISHED);
+		} catch (Exception e) {
+			changeTaskStateTo(taskHandle, TaskState.ABORTED);
+			log.error(String.format("Task '%s' has been aborted due to underlaying exception.", taskHandle.getId()), e);
+		} finally {
+			runningTasks.remove(taskHandle.getId());
+		}
+		deleteTaskDir(taskDirectory);
+	}
+
+	private Process createAndStartTaskProcess(TaskEntry taskEntry,
+			File taskDirectory) throws IOException, BpkConfigurationException, ZipException, Exception {
+		SwRepoClient swRepoClient = createSRClient();
+		BpkIdentifier bpkIdentifier = createBpkIdentifier(taskEntry.getTaskDescriptor());
+		Bpk bpk = downloadBpk(swRepoClient, bpkIdentifier);
+		BpkConfiguration bpkResolvedConfiguration = BpkResolver.resolve(bpk.getFile());
+
+		List<String> additionalArgs = readTaskArguments(taskEntry);
+		TaskRunOpts runOpts;
+
+		if (isJavaTask(bpkResolvedConfiguration)) {
+			JavaRuntime runtime = (JavaRuntime) bpkResolvedConfiguration.getRuntime();
+			File bpkJarFile = unzipBpkJarFileTo(bpk, runtime, taskDirectory);
+			List<File> dependencies = downloadJavaClasspathDependencies(swRepoClient, runtime);
+			runOpts = new JavaTaskRunOpts(taskDirectory, bpkJarFile, dependencies, additionalArgs);
+		} else {
+			throw new Exception("Unsupported runtime type");
+		}
+
+		ProcessBuilder processBuilder = new ProcessBuilder(runOpts.createCommandLine());
+		processBuilder.inheritIO();
+		Process process = processBuilder.start();
+		return process;
+	}
+
+	private File unzipBpkJarFileTo(Bpk bpk, JavaRuntime runtime,
+			File taskDirectory) throws ZipException, IOException {
+		File unzippedDir = new File(taskDirectory, "bpk");
+		ZipFileUtil.unzipToDir(bpk.getFile(), unzippedDir);
+		return new File(new File(unzippedDir, "files"), runtime.getJarFile());
+	}
+
+	private File createTaskDir(TaskEntry taskEntry) {
+		String taskDirName = taskEntry.getTaskDescriptor().getName() + "_" + new Date().getTime();
+		File taskDir = new File(hostRuntimeInfo.getWorkingDirectory(), taskDirName);
+		taskDir.mkdirs();
+		return taskDir;
+	}
+
+	private void deleteTaskDir(File taskDirectory) {
+		try {
+			FileUtils.deleteDirectory(taskDirectory);
+		} catch (IOException e) {
+			log.warn(String.format("Taks directory '%s' couldn't be deleted", taskDirectory), e);
+		}
+	}
+
+	private List<String> readTaskArguments(TaskEntry taskEntry) {
+		Arguments argument = taskEntry.getTaskDescriptor().getArguments();
+		return (argument != null && argument.getArgument() != null)
+				? argument.getArgument() : Collections.<String> emptyList();
+	}
+
+	private List<File> downloadJavaClasspathDependencies(SwRepoClient client,
+			JavaRuntime runtime) {
+		List<File> dependencies = new ArrayList<>();
+		for (BpkArtifact bpkArtifact : runtime.getBpkArtifacts().getArtifact()) {
+			Artifact artifact = client.getArtifact(bpkArtifact.getGroupId(), bpkArtifact.getArtifactId(), bpkArtifact.getVersion());
+			dependencies.add(artifact.getFile());
+		}
+		return dependencies;
+	}
+
+	private boolean isJavaTask(BpkConfiguration bpkResolvedConfiguration) {
+		return bpkResolvedConfiguration.getRuntime() instanceof JavaRuntime;
+	}
+
+	private Bpk downloadBpk(SwRepoClient sRClient, BpkIdentifier bpkIdentifier) {
+		return sRClient.getBpk(bpkIdentifier);
+	}
+
+	private synchronized TaskEntry loadTask(String taskId) {
+		return getTaskUtils().getTask(taskId);
+	}
+
+	private void changeTaskStateTo(TaskEntry taskEntry, TaskState state) {
+		String logMsgTemplate = "State of task '%s' has been changed to '%s'.";
+		log.info(String.format(logMsgTemplate, taskEntry.getId(), state));
+		getTaskUtils().setStateAndPut(taskEntry, state, logMsgTemplate, taskEntry.getId(), getNodeId());
+	}
+
+	private TaskUtils getTaskUtils() {
+		return clusterContext.getTasksUtils();
+	}
+
+	private BpkIdentifier createBpkIdentifier(TaskDescriptor descriptor) {
 		BpkIdentifier bpkMetaInfo = new BpkIdentifier();
 		bpkMetaInfo.setGroupId(descriptor.getGroupId());
 		bpkMetaInfo.setBpkId(descriptor.getBpkId());
@@ -268,15 +316,54 @@ class HostRuntime implements IClusterService {
 		return swRepoClient;
 	}
 
-	void killTask(KillTaskMessage message) {
-		//FIXME
+	private void loadAndKillTask(KillTaskMessage message) {
+		TaskEntry taskHandle = loadTask(message.taskId);
+		if (taskHandle == null) {
+			return;
+		} else {
+			Process taskProcess = runningTasks.get(taskHandle.getId());
+			taskProcess.destroy();
+		}
+	}
+	static abstract class TaskRunOpts {
+		protected File taskDirectory;
+		protected List<String> additionalArgs;
+
+		abstract String[] createCommandLine();
 	}
 
-	private File createTmpDir() throws IOException {
-		File file = File.createTempFile("unpacked", "bpk");
-		file.delete();
-		file.mkdir();
-		return file;
-	}
+	static final class JavaTaskRunOpts extends TaskRunOpts {
+		File bpkJarFile;
+		List<File> dependencies;
 
+		JavaTaskRunOpts(File taskDirectory, File bpkFile, List<File> dependencies, List<String> additionalArgs) {
+			this.taskDirectory = taskDirectory;
+			this.bpkJarFile = bpkFile;
+			this.dependencies = dependencies;
+			this.additionalArgs = additionalArgs;
+		}
+
+		@Override
+		String[] createCommandLine() {
+			List<String> cmd = new ArrayList<>();
+
+			cmd.add("java");
+			cmd.add("-jar");
+			cmd.add(bpkJarFile.getAbsolutePath());
+
+			cmd.add("-cp");
+			StringBuilder cp = new StringBuilder();
+			for (File dep : dependencies) {
+				cp.append(dep.getAbsolutePath());
+			}
+			cmd.add(cp.toString());
+
+			for (String arg : additionalArgs) {
+				cmd.add(arg);
+			}
+
+			return cmd.toArray(new String[cmd.size()]);
+		}
+
+	}
 }
