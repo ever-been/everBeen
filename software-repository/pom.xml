@@ -22,7 +22,7 @@
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>${maven-assembly-plugin.version}</version>
 				<configuration>
-					<final-name>software-repository</final-name>
+					<finalName>software-repository</finalName>
 					<appendAssemblyId>false</appendAssemblyId>
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
@@ -121,5 +121,12 @@
 			<version>${maven.version}</version>
 		</dependency>
 
-	</dependencies>
+        <dependency>
+            <groupId>args4j</groupId>
+            <artifactId>args4j</artifactId>
+            <version>${args4j.version}</version>
+        </dependency>
+
+
+    </dependencies>
 </project>

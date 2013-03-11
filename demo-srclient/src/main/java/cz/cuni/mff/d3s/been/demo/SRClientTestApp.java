@@ -16,7 +16,7 @@ public class SRClientTestApp {
 	@Option(name = "-s", aliases = { "--store" }, usage = "Which file you want to store in software repository", required = true)
 	private File putFile;
 
-	@Option(name = "-h", aliases = { "--host" }, usage = "Hostname of cumputer, where SW Repository is running")
+	@Option(name = "-h", aliases = { "--host" }, usage = "Hostname of computer, where SW Repository is running")
 	private String host = "localhost";
 
 	@Option(name = "-p", aliases = { "--port" }, usage = "Port on which SW Repository is running")

@@ -102,15 +102,15 @@ final class LocalTaskListener implements EntryListener<String, TaskEntry>, IClus
 				// This SHOULD NOT be necessary ... but leave it here for now
 				clusterCtx.getTasksUtils().assertEqual(oldEntry, entryCopy);
 
-				// Send a message to the runtime
-				clusterCtx.getTopicUtils().publish(RUNTIME_TOPIC, newRunTaskMessage(entry));
-
 				clusterCtx.getAtomicNumber(entry.getId()).set(5);
 
 				txn.commit(); // END TRANSACTION ------------------------------
-			}
+            }
 
-		} catch (NoRuntimeFoundException e) {
+            // Send a message to the runtime
+            clusterCtx.getTopicUtils().publish(RUNTIME_TOPIC, newRunTaskMessage(entry));
+
+        } catch (NoRuntimeFoundException e) {
 			// TODO: Abort the task?
 			log.warn("No runtime found for task " + entry.getId(), e);
 
@@ -169,7 +169,6 @@ final class LocalTaskListener implements EntryListener<String, TaskEntry>, IClus
 		}
 
 		log.info("Entry updated " + taskId);
-		log.info(TaskEntries.toXml(entry));
 	}
 
 	@Override

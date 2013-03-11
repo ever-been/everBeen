@@ -1,32 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<parent>
-		<artifactId>clustered</artifactId>
-		<groupId>cz.cuni.mff.d3s.been</groupId>
-		<version>3.0.0</version>
-	</parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
 	<modelVersion>4.0.0</modelVersion>
 
+	<groupId>cz.cuni.mff.d3s.been</groupId>
 	<artifactId>task-test</artifactId>
-
-	<dependencies>
-		<!-- BEEN DEPENDENCIES -->
-
-		<!-- EXTERNAL DEPENDENCIES -->
-		<dependency>
-			<groupId>com.hazelcast</groupId>
-			<artifactId>hazelcast-client</artifactId>
-			<version>${hazelcast.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>args4j</groupId>
-			<artifactId>args4j</artifactId>
-			<version>${args4j.version}</version>
-		</dependency>
-	</dependencies>
+	<version>3.0.0</version>
 
 	<build>
 		<plugins>
@@ -46,7 +26,7 @@
 			<plugin>
 				<groupId>cz.cuni.mff.d3s.been</groupId>
 				<artifactId>bpk-plugin</artifactId>
-				<version>${project.parent.version}</version>
+				<version>3.0.0</version>
 				<executions>
 					<execution>
 						<goals>
@@ -60,24 +40,20 @@
 					<!-- default is java -->
 					<runtime>java</runtime>
 
-					<!-- main jar file,  only if you want to overide the jar maven creates ..-->
+					<!-- main jar file, only if you want to overide the jar maven creates 
+						.. -->
 					<packageJarFile></packageJarFile>
 
 					<filesToArchive>
-						    <!-- additional files to include -->
+						<!-- additional files to include -->
 					</filesToArchive>
 
 					<!-- maven dependencies are handled automatically -->
 
-					<!-- dependencies on other BPKs-->
+					<!-- dependencies on other BPKs -->
 					<bpkDependencies>
-						<!--
-						<bpkIdentifier>
-							<groupId>GROUP_ID</groupId>
-							<bpkId>BPK_ID</bpkId>
-							<version>VERSION</version>
-						</bpkIdentifier>
-						-->
+						<!-- <bpkIdentifier> <groupId>GROUP_ID</groupId> <bpkId>BPK_ID</bpkId> 
+							<version>VERSION</version> </bpkIdentifier> -->
 					</bpkDependencies>
 
 

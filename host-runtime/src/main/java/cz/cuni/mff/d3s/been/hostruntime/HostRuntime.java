@@ -2,8 +2,11 @@ package cz.cuni.mff.d3s.been.hostruntime;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.apache.maven.artifact.Artifact;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.d3s.been.bpk.Bpk;
 import cz.cuni.mff.d3s.been.bpk.BpkArtifact;
@@ -16,6 +19,7 @@ import cz.cuni.mff.d3s.been.bpk.JavaRuntime;
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
 import cz.cuni.mff.d3s.been.core.ClusterContext;
 import cz.cuni.mff.d3s.been.core.JSONUtils.JSONSerializerException;
+import cz.cuni.mff.d3s.been.core.TaskUtils;
 import cz.cuni.mff.d3s.been.core.protocol.Context;
 import cz.cuni.mff.d3s.been.core.protocol.messages.BaseMessage;
 import cz.cuni.mff.d3s.been.core.protocol.messages.KillTaskMessage;
@@ -26,11 +30,12 @@ import cz.cuni.mff.d3s.been.core.protocol.messages.TaskStartedMessage;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.sri.SWRepositoryInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
-import cz.cuni.mff.d3s.been.core.task.TaskEntries;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
+
+// FIXME logging
 
 /**
  * 
@@ -46,6 +51,8 @@ import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
  * 
  */
 class HostRuntime implements IClusterService {
+
+	private static final Logger log = LoggerFactory.getLogger(HostRuntime.class);
 
 	/**
 	 * Stores basic information (name, id, host, port, OS, memory, Java) about
@@ -70,11 +77,11 @@ class HostRuntime implements IClusterService {
 	/**
 	 * Creates new {@link HostRuntime} with cluster-unique id.
 	 * 
+	 * @param clusterContext
 	 * @param swRepoClientFactory
 	 *          factory for creating {@link SwRepoClient} instances from real-time
 	 *          obtained IP and port
-	 * @param nodeId
-	 *          cluster-unique id of {@link HostRuntime} node
+	 * @param hostRuntimeInfo
 	 */
 	public HostRuntime(
 			ClusterContext clusterContext,
@@ -165,9 +172,13 @@ class HostRuntime implements IClusterService {
 	}
 
 	void tryRunTask(RunTaskMessage message) {
+		log.info("tryRunTask started");
+
 		String taskId = message.taskId;
 		TaskEntry taskEntry = clusterContext.getTasksUtils().getTask(taskId);
-		TaskEntries.setState(
+
+		final TaskUtils taskUtils = clusterContext.getTasksUtils();
+		taskUtils.setStateAndPut(
 				taskEntry,
 				TaskState.ACCEPTED,
 				"Task '%s' has been accepted by HR '%s'.",
@@ -197,7 +208,7 @@ class HostRuntime implements IClusterService {
 			//	// ... zatim neuvazujeme zadne dalsi BPK zavislosti, pouze parenti BPK a ostatni
 			//}
 
-			String cmd = "";
+			ArrayList<String> cmd = new ArrayList<String>();
 
 			if (resolvedConf.getRuntime() instanceof JavaRuntime) {
 				JavaRuntime runtime = (JavaRuntime) resolvedConf.getRuntime();
@@ -205,47 +216,54 @@ class HostRuntime implements IClusterService {
 				File tmpFolder = createTmpDir();
 				ZipFileUtil.unzipToDir(bpk.getFile(), tmpFolder);
 
-				cmd += "java -jar " + new File(tmpFolder, runtime.getJarFile()).getAbsolutePath();
+				cmd.add("java");
+				cmd.add("-jar");
+				File dirToBpk = new File(tmpFolder, "files");
+				cmd.add(new File(dirToBpk, runtime.getJarFile()).getAbsolutePath());
 
 				BpkArtifacts arts = runtime.getBpkArtifacts();
 				// toto jsou javovske (mavenovske) zavislosti
 
 				if (!arts.getArtifact().isEmpty()) {
-					cmd += " -cp \"";
+					cmd.add("-cp");
 					boolean first = true;
+					String cp = "";
 					for (BpkArtifact art : arts.getArtifact()) {
 						if (!first) {
-							cmd += ";";
+							cp += ";";
 						}
 						Artifact artifact = sRClient.getArtifact(
 								art.getGroupId(),
 								art.getArtifactId(),
 								art.getVersion());
-						cmd += artifact.getFile().getAbsolutePath();
+						cp += artifact.getFile().getAbsolutePath();
 						first = false;
 					}
-					cmd += "\"";
+					cmd.add(cp);
 				}
 			}
 			// FIXME radek - kde vezmu zdrojaky pro sfuj BPK ? asi
 
 			try {
-				Process proc = Runtime.getRuntime().exec(cmd);
-				TaskEntries.setState(
+				// FIXME zde je wait, zablokuje se a teda nejde pustit dalsi task
+				ProcessBuilder pb = new ProcessBuilder(cmd);
+				pb.inheritIO();
+				Process proc = pb.start();
+				taskUtils.setStateAndPut(
 						taskEntry,
 						TaskState.RUNNING,
 						"The task '%s' has been started on HR '%s'.",
 						taskId,
 						getNodeId());
 				proc.waitFor(); // FIXME ?? shoud=ld we handle exit codes?
-				TaskEntries.setState(
+				taskUtils.setStateAndPut(
 						taskEntry,
 						TaskState.FINISHED,
 						"The task '%s' has been successfully finished on HR '%s'.",
 						taskId,
 						getNodeId());
 			} catch (IOException | InterruptedException e) {
-				TaskEntries.setState(
+				taskUtils.setStateAndPut(
 						taskEntry,
 						TaskState.ABORTED,
 						"The task '%s' has been aborted on HR '%s' due to underlaying exception '%s'.",
@@ -256,7 +274,8 @@ class HostRuntime implements IClusterService {
 				// TODO Auto-generated catch block
 			}
 		} catch (Throwable t) {
-			TaskEntries.setState(
+			// FIXME logging
+			taskUtils.setStateAndPut(
 					taskEntry,
 					TaskState.ABORTED,
 					"The task '%s' has been aborted on HR '%s' due to unexpected exception '%s'.",

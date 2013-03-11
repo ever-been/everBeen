@@ -31,6 +31,7 @@ import cz.cuni.mff.d3s.been.core.task.TaskState;
  */
 public class LocalKeyScanner implements Runnable {
 
+
 	private final ClusterContext clusterCtx;
 
 	public LocalKeyScanner(ClusterContext clusterCtx) {
@@ -52,6 +53,9 @@ public class LocalKeyScanner implements Runnable {
 			if (entry == null) {
 				continue;
 			}
+
+			log.info("Task ID: {}, status: {}", entry.getId(), entry.getState().toString());
+
 
 			entry.getId();
 			String ownerId = entry.isSetOwnerId() ? entry.getOwnerId() : ZERO_ID;
@@ -79,12 +83,14 @@ public class LocalKeyScanner implements Runnable {
 				// Checks whether the task got response from a runtime in a timely fashion
 				long count = clusterCtx.getInstance().getAtomicNumber(entry.getId()).decrementAndGet();
 				if (count < 1) {
-					log.info("Stale task " + entry.getId() + "detected! " + count);
+					log.info("Stale task " + entry.getId() + " detected! " + count);
+
+					/*
 					Transaction txn = clusterCtx.getTransaction();
 
 					try {
 						txn.begin();
-						clusterCtx.getTasksUtils().assertClusterEqual(entry);
+						clusterCtx.getTasksUtils().assertClusterEqualCopy(entry);
 						TaskEntries.setState(entry, TaskState.SUBMITTED, entry.getRuntimeId() + "did not respond!");
 						clusterCtx.getTasksUtils().putTask(entry);
 						txn.commit();
@@ -94,6 +100,7 @@ public class LocalKeyScanner implements Runnable {
 						txn.rollback(); // OK, will get it next time if needed
 
 					}
+					*/
 				}
 
 			} else if (entry.getState() == TaskState.ABORTED) {
