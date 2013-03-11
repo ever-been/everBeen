@@ -1,6 +1,6 @@
 package cz.cuni.mff.d3s.been.swrepoclient;
 
-import cz.cuni.mff.d3s.been.swrepository.DataStore;
+import cz.cuni.mff.d3s.been.datastore.DataStore;
 
 public class SwRepoClientFactory {
 	/**

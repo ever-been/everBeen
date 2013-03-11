@@ -1,24 +1,41 @@
 package cz.cuni.mff.d3s.been.bpk;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
-public class Bpk {
-	BpkIdentifier identifier;
-	File file;
+/**
+ * A BEEN software package.
+ * 
+ * @author darklight
+ * 
+ */
+public interface Bpk {
+	/**
+	 * Get a unique identifier for the package.
+	 * 
+	 * @return The identifier
+	 */
+	BpkIdentifier getBpkIdentifier();
 
-	public BpkIdentifier getIdentifier() {
-		return this.identifier;
-	}
+	/**
+	 * Open a stream to the package's content. The user is responsible for closing
+	 * it.
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
+	InputStream getInputStream() throws IOException;
 
-	public void setIdentifier(BpkIdentifier identifier) {
-		this.identifier = identifier;
-	}
-
-	public File getFile() {
-		return this.file;
-	}
-
-	public void setFile(File file) {
-		this.file = file;
-	}
+	/**
+	 * Get a file handle to the package's content.
+	 * 
+	 * @return A temporary defensive copy of the package's content, within a
+	 *         {@link java.io.File}
+	 * 
+	 * @deprecated Too much defensive copying involved in {@link java.io.File}
+	 *             operations + abstractions go to hell
+	 */
+	@Deprecated
+	File getFile();
 }

@@ -1,4 +1,4 @@
-package cz.cuni.mff.d3s.been.swrepository;
+package cz.cuni.mff.d3s.been.datastore;
 
 import java.util.Iterator;
 import java.util.ServiceLoader;

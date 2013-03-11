@@ -6,9 +6,9 @@ import com.hazelcast.core.HazelcastInstance;
 
 import cz.cuni.mff.d3s.been.core.ClusterContext;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
+import cz.cuni.mff.d3s.been.datastore.DataStoreFactory;
 import cz.cuni.mff.d3s.been.detectors.Detector;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
-import cz.cuni.mff.d3s.been.swrepository.DataStoreFactory;
 
 /**
  * @author Martin Sixta
