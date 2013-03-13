@@ -8,8 +8,8 @@ import org.apache.maven.artifact.Artifact;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cz.cuni.mff.d3s.been.bpk.ArtifactIdentifier;
 import cz.cuni.mff.d3s.been.bpk.Bpk;
-import cz.cuni.mff.d3s.been.bpk.BpkArtifact;
 import cz.cuni.mff.d3s.been.bpk.BpkArtifacts;
 import cz.cuni.mff.d3s.been.bpk.BpkConfiguration;
 import cz.cuni.mff.d3s.been.bpk.BpkConfigurationException;
@@ -228,14 +228,11 @@ class HostRuntime implements IClusterService {
 					cmd.add("-cp");
 					boolean first = true;
 					String cp = "";
-					for (BpkArtifact art : arts.getArtifact()) {
+					for (ArtifactIdentifier art : arts.getArtifact()) {
 						if (!first) {
 							cp += ";";
 						}
-						Artifact artifact = sRClient.getArtifact(
-								art.getGroupId(),
-								art.getArtifactId(),
-								art.getVersion());
+						Artifact artifact = sRClient.getArtifact(art);
 						cp += artifact.getFile().getAbsolutePath();
 						first = false;
 					}

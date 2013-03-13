@@ -9,12 +9,17 @@ import static junit.framework.Assert.assertTrue;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.LinkedList;
+import java.util.List;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.maven.artifact.Artifact;
 import org.codehaus.plexus.util.FileUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -24,6 +29,7 @@ import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
+import cz.cuni.mff.d3s.been.bpk.ArtifactIdentifier;
 import cz.cuni.mff.d3s.been.bpk.Bpk;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.datastore.DataStore;
@@ -124,6 +130,7 @@ public class TestTraffic {
 	private SwRepoClient client = null;
 	private File randomContentFile = null;
 	private BpkIdentifier bpkId = null;
+	private ArtifactIdentifier artifactId = null;
 
 	@Rule
 	public ServerAllocatorRule serverAllocatorRule = new ServerAllocatorRule();
@@ -143,6 +150,11 @@ public class TestTraffic {
 		bpkId.setBpkId("evil-package");
 		bpkId.setGroupId("cz.cuni.mff.d3s.been.swrepository.test");
 		bpkId.setVersion("0.0.7");
+
+		artifactId = new ArtifactIdentifier();
+		artifactId.setArtifactId("bigBaddaBoom");
+		artifactId.setGroupId("cz.cuni.mff.d3s.been.swrepository.test");
+		artifactId.setVersion("3.2.1...");
 	}
 
 	@Before
@@ -315,9 +327,7 @@ public class TestTraffic {
 
 		Bpk bpk = client.getBpk(bpkId);
 		assertNotNull(bpk);
-		assertNotNull(bpk.getFile());
-		File bpkFile = bpk.getFile();
-		assertTrue(bpkFile.exists());
+		InputStream bpkFileStream = bpk.getInputStream();
 
 		File fileInCache = getFileFromPathAndName(
 				CLIENT_PERSISTENCE_ROOT_FOLDER,
@@ -328,9 +338,36 @@ public class TestTraffic {
 				bpkId.getVersion());
 		assertNotNull(fileInCache);
 		assertTrue(fileInCache.exists());
-		assertEquals(FileUtils.fileRead(bpkFile), FileUtils.fileRead(fileInCache));
+		assertEquals(
+				IOUtils.toString(bpkFileStream),
+				FileUtils.fileRead(fileInCache));
 	}
-	// test download artifact
+
+	@Test
+	public void testDownloadArtifact() throws IOException {
+		File serverFile = getFileFromPathAndName(
+				SERVER_PERSISTENCE_ROOT_FOLDER,
+				String.format(
+						"%s-%s.jar",
+						artifactId.getArtifactId(),
+						artifactId.getVersion()),
+				"artifacts",
+				artifactId.getGroupId(),
+				artifactId.getArtifactId(),
+				artifactId.getVersion());
+		serverFile.getParentFile().mkdirs();
+		serverFile.createNewFile();
+		FileWriter fw = new FileWriter(serverFile);
+		fw.write("KABOOOOOOOOOOOOOOOOOOOOOOM!!!");
+		fw.close();
+
+		Artifact artifact = client.getArtifact(artifactId);
+		assertNotNull(artifact);
+		assertFalse(artifact.getFile().equals(serverFile));
+		assertEquals(
+				FileUtils.fileRead(serverFile),
+				FileUtils.fileRead(artifact.getFile()));
+	}
 	// test download artifact bad identifier
 	// test download artifact server down
 	// test upload artifact
@@ -363,18 +400,21 @@ public class TestTraffic {
 			String fileName,
 			String storeName,
 			File referenceFile,
-			String... pathItems) throws IOException {
+			String groupId,
+			String itemId,
+			String itemVersion) throws IOException {
 		final File file = getFileFromPathAndName(
 				root,
 				fileName,
 				storeName,
-				pathItems);
+				groupId,
+				itemId,
+				itemVersion);
 		assertTrue(file.exists());
 		final String actualFileContent = FileUtils.fileRead(referenceFile);
 		final String referenceFileContent = FileUtils.fileRead(file);
 		assertEquals(referenceFileContent, actualFileContent);
 	}
-
 	/**
 	 * Assert that a file can not be found in the server persistence.
 	 * 
@@ -391,23 +431,35 @@ public class TestTraffic {
 			File root,
 			String fileName,
 			String storeName,
-			String... pathItems) {
+			String groupId,
+			String itemId,
+			String itemVersion) {
 		final File file = getFileFromPathAndName(
 				root,
 				fileName,
 				storeName,
-				pathItems);
+				groupId,
+				itemId,
+				itemVersion);
 		assertFalse(file.exists());
 	}
-
 	private File getFileFromPathAndName(
 			File root,
 			String fileName,
 			String storeName,
-			String... pathItems) {
+			String groupId,
+			String itemId,
+			String itemVersion) {
+
+		List<String> pathItemList = new LinkedList<String>();
+		for (String grpIdPart : groupId.split("\\.")) {
+			pathItemList.add(grpIdPart);
+		}
+		pathItemList.add(itemId);
+		pathItemList.add(itemVersion);
 		Path path = FileSystems.getDefault().getPath(
 				root.getPath() + File.separator + storeName,
-				pathItems);
+				pathItemList.toArray(new String[pathItemList.size()]));
 		return new File(path.toFile(), fileName);
 	}
 }

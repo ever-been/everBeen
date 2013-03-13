@@ -22,8 +22,7 @@ import cz.cuni.mff.d3s.been.util.CopyStream;
 public class FSBasedStorePersister implements StorePersister {
 
 	/** Class log */
-	private static final Logger log = LoggerFactory
-			.getLogger(FSBasedStorePersister.class);
+	private static final Logger log = LoggerFactory.getLogger(FSBasedStorePersister.class);
 
 	private final File storedFile;
 	private final String entityId;
@@ -38,18 +37,19 @@ public class FSBasedStorePersister implements StorePersister {
 		if (!storedFile.exists()) {
 			final File parent = storedFile.getParentFile();
 			if (parent == null) {
-				log.error(String
-						.format("Failed to store BPK because expected storage file \"%s\" doesn't have a parent folder",
-								storedFile.getPath()));
+				log.error(
+						"Failed to store BPK because expected storage file \"{}\" doesn't have a parent folder",
+						storedFile.getPath());
 				return false;
 			}
 			parent.mkdirs(); // TODO handle security exception
 			try {
 				storedFile.createNewFile();
 			} catch (IOException e) {
-				log.error(String
-						.format("Could not create file to hold entity %s: I/O error %s",
-								entityId, e.getMessage()));
+				log.error(
+						"Could not create file to hold entity {}: I/O error {}",
+						entityId,
+						e.getMessage());
 				return false;
 			}
 		}
@@ -57,9 +57,10 @@ public class FSBasedStorePersister implements StorePersister {
 		try {
 			os = new FileOutputStream(storedFile);
 		} catch (IOException e) {
-			log.error(String.format(
-					"Failed to persist entity %s: I/O error %s", entityId,
-					e.getMessage()));
+			log.error(
+					"Failed to persist entity {}: I/O error {}",
+					entityId,
+					e.getMessage());
 			return false;
 		}
 		CopyStream copyStream = new CopyStream(content, true, os, true, true);
