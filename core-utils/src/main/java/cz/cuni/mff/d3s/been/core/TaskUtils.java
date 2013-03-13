@@ -14,10 +14,11 @@ import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
 
 /**
+ *
+ * Utility class for BEEN tasks stored in Hazelcast map.
+ *
+ *
  * @author Martin Sixta
- * 
- *         FIXME see TaskEntries class and TaskUtils! Should be merged FIXME
- *         COMMENTS! COMMENTS! COMMENTS! :)
  */
 public class TaskUtils {
 
@@ -29,7 +30,6 @@ public class TaskUtils {
 	}
 
 	public IMap<String, TaskEntry> getTasksMap() {
-
 		return clusterCtx.getMap(TASKS_MAP_NAME);
 	}
 
@@ -82,6 +82,8 @@ public class TaskUtils {
 		return clusterCtx.getConfig().findMatchingMapConfig("BEEN_MAP_TASKS");
 	}
 
+
+	// TODO: sixtam re-analyze all *equal* functions + docs
 	public boolean isClusterEqual(TaskEntry entry) {
 
 		TaskEntry taskEntryCopy = getTasksMap().get(entry.getId());
@@ -93,12 +95,14 @@ public class TaskUtils {
 		}
 	}
 
+	// TODO: sixtam re-analyze all *equal* functions + docs
 	public void assertClusterEqual(TaskEntry entry) {
 		if (!isClusterEqual(entry)) {
 			throw new IllegalStateException(String.format("Entry '%s' has changed!", entry.getId()));
 		}
 	}
 
+	// TODO: sixtam re-analyze all *equal* functions + docs
 	public TaskEntry assertClusterEqualCopy(TaskEntry entry) {
 		TaskEntry copy = getTask(entry.getId());
 
@@ -109,14 +113,27 @@ public class TaskUtils {
 		}
 	}
 
+	// TODO: sixtam re-analyze all *equal* functions + docs
 	public void assertEqual(TaskEntry entry, TaskEntry copy) {
 		if (!entry.equals(copy)) {
 			throw new IllegalStateException(String.format("Entry '%s' has changed!", entry.getId()));
 		}
 	}
 
-	public void setStateAndPut(TaskEntry entry, TaskState newState,
-			String reasonFormat, Object... reasonArgs) throws IllegalArgumentException {
+	/**
+	 *
+	 * Updates state of a task.
+	 *
+	 * @param entry
+	 * @param newState
+	 * @param reasonFormat
+	 * @param reasonArgs
+	 * @throws IllegalArgumentException
+	 *
+	 * TODO: sixtam resolve concurrency issues
+	 */
+	public void updateTaskState(TaskEntry entry, TaskState newState,
+								String reasonFormat, Object... reasonArgs) throws IllegalArgumentException {
 		TaskEntries.setState(entry, newState, reasonFormat, reasonArgs);
 		putTask(entry);
 	}

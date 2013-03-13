@@ -291,7 +291,7 @@ class HostRuntime implements IClusterService {
 	private void changeTaskStateTo(TaskEntry taskEntry, TaskState state) {
 		String logMsgTemplate = "State of task '%s' has been changed to '%s'.";
 		log.info(String.format(logMsgTemplate, taskEntry.getId(), state));
-		getTaskUtils().setStateAndPut(taskEntry, state, logMsgTemplate, taskEntry.getId(), getNodeId());
+		getTaskUtils().updateTaskState(taskEntry, state, logMsgTemplate, taskEntry.getId(), getNodeId());
 	}
 
 	private TaskUtils getTaskUtils() {

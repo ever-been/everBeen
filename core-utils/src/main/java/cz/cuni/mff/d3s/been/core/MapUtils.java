@@ -1,12 +1,15 @@
 package cz.cuni.mff.d3s.been.core;
 
-import java.util.Collection;
-import java.util.LinkedList;
-
 import com.hazelcast.core.IMap;
 import com.hazelcast.core.Instance;
 
+import java.util.Collection;
+import java.util.LinkedList;
+
 /**
+ * 
+ * Utility class for often map related functions.
+ * 
  * @author Martin Sixta
  */
 public class MapUtils {
@@ -18,7 +21,19 @@ public class MapUtils {
 		this.clusterCtx = clusterCtx;
 	}
 
-	public Collection<Object> getValues(String mapName) {
+	/**
+	 * 
+	 * Returns collection of all values in a map.
+	 * 
+	 * Use with care, such a map can be big.
+	 * 
+	 * @param mapName
+	 *          name of the map
+	 * @return Collection of all values of the map (possibly empty)
+	 * @throws IllegalArgumentException
+	 *           if such a map does not exists
+	 */
+	public Collection<Object> getValues(String mapName) throws IllegalArgumentException {
 		Collection<Object> values = new LinkedList<>();
 
 		if (clusterCtx.containsInstance(Instance.InstanceType.MAP, mapName)) {
@@ -34,11 +49,36 @@ public class MapUtils {
 		return values;
 	}
 
+	/**
+	 * Returns value from a map.
+	 * 
+	 * 
+	 * @param mapName
+	 *          name of the map
+	 * @param key
+	 *          key of the map
+	 * @param <K>
+	 *          type of a map key
+	 * @param <V>
+	 *          type of a map value
+	 * @return value of the map, or null if no such key exists
+	 */
 	public <K, V> V getValue(String mapName, K key) {
 		IMap<String, V> map = clusterCtx.getMap(mapName);
 		return map.get(key);
 	}
 
+	/**
+	 * Sets a value to a map.
+	 * 
+	 * 
+	 * @param mapName
+	 *          name of the map
+	 * @param key
+	 *          key of the map
+	 * @param value
+	 *          value of the entry
+	 */
 	public void setValue(String mapName, Object key, Object value) {
 		clusterCtx.getMap(mapName).put(key, value);
 	}
