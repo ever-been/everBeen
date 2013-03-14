@@ -54,7 +54,7 @@ public abstract class BaseNodeInfo implements Serializable {
 		 * tasks call {@link HostRuntimeNodeInfo#addRunningTask(String)} and
 		 * {@link HostRuntimeNodeInfo#removeRunningTask(String)}
 		 *
-		 * @param taskName
+		 * @param taskId
 		 * @return
 		 */
 		public final List<String> getRunningTasks() {

@@ -28,6 +28,18 @@ Cluster-unique ID of HostRuntime.
 			</xs:appinfo>
 		</xs:annotation>
 	</xs:element>
+	
+	<xs:element name="workingDirectory" type="xs:string">
+		<xs:annotation>
+			<xs:appinfo>
+				<jaxb:property>
+					<jaxb:javadoc>
+Host runtime working directory. Subworking directories for all tasks are created here.
+					</jaxb:javadoc>
+				</jaxb:property>
+			</xs:appinfo>
+		</xs:annotation>
+	</xs:element>
 
 	<xs:element name="port" type="common:positiveInt">
 		<xs:annotation>
@@ -90,6 +102,7 @@ Stores basic information about HostRuntime (name/id/host/port/os/memory/java ver
 				<xs:element ref="runtimeinfo:id" minOccurs="1" maxOccurs="1" />
 				<xs:element ref="runtimeinfo:port" minOccurs="1" maxOccurs="1" />
 				<xs:element ref="runtimeinfo:host" minOccurs="1" maxOccurs="1" />
+				<xs:element ref="runtimeinfo:workingDirectory" minOccurs="1" maxOccurs="1" />
 
                 <xs:element ref="hardwareinfo:hardware" minOccurs="1" maxOccurs="1" />
 				<xs:element name="java" type="runtimeinfo:java" minOccurs="0" maxOccurs="1" />

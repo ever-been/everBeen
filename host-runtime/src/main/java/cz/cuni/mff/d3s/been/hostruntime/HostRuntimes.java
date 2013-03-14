@@ -1,13 +1,11 @@
 package cz.cuni.mff.d3s.been.hostruntime;
 
-import java.io.File;
 import java.util.UUID;
 
 import com.hazelcast.core.HazelcastInstance;
 
 import cz.cuni.mff.d3s.been.core.ClusterContext;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
-import cz.cuni.mff.d3s.been.datastore.DataStore;
 import cz.cuni.mff.d3s.been.datastore.DataStoreFactory;
 import cz.cuni.mff.d3s.been.detectors.Detector;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
@@ -18,6 +16,8 @@ import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
 // FIXME Martin Sixta .. why it is named HostRuntimes (name is misleading)
 public class HostRuntimes {
 
+	private static final String HR_DEFAULT_WRKDIR_NAME = ".HostRuntime";
+
 	private static HostRuntime hostRuntime = null;
 
 	/**
@@ -27,11 +27,11 @@ public class HostRuntimes {
 	 * @param hazelcastInstance
 	 * @return
 	 */
-	public static synchronized HostRuntime getRuntime(HazelcastInstance hazelcastInstance) {
+	public static synchronized HostRuntime getRuntime(
+			HazelcastInstance hazelcastInstance) {
 		if (hostRuntime == null) {
-            ClusterContext clusterContext = new ClusterContext(hazelcastInstance);
-            // FIXME Tadeas - temporary situated to /tmp/hostRuntime ... figure out later
-            SwRepoClientFactory swRepoClientFactory = new SwRepoClientFactory(DataStoreFactory.getDataStore());
+			ClusterContext clusterContext = new ClusterContext(hazelcastInstance);
+			SwRepoClientFactory swRepoClientFactory = new SwRepoClientFactory(DataStoreFactory.getDataStore());
 
 			RuntimeInfo info = newRuntimeInfo(clusterContext);
 			hostRuntime = new HostRuntime(clusterContext, swRepoClientFactory, info);
@@ -39,23 +39,27 @@ public class HostRuntimes {
 		return hostRuntime;
 	}
 
-    /**
-     * Creates new {@link RuntimeInfo} and initializes all possible values.
-     *
-     * @return initialized RuntimeInfo
-     */
-    public static RuntimeInfo newRuntimeInfo(ClusterContext clusterContext) {
-        RuntimeInfo ri = new RuntimeInfo();
+	/**
+	 * Creates new {@link RuntimeInfo} and initializes all possible values.
+	 * 
+	 * @param clusterContext
+	 * 
+	 * @return initialized RuntimeInfo
+	 */
+	public static RuntimeInfo newRuntimeInfo(ClusterContext clusterContext) {
+		RuntimeInfo ri = new RuntimeInfo();
 
-        String nodeId = UUID.randomUUID().toString();
-        ri.setId(nodeId);
+		ri.setWorkingDirectory(HR_DEFAULT_WRKDIR_NAME);
 
-        ri.setPort(clusterContext.getPort());
-        ri.setHost(clusterContext.getHostName());
+		String nodeId = UUID.randomUUID().toString();
+		ri.setId(nodeId);
 
-        Detector detector = new Detector();
-        detector.detectAll(ri);
+		ri.setPort(clusterContext.getPort());
+		ri.setHost(clusterContext.getHostName());
 
-        return ri;
-    }
+		Detector detector = new Detector();
+		detector.detectAll(ri);
+
+		return ri;
+	}
 }

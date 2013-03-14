@@ -42,10 +42,25 @@ public class TaskUtils {
 		return getTasksMap().values(predicate);
 	}
 
-	public TaskEntry getTask(String key) {
-		return getTasksMap().get(key);
+	/**
+	 * Loads task entry from cluster.
+	 * 
+	 * @param id
+	 *          id of task which should be loaded
+	 * @return loaded task or null if task does not exists
+	 */
+	public TaskEntry getTask(String id) {
+		return getTasksMap().get(id);
 	}
 
+	/**
+	 * Stores task entry in cluster. Entry is stored in map in cluster, where the
+	 * task's id is used as key.
+	 * 
+	 * @param taskEntry
+	 *          entry to be stored
+	 * @return previous value associated with id of taskEntry
+	 */
 	public TaskEntry putTask(TaskEntry taskEntry) {
 		return getTasksMap().put(taskEntry.getId(), taskEntry);
 	}
@@ -100,10 +115,10 @@ public class TaskUtils {
 		}
 	}
 
-    public void setStateAndPut(TaskEntry entry, TaskState newState,
-                               String reasonFormat, Object... reasonArgs) throws IllegalArgumentException {
-        TaskEntries.setState(entry, newState, reasonFormat, reasonArgs);
-        putTask(entry);
-    }
+	public void setStateAndPut(TaskEntry entry, TaskState newState,
+			String reasonFormat, Object... reasonArgs) throws IllegalArgumentException {
+		TaskEntries.setState(entry, newState, reasonFormat, reasonArgs);
+		putTask(entry);
+	}
 
 }
