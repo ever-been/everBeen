@@ -43,7 +43,7 @@
 				<version>${jaxb2-maven-plugin.version}</version>
 
                 <configuration>
-                    <arguments>-Xequals -XhashCode -XtoString</arguments>
+                    <arguments>-Xequals -XhashCode -XtoString -Xfluent-api</arguments>
                 </configuration>
 
                 <dependencies>
@@ -52,6 +52,11 @@
                         <artifactId>jaxb2-basics</artifactId>
                         <version>0.6.4</version>
                     </dependency>
+					<dependency>
+						<groupId>org.jvnet.jaxb2_commons</groupId>
+						<artifactId>jaxb2-fluent-api</artifactId>
+						<version>3.0</version>
+					</dependency>
                 </dependencies>
 
 				<executions>

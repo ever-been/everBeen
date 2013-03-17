@@ -50,10 +50,15 @@ public enum TaskState {
 	/**
 	 * Indicates that a task has been aborted.
 	 */
-	ABORTED, 
+	ABORTED;
 
-;
-
+	/**
+	 *
+	 * Checks whether task state can be changed from the current state.
+	 *
+	 * @param state state to change to
+	 * @return true if the change is legal, false otherwise
+	 */
 	public boolean canChangeTo(TaskState state) {
 
 		// can abort in any state
