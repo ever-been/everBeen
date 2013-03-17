@@ -236,6 +236,9 @@ class HostRuntime implements IClusterService {
 		SwRepoClient swRepoClient = createSRClient();
 		BpkIdentifier bpkIdentifier = createBpkIdentifier(taskEntry.getTaskDescriptor());
 		Bpk bpk = downloadBpk(swRepoClient, bpkIdentifier);
+		if (bpk == null) {
+			throw new Exception(String.format("Missing bpk '%s:%s:%s' in software repository. ", bpkIdentifier.getGroupId(), bpkIdentifier.getBpkId(), bpkIdentifier.getVersion()));
+		}
 		BpkConfiguration bpkResolvedConfiguration = BpkResolver.resolve(bpk.getInputStream());
 
 		List<String> additionalArgs = readTaskArguments(taskEntry);
