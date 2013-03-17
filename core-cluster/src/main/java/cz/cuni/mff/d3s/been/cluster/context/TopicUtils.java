@@ -1,4 +1,4 @@
-package cz.cuni.mff.d3s.been.core;
+package cz.cuni.mff.d3s.been.cluster.context;
 
 import com.hazelcast.core.ITopic;
 import com.hazelcast.core.MessageListener;

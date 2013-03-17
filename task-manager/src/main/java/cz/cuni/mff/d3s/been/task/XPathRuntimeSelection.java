@@ -5,8 +5,8 @@ import java.util.Random;
 
 import com.hazelcast.query.Predicate;
 
-import cz.cuni.mff.d3s.been.core.ClusterContext;
-import cz.cuni.mff.d3s.been.core.query.XPathPredicate;
+import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
+import cz.cuni.mff.d3s.been.cluster.query.XPathPredicate;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;

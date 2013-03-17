@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.hazelcast.core.MembershipEvent;
 
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
-import cz.cuni.mff.d3s.been.core.ClusterContext;
+import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 
 /**
  * Listens for cluster membership events.

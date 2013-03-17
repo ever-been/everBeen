@@ -1,4 +1,4 @@
-package cz.cuni.mff.d3s.been.core;
+package cz.cuni.mff.d3s.been.cluster.context;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
@@ -17,6 +17,8 @@ import com.hazelcast.core.ITopic;
 import com.hazelcast.core.Instance;
 import com.hazelcast.core.Member;
 import com.hazelcast.core.Transaction;
+
+import cz.cuni.mff.d3s.been.cluster.Names;
 
 /**
  * @author Martin Sixta

@@ -1,4 +1,4 @@
-package cz.cuni.mff.d3s.been.core;
+package cz.cuni.mff.d3s.been.cluster.context;
 
 import java.util.Collection;
 import java.util.LinkedList;

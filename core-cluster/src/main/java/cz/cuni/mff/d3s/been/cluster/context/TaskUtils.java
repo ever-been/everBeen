@@ -1,6 +1,4 @@
-package cz.cuni.mff.d3s.been.core;
-
-import static cz.cuni.mff.d3s.been.core.Names.TASKS_MAP_NAME;
+package cz.cuni.mff.d3s.been.cluster.context;
 
 import java.util.Collection;
 
@@ -8,6 +6,7 @@ import com.hazelcast.config.MapConfig;
 import com.hazelcast.core.IMap;
 import com.hazelcast.query.SqlPredicate;
 
+import cz.cuni.mff.d3s.been.cluster.Names;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntries;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
@@ -30,7 +29,7 @@ public class TaskUtils {
 
 	public IMap<String, TaskEntry> getTasksMap() {
 
-		return clusterCtx.getMap(TASKS_MAP_NAME);
+		return clusterCtx.getMap(Names.TASKS_MAP_NAME);
 	}
 
 	public Collection<TaskEntry> getTasks() {

@@ -1,10 +1,11 @@
-package cz.cuni.mff.d3s.been.core;
+package cz.cuni.mff.d3s.been.cluster.context;
 
 import java.util.Collection;
 
 import com.hazelcast.core.IMap;
 import com.hazelcast.core.IQueue;
 
+import cz.cuni.mff.d3s.been.cluster.Names;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 
 /**
