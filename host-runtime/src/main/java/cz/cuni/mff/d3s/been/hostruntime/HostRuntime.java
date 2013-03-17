@@ -218,7 +218,7 @@ class HostRuntime implements IClusterService {
 		SwRepoClient swRepoClient = createSRClient();
 		BpkIdentifier bpkIdentifier = createBpkIdentifier(taskEntry.getTaskDescriptor());
 		Bpk bpk = downloadBpk(swRepoClient, bpkIdentifier);
-		BpkConfiguration bpkResolvedConfiguration = BpkResolver.resolve(bpk.getFile());
+		BpkConfiguration bpkResolvedConfiguration = BpkResolver.resolve(bpk.getInputStream());
 
 		List<String> additionalArgs = readTaskArguments(taskEntry);
 		TaskRunOpts runOpts;
