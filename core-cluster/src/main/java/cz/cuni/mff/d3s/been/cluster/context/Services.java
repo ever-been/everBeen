@@ -13,11 +13,11 @@ import cz.cuni.mff.d3s.been.core.sri.SWRepositoryInfo;
  * @author Tadeáš Palusga
  * 
  */
-public class ServicesUtils {
+public class Services {
 
 	private ClusterContext clusterCtx;
 
-	ServicesUtils(ClusterContext clusterCtx) {
+	Services(ClusterContext clusterCtx) {
 		// package private visibility prevents out-of-package instantiation
 		this.clusterCtx = clusterCtx;
 	}

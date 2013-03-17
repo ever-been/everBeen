@@ -24,7 +24,7 @@ import cz.cuni.mff.d3s.been.bpk.BpkResolver;
 import cz.cuni.mff.d3s.been.bpk.JavaRuntime;
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
-import cz.cuni.mff.d3s.been.cluster.context.TaskUtils;
+import cz.cuni.mff.d3s.been.cluster.context.Tasks;
 import cz.cuni.mff.d3s.been.core.protocol.messages.KillTaskMessage;
 import cz.cuni.mff.d3s.been.core.protocol.messages.RunTaskMessage;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
@@ -294,7 +294,7 @@ class HostRuntime implements IClusterService {
 		getTaskUtils().setStateAndPut(taskEntry, state, logMsgTemplate, taskEntry.getId(), getNodeId());
 	}
 
-	private TaskUtils getTaskUtils() {
+	private Tasks getTaskUtils() {
 		return clusterContext.getTasksUtils();
 	}
 

@@ -11,11 +11,11 @@ import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 /**
  * @author Martin Sixta
  */
-public class RuntimesUtils {
+public class Runtimes {
 
 	private ClusterContext clusterCtx;
 
-	RuntimesUtils(ClusterContext clusterCtx) {
+	Runtimes(ClusterContext clusterCtx) {
 		// package private visibility prevents out-of-package instantiation
 		this.clusterCtx = clusterCtx;
 	}

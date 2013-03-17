@@ -18,11 +18,11 @@ import cz.cuni.mff.d3s.been.core.task.TaskState;
  *         FIXME see TaskEntries class and TaskUtils! Should be merged FIXME
  *         COMMENTS! COMMENTS! COMMENTS! :)
  */
-public class TaskUtils {
+public class Tasks {
 
 	private ClusterContext clusterCtx;
 
-	TaskUtils(ClusterContext clusterCtx) {
+	Tasks(ClusterContext clusterCtx) {
 		// package private visibility prevents out-of-package instantiation
 		this.clusterCtx = clusterCtx;
 	}

@@ -6,11 +6,11 @@ import com.hazelcast.core.MessageListener;
 /**
  * @author Martin Sixta
  */
-public class TopicUtils {
+public class Topics {
 
 	private ClusterContext clusterCtx;
 
-	TopicUtils(ClusterContext clusterCtx) {
+	Topics(ClusterContext clusterCtx) {
 		// package private visibility prevents out-of-package instantiation	
 		this.clusterCtx = clusterCtx;
 	}

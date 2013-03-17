@@ -25,39 +25,39 @@ import cz.cuni.mff.d3s.been.cluster.Names;
  */
 public class ClusterContext {
 
-	private final MapUtils mapUtils;
-	private final RuntimesUtils runtimesUtils;
-	private final TaskUtils tasksUtils;
-	private final TopicUtils topicUtils;
-	private final ServicesUtils servicesUtils;
+	private final Maps mapUtils;
+	private final Runtimes runtimesUtils;
+	private final Tasks tasksUtils;
+	private final Topics topicUtils;
+	private final Services servicesUtils;
 	private final HazelcastInstance hcInstance;
 
 	public ClusterContext(HazelcastInstance hcInstance) {
 		this.hcInstance = hcInstance;
-		this.mapUtils = new MapUtils(this);
-		this.runtimesUtils = new RuntimesUtils(this);
-		this.tasksUtils = new TaskUtils(this);
-		this.topicUtils = new TopicUtils(this);
-		this.servicesUtils = new ServicesUtils(this);
+		this.mapUtils = new Maps(this);
+		this.runtimesUtils = new Runtimes(this);
+		this.tasksUtils = new Tasks(this);
+		this.topicUtils = new Topics(this);
+		this.servicesUtils = new Services(this);
 	}
 
-	public TaskUtils getTasksUtils() {
+	public Tasks getTasksUtils() {
 		return tasksUtils;
 	}
 
-	public MapUtils getMapUtils() {
+	public Maps getMapUtils() {
 		return mapUtils;
 	}
 
-	public RuntimesUtils getRuntimesUtils() {
+	public Runtimes getRuntimesUtils() {
 		return runtimesUtils;
 	}
 
-	public TopicUtils getTopicUtils() {
+	public Topics getTopicUtils() {
 		return topicUtils;
 	}
 
-	public ServicesUtils getServicesUtils() {
+	public Services getServicesUtils() {
 		return servicesUtils;
 	}
 

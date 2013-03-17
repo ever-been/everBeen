@@ -9,11 +9,11 @@ import com.hazelcast.core.Instance;
 /**
  * @author Martin Sixta
  */
-public class MapUtils {
+public class Maps {
 
 	private final ClusterContext clusterCtx;
 
-	MapUtils(ClusterContext clusterCtx) {
+	Maps(ClusterContext clusterCtx) {
 		// package private visibility prevents out-of-package instantiation
 		this.clusterCtx = clusterCtx;
 	}
