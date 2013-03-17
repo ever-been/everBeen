@@ -12,8 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
-import cz.cuni.mff.d3s.been.core.JSONUtils;
-import cz.cuni.mff.d3s.been.core.JSONUtils.JSONSerializerException;
+import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
+import cz.cuni.mff.d3s.been.core.utils.JSONUtils.JSONSerializerException;
 import cz.cuni.mff.d3s.been.datastore.BpkStore;
 import cz.cuni.mff.d3s.been.datastore.StorePersister;
 import cz.cuni.mff.d3s.been.datastore.StoreReader;

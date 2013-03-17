@@ -8,9 +8,9 @@ import com.hazelcast.impl.ascii.rest.RestValue;
 
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
-import cz.cuni.mff.d3s.been.core.JSONUtils;
 import cz.cuni.mff.d3s.been.core.protocol.Context;
 import cz.cuni.mff.d3s.been.core.protocol.messages.BaseMessage;
+import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
 
 /**
  * This class should not be used in real environment while not properly tested
