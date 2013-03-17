@@ -17,7 +17,7 @@
 			<artifactId>core-protocol</artifactId>
 			<version>3.0.0</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
 			<artifactId>software-repository-client</artifactId>
@@ -48,20 +48,25 @@
 			<version>3.0.0</version>
 		</dependency>
 
-        <dependency>
-            <groupId>cz.cuni.mff.d3s.been</groupId>
-            <artifactId>detectors</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>detectors</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
 
-
-        <dependency>
+		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>1.3.2</version>
 		</dependency>
 
-        <!-- TESTING LIBRARIES -->
+		<dependency>
+			<groupId>org.jeromq</groupId>
+			<artifactId>jeromq</artifactId>
+			<version>0.2.0</version>
+		</dependency>
+
+		<!-- TESTING LIBRARIES -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -74,7 +79,7 @@
 			<artifactId>mockito-all</artifactId>
 			<version>1.9.5</version>
 		</dependency>
-		
+
 
 
 	</dependencies>

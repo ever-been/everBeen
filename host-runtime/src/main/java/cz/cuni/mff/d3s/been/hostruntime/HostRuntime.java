@@ -25,6 +25,7 @@ import cz.cuni.mff.d3s.been.bpk.JavaRuntime;
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.cluster.context.Tasks;
+import cz.cuni.mff.d3s.been.core.TaskPropertyNames;
 import cz.cuni.mff.d3s.been.core.protocol.messages.KillTaskMessage;
 import cz.cuni.mff.d3s.been.core.protocol.messages.RunTaskMessage;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
@@ -80,6 +81,8 @@ class HostRuntime implements IClusterService {
 
 	private final Map<String, Process> runningTasks = Collections.synchronizedMap(new HashMap<String, Process>());
 
+	private TaskMessageDispatcher taskMessageDispatcher;
+
 	/**
 	 * Creates new {@link HostRuntime} with cluster-unique id.
 	 * 
@@ -103,6 +106,9 @@ class HostRuntime implements IClusterService {
 	 */
 	@Override
 	public void start() {
+		// We have to prepare TaskLogProcessor before any task can be run
+		registerTaskMessageDispatcher();
+
 		// All listeners must be initialized before any message will be
 		// received.
 		registerListeners();
@@ -124,6 +130,18 @@ class HostRuntime implements IClusterService {
 		// Now, no new message should be received and we can unregister
 		// listeners
 		unregisterListeners();
+
+		// Now, we can easily remove taskMessageDispatcher
+		unregisterTaskMessageDispatcher();
+	}
+
+	private void unregisterTaskMessageDispatcher() {
+		taskMessageDispatcher.terminate();
+	}
+
+	private void registerTaskMessageDispatcher() {
+		taskMessageDispatcher = new TaskMessageDispatcher();
+		taskMessageDispatcher.start();
 	}
 
 	private void unregisterListeners() {
@@ -234,8 +252,16 @@ class HostRuntime implements IClusterService {
 
 		ProcessBuilder processBuilder = new ProcessBuilder(runOpts.createCommandLine());
 		processBuilder.inheritIO();
+		processBuilder.environment().putAll(createEnvironmentProperties(taskEntry));
 		Process process = processBuilder.start();
 		return process;
+	}
+
+	private Map<String, String> createEnvironmentProperties(TaskEntry taskEntry) {
+		Map<String, String> properties = new HashMap<>();
+		properties.put(TaskPropertyNames.TASK_ID, taskEntry.getId());
+		properties.put(TaskPropertyNames.HR_COMM_PORT, Integer.toString(taskMessageDispatcher.getReceiverPort()));
+		return properties;
 	}
 
 	private File unzipBpkJarFileTo(Bpk bpk, JavaRuntime runtime,
