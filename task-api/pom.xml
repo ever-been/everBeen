@@ -13,10 +13,38 @@
     </parent>
 
     <dependencies>
+		<!-- BEEN -->
         <dependency>
             <groupId>cz.cuni.mff.d3s.been</groupId>
             <artifactId>core-data</artifactId>
             <version>3.0.0</version>
         </dependency>
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>core-utils</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+
+		<!-- EXTERNAL -->
+		<dependency>
+			<groupId>org.jeromq</groupId>
+			<artifactId>jeromq</artifactId>
+			<version>0.2.0</version>
+		</dependency>
     </dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin.version}</version>
+				<configuration>
+					<source>${java-source.version}</source>
+					<target>${java-target.version}</target>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
 </project>

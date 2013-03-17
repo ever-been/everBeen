@@ -15,10 +15,12 @@ public class LogMessage {
 	public int level;
 	public String message;
 	public String errorTrace;
+	public String senderId;
 
-	public LogMessage(int level, String message, Throwable t) {
+	public LogMessage(int level, String message, Throwable t, String senderId) {
 		this.level = level;
 		this.message = message;
+		this.senderId = senderId;
 
 		if (t != null) {
 			try (StringWriter sw = new StringWriter(); PrintWriter pw = new PrintWriter(sw)) {
