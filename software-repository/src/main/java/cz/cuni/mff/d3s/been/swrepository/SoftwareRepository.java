@@ -4,8 +4,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
-import cz.cuni.mff.d3s.been.core.ClusterContext;
-import cz.cuni.mff.d3s.been.core.Names;
+import cz.cuni.mff.d3s.been.cluster.Names;
+import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.sri.SWRepositoryInfo;
 import cz.cuni.mff.d3s.been.datastore.DataStore;
 import cz.cuni.mff.d3s.been.swrepository.httpserver.HttpServer;

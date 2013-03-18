@@ -8,7 +8,7 @@ import com.hazelcast.core.Message;
 import com.hazelcast.core.MessageListener;
 
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
-import cz.cuni.mff.d3s.been.core.ClusterContext;
+import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.protocol.Context;
 import cz.cuni.mff.d3s.been.core.protocol.messages.BaseMessage;
 import cz.cuni.mff.d3s.been.core.protocol.messages.KillTaskMessage;

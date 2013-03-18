@@ -10,7 +10,7 @@ import com.hazelcast.core.IMap;
 import com.hazelcast.core.Transaction;
 
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
-import cz.cuni.mff.d3s.been.core.ClusterContext;
+import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.protocol.Context;
 import cz.cuni.mff.d3s.been.core.protocol.messages.RunTaskMessage;
 import cz.cuni.mff.d3s.been.core.task.TaskEntries;

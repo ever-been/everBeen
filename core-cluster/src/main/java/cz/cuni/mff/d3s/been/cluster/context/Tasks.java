@@ -1,6 +1,4 @@
-package cz.cuni.mff.d3s.been.core;
-
-import static cz.cuni.mff.d3s.been.core.Names.TASKS_MAP_NAME;
+package cz.cuni.mff.d3s.been.cluster.context;
 
 import java.util.Collection;
 
@@ -8,29 +6,30 @@ import com.hazelcast.config.MapConfig;
 import com.hazelcast.core.IMap;
 import com.hazelcast.query.SqlPredicate;
 
+import cz.cuni.mff.d3s.been.cluster.Names;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntries;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
 
 /**
- * @author Martin Sixta
  * 
- *         FIXME see TaskEntries class and TaskUtils! Should be merged FIXME
- *         COMMENTS! COMMENTS! COMMENTS! :)
+ * Utility class for BEEN tasks stored in Hazelcast map.
+ * 
+ * 
+ * @author Martin Sixta
  */
-public class TaskUtils {
+public class Tasks {
 
 	private ClusterContext clusterCtx;
 
-	TaskUtils(ClusterContext clusterCtx) {
+	Tasks(ClusterContext clusterCtx) {
 		// package private visibility prevents out-of-package instantiation
 		this.clusterCtx = clusterCtx;
 	}
 
 	public IMap<String, TaskEntry> getTasksMap() {
-
-		return clusterCtx.getMap(TASKS_MAP_NAME);
+		return clusterCtx.getMap(Names.TASKS_MAP_NAME);
 	}
 
 	public Collection<TaskEntry> getTasks() {
@@ -82,6 +81,7 @@ public class TaskUtils {
 		return clusterCtx.getConfig().findMatchingMapConfig("BEEN_MAP_TASKS");
 	}
 
+	// TODO: sixtam re-analyze all *equal* functions + docs
 	public boolean isClusterEqual(TaskEntry entry) {
 
 		TaskEntry taskEntryCopy = getTasksMap().get(entry.getId());
@@ -93,12 +93,14 @@ public class TaskUtils {
 		}
 	}
 
+	// TODO: sixtam re-analyze all *equal* functions + docs
 	public void assertClusterEqual(TaskEntry entry) {
 		if (!isClusterEqual(entry)) {
 			throw new IllegalStateException(String.format("Entry '%s' has changed!", entry.getId()));
 		}
 	}
 
+	// TODO: sixtam re-analyze all *equal* functions + docs
 	public TaskEntry assertClusterEqualCopy(TaskEntry entry) {
 		TaskEntry copy = getTask(entry.getId());
 
@@ -109,13 +111,26 @@ public class TaskUtils {
 		}
 	}
 
+	// TODO: sixtam re-analyze all *equal* functions + docs
 	public void assertEqual(TaskEntry entry, TaskEntry copy) {
 		if (!entry.equals(copy)) {
 			throw new IllegalStateException(String.format("Entry '%s' has changed!", entry.getId()));
 		}
 	}
 
-	public void setStateAndPut(TaskEntry entry, TaskState newState,
+	/**
+	 * 
+	 * Updates state of a task.
+	 * 
+	 * @param entry
+	 * @param newState
+	 * @param reasonFormat
+	 * @param reasonArgs
+	 * @throws IllegalArgumentException
+	 * 
+	 *           TODO: sixtam resolve concurrency issues
+	 */
+	public void updateTaskState(TaskEntry entry, TaskState newState,
 			String reasonFormat, Object... reasonArgs) throws IllegalArgumentException {
 		TaskEntries.setState(entry, newState, reasonFormat, reasonArgs);
 		putTask(entry);

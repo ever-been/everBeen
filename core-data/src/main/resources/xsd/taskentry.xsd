@@ -41,8 +41,23 @@
 	<xs:element name="stateChangeEntry">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element ref="taskentry:state" minOccurs="1" maxOccurs="1"/>
-				<xs:element name="reason" type="xs:string" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="taskentry:state" minOccurs="1" maxOccurs="1">
+					<xs:annotation>
+						<xs:appinfo>
+							<jaxb:property>
+								<jaxb:javadoc>State of the task.</jaxb:javadoc>
+							</jaxb:property>
+						</xs:appinfo>
+					</xs:annotation>
+				</xs:element>
+
+				<xs:element name="reason" type="xs:string" minOccurs="1" maxOccurs="1">
+					<xs:annotation>
+						<xs:appinfo>
+							<jaxb:javadoc>Describes why an entry's state changed.</jaxb:javadoc>
+						</xs:appinfo>
+					</xs:annotation>
+				</xs:element>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -55,7 +70,7 @@
 					<xs:annotation>
 						<xs:appinfo>
 							<jaxb:property name="logEntries">
-
+								<jaxb:javadoc>List of log entries.</jaxb:javadoc>
 							</jaxb:property>
 						</xs:appinfo>
 					</xs:annotation>
@@ -68,12 +83,75 @@
 	<xs:element name="taskEntry">
 		<xs:complexType>
 			<xs:all>
-				<xs:element ref="taskentry:id" minOccurs="1" maxOccurs="1"/>
-				<xs:element ref="taskentry:ownerId" minOccurs="0" maxOccurs="1"/>
-				<xs:element ref="taskentry:runtimeId" minOccurs="0" maxOccurs="1"/>
-				<xs:element ref="taskentry:state" minOccurs="1" maxOccurs="1"/>
-				<xs:element ref="td:taskDescriptor" minOccurs="1" maxOccurs="1"/>
-				<xs:element ref="taskentry:stateChangeLog"  minOccurs="0" maxOccurs="1" />
+				<xs:element ref="taskentry:id" minOccurs="1" maxOccurs="1">
+					<xs:annotation>
+						<xs:appinfo>
+							<jaxb:property>
+								<jaxb:javadoc>Cluster-unique ID of the task.</jaxb:javadoc>
+							</jaxb:property>
+						</xs:appinfo>
+					</xs:annotation>
+				</xs:element>
+
+				<xs:element ref="taskentry:ownerId" minOccurs="0" maxOccurs="1">
+					<xs:annotation>
+						<xs:appinfo>
+							<jaxb:property>
+								<jaxb:javadoc>Current task manager taking care of the entry.</jaxb:javadoc>
+							</jaxb:property>
+						</xs:appinfo>
+					</xs:annotation>
+				</xs:element>
+
+				<xs:element ref="taskentry:runtimeId" minOccurs="0" maxOccurs="1">
+					<xs:annotation>
+						<xs:appinfo>
+							<jaxb:property>
+								<jaxb:javadoc>ID of a Host Runtime on which the task has been scheduled</jaxb:javadoc>
+							</jaxb:property>
+						</xs:appinfo>
+					</xs:annotation>
+				</xs:element>
+
+				<xs:element ref="taskentry:state" minOccurs="1" maxOccurs="1">
+					<xs:annotation>
+						<xs:appinfo>
+							<jaxb:property>
+								<jaxb:javadoc>Current state of the task.</jaxb:javadoc>
+							</jaxb:property>
+						</xs:appinfo>
+					</xs:annotation>
+				</xs:element>
+
+				<xs:element name="exitCode" type="common:nonnegativeInt" default="0" minOccurs="0" maxOccurs="1">
+					<xs:annotation>
+						<xs:appinfo>
+							<jaxb:property>
+								<jaxb:javadoc>Exit code of the task. The value has meaning only if task ends up in TaskState.FINISHED</jaxb:javadoc>
+							</jaxb:property>
+						</xs:appinfo>
+					</xs:annotation>
+				</xs:element>
+
+				<xs:element ref="td:taskDescriptor" minOccurs="1" maxOccurs="1">
+					<xs:annotation>
+						<xs:appinfo>
+							<jaxb:property>
+								<jaxb:javadoc>Task descriptor for a task.</jaxb:javadoc>
+							</jaxb:property>
+						</xs:appinfo>
+					</xs:annotation>
+				</xs:element>
+
+				<xs:element ref="taskentry:stateChangeLog"  minOccurs="0" maxOccurs="1">
+					<xs:annotation>
+						<xs:appinfo>
+							<jaxb:property>
+								<jaxb:javadoc>Logs changes to the TaskEntry</jaxb:javadoc>
+							</jaxb:property>
+						</xs:appinfo>
+					</xs:annotation>
+				</xs:element>
 
 			</xs:all>
 		</xs:complexType>

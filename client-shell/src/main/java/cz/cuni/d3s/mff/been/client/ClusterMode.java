@@ -6,7 +6,7 @@ import jline.console.ConsoleReader;
 
 import com.hazelcast.core.Instance;
 
-import cz.cuni.mff.d3s.been.core.ClusterContext;
+import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.runtime.RuntimeInfos;
 import cz.cuni.mff.d3s.been.core.task.TaskEntries;

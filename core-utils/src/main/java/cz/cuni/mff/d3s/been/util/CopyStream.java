@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.apache.commons.io.IOUtils;
+
 /**
  * This class is used to copy InputStream to OutputStream on the fly. It can be
  * used for example to redirect FileInputStream to SocketOutputStream - reason
@@ -30,21 +32,18 @@ public class CopyStream {
 	 * Create a stream copying tool.
 	 * 
 	 * @param input
-	 *            Input stream to copy from
+	 *          Input stream to copy from
 	 * @param closeInputOnExit
-	 *            Whether the input stream should be closed once the copying is
-	 *            done
+	 *          Whether the input stream should be closed once the copying is done
 	 * @param output
-	 *            Output stream to write to
+	 *          Output stream to write to
 	 * @param closeOutputOnExit
-	 *            Whether the output stream should be closed once the copying is
-	 *            done
+	 *          Whether the output stream should be closed once the copying is
+	 *          done
 	 * @param flushOutputOnWrite
-	 *            Whether a flush should be forced after the copying is over
+	 *          Whether a flush should be forced after the copying is over
 	 */
-	public CopyStream(InputStream input, boolean closeInputOnExit,
-			OutputStream output, boolean closeOutputOnExit,
-			boolean flushOutputOnWrite) {
+	public CopyStream(InputStream input, boolean closeInputOnExit, OutputStream output, boolean closeOutputOnExit, boolean flushOutputOnWrite) {
 		this.input = input;
 		this.closeInputOnExit = closeInputOnExit;
 		this.output = output;
@@ -56,13 +55,12 @@ public class CopyStream {
 	 * Perform the copy.
 	 * 
 	 * @throws IOException
-	 *             Whenever reading the input or writing the output fails
+	 *           Whenever reading the input or writing the output fails
 	 */
 	public void copy() throws IOException {
 		try {
 			byte[] buffer = new byte[BUFFERSIZE];
-			for (int bytes = input.read(buffer); bytes >= 0; bytes = input
-					.read(buffer)) {
+			for (int bytes = input.read(buffer); bytes >= 0; bytes = input.read(buffer)) {
 				output.write(buffer, 0, bytes);
 				if (flushOutputOnWrite) {
 					output.flush();
@@ -72,20 +70,10 @@ public class CopyStream {
 			throw ex;
 		} finally {
 			if (closeInputOnExit) {
-				// FIXME -> use ioutils, quiet close
-				try {
-					input.close();
-				} catch (IOException ex) {
-					// ignore
-				}
+				IOUtils.closeQuietly(input);
 			}
 			if (closeOutputOnExit) {
-				// FIXME -> use ioutils, quiet close
-				try {
-					output.close();
-				} catch (IOException ex) {
-					// ignore
-				}
+				IOUtils.closeQuietly(output);
 			}
 		}
 	}

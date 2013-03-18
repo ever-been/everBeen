@@ -23,8 +23,9 @@ import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.bpk.BpkResolver;
 import cz.cuni.mff.d3s.been.bpk.JavaRuntime;
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
-import cz.cuni.mff.d3s.been.core.ClusterContext;
-import cz.cuni.mff.d3s.been.core.TaskUtils;
+import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
+import cz.cuni.mff.d3s.been.cluster.context.Tasks;
+import cz.cuni.mff.d3s.been.core.TaskPropertyNames;
 import cz.cuni.mff.d3s.been.core.protocol.messages.KillTaskMessage;
 import cz.cuni.mff.d3s.been.core.protocol.messages.RunTaskMessage;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
@@ -80,6 +81,8 @@ class HostRuntime implements IClusterService {
 
 	private final Map<String, Process> runningTasks = Collections.synchronizedMap(new HashMap<String, Process>());
 
+	private TaskMessageDispatcher taskMessageDispatcher;
+
 	/**
 	 * Creates new {@link HostRuntime} with cluster-unique id.
 	 * 
@@ -106,6 +109,9 @@ class HostRuntime implements IClusterService {
 	 */
 	@Override
 	public void start() {
+		// We have to prepare TaskLogProcessor before any task can be run
+		registerTaskMessageDispatcher();
+
 		// All listeners must be initialized before any message will be
 		// received.
 		registerListeners();
@@ -127,6 +133,18 @@ class HostRuntime implements IClusterService {
 		// Now, no new message should be received and we can unregister
 		// listeners
 		unregisterListeners();
+
+		// Now, we can easily remove taskMessageDispatcher
+		unregisterTaskMessageDispatcher();
+	}
+
+	private void unregisterTaskMessageDispatcher() {
+		taskMessageDispatcher.terminate();
+	}
+
+	private void registerTaskMessageDispatcher() {
+		taskMessageDispatcher = new TaskMessageDispatcher();
+		taskMessageDispatcher.start();
 	}
 
 	private void unregisterListeners() {
@@ -224,7 +242,14 @@ class HostRuntime implements IClusterService {
 		SwRepoClient swRepoClient = createSRClient();
 		BpkIdentifier bpkIdentifier = createBpkIdentifier(taskEntry.getTaskDescriptor());
 		Bpk bpk = downloadBpk(swRepoClient, bpkIdentifier);
-		BpkConfiguration bpkResolvedConfiguration = BpkResolver.resolve(bpk.getFile());
+		if (bpk == null) {
+			throw new Exception(String.format(
+					"Missing bpk '%s:%s:%s' in software repository. ",
+					bpkIdentifier.getGroupId(),
+					bpkIdentifier.getBpkId(),
+					bpkIdentifier.getVersion()));
+		}
+		BpkConfiguration bpkResolvedConfiguration = BpkResolver.resolve(bpk.getInputStream());
 
 		List<String> additionalArgs = readTaskArguments(taskEntry);
 		TaskRunOpts runOpts;
@@ -242,8 +267,18 @@ class HostRuntime implements IClusterService {
 
 		ProcessBuilder processBuilder = new ProcessBuilder(runOpts.createCommandLine());
 		processBuilder.inheritIO();
+		processBuilder.environment().putAll(createEnvironmentProperties(taskEntry));
 		Process process = processBuilder.start();
 		return process;
+	}
+
+	private Map<String, String> createEnvironmentProperties(TaskEntry taskEntry) {
+		Map<String, String> properties = new HashMap<>();
+		properties.put(TaskPropertyNames.TASK_ID, taskEntry.getId());
+		properties.put(
+				TaskPropertyNames.HR_COMM_PORT,
+				Integer.toString(taskMessageDispatcher.getReceiverPort()));
+		return properties;
 	}
 
 	private File unzipBpkJarFileTo(
@@ -251,7 +286,7 @@ class HostRuntime implements IClusterService {
 			JavaRuntime runtime,
 			File taskDirectory) throws ZipException, IOException {
 		File unzippedDir = new File(taskDirectory, "bpk");
-		ZipFileUtil.unzipToDir(bpk.getFile(), unzippedDir);
+		ZipFileUtil.unzipToDir(bpk.getFile(), unzippedDir); // TODO donarus - use ZipArchiveInputStream instead
 		return new File(new File(unzippedDir, "files"), runtime.getJarFile());
 	}
 
@@ -304,7 +339,7 @@ class HostRuntime implements IClusterService {
 	private void changeTaskStateTo(TaskEntry taskEntry, TaskState state) {
 		String logMsgTemplate = "State of task '%s' has been changed to '%s'.";
 		log.info(String.format(logMsgTemplate, taskEntry.getId(), state));
-		getTaskUtils().setStateAndPut(
+		getTaskUtils().updateTaskState(
 				taskEntry,
 				state,
 				logMsgTemplate,
@@ -312,7 +347,7 @@ class HostRuntime implements IClusterService {
 				getNodeId());
 	}
 
-	private TaskUtils getTaskUtils() {
+	private Tasks getTaskUtils() {
 		return clusterContext.getTasksUtils();
 	}
 

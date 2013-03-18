@@ -1,4 +1,4 @@
-package cz.cuni.mff.d3s.been.core.query;
+package cz.cuni.mff.d3s.been.cluster.query;
 
 import org.apache.commons.jxpath.JXPathContext;
 

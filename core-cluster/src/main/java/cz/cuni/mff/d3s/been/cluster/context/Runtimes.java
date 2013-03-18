@@ -1,20 +1,20 @@
-package cz.cuni.mff.d3s.been.core;
+package cz.cuni.mff.d3s.been.cluster.context;
 
 import java.util.Collection;
 
 import com.hazelcast.core.IMap;
-import com.hazelcast.core.IQueue;
 
+import cz.cuni.mff.d3s.been.cluster.Names;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 
 /**
  * @author Martin Sixta
  */
-public class RuntimesUtils {
+public class Runtimes {
 
 	private ClusterContext clusterCtx;
 
-	RuntimesUtils(ClusterContext clusterCtx) {
+	Runtimes(ClusterContext clusterCtx) {
 		// package private visibility prevents out-of-package instantiation
 		this.clusterCtx = clusterCtx;
 	}
@@ -65,14 +65,4 @@ public class RuntimesUtils {
 		return clusterCtx.getMap(Names.HOSTRUNTIMES_MAP_NAME);
 	}
 
-	/**
-	 * FIXME Martin Sixta ?? I do not understand what the "LocalTaskQueue" really
-	 * is. Please document it.
-	 * 
-	 * @return
-	 */
-	public IQueue<String> getLocalTaskQueue() {
-		return clusterCtx.getInstance().getQueue(clusterCtx.getId());
-
-	}
 }

@@ -1,7 +1,8 @@
-package cz.cuni.mff.d3s.been.core;
+package cz.cuni.mff.d3s.been.cluster.context;
 
 import com.hazelcast.core.IMap;
 
+import cz.cuni.mff.d3s.been.cluster.Names;
 import cz.cuni.mff.d3s.been.core.protocol.pojo.BaseNodeInfo.SoftwareRepositoryNodeInfo;
 import cz.cuni.mff.d3s.been.core.sri.SWRepositoryInfo;
 
@@ -12,11 +13,11 @@ import cz.cuni.mff.d3s.been.core.sri.SWRepositoryInfo;
  * @author Tadeáš Palusga
  * 
  */
-public class ServicesUtils {
+public class Services {
 
 	private ClusterContext clusterCtx;
 
-	ServicesUtils(ClusterContext clusterCtx) {
+	Services(ClusterContext clusterCtx) {
 		// package private visibility prevents out-of-package instantiation
 		this.clusterCtx = clusterCtx;
 	}

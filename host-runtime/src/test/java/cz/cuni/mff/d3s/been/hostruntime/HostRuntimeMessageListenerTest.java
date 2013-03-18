@@ -10,7 +10,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import cz.cuni.mff.d3s.been.core.ClusterContext;
+import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.protocol.messages.KillTaskMessage;
 import cz.cuni.mff.d3s.been.core.protocol.messages.RunTaskMessage;
 

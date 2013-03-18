@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.hazelcast.core.IMap;
 import com.hazelcast.core.Transaction;
 
-import cz.cuni.mff.d3s.been.core.ClusterContext;
+import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.task.TaskEntries;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;

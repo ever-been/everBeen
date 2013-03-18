@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import com.hazelcast.core.HazelcastInstance;
 
-import cz.cuni.mff.d3s.been.core.ClusterContext;
+import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.datastore.DataStoreFactory;
 import cz.cuni.mff.d3s.been.detectors.Detector;

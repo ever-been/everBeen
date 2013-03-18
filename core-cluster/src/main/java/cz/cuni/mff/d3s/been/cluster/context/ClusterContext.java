@@ -1,4 +1,4 @@
-package cz.cuni.mff.d3s.been.core;
+package cz.cuni.mff.d3s.been.cluster.context;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
@@ -6,56 +6,52 @@ import java.util.Collection;
 import java.util.Set;
 
 import com.hazelcast.config.Config;
-import com.hazelcast.core.AtomicNumber;
-import com.hazelcast.core.ClientService;
-import com.hazelcast.core.Cluster;
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.IList;
-import com.hazelcast.core.IMap;
-import com.hazelcast.core.IQueue;
-import com.hazelcast.core.ITopic;
-import com.hazelcast.core.Instance;
-import com.hazelcast.core.Member;
-import com.hazelcast.core.Transaction;
+import com.hazelcast.core.*;
+
+import cz.cuni.mff.d3s.been.cluster.Names;
 
 /**
+ * 
+ * Utility class for often used Hazelcast functions.
+ * 
+ * 
  * @author Martin Sixta
  */
 public class ClusterContext {
 
-	private final MapUtils mapUtils;
-	private final RuntimesUtils runtimesUtils;
-	private final TaskUtils tasksUtils;
-	private final TopicUtils topicUtils;
-	private final ServicesUtils servicesUtils;
+	private final Maps mapUtils;
+	private final Runtimes runtimesUtils;
+	private final Tasks tasksUtils;
+	private final Topics topicUtils;
+	private final Services servicesUtils;
 	private final HazelcastInstance hcInstance;
 
 	public ClusterContext(HazelcastInstance hcInstance) {
 		this.hcInstance = hcInstance;
-		this.mapUtils = new MapUtils(this);
-		this.runtimesUtils = new RuntimesUtils(this);
-		this.tasksUtils = new TaskUtils(this);
-		this.topicUtils = new TopicUtils(this);
-		this.servicesUtils = new ServicesUtils(this);
+		this.mapUtils = new Maps(this);
+		this.runtimesUtils = new Runtimes(this);
+		this.tasksUtils = new Tasks(this);
+		this.topicUtils = new Topics(this);
+		this.servicesUtils = new Services(this);
 	}
 
-	public TaskUtils getTasksUtils() {
+	public Tasks getTasksUtils() {
 		return tasksUtils;
 	}
 
-	public MapUtils getMapUtils() {
+	public Maps getMapUtils() {
 		return mapUtils;
 	}
 
-	public RuntimesUtils getRuntimesUtils() {
+	public Runtimes getRuntimesUtils() {
 		return runtimesUtils;
 	}
 
-	public TopicUtils getTopicUtils() {
+	public Topics getTopicUtils() {
 		return topicUtils;
 	}
 
-	public ServicesUtils getServicesUtils() {
+	public Services getServicesUtils() {
 		return servicesUtils;
 	}
 
@@ -63,25 +59,61 @@ public class ClusterContext {
 		return hcInstance;
 	}
 
+	/**
+	 * Set of current members of the cluster. Returning set instance is not
+	 * modifiable. Every member in the cluster has the same member list in the
+	 * same order. First member is the oldest member.
+	 * 
+	 * @return current members of the cluster
+	 */
 	public Set<Member> getMembers() {
 
 		return getInstance().getCluster().getMembers();
 
 	}
 
+	/**
+	 * Returns UUID of this member.
+	 * 
+	 * @return UUID of this member.
+	 */
 	public String getId() {
 		return getLocalMember().getUuid();
 	}
 
+	/**
+	 * 
+	 * Returns port of this member.
+	 * 
+	 * Use {@link cz.cuni.mff.d3s.been.core.ClusterContext#getInetSocketAddress()}
+	 * instead.
+	 * 
+	 * @return port of this member
+	 */
+	@Deprecated
 	public int getPort() {
 		return getLocalMember().getInetSocketAddress().getPort();
 
 	}
 
+	/**
+	 * Returns host name of this member.
+	 * 
+	 * Use {@link cz.cuni.mff.d3s.been.core.ClusterContext#getInetSocketAddress()}
+	 * instead.
+	 * 
+	 * @return host name of this member
+	 */
+	@Deprecated
 	public String getHostName() {
 		return getLocalMember().getInetSocketAddress().getHostName();
 	}
 
+	/**
+	 * Returns the InetSocketAddress of this member.
+	 * 
+	 * @return InetSocketAddress of this member
+	 */
 	public InetSocketAddress getInetSocketAddress() {
 		return getLocalMember().getInetSocketAddress();
 	}
@@ -122,9 +154,22 @@ public class ClusterContext {
 		return getInstance().getAtomicNumber(name);
 	}
 
+	/**
+	 *
+	 * Returns all queue, map, set, list, topic, lock, multimap instances created by Hazelcast.
+	 *
+	 * @return the collection of instances created by Hazelcast.
+	 */
 	public Collection<Instance> getInstances() {
 		return getInstance().getInstances();
 	}
+
+	/**
+	 *
+	 * Returns instances of specified type created by Hazelcast.
+	 *
+	 * @return the collection of instances of specified type created by Hazelcast.
+	 */
 
 	public Collection<Instance> getInstances(Instance.InstanceType instanceType) {
 		Collection<Instance> instances = new ArrayList<>();
@@ -138,6 +183,14 @@ public class ClusterContext {
 		return instances;
 	}
 
+	/**
+	 *
+	 * Checks for existence of an instance (queue, map, set, list, topic, lock, multimap).
+	 *
+	 * @param instanceType type of the instance
+	 * @param name name of the instance
+	 * @return  true if the instance exists, false otherwise
+	 */
 	public boolean containsInstance(Instance.InstanceType instanceType,
 			String name) {
 
@@ -151,14 +204,35 @@ public class ClusterContext {
 		return false;
 	}
 
+	/**
+	 * Returns the configuration of this Hazelcast instance.
+	 *
+	 * @return configuration of this Hazelcast instance
+	 */
 	public Config getConfig() {
 		return getInstance().getConfig();
 	}
 
+	/**
+	 * Registers a service.
+	 *
+	 * @param serviceName name of the service
+	 * @param serviceInfo information about the service (service specific)
+	 *
+	 * TODO: check for concurency issues
+	 */
 	public void registerService(String serviceName, Object serviceInfo) {
 		getMap(Names.SERVICES_MAP_NAME).put(serviceName, serviceInfo);
 	}
 
+	/**
+	 * Un-registers a service.
+	 *
+	 *
+	 * @param serviceName name of the service
+	 *
+	 * TODO: check for concurency issues
+	 */
 	public void unregisterService(String serviceName) {
 		getMap(Names.SERVICES_MAP_NAME).remove(serviceName);
 	}
