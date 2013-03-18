@@ -1,15 +1,15 @@
 package cz.cuni.mff.d3s.been.taskapi.mq;
 
-import org.jeromq.ZMQ;
-
 import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.HR_COMM_PORT;
 
+import org.jeromq.ZMQ;
+
 /**
- *
+ * 
  * Class for inter-process messaging between tasks and Host Runtimes.
- *
+ * 
  * Part of the Java BEEN Task API.
- *
+ * 
  * @author Martin Sixta
  */
 public class Messages {
@@ -17,14 +17,14 @@ public class Messages {
 	/**
 	 * ZMQ.Context
 	 */
-	private static ZMQ.Context context;
+	private volatile static ZMQ.Context context;
 
 	/**
 	 * Socket to send messages to Host Runtime. Singleton protected with
 	 * double-checked locking.
 	 */
 
-	private static ZMQ.Socket sender;
+	private volatile static ZMQ.Socket sender;
 
 	/**
 	 * Protocol used to exchange messages.
@@ -37,7 +37,8 @@ public class Messages {
 	public static String SINK_HOST = "localhost";
 
 	/**
-	 * Lock object. Used in double-checked locking for {@link ZMQ.Socket} singleton.
+	 * Lock object. Used in double-checked locking for {@link ZMQ.Socket}
+	 * singleton.
 	 */
 	private static String __lock = "LOCK_OBJECT";
 
@@ -45,14 +46,11 @@ public class Messages {
 	 * System property name with the port on which the Host Runtime listens.
 	 */
 
-
-
-
 	/**
-	 *
+	 * 
 	 * Returns {@link ZMQ.Socket} where to send messages to the Host Runtime.
-	 *
-	 * @return
+	 * 
+	 * @return writable socket connected to host runtime
 	 */
 	public static ZMQ.Socket getSocketToHostRuntime() {
 		// double locking
@@ -66,9 +64,9 @@ public class Messages {
 
 					String SINK_CONN = String.format("%s://%s:%d", SINK_PROT, SINK_HOST, SINK_PORT);
 
-					int bindedPort = sender.bind(SINK_CONN);
+					boolean connected = sender.connect(SINK_CONN);
 
-					if (bindedPort != SINK_PORT) {
+					if (!connected) {
 						// TODO sixtam Proper Exception
 						throw new IllegalStateException("Cannot bind to a port: " + SINK_PORT);
 					}
@@ -77,7 +75,20 @@ public class Messages {
 		}
 
 		return sender;
+	}
 
+	/**
+	 * Closes all opened socket connections to host runtime
+	 */
+	public synchronized static void shutdown() {
+		if (context != null) {
+			if (sender != null) {
+				sender.close();
+				sender = null;
+			}
+			context.term();
+			context = null;
+		}
 	}
 
 	private static int getHostRuntimePort() {
