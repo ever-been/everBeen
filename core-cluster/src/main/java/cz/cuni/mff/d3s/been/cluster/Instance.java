@@ -27,6 +27,10 @@ public final class Instance {
 	private static HazelcastInstance hazelcastInstance;
 	private static NodeType nodeType = null;
 
+
+	private static int SECOND = 1000;
+	private static int NATIVE_CLIENT_TIMEOUT = 120*SECOND;
+
 	public static NodeType getNodeType() {
 		return nodeType;
 	}
@@ -55,6 +59,7 @@ public final class Instance {
         InetSocketAddress socketAddress = new InetSocketAddress(host, port);
 
         ClientConfig clientConfig = new ClientConfig();
+		clientConfig.setConnectionTimeout(NATIVE_CLIENT_TIMEOUT);
         clientConfig.getGroupConfig().setName(groupName).setPassword(groupPassword);
         clientConfig.addInetSocketAddress(socketAddress);
 
