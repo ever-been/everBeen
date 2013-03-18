@@ -1,17 +1,15 @@
-package cz.cuni.mff.d3s.been.node;
+package cz.cuni.mff.d3s.been.core;
 
 /**
  * Exit status codes.
- *
+ * 
  * @author Martin Sixta
  */
-enum StatusCode {
+public enum StatusCode {
 
-	EX_OK(0),
-	EX_USAGE(67);
+	EX_OK(0), EX_USAGE(67);
 
 	private int code;
-
 
 	StatusCode(int code) {
 		this.code = code;

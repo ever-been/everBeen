@@ -15,8 +15,8 @@ import org.kohsuke.args4j.Option;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static cz.cuni.mff.d3s.been.node.StatusCode.EX_OK;
-import static cz.cuni.mff.d3s.been.node.StatusCode.EX_USAGE;
+import static cz.cuni.mff.d3s.been.core.StatusCode.EX_OK;
+import static cz.cuni.mff.d3s.been.core.StatusCode.EX_USAGE;
 
 
 /**

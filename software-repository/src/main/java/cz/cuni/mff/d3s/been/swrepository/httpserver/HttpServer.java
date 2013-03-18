@@ -45,7 +45,7 @@ public class HttpServer {
 	 * @param port
 	 *          Port on which the server listens
 	 */
-	public HttpServer(final InetAddress inetAddr, final int port) {
+	public HttpServer(InetAddress inetAddr, int port) {
 		this.inetAddr = inetAddr;
 		this.port = port;
 		this.handlerResolver = new HttpRequestHandlerRegistry();
@@ -81,7 +81,10 @@ public class HttpServer {
 		// TODO initialize the sub-services;
 		HttpService httpService = new HttpService(httpProc, new DefaultConnectionReuseStrategy(), new DefaultHttpResponseFactory(), handlerResolver, params);
 
-		log.debug(String.format("Running listener thread on port %d with params %s", port, params.toString()));
+		log.debug(String.format(
+				"Running listener thread on port %d with params %s",
+				port,
+				params.toString()));
 		listenerThread = new ListenerThread(httpService, inetAddr, port, params);
 		listenerThread.start();
 	}
@@ -123,7 +126,11 @@ public class HttpServer {
 		private final InetAddress inetAddr;
 		private final HttpParams params;
 
-		ListenerThread(HttpService service, InetAddress inetAddr, int port, HttpParams params) {
+		ListenerThread(
+				HttpService service,
+				InetAddress inetAddr,
+				int port,
+				HttpParams params) {
 			this.service = service;
 			this.context = new BasicHttpContext();
 			this.port = port;
@@ -139,11 +146,16 @@ public class HttpServer {
 			try {
 				serverSocket = new ServerSocket(port, MAX_CONNECTIONS, inetAddr);
 			} catch (IOException e) {
-				log.error(String.format("Unable to bind server socket on port %d - %s", port, e.getMessage()));
+				log.error(String.format(
+						"Unable to bind server socket on port %d - %s",
+						port,
+						e.getMessage()));
 				return;
 			}
 
-			log.info(String.format("Listener thread bound to socket %s", serverSocket.toString()));
+			log.info(String.format(
+					"Listener thread bound to socket %s",
+					serverSocket.toString()));
 
 			Socket socket;
 			while (!Thread.interrupted()) {
@@ -151,7 +163,9 @@ public class HttpServer {
 				try {
 					socket = serverSocket.accept();
 				} catch (IOException e) {
-					log.error(String.format("Failed to accept incoming socket connection - %s", e.getMessage()));
+					log.error(String.format(
+							"Failed to accept incoming socket connection - %s",
+							e.getMessage()));
 					continue;
 				}
 
@@ -159,30 +173,43 @@ public class HttpServer {
 				try {
 					connection.bind(socket, params);
 				} catch (IOException e) {
-					log.error(String.format("Failed to bind incoming connection %s - %s", connection.toString(), e.getMessage()));
+					log.error(String.format(
+							"Failed to bind incoming connection %s - %s",
+							connection.toString(),
+							e.getMessage()));
 					continue;
 				}
 
 				try {
 					service.handleRequest(connection, context);
 				} catch (HttpException e) {
-					log.error("Could not process incoming connection %s - %s", connection.toString(), e.getMessage());
+					log.error(
+							"Could not process incoming connection %s - %s",
+							connection.toString(),
+							e.getMessage());
 					continue;
 				} catch (IOException e) {
-					log.error(String.format("I/O error when processing incoming connection %s - %s", connection.toString(), e.getMessage()));
+					log.error(String.format(
+							"I/O error when processing incoming connection %s - %s",
+							connection.toString(),
+							e.getMessage()));
 					continue;
 				}
 				try {
 					connection.close();
 				} catch (IOException e) {
-					log.error(String.format("Leaked connection %s when attempting release after handling request", connection.toString()));
+					log.error(String.format(
+							"Leaked connection %s when attempting release after handling request",
+							connection.toString()));
 				}
 				log.debug("Request processed.");
 			}
 
 			try {
 				serverSocket.close();
-				log.info(String.format("Socket %s released, listener is down.", serverSocket.toString()));
+				log.info(String.format(
+						"Socket %s released, listener is down.",
+						serverSocket.toString()));
 			} catch (IOException e) {
 				log.error(String.format("Failed to close listener socket - %s"));
 			}

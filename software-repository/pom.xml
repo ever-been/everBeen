@@ -22,7 +22,7 @@
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>${maven-assembly-plugin.version}</version>
 				<configuration>
-					<finalName>software-repository</finalName>
+					<finalName>software-repository-runnable</finalName>
 					<appendAssemblyId>false</appendAssemblyId>
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>

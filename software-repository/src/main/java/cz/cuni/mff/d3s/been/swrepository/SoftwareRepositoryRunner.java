@@ -1,8 +1,12 @@
 package cz.cuni.mff.d3s.been.swrepository;
 
+import static cz.cuni.mff.d3s.been.core.StatusCode.EX_USAGE;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,22 +28,22 @@ public class SoftwareRepositoryRunner {
 	private static final Logger log = LoggerFactory.getLogger(SoftwareRepositoryRunner.class);
 
 	@Option(name = "-h", aliases = { "--host" }, usage = "Hostname of a cluster member to connect to")
-	private final String host = "localhost";
+	private String host = "localhost";
 
 	@Option(name = "-p", aliases = { "--port" }, usage = "Port of the host")
-	private final int port = 5701;
+	private int port = 5701;
 
 	@Option(name = "-gn", aliases = { "--group-name" }, usage = "Group Name")
-	private final String groupName = "dev";
+	private String groupName = "dev";
 
 	@Option(name = "-gp", aliases = { "--group-password" }, usage = "Group Password")
-	private final String groupPassword = "dev-pass";
+	private String groupPassword = "dev-pass";
 
-	@Option(name = "-tn", aliases = { "--http-name" }, usage = "Hostname for the HTTP server to bind, defaults to \"localhost\"")
-	private final String httpHost = "localhost";
+	@Option(name = "-th", aliases = { "--http-host" }, usage = "Hostname for the HTTP server to bind, defaults to \"localhost\"")
+	private String httpHost = "localhost";
 
 	@Option(name = "-tp", aliases = { "--http-port" }, usage = "Port for the HTTP server to bind, defaults to 8000")
-	private final int httpPort = 8000;
+	private int httpPort = 8000;
 
 	/**
 	 * Run a software repository node from command-line.
@@ -52,6 +56,19 @@ public class SoftwareRepositoryRunner {
 	}
 
 	public void doMain(String[] args) {
+		CmdLineParser parser = new CmdLineParser(this);
+
+		try {
+			// parse the arguments.
+			parser.parseArgument(args);
+
+		} catch (CmdLineException e) {
+			System.err.println(e.getMessage());
+			System.err.println("\nUsage:");
+			parser.printUsage(System.err);
+
+			System.exit(EX_USAGE.getCode());
+		}
 
 		HazelcastInstance inst = Instance.newNativeInstance(
 				host,
@@ -70,6 +87,8 @@ public class SoftwareRepositoryRunner {
 					"Software Repository could not start: Failed to resolve local address {}. Cause was: {}",
 					httpHost,
 					e.getMessage());
+			inst.getLifecycleService().shutdown(); // kill the SWRepository Hazelcast instance - without the HTTP server, it's useless
+			return;
 		}
 		HttpServer httpServer = new HttpServer(myAddr, httpPort);
 		swRepo.setDataStore(dataStore);
