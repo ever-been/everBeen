@@ -13,11 +13,6 @@
 	</parent>
 
 	<dependencies>
-		<dependency>
-			<groupId>cz.cuni.mff.d3s.been</groupId>
-			<artifactId>core-data</artifactId>
-			<version>3.0.0</version>
-		</dependency>
 
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
