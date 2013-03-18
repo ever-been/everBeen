@@ -136,7 +136,8 @@ public final class FSBasedStore implements DataStore {
 	 * @return The path to the BPK
 	 */
 	public File getBpkItem(BpkIdentifier bpkIdentifier) {
-		if (bpkIdentifier.getGroupId() == null || bpkIdentifier.getBpkId() == null || bpkIdentifier.getVersion() == null) {
+		if (bpkIdentifier == null || bpkIdentifier.getGroupId() == null || bpkIdentifier.getBpkId() == null || bpkIdentifier.getVersion() == null) {
+			log.error("Null or incomplete BPK identifier {}", bpkIdentifier);
 			return null;
 		}
 		final List<String> pathItems = new LinkedList<String>();
@@ -167,6 +168,10 @@ public final class FSBasedStore implements DataStore {
 	 * @return The path to the Artifact file
 	 */
 	public File getArtifactItem(ArtifactIdentifier artifactIdentifier) {
+		if (artifactIdentifier == null || artifactIdentifier.getGroupId() == null || artifactIdentifier.getArtifactId() == null || artifactIdentifier.getVersion() == null) {
+			log.error("Null or incomplete Artifact identifier {}", artifactIdentifier);
+			return null;
+		};
 		final List<String> pathItems = new ArrayList<>(Arrays.asList(artifactIdentifier.getGroupId().split(
 				"\\.")));
 		pathItems.add(artifactIdentifier.getArtifactId());

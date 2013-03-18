@@ -17,6 +17,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.artifact.Artifact;
@@ -146,6 +147,14 @@ public class TestTraffic {
 		randomContentFile = File.createTempFile(
 				"testSwRepoTraffic",
 				"randomContent");
+		FileWriter fw = new FileWriter(randomContentFile);
+		Random random = new Random(System.currentTimeMillis());
+		for (int i = 0; i < 1024; ++i) {
+			fw.write(random.nextInt());
+		}
+		fw.flush();
+		fw.close();
+
 		bpkId = new BpkIdentifier();
 		bpkId.setBpkId("evil-package");
 		bpkId.setGroupId("cz.cuni.mff.d3s.been.swrepository.test");
@@ -205,36 +214,19 @@ public class TestTraffic {
 	}
 
 	@Test
-	public void testUploadBpk_overwrite() throws IOException {
+	public void testUploadBpk_duplicateEntry() throws IOException {
 		assertTrue(client.putBpk(bpkId, randomContentFile));
-		// reset fields - generates same identifier but different content
-		fillFields();
-		assertTrue(client.putBpk(bpkId, randomContentFile));
-		assertFilePresent(
-				SERVER_PERSISTENCE_ROOT_FOLDER,
-				String.format("%s-%s.bpk", bpkId.getBpkId(), bpkId.getVersion()),
-				"bpks",
-				randomContentFile,
-				bpkId.getGroupId(),
-				bpkId.getBpkId(),
-				bpkId.getVersion());
+		assertTrue(client.putBpk(bpkId, randomContentFile)); // will be changed to assertFalse once the behavior has changed to the desired version
 	}
 
 	@Test
 	public void testUploadBpk_fileDoesntExist() {
 		randomContentFile.delete();
 		assertFalse(client.putBpk(bpkId, randomContentFile));
-		assertFileAbsent(
-				SERVER_PERSISTENCE_ROOT_FOLDER,
-				String.format("%s-%s.bpk", bpkId.getBpkId(), bpkId.getVersion()),
-				"bpks",
-				bpkId.getGroupId(),
-				bpkId.getBpkId(),
-				bpkId.getVersion());
 	}
 
 	@Test
-	public void testUploadBpk_essentialIdentifiersNull() {
+	public void testUploadBpk_badIdentifier() {
 		bpkId.setBpkId(null);
 		assertFalse(client.putBpk(bpkId, randomContentFile));
 	}
@@ -242,13 +234,6 @@ public class TestTraffic {
 	@Test
 	public void testUploadBpk_serverDown() {
 		assertFalse(client.putBpk(bpkId, randomContentFile));
-		assertFileAbsent(
-				SERVER_PERSISTENCE_ROOT_FOLDER,
-				String.format("%s-%s.bpk", bpkId.getBpkId(), bpkId.getVersion()),
-				"bpks",
-				bpkId.getGroupId(),
-				bpkId.getBpkId(),
-				bpkId.getVersion());
 	}
 
 	// test delete bpk that exists
@@ -272,12 +257,14 @@ public class TestTraffic {
 
 		Bpk bpk = client.getBpk(bpkId);
 		assertNotNull(bpk);
-		final String downloadedContent = FileUtils.fileRead(bpk.getFile());
+		InputStream bpkIs = bpk.getInputStream();
+		final String downloadedContent = IOUtils.toString(bpkIs);
+		bpkIs.close();
 		assertEquals(evilContent, downloadedContent);
 	}
 
 	@Test
-	public void testDownloadBpk_essentialIdentifiersNull() {
+	public void testDownloadBpk_badIdentifier() {
 		bpkId.setBpkId(null);
 		assertNull(client.getBpk(bpkId));
 	}
@@ -305,9 +292,10 @@ public class TestTraffic {
 
 		Bpk bpk = client.getBpk(bpkId);
 		assertNotNull(bpk);
-		assertNotNull(bpk.getFile());
-		assertTrue(bpk.getFile().exists());
-		assertEquals(cacheContent, FileUtils.fileRead(bpk.getFile()));
+		InputStream bpkIs = bpk.getInputStream();
+		assertNotNull(bpkIs);
+		assertEquals(cacheContent, IOUtils.toString(bpkIs));
+		bpkIs.close();
 	}
 
 	@Test
@@ -368,14 +356,98 @@ public class TestTraffic {
 				FileUtils.fileRead(serverFile),
 				FileUtils.fileRead(artifact.getFile()));
 	}
-	// test download artifact bad identifier
-	// test download artifact server down
-	// test upload artifact
-	// test upload artifact file doesn't exist
-	// test upload artifact with parts of artifact null
-	// test upload artifact server down
-	// test delete artifact that exists
-	// test delete artifact that doesn't exist
+
+	@Test
+	public void testDownloadArtifact_badIdentifier() {
+		artifactId.setArtifactId(null);
+		assertNull(client.getArtifact(artifactId));
+	}
+
+	@Test
+	public void testDownloadArtifact_serverDown() throws IOException {
+		File serverFile = getFileFromPathAndName(
+				SERVER_PERSISTENCE_ROOT_FOLDER,
+				String.format(
+						"%s-%s.jar",
+						artifactId.getArtifactId(),
+						artifactId.getVersion()),
+				"artifacts",
+				artifactId.getGroupId(),
+				artifactId.getArtifactId(),
+				artifactId.getVersion());
+		serverFile.getParentFile().mkdirs();
+		serverFile.createNewFile();
+		FileWriter fw = new FileWriter(serverFile);
+		fw.write("KABOOOOOOOOOOOOOOOOOOOOOOM!!!");
+		fw.close();
+
+		Artifact artifact = client.getArtifact(artifactId);
+		assertNull(artifact);
+	}
+
+	@Test
+	public void testDownloadArtifactInCache_serverDown() throws IOException {
+		File cacheFile = getFileFromPathAndName(
+				CLIENT_PERSISTENCE_ROOT_FOLDER,
+				String.format(
+						"%s-%s.jar",
+						artifactId.getArtifactId(),
+						artifactId.getVersion()),
+				"artifacts",
+				artifactId.getGroupId(),
+				artifactId.getArtifactId(),
+				artifactId.getVersion());
+		cacheFile.getParentFile().mkdirs();
+		cacheFile.createNewFile();
+		FileWriter fw = new FileWriter(cacheFile);
+		fw.write("KABOOOOOOOOOOOOOOOOOOOOOOM!!!");
+		fw.close();
+
+		Artifact artifact = client.getArtifact(artifactId);
+		assertNotNull(artifact);
+		assertNotNull(artifact.getFile());
+		assertTrue(artifact.getFile().exists());
+		assertEquals(
+				FileUtils.fileRead(cacheFile),
+				FileUtils.fileRead(artifact.getFile()));
+	}
+
+	@Test
+	public void testUploadArtifact() throws IOException {
+		client.putArtifact(artifactId, randomContentFile);
+		File serverItem = getFileFromPathAndName(
+				SERVER_PERSISTENCE_ROOT_FOLDER,
+				String.format(
+						"%s-%s.jar",
+						artifactId.getArtifactId(),
+						artifactId.getVersion()),
+				"artifacts",
+				artifactId.getGroupId(),
+				artifactId.getArtifactId(),
+				artifactId.getVersion());
+		assertNotNull(serverItem);
+		assertTrue(serverItem.exists());
+		assertEquals(
+				FileUtils.fileRead(randomContentFile),
+				FileUtils.fileRead(serverItem));
+	}
+
+	@Test
+	public void testUploadArtifact_noFile() {
+		randomContentFile.delete();
+		assertFalse(client.putArtifact(artifactId, randomContentFile));
+	}
+
+	@Test
+	public void testUploadArtifact_serverDown() {
+		assertFalse(client.putArtifact(artifactId, randomContentFile));
+	}
+
+	@Test
+	public void testUploadArtifact_duplicateEntry() {
+		assertTrue(client.putArtifact(artifactId, randomContentFile));
+		assertTrue(client.putArtifact(artifactId, randomContentFile)); // will be changed to assertFalse once the behavior has changed to the desired version
+	}
 
 	/**
 	 * Assert that a file can be found in the server persistence and that its

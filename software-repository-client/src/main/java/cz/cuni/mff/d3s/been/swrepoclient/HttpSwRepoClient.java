@@ -51,11 +51,11 @@ class HttpSwRepoClient implements SwRepoClient {
 
 	@Override
 	public Artifact getArtifact(ArtifactIdentifier artifactIdentifier) {
-		Artifact artifact = getArtifactFromCache(artifactIdentifier);
-		if (artifact == null) {
-			return getArtifactByHTTP(artifactIdentifier);
+		StoreReader artifactReader = softwareCache.getArtifactReader(artifactIdentifier);
+		if (artifactReader != null) {
+			return new ArtifactFromStore(artifactIdentifier, artifactReader);
 		} else {
-			return artifact;
+			return getArtifactByHTTP(artifactIdentifier);
 		}
 	}
 
@@ -132,6 +132,7 @@ class HttpSwRepoClient implements SwRepoClient {
 					"Failed to upload artifact {} due to transport I/O error - {}",
 					artifactIdentifier.toString(),
 					e.getMessage());
+			return false;
 		}
 
 		if (response.getStatusLine().getStatusCode() / 100 != 2) {
@@ -320,9 +321,13 @@ class HttpSwRepoClient implements SwRepoClient {
 		}
 		IOUtils.closeQuietly(is);
 
-		return getArtifactFromCache(artifactIdentifier);
+		StoreReader sr = softwareCache.getArtifactReader(artifactIdentifier);
+		if (sr == null) {
+			return null;
+		} else {
+			return new ArtifactFromStore(artifactIdentifier, sr);
+		}
 	}
-
 	/**
 	 * Ask the repository for a BPK by HTTP
 	 */
@@ -393,19 +398,6 @@ class HttpSwRepoClient implements SwRepoClient {
 		IOUtils.closeQuietly(is);
 
 		return new BpkFromStore(softwareCache.getBpkReader(bpkIdentifier), bpkIdentifier);
-	}
-
-	/**
-	 * Try to construct an Artifact from cache. If impossible for any reason,
-	 * return <code>null</code>
-	 */
-	private Artifact getArtifactFromCache(ArtifactIdentifier artifactIdentifier) {
-		StoreReader artifactReader = softwareCache.getArtifactReader(artifactIdentifier);
-		if (artifactReader == null) {
-			return null;
-		}
-
-		return new ArtifactFromStore(artifactIdentifier, artifactReader);
 	}
 
 }
