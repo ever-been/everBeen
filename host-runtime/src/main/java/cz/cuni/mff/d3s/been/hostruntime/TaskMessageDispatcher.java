@@ -30,11 +30,14 @@ public class TaskMessageDispatcher {
 	private static final String STOP_MESSAGE = "XX1456123_STOP_RECEIVER_MESSAGE";
 
 	/**
+	 * identification of not bounded port
+	 */
+	private static final int NOT_BOUND_PORT = -1;
+
+	/**
 	 * Message queue context for sender and receiver.
 	 */
-	private ZMQ.Context context;
-
-	private static final int NOT_BOUND_PORT = -1;
+	private volatile ZMQ.Context context;
 
 	/**
 	 * Random generated port on which the receiver is running
@@ -75,6 +78,17 @@ public class TaskMessageDispatcher {
 			}
 		}.start();
 
+		Runtime.getRuntime().addShutdownHook(createShutdownHook());
+
+	}
+
+	private Thread createShutdownHook() {
+		return new Thread() {
+			@Override
+			public void run() {
+				TaskMessageDispatcher.this.terminate();
+			}
+		};
 	}
 
 	/**
