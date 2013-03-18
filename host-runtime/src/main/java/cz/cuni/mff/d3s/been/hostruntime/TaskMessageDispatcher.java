@@ -6,6 +6,8 @@ import java.util.Map;
 import org.jeromq.ZMQ;
 
 import cz.cuni.mff.d3s.been.core.TaskMessageType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Purpose of this service is to allow communication between HostRuntime and
@@ -17,6 +19,8 @@ import cz.cuni.mff.d3s.been.core.TaskMessageType;
  * 
  */
 public class TaskMessageDispatcher {
+
+	private static final Logger log = LoggerFactory.getLogger(TaskMessageDispatcher.class);
 
 	/**
 	 * Address on which the receiver is bound
@@ -63,6 +67,7 @@ public class TaskMessageDispatcher {
 				boolean run = true;
 				while (run) {
 					String message = new String(receiver.recv(0)).trim();
+					log.debug(message);
 					if (STOP_MESSAGE.equals(message)) {
 						run = false;
 					} else {
