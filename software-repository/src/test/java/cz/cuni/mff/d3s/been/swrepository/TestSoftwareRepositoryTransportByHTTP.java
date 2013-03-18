@@ -9,12 +9,18 @@ import static junit.framework.Assert.assertTrue;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.maven.artifact.Artifact;
 import org.codehaus.plexus.util.FileUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -24,9 +30,10 @@ import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
+import cz.cuni.mff.d3s.been.bpk.ArtifactIdentifier;
 import cz.cuni.mff.d3s.been.bpk.Bpk;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
-import cz.cuni.mff.d3s.been.datastore.DataStore;
+import cz.cuni.mff.d3s.been.datastore.SoftwareStore;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
 import cz.cuni.mff.d3s.been.swrepository.httpserver.HttpServer;
@@ -39,7 +46,7 @@ import cz.cuni.mff.d3s.been.swrepository.httpserver.HttpServer;
  * @author darklight
  * 
  */
-public class TestTraffic {
+public class TestSoftwareRepositoryTransportByHTTP {
 
 	private class RunningServerStatement extends Statement {
 		private final Statement base;
@@ -67,7 +74,7 @@ public class TestTraffic {
 			final InetAddress addr = probeSocket.getInetAddress();
 			probeSocket.close();
 			server = new HttpServer(addr, port);
-			DataStore dataStore = new FSBasedStore(SERVER_PERSISTENCE_ROOT_FOLDER);
+			SoftwareStore dataStore = new FSBasedStore(SERVER_PERSISTENCE_ROOT_FOLDER);
 			server.getResolver().register("/bpk*", new BpkRequestHandler(dataStore));
 			server.getResolver().register(
 					"/artifact*",
@@ -113,10 +120,10 @@ public class TestTraffic {
 	private static final File SERVER_PERSISTENCE_ROOT_FOLDER = new File(".server-persistence");
 	/** Root folder of the client's persistence. */
 	private static final File CLIENT_PERSISTENCE_ROOT_FOLDER = new File(".client-persistence");
-	private final DataStore dataStore;
+	private final SoftwareStore dataStore;
 	private final SwRepoClientFactory clientFactory;
 
-	public TestTraffic() {
+	public TestSoftwareRepositoryTransportByHTTP() {
 		dataStore = new FSBasedStore(CLIENT_PERSISTENCE_ROOT_FOLDER);
 		clientFactory = new SwRepoClientFactory(dataStore);
 	}
@@ -124,6 +131,7 @@ public class TestTraffic {
 	private SwRepoClient client = null;
 	private File randomContentFile = null;
 	private BpkIdentifier bpkId = null;
+	private ArtifactIdentifier artifactId = null;
 
 	@Rule
 	public ServerAllocatorRule serverAllocatorRule = new ServerAllocatorRule();
@@ -139,10 +147,23 @@ public class TestTraffic {
 		randomContentFile = File.createTempFile(
 				"testSwRepoTraffic",
 				"randomContent");
+		FileWriter fw = new FileWriter(randomContentFile);
+		Random random = new Random(System.currentTimeMillis());
+		for (int i = 0; i < 1024; ++i) {
+			fw.write(random.nextInt());
+		}
+		fw.flush();
+		fw.close();
+
 		bpkId = new BpkIdentifier();
 		bpkId.setBpkId("evil-package");
 		bpkId.setGroupId("cz.cuni.mff.d3s.been.swrepository.test");
 		bpkId.setVersion("0.0.7");
+
+		artifactId = new ArtifactIdentifier();
+		artifactId.setArtifactId("bigBaddaBoom");
+		artifactId.setGroupId("cz.cuni.mff.d3s.been.swrepository.test");
+		artifactId.setVersion("3.2.1...");
 	}
 
 	@Before
@@ -193,36 +214,19 @@ public class TestTraffic {
 	}
 
 	@Test
-	public void testUploadBpk_overwrite() throws IOException {
+	public void testUploadBpk_duplicateEntry() throws IOException {
 		assertTrue(client.putBpk(bpkId, randomContentFile));
-		// reset fields - generates same identifier but different content
-		fillFields();
-		assertTrue(client.putBpk(bpkId, randomContentFile));
-		assertFilePresent(
-				SERVER_PERSISTENCE_ROOT_FOLDER,
-				String.format("%s-%s.bpk", bpkId.getBpkId(), bpkId.getVersion()),
-				"bpks",
-				randomContentFile,
-				bpkId.getGroupId(),
-				bpkId.getBpkId(),
-				bpkId.getVersion());
+		assertTrue(client.putBpk(bpkId, randomContentFile)); // will be changed to assertFalse once the behavior has changed to the desired version
 	}
 
 	@Test
 	public void testUploadBpk_fileDoesntExist() {
 		randomContentFile.delete();
 		assertFalse(client.putBpk(bpkId, randomContentFile));
-		assertFileAbsent(
-				SERVER_PERSISTENCE_ROOT_FOLDER,
-				String.format("%s-%s.bpk", bpkId.getBpkId(), bpkId.getVersion()),
-				"bpks",
-				bpkId.getGroupId(),
-				bpkId.getBpkId(),
-				bpkId.getVersion());
 	}
 
 	@Test
-	public void testUploadBpk_essentialIdentifiersNull() {
+	public void testUploadBpk_badIdentifier() {
 		bpkId.setBpkId(null);
 		assertFalse(client.putBpk(bpkId, randomContentFile));
 	}
@@ -230,13 +234,6 @@ public class TestTraffic {
 	@Test
 	public void testUploadBpk_serverDown() {
 		assertFalse(client.putBpk(bpkId, randomContentFile));
-		assertFileAbsent(
-				SERVER_PERSISTENCE_ROOT_FOLDER,
-				String.format("%s-%s.bpk", bpkId.getBpkId(), bpkId.getVersion()),
-				"bpks",
-				bpkId.getGroupId(),
-				bpkId.getBpkId(),
-				bpkId.getVersion());
 	}
 
 	// test delete bpk that exists
@@ -260,12 +257,14 @@ public class TestTraffic {
 
 		Bpk bpk = client.getBpk(bpkId);
 		assertNotNull(bpk);
-		final String downloadedContent = FileUtils.fileRead(bpk.getFile());
+		InputStream bpkIs = bpk.getInputStream();
+		final String downloadedContent = IOUtils.toString(bpkIs);
+		bpkIs.close();
 		assertEquals(evilContent, downloadedContent);
 	}
 
 	@Test
-	public void testDownloadBpk_essentialIdentifiersNull() {
+	public void testDownloadBpk_badIdentifier() {
 		bpkId.setBpkId(null);
 		assertNull(client.getBpk(bpkId));
 	}
@@ -293,9 +292,10 @@ public class TestTraffic {
 
 		Bpk bpk = client.getBpk(bpkId);
 		assertNotNull(bpk);
-		assertNotNull(bpk.getFile());
-		assertTrue(bpk.getFile().exists());
-		assertEquals(cacheContent, FileUtils.fileRead(bpk.getFile()));
+		InputStream bpkIs = bpk.getInputStream();
+		assertNotNull(bpkIs);
+		assertEquals(cacheContent, IOUtils.toString(bpkIs));
+		bpkIs.close();
 	}
 
 	@Test
@@ -315,9 +315,7 @@ public class TestTraffic {
 
 		Bpk bpk = client.getBpk(bpkId);
 		assertNotNull(bpk);
-		assertNotNull(bpk.getFile());
-		File bpkFile = bpk.getFile();
-		assertTrue(bpkFile.exists());
+		InputStream bpkFileStream = bpk.getInputStream();
 
 		File fileInCache = getFileFromPathAndName(
 				CLIENT_PERSISTENCE_ROOT_FOLDER,
@@ -328,17 +326,128 @@ public class TestTraffic {
 				bpkId.getVersion());
 		assertNotNull(fileInCache);
 		assertTrue(fileInCache.exists());
-		assertEquals(FileUtils.fileRead(bpkFile), FileUtils.fileRead(fileInCache));
+		assertEquals(
+				IOUtils.toString(bpkFileStream),
+				FileUtils.fileRead(fileInCache));
 	}
-	// test download artifact
-	// test download artifact bad identifier
-	// test download artifact server down
-	// test upload artifact
-	// test upload artifact file doesn't exist
-	// test upload artifact with parts of artifact null
-	// test upload artifact server down
-	// test delete artifact that exists
-	// test delete artifact that doesn't exist
+
+	@Test
+	public void testDownloadArtifact() throws IOException {
+		File serverFile = getFileFromPathAndName(
+				SERVER_PERSISTENCE_ROOT_FOLDER,
+				String.format(
+						"%s-%s.jar",
+						artifactId.getArtifactId(),
+						artifactId.getVersion()),
+				"artifacts",
+				artifactId.getGroupId(),
+				artifactId.getArtifactId(),
+				artifactId.getVersion());
+		serverFile.getParentFile().mkdirs();
+		serverFile.createNewFile();
+		FileWriter fw = new FileWriter(serverFile);
+		fw.write("KABOOOOOOOOOOOOOOOOOOOOOOM!!!");
+		fw.close();
+
+		Artifact artifact = client.getArtifact(artifactId);
+		assertNotNull(artifact);
+		assertFalse(artifact.getFile().equals(serverFile));
+		assertEquals(
+				FileUtils.fileRead(serverFile),
+				FileUtils.fileRead(artifact.getFile()));
+	}
+
+	@Test
+	public void testDownloadArtifact_badIdentifier() {
+		artifactId.setArtifactId(null);
+		assertNull(client.getArtifact(artifactId));
+	}
+
+	@Test
+	public void testDownloadArtifact_serverDown() throws IOException {
+		File serverFile = getFileFromPathAndName(
+				SERVER_PERSISTENCE_ROOT_FOLDER,
+				String.format(
+						"%s-%s.jar",
+						artifactId.getArtifactId(),
+						artifactId.getVersion()),
+				"artifacts",
+				artifactId.getGroupId(),
+				artifactId.getArtifactId(),
+				artifactId.getVersion());
+		serverFile.getParentFile().mkdirs();
+		serverFile.createNewFile();
+		FileWriter fw = new FileWriter(serverFile);
+		fw.write("KABOOOOOOOOOOOOOOOOOOOOOOM!!!");
+		fw.close();
+
+		Artifact artifact = client.getArtifact(artifactId);
+		assertNull(artifact);
+	}
+
+	@Test
+	public void testDownloadArtifactInCache_serverDown() throws IOException {
+		File cacheFile = getFileFromPathAndName(
+				CLIENT_PERSISTENCE_ROOT_FOLDER,
+				String.format(
+						"%s-%s.jar",
+						artifactId.getArtifactId(),
+						artifactId.getVersion()),
+				"artifacts",
+				artifactId.getGroupId(),
+				artifactId.getArtifactId(),
+				artifactId.getVersion());
+		cacheFile.getParentFile().mkdirs();
+		cacheFile.createNewFile();
+		FileWriter fw = new FileWriter(cacheFile);
+		fw.write("KABOOOOOOOOOOOOOOOOOOOOOOM!!!");
+		fw.close();
+
+		Artifact artifact = client.getArtifact(artifactId);
+		assertNotNull(artifact);
+		assertNotNull(artifact.getFile());
+		assertTrue(artifact.getFile().exists());
+		assertEquals(
+				FileUtils.fileRead(cacheFile),
+				FileUtils.fileRead(artifact.getFile()));
+	}
+
+	@Test
+	public void testUploadArtifact() throws IOException {
+		client.putArtifact(artifactId, randomContentFile);
+		File serverItem = getFileFromPathAndName(
+				SERVER_PERSISTENCE_ROOT_FOLDER,
+				String.format(
+						"%s-%s.jar",
+						artifactId.getArtifactId(),
+						artifactId.getVersion()),
+				"artifacts",
+				artifactId.getGroupId(),
+				artifactId.getArtifactId(),
+				artifactId.getVersion());
+		assertNotNull(serverItem);
+		assertTrue(serverItem.exists());
+		assertEquals(
+				FileUtils.fileRead(randomContentFile),
+				FileUtils.fileRead(serverItem));
+	}
+
+	@Test
+	public void testUploadArtifact_noFile() {
+		randomContentFile.delete();
+		assertFalse(client.putArtifact(artifactId, randomContentFile));
+	}
+
+	@Test
+	public void testUploadArtifact_serverDown() {
+		assertFalse(client.putArtifact(artifactId, randomContentFile));
+	}
+
+	@Test
+	public void testUploadArtifact_duplicateEntry() {
+		assertTrue(client.putArtifact(artifactId, randomContentFile));
+		assertTrue(client.putArtifact(artifactId, randomContentFile)); // will be changed to assertFalse once the behavior has changed to the desired version
+	}
 
 	/**
 	 * Assert that a file can be found in the server persistence and that its
@@ -363,18 +472,21 @@ public class TestTraffic {
 			String fileName,
 			String storeName,
 			File referenceFile,
-			String... pathItems) throws IOException {
+			String groupId,
+			String itemId,
+			String itemVersion) throws IOException {
 		final File file = getFileFromPathAndName(
 				root,
 				fileName,
 				storeName,
-				pathItems);
+				groupId,
+				itemId,
+				itemVersion);
 		assertTrue(file.exists());
 		final String actualFileContent = FileUtils.fileRead(referenceFile);
 		final String referenceFileContent = FileUtils.fileRead(file);
 		assertEquals(referenceFileContent, actualFileContent);
 	}
-
 	/**
 	 * Assert that a file can not be found in the server persistence.
 	 * 
@@ -391,23 +503,35 @@ public class TestTraffic {
 			File root,
 			String fileName,
 			String storeName,
-			String... pathItems) {
+			String groupId,
+			String itemId,
+			String itemVersion) {
 		final File file = getFileFromPathAndName(
 				root,
 				fileName,
 				storeName,
-				pathItems);
+				groupId,
+				itemId,
+				itemVersion);
 		assertFalse(file.exists());
 	}
-
 	private File getFileFromPathAndName(
 			File root,
 			String fileName,
 			String storeName,
-			String... pathItems) {
+			String groupId,
+			String itemId,
+			String itemVersion) {
+
+		List<String> pathItemList = new LinkedList<String>();
+		for (String grpIdPart : groupId.split("\\.")) {
+			pathItemList.add(grpIdPart);
+		}
+		pathItemList.add(itemId);
+		pathItemList.add(itemVersion);
 		Path path = FileSystems.getDefault().getPath(
 				root.getPath() + File.separator + storeName,
-				pathItems);
+				pathItemList.toArray(new String[pathItemList.size()]));
 		return new File(path.toFile(), fileName);
 	}
 }

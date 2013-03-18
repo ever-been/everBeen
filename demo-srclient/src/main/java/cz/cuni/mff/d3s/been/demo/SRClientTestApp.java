@@ -7,7 +7,7 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
-import cz.cuni.mff.d3s.been.datastore.DataStoreFactory;
+import cz.cuni.mff.d3s.been.datastore.SoftwareStoreFactory;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
 
@@ -37,7 +37,7 @@ public class SRClientTestApp {
 
 	private void doMain(String[] args) {
 		parseCmdLineArguments(args);
-		SwRepoClient client = new SwRepoClientFactory(DataStoreFactory.getDataStore()).getClient(host, port);
+		SwRepoClient client = new SwRepoClientFactory(SoftwareStoreFactory.getDataStore()).getClient(host, port);
 
 		if (putFile != null) {
 			BpkIdentifier bpkFile = new BpkIdentifier();

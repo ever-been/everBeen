@@ -112,9 +112,10 @@ public class BpkRequestHandler extends SkeletalRequestHandler {
 			final InputStream requestFile = put.getEntity().getContent();
 			bpkPersister.dump(requestFile);
 		} catch (IOException e) {
-			log.error(String.format(
-					"Could not persist BPK {groupId=%s, artifactId=%s, version=%s}.",
-					bpkIdentifier.toString()));
+			log.error(
+					"Could not persist BPK {} due to I/O error - {}.",
+					bpkIdentifier.toString(),
+					e.getMessage());
 		}
 	}
 }

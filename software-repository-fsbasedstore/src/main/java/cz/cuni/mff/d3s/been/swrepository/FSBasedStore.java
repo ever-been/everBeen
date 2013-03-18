@@ -6,12 +6,17 @@ package cz.cuni.mff.d3s.been.swrepository;
 import java.io.File;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cz.cuni.mff.d3s.been.bpk.ArtifactIdentifier;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
-import cz.cuni.mff.d3s.been.datastore.DataStore;
+import cz.cuni.mff.d3s.been.datastore.SoftwareStore;
 import cz.cuni.mff.d3s.been.datastore.StorePersister;
 import cz.cuni.mff.d3s.been.datastore.StoreReader;
 
@@ -19,7 +24,7 @@ import cz.cuni.mff.d3s.been.datastore.StoreReader;
  * @author darklight
  * 
  */
-public final class FSBasedStore implements DataStore {
+public final class FSBasedStore implements SoftwareStore {
 
 	private static final Logger log = LoggerFactory.getLogger(FSBasedStore.class);
 
@@ -68,11 +73,8 @@ public final class FSBasedStore implements DataStore {
 	}
 
 	@Override
-	public StoreReader getArtifactReader(
-			String groupId,
-			String artifactId,
-			String version) {
-		File item = getItemPath(artifactFSRoot, groupId, artifactId, version);
+	public StoreReader getArtifactReader(ArtifactIdentifier artifactIdentifier) {
+		File item = getArtifactItem(artifactIdentifier);
 		if (item == null || !item.exists()) {
 			return null;
 		} else {
@@ -91,17 +93,12 @@ public final class FSBasedStore implements DataStore {
 
 	@Override
 	public StorePersister getArtifactPersister(
-			String groupId,
-			String artifactId,
-			String version) {
-		return new FSBasedStorePersister(String.format(
-				"%s:%s:%s",
-				groupId,
-				artifactId,
-				version), getArtifactItem(
-				getItemPath(artifactFSRoot, groupId, artifactId, version),
-				artifactId,
-				version));
+			ArtifactIdentifier artifactIdentifier) {
+		File item = getArtifactItem(artifactIdentifier);
+		if (item == null) {
+			return null;
+		}
+		return new FSBasedStorePersister(artifactIdentifier.toString(), item);
 	}
 
 	@Override
@@ -139,38 +136,56 @@ public final class FSBasedStore implements DataStore {
 	 * @return The path to the BPK
 	 */
 	public File getBpkItem(BpkIdentifier bpkIdentifier) {
-		if (bpkIdentifier.getGroupId() == null || bpkIdentifier.getBpkId() == null || bpkIdentifier.getVersion() == null) {
+		if (bpkIdentifier == null || bpkIdentifier.getGroupId() == null || bpkIdentifier.getBpkId() == null || bpkIdentifier.getVersion() == null) {
+			log.error("Null or incomplete BPK identifier {}", bpkIdentifier);
 			return null;
 		}
+		final List<String> pathItems = new LinkedList<String>();
+		for (String grpIdPart : bpkIdentifier.getGroupId().split("\\.")) {
+			pathItems.add(grpIdPart);
+		};
+		pathItems.add(bpkIdentifier.getBpkId());
+		pathItems.add(bpkIdentifier.getVersion());
+
 		final File itemPath = getItemPath(
 				bpkFSRoot,
-				bpkIdentifier.getGroupId(),
-				bpkIdentifier.getBpkId(),
-				bpkIdentifier.getVersion());
+				pathItems.toArray(new String[pathItems.size()]));
+
 		final String bpkFileName = String.format(
 				"%s-%s.bpk",
 				bpkIdentifier.getBpkId(),
 				bpkIdentifier.getVersion());
+
 		return new File(itemPath, bpkFileName);
 	}
 
 	/**
 	 * Get an Artifact's path in the persistence tree
 	 * 
-	 * @param itemPath
-	 *          The parent directory of the artifact
-	 * @param artifactId
-	 *          The <code>artifactId</code> of the artifact
-	 * @param versionId
-	 *          The <code>version</code> of the artifact
+	 * @param artifactIdentifier
+	 *          A fully qualified identifier of the Maven artifact
 	 * 
 	 * @return The path to the Artifact file
 	 */
-	public File getArtifactItem(File itemPath, String artifactId, String versionId) {
+	public File getArtifactItem(ArtifactIdentifier artifactIdentifier) {
+		if (artifactIdentifier == null || artifactIdentifier.getGroupId() == null || artifactIdentifier.getArtifactId() == null || artifactIdentifier.getVersion() == null) {
+			log.error("Null or incomplete Artifact identifier {}", artifactIdentifier);
+			return null;
+		};
+		final List<String> pathItems = new ArrayList<>(Arrays.asList(artifactIdentifier.getGroupId().split(
+				"\\.")));
+		pathItems.add(artifactIdentifier.getArtifactId());
+		pathItems.add(artifactIdentifier.getVersion());
+		final String[] newPathItems = new String[pathItems.size()];
+		pathItems.toArray(newPathItems);
+
+		final File itemPath = getItemPath(artifactFSRoot, newPathItems);
+
 		final String artifactFileName = String.format(
 				"%s-%s.jar",
-				artifactId,
-				versionId);
+				artifactIdentifier.getArtifactId(),
+				artifactIdentifier.getVersion());
+
 		return new File(itemPath, artifactFileName);
 	}
 }

@@ -1,15 +1,13 @@
 package cz.cuni.mff.d3s.been.swrepoclient;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -23,16 +21,16 @@ import org.apache.maven.artifact.Artifact;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cz.cuni.mff.d3s.been.bpk.ArtifactIdentifier;
 import cz.cuni.mff.d3s.been.bpk.Bpk;
-import cz.cuni.mff.d3s.been.bpk.BpkArtifact;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
 import cz.cuni.mff.d3s.been.core.utils.JSONUtils.JSONSerializerException;
+import cz.cuni.mff.d3s.been.datastore.ArtifactFromStore;
 import cz.cuni.mff.d3s.been.datastore.BpkFromStore;
-import cz.cuni.mff.d3s.been.datastore.DataStore;
+import cz.cuni.mff.d3s.been.datastore.SoftwareStore;
 import cz.cuni.mff.d3s.been.datastore.StorePersister;
 import cz.cuni.mff.d3s.been.datastore.StoreReader;
-import cz.cuni.mff.d3s.been.util.CopyStream;
 
 class HttpSwRepoClient implements SwRepoClient {
 	/** HTTP implementation specific log for the sw repo client */
@@ -43,18 +41,22 @@ class HttpSwRepoClient implements SwRepoClient {
 	/** Port on which the software repository listens */
 	private final Integer port;
 	/** Data store to use for caching. */
-	private final DataStore softwareCache;
+	private final SoftwareStore softwareCache;
 
-	HttpSwRepoClient(String hostname, Integer port, DataStore softwareCache) {
+	HttpSwRepoClient(String hostname, Integer port, SoftwareStore softwareCache) {
 		this.hostname = hostname;
 		this.port = port;
 		this.softwareCache = softwareCache;
 	}
 
 	@Override
-	public Artifact getArtifact(String groupId, String artifactId, String version) {
-		// TODO Auto-generated method stub
-		return null;
+	public Artifact getArtifact(ArtifactIdentifier artifactIdentifier) {
+		StoreReader artifactReader = softwareCache.getArtifactReader(artifactIdentifier);
+		if (artifactReader != null) {
+			return new ArtifactFromStore(artifactIdentifier, artifactReader);
+		} else {
+			return getArtifactByHTTP(artifactIdentifier);
+		}
 	}
 
 	@Override
@@ -68,31 +70,106 @@ class HttpSwRepoClient implements SwRepoClient {
 	}
 
 	@Override
-	public boolean putArtifact(BpkArtifact artifactMetaInfo, File artifactFile) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean putBpk(BpkIdentifier bpkMetaInfo, File bpkFile) {
-
-		if (bpkMetaInfo == null || bpkFile == null) {
-			log.error("Failed to upload BPK - package object or its meta-info was null.");
+	public boolean putArtifact(
+			ArtifactIdentifier artifactIdentifier,
+			File artifactFile) {
+		if (artifactIdentifier == null || artifactFile == null) {
+			log.error(
+					"Refused put because of invalid artifact (was {}) or identifier (was {})",
+					artifactFile,
+					artifactIdentifier);
 			return false;
 		}
 
-		if (!bpkFile.exists()) {
-			log.error("Failed to upload BPK %s - file doesn't exist.");
+		if (!artifactFile.exists()) {
+			log.error(
+					"Uploaded artifact \"{}\" doesn't exist",
+					artifactFile.getAbsolutePath());
 			return false;
 		}
 
 		HttpPut request = null;
 		try {
-			request = new HttpPut(createRepoUri() + "/bpk");
+			final String uriCandidate = createRepoUri() + "/artifact";
+			request = new HttpPut(uriCandidate);
 		} catch (URISyntaxException e) {
-			log.error(String.format(
-					"Failed to upload BPK %s to repository - URI synthesis error.",
-					bpkMetaInfo.toString()));
+			log.error(
+					"Failed to upload Artifact {} because the repository URI was invalid. Cause: {}",
+					artifactIdentifier.toString(),
+					e.getMessage());
+		}
+
+		try {
+			request.setHeader(
+					SwRepoClientFactory.ARTIFACT_IDENTIFIER_HEADER_NAME,
+					JSONUtils.serialize(artifactIdentifier));
+		} catch (JSONSerializerException e) {
+			log.error(
+					"Failed to upload Artifact {} due to artifact identifier serialization error - {}",
+					artifactIdentifier.toString(),
+					e.getMessage());
+			return false;
+		}
+
+		InputStreamEntity artifactEntity = createFileEntity(artifactFile);
+		if (artifactEntity == null) {
+			return false;
+		}
+		request.setEntity(artifactEntity);// entity closes the stream
+
+		HttpClient client = new DefaultHttpClient();
+		HttpResponse response = null;
+		try {
+			response = client.execute(request);
+		} catch (ClientProtocolException e) {
+			log.error(
+					"Failed to upload Artifact {} due to HTTP protocol error - {}",
+					artifactIdentifier.toString(),
+					e.getMessage());
+			return false;
+		} catch (IOException e) {
+			log.error(
+					"Failed to upload artifact {} due to transport I/O error - {}",
+					artifactIdentifier.toString(),
+					e.getMessage());
+			return false;
+		}
+
+		if (response.getStatusLine().getStatusCode() / 100 != 2) {
+			log.error(
+					"Failed to upload artifact {} - server error: {}",
+					artifactIdentifier.toString(),
+					response.getStatusLine().getReasonPhrase());
+			return false;
+		}
+		return true;
+	}
+	@Override
+	public boolean putBpk(BpkIdentifier bpkMetaInfo, File bpkFile) {
+
+		if (bpkMetaInfo == null || bpkFile == null) {
+			log.error(
+					"Failed to upload BPK {} - package object or its meta-info was null.",
+					bpkMetaInfo);
+			return false;
+		}
+
+		if (!bpkFile.exists()) {
+			log.error(
+					"Failed to upload BPK {} - file doesn't exist.",
+					bpkMetaInfo.toString());
+			return false;
+		}
+
+		HttpPut request = null;
+		try {
+			final String uriCandidate = createRepoUri() + "/bpk";
+			request = new HttpPut(uriCandidate);
+		} catch (URISyntaxException e) {
+			log.error(
+					"Failed to upload BPK {} to repository because the repository URI was invalid. Cause: {}",
+					bpkMetaInfo.toString(),
+					e.getMessage());
 			return false;
 		}
 
@@ -101,82 +178,70 @@ class HttpSwRepoClient implements SwRepoClient {
 					SwRepoClientFactory.BPK_IDENTIFIER_HEADER_NAME,
 					JSONUtils.serialize(bpkMetaInfo));
 		} catch (JSONSerializerException e) {
-			log.error(String.format(
-					"Failed to upload BPK %s to repository - Identifier serialization error.",
-					bpkMetaInfo.toString()));
+			log.error(
+					"Failed to upload BPK {} to repository - Identifier serialization error.",
+					bpkMetaInfo.toString());
 			return false;
 		}
 
-		InputStream sentFileStream = null;
-		try {
-			sentFileStream = new BufferedInputStream(new FileInputStream(bpkFile));
-		} catch (IOException e) {
-			log.error(String.format(
-					"Failed to upload BPK %s to repository - error reading file %s",
-					bpkMetaInfo.toString(),
-					bpkFile.getAbsolutePath()));
+		InputStreamEntity sentEntity = createFileEntity(bpkFile);
+		if (sentEntity == null) {
 			return false;
 		}
-		InputStreamEntity sentEntity = new InputStreamEntity(sentFileStream, bpkFile.length());
-		request.setEntity(sentEntity);
+		request.setEntity(sentEntity);// entity closes the stream
 
 		HttpClient cli = new DefaultHttpClient();
 		HttpResponse response = null;
 		try {
 			response = cli.execute(request);
 		} catch (ClientProtocolException e) {
-			log.error(String.format(
-					"Failed to upload BPK %s - transport protocol error: \"%s\"",
+			log.error(
+					"Failed to upload BPK {} due to HTTP protocol error - {}",
 					bpkMetaInfo.toString(),
-					e.getMessage()));
+					e.getMessage());
 			return false;
 		} catch (IOException e) {
-			log.error(String.format(
-					"Failed to upload BPK %s - transport I/O error: \"%s\"",
+			log.error(
+					"Failed to upload BPK {} due to transport I/O error - {}",
 					bpkMetaInfo.toString(),
-					e.getMessage()));
+					e.getMessage());
 			return false;
 		}
 
 		if ((response.getStatusLine().getStatusCode() / 100) != 2) {
-			log.error(String.format(
-					"Failed to upload BPK %s - server error: \"%s\"",
+			log.error(
+					"Failed to upload BPK {} - server error: \"{}\"",
 					bpkMetaInfo.toString(),
-					response.getStatusLine().getReasonPhrase()));
+					response.getStatusLine().getReasonPhrase());
 			return false;
 		} else {
 			return true;
 		}
 	}
 
-	private boolean storeContentToFile(InputStream content, File targetFile) {
-		if (targetFile == null) {
-			return false;
-		}
-		FileOutputStream fos = null;
+	/**
+	 * Create an input stream entity from a file
+	 */
+	InputStreamEntity createFileEntity(File file) {
 		try {
-			fos = new FileOutputStream(targetFile);
-		} catch (FileNotFoundException e) {
-			log.error(
-					"Could not open temporary file \"{}\" for writing - {}",
-					targetFile.getAbsolutePath(),
-					e.getMessage());
-			return false;
-		}
-		CopyStream copyStream = new CopyStream(content, true, fos, true, true);
-		try {
-			copyStream.copy();
+			return new InputStreamEntity(new FileInputStream(file), file.length());
 		} catch (IOException e) {
 			log.error(
-					"Could not copy content to File \"{}\" to cache - {}",
-					targetFile.getAbsolutePath(),
+					"Failed to marshall file {} into a HTTP entity - {}",
+					file.getAbsolutePath(),
 					e.getMessage());
-			return false;
+			return null;
 		}
-		return true;
 	}
-
-	URI createRepoUri() throws URISyntaxException {
+	/**
+	 * Synthesize the URI of the software repository from internals
+	 * 
+	 * @return the URI of the repository
+	 * 
+	 * @throws URISyntaxException
+	 *           When some of the internals are malformed
+	 */
+	private URI createRepoUri() throws URISyntaxException {
 		URIBuilder uriBuilder = new URIBuilder();
 		uriBuilder.setHost(hostname);
 		uriBuilder.setPort(port);
@@ -184,14 +249,97 @@ class HttpSwRepoClient implements SwRepoClient {
 		return uriBuilder.build();
 	}
 
+	/**
+	 * Ask the repository for a Maven artifact by HTTP
+	 */
+	private Artifact getArtifactByHTTP(ArtifactIdentifier artifactIdentifier) {
+		HttpUriRequest request = null;
+		try {
+			request = new HttpGet(createRepoUri() + "/artifact");
+		} catch (URISyntaxException e) {
+			log.error(
+					"Failed to retrieve Artifact {} - unable to synthesize get request URI ({})",
+					artifactIdentifier.toString(),
+					e.getMessage());
+			return null;
+		}
+		try {
+			request.addHeader(
+					SwRepoClientFactory.ARTIFACT_IDENTIFIER_HEADER_NAME,
+					JSONUtils.serialize(artifactIdentifier));
+		} catch (JSONSerializerException e) {
+			log.error(
+					"Failed to retrieve Maven artifact {} - unable to serialize Artifact identifier into request header",
+					artifactIdentifier.toString());
+			return null;
+		}
+
+		HttpClient httpCli = new DefaultHttpClient();
+		HttpResponse response;
+		try {
+			response = httpCli.execute(request);
+		} catch (ClientProtocolException e) {
+			log.error(
+					"Failed to retrieve Artifact {} - unable to synthesize get request URI",
+					artifactIdentifier.toString());
+			return null;
+		} catch (IOException e) {
+			log.error(
+					"Failed to retrieve BKP {} - I/O error or connection re-set",
+					artifactIdentifier.toString());
+			return null;
+		}
+
+		if (response.getStatusLine().getStatusCode() / 100 != 2) {
+			log.error(
+					"Failed to retrieve Artifact {} - server refusal: \"{}\"",
+					artifactIdentifier.toString(),
+					response.getStatusLine().getReasonPhrase());
+			return null;
+		}
+
+		InputStream is = null;
+		try {
+			is = response.getEntity().getContent();
+		} catch (IOException e) {
+			log.error(
+					"Failed to retrieve Artifact {} - error opening SW repo response for reading",
+					artifactIdentifier.toString());
+			return null;
+		}
+
+		StorePersister sp = softwareCache.getArtifactPersister(artifactIdentifier);
+		try {
+			sp.dump(is);
+		} catch (IOException e) {
+			log.error(
+					"Failed to cache Artifact {} locally - {}",
+					artifactIdentifier.toString(),
+					e.getMessage());
+			IOUtils.closeQuietly(is);
+			return null;
+		}
+		IOUtils.closeQuietly(is);
+
+		StoreReader sr = softwareCache.getArtifactReader(artifactIdentifier);
+		if (sr == null) {
+			return null;
+		} else {
+			return new ArtifactFromStore(artifactIdentifier, sr);
+		}
+	}
+	/**
+	 * Ask the repository for a BPK by HTTP
+	 */
 	private Bpk getBpkByHTTP(BpkIdentifier bpkIdentifier) {
 		HttpUriRequest request = null;
 		try {
 			request = new HttpGet(createRepoUri() + "/bpk");
 		} catch (URISyntaxException e) {
-			log.error(String.format(
-					"Failed to retrieve BKP %s - unable to synthesize get request URI",
-					bpkIdentifier.toString()));
+			log.error(
+					"Failed to retrieve BKP {} - unable to synthesize get request URI ({})",
+					bpkIdentifier.toString(),
+					e.getMessage());
 			return null;
 		}
 		try {
@@ -247,65 +395,9 @@ class HttpSwRepoClient implements SwRepoClient {
 					bpkIdentifier.toString(),
 					e.getMessage());
 		}
-		closeStream(is);
+		IOUtils.closeQuietly(is);
 
 		return new BpkFromStore(softwareCache.getBpkReader(bpkIdentifier), bpkIdentifier);
 	}
-	private boolean storeBpkFileToCache(File file, BpkIdentifier bpkIdentifier) {
-		InputStream bpkIs = null;
-		try {
-			bpkIs = new FileInputStream(file);
-		} catch (IllegalStateException e) {
-			log.error(
-					"Entity {} is not ready to give away its content - {}",
-					bpkIs.toString(),
-					e.getMessage());
-			return false;
-		} catch (IOException e) {
-			log.error(
-					"I/O error when reading content from entity {} - {}",
-					bpkIdentifier.toString(),
-					e.getMessage());
-			closeStream(bpkIs);
-			return false;
-		}
-		try {
-			softwareCache.getBpkPersister(bpkIdentifier).dump(bpkIs);
-		} catch (IOException e) {
-			log.error(
-					"I/O error writing BPK {} - {}",
-					bpkIdentifier.toString(),
-					e.getMessage());
-			closeStream(bpkIs);
-			return false;
-		}
-		try {
-			bpkIs.close();
-		} catch (IOException e) {
-			log.error(
-					"Leaked descriptor (BPK {}): Couldn't close HTTP entity content stream - {}",
-					bpkIdentifier.toString(),
-					e.getMessage());
-		}
-		return true;
-	}
 
-	private File createTmpFile() {
-		File file = null;
-		try {
-			file = File.createTempFile("httpSwRepoClient", "bpk");
-		} catch (IOException e) {
-			log.error("Could not create temporary file.");
-			return null;
-		}
-		return file;
-	}
-
-	private void closeStream(InputStream is) {
-		try {
-			is.close();
-		} catch (IOException e) {
-			log.error("Leaked file descriptor on stream {}", is.toString());
-		}
-	}
 }

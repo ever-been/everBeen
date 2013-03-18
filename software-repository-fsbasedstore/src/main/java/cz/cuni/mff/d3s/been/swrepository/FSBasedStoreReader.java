@@ -23,12 +23,8 @@ class FSBasedStoreReader implements StoreReader {
 	}
 
 	@Override
-	public InputStream getContentStream() {
-		try {
-			return new FileInputStream(readFile);
-		} catch (IOException e) {
-			return null;
-		}
+	public InputStream getContentStream() throws IOException {
+		return new FileInputStream(readFile);
 	}
 
 	@Override

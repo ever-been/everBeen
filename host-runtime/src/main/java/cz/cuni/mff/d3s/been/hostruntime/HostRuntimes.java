@@ -6,7 +6,7 @@ import com.hazelcast.core.HazelcastInstance;
 
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
-import cz.cuni.mff.d3s.been.datastore.DataStoreFactory;
+import cz.cuni.mff.d3s.been.datastore.SoftwareStoreFactory;
 import cz.cuni.mff.d3s.been.detectors.Detector;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
 
@@ -31,7 +31,7 @@ public class HostRuntimes {
 			HazelcastInstance hazelcastInstance) {
 		if (hostRuntime == null) {
 			ClusterContext clusterContext = new ClusterContext(hazelcastInstance);
-			SwRepoClientFactory swRepoClientFactory = new SwRepoClientFactory(DataStoreFactory.getDataStore());
+			SwRepoClientFactory swRepoClientFactory = new SwRepoClientFactory(SoftwareStoreFactory.getDataStore());
 
 			RuntimeInfo info = newRuntimeInfo(clusterContext);
 			hostRuntime = new HostRuntime(clusterContext, swRepoClientFactory, info);

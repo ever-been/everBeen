@@ -1,37 +1,30 @@
 package cz.cuni.mff.d3s.been.bpkplugin;
 
-import static cz.cuni.mff.d3s.been.bpk.PackageNames.CONFIG_FILE;
 import static cz.cuni.mff.d3s.been.bpk.PackageNames.FILES_DIR;
 import static cz.cuni.mff.d3s.been.bpk.PackageNames.FILE_SUFFIX;
-import static cz.cuni.mff.d3s.been.bpk.PackageNames.METADATA_FILE;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
-import java.io.StringWriter;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.google.inject.name.Names;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 
+import cz.cuni.mff.d3s.been.bpk.ArtifactIdentifier;
+import cz.cuni.mff.d3s.been.bpk.BpkArtifacts;
+import cz.cuni.mff.d3s.been.bpk.BpkConfigUtils;
+import cz.cuni.mff.d3s.been.bpk.BpkConfiguration;
+import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
+import cz.cuni.mff.d3s.been.bpk.BpkRuntime;
+import cz.cuni.mff.d3s.been.bpk.JavaRuntime;
+import cz.cuni.mff.d3s.been.bpk.MetaInf;
+import cz.cuni.mff.d3s.been.bpk.ObjectFactory;
 import cz.cuni.mff.d3s.been.bpk.PackageNames;
-
-import cz.cuni.mff.d3s.been.bpk.*;
-import org.xml.sax.SAXException;
-
-import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.validation.*;
 
 /*
  * Mojo plugin development is comment-annotation driven. 
@@ -116,7 +109,6 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 	 */
 	String finalName;
 
-
 	/**
 	 * Name of the bpk package. <b>${project.build.finalName}</b> by default.
 	 * (Will be used in generated metadata.xml)
@@ -126,8 +118,6 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 	 * @required
 	 */
 	String name;
-
-
 
 	/**
 	 * Type of bpk package. <b>task</b> by default. (Will be used in generated
@@ -167,10 +157,10 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 	// RUNTIME
 	// *************************************************************************
 	/**
-	 *
-	 *
+	 * 
+	 * 
 	 * @parameter default-value="java"
-	 *
+	 * 
 	 * @required
 	 */
 	String runtime;
@@ -178,12 +168,12 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 	/**
 	 * Jar file with classes for this package. (Will be used in generated
 	 * config.xml)
-	 *
-	 * @parameter expression="${project.build.directory}/${project.build.finalName}.jar"
-	 *
+	 * 
+	 * @parameter 
+	 *            expression="${project.build.directory}/${project.build.finalName}.jar"
+	 * 
 	 */
 	File packageJarFile;
-
 
 	// *************************************************************************
 	// META-INF
@@ -191,19 +181,19 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 	/**
 	 * Version of bpk package. <b>${project.version}</b> by default. (Will be used
 	 * in generated metadata.xml)
-	 *
+	 * 
 	 * @parameter expression="${project.groupId}"
-	 *
+	 * 
 	 * @required
 	 */
 	String groupId;
 
 	/**
-	 * Version of bpk package. <b>${project.artifactId}</b> by default. (Will be used
-	 * in generated metadata.xml)
-	 *
+	 * Version of bpk package. <b>${project.artifactId}</b> by default. (Will be
+	 * used in generated metadata.xml)
+	 * 
 	 * @parameter expression="${project.artifactId}"
-	 *
+	 * 
 	 * @required
 	 */
 	String bpkId;
@@ -211,9 +201,9 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 	/**
 	 * Version of bpk package. <b>${project.version}</b> by default. (Will be used
 	 * in generated metadata.xml)
-	 *
+	 * 
 	 * @parameter expression="${project.version}"
-	 *
+	 * 
 	 * @required
 	 */
 	String version;
@@ -225,7 +215,7 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 	/**
 	 * List of dependencies of this module on other (data) BPKs. You should not
 	 * include code dependencies here, but use runtime instead.
-	 *
+	 * 
 	 * @parameter
 	 */
 	List<BpkIdentifier> bpkDependencies;
@@ -260,17 +250,15 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 
 			}
 
-
-//			BpkDependencies dependencies = bpkRuntime.getBpkDependencies();
-//			// DEPENDENCIES
-//			if (bpkDependencies != null) {
-//				for(BpkIdentifier identifier: bpkDependencies) {
-//					//dependencies.getDependency().add(identifier);
-//				}
-//			}
+			//			BpkDependencies dependencies = bpkRuntime.getBpkDependencies();
+			//			// DEPENDENCIES
+			//			if (bpkDependencies != null) {
+			//				for(BpkIdentifier identifier: bpkDependencies) {
+			//					//dependencies.getDependency().add(identifier);
+			//				}
+			//			}
 
 			bpkConfiguration.setRuntime(bpkRuntime);
-
 
 			List<FileToArchive> files = new ArrayList<FileToArchive>();
 
@@ -279,20 +267,18 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 			try {
 
 				configXml = BpkConfigUtils.toXml(bpkConfiguration);
-				FileToArchive configFileToArchive = createFileToArchive(PackageNames.CONFIG_FILE, configXml);
+				FileToArchive configFileToArchive = createFileToArchive(
+						PackageNames.CONFIG_FILE,
+						configXml);
 
 				files.add(configFileToArchive);
 			} catch (Exception e) {
 				log.error(e);
 			}
 
-
-
 			// generate
 			files.add(createFileToArchiveFromPackageJar());
 			files.addAll(getLibsToArchive());
-
-
 
 			for (FileItem fitem : filesToArchive) {
 				files.addAll(fitem.getFilesToArchive(log));
@@ -326,7 +312,7 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 		BpkArtifacts bpkArtifacts = bpkFactory.createBpkArtifacts();
 
 		for (Artifact artifact : artifacts) {
-			BpkArtifact bpkArtifact = bpkFactory.createBpkArtifact();
+			ArtifactIdentifier bpkArtifact = bpkFactory.createArtifactIdentifier();
 
 			bpkArtifact.setGroupId(artifact.getGroupId());
 			bpkArtifact.setArtifactId(artifact.getArtifactId());
@@ -356,8 +342,6 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 		return libs;
 	}
 
-
-
 	FileToArchive createFileToArchiveFromPackageJar() {
 		String nameInBpk = FILES_DIR + "/" + packageJarFile.getName();
 		log.info("    WILL BE ADDED: '" + packageJarFile.getAbsolutePath() + "' -> '" + nameInBpk + "'");
@@ -379,8 +363,6 @@ public class CreateBeenPackageMojo extends AbstractMojo {
 		log.info("==  CREATING BEEN PACKAGE ENDED  ==");
 		log.info("===================================");
 	}
-
-
 
 	private FileToArchive createFileToArchive(String nameInBpk, String content) throws IOException {
 		File tmpFile = File.createTempFile("tmp_generated_config", ".xml");

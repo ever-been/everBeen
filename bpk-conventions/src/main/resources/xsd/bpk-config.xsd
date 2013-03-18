@@ -42,7 +42,7 @@
 	<xs:element name="bpkArtifacts">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="artifact" type="bpk:BpkArtifact" minOccurs="0" maxOccurs="unbounded" />
+				<xs:element name="artifact" type="bpk:ArtifactIdentifier" minOccurs="0" maxOccurs="unbounded" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -64,7 +64,7 @@
 		</xs:sequence>
 	</xs:complexType>
 	
-	<xs:complexType name="BpkArtifact">
+	<xs:complexType name="ArtifactIdentifier">
 		<xs:sequence>
 			<xs:element name="groupId" type="xs:string" />
 			<xs:element name="artifactId" type="xs:string" />

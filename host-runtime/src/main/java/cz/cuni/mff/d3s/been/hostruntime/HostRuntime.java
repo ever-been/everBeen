@@ -16,8 +16,8 @@ import org.apache.maven.artifact.Artifact;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cz.cuni.mff.d3s.been.bpk.ArtifactIdentifier;
 import cz.cuni.mff.d3s.been.bpk.Bpk;
-import cz.cuni.mff.d3s.been.bpk.BpkArtifact;
 import cz.cuni.mff.d3s.been.bpk.BpkConfiguration;
 import cz.cuni.mff.d3s.been.bpk.BpkConfigurationException;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
@@ -298,25 +298,19 @@ class HostRuntime implements IClusterService {
 	private List<File> downloadJavaClasspathDependencies(SwRepoClient client,
 			JavaRuntime runtime, File taskDirectory) {
 		List<File> dependencies = new ArrayList<>();
-		for (BpkArtifact bpkArtifact : runtime.getBpkArtifacts().getArtifact()) {
-			Artifact artifact = client.getArtifact(bpkArtifact.getGroupId(), bpkArtifact.getArtifactId(), bpkArtifact.getVersion());
+		for (ArtifactIdentifier bpkArtifact : runtime.getBpkArtifacts().getArtifact()) {
+			Artifact artifact = client.getArtifact(bpkArtifact);
 			if (artifact != null) {
 				dependencies.add(artifact.getFile());
 			} else {
-				File artifactFile = determineJarInBpk(taskDirectory, bpkArtifact);
+				String fileName = String.format("%s-%s.jar", bpkArtifact.getArtifactId(), bpkArtifact.getVersion());
+				File artifactFile = new File(taskDirectory, String.format("bpk%slib%s%s", File.separatorChar, File.separatorChar, fileName));
 				if (artifactFile.exists()) {
 					dependencies.add(artifactFile);
 				}
 			}
 		}
 		return dependencies;
-	}
-
-	private File determineJarInBpk(File taskDirectory,
-			BpkArtifact bpkArtifact) {
-		String fileName = String.format("%s-%s.jar", bpkArtifact.getArtifactId(), bpkArtifact.getVersion());
-		File artifactFile = new File(taskDirectory, String.format("bpk%slib%s%s", File.separatorChar, File.separatorChar, fileName));
-		return artifactFile;
 	}
 	private boolean isJavaTask(BpkConfiguration bpkResolvedConfiguration) {
 		return bpkResolvedConfiguration.getRuntime() instanceof JavaRuntime;
@@ -399,7 +393,7 @@ class HostRuntime implements IClusterService {
 			StringBuilder cp = new StringBuilder();
 			for (File dep : dependencies) {
 				cp.append(dep.getAbsolutePath());
-				cp.append(":");
+				cp.append(File.pathSeparatorChar);
 			}
 			cp.append(bpkJarFile.getAbsolutePath());
 			cmd.add(cp.toString());

@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.datastore;
 
+import cz.cuni.mff.d3s.been.bpk.ArtifactIdentifier;
 
 /**
  * Data storage for Maven artifacts.
@@ -11,34 +12,20 @@ public interface ArtifactStore {
 	/**
 	 * Retrieve a Maven artifact from the repository
 	 * 
-	 * @param groupId
-	 *          The artifact's <code>groupId</code>
-	 * @param artifactId
-	 *          The artifact's <code>artifactId</code>
-	 * @param version
-	 *          The artifact's <code>version</code>
+	 * @param artifactIdentifier
+	 *          Full identifier of the Maven artifact
 	 * 
 	 * @return A reader object that enables R/O access to a Maven artifact
 	 */
-	StoreReader getArtifactReader(
-			String groupId,
-			String artifactId,
-			String version);
+	StoreReader getArtifactReader(ArtifactIdentifier artifactIdentifier);
 
 	/**
 	 * Store a Maven artifact into the repository.
 	 * 
-	 * @param groupId
-	 *          The artifact's <code>groupId</code>
-	 * @param artifactId
-	 *          The artifact's <code>artifactId</code>
-	 * @param version
-	 *          The artifact's <code>version</code>
+	 * @param artifactIdentifier
+	 *          Full identifier of the maven artifact
 	 * 
 	 * @return A writer object that enables the user to persist a Maven artifact
 	 */
-	StorePersister getArtifactPersister(
-			String groupId,
-			String artifactId,
-			String version);
+	StorePersister getArtifactPersister(ArtifactIdentifier artifactIdentifier);
 }
