@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.jar.JarFile;
 import java.util.zip.ZipException;
 
 import org.apache.commons.io.FileUtils;
@@ -143,7 +144,6 @@ class HostRuntime implements IClusterService {
 		taskMessageDispatcher = new TaskMessageDispatcher();
 		taskMessageDispatcher.start();
 	}
-
 	private void unregisterListeners() {
 		messageListener.stop();
 	}
@@ -247,7 +247,7 @@ class HostRuntime implements IClusterService {
 		if (isJavaTask(bpkResolvedConfiguration)) {
 			JavaRuntime runtime = (JavaRuntime) bpkResolvedConfiguration.getRuntime();
 			File bpkJarFile = unzipBpkJarFileTo(bpk, runtime, taskDirectory);
-			List<File> dependencies = downloadJavaClasspathDependencies(swRepoClient, runtime);
+			List<File> dependencies = downloadJavaClasspathDependencies(swRepoClient, runtime, taskDirectory);
 			runOpts = new JavaTaskRunOpts(taskDirectory, bpkJarFile, dependencies, additionalArgs);
 		} else {
 			throw new Exception("Unsupported runtime type");
@@ -296,15 +296,28 @@ class HostRuntime implements IClusterService {
 	}
 
 	private List<File> downloadJavaClasspathDependencies(SwRepoClient client,
-			JavaRuntime runtime) {
+			JavaRuntime runtime, File taskDirectory) {
 		List<File> dependencies = new ArrayList<>();
 		for (BpkArtifact bpkArtifact : runtime.getBpkArtifacts().getArtifact()) {
 			Artifact artifact = client.getArtifact(bpkArtifact.getGroupId(), bpkArtifact.getArtifactId(), bpkArtifact.getVersion());
-			dependencies.add(artifact.getFile());
+			if (artifact != null) {
+				dependencies.add(artifact.getFile());
+			} else {
+				File artifactFile = determineJarInBpk(taskDirectory, bpkArtifact);
+				if (artifactFile.exists()) {
+					dependencies.add(artifactFile);
+				}
+			}
 		}
 		return dependencies;
 	}
 
+	private File determineJarInBpk(File taskDirectory,
+			BpkArtifact bpkArtifact) {
+		String fileName = String.format("%s-%s.jar", bpkArtifact.getArtifactId(), bpkArtifact.getVersion());
+		File artifactFile = new File(taskDirectory, String.format("bpk%slib%s%s", File.separatorChar, File.separatorChar, fileName));
+		return artifactFile;
+	}
 	private boolean isJavaTask(BpkConfiguration bpkResolvedConfiguration) {
 		return bpkResolvedConfiguration.getRuntime() instanceof JavaRuntime;
 	}
@@ -358,7 +371,7 @@ class HostRuntime implements IClusterService {
 		protected File taskDirectory;
 		protected List<String> additionalArgs;
 
-		abstract String[] createCommandLine();
+		abstract String[] createCommandLine() throws IOException;
 	}
 
 	static final class JavaTaskRunOpts extends TaskRunOpts {
@@ -373,26 +386,34 @@ class HostRuntime implements IClusterService {
 		}
 
 		@Override
-		String[] createCommandLine() {
+		String[] createCommandLine() throws IOException {
 			List<String> cmd = new ArrayList<>();
 
 			cmd.add("java");
-			cmd.add("-jar");
-			cmd.add(bpkJarFile.getAbsolutePath());
-
-			cmd.add("-cp");
-			StringBuilder cp = new StringBuilder();
-			for (File dep : dependencies) {
-				cp.append(dep.getAbsolutePath());
-			}
-			cmd.add(cp.toString());
 
 			for (String arg : additionalArgs) {
 				cmd.add(arg);
 			}
 
+			cmd.add("-cp");
+			StringBuilder cp = new StringBuilder();
+			for (File dep : dependencies) {
+				cp.append(dep.getAbsolutePath());
+				cp.append(":");
+			}
+			cp.append(bpkJarFile.getAbsolutePath());
+			cmd.add(cp.toString());
+
+			cmd.add(determineMainClass(bpkJarFile));
+
+			log.debug(cmd.toString());
 			return cmd.toArray(new String[cmd.size()]);
 		}
 
+		private String determineMainClass(File bpkJarFile) throws IOException {
+			try (JarFile jarfile = new JarFile(bpkJarFile)) {
+				return jarfile.getManifest().getMainAttributes().getValue("Main-Class");
+			}
+		}
 	}
 }
