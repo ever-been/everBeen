@@ -197,7 +197,7 @@
 							<schemaDirectory> ${project.basedir}/src/main/resources/xsd</schemaDirectory>
 							<staleFile>${project.build.directory}/jaxb2/.riXjcStaleFlag</staleFile>
 							<clearOutputDir>false</clearOutputDir>
-							<schemaFiles>runtimeinfo.xsd, hardwareinfo.xsd, common.xsd</schemaFiles>
+							<schemaFiles>runtimeinfo.xsd, hardwareinfo.xsd, monitor.xsd, common.xsd</schemaFiles>
 							<packageName>cz.cuni.mff.d3s.been.core.ri</packageName>
 							<extension>true</extension>
 						</configuration>

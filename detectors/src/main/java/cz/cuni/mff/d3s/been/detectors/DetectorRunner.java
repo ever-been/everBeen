@@ -1,11 +1,20 @@
 package cz.cuni.mff.d3s.been.detectors;
 
+import cz.cuni.mff.d3s.been.core.ri.MonitorSample;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
+import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
 import org.apache.commons.jxpath.JXPathContext;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.eclipse.persistence.jaxb.JAXBContextProperties;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -37,6 +46,48 @@ public class DetectorRunner {
         // try some XPaths
         JXPathContext context = JXPathContext.newContext(ri);
         System.out.println(context.getValue("//cpu/vendor"));
-        System.out.println(context.getValue("//networkInterface[name='en0']/mtu"));
-    }
+        System.out.println(context.getValue("//networkInterface[1]/mtu"));
+
+		// try the monitor
+		for (int i = 0; i < 10; i++) {
+			MonitorSample sample = detector.generateSample();
+
+			try {
+				String s = JSONUtils.serialize(sample);
+				System.out.println(s);
+			} catch (JSONUtils.JSONSerializerException e) {
+				e.printStackTrace();
+			}
+
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+
+		// monitor sampling benchmark
+		long startTime = System.nanoTime();
+		long counter = 0;
+		ObjectMapper mapper = new ObjectMapper();
+		while (true) {
+			if (System.nanoTime() - startTime > 1000 * 1000 * 1000) break;
+
+			MonitorSample sample = detector.generateSample();
+
+			try {
+				mapper.writeValueAsString(sample);
+			} catch (JsonMappingException e) {
+				e.printStackTrace();
+			} catch (JsonGenerationException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			counter++;
+		}
+
+		System.out.println("Monitoring performs " + counter + " samples/second");
+	}
 }

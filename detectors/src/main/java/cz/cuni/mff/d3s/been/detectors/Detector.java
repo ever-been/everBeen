@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.detectors;
 
+import cz.cuni.mff.d3s.been.core.ri.MonitorSample;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 
 /**
@@ -10,9 +11,15 @@ import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
  * To change this template use File | Settings | File Templates.
  */
 public class Detector {
+
+	SigarDetector detector;
+
+	public Detector() {
+		// detect HW
+		detector = new SigarDetector();
+	}
+
     public void detectAll(RuntimeInfo runtimeInfo) {
-        // detect HW
-        SigarDetector detector = new SigarDetector();
         runtimeInfo.setHardware(detector.detectHardware());
 
         // detect Java
@@ -22,4 +29,10 @@ public class Detector {
         // detect OS
         // TODO
     }
+
+	public MonitorSample generateSample() {
+		MonitorSample sample = detector.generateSample();
+		sample.setTimestamp(System.nanoTime());
+		return sample;
+	}
 }
