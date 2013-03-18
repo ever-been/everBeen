@@ -7,6 +7,6 @@ package cz.cuni.mff.d3s.been.datastore;
  * @author darklight
  *
  */
-public interface DataStore extends BpkStore, ArtifactStore {
+public interface SoftwareStore extends BpkStore, ArtifactStore {
 
 }

@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.d3s.been.bpk.ArtifactIdentifier;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
-import cz.cuni.mff.d3s.been.datastore.DataStore;
+import cz.cuni.mff.d3s.been.datastore.SoftwareStore;
 import cz.cuni.mff.d3s.been.datastore.StorePersister;
 import cz.cuni.mff.d3s.been.datastore.StoreReader;
 
@@ -24,7 +24,7 @@ import cz.cuni.mff.d3s.been.datastore.StoreReader;
  * @author darklight
  * 
  */
-public final class FSBasedStore implements DataStore {
+public final class FSBasedStore implements SoftwareStore {
 
 	private static final Logger log = LoggerFactory.getLogger(FSBasedStore.class);
 

@@ -33,7 +33,7 @@ import org.junit.runners.model.Statement;
 import cz.cuni.mff.d3s.been.bpk.ArtifactIdentifier;
 import cz.cuni.mff.d3s.been.bpk.Bpk;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
-import cz.cuni.mff.d3s.been.datastore.DataStore;
+import cz.cuni.mff.d3s.been.datastore.SoftwareStore;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
 import cz.cuni.mff.d3s.been.swrepository.httpserver.HttpServer;
@@ -46,7 +46,7 @@ import cz.cuni.mff.d3s.been.swrepository.httpserver.HttpServer;
  * @author darklight
  * 
  */
-public class TestTraffic {
+public class TestSoftwareRepositoryTransportByHTTP {
 
 	private class RunningServerStatement extends Statement {
 		private final Statement base;
@@ -74,7 +74,7 @@ public class TestTraffic {
 			final InetAddress addr = probeSocket.getInetAddress();
 			probeSocket.close();
 			server = new HttpServer(addr, port);
-			DataStore dataStore = new FSBasedStore(SERVER_PERSISTENCE_ROOT_FOLDER);
+			SoftwareStore dataStore = new FSBasedStore(SERVER_PERSISTENCE_ROOT_FOLDER);
 			server.getResolver().register("/bpk*", new BpkRequestHandler(dataStore));
 			server.getResolver().register(
 					"/artifact*",
@@ -120,10 +120,10 @@ public class TestTraffic {
 	private static final File SERVER_PERSISTENCE_ROOT_FOLDER = new File(".server-persistence");
 	/** Root folder of the client's persistence. */
 	private static final File CLIENT_PERSISTENCE_ROOT_FOLDER = new File(".client-persistence");
-	private final DataStore dataStore;
+	private final SoftwareStore dataStore;
 	private final SwRepoClientFactory clientFactory;
 
-	public TestTraffic() {
+	public TestSoftwareRepositoryTransportByHTTP() {
 		dataStore = new FSBasedStore(CLIENT_PERSISTENCE_ROOT_FOLDER);
 		clientFactory = new SwRepoClientFactory(dataStore);
 	}

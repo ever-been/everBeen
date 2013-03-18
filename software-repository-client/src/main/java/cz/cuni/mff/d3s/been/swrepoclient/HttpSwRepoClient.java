@@ -28,7 +28,7 @@ import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
 import cz.cuni.mff.d3s.been.core.utils.JSONUtils.JSONSerializerException;
 import cz.cuni.mff.d3s.been.datastore.ArtifactFromStore;
 import cz.cuni.mff.d3s.been.datastore.BpkFromStore;
-import cz.cuni.mff.d3s.been.datastore.DataStore;
+import cz.cuni.mff.d3s.been.datastore.SoftwareStore;
 import cz.cuni.mff.d3s.been.datastore.StorePersister;
 import cz.cuni.mff.d3s.been.datastore.StoreReader;
 
@@ -41,9 +41,9 @@ class HttpSwRepoClient implements SwRepoClient {
 	/** Port on which the software repository listens */
 	private final Integer port;
 	/** Data store to use for caching. */
-	private final DataStore softwareCache;
+	private final SoftwareStore softwareCache;
 
-	HttpSwRepoClient(String hostname, Integer port, DataStore softwareCache) {
+	HttpSwRepoClient(String hostname, Integer port, SoftwareStore softwareCache) {
 		this.hostname = hostname;
 		this.port = port;
 		this.softwareCache = softwareCache;
