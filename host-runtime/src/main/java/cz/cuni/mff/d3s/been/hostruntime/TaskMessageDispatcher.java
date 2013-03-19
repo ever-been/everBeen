@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jeromq.ZMQ;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.d3s.been.core.TaskMessageType;
 
@@ -17,6 +19,8 @@ import cz.cuni.mff.d3s.been.core.TaskMessageType;
  * 
  */
 public class TaskMessageDispatcher {
+
+	private static final Logger log = LoggerFactory.getLogger(TaskMessageDispatcher.class);
 
 	/**
 	 * Address on which the receiver is bound
@@ -62,7 +66,8 @@ public class TaskMessageDispatcher {
 			public void run() {
 				boolean run = true;
 				while (run) {
-					String message = new String(receiver.recv()).trim();
+					String message = new String(receiver.recv(0)).trim();
+					log.debug(message);
 					if (STOP_MESSAGE.equals(message)) {
 						run = false;
 					} else {
