@@ -1,23 +1,28 @@
 package cz.cuni.d3s.mff.been.client;
 
-import java.net.InetSocketAddress;
+import java.io.File;
 
-import com.hazelcast.core.HazelcastInstance;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import com.hazelcast.client.ClientConfig;
-import com.hazelcast.client.HazelcastClient;
+import com.hazelcast.core.HazelcastInstance;
 
+import cz.cuni.mff.d3s.been.bpk.BpkConfiguration;
+import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
+import cz.cuni.mff.d3s.been.bpk.BpkResolver;
+import cz.cuni.mff.d3s.been.bpk.MetaInf;
 import cz.cuni.mff.d3s.been.cluster.Instance;
-import cz.cuni.mff.d3s.been.cluster.NodeType;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.jaxb.BindingComposer;
 import cz.cuni.mff.d3s.been.core.jaxb.BindingParser;
 import cz.cuni.mff.d3s.been.core.jaxb.XSD;
+import cz.cuni.mff.d3s.been.core.sri.SWRepositoryInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
+import cz.cuni.mff.d3s.been.datastore.SoftwareStoreFactory;
+import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
+import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
 
 /**
  * 
@@ -51,13 +56,14 @@ public class Submitter {
 	@Option(name = "-pe", aliases = { "--print-entry" }, usage = "Print the created Task Entry")
 	private boolean printEntry = false;
 
+	@Option(name = "-bpk", aliases = { "--been-package" }, usage = "Upload BPK to Software Repository first.")
+	private String bpkFile;
 
 	public static void main(String[] args) {
 		new Submitter().doMain(args);
 	}
 
-	public Submitter() {
-	}
+	public Submitter() {}
 
 	private void doMain(String[] args) {
 
@@ -78,9 +84,14 @@ public class Submitter {
 				System.setProperty("hazelcast.logging.type", "none");
 			}
 
-            // connect to the cluster
-            HazelcastInstance instance = Instance.newNativeInstance(host, port, groupName, groupPassword);
-			ClusterContext clusterContext =  new ClusterContext(instance);
+			// connect to the cluster
+			HazelcastInstance instance = Instance.newNativeInstance(host, port, groupName, groupPassword);
+			ClusterContext clusterContext = new ClusterContext(instance);
+
+			// upload BPK
+			if (bpkFile != null) {
+				uploadBpk(bpkFile, clusterContext);
+			}
 
 			// submit
 			String taskId = clusterContext.getTasksUtils().submit(td);
@@ -100,11 +111,28 @@ public class Submitter {
 			System.err.println("\nUsage:");
 			parser.printUsage(System.err);
 
-			return;
 		} catch (Exception e) {
 			e.printStackTrace();
-        } finally {
-            Instance.shutdown();
+		} finally {
+			Instance.shutdown();
 		}
+	}
+
+	private void uploadBpk(String bpkFile, ClusterContext clusterContext) throws Exception {
+
+		SWRepositoryInfo swInfo = clusterContext.getServicesUtils().getSWRepositoryInfo();
+		SwRepoClient client = new SwRepoClientFactory(SoftwareStoreFactory.getDataStore()).getClient(swInfo.getHost(), swInfo.getHttpServerPort());
+
+		BpkIdentifier bpkIdentifier = new BpkIdentifier();
+
+		BpkConfiguration bpkConfiguration = BpkResolver.resolve(new File(bpkFile));
+		MetaInf metaInf = bpkConfiguration.getMetaInf();
+		bpkIdentifier.setGroupId(metaInf.getGroupId());
+		bpkIdentifier.setBpkId(metaInf.getBpkId());
+		bpkIdentifier.setVersion(metaInf.getVersion());
+
+		client.putBpk(bpkIdentifier, new File(bpkFile));
+
+		System.out.printf("%s uploaded to Software Repository\n", bpkFile);
 	}
 }
