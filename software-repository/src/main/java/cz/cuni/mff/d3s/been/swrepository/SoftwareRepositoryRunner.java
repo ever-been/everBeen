@@ -2,9 +2,6 @@ package cz.cuni.mff.d3s.been.swrepository;
 
 import static cz.cuni.mff.d3s.been.core.StatusCode.EX_USAGE;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -15,9 +12,6 @@ import com.hazelcast.core.HazelcastInstance;
 
 import cz.cuni.mff.d3s.been.cluster.Instance;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
-import cz.cuni.mff.d3s.been.datastore.SoftwareStore;
-import cz.cuni.mff.d3s.been.datastore.SoftwareStoreFactory;
-import cz.cuni.mff.d3s.been.swrepository.httpserver.HttpServer;
 
 /**
  * 
@@ -70,30 +64,22 @@ public class SoftwareRepositoryRunner {
 			System.exit(EX_USAGE.getCode());
 		}
 
-		HazelcastInstance inst = Instance.newNativeInstance(
-				host,
-				port,
-				groupName,
-				groupPassword);
+		HazelcastInstance inst = Instance.newNativeInstance(host, port, groupName, groupPassword);
 		ClusterContext clusterCtx = new ClusterContext(inst);
 
-		SoftwareRepository swRepo = new SoftwareRepository(clusterCtx);
-		SoftwareStore dataStore = SoftwareStoreFactory.getDataStore();
-		InetAddress myAddr = null;
 		try {
-			myAddr = InetAddress.getByName(httpHost);
-		} catch (UnknownHostException e) {
-			log.error(
-					"Software Repository could not start: Failed to resolve local address {}. Cause was: {}",
-					httpHost,
-					e.getMessage());
-			inst.getLifecycleService().shutdown(); // kill the SWRepository Hazelcast instance - without the HTTP server, it's useless
-			return;
+			SoftwareRepository swRepo = SoftwareRepositories.createSWRepository(clusterCtx, httpHost, httpPort);
+			swRepo.init();
+			swRepo.start();
+			System.out.println("Press any key to stop the Software Repository");
+			System.in.read();
+			swRepo.stop();
+			System.exit(0); // TODO when swRepo.stop() gets fixed this can be removed
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			inst.getLifecycleService().shutdown(); // kills lingering threads
 		}
-		HttpServer httpServer = new HttpServer(myAddr, httpPort);
-		swRepo.setDataStore(dataStore);
-		swRepo.setHttpServer(httpServer);
-		swRepo.init();
-		swRepo.start();
+
 	}
 }
