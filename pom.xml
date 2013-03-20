@@ -7,9 +7,6 @@
 	<groupId>cz.cuni.mff.d3s.been</groupId>
 	<artifactId>clustered</artifactId>
 	<version>3.0.0</version>
-	<modules>
-		<module>jzmq</module>
-	</modules>
 
 	<packaging>pom</packaging>
 
