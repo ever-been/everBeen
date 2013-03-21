@@ -1,6 +1,10 @@
 package cz.cuni.mff.d3s.been.bpk;
 
-import org.xml.sax.SAXException;
+import java.io.File;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.net.URL;
+import java.nio.file.Path;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
@@ -9,14 +13,12 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-import java.io.File;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.net.URL;
+
+import org.xml.sax.SAXException;
 
 /**
  * Utility class for working with BpkConfiguration.
- *
+ * 
  * @author Martin Sixta
  */
 public class BpkConfigUtils {
@@ -26,7 +28,8 @@ public class BpkConfigUtils {
 	public static String SCHEMA_RESOURCE_FILE = "xsd/bpk-config.xsd";
 
 	/**
-	 * JAXBContext for BpkConfiguration. Don't use directly, use getContext() instead!
+	 * JAXBContext for BpkConfiguration. Don't use directly, use getContext()
+	 * instead!
 	 */
 	private static JAXBContext __context = null;
 
@@ -36,11 +39,12 @@ public class BpkConfigUtils {
 	private static Schema __schema = null;
 
 	/**
-	 *
+	 * 
 	 * Creating context is not cheap. Let's do it only once.
-	 *
-	 * @return  JAXB context fot BpkConfiguration
-	 * @throws JAXBException when context cannot be created
+	 * 
+	 * @return JAXB context fot BpkConfiguration
+	 * @throws JAXBException
+	 *           when context cannot be created
 	 */
 	private static synchronized JAXBContext getContext() throws JAXBException {
 		if (__context == null) {
@@ -51,11 +55,12 @@ public class BpkConfigUtils {
 	}
 
 	/**
-	 *
+	 * 
 	 * Creating schema is not cheap. Let's do it only once.
-	 *
-	 * @return  Schema for BpkConfiguration
-	 * @throws SAXException when schema cannot be created
+	 * 
+	 * @return Schema for BpkConfiguration
+	 * @throws SAXException
+	 *           when schema cannot be created
 	 */
 	private static synchronized Schema getSchema() throws SAXException {
 		if (__schema == null) {
@@ -69,18 +74,20 @@ public class BpkConfigUtils {
 
 	/**
 	 * Converts BpkConfiguration to it's XML representation.
-	 *
-	 * @param bpkConfiguration configuration to parse
+	 * 
+	 * @param bpkConfiguration
+	 *          configuration to parse
 	 * @return XML representation of bpkConfiguration
-	 * @throws BpkConfigurationException when it rains
+	 * @throws BpkConfigurationException
+	 *           when it rains
 	 */
-	public static String toXml(BpkConfiguration bpkConfiguration) throws  BpkConfigurationException {
+	public static String toXml(BpkConfiguration bpkConfiguration) throws BpkConfigurationException {
 		try {
 
 			// create and init marshaller
 			Marshaller marshaller = getContext().createMarshaller();
 			marshaller.setSchema(getSchema());
-			marshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, true );
+			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
 			// write it
 			StringWriter writer = new StringWriter();
@@ -90,13 +97,13 @@ public class BpkConfigUtils {
 
 		} catch (Exception e) {
 			String message = "Cannot convert to XML";
-			throw new  BpkConfigurationException(message, e);
+			throw new BpkConfigurationException(message, e);
 		}
 	}
 
 	/**
 	 * Parses BpkConfiguration from an InputStream.
-	 *
+	 * 
 	 * @param input
 	 * @return
 	 * @throws BpkConfigurationException
@@ -112,13 +119,13 @@ public class BpkConfigUtils {
 		} catch (Exception e) {
 			String message = "Cannot parse XML!";
 			e.printStackTrace();
-			throw new  BpkConfigurationException(message, e);
+			throw new BpkConfigurationException(message, e);
 		}
 	}
 
 	/**
 	 * Parses BpkConfiguration from a File.
-	 *
+	 * 
 	 * @param input
 	 * @return
 	 * @throws BpkConfigurationException
@@ -133,7 +140,18 @@ public class BpkConfigUtils {
 
 		} catch (Exception e) {
 			String message = "Cannot parse XML!";
-			throw new  BpkConfigurationException(message, e);
+			throw new BpkConfigurationException(message, e);
 		}
+	}
+
+	/**
+	 * Parses BpkConfiguration from a Path.
+	 * 
+	 * @param input
+	 * @return
+	 * @throws BpkConfigurationException
+	 */
+	public static BpkConfiguration fromXml(Path input) throws BpkConfigurationException {
+		return fromXml(input.toFile());
 	}
 }

@@ -2,27 +2,23 @@ package cz.cuni.mff.d3s.been.hostruntime;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.jar.JarFile;
 import java.util.zip.ZipException;
 
+import org.apache.commons.exec.CommandLine;
 import org.apache.commons.io.FileUtils;
-import org.apache.maven.artifact.Artifact;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cz.cuni.mff.d3s.been.bpk.ArtifactIdentifier;
 import cz.cuni.mff.d3s.been.bpk.Bpk;
+import cz.cuni.mff.d3s.been.bpk.BpkConfigUtils;
 import cz.cuni.mff.d3s.been.bpk.BpkConfiguration;
 import cz.cuni.mff.d3s.been.bpk.BpkConfigurationException;
-import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
-import cz.cuni.mff.d3s.been.bpk.BpkResolver;
-import cz.cuni.mff.d3s.been.bpk.JavaRuntime;
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.cluster.context.Tasks;
@@ -30,15 +26,13 @@ import cz.cuni.mff.d3s.been.core.TaskPropertyNames;
 import cz.cuni.mff.d3s.been.core.protocol.messages.KillTaskMessage;
 import cz.cuni.mff.d3s.been.core.protocol.messages.RunTaskMessage;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
-import cz.cuni.mff.d3s.been.core.sri.SWRepositoryInfo;
-import cz.cuni.mff.d3s.been.core.task.Arguments;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
+import cz.cuni.mff.d3s.been.hostruntime.proc.Processes;
+import cz.cuni.mff.d3s.been.hostruntime.proc.TaskProcess;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
-
-// FIXME logging
 
 /**
  * 
@@ -85,6 +79,11 @@ class HostRuntime implements IClusterService {
 	private TaskMessageDispatcher taskMessageDispatcher;
 
 	/**
+	 * Proxy to Software Repository
+	 */
+	private SoftwareResolver softwareResolver;
+
+	/**
 	 * Creates new {@link HostRuntime} with cluster-unique id.
 	 * 
 	 * @param clusterContext
@@ -99,6 +98,8 @@ class HostRuntime implements IClusterService {
 		this.clusterContext = clusterContext;
 		this.hostRuntimeInfo = hostRuntimeInfo;
 		this.swRepoClientFactory = swRepoClientFactory;
+
+		this.softwareResolver = new SoftwareResolver(clusterContext.getServicesUtils(), swRepoClientFactory);
 	}
 
 	/**
@@ -232,29 +233,35 @@ class HostRuntime implements IClusterService {
 	}
 
 	private Process createAndStartTaskProcess(TaskEntry taskEntry,
-			File taskDirectory) throws IOException, BpkConfigurationException, ZipException, Exception {
-		SwRepoClient swRepoClient = createSRClient();
-		BpkIdentifier bpkIdentifier = createBpkIdentifier(taskEntry.getTaskDescriptor());
-		Bpk bpk = downloadBpk(swRepoClient, bpkIdentifier);
-		if (bpk == null) {
-			throw new Exception(String.format("Missing bpk '%s:%s:%s' in software repository. ", bpkIdentifier.getGroupId(), bpkIdentifier.getBpkId(), bpkIdentifier.getVersion()));
-		}
-		BpkConfiguration bpkResolvedConfiguration = BpkResolver.resolve(bpk.getInputStream());
+			File taskDirectory) throws IOException, BpkConfigurationException, ZipException, TaskException {
 
-		List<String> additionalArgs = readTaskArguments(taskEntry);
-		TaskRunOpts runOpts;
+		TaskDescriptor td = taskEntry.getTaskDescriptor();
 
-		if (isJavaTask(bpkResolvedConfiguration)) {
-			JavaRuntime runtime = (JavaRuntime) bpkResolvedConfiguration.getRuntime();
-			File bpkJarFile = unzipBpkJarFileTo(bpk, runtime, taskDirectory);
-			List<File> dependencies = downloadJavaClasspathDependencies(swRepoClient, runtime, taskDirectory);
-			runOpts = new JavaTaskRunOpts(taskDirectory, bpkJarFile, dependencies, additionalArgs);
-		} else {
-			throw new Exception("Unsupported runtime type");
-		}
+		// obtain bpk
+		Bpk bpk = softwareResolver.getBpk(td);
 
-		ProcessBuilder processBuilder = new ProcessBuilder(runOpts.createCommandLine());
+		// unzip to task dir
+		ZipFileUtil.unzipToDir(bpk.getFile(), taskDirectory);
+
+		// obtain bpk configuration
+		Path dir = Paths.get(taskDirectory.toString());
+		Path configPath = dir.resolve("config.xml"); // TODO use bpk convetions
+		BpkConfiguration bpkConfiguration = BpkConfigUtils.fromXml(configPath);
+
+		// create process for the task
+		TaskProcess taskProcess = Processes.createProcess(bpkConfiguration.getRuntime(), td, dir);
+
+		// TODO resolve dependencies
+		//Collection<ArtifactIdentifier> identifiers = taskProcess.getArtifactDependencies();
+		//Collection<Artifact> artifacts = softwareResolver.resolveArtifacts(identifiers);
+
+		// TODO move dependencies inside task's directory
+
+		CommandLine cmdLine = taskProcess.createCommandLine();
+		ProcessBuilder processBuilder = new ProcessBuilder(cmdLine.toStrings());
 		processBuilder.inheritIO();
+
+		//TODO set correctly the working direcotory
 		processBuilder.environment().putAll(createEnvironmentProperties(taskEntry));
 		Process process = processBuilder.start();
 		return process;
@@ -265,13 +272,6 @@ class HostRuntime implements IClusterService {
 		properties.put(TaskPropertyNames.TASK_ID, taskEntry.getId());
 		properties.put(TaskPropertyNames.HR_COMM_PORT, Integer.toString(taskMessageDispatcher.getReceiverPort()));
 		return properties;
-	}
-
-	private File unzipBpkJarFileTo(Bpk bpk, JavaRuntime runtime,
-			File taskDirectory) throws ZipException, IOException {
-		File unzippedDir = new File(taskDirectory, "bpk");
-		ZipFileUtil.unzipToDir(bpk.getFile(), unzippedDir);
-		return new File(new File(unzippedDir, "files"), runtime.getJarFile());
 	}
 
 	private File createTaskDir(TaskEntry taskEntry) {
@@ -289,37 +289,6 @@ class HostRuntime implements IClusterService {
 		}
 	}
 
-	private List<String> readTaskArguments(TaskEntry taskEntry) {
-		Arguments argument = taskEntry.getTaskDescriptor().getArguments();
-		return (argument != null && argument.getArgument() != null)
-				? argument.getArgument() : Collections.<String> emptyList();
-	}
-
-	private List<File> downloadJavaClasspathDependencies(SwRepoClient client,
-			JavaRuntime runtime, File taskDirectory) {
-		List<File> dependencies = new ArrayList<>();
-		for (ArtifactIdentifier bpkArtifact : runtime.getBpkArtifacts().getArtifact()) {
-			Artifact artifact = client.getArtifact(bpkArtifact);
-			if (artifact != null) {
-				dependencies.add(artifact.getFile());
-			} else {
-				String fileName = String.format("%s-%s.jar", bpkArtifact.getArtifactId(), bpkArtifact.getVersion());
-				File artifactFile = new File(taskDirectory, String.format("bpk%slib%s%s", File.separatorChar, File.separatorChar, fileName));
-				if (artifactFile.exists()) {
-					dependencies.add(artifactFile);
-				}
-			}
-		}
-		return dependencies;
-	}
-	private boolean isJavaTask(BpkConfiguration bpkResolvedConfiguration) {
-		return bpkResolvedConfiguration.getRuntime() instanceof JavaRuntime;
-	}
-
-	private Bpk downloadBpk(SwRepoClient sRClient, BpkIdentifier bpkIdentifier) {
-		return sRClient.getBpk(bpkIdentifier);
-	}
-
 	private synchronized TaskEntry loadTask(String taskId) {
 		return getTaskUtils().getTask(taskId);
 	}
@@ -334,24 +303,6 @@ class HostRuntime implements IClusterService {
 		return clusterContext.getTasksUtils();
 	}
 
-	private BpkIdentifier createBpkIdentifier(TaskDescriptor descriptor) {
-		BpkIdentifier bpkMetaInfo = new BpkIdentifier();
-		bpkMetaInfo.setGroupId(descriptor.getGroupId());
-		bpkMetaInfo.setBpkId(descriptor.getBpkId());
-		bpkMetaInfo.setVersion(descriptor.getVersion());
-		return bpkMetaInfo;
-	}
-
-	private SwRepoClient createSRClient() {
-		SWRepositoryInfo swRepositoryInfo = clusterContext.getServicesUtils().getSWRepositoryInfo();
-
-		String host = swRepositoryInfo.getHost();
-		int port = swRepositoryInfo.getHttpServerPort();
-
-		SwRepoClient swRepoClient = swRepoClientFactory.getClient(host, port);
-		return swRepoClient;
-	}
-
 	private void loadAndKillTask(KillTaskMessage message) {
 		TaskEntry taskHandle = loadTask(message.taskId);
 		if (taskHandle == null) {
@@ -361,53 +312,5 @@ class HostRuntime implements IClusterService {
 			taskProcess.destroy();
 		}
 	}
-	static abstract class TaskRunOpts {
-		protected File taskDirectory;
-		protected List<String> additionalArgs;
 
-		abstract String[] createCommandLine() throws IOException;
-	}
-
-	static final class JavaTaskRunOpts extends TaskRunOpts {
-		File bpkJarFile;
-		List<File> dependencies;
-
-		JavaTaskRunOpts(File taskDirectory, File bpkFile, List<File> dependencies, List<String> additionalArgs) {
-			this.taskDirectory = taskDirectory;
-			this.bpkJarFile = bpkFile;
-			this.dependencies = dependencies;
-			this.additionalArgs = additionalArgs;
-		}
-
-		@Override
-		String[] createCommandLine() throws IOException {
-			List<String> cmd = new ArrayList<>();
-
-			cmd.add("java");
-
-			for (String arg : additionalArgs) {
-				cmd.add(arg);
-			}
-
-			cmd.add("-cp");
-			StringBuilder cp = new StringBuilder();
-			for (File dep : dependencies) {
-				cp.append(dep.getAbsolutePath());
-				cp.append(File.pathSeparatorChar);
-			}
-			cp.append(bpkJarFile.getAbsolutePath());
-			cmd.add(cp.toString());
-
-			cmd.add(determineMainClass(bpkJarFile));
-
-			log.debug(cmd.toString());
-			return cmd.toArray(new String[cmd.size()]);
-		}
-
-		private String determineMainClass(File bpkJarFile) throws IOException {
-			try (JarFile jarfile = new JarFile(bpkJarFile)) {
-				return jarfile.getManifest().getMainAttributes().getValue("Main-Class");
-			}
-		}
-	}
 }

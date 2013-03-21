@@ -1,6 +1,7 @@
 package cz.cuni.mff.d3s.been.bpk;
 
 import java.io.*;
+import java.nio.file.Path;
 
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
@@ -16,6 +17,10 @@ public class BpkResolver {
 		} catch (IOException e) {
 			throw new BpkConfigurationException("Cannot read configuration from " + bpkFile, e);
 		}
+	}
+
+	public static BpkConfiguration resolve(Path bpkPath) throws BpkConfigurationException {
+		return resolve(bpkPath.toFile());
 	}
 
 	public static BpkConfiguration resolve(InputStream bpkIs) throws BpkConfigurationException {
