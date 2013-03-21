@@ -1,8 +1,12 @@
 package cz.cuni.mff.d3s.been.hostruntime.proc;
 
+import static cz.cuni.mff.d3s.been.bpk.PackageNames.FILES_DIR;
+import static cz.cuni.mff.d3s.been.bpk.PackageNames.LIB_DIR;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.jar.JarFile;
@@ -23,6 +27,21 @@ import cz.cuni.mff.d3s.been.hostruntime.TaskException;
  * @author Martin Sixta
  */
 class JavaBasedProcess implements TaskProcess {
+
+	/**
+	 * Name of Java's executable. This is overkill, isn't it?
+	 */
+	private static String JAVA_PROG = "java";
+
+	/**
+	 * Name of Java's classpath argument. See {@link #JAVA}.
+	 */
+	private static String JAVA_CLASSPATH_ARG = "-cp";
+
+	/**
+	 * Wildcard for classpath.
+	 */
+	private static String CP_WILDCARD = "*";
 
 	private JavaRuntime runtime;
 	private TaskDescriptor td;
@@ -55,20 +74,23 @@ class JavaBasedProcess implements TaskProcess {
 
 	@Override
 	public CommandLine createCommandLine() throws TaskException {
-		Path libDir = taskDir.resolve("lib").resolve("*"); // dirty tricks
-		Path filesDir = taskDir.resolve("files").resolve("*"); // dirty tricks
+		Path filesDir = Paths.get(FILES_DIR);
+		Path libDir = Paths.get(LIB_DIR);
+		Path jarPath = taskDir.resolve("files").resolve(runtime.getJarFile());
 
-		Path mainJarPath = taskDir.resolve("files").resolve(runtime.getJarFile());
+		String filesCp = filesDir.resolve(CP_WILDCARD).toString(); // dirty tricks
+		String libCp = libDir.resolve(CP_WILDCARD).toString(); // dirty tricks
 
 		// --------------------------------------------------------------------
 		// program name
-		CommandLine cmdLine = new CommandLine("java");
+		// --------------------------------------------------------------------
+		CommandLine cmdLine = new CommandLine(JAVA_PROG);
 
 		// --------------------------------------------------------------------
 		// classpath
 		// --------------------------------------------------------------------
-		String classpath = concatPaths(libDir.toString(), filesDir.toString());
-		cmdLine.addArgument("-cp").addArgument(classpath);
+		String classpath = concatPaths(libCp, filesCp);
+		cmdLine.addArgument(JAVA_CLASSPATH_ARG).addArgument(classpath);
 
 		// --------------------------------------------------------------------
 		// java options
@@ -86,7 +108,7 @@ class JavaBasedProcess implements TaskProcess {
 		// --------------------------------------------------------------------
 		// main class
 		// --------------------------------------------------------------------
-		cmdLine.addArgument(getMainClass(mainJarPath));
+		cmdLine.addArgument(getMainClass(jarPath));
 
 		// --------------------------------------------------------------------
 		// task arguments

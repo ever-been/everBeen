@@ -15,10 +15,7 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cz.cuni.mff.d3s.been.bpk.Bpk;
-import cz.cuni.mff.d3s.been.bpk.BpkConfigUtils;
-import cz.cuni.mff.d3s.been.bpk.BpkConfiguration;
-import cz.cuni.mff.d3s.been.bpk.BpkConfigurationException;
+import cz.cuni.mff.d3s.been.bpk.*;
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.cluster.context.Tasks;
@@ -245,7 +242,7 @@ class HostRuntime implements IClusterService {
 
 		// obtain bpk configuration
 		Path dir = Paths.get(taskDirectory.toString());
-		Path configPath = dir.resolve("config.xml"); // TODO use bpk convetions
+		Path configPath = dir.resolve(PackageNames.CONFIG_FILE); // TODO use bpk convetions
 		BpkConfiguration bpkConfiguration = BpkConfigUtils.fromXml(configPath);
 
 		// create process for the task
@@ -257,11 +254,12 @@ class HostRuntime implements IClusterService {
 
 		// TODO move dependencies inside task's directory
 
+		// run the thing
 		CommandLine cmdLine = taskProcess.createCommandLine();
 		ProcessBuilder processBuilder = new ProcessBuilder(cmdLine.toStrings());
 		processBuilder.inheritIO();
+		processBuilder.directory(dir.toFile());
 
-		//TODO set correctly the working direcotory
 		processBuilder.environment().putAll(createEnvironmentProperties(taskEntry));
 		Process process = processBuilder.start();
 		return process;
