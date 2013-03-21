@@ -17,7 +17,7 @@ import cz.cuni.mff.d3s.been.core.protocol.messages.RunTaskMessage;
 public class HostRuntimeMessageListenerTest extends Assert {
 
 	@Mock
-	private HostRuntime hostRuntime;
+	private ProcessManager processManager;
 
 	@Mock
 	private ClusterContext clusterContext;
@@ -27,7 +27,7 @@ public class HostRuntimeMessageListenerTest extends Assert {
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
-		listener = new HostRuntimeMessageListener(hostRuntime, clusterContext);
+		listener = new HostRuntimeMessageListener(processManager, clusterContext);
 	}
 
 	@Ignore
@@ -39,8 +39,8 @@ public class HostRuntimeMessageListenerTest extends Assert {
 		//Message<BaseMessage> message = new Message<BaseMessage>(...)
 		//listener.onMessage(msg);
 
-		verify(hostRuntime).onKillTask(msg);
-		verifyNoMoreInteractions(hostRuntime);
+		verify(processManager).onKillTask(msg);
+		verifyNoMoreInteractions(processManager);
 	}
 
 	@Ignore
@@ -52,8 +52,8 @@ public class HostRuntimeMessageListenerTest extends Assert {
 		//Message<BaseMessage> message = new Message<BaseMessage>(...)
 		//listener.onMessage(msg);
 
-		verify(hostRuntime).onRunTask(msg);
-		verifyNoMoreInteractions(hostRuntime);
+		verify(processManager).onRunTask(msg);
+		verifyNoMoreInteractions(processManager);
 	}
 
 }

@@ -18,11 +18,11 @@ final class HostRuntimeMessageListener implements MessageListener<BaseMessage>, 
 
 	private static final Logger log = LoggerFactory.getLogger(HostRuntimeMessageListener.class);
 
-	private HostRuntime hostRuntime;
+	private ProcessManager hostRuntime;
 
 	final ITopic<BaseMessage> globalTopic;
 
-	public HostRuntimeMessageListener(final HostRuntime hostRuntime, final ClusterContext clusterContext) {
+	public HostRuntimeMessageListener(final ProcessManager hostRuntime, final ClusterContext clusterContext) {
 		this.hostRuntime = hostRuntime;
 		globalTopic = clusterContext.getTopic(Context.GLOBAL_TOPIC.getName());
 	}
@@ -46,7 +46,7 @@ final class HostRuntimeMessageListener implements MessageListener<BaseMessage>, 
 			if (messageObject instanceof RunTaskMessage) {
 				RunTaskMessage runTaskMessage = (RunTaskMessage) messageObject;
 
-				log.info("Runtime: Received task to run " + runTaskMessage.taskId);
+				log.info("Runtime: Received task to start " + runTaskMessage.taskId);
 				new Thread() {
 					@Override
 					public void run() {
