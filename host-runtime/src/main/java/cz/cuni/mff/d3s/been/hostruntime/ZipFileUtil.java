@@ -1,65 +1,81 @@
 package cz.cuni.mff.d3s.been.hostruntime;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Enumeration;
+import java.io.*;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
-import java.util.zip.ZipFile;
-
-import org.apache.commons.io.IOUtils;
+import java.util.zip.ZipInputStream;
 
 /**
  * 
+ * Utility class for unzipping files/streams.
+ * 
+ * 
+ * TODO we should move this to utility module or use 3rd party library
+ * 
  * @author Tadeáš Palusga
+ * @author Martin Sixta
  * 
  */
 public class ZipFileUtil {
 
 	/**
+	 * Unzips a file to specified direcotry.
+	 * 
 	 * @param zipFile
+	 *          file to unzip
 	 * @param toDir
+	 *          where to unzip
 	 * @throws IOException
-	 * @throws ZipException
+	 *           when the file cannot be unzipped to the directory
 	 */
-	public static void unzipToDir(File zipFile, File toDir) throws ZipException, IOException {
-		ZipFile _zipFile = new ZipFile(zipFile);
-		Enumeration<?> files = _zipFile.entries();
-		File f = null;
-		FileOutputStream fos = null;
+	public static void unzipToDir(File zipFile, File toDir) throws IOException {
+		try (FileInputStream fis = new FileInputStream(zipFile)) {
+			unzipToDir(fis, toDir);
+		}
+	}
 
-		while (files.hasMoreElements()) {
-			try {
-				ZipEntry entry = (ZipEntry) files.nextElement();
-				InputStream eis = _zipFile.getInputStream(entry);
-				byte[] buffer = new byte[1024];
-				int bytesRead = 0;
+	/**
+	 * 
+	 * Unzips content of a stream to specified directory.
+	 * 
+	 * @param is
+	 *          stream to unzip
+	 * @param toDir
+	 *          where to unzip
+	 * @throws IOException
+	 *           when the content of the stream cannot be unzipped to specified
+	 *           directory
+	 */
+	public static void unzipToDir(InputStream is, File toDir) throws IOException {
+		try (ZipInputStream zipStream = new ZipInputStream(is)) {
+			ZipEntry entry = zipStream.getNextEntry();
 
-				f = new File(toDir.getAbsolutePath() + File.separator + entry.getName());
+			while (entry != null) {
+
+				File f = new File(toDir.getAbsolutePath() + File.separator + entry.getName());
 
 				if (entry.isDirectory()) {
 					f.mkdirs();
-					continue;
+
 				} else {
 					f.getParentFile().mkdirs();
 					f.createNewFile();
+
+					byte[] buffer = new byte[1024];
+					int bytesRead = 0;
+
+					try (FileOutputStream fos = new FileOutputStream(f)) {
+						while ((bytesRead = zipStream.read(buffer)) != -1) {
+							fos.write(buffer, 0, bytesRead);
+						}
+					}
 				}
 
-				fos = new FileOutputStream(f);
-
-				while ((bytesRead = eis.read(buffer)) != -1) {
-					fos.write(buffer, 0, bytesRead);
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-				continue;
-			} finally {
-				IOUtils.closeQuietly(fos);
+				entry = zipStream.getNextEntry();
 			}
+
+			zipStream.closeEntry();
+
 		}
-		_zipFile.close();
 	}
 
 }
