@@ -189,7 +189,7 @@ final class ProcessManager {
 		Bpk bpk = softwareResolver.getBpk(td);
 
 		// unzip to task dir
-		ZipFileUtil.unzipToDir(bpk.getFile(), taskDirectory);
+		ZipFileUtil.unzipToDir(bpk.getInputStream(), taskDirectory);
 
 		// obtain bpk configuration
 		Path dir = Paths.get(taskDirectory.toString());
