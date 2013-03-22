@@ -14,6 +14,7 @@ import com.hazelcast.core.HazelcastInstance;
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
 import cz.cuni.mff.d3s.been.cluster.Instance;
 import cz.cuni.mff.d3s.been.cluster.NodeType;
+import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.hostruntime.HostRuntimes;
 import cz.cuni.mff.d3s.been.swrepository.SoftwareRepositories;
@@ -98,9 +99,7 @@ public class Runner {
 
 		// Run Task Manager on DATA nodes
 		if (nodeType == NodeType.DATA) {
-			log.info("Starting Task Manager");
 			startTaskManager(instance);
-			log.info("Task Manager started.");
 		}
 
 		// Software Repository
@@ -113,7 +112,6 @@ public class Runner {
 			startHostRuntime(instance);
 		}
 	}
-
 	private void printUsage() {
 		CmdLineParser parser = new CmdLineParser(this);
 		parser.printUsage(System.out);
@@ -150,8 +148,15 @@ public class Runner {
 	}
 
 	private void startTaskManager(final HazelcastInstance instance) {
+		log.info("Starting Task Manager.");
 		IClusterService taskManager = Managers.getManager(instance);
-		taskManager.start();
+		try {
+			taskManager.start();
+			log.info("Task Manager successfully started.");
+		} catch (ServiceException e) {
+			log.error("Task Manager could not be started - {}", e.getMessage());
+			log.debug("Reasons for Task Manager not starting:", e);
+		}
 	}
 
 	private void startHostRuntime(final HazelcastInstance instance) {
@@ -163,27 +168,30 @@ public class Runner {
 
 			log.info("Host Runtime Started");
 		} catch (Exception e) {
-			log.error("Host Runtime cannot be started", e);
+			log.error("Host Runtime cannot be started", e.getMessage());
+			log.debug("Reasons for Host Runtime not starting:", e);
 		}
 	}
 
 	private void startSWRepository(HazelcastInstance instance) {
 		log.info("Starting Software repository");
-
 		ClusterContext ctx = new ClusterContext(instance);
 
 		String host = ctx.getInetSocketAddress().getHostName();
 		int port = 8000;
 
-		SoftwareRepository swRepo = SoftwareRepositories.createSWRepository(ctx, host, port);
+		SoftwareRepository swRepo = SoftwareRepositories.createSWRepository(
+				ctx,
+				host,
+				port);
 
+		swRepo.init();
 		try {
-			swRepo.init();
 			swRepo.start();
-
-			log.info("Software Repository started");
-		} catch (Exception e) {
-			log.error("Software Repository cannot be started", e);
+			log.info("Software Repository successfully started.");
+		} catch (ServiceException e) {
+			log.error("Software Repository could not be started - {}", e.getMessage());
+			log.debug("Reasons for Software Repository not starting:", e);
 		}
 
 	}

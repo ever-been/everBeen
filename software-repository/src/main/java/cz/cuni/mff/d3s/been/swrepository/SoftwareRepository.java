@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
 import cz.cuni.mff.d3s.been.cluster.Names;
+import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.sri.SWRepositoryInfo;
 import cz.cuni.mff.d3s.been.datastore.SoftwareStore;
@@ -43,7 +44,7 @@ public class SoftwareRepository implements IClusterService {
 	}
 
 	@Override
-	public void start() {
+	public void start() throws ServiceException {
 		if (httpServer == null) {
 			log.error("Cannot start Software Repository - HTTP server is null.");
 			return;

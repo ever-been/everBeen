@@ -37,6 +37,7 @@ import cz.cuni.mff.d3s.been.datastore.SoftwareStore;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
 import cz.cuni.mff.d3s.been.swrepository.httpserver.HttpServer;
+import cz.cuni.mff.d3s.been.swrepository.httpserver.HttpServerException;
 
 /**
  * A simulation of actual software repository use-cases. Consists in running a
@@ -65,7 +66,7 @@ public class TestSoftwareRepositoryTransportByHTTP {
 			stopServer();
 		}
 
-		private void startServer() throws IOException {
+		private void startServer() throws IOException, HttpServerException {
 			// find a random free socket
 			ServerSocket probeSocket = null;
 			probeSocket = new ServerSocket(0);
