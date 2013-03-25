@@ -19,6 +19,7 @@ import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 public class ClientListener implements com.hazelcast.core.ClientListener, IClusterService {
 
 	private ClusterContext clusterCtx;
+	private InprocMessaging inprocMessaging;
 
 	public ClientListener(ClusterContext clusterCtx) {
 		this.clusterCtx = clusterCtx;
@@ -44,5 +45,9 @@ public class ClientListener implements com.hazelcast.core.ClientListener, IClust
 	@Override
 	public void stop() {
 		clusterCtx.getClientService().removeClientListener(this);
+	}
+
+	public void withInprocMessaging(InprocMessaging inprocMessaging) {
+		this.inprocMessaging = inprocMessaging;
 	}
 }
