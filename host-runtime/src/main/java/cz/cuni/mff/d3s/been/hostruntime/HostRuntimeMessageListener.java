@@ -41,8 +41,8 @@ final class HostRuntimeMessageListener implements MessageListener<BaseMessage>, 
 	public void onMessage(Message<BaseMessage> message) {
 		final BaseMessage messageObject = message.getMessageObject();
 
-		String recieverId = messageObject.recieverId;
-		if (recieverId == null || hostRuntime.getNodeId().equals(recieverId)) {
+		String receiverId = messageObject.recieverId;
+		if (receiverId == null || hostRuntime.getNodeId().equals(receiverId)) {
 			if (messageObject instanceof RunTaskMessage) {
 				RunTaskMessage runTaskMessage = (RunTaskMessage) messageObject;
 
