@@ -5,12 +5,14 @@ import static cz.cuni.mff.d3s.been.bpk.PackageNames.LIB_DIR;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.jar.JarFile;
 
+import cz.cuni.mff.d3s.been.core.task.ModeEnum;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.util.StringUtils;
 
@@ -19,6 +21,8 @@ import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.bpk.JavaRuntime;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.hostruntime.TaskException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -28,13 +32,15 @@ import cz.cuni.mff.d3s.been.hostruntime.TaskException;
  */
 class JavaBasedProcess implements TaskProcess {
 
+	private static final Logger log = LoggerFactory.getLogger(JavaBasedProcess.class);
+
 	/**
 	 * Name of Java's executable. This is overkill, isn't it?
 	 */
 	private static String JAVA_PROG = "java";
 
 	/**
-	 * Name of Java's classpath argument. See {@link #JAVA}.
+	 * Name of Java's classpath argument. See {@link #JAVA_PROG}.
 	 */
 	private static String JAVA_CLASSPATH_ARG = "-cp";
 
@@ -104,6 +110,7 @@ class JavaBasedProcess implements TaskProcess {
 		// --------------------------------------------------------------------
 		// debug
 		// --------------------------------------------------------------------
+		addDebugParameters(cmdLine);
 
 		// --------------------------------------------------------------------
 		// main class
@@ -120,6 +127,34 @@ class JavaBasedProcess implements TaskProcess {
 		}
 
 		return cmdLine;
+	}
+
+	private void addDebugParameters(CommandLine cmdLine) throws TaskException {
+		if (td.isSetDebug() && td.getDebug().getMode() != ModeEnum.NONE) {
+			String debugParam = "";
+			if (td.getDebug().getMode() == ModeEnum.CONNECT) {
+				debugParam = "-agentlib:jdwp=transport=dt_socket,server=n,address=" + td.getDebug().getHost() + ":" + td.getDebug().getPort();
+			} else if (td.getDebug().getMode() == ModeEnum.LISTEN) {
+
+				int port = td.getDebug().getPort();
+				if (port == 0) {
+					try {
+						ServerSocket ss = new ServerSocket(0);
+						port = ss.getLocalPort();
+						ss.close();
+					} catch (IOException e) {
+						throw new TaskException("Cannot bind port for debugging", e);
+					}
+				}
+
+				debugParam = "-agentlib:jdwp=transport=dt_socket,server=y,address=" + port;
+
+				log.info("Debugged process is listening on port {}", port);
+			}
+
+			debugParam += ",suspend=" + (td.getDebug().isSuspend() ? "y" : "n");
+			cmdLine.addArgument(debugParam);
+		}
 	}
 
 	/**
