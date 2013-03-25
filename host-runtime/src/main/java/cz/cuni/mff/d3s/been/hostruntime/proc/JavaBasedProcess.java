@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Martin Sixta
  */
-class JavaBasedProcess implements TaskProcess {
+public class JavaBasedProcess implements TaskProcess {
 
 	private static final Logger log = LoggerFactory.getLogger(JavaBasedProcess.class);
 
@@ -52,6 +52,16 @@ class JavaBasedProcess implements TaskProcess {
 	private JavaRuntime runtime;
 	private TaskDescriptor td;
 	private Path taskDir;
+	private boolean debugListeningMode;
+	private int debugPort;
+
+	public boolean isDebugListeningMode() {
+		return debugListeningMode;
+	}
+
+	public int getDebugPort() {
+		return debugPort;
+	}
 
 	public JavaBasedProcess(JavaRuntime runtime, TaskDescriptor td, Path taskDir) {
 		this.runtime = runtime;
@@ -146,6 +156,9 @@ class JavaBasedProcess implements TaskProcess {
 						throw new TaskException("Cannot bind port for debugging", e);
 					}
 				}
+
+				this.debugPort = port;
+				this.debugListeningMode = true;
 
 				debugParam = "-agentlib:jdwp=transport=dt_socket,server=y,address=" + port;
 
