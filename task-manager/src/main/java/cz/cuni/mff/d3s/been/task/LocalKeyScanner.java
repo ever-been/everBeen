@@ -7,7 +7,6 @@ import com.hazelcast.core.IMap;
 import com.hazelcast.core.Transaction;
 
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
-import cz.cuni.mff.d3s.been.core.task.TaskEntries;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
 
@@ -29,8 +28,7 @@ import cz.cuni.mff.d3s.been.core.task.TaskState;
  * 
  * @author Martin Sixta
  */
-public class LocalKeyScanner implements Runnable {
-
+final class LocalKeyScanner implements Runnable {
 
 	private final ClusterContext clusterCtx;
 
@@ -40,6 +38,7 @@ public class LocalKeyScanner implements Runnable {
 
 	private static final Logger log = LoggerFactory.getLogger(LocalKeyScanner.class);
 	private static final String ZERO_ID = "0";
+
 	@Override
 	public void run() {
 
@@ -55,7 +54,6 @@ public class LocalKeyScanner implements Runnable {
 			}
 
 			log.info("Task ID: {}, status: {}", entry.getId(), entry.getState().toString());
-
 
 			entry.getId();
 			String ownerId = entry.isSetOwnerId() ? entry.getOwnerId() : ZERO_ID;

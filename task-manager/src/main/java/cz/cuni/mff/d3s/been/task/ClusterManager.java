@@ -4,10 +4,17 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.jeromq.ZMQ;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
+import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
+import cz.cuni.mff.d3s.been.mq.IMessageQueue;
+import cz.cuni.mff.d3s.been.mq.IMessageReceiver;
+import cz.cuni.mff.d3s.been.mq.Messaging;
+import cz.cuni.mff.d3s.been.mq.MessagingException;
+import cz.cuni.mff.d3s.been.task.message.TaskMessage;
 
 /**
  * 
@@ -18,53 +25,56 @@ import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
  * @author Martin Sixta
  */
 final class ClusterManager implements IClusterService {
+	private static final Logger log = LoggerFactory.getLogger(ClusterManager.class);
+
 	private final LocalTaskListener localTaskListener;
 	private final MembershipListener membershipListener;
 	private final ClientListener clientListener;
 	private final ClusterContext clusterCtx;
 
-	private static final String INPROC_QUEUE = "been.tm.queue";
+	private static final String ACTION_QUEUE_NAME = "been.tm.queue";
 
-	private volatile ZMQ.Context zmqContext;
+	private final IMessageQueue<TaskMessage> actionQueue;
 
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
 	public ClusterManager(ClusterContext clusterCtx) {
-
 		this.clusterCtx = clusterCtx;
-
-		zmqContext = ZMQ.context();
 
 		localTaskListener = new LocalTaskListener(clusterCtx);
 		membershipListener = new MembershipListener(clusterCtx);
 		clientListener = new ClientListener(clusterCtx);
 
+		this.actionQueue = Messaging.createInprocQueue(ACTION_QUEUE_NAME);
+
 	}
 
-	private TaskMessageProcessor taskActionProcessor;
-	@Override
-	public void start() {
+	private TaskMessageProcessor taskMessageProcessor;
 
+	@Override
+	public void start() throws ServiceException {
+
+		IMessageReceiver<TaskMessage> receiver;
 		try {
-			taskActionProcessor = new TaskMessageProcessor(clusterCtx, zmqContext, INPROC_QUEUE);
-		} catch (TaskManagerException e) {
-			e.printStackTrace(); //To change body of catch statement use File | Settings | File Templates.
-			return;
+			receiver = actionQueue.getReceiver();
+
+			localTaskListener.withSender(actionQueue.createSender());
+			membershipListener.withSender(actionQueue.createSender());
+			clientListener.withSender(actionQueue.createSender());
+
+		} catch (MessagingException e) {
+			throw new ServiceException("Cannot start clustered Task Manager", e);
 		}
 
-		taskActionProcessor.start();
+		taskMessageProcessor = new TaskMessageProcessor(clusterCtx, receiver);
 
-		localTaskListener.withInprocMessaging(new InprocMessaging(zmqContext, INPROC_QUEUE));
-		membershipListener.withInprocMessaging(new InprocMessaging(zmqContext, INPROC_QUEUE));
-		clientListener.withInprocMessaging(new InprocMessaging(zmqContext, INPROC_QUEUE));
+		taskMessageProcessor.start();
 
 		localTaskListener.start();
 		membershipListener.start();
 		clientListener.start();
 
 		scheduler.scheduleAtFixedRate(new LocalKeyScanner(clusterCtx), 5, 5, TimeUnit.SECONDS);
-
-		System.out.println("My ID is: " + clusterCtx.getId());
 
 	}
 
@@ -74,6 +84,7 @@ final class ClusterManager implements IClusterService {
 		membershipListener.stop();
 		localTaskListener.stop();
 		scheduler.shutdown();
+		actionQueue.terminate();
 	}
 
 }

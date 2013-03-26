@@ -1,4 +1,4 @@
-package cz.cuni.mff.d3s.been.task;
+package cz.cuni.mff.d3s.been.task.action;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,26 +11,14 @@ import cz.cuni.mff.d3s.been.core.protocol.messages.RunTaskMessage;
 import cz.cuni.mff.d3s.been.core.task.TaskEntries;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
+import cz.cuni.mff.d3s.been.task.IRuntimeSelection;
+import cz.cuni.mff.d3s.been.task.NoRuntimeFoundException;
+import cz.cuni.mff.d3s.been.task.RandomRuntimeSelection;
+import cz.cuni.mff.d3s.been.task.message.TaskMessage;
 
 /**
  * @author Martin Sixta
  */
-interface TaskAction {
-
-	public void execute();
-
-}
-
-abstract class AbstractTaskAction implements TaskAction {
-	protected final ClusterContext clusterCtx;
-	protected final TaskMessage msg;
-
-	public AbstractTaskAction(ClusterContext ctx, TaskMessage msg) {
-		this.clusterCtx = ctx;
-		this.msg = msg;
-	}
-}
-
 class NewTaskAction extends AbstractTaskAction {
 
 	private static Logger log = LoggerFactory.getLogger(NewTaskAction.class);

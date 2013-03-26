@@ -10,8 +10,12 @@ import com.hazelcast.core.IMap;
 
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
-import cz.cuni.mff.d3s.been.core.protocol.Context;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
+import cz.cuni.mff.d3s.been.mq.IMessageSender;
+import cz.cuni.mff.d3s.been.mq.MessagingException;
+import cz.cuni.mff.d3s.been.task.message.NewTaskMessage;
+import cz.cuni.mff.d3s.been.task.message.TaskMessage;
+import cz.cuni.mff.d3s.been.task.message.UpdatedTaskMessage;
 
 /**
  * Listens for local key events of the Task Map.
@@ -21,11 +25,10 @@ import cz.cuni.mff.d3s.been.core.task.TaskEntry;
  */
 final class LocalTaskListener implements EntryListener<String, TaskEntry>, IClusterService {
 	private static final Logger log = LoggerFactory.getLogger(LocalTaskListener.class);
-	private static final String RUNTIME_TOPIC = Context.GLOBAL_TOPIC.getName();
 
 	private IMap<String, TaskEntry> taskMap;
 	private ClusterContext clusterCtx;
-	private InprocMessaging inprocMessaging;
+	private IMessageSender<TaskMessage> sender;
 
 	public LocalTaskListener(ClusterContext clusterCtx) {
 		this.clusterCtx = clusterCtx;
@@ -53,12 +56,13 @@ final class LocalTaskListener implements EntryListener<String, TaskEntry>, IClus
 
 	@Override
 	public void entryAdded(EntryEvent<String, TaskEntry> event) {
-
 		TaskEntry entry = event.getValue();
-		String taskId = event.getKey();
-
-		inprocMessaging.send(new NewTaskMessage(entry));
-
+		try {
+			sender.send(new NewTaskMessage(entry));
+		} catch (MessagingException e) {
+			String msg = String.format("Cannot send message to %s on entry added", sender.getConnection());
+			log.error(msg, e);
+		}
 	}
 
 	@Override
@@ -72,25 +76,13 @@ final class LocalTaskListener implements EntryListener<String, TaskEntry>, IClus
 	@Override
 	public void entryUpdated(EntryEvent<String, TaskEntry> event) {
 		TaskEntry entry = event.getValue();
-		String taskId = event.getKey();
-
-		switch (entry.getState()) {
-			case ABORTED:
-				log.info("Task has been ABORTED: " + taskId);
-				break;
-			case SUBMITTED:
-				if (!entry.getRuntimeId().equals("0")) {
-					//timeout exceeded, stale task
-					// what now?
-				} else {
-					//
-				}
-
-				break;
-
+		try {
+			sender.send(new UpdatedTaskMessage(entry));
+		} catch (MessagingException e) {
+			String msg = String.format("Cannot send message to %s on entry updated", sender.getConnection());
+			log.error(msg, e);
 		}
 
-		log.info("Entry updated " + taskId);
 	}
 
 	@Override
@@ -101,7 +93,7 @@ final class LocalTaskListener implements EntryListener<String, TaskEntry>, IClus
 		log.info("Entry evicted " + taskId);
 	}
 
-	public void withInprocMessaging(InprocMessaging inprocMessaging) {
-		this.inprocMessaging = inprocMessaging;
+	public void withSender(IMessageSender<TaskMessage> sender) {
+		this.sender = sender;
 	}
 }

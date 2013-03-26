@@ -10,7 +10,7 @@ import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 /**
  * @author Martin Sixta
  */
-final class RandomRuntimeSelection implements IRuntimeSelection {
+public final class RandomRuntimeSelection implements IRuntimeSelection {
 
 	private final Random rnd;
 	private ClusterContext clusterCtx;
