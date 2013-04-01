@@ -54,6 +54,12 @@
 			<version>${project.parent.version}</version>
 		</dependency>
 
+        <dependency>
+            <groupId>cz.cuni.mff.d3s.been</groupId>
+            <artifactId>debug-assistant</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+
 		<!-- EXTERNAL -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>

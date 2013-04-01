@@ -7,6 +7,7 @@ import com.hazelcast.core.MembershipEvent;
 
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
+import cz.cuni.mff.d3s.been.mq.IMessageSender;
 
 /**
  * Listens for cluster membership events.
@@ -16,6 +17,7 @@ import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 final class MembershipListener implements com.hazelcast.core.MembershipListener, IClusterService {
 
 	private ClusterContext clusterCtx;
+	private IMessageSender inprocMessaging;
 
 	public MembershipListener(ClusterContext clusterCtx) {
 		this.clusterCtx = clusterCtx;
@@ -41,5 +43,9 @@ final class MembershipListener implements com.hazelcast.core.MembershipListener,
 	@Override
 	public void memberRemoved(MembershipEvent membershipEvent) {
 		log.info("Member removed: {}", membershipEvent.getMember());
+	}
+
+	public void withSender(IMessageSender inprocMessaging) {
+		this.inprocMessaging = inprocMessaging;
 	}
 }

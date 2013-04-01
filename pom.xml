@@ -1,142 +1,142 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<groupId>cz.cuni.mff.d3s.been</groupId>
-	<artifactId>clustered</artifactId>
-	<version>3.0.0</version>
+    <groupId>cz.cuni.mff.d3s.been</groupId>
+    <artifactId>clustered</artifactId>
+    <version>3.0.0</version>
+    <packaging>pom</packaging>
 
-	<packaging>pom</packaging>
+    <properties>
+        <!-- BEEN DEPENDENCIES -->
+        <been.cluster.version>3.0.0</been.cluster.version>
+        <been.task.version>3.0.0</been.task.version>
 
-	<properties>
-		<!-- BEEN DEPENDENCIES -->
-		<been.cluster.version>3.0.0</been.cluster.version>
-		<been.task.version>3.0.0</been.task.version>
+        <!-- 3RD PARTY DEPENDENCIES -->
+        <hazelcast.version>2.5</hazelcast.version>
+        <httpclient.version>4.2.3</httpclient.version>
+        <httpcore.version>4.2.3</httpcore.version>
+        <commons-io.version>2.4</commons-io.version>
+        <commons-compress.version>1.4.1</commons-compress.version>
+        <junit.version>4.11</junit.version>
+        <maven.version>3.0.4</maven.version>
 
-		<!-- 3RD PARTY DEPENDENCIES -->
-		<hazelcast.version>2.5</hazelcast.version>
-		<httpclient.version>4.2.3</httpclient.version>
-		<httpcore.version>4.2.3</httpcore.version>
-		<commons-io.version>2.4</commons-io.version>
-		<commons-compress.version>1.4.1</commons-compress.version>
-		<junit.version>4.11</junit.version>
-		<maven.version>3.0.4</maven.version>
-
-		<!-- PLUGIN VERSION CONTROL -->
-		<jaxb2-maven-plugin.version>1.5</jaxb2-maven-plugin.version>
-		<maven-assembly-plugin.version>2.3</maven-assembly-plugin.version>
-		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
-		<maven-jar-plugin.version>2.4</maven-jar-plugin.version>
-		<maven-resources-plugin.version>2.6</maven-resources-plugin.version>
-		<one.jar.version>0.97</one.jar.version>
-		<args4j.version>2.0.16</args4j.version>
+        <!-- PLUGIN VERSION CONTROL -->
+        <jaxb2-maven-plugin.version>1.5</jaxb2-maven-plugin.version>
+        <maven-assembly-plugin.version>2.3</maven-assembly-plugin.version>
+        <maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
+        <maven-jar-plugin.version>2.4</maven-jar-plugin.version>
+        <maven-resources-plugin.version>2.6</maven-resources-plugin.version>
+        <one.jar.version>0.97</one.jar.version>
+        <args4j.version>2.0.16</args4j.version>
 
 
-		<!-- SOURCE LEVEL CONTROL -->
-		<java-source.version>1.7</java-source.version>
-		<java-target.version>1.7</java-target.version>
+        <!-- SOURCE LEVEL CONTROL -->
+        <java-source.version>1.7</java-source.version>
+        <java-target.version>1.7</java-target.version>
 
-		<!-- LOGGING -->
-		<log4j.version>1.2.12</log4j.version>
-		<logback.version>1.0.6</logback.version>
-		<slf4j.version>1.6.4</slf4j.version>
+        <!-- LOGGING -->
+        <log4j.version>1.2.12</log4j.version>
+        <logback.version>1.0.6</logback.version>
+        <slf4j.version>1.6.4</slf4j.version>
 
-		<!-- ENCODING -->
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
+        <!-- ENCODING -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
+    <dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
 
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
-			<version>${slf4j.version}</version>
-			<scope>runtime</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>runtime</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${junit.version}</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${maven-compiler-plugin.version}</version>
-				<configuration>
-					<source>${java-source.version}</source>
-					<target>${java-target.version}</target>
-				</configuration>
-			</plugin>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <source>${java-source.version}</source>
+                    <target>${java-target.version}</target>
+                </configuration>
+            </plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-site-plugin</artifactId>
-				<version>3.2</version>
-			</plugin>
-		</plugins>
-	</build>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.2</version>
+            </plugin>
+        </plugins>
+    </build>
 
-	<reporting>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-report-plugin</artifactId>
-				<version>2.13</version>
-			</plugin>
-		</plugins>
-	</reporting>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>2.13</version>
+            </plugin>
+        </plugins>
+    </reporting>
 
-	
-	<profiles>
-		<profile>
-			<id>buildCore</id>
 
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
+    <profiles>
+        <profile>
+            <id>buildCore</id>
 
-			<modules>
-				<module>core-data</module>
-				<module>core-utils</module>
-				<module>core-protocol</module>
-				<module>core-cluster</module>
-				<module>detectors</module>
-				<module>task-manager</module>
-				<module>node</module>
-				<module>client-submitter</module>
-				<module>client-shell</module>
-				<module>host-runtime</module>
-				<module>software-repository-store</module>
-				<module>software-repository-client</module>
-				<module>software-repository</module>
-				<module>software-repository-fsbasedstore</module>
-                		<module>demo-srclient</module>
-		                <module>task-api</module>
-				<module>task-test</module>
-			</modules>
-		</profile>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
 
-		<profile>
-			<id>buildBpkPlugin</id>
+            <modules>
+                <module>core-data</module>
+                <module>core-utils</module>
+                <module>core-protocol</module>
+                <module>core-cluster</module>
+                <module>detectors</module>
+                <module>task-manager</module>
+                <module>node</module>
+                <module>client-submitter</module>
+                <module>client-shell</module>
+                <module>debug-assistant</module>
+                <module>host-runtime</module>
+                <module>software-repository-store</module>
+                <module>software-repository-client</module>
+                <module>software-repository</module>
+                <module>software-repository-fsbasedstore</module>
+                <module>demo-srclient</module>
+                <module>task-api</module>
+                <module>task-test</module>
+            </modules>
+        </profile>
 
-			<modules>
-				<module>bpk-conventions</module>
-				<module>bpk-plugin</module>
-			</modules>
-		</profile>
+        <profile>
+            <id>buildBpkPlugin</id>
 
-	</profiles>
+            <modules>
+                <module>bpk-conventions</module>
+                <module>bpk-plugin</module>
+            </modules>
+        </profile>
+
+    </profiles>
 </project>
