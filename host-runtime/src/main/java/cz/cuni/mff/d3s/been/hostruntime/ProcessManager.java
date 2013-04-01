@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.ZipException;
 
+import cz.cuni.mff.d3s.been.debugassistant.DebugAssistant;
+import cz.cuni.mff.d3s.been.hostruntime.proc.JavaBasedProcess;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -170,6 +172,10 @@ final class ProcessManager {
 			// we do not care if this method takes too long, because this method should be called
 			// asynchronously from parental methods
 			process.waitFor();
+
+			DebugAssistant dbg = new DebugAssistant(clusterContext);
+			dbg.removeSuspendedTask(taskHandle.getId());
+
 			changeTaskStateTo(taskHandle, TaskState.FINISHED);
 		} catch (Exception e) {
 			changeTaskStateTo(taskHandle, TaskState.ABORTED);
@@ -212,7 +218,19 @@ final class ProcessManager {
 		processBuilder.directory(dir.toFile());
 
 		processBuilder.environment().putAll(createEnvironmentProperties(taskEntry));
+
+		// let debug assistant know about this process
+		if (taskProcess instanceof JavaBasedProcess) {
+			JavaBasedProcess jbp = ((JavaBasedProcess) taskProcess);
+			if (jbp.isDebugListeningMode()) {
+				DebugAssistant dbg = new DebugAssistant(clusterContext);
+				dbg.addSuspendedTask(taskEntry.getId(), clusterContext.getInetSocketAddress().getHostName(), jbp.getDebugPort());
+			}
+		}
+
+		// run it
 		Process process = processBuilder.start();
+
 		return process;
 	}
 

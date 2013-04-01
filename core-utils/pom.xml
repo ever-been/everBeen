@@ -12,7 +12,6 @@
 	</parent>
 
 
-
 	<dependencies>
 		<!-- BEEN -->
 		<dependency>
@@ -25,6 +24,18 @@
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>${commons-io.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jeromq</groupId>
+			<artifactId>jeromq</artifactId>
+			<version>0.2.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.1</version>
 		</dependency>
 	</dependencies>
 </project>

@@ -120,6 +120,7 @@
 				<module>client-submitter</module>
 				<module>client-shell</module>
 				<module>host-runtime</module>
+				<module>debug-assistant</module>
 				<module>software-repository-store</module>
 				<module>software-repository-client</module>
 				<module>software-repository</module>

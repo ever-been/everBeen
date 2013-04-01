@@ -259,6 +259,27 @@
 	</xs:complexType>
 	
 	<xs:element name="loadMonitoring" type="td:LoadMonitoring"/>
+
+    <xs:simpleType name="ModeEnum">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="none" />
+            <xs:enumeration value="connect" />
+            <xs:enumeration value="listen" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:element name="mode" type="td:ModeEnum"/>
+    <xs:element name="host" type="xs:string"/>
+    <xs:element name="port" type="xs:int"/>
+    <xs:element name="suspend" type="xs:boolean"/>
+    <xs:complexType name="Debug">
+        <xs:sequence>
+            <xs:element ref="td:mode" minOccurs="1" maxOccurs="1"/>
+            <xs:element ref="td:host" minOccurs="1" maxOccurs="1"/>
+            <xs:element ref="td:port" minOccurs="1" maxOccurs="1"/>
+            <xs:element ref="td:suspend" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="debug" type="td:Debug"/>
 	
 	<xs:element name="description" type="xs:string"/>
 	
@@ -281,6 +302,7 @@
 				<xs:element ref="td:dependencies" minOccurs="0" maxOccurs="1"/>
 				<xs:element ref="td:failurePolicy" minOccurs="0" maxOccurs="1"/>
 				<xs:element ref="td:loadMonitoring" minOccurs="0" maxOccurs="1"/>
+                <xs:element ref="td:debug" minOccurs="0" maxOccurs="1"/>
 			</xs:all>
 			<xs:attributeGroup ref="td:taskDescriptorAttrGroup"/>
 		</xs:complexType>
