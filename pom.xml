@@ -23,6 +23,7 @@
 		<commons-compress.version>1.4.1</commons-compress.version>
 		<junit.version>4.11</junit.version>
 		<maven.version>3.0.4</maven.version>
+		<mongo.version>2.10.1</mongo.version>
 
 		<!-- PLUGIN VERSION CONTROL -->
 		<jaxb2-maven-plugin.version>1.5</jaxb2-maven-plugin.version>
@@ -123,6 +124,10 @@
 				<module>software-repository-client</module>
 				<module>software-repository</module>
 				<module>software-repository-fsbasedstore</module>
+				<module>results</module>
+				<module>results-repository-storage</module>
+				<module>results-repository</module>
+				<module>results-repository-mongo-storage</module>
                 		<module>demo-srclient</module>
 		                <module>task-api</module>
 				<module>task-test</module>
