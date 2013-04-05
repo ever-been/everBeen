@@ -15,8 +15,10 @@ import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.cluster.context.Tasks;
 import cz.cuni.mff.d3s.been.core.protocol.Context;
 import cz.cuni.mff.d3s.been.core.protocol.messages.RunTaskMessage;
+import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntries;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
+import cz.cuni.mff.d3s.been.core.task.TaskState;
 
 /**
  * @author Martin Sixta
@@ -27,14 +29,11 @@ final class ScheduleTaskAction implements TaskAction {
 
 	private final ClusterContext ctx;
 	private TaskEntry entry;
-	private IRuntimeSelection runtimeSelection;
 	private static final String RUNTIME_TOPIC = Context.GLOBAL_TOPIC.getName();
 
 	public ScheduleTaskAction(ClusterContext ctx, TaskEntry entry) {
 		this.ctx = ctx;
 		this.entry = entry;
-
-		runtimeSelection = new RandomRuntimeSelection(ctx);
 	}
 
 	@Override
@@ -56,7 +55,8 @@ final class ScheduleTaskAction implements TaskAction {
 		try {
 
 			// 1) Find suitable Host Runtime
-			String receiverId = runtimeSelection.select(entry);
+			String receiverId = findHostRuntime(entry);
+
 			String id = entry.getId();
 
 			TaskEntry entryCopy = map.get(id);
@@ -93,23 +93,47 @@ final class ScheduleTaskAction implements TaskAction {
 
 		} catch (NoRuntimeFoundException e) {
 			// TODO: Abort the task ...
-			log.warn("No runtime found for task " + entry.getId(), e);
+			String msg = String.format("No runtime found for task %s", entry.getId());
+			log.warn(msg, e);
 
-			return;
+			abortTask(msg);
+
 		} catch (Throwable e) {
-			log.error("Will rollback the transaction", e);
-			e.printStackTrace();
-			// TODO: try again or abort the task!
+			String msg = String.format("Rollback while scheduling task %s", taskId);
+			log.error(msg, e);
+
 			if (txn != null) {
 				try {
-					log.info("Rollback on " + taskId);
 					txn.rollback();
 				} catch (Throwable t) {
 					//quell
 				};
 			}
+
+			abortTask(msg);
 		}
 
+	}
+
+	private void abortTask(String msg) {
+		log.warn("Aborting task {}", entry.getId());
+		ctx.getTasksUtils().updateTaskState(entry, TaskState.ABORTED, msg);
+	}
+
+	private String findHostRuntime(final TaskEntry entry) throws NoRuntimeFoundException {
+
+		IRuntimeSelection selection = createSelection(entry.getTaskDescriptor());
+
+		return selection.select(entry);
+
+	}
+
+	private IRuntimeSelection createSelection(final TaskDescriptor td) {
+		if (td.isSetHostRuntimes() && td.getHostRuntimes().isSetXpath()) {
+			return new XPathRuntimeSelection(ctx);
+		} else {
+			return new RandomRuntimeSelection(ctx);
+		}
 	}
 
 	private RunTaskMessage newRunTaskMessage(TaskEntry taskEntry) {
