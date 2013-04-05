@@ -17,7 +17,7 @@ import cz.cuni.mff.d3s.been.mq.IMessageSender;
  * 
  * @author Martin Sixta
  */
-public class ClientListener implements com.hazelcast.core.ClientListener, IClusterService {
+final class ClientListener implements com.hazelcast.core.ClientListener, IClusterService {
 
 	private ClusterContext clusterCtx;
 	private IMessageSender inprocMessaging;

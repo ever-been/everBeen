@@ -6,9 +6,6 @@ import org.slf4j.LoggerFactory;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.mq.IMessageReceiver;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
-import cz.cuni.mff.d3s.been.task.action.TaskAction;
-import cz.cuni.mff.d3s.been.task.action.TaskActions;
-import cz.cuni.mff.d3s.been.task.message.TaskMessage;
 
 /**
  * @author Martin Sixta
@@ -28,19 +25,20 @@ final class TaskMessageProcessor extends Thread {
 
 	@Override
 	public void run() {
+		// TODO add poison
 		while (true) {
 			try {
 				TaskMessage message = receiver.receive();
 
 				log.debug("Task Action of type '{}' received", message.getClass());
 
-				TaskAction action = TaskActions.createAction(clusterCtx, message);
+				TaskAction action = message.createAction(clusterCtx);
 
 				action.execute();
 
 			} catch (MessagingException e) {
 				log.error("Cannot receive a message", e);
-			} catch (TaskManagerException e) {
+			} catch (TaskActionException e) {
 				log.error("Cannot execute action for received message", e);
 			}
 
