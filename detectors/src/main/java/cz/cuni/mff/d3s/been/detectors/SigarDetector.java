@@ -117,14 +117,20 @@ public class SigarDetector {
 	public OperatingSystem detectOperatingSystem() {
 		OperatingSystem os = new OperatingSystem();
 
-		org.hyperic.sigar.OperatingSystem sys = org.hyperic.sigar.OperatingSystem.getInstance();
-		os.setName(sys.getName());
-		os.setVersion(sys.getVersion());
-		os.setArch(sys.getArch());
-		os.setVendor(sys.getVendor());
-		os.setVendorVersion(sys.getVendorVersion());
-		os.setDataModel(sys.getDataModel());
-		os.setEndian(sys.getCpuEndian());
+		try {
+			loadSigar();
+
+			org.hyperic.sigar.OperatingSystem sys = org.hyperic.sigar.OperatingSystem.getInstance();
+			os.setName(sys.getName());
+			os.setVersion(sys.getVersion());
+			os.setArch(sys.getArch());
+			os.setVendor(sys.getVendor());
+			os.setVendorVersion(sys.getVendorVersion());
+			os.setDataModel(sys.getDataModel());
+			os.setEndian(sys.getCpuEndian());
+		} catch (SigarException e) {
+			// do nothing
+		}
 
 		return os;
 	}
@@ -133,6 +139,8 @@ public class SigarDetector {
 		ArrayList<Filesystem> fslist = new ArrayList<>();
 
 		try {
+			loadSigar();
+
 			for (FileSystem fs : sigar.getFileSystemList()) {
 				FileSystemUsage usage = sigar.getFileSystemUsage(fs.getDirName());
 
@@ -160,10 +168,14 @@ public class SigarDetector {
 			if (sigar == null)
 				return null;
 
+			// memory
 			Mem mem = sigar.getMem();
 			sample.setFreeMemory(mem.getFree());
+
+			// processes
 			sample.setProcessCount(sigar.getProcList().length);
 
+			// network interfaces
 			for (String ifname : sigar.getNetInterfaceList()) {
 				NetworkSample networkSample = new NetworkSample();
 				NetInterfaceStat stat = sigar.getNetInterfaceStat(ifname);
@@ -172,6 +184,23 @@ public class SigarDetector {
 				networkSample.setBytesOut(stat.getTxBytes());
 
 				sample.getInterfaces().add(networkSample);
+			}
+
+			// filesystems
+			for (FileSystem fs : sigar.getFileSystemList()) {
+				if (fs.getType() == FileSystem.TYPE_LOCAL_DISK) {
+					FileSystemUsage usage = sigar.getFileSystemUsage(fs.getDirName());
+					FilesystemSample fsSample = new FilesystemSample();
+
+					fsSample.setDeviceName(fs.getDevName());
+					fsSample.setDirectory(fs.getDirName());
+					fsSample.setReadBytes(usage.getDiskReadBytes());
+					fsSample.setReads(usage.getDiskReads());
+					fsSample.setWriteBytes(usage.getDiskWriteBytes());
+					fsSample.setWrites(usage.getDiskWrites());
+
+					sample.getFilesystems().add(fsSample);
+				}
 			}
 
 		} catch (SigarException e) {
