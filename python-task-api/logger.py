@@ -90,8 +90,19 @@ def send(logLevel, msg):
 ''' 
    MAIN EXECUTION LOGIC 
 '''
+if len(sys.argv) == 1:
+    send(WARN, "Undefined operation in python task API for logging. Check your task implementation.")
+    sys.exit()    
+    
 msgType = sys.argv[1]
-msg = sys.argv[2]
+
+if len(sys.argv) >= 3:
+    msg = sys.argv[2]
+elif sys.stdin.isatty():
+    send(WARN, "Invalid usage of python task API for logging. Reading from connected tty device (interactive keyboard input)) is not supported.")
+    sys.exit()    
+else:
+    msg = sys.stdin.read()
 
 if msgType == "-i":
     send(INFO, msg)
