@@ -5,11 +5,21 @@
    instance of Host Runtime. 
 
    USAGE:
-     python log.py --trace "this is a trace message"
-     python log.py --debug "this is a debug message"
-     python log.py --info  "this is an info message"
-     python log.py --warn  "this is a warn message"
-     python log.py --error "this is an error message"
+     python log.py -t "this is a trace msg"
+     python log.py -d "this is a debug msg"
+     python log.py -i "this is an info msg"
+     python log.py -w "this is a warn msg"
+     python log.py -e "this is an error msg"
+     
+   PREREQUISITIES:
+     python
+     pyzmq python module ('pip install pyzmq', 'easy_install pyzmq' etc)
+     
+     
+     
+     
+     @author:  Tadas Palusga
+     @version: 1.0
 
 '''
 
@@ -25,41 +35,73 @@ import zmq
 TASK_ID_ENVPROP_NAME = "BEEN_TASK_ID"
 PORT_ENVPROP_NAME = "BEEN_PORT"
 
-LOG_LEVEL_TRACE = 1
-LOG_LEVEL_DEBUG = 2
-LOG_LEVEL_INFO = 3
-LOG_LEVEL_WARN = 4
-LOG_LEVEL_ERROR = 5
+TRACE = 1
+DEBUG = 2
+INFO = 3
+WARN = 4
+ERROR = 5
 
 
-''' MESSAGE CREATOR METHOD '''
-def sendMessage(logLevel, message):
+''' 
+   Sends msg with appropriate log level to running Host Runtime via zeromq library.
+   Message is constructed as JSON object in following format (real JSON object
+   is constructed without spaces):
+   
+   {
+       logLevel:  {X},
+       msg:   "msg body",
+       senderId:  "{SENDER_ID}"
+   }
+   
+   where {X} is the appropriate log level (see constants defined earlier in this script)
+   and {SENDER_ID} is obtained from environment variable (for name of this property see
+   constants defined earlier in this script)
+   
+   address of target socket is
+      tcp://localhost:PORT
+   where PORT is obtained from from environment variable (for name of this property see
+   constants defined earlier in this script)
+   
+'''
+def send(logLevel, msg):
+    # construct the msg in proper json format
     senderId = os.environ.get(TASK_ID_ENVPROP_NAME)
-    jsonMessage = "{logLevel:" + str(logLevel) + ",message:\"" + message + "\",senderId:\"" + str(senderId) + "\"}"
+    jsonMessage = "{logLevel:" + str(logLevel) + ",msg:\"" + msg + "\",senderId:\"" + str(senderId) + "\"}"
     
+    # open socket connection to running host runtime
     context = zmq.Context()
+    # The default LINGER is -1, which means wait until all
+    # messages have been sent before allowing termination.
+    # Set to 0 to discard unsent messages immediately, 
+    # and any positive integer will be the number of 
+    # milliseconds to keep trying to send before discard. 
+    context.setsockopt(zmq.LINGER, 0)
     sender = context.socket(zmq.PUSH)
     
     port = os.environ.get(PORT_ENVPROP_NAME)
     sender.connect("tcp://localhost:" + str(port))
  
     sender.send(jsonMessage)
+    
     sender.close()
-    context.term();
+    context.term()
 
-''' EXECUTION LOGIC '''
-msgtype = sys.argv[1]
-message = sys.argv[2]
 
-if msgtype == "--info":
-    sendMessage(LOG_LEVEL_INFO, message)
-elif msgtype == "--debug":
-    sendMessage(LOG_LEVEL_DEBUG, message)
-elif msgtype == "--warn":
-    sendMessage(LOG_LEVEL_WARN, message)
-elif msgtype == "--error":
-    sendMessage(LOG_LEVEL_ERROR, message)
-elif msgtype == "--trace":
-    sendMessage(LOG_LEVEL_TRACE, message)
+''' 
+   MAIN EXECUTION LOGIC 
+'''
+msgType = sys.argv[1]
+msg = sys.argv[2]
+
+if msgType == "-i":
+    send(INFO, msg)
+elif msgType == "-d":
+    send(DEBUG, msg)
+elif msgType == "-w":
+    send(WARN, msg)
+elif msgType == "-e":
+    send(ERROR, msg)
+elif msgType == "-t":
+    send(TRACE, msg)
 else:
-    sendMessage(LOG_LEVEL_WARN, "Unrecognized operation '" + msgtype + "' in python task API. Check your task implementation.")
+    send(WARN, "Unrecognized operation '" + msgType + "' in python task API for logging. Check your task implementation.")
