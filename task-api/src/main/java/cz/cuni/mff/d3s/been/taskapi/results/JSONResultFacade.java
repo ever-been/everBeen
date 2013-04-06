@@ -5,21 +5,18 @@ import java.util.Collection;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
-import cz.cuni.mff.d3s.been.results.DAOException;
-import cz.cuni.mff.d3s.been.results.Result;
-import cz.cuni.mff.d3s.been.results.ResultCarrier;
-import cz.cuni.mff.d3s.been.results.ResultContainerId;
-import cz.cuni.mff.d3s.been.results.ResultFilter;
-import cz.cuni.mff.d3s.been.taskapi.mq.Messaging;
+import cz.cuni.mff.d3s.been.mq.IMessageSender;
+import cz.cuni.mff.d3s.been.mq.MessagingException;
+import cz.cuni.mff.d3s.been.results.*;
 
 final class JSONResultFacade implements ResultFacade {
 
 	private final ObjectMapper om;
-	private final Messaging msg;
+	private final IMessageSender<String> sender;
 
-	public JSONResultFacade(Messaging msg) {
+	public JSONResultFacade(IMessageSender<String> sender) {
+		this.sender = sender;
 		this.om = new ObjectMapper();
-		this.msg = msg;
 	}
 
 	@Override
@@ -31,15 +28,15 @@ final class JSONResultFacade implements ResultFacade {
 		try {
 			rc = new ResultCarrier(containerId, om.writeValueAsString(result));
 		} catch (IOException e) {
-			throw new DAOException(String.format(
-					"Unable to serialize Result %s to JSON.",
-					result.toString()), e);
+			throw new DAOException(String.format("Unable to serialize Result %s to JSON.", result.toString()), e);
 		}
 
 		try {
-			msg.send(om.writeValueAsString(rc));
+			sender.send(om.writeValueAsString(rc));
 		} catch (IOException e) {
 			throw new DAOException("Unable to serialize result carrier to JSON", e);
+		} catch (MessagingException e) {
+			e.printStackTrace(); //To change body of catch statement use File | Settings | File Templates.
 		}
 	}
 
@@ -77,14 +74,14 @@ final class JSONResultFacade implements ResultFacade {
 			try {
 				serializedResult = om.writeValueAsString(result);
 			} catch (IOException e) {
-				throw new DAOException(String.format(
-						"Unable to serialize Result %s to json",
-						result.toString()), e);
+				throw new DAOException(String.format("Unable to serialize Result %s to json", result.toString()), e);
 			}
 			try {
-				msg.send(om.writeValueAsString(new ResultCarrier(containerId, serializedResult)));
+				sender.send(om.writeValueAsString(new ResultCarrier(containerId, serializedResult)));
 			} catch (IOException e) {
 				throw new DAOException("Unable to serialize result carrier to JSON", e);
+			} catch (MessagingException e) {
+				e.printStackTrace(); //To change body of catch statement use File | Settings | File Templates.
 			}
 		}
 
