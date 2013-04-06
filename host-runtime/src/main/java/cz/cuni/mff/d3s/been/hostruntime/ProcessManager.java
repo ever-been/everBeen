@@ -1,5 +1,7 @@
 package cz.cuni.mff.d3s.been.hostruntime;
 
+import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -10,8 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.ZipException;
 
-import cz.cuni.mff.d3s.been.debugassistant.DebugAssistant;
-import cz.cuni.mff.d3s.been.hostruntime.proc.JavaBasedProcess;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -20,13 +20,14 @@ import org.slf4j.LoggerFactory;
 import cz.cuni.mff.d3s.been.bpk.*;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.cluster.context.Tasks;
-import cz.cuni.mff.d3s.been.core.TaskPropertyNames;
 import cz.cuni.mff.d3s.been.core.protocol.messages.KillTaskMessage;
 import cz.cuni.mff.d3s.been.core.protocol.messages.RunTaskMessage;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
+import cz.cuni.mff.d3s.been.debugassistant.DebugAssistant;
+import cz.cuni.mff.d3s.been.hostruntime.proc.JavaBasedProcess;
 import cz.cuni.mff.d3s.been.hostruntime.proc.Processes;
 import cz.cuni.mff.d3s.been.hostruntime.proc.TaskProcess;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
@@ -236,8 +237,9 @@ final class ProcessManager {
 
 	private Map<String, String> createEnvironmentProperties(TaskEntry taskEntry) {
 		Map<String, String> properties = new HashMap<>();
-		properties.put(TaskPropertyNames.TASK_ID, taskEntry.getId());
-		properties.put(TaskPropertyNames.HR_COMM_PORT, Integer.toString(taskMessageDispatcher.getReceiverPort()));
+		properties.put(TASK_ID, taskEntry.getId());
+		properties.put(HR_COMM_PORT, Integer.toString(taskMessageDispatcher.getReceiverPort()));
+		properties.put(HR_RESULTS_PORT, System.getProperty(HR_RESULTS_PORT));
 		return properties;
 	}
 
