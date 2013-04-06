@@ -14,7 +14,6 @@ import cz.cuni.mff.d3s.been.mq.IMessageQueue;
 import cz.cuni.mff.d3s.been.mq.IMessageReceiver;
 import cz.cuni.mff.d3s.been.mq.Messaging;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
-import cz.cuni.mff.d3s.been.task.message.TaskMessage;
 
 /**
  * 
@@ -55,12 +54,14 @@ final class ClusterManager implements IClusterService {
 	public void start() throws ServiceException {
 
 		IMessageReceiver<TaskMessage> receiver;
+		LocalKeyScanner keyScanner = new LocalKeyScanner(clusterCtx);
 		try {
 			receiver = actionQueue.getReceiver();
 
 			localTaskListener.withSender(actionQueue.createSender());
 			membershipListener.withSender(actionQueue.createSender());
 			clientListener.withSender(actionQueue.createSender());
+			keyScanner.withSender(actionQueue.createSender());
 
 		} catch (MessagingException e) {
 			throw new ServiceException("Cannot start clustered Task Manager", e);
@@ -74,7 +75,7 @@ final class ClusterManager implements IClusterService {
 		membershipListener.start();
 		clientListener.start();
 
-		scheduler.scheduleAtFixedRate(new LocalKeyScanner(clusterCtx), 5, 5, TimeUnit.SECONDS);
+		scheduler.scheduleAtFixedRate(keyScanner, 5, 10, TimeUnit.SECONDS);
 
 	}
 

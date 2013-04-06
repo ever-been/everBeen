@@ -1,6 +1,7 @@
 package cz.cuni.mff.d3s.been.cluster.context;
 
 import java.util.Collection;
+import java.util.concurrent.TimeUnit;
 
 import com.hazelcast.config.MapConfig;
 import com.hazelcast.core.IMap;
@@ -28,6 +29,11 @@ public class Tasks {
 		this.clusterCtx = clusterCtx;
 	}
 
+	/**
+	 * Returns Tasks map.
+	 * 
+	 * @return tasks map
+	 */
 	public IMap<String, TaskEntry> getTasksMap() {
 		return clusterCtx.getMap(Names.TASKS_MAP_NAME);
 	}
@@ -53,17 +59,45 @@ public class Tasks {
 	}
 
 	/**
-	 * Stores task entry in cluster. Entry is stored in map in cluster, where the
-	 * task's id is used as key.
+	 * Stores task entry in the cluster. Task's id is used as the key.
 	 * 
 	 * @param taskEntry
 	 *          entry to be stored
-	 * @return previous value associated with id of taskEntry
+	 * @return old value of the entry
 	 */
 	public TaskEntry putTask(TaskEntry taskEntry) {
-		return getTasksMap().put(taskEntry.getId(), taskEntry);
+		return putTask(taskEntry, 1, TimeUnit.DAYS);
 	}
 
+	/**
+	 * Stores task entry in the cluster with time-to-live. After ttl expires the
+	 * entry is evicted from the map. Task's id is used as the key.
+	 * 
+	 * WARNING: don't use unless you know what are you doing
+	 * 
+	 * 
+	 * @param entry
+	 *          entry to be stored
+	 * @param ttl
+	 *          time-to-live of the entry
+	 * @param timeUnit
+	 *          time unit of ttl
+	 * 
+	 * @return old value of the entry
+	 */
+	public TaskEntry putTask(TaskEntry entry, long ttl, TimeUnit timeUnit) {
+		return getTasksMap().put(entry.getId(), entry, ttl, timeUnit);
+	}
+
+	/**
+	 * Submits a task described by the taskDescriptor to Task Manager to be
+	 * scheduled.
+	 * 
+	 * @param taskDescriptor
+	 *          descriptor of a task
+	 * 
+	 * @return id of the submitted task
+	 */
 	public String submit(TaskDescriptor taskDescriptor) {
 		// create task entry
 		TaskEntry taskEntry = TaskEntries.create(taskDescriptor);
@@ -77,43 +111,33 @@ public class Tasks {
 
 	}
 
+	/**
+	 * Returns configuration of tasks map.
+	 * 
+	 * @return Tasks map configuration
+	 */
 	public MapConfig getTasksMapConfig() {
-		return clusterCtx.getConfig().findMatchingMapConfig("BEEN_MAP_TASKS");
+		return clusterCtx.getConfig().findMatchingMapConfig(Names.TASKS_MAP_NAME);
 	}
 
-	// TODO: sixtam re-analyze all *equal* functions + docs
+	/**
+	 * 
+	 * Warning: lock, transaction
+	 * 
+	 * @param entry
+	 * @return
+	 */
 	public boolean isClusterEqual(TaskEntry entry) {
-
-		TaskEntry taskEntryCopy = getTasksMap().get(entry.getId());
-
-		if (taskEntryCopy == null || taskEntryCopy.equals(entry)) {
-			return false;
-		} else {
-			return true;
-		}
+		TaskEntry copy = getTask(entry.getId());
+		return entry.equals(copy);
 	}
 
-	// TODO: sixtam re-analyze all *equal* functions + docs
+	/**
+	 * 
+	 * @param entry
+	 */
 	public void assertClusterEqual(TaskEntry entry) {
 		if (!isClusterEqual(entry)) {
-			throw new IllegalStateException(String.format("Entry '%s' has changed!", entry.getId()));
-		}
-	}
-
-	// TODO: sixtam re-analyze all *equal* functions + docs
-	public TaskEntry assertClusterEqualCopy(TaskEntry entry) {
-		TaskEntry copy = getTask(entry.getId());
-
-		if (entry.equals(copy)) {
-			return copy;
-		} else {
-			throw new IllegalStateException(String.format("Entry '%s' has changed!", entry.getId()));
-		}
-	}
-
-	// TODO: sixtam re-analyze all *equal* functions + docs
-	public void assertEqual(TaskEntry entry, TaskEntry copy) {
-		if (!entry.equals(copy)) {
 			throw new IllegalStateException(String.format("Entry '%s' has changed!", entry.getId()));
 		}
 	}

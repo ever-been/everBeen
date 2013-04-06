@@ -42,4 +42,21 @@ public final class Messaging {
 			String queue) {
 		return new InprocMessageQueue<>(queue);
 	}
+
+	/**
+	 * 
+	 * Returns IMessageQueue connecting a task to its Host Runtime.
+	 * 
+	 * Typically a task wants to create such a queue.
+	 * 
+	 * WARNING: the returned implementation does support receiving!
+	 * 
+	 * 
+	 * @param port
+	 *          port on which a Host Runtime listens for messages from tasks
+	 * @return
+	 */
+	public static IMessageQueue<String> createTaskQueue(int port) {
+		return new TaskMessageQueue("localhost", port);
+	}
 }

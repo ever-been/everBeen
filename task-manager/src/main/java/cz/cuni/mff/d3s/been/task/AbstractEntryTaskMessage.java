@@ -1,12 +1,12 @@
-package cz.cuni.mff.d3s.been.task.message;
+package cz.cuni.mff.d3s.been.task;
 
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 
-abstract class AbstractTaskMessage implements TaskMessage {
+abstract class AbstractEntryTaskMessage implements TaskMessage {
 
 	private TaskEntry entry;
 
-	public AbstractTaskMessage(TaskEntry entry) {
+	public AbstractEntryTaskMessage(TaskEntry entry) {
 		this.entry = entry;
 	}
 
