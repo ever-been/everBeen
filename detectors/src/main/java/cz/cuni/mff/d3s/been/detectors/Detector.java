@@ -1,8 +1,6 @@
 package cz.cuni.mff.d3s.been.detectors;
 
-import cz.cuni.mff.d3s.been.core.ri.Filesystem;
-import cz.cuni.mff.d3s.been.core.ri.MonitorSample;
-import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
+import cz.cuni.mff.d3s.been.core.ri.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -37,9 +35,60 @@ public class Detector {
 		}
     }
 
-	public MonitorSample generateSample() {
-		MonitorSample sample = detector.generateSample();
+	private MonitorSample lastSample;
+
+	public MonitorSample generateSample(boolean differential) {
+		MonitorSample newSample = detector.generateSample();
+		MonitorSample sample = newSample;
+
+		if (differential)
+			sample = calculateDifferentialSample(sample, lastSample);
+
+		lastSample = newSample;
+
 		sample.setTimestamp(System.nanoTime());
 		return sample;
+	}
+
+	private MonitorSample calculateDifferentialSample(MonitorSample newSample, MonitorSample oldSample) {
+
+		MonitorSample diff = new MonitorSample();
+		diff.setLoadAverage(newSample.getLoadAverage());
+		diff.setTimestamp(newSample.getTimestamp());
+		diff.setFreeMemory(newSample.getFreeMemory());
+		diff.setProcessCount(newSample.getProcessCount());
+
+		// network
+		for (int i = 0; i < newSample.getInterfaces().size(); i++) {
+			NetworkSample n1 = newSample.getInterfaces().get(i);
+			NetworkSample diffSample = new NetworkSample();
+			diffSample.setName(n1.getName());
+
+			if (oldSample != null) {
+				NetworkSample n2 = oldSample.getInterfaces().get(i);
+				diffSample.setBytesIn(n1.getBytesIn() - n2.getBytesIn());
+				diffSample.setBytesOut(n1.getBytesOut() - n2.getBytesOut());
+			}
+
+			diff.getInterfaces().add(diffSample);
+		}
+
+		// filesystems
+		for (int i = 0; i < newSample.getFilesystems().size(); i++) {
+			FilesystemSample f1 = newSample.getFilesystems().get(i);
+			FilesystemSample diffSample = new FilesystemSample();
+
+			if (oldSample != null) {
+				FilesystemSample f2 = oldSample.getFilesystems().get(i);
+				diffSample.setReadBytes(f1.getReadBytes() - f2.getReadBytes());
+				diffSample.setReads(f1.getReads() - f2.getReads());
+				diffSample.setWriteBytes(f1.getWriteBytes() - f2.getWriteBytes());
+				diffSample.setWrites(f1.getWrites() - f2.getWrites());
+			}
+
+			diff.getFilesystems().add(diffSample);
+		}
+
+		return diff;
 	}
 }
