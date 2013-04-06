@@ -21,9 +21,7 @@
 		<xs:annotation>
 			<xs:appinfo>
 				<jaxb:property>
-					<jaxb:javadoc>
-Cluster-unique ID of HostRuntime.
-					</jaxb:javadoc>
+					<jaxb:javadoc>Cluster-unique ID of HostRuntime.</jaxb:javadoc>
 				</jaxb:property>
 			</xs:appinfo>
 		</xs:annotation>
@@ -33,9 +31,7 @@ Cluster-unique ID of HostRuntime.
 		<xs:annotation>
 			<xs:appinfo>
 				<jaxb:property>
-					<jaxb:javadoc>
-Host runtime working directory. Subworking directories for all tasks are created here.
-					</jaxb:javadoc>
+					<jaxb:javadoc>Host runtime working directory. Subworking directories for all tasks are created here.</jaxb:javadoc>
 				</jaxb:property>
 			</xs:appinfo>
 		</xs:annotation>
@@ -45,9 +41,7 @@ Host runtime working directory. Subworking directories for all tasks are created
 		<xs:annotation>
 			<xs:appinfo>
 				<jaxb:property>
-					<jaxb:javadoc>
-Port on which the hazelcast instance for this HostRuntime is running.
-					</jaxb:javadoc>
+					<jaxb:javadoc>Port on which the hazelcast instance for this HostRuntime is running.</jaxb:javadoc>
 				</jaxb:property>
 			</xs:appinfo>
 		</xs:annotation>
@@ -57,9 +51,7 @@ Port on which the hazelcast instance for this HostRuntime is running.
 		<xs:annotation>
 			<xs:appinfo>
 				<jaxb:property>
-					<jaxb:javadoc>
-Host(IP/FQDN) on which the hazelcast instance for this HostRuntime is running.
-					</jaxb:javadoc>
+					<jaxb:javadoc>Host(IP/FQDN) on which the hazelcast instance for this HostRuntime is running.</jaxb:javadoc>
 				</jaxb:property>
 			</xs:appinfo>
 		</xs:annotation>
@@ -69,9 +61,7 @@ Host(IP/FQDN) on which the hazelcast instance for this HostRuntime is running.
 		<xs:annotation>
 			<xs:appinfo>
 				<jaxb:class>
-					<jaxb:javadoc>
-A Java object stores information about vendor and version of JRE on target HostRuntime.
-					</jaxb:javadoc>
+					<jaxb:javadoc>A Java object stores information about vendor and version of JRE on target HostRuntime.</jaxb:javadoc>
 				</jaxb:class>
 			</xs:appinfo>
 		</xs:annotation>
@@ -86,14 +76,24 @@ A Java object stores information about vendor and version of JRE on target HostR
 		</xs:all>
 	</xs:complexType>
 
+    <xs:complexType name="operatingSystem">
+        <xs:all>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="version" type="xs:string"/>
+            <xs:element name="arch" type="xs:string"/>
+            <xs:element name="vendor" type="xs:string"/>
+            <xs:element name="vendorVersion" type="xs:string" />
+            <xs:element name="dataModel" type="xs:string" />
+            <xs:element name="endian" type="xs:string" />
+        </xs:all>
+    </xs:complexType>
+
 
 	<xs:element name="runtimeInfo">
 		<xs:annotation>
 			<xs:appinfo>
 				<jaxb:class>
-					<jaxb:javadoc>
-Stores basic information about HostRuntime (name/id/host/port/os/memory/java version and vendor).
-					</jaxb:javadoc>
+					<jaxb:javadoc>Stores basic information about HostRuntime (name/id/host/port/os/memory/java version and vendor).</jaxb:javadoc>
 				</jaxb:class>
 			</xs:appinfo>
 		</xs:annotation>
@@ -106,7 +106,7 @@ Stores basic information about HostRuntime (name/id/host/port/os/memory/java ver
 
                 <xs:element ref="hardwareinfo:hardware" minOccurs="1" maxOccurs="1" />
 				<xs:element name="java" type="runtimeinfo:java" minOccurs="0" maxOccurs="1" />
-
+                <xs:element name="operatingSystem" type="runtimeinfo:operatingSystem" minOccurs="1" maxOccurs="1" />
 			</xs:all>
 		</xs:complexType>
 	</xs:element>

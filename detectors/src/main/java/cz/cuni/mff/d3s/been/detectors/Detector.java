@@ -20,6 +20,7 @@ public class Detector {
 	}
 
     public void detectAll(RuntimeInfo runtimeInfo) {
+		// detect hardware
         runtimeInfo.setHardware(detector.detectHardware());
 
         // detect Java
@@ -27,7 +28,7 @@ public class Detector {
         runtimeInfo.setJava(java.detectJava());
 
         // detect OS
-        // TODO
+        runtimeInfo.setOperatingSystem(detector.detectOperatingSystem());
     }
 
 	public MonitorSample generateSample() {

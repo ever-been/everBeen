@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import cz.cuni.mff.d3s.been.core.ri.OperatingSystem;
 import org.apache.commons.io.IOUtils;
 import org.hyperic.jni.ArchLoader;
 import org.hyperic.jni.ArchNotSupportedException;
@@ -109,6 +110,21 @@ public class SigarDetector {
 		} catch (SigarException e) {
 			return null;
 		}
+	}
+
+	public OperatingSystem detectOperatingSystem() {
+		OperatingSystem os = new OperatingSystem();
+
+		org.hyperic.sigar.OperatingSystem sys = org.hyperic.sigar.OperatingSystem.getInstance();
+		os.setName(sys.getName());
+		os.setVersion(sys.getVersion());
+		os.setArch(sys.getArch());
+		os.setVendor(sys.getVendor());
+		os.setVendorVersion(sys.getVendorVersion());
+		os.setDataModel(sys.getDataModel());
+		os.setEndian(sys.getCpuEndian());
+
+		return os;
 	}
 
 	public MonitorSample generateSample() {
