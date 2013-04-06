@@ -123,7 +123,6 @@
                 <module>software-repository-client</module>
                 <module>software-repository</module>
                 <module>software-repository-fsbasedstore</module>
-                <module>demo-srclient</module>
                 <module>task-api</module>
                 <module>task-test</module>
             </modules>
