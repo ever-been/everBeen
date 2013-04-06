@@ -14,6 +14,8 @@
 target
 **/target
 **/bin
+.persistence
 **/.persistence
+.HostRuntime
 **/.HostRuntime
 **/.pydevproject
