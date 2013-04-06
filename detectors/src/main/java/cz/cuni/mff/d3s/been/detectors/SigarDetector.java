@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 import cz.cuni.mff.d3s.been.core.ri.OperatingSystem;
 import org.apache.commons.io.IOUtils;
@@ -125,6 +127,28 @@ public class SigarDetector {
 		os.setEndian(sys.getCpuEndian());
 
 		return os;
+	}
+
+	public List<Filesystem> detectFilesystems() {
+		ArrayList<Filesystem> fslist = new ArrayList<>();
+
+		try {
+			for (FileSystem fs : sigar.getFileSystemList()) {
+				FileSystemUsage usage = sigar.getFileSystemUsage(fs.getDirName());
+
+				Filesystem f = new Filesystem();
+				f.setDeviceName(fs.getDevName());
+				f.setDirectory(fs.getDirName());
+				f.setType(fs.getTypeName());
+				f.setTotal(usage.getTotal() * 1024);
+				f.setFree(usage.getFree() * 1024);
+				fslist.add(f);
+			}
+		} catch (SigarException e) {
+			// do nothing
+		}
+
+		return fslist;
 	}
 
 	public MonitorSample generateSample() {

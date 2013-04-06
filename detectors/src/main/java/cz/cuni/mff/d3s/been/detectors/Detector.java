@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.detectors;
 
+import cz.cuni.mff.d3s.been.core.ri.Filesystem;
 import cz.cuni.mff.d3s.been.core.ri.MonitorSample;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 
@@ -29,6 +30,11 @@ public class Detector {
 
         // detect OS
         runtimeInfo.setOperatingSystem(detector.detectOperatingSystem());
+
+		// detect filesystems
+		for (Filesystem fs : detector.detectFilesystems()) {
+			runtimeInfo.getFilesystem().add(fs);
+		}
     }
 
 	public MonitorSample generateSample() {
