@@ -5,7 +5,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
+import cz.cuni.mff.d3s.been.core.ri.OperatingSystem;
 import org.apache.commons.io.IOUtils;
 import org.hyperic.jni.ArchLoader;
 import org.hyperic.jni.ArchNotSupportedException;
@@ -109,6 +112,43 @@ public class SigarDetector {
 		} catch (SigarException e) {
 			return null;
 		}
+	}
+
+	public OperatingSystem detectOperatingSystem() {
+		OperatingSystem os = new OperatingSystem();
+
+		org.hyperic.sigar.OperatingSystem sys = org.hyperic.sigar.OperatingSystem.getInstance();
+		os.setName(sys.getName());
+		os.setVersion(sys.getVersion());
+		os.setArch(sys.getArch());
+		os.setVendor(sys.getVendor());
+		os.setVendorVersion(sys.getVendorVersion());
+		os.setDataModel(sys.getDataModel());
+		os.setEndian(sys.getCpuEndian());
+
+		return os;
+	}
+
+	public List<Filesystem> detectFilesystems() {
+		ArrayList<Filesystem> fslist = new ArrayList<>();
+
+		try {
+			for (FileSystem fs : sigar.getFileSystemList()) {
+				FileSystemUsage usage = sigar.getFileSystemUsage(fs.getDirName());
+
+				Filesystem f = new Filesystem();
+				f.setDeviceName(fs.getDevName());
+				f.setDirectory(fs.getDirName());
+				f.setType(fs.getTypeName());
+				f.setTotal(usage.getTotal() * 1024);
+				f.setFree(usage.getFree() * 1024);
+				fslist.add(f);
+			}
+		} catch (SigarException e) {
+			// do nothing
+		}
+
+		return fslist;
 	}
 
 	public MonitorSample generateSample() {
