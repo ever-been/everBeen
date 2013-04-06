@@ -48,6 +48,21 @@
         </xs:sequence>
     </xs:complexType>
 
+    <xs:complexType name="loadAverage">
+        <xs:annotation>
+            <xs:appinfo>
+                <jaxb:class>
+                    <jaxb:javadoc>System load average for the last 1, 5 and 15 minutes.</jaxb:javadoc>
+                </jaxb:class>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="load1" type="xs:double" />
+            <xs:element name="load5" type="xs:double" />
+            <xs:element name="load15" type="xs:double" />
+        </xs:sequence>
+    </xs:complexType>
+
     <xs:element name="monitorSample">
         <xs:annotation>
             <xs:appinfo>
@@ -63,6 +78,7 @@
                 <xs:element name="processCount" type="xs:int" />
                 <xs:element name="interfaces" type="networkSample" minOccurs="0" maxOccurs="unbounded" />
                 <xs:element name="filesystems" type="filesystemSample" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="loadAverage" type="loadAverage" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>

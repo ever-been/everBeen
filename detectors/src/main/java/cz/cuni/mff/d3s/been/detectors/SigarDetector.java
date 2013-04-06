@@ -168,6 +168,14 @@ public class SigarDetector {
 			if (sigar == null)
 				return null;
 
+			// load average
+			double[] avg = sigar.getLoadAverage();
+			LoadAverage la = new LoadAverage();
+			la.setLoad1(avg[0]);
+			la.setLoad5(avg[1]);
+			la.setLoad15(avg[2]);
+			sample.setLoadAverage(la);
+
 			// memory
 			Mem mem = sigar.getMem();
 			sample.setFreeMemory(mem.getFree());
