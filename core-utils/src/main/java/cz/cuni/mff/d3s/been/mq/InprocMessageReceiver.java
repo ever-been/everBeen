@@ -112,6 +112,11 @@ final class InprocMessageReceiver<T extends Serializable> implements IMessageRec
 		return socket != null;
 	}
 
+	@Override
+	public int getPort() {
+		return PORT_OK;
+	}
+
 	public InprocMessageSender<T> createSender() {
 		return new InprocMessageSender<>(context, queue);
 	}
