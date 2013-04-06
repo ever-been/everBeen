@@ -42,6 +42,10 @@ public final class Messages {
 	}
 
 	public static synchronized void terminate() {
+		if (defaultSender != null) {
+			defaultSender.close();
+		}
+
 		if (taskMessageQueue != null) {
 			taskMessageQueue.terminate();
 		}
