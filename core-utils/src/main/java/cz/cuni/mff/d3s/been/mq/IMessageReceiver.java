@@ -30,4 +30,6 @@ public interface IMessageReceiver<T extends Serializable> {
 	 */
 	public boolean isConnected();
 
+	public int getPort();
+
 }
