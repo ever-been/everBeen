@@ -35,12 +35,6 @@ public class ResultsRepositoryRunner {
 	@Option(name = "-gp", aliases = { "--group-password" }, usage = "Group Password")
 	private String groupPassword = "dev-pass";
 
-	@Option(name = "-th", aliases = { "--http-host" }, usage = "Hostname for the HTTP server to bind, defaults to \"localhost\"")
-	private String httpHost = "localhost";
-
-	@Option(name = "-tp", aliases = { "--http-port" }, usage = "Port for the HTTP server to bind, defaults to 8000")
-	private int httpPort = 8000;
-
 	/**
 	 * Run a software repository node from command-line.
 	 * 
