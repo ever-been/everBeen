@@ -77,6 +77,8 @@ public class Detector {
 		for (int i = 0; i < newSample.getFilesystems().size(); i++) {
 			FilesystemSample f1 = newSample.getFilesystems().get(i);
 			FilesystemSample diffSample = new FilesystemSample();
+			diffSample.setDeviceName(f1.getDeviceName());
+			diffSample.setDirectory(f1.getDirectory());
 
 			if (oldSample != null) {
 				FilesystemSample f2 = oldSample.getFilesystems().get(i);

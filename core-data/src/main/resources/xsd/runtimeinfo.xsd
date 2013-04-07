@@ -9,12 +9,19 @@
         xmlns:hardwareinfo="http://been.d3s.mff.cuni.cz/hardwareinfo"
 		xmlns:xs="http://www.w3.org/2001/XMLSchema"
 		xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
-		xmlns:common="http://been.d3s.mff.cuni.cz/common"
 		xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
 		jaxb:extensionBindingPrefixes="xjc"
 		jaxb:version="2.0">
 
-	<xs:import schemaLocation="common.xsd" namespace="http://been.d3s.mff.cuni.cz/common"/>
+    <xs:annotation>
+        <xs:appinfo>
+            <jaxb:globalBindings generateIsSetMethod="false">
+                <xjc:serializable uid="-9223372036854775808"/>
+                <xjc:superClass name="cz.cuni.mff.d3s.been.core.jaxb.AbstractSerializable"/>
+            </jaxb:globalBindings>
+        </xs:appinfo>
+    </xs:annotation>
+
     <xs:import schemaLocation="hardwareinfo.xsd" namespace="http://been.d3s.mff.cuni.cz/hardwareinfo"/>
 
 	<xs:element name="id" type="xs:string">
@@ -37,7 +44,7 @@
 		</xs:annotation>
 	</xs:element>
 
-	<xs:element name="port" type="common:positiveInt">
+	<xs:element name="port" type="xs:int">
 		<xs:annotation>
 			<xs:appinfo>
 				<jaxb:property>

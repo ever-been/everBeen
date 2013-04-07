@@ -1,5 +1,8 @@
 package cz.cuni.mff.d3s.been.hostruntime;
 
+import java.io.File;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -11,6 +14,7 @@ import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.TaskPropertyNames;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
+import cz.cuni.mff.d3s.been.detectors.Monitoring;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
 
@@ -81,7 +85,10 @@ class HostRuntime implements IClusterService {
 	 * @param hostRuntimeInfo
 	 *          object which stores basic information about HostRuntime
 	 */
-	public HostRuntime(ClusterContext clusterContext, SwRepoClientFactory swRepoClientFactory, RuntimeInfo hostRuntimeInfo) {
+	public HostRuntime(
+			ClusterContext clusterContext,
+			SwRepoClientFactory swRepoClientFactory,
+			RuntimeInfo hostRuntimeInfo) {
 		this.clusterContext = clusterContext;
 		this.hostRuntimeInfo = hostRuntimeInfo;
 		this.swRepoClientFactory = swRepoClientFactory;
@@ -98,6 +105,10 @@ class HostRuntime implements IClusterService {
 			executorService = Executors.newSingleThreadExecutor();
 			startResultsDispatcher();
 
+			// create ".HostRuntime" working directory
+			File workingDir = new File(hostRuntimeInfo.getWorkingDirectory());
+			workingDir.mkdirs();
+
 			startProcessManager();
 
 			// All listeners must be initialized before any message will be
@@ -111,6 +122,13 @@ class HostRuntime implements IClusterService {
 		} catch (Exception e) {
 			throw new ServiceException("Cannot start HostRuntime", e);
 		}
+		// HR is now prepared to consume all important messages.
+
+		// start monitoring
+		Path monitoringLogPath = FileSystems.getDefault().getPath(
+				hostRuntimeInfo.getWorkingDirectory(),
+				"monitoring.log");
+		Monitoring.startMonitoring(monitoringLogPath);
 	}
 
 	/**
@@ -149,7 +167,9 @@ class HostRuntime implements IClusterService {
 		resultsDispatcher = new ResultsDispatcher(clusterContext, hostRuntimeInfo, "localhost");
 		executorService.submit(resultsDispatcher);
 		int port = resultsDispatcher.getPort();
-		System.setProperty(TaskPropertyNames.HR_RESULTS_PORT, Integer.toString(port));
+		System.setProperty(
+				TaskPropertyNames.HR_RESULTS_PORT,
+				Integer.toString(port));
 
 	}
 
@@ -181,4 +201,5 @@ class HostRuntime implements IClusterService {
 	private void unregisterHostRuntime() {
 		clusterContext.getRuntimesUtils().removeRuntimeInfo(hostRuntimeInfo.getId());
 	}
+
 }
