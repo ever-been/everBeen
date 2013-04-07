@@ -32,8 +32,8 @@ import zmq
 
 
 ''' CONSTANTS '''
-TASK_ID_ENVPROP_NAME = "BEEN_TASK_ID"
-PORT_ENVPROP_NAME = "BEEN_TASK_MQ_SINK_PORT"
+TASK_ID_ENVPROP_NAME = "been.task.id"
+PORT_ENVPROP_NAME = "been.task.mq.sink.port"
 
 TRACE = 1
 DEBUG = 2
