@@ -1,5 +1,7 @@
 package cz.cuni.mff.d3s.been.hostruntime;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.UUID;
 
 import com.hazelcast.core.HazelcastInstance;
@@ -49,7 +51,9 @@ public class HostRuntimes {
 	public static RuntimeInfo newRuntimeInfo(ClusterContext clusterContext) {
 		RuntimeInfo ri = new RuntimeInfo();
 
-		ri.setWorkingDirectory(HR_DEFAULT_WRKDIR_NAME);
+		// get absolute path to ".HostRuntime" directory
+		Path p = Paths.get(HR_DEFAULT_WRKDIR_NAME).toAbsolutePath();
+		ri.setWorkingDirectory(p.toString());
 
 		String nodeId = UUID.randomUUID().toString();
 		ri.setId(nodeId);

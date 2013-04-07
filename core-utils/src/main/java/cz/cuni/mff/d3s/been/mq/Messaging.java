@@ -13,6 +13,8 @@ public final class Messaging {
 	 */
 	private static final String INPROC_PROTO = "inproc";
 
+	private static final String TCP_PROTO = "tcp";
+
 	/**
 	 * Format for connection string (protocol type, queue name)
 	 */
@@ -30,6 +32,17 @@ public final class Messaging {
 	}
 
 	/**
+	 * Creates connection String a tcp-based queue, random port
+	 * 
+	 * @param queue
+	 *          name of the host to listen on
+	 * @return connection string which can be used in ZMQ.Socket calls.
+	 */
+	static String createTcpConnection(String host) {
+		return String.format(CONN_FORMAT, TCP_PROTO, host);
+	}
+
+	/**
 	 * Creates named, inter-process message queue.
 	 * 
 	 * @param queue
@@ -41,5 +54,36 @@ public final class Messaging {
 	public static <T extends Serializable> IMessageQueue<T> createInprocQueue(
 			String queue) {
 		return new InprocMessageQueue<>(queue);
+	}
+
+	/**
+	 * Creates tcp-based message queue listening on a random port.
+	 * 
+	 * @param host
+	 *          name of the host
+	 * @param <T>
+	 *          type of messages to send/receive (i.e. base class)
+	 * @return tcp-based message queue
+	 */
+	public static <T extends Serializable> IMessageQueue<T> createTcpQueue(
+			String host) {
+		return new TcpMessageQueue<>(host);
+	}
+
+	/**
+	 * 
+	 * Returns IMessageQueue connecting a task to its Host Runtime.
+	 * 
+	 * Typically a task wants to create such a queue.
+	 * 
+	 * WARNING: the returned implementation does support receiving!
+	 * 
+	 * 
+	 * @param port
+	 *          port on which a Host Runtime listens for messages from tasks
+	 * @return
+	 */
+	public static IMessageQueue<String> createTaskQueue(int port) {
+		return new TaskMessageQueue("localhost", port);
 	}
 }

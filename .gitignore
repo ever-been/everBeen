@@ -3,6 +3,7 @@
 **/*.iml
 .idea
 **/.idea
+
 # Eclipse project files
 .classpath
 **/.classpath
@@ -10,9 +11,16 @@
 **/.project
 .settings
 **/.settings
+
 # Compiled binaries
 target
 **/target
 **/bin
+.persistence
 **/.persistence
+.HostRuntime
 **/.HostRuntime
+**/.pydevproject
+
+# junk
+.DS_Store

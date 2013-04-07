@@ -111,7 +111,7 @@ final class ProcessManager {
 	 * 
 	 * @param message
 	 */
-	synchronized void onRunTask(RunTaskMessage message) {
+	void onRunTask(RunTaskMessage message) {
 		loadAndRunTask(message);
 	}
 
@@ -256,7 +256,7 @@ final class ProcessManager {
 		}
 	}
 
-	private synchronized TaskEntry loadTask(String taskId) {
+	private TaskEntry loadTask(String taskId) {
 		return tasks.getTask(taskId);
 	}
 

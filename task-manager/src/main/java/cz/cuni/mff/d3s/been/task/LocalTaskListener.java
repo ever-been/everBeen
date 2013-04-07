@@ -13,9 +13,6 @@ import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.mq.IMessageSender;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
-import cz.cuni.mff.d3s.been.task.message.NewTaskMessage;
-import cz.cuni.mff.d3s.been.task.message.TaskMessage;
-import cz.cuni.mff.d3s.been.task.message.UpdatedTaskMessage;
 
 /**
  * Listens for local key events of the Task Map.
@@ -60,37 +57,28 @@ final class LocalTaskListener implements EntryListener<String, TaskEntry>, IClus
 		try {
 			sender.send(new NewTaskMessage(entry));
 		} catch (MessagingException e) {
-			String msg = String.format("Cannot send message to %s on entry added", sender.getConnection());
+			String msg = String.format("Cannot send message to '%s'", sender.getConnection());
 			log.error(msg, e);
 		}
 	}
 
 	@Override
 	public void entryRemoved(EntryEvent<String, TaskEntry> event) {
-		event.getValue();
-		String taskId = event.getKey();
-
-		log.info("Entry removed " + taskId);
+		log.info("TaskEntry {} removed ", event.getKey());
 	}
 
 	@Override
 	public void entryUpdated(EntryEvent<String, TaskEntry> event) {
-		TaskEntry entry = event.getValue();
-		try {
-			sender.send(new UpdatedTaskMessage(entry));
-		} catch (MessagingException e) {
-			String msg = String.format("Cannot send message to %s on entry updated", sender.getConnection());
-			log.error(msg, e);
-		}
-
+		// TODO more useful debug message?
+		log.debug("TaskEntry {} updated", event.getKey());
 	}
 
 	@Override
 	public void entryEvicted(EntryEvent<String, TaskEntry> event) {
-		event.getValue();
-		String taskId = event.getKey();
+		log.info("TaskEntry {} evicted", event.getKey());
 
-		log.info("Entry evicted " + taskId);
+		// TODO figure out why the entry was evicted (i.e. stale task)
+
 	}
 
 	public void withSender(IMessageSender<TaskMessage> sender) {

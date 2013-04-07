@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.hostruntime;
 
+import cz.cuni.mff.d3s.been.detectors.Monitoring;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,6 +9,10 @@ import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
+
+import java.io.File;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 
 /**
  * 
@@ -77,6 +82,10 @@ class HostRuntime implements IClusterService {
 	 */
 	@Override
 	public void start() {
+		// create ".HostRuntime" working directory
+		File workingDir = new File(hostRuntimeInfo.getWorkingDirectory());
+		workingDir.mkdirs();
+
 		startProcessManager();
 
 		// All listeners must be initialized before any message will be
@@ -87,6 +96,10 @@ class HostRuntime implements IClusterService {
 		registerHostRuntime();
 
 		// HR is now prepared to consume all important messages.
+
+		// start monitoring
+		Path monitoringLogPath = FileSystems.getDefault().getPath(hostRuntimeInfo.getWorkingDirectory(), "monitoring.log");
+		Monitoring.startMonitoring(monitoringLogPath);
 	}
 
 	/**
@@ -149,4 +162,6 @@ class HostRuntime implements IClusterService {
 	private void unregisterHostRuntime() {
 		clusterContext.getRuntimesUtils().removeRuntimeInfo(hostRuntimeInfo.getId());
 	}
+
+
 }

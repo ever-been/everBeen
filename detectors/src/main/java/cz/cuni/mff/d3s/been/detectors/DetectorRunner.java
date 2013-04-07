@@ -50,7 +50,7 @@ public class DetectorRunner {
 
 		// try the monitor
 		for (int i = 0; i < 10; i++) {
-			MonitorSample sample = detector.generateSample();
+			MonitorSample sample = detector.generateSample(true);
 
 			try {
 				String s = JSONUtils.serialize(sample);
@@ -73,7 +73,7 @@ public class DetectorRunner {
 		while (true) {
 			if (System.nanoTime() - startTime > 1000 * 1000 * 1000) break;
 
-			MonitorSample sample = detector.generateSample();
+			MonitorSample sample = detector.generateSample(true);
 
 			try {
 				mapper.writeValueAsString(sample);

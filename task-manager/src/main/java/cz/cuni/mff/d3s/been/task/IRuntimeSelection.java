@@ -5,6 +5,6 @@ import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 /**
  * @author Martin Sixta
  */
-public interface IRuntimeSelection {
+interface IRuntimeSelection {
 	String select(final TaskEntry taskEntry) throws NoRuntimeFoundException;
 }

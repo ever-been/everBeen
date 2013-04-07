@@ -17,15 +17,16 @@ public abstract class Task {
 	public abstract void run();
 
 	private void initialize() {
-		this.id = System.getProperty(TaskPropertyNames.TASK_ID);
+		this.id = System.getenv(TaskPropertyNames.TASK_ID);
 		// TODO notify HostManager that the task is no longer suspended
+		// Messages.send("TASK_RUNNING#");
 	}
 
 	public void doMain(String[] args) {
 		initialize();
-
-		System.out.println("Task is started");
 		run();
-		System.out.println("Task is finished");
+
+		// TODO not ideal, what if other threads are running and we shut them down?
+		Messages.terminate();
 	}
 }

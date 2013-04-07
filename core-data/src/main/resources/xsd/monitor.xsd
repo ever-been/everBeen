@@ -8,14 +8,18 @@
         xmlns:monitor="http://been.d3s.mff.cuni.cz/monitor"
         xmlns:xs="http://www.w3.org/2001/XMLSchema"
         xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
-        xmlns:common="http://been.d3s.mff.cuni.cz/common"
         xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
         jaxb:extensionBindingPrefixes="xjc"
         jaxb:version="2.0">
 
-    <xs:import schemaLocation="common.xsd" namespace="http://been.d3s.mff.cuni.cz/common"/>
-
     <xs:complexType name="networkSample">
+        <xs:annotation>
+            <xs:appinfo>
+                <jaxb:class>
+                    <jaxb:javadoc>Monitoring data about a single network interface.</jaxb:javadoc>
+                </jaxb:class>
+            </xs:appinfo>
+        </xs:annotation>
         <xs:sequence>
             <xs:element name="name" type="xs:string" />
             <xs:element name="bytesIn" type="xs:long" />
@@ -23,13 +27,55 @@
         </xs:sequence>
     </xs:complexType>
 
+    <xs:complexType name="filesystemSample">
+        <xs:annotation>
+            <xs:appinfo>
+                <jaxb:class>
+                    <jaxb:javadoc>Monitoring data about a single filesystem.</jaxb:javadoc>
+                </jaxb:class>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="deviceName" type="xs:string" />
+            <xs:element name="directory" type="xs:string" />
+            <xs:element name="reads" type="xs:long" />
+            <xs:element name="writes" type="xs:long" />
+            <xs:element name="readBytes" type="xs:long" />
+            <xs:element name="writeBytes" type="xs:long" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="loadAverage">
+        <xs:annotation>
+            <xs:appinfo>
+                <jaxb:class>
+                    <jaxb:javadoc>System load average for the last 1, 5 and 15 minutes.</jaxb:javadoc>
+                </jaxb:class>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="load1" type="xs:double" />
+            <xs:element name="load5" type="xs:double" />
+            <xs:element name="load15" type="xs:double" />
+        </xs:sequence>
+    </xs:complexType>
+
     <xs:element name="monitorSample">
+        <xs:annotation>
+            <xs:appinfo>
+                <jaxb:class>
+                    <jaxb:javadoc>A single monitoring sample containing various data about current system usage.</jaxb:javadoc>
+                </jaxb:class>
+            </xs:appinfo>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="timestamp" type="xs:long" />
                 <xs:element name="freeMemory" type="xs:long" />
                 <xs:element name="processCount" type="xs:int" />
                 <xs:element name="interfaces" type="networkSample" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="filesystems" type="filesystemSample" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="loadAverage" type="loadAverage" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
