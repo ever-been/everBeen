@@ -35,7 +35,7 @@ class JavaGenerator extends GeneratorImpl {
 
 		if (config.packageJarFile == null) {
 			result.append("parameter 'packageJarFile' must not be null \n");
-		} else if (config.packageJarFile == null) {
+		} else if (!config.packageJarFile.exists()) {
 			result.append(String.format("file '%s' specified in parameter 'packageJarFile' does not exists \n", config.packageJarFile));
 		}
 
@@ -45,6 +45,10 @@ class JavaGenerator extends GeneratorImpl {
 
 		if (config.artifacts == null) {
 			result.append("parameter 'artifacts' must not be null \n");
+		}
+
+		if (config.bpkDependencies == null) {
+			result.append("parameter 'bpkDependencies' must not be null \n");
 		}
 
 		if (result.length() > 0) {
@@ -111,10 +115,16 @@ class JavaGenerator extends GeneratorImpl {
 
 	@Override
 	JavaRuntime createRuntime(Configuration config) {
-		ObjectFactory objectFactory = new ObjectFactory();
-		JavaRuntime runtime = objectFactory.createJavaRuntime();
-		runtime.setJarFile(config.packageJarFile.getName());
+		JavaRuntime runtime = new ObjectFactory().createJavaRuntime();
 
+		runtime.setJarFile(config.packageJarFile.getName());
+		runtime.setBpkArtifacts(createBpkArtifacts(config));
+
+		return runtime;
+	}
+
+	private BpkArtifacts createBpkArtifacts(Configuration config) {
+		ObjectFactory objectFactory = new ObjectFactory();
 		BpkArtifacts bpkArtifacts = objectFactory.createBpkArtifacts();
 
 		for (Artifact artifact : config.artifacts) {
@@ -127,9 +137,7 @@ class JavaGenerator extends GeneratorImpl {
 			bpkArtifacts.getArtifact().add(bpkArtifact);
 		}
 
-		runtime.setBpkArtifacts(bpkArtifacts);
-
-		return runtime;
+		return bpkArtifacts;
 	}
 
 }

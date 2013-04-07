@@ -118,7 +118,7 @@ public abstract class GeneratorImpl implements Generator {
 	 */
 	private void save(Collection<ItemToArchive> items, Configuration cfg) throws IOException {
 		File bpkFile = createEmptyBpkFile(cfg);
-		new ZipUtil().createZip(items, bpkFile);
+		ZipUtil.createZip(items, bpkFile);
 	}
 
 	/**
