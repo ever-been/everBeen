@@ -59,15 +59,15 @@ public final class Messaging {
 	/**
 	 * Creates tcp-based message queue listening on a random port.
 	 * 
+	 * Sends Strings.
+	 * 
+	 * 
 	 * @param host
 	 *          name of the host
-	 * @param <T>
-	 *          type of messages to send/receive (i.e. base class)
 	 * @return tcp-based message queue
 	 */
-	public static <T extends Serializable> IMessageQueue<T> createTcpQueue(
-			String host) {
-		return new TcpMessageQueue<>(host);
+	public static IMessageQueue<String> createTcpQueue(String host) {
+		return new TcpMessageQueue(host);
 	}
 
 	/**

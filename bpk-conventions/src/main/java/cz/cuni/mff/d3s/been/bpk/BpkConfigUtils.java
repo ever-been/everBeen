@@ -1,6 +1,7 @@
 package cz.cuni.mff.d3s.been.bpk;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URL;
@@ -14,6 +15,8 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 /**
@@ -22,10 +25,12 @@ import org.xml.sax.SAXException;
  * @author Martin Sixta
  */
 public class BpkConfigUtils {
+	private static final Logger log = LoggerFactory.getLogger(BpkConfigUtils.class);
+
 	/**
 	 * Where the XSD file for BpkConfiguration is located relative to resources.
 	 */
-	public static String SCHEMA_RESOURCE_FILE = "xsd/bpk-config.xsd";
+	public static String SCHEMA_RESOURCE_FILE = "bpk-config.xsd";
 
 	/**
 	 * JAXBContext for BpkConfiguration. Don't use directly, use getContext()
@@ -65,7 +70,13 @@ public class BpkConfigUtils {
 	private static synchronized Schema getSchema() throws SAXException {
 		if (__schema == null) {
 			SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-			URL url = BpkConfigUtils.class.getClassLoader().getResource(SCHEMA_RESOURCE_FILE);
+			URL url = BpkConfigUtils.class.getResource(SCHEMA_RESOURCE_FILE);
+			log.debug("Loading BPK config schema from {}", url);
+			try {
+				log.debug("Loaded BPK config schema:{}", url.getContent());
+			} catch (IOException e) {
+				log.debug("Failed loading BPK config schema because", e);
+			}
 			__schema = sf.newSchema(url);
 		}
 
@@ -139,8 +150,7 @@ public class BpkConfigUtils {
 			return (BpkConfiguration) unmarshaller.unmarshal(input);
 
 		} catch (Exception e) {
-			String message = "Cannot parse XML!";
-			throw new BpkConfigurationException(message, e);
+			throw new BpkConfigurationException("Cannot parse BPK configruation XML.", e);
 		}
 	}
 

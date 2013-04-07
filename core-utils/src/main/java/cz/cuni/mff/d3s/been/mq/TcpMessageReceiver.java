@@ -1,9 +1,5 @@
 package cz.cuni.mff.d3s.been.mq;
 
-import java.io.Serializable;
-
-import org.apache.commons.lang3.SerializationException;
-import org.apache.commons.lang3.SerializationUtils;
 import org.jeromq.ZMQ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +10,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Martin Sixta
  */
-public class TcpMessageReceiver<T extends Serializable> implements IMessageReceiver<T> {
+public class TcpMessageReceiver implements IMessageReceiver<String> {
 
 	/** Logging */
 	private static Logger log = LoggerFactory.getLogger(TcpMessageReceiver.class);
@@ -74,26 +70,21 @@ public class TcpMessageReceiver<T extends Serializable> implements IMessageRecei
 			throw new MessagingException("Cannot bind socket.");
 		}
 
-		log.debug("TcpMessageReceiver is bind to address {} ", connection);
+		log.debug("TcpMessageReceiver is bind to address {}:{} ", connection, port);
 
 	}
 
-	public T receive() throws MessagingException {
+	public String receive() throws MessagingException {
 		if (!isConnected()) {
 			throw new MessagingException("Receive on unbind socket.");
 		}
 
-		try {
-			byte[] bytes = socket.recv();
-			Object object = SerializationUtils.deserialize(bytes);
-			return (T) object;
-		} catch (ClassCastException | SerializationException
-				| IllegalArgumentException e) {
-			throw new MessagingException("Cannot cast to a proper type.", e);
-		}
+		byte[] bytes = socket.recv();
+		return new String(bytes);
+
 	}
 
-	public TcpMessageSender<T> createSender() {
-		return new TcpMessageSender<>(context, host);
+	public TcpMessageSender createSender() {
+		return new TcpMessageSender(context, connection);
 	}
 }

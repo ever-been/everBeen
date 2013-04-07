@@ -11,15 +11,8 @@
 		<version>3.0.0</version>
 	</parent>
 
-
 	<dependencies>
 		<!-- BEEN DEPENDENCIES -->
-		<dependency>
-			<groupId>cz.cuni.mff.d3s.been</groupId>
-			<artifactId>task-manager</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>
-
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
 			<artifactId>core-data</artifactId>
@@ -35,6 +28,12 @@
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
 			<artifactId>core-cluster</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>task-manager</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 
@@ -63,59 +62,53 @@
 			<version>${args4j.version}</version>
 		</dependency>
 
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <scope>runtime</scope>
-            <version>${logback.version}</version>
-        </dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<scope>runtime</scope>
+			<version>${logback.version}</version>
+		</dependency>
 
 	</dependencies>
 
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin.version}</version>
+				<configuration>
+					<source>${java-source.version}</source>
+					<target>${java-target.version}</target>
+				</configuration>
+			</plugin>
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.4</version>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>${maven-assembly-plugin.version}</version>
 				<configuration>
+					<finalName>node-runnable</finalName>
 					<archive>
 						<manifest>
 							<mainClass>cz.cuni.mff.d3s.been.node.Runner</mainClass>
 						</manifest>
 					</archive>
+					<appendAssemblyId>false</appendAssemblyId>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
 				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.dstovall</groupId>
-				<artifactId>onejar-maven-plugin</artifactId>
-				<version>1.4.4</version>
 				<executions>
 					<execution>
-						<configuration>
-							<onejarVersion>${one.jar.version}</onejarVersion>
-							<attachToBuild>true</attachToBuild>
-							<classifier>onejar</classifier>
-						</configuration>
+						<phase>package</phase>
 						<goals>
-							<goal>one-jar</goal>
+							<goal>single</goal>
 						</goals>
 					</execution>
 				</executions>
 			</plugin>
 		</plugins>
 	</build>
-
-	<pluginRepositories>
-		<pluginRepository>
-			<id>onejar-maven-plugin.googlecode.com</id>
-			<url>http://onejar-maven-plugin.googlecode.com/svn/mavenrepo</url>
-		</pluginRepository>
-	</pluginRepositories>
-
-
-
 </project>
