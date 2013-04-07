@@ -79,11 +79,12 @@
 		</xs:sequence>
 	</xs:complexType>
 	
-	<xs:complexType name="JavaBasedRuntime">
+	<xs:complexType name="JavaRuntime">
 		<xs:complexContent>
 			<xs:extension base="bpk:BpkRuntime">
 				<xs:sequence>
 					<xs:element ref="bpk:bpkArtifacts"  minOccurs="0" />
+					<xs:element name="jarFile" type="xs:string" />
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -91,29 +92,7 @@
 	
 	<xs:element name="runtime" type="bpk:BpkRuntime" />
 	
-	<xs:complexType name="JavaRuntime">
-		<xs:complexContent>
-			<xs:extension base="bpk:JavaBasedRuntime">
-				<xs:sequence>
-					<xs:element name="jarFile" type="xs:string" />
-				</xs:sequence>
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
-	
 	<xs:element name="java" type="bpk:JavaRuntime" />
-	
-	<xs:complexType name="JythonRuntime">
-		<xs:complexContent>
-			<xs:extension base="bpk:JavaBasedRuntime">
-				<xs:sequence>
-					<xs:element name="mainScript" type="xs:string" />
-				</xs:sequence>
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
-	
-	<xs:element name="jython" type="bpk:JythonRuntime" />
 	
 	<xs:complexType name="NativeRuntime">
 		<xs:complexContent>
