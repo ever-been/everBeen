@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.d3s.been.core.TaskPropertyNames;
 import cz.cuni.mff.d3s.been.mq.IMessageQueue;
+import cz.cuni.mff.d3s.been.mq.IMessageSender;
 import cz.cuni.mff.d3s.been.mq.Messaging;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
 import cz.cuni.mff.d3s.been.taskapi.results.ResultFacade;
@@ -20,6 +21,7 @@ public abstract class Task {
 
 	private String id;
 	private IMessageQueue<String> resQueue;
+	private IMessageSender<String> resSender;
 	protected final ResultFacade results = new TaskFieldResultFacadeWrapper();
 
 	public String getId() {
@@ -33,11 +35,10 @@ public abstract class Task {
 		final String resultPort = System.getenv(TaskPropertyNames.HR_RESULTS_PORT);
 		resQueue = Messaging.createTaskQueue(Integer.valueOf(resultPort));
 		try {
-			((TaskFieldResultFacadeWrapper) results).setResultFacade(ResultFacadeFactory.createResultFacade(resQueue.createSender()));
+			resSender = resQueue.createSender();
+			((TaskFieldResultFacadeWrapper) results).setResultFacade(ResultFacadeFactory.createResultFacade(resSender));
 		} catch (MessagingException e) {
-			log.error(
-					"Failed to create Task environment due to messaging system initialization error - {}",
-					e.getMessage());
+			log.error("Failed to create Task environment due to messaging system initialization error - {}", e.getMessage());
 			log.debug("Reasons for Task setup failing:", e);
 			// TODO exit with code
 		}
@@ -45,7 +46,9 @@ public abstract class Task {
 		// Messages.send("TASK_RUNNING#");
 	}
 	private void tearDown() {
+		resSender.close();
 		resQueue.terminate();
+		Messages.terminate();
 	}
 
 	public void doMain(String[] args) {
