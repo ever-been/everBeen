@@ -1,7 +1,6 @@
 package cz.cuni.mff.d3s.been.bpkplugin;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -11,12 +10,13 @@ import java.io.InputStream;
  * @author Tadeas Palusga
  * 
  */
-final class FileToArchive implements ItemToArchive {
+class StringToArchive implements ItemToArchive {
 
 	/**
-	 * file on disk which should be added to BPK archive
+	 * string which should be added to BPK archive as content of file with path
+	 * 'pathInZip'
 	 */
-	private File file;
+	private String string;
 
 	/**
 	 * path in BPK archive
@@ -26,17 +26,18 @@ final class FileToArchive implements ItemToArchive {
 	/**
 	 * @param pathInZip
 	 *          path in BPK archive
-	 * @param file
-	 *          file on disk which should be added to BPK archive
+	 * @param string
+	 *          string which should be added to BPK archive as content of file
+	 *          with path 'pathInZip'
 	 */
-	public FileToArchive(String pathInZip, File file) {
+	public StringToArchive(String pathInZip, String string) {
 		this.pathInZip = pathInZip;
-		this.file = file;
+		this.string = string;
 	}
 
 	@Override
 	public InputStream getInputStream() throws IOException {
-		return new FileInputStream(file);
+		return new ByteArrayInputStream(string.getBytes());
 	}
 
 	@Override
