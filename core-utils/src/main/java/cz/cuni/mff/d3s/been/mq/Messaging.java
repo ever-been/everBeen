@@ -53,21 +53,21 @@ public final class Messaging {
 	 */
 	public static <T extends Serializable> IMessageQueue<T> createInprocQueue(
 			String queue) {
-		return new InprocMessageQueue<T>(queue);
+		return new InprocMessageQueue<>(queue);
 	}
 
 	/**
 	 * Creates tcp-based message queue listening on a random port.
 	 * 
+	 * Sends Strings.
+	 * 
+	 * 
 	 * @param host
 	 *          name of the host
-	 * @param <T>
-	 *          type of messages to send/receive (i.e. base class)
 	 * @return tcp-based message queue
 	 */
-	public static <T extends Serializable> IMessageQueue<T> createTcpQueue(
-			String host) {
-		return new TcpMessageQueue<T>(host);
+	public static IMessageQueue<String> createTcpQueue(String host) {
+		return new TcpMessageQueue(host);
 	}
 
 	/**
