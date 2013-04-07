@@ -4,11 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hazelcast.core.IMap;
-import com.hazelcast.core.Transaction;
 
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
-import cz.cuni.mff.d3s.been.core.task.TaskState;
+import cz.cuni.mff.d3s.been.mq.IMessageSender;
 
 /**
  * 
@@ -29,83 +28,51 @@ import cz.cuni.mff.d3s.been.core.task.TaskState;
  * @author Martin Sixta
  */
 final class LocalKeyScanner implements Runnable {
+	private static final Logger log = LoggerFactory.getLogger(LocalKeyScanner.class);
 
 	private final ClusterContext clusterCtx;
+	private IMessageSender<TaskMessage> sender;
+
+	private final String nodeId;
 
 	public LocalKeyScanner(ClusterContext clusterCtx) {
 		this.clusterCtx = clusterCtx;
+		this.nodeId = clusterCtx.getId();
 	}
-
-	private static final Logger log = LoggerFactory.getLogger(LocalKeyScanner.class);
-	private static final String ZERO_ID = "0";
 
 	@Override
 	public void run() {
 
 		IMap<String, TaskEntry> map = clusterCtx.getTasksUtils().getTasksMap();
-		String nodeId = clusterCtx.getId();
 
 		for (String taskId : map.localKeySet()) {
-
 			TaskEntry entry = map.get(taskId);
 
 			if (entry == null) {
 				continue;
 			}
 
-			log.info("Task ID: {}, status: {}", entry.getId(), entry.getState().toString());
-
-			entry.getId();
-			String ownerId = entry.isSetOwnerId() ? entry.getOwnerId() : ZERO_ID;
-
-			if (ownerId.equals(ZERO_ID) || !ownerId.equals(nodeId)) {
-				// The owner of the key is different, reclaim it.
-				// This could be just a normal migration or something more
-				// serious, like a node crashing.
-				// In case of ZERE_ID it could ALSO just mean that this thread got
-				// lucky -> before entryAdded
-
-				Transaction txn = clusterCtx.getTransaction();
-				try {
-					txn.begin();
-					clusterCtx.getTasksUtils().assertClusterEqual(entry);
-					entry.setOwnerId(nodeId);
-					map.put(entry.getId(), entry);
-
-				} catch (Throwable e) {
-					log.warn("Unable to change ownership of the entry: ", e);
-					txn.rollback(); // OK, will get it next time if needed
-				}
-
-			} else if (entry.getState() == TaskState.SCHEDULED) {
-				// Checks whether the task got response from a runtime in a timely fashion
-				long count = clusterCtx.getInstance().getAtomicNumber(entry.getId()).decrementAndGet();
-				if (count < 1) {
-					log.info("Stale task " + entry.getId() + " detected! " + count);
-
-					/*
-					Transaction txn = clusterCtx.getTransaction();
-
-					try {
-						txn.begin();
-						clusterCtx.getTasksUtils().assertClusterEqualCopy(entry);
-						TaskEntries.setState(entry, TaskState.SUBMITTED, entry.getRuntimeId() + "did not respond!");
-						clusterCtx.getTasksUtils().putTask(entry);
-						txn.commit();
-
-					} catch (Throwable e) {
-						log.warn("Unable to update stale task: " + taskId, e);
-						txn.rollback(); // OK, will get it next time if needed
-
-					}
-					*/
-				}
-
-			} else if (entry.getState() == TaskState.ABORTED) {
-				// TODO: reclamation of the task entry
+			try {
+				checkEntry(entry);
+			} catch (Exception e) {
+				log.error("Error when checking TaskEntry " + taskId, e);
 			}
+
 		}
 
 	}
 
+	private void checkEntry(TaskEntry entry) throws Exception {
+
+		// log.debug("TaskEntry ID: {}, status: {}", entry.getId(), entry.getState().toString());
+
+		if (!TMUtils.isOwner(entry, nodeId)) {
+			log.debug("Will take over the task {}", entry.getId());
+			sender.send(new NewOwnerTaskMessage(entry));
+		}
+	}
+
+	public void withSender(IMessageSender<TaskMessage> sender) {
+		this.sender = sender;
+	}
 }

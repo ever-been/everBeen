@@ -1,10 +1,15 @@
 package cz.cuni.mff.d3s.been.hostruntime;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
+import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
+import cz.cuni.mff.d3s.been.core.TaskPropertyNames;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
@@ -55,6 +60,17 @@ class HostRuntime implements IClusterService {
 	private ProcessManager processManager;
 
 	/**
+	 * Results dispatcher
+	 */
+	private ResultsDispatcher resultsDispatcher;
+
+	/**
+	 *
+	 */
+
+	private ExecutorService executorService;
+
+	/**
 	 * Creates new {@link HostRuntime} with cluster-unique id.
 	 * 
 	 * @param clusterContext
@@ -76,17 +92,25 @@ class HostRuntime implements IClusterService {
 	 * itself in cluster.
 	 */
 	@Override
-	public void start() {
-		startProcessManager();
+	public void start() throws ServiceException {
 
-		// All listeners must be initialized before any message will be
-		// received.
-		registerListeners();
+		try {
+			executorService = Executors.newSingleThreadExecutor();
+			startResultsDispatcher();
 
-		// Now, we can register the runtime without missing any messages.
-		registerHostRuntime();
+			startProcessManager();
 
-		// HR is now prepared to consume all important messages.
+			// All listeners must be initialized before any message will be
+			// received.
+			registerListeners();
+
+			// Now, we can register the runtime without missing any messages.
+			registerHostRuntime();
+
+			// HR is now prepared to consume all important messages.
+		} catch (Exception e) {
+			throw new ServiceException("Cannot start HostRuntime", e);
+		}
 	}
 
 	/**
@@ -119,6 +143,14 @@ class HostRuntime implements IClusterService {
 	private void stopProcessManager() {
 		processManager.stop();
 		processManager = null;
+	}
+
+	private void startResultsDispatcher() throws Exception {
+		resultsDispatcher = new ResultsDispatcher(clusterContext, hostRuntimeInfo, "localhost");
+		executorService.submit(resultsDispatcher);
+		int port = resultsDispatcher.getPort();
+		System.setProperty(TaskPropertyNames.HR_RESULTS_PORT, Integer.toString(port));
+
 	}
 
 	/**

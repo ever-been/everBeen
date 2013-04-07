@@ -1,5 +1,9 @@
 package cz.cuni.mff.d3s.been.hostruntime;
 
+import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.HR_COMM_PORT;
+import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.HR_RESULTS_PORT;
+import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.TASK_ID;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -10,23 +14,26 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.ZipException;
 
-import cz.cuni.mff.d3s.been.debugassistant.DebugAssistant;
-import cz.cuni.mff.d3s.been.hostruntime.proc.JavaBasedProcess;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cz.cuni.mff.d3s.been.bpk.*;
+import cz.cuni.mff.d3s.been.bpk.Bpk;
+import cz.cuni.mff.d3s.been.bpk.BpkConfigUtils;
+import cz.cuni.mff.d3s.been.bpk.BpkConfiguration;
+import cz.cuni.mff.d3s.been.bpk.BpkConfigurationException;
+import cz.cuni.mff.d3s.been.bpk.PackageNames;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.cluster.context.Tasks;
-import cz.cuni.mff.d3s.been.core.TaskPropertyNames;
 import cz.cuni.mff.d3s.been.core.protocol.messages.KillTaskMessage;
 import cz.cuni.mff.d3s.been.core.protocol.messages.RunTaskMessage;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
+import cz.cuni.mff.d3s.been.debugassistant.DebugAssistant;
+import cz.cuni.mff.d3s.been.hostruntime.proc.JavaBasedProcess;
 import cz.cuni.mff.d3s.been.hostruntime.proc.Processes;
 import cz.cuni.mff.d3s.been.hostruntime.proc.TaskProcess;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
@@ -84,7 +91,10 @@ final class ProcessManager {
 	 * @param swRepoClientFactory
 	 * @param hostInfo
 	 */
-	ProcessManager(ClusterContext clusterContext, SwRepoClientFactory swRepoClientFactory, RuntimeInfo hostInfo) {
+	ProcessManager(
+			ClusterContext clusterContext,
+			SwRepoClientFactory swRepoClientFactory,
+			RuntimeInfo hostInfo) {
 		this.clusterContext = clusterContext;
 		this.hostInfo = hostInfo;
 		this.softwareResolver = new SoftwareResolver(clusterContext.getServicesUtils(), swRepoClientFactory);
@@ -179,14 +189,17 @@ final class ProcessManager {
 			changeTaskStateTo(taskHandle, TaskState.FINISHED);
 		} catch (Exception e) {
 			changeTaskStateTo(taskHandle, TaskState.ABORTED);
-			log.error(String.format("Task '%s' has been aborted due to underlaying exception.", taskHandle.getId()), e);
+			log.error(String.format(
+					"Task '%s' has been aborted due to underlying exception.",
+					taskHandle.getId()), e);
 		} finally {
 			runningTasks.remove(taskHandle.getId());
 		}
 		deleteTaskDir(taskDirectory);
 	}
 
-	private Process createAndStartTaskProcess(TaskEntry taskEntry,
+	private Process createAndStartTaskProcess(
+			TaskEntry taskEntry,
 			File taskDirectory) throws IOException, BpkConfigurationException, ZipException, TaskException {
 
 		TaskDescriptor td = taskEntry.getTaskDescriptor();
@@ -203,7 +216,10 @@ final class ProcessManager {
 		BpkConfiguration bpkConfiguration = BpkConfigUtils.fromXml(configPath);
 
 		// create process for the task
-		TaskProcess taskProcess = Processes.createProcess(bpkConfiguration.getRuntime(), td, dir);
+		TaskProcess taskProcess = Processes.createProcess(
+				bpkConfiguration.getRuntime(),
+				td,
+				dir);
 
 		// TODO resolve dependencies
 		//Collection<ArtifactIdentifier> identifiers = taskProcess.getArtifactDependencies();
@@ -224,7 +240,10 @@ final class ProcessManager {
 			JavaBasedProcess jbp = ((JavaBasedProcess) taskProcess);
 			if (jbp.isDebugListeningMode()) {
 				DebugAssistant dbg = new DebugAssistant(clusterContext);
-				dbg.addSuspendedTask(taskEntry.getId(), clusterContext.getInetSocketAddress().getHostName(), jbp.getDebugPort());
+				dbg.addSuspendedTask(
+						taskEntry.getId(),
+						clusterContext.getInetSocketAddress().getHostName(),
+						jbp.getDebugPort());
 			}
 		}
 
@@ -236,13 +255,17 @@ final class ProcessManager {
 
 	private Map<String, String> createEnvironmentProperties(TaskEntry taskEntry) {
 		Map<String, String> properties = new HashMap<>();
-		properties.put(TaskPropertyNames.TASK_ID, taskEntry.getId());
-		properties.put(TaskPropertyNames.HR_COMM_PORT, Integer.toString(taskMessageDispatcher.getReceiverPort()));
+		properties.put(TASK_ID, taskEntry.getId());
+		properties.put(
+				HR_COMM_PORT,
+				Integer.toString(taskMessageDispatcher.getReceiverPort()));
+		properties.put(HR_RESULTS_PORT, System.getProperty(HR_RESULTS_PORT));
 		return properties;
 	}
 
 	private File createTaskDir(TaskEntry taskEntry) {
-		String taskDirName = taskEntry.getTaskDescriptor().getName() + "_" + new Date().getTime();
+		String taskDirName = taskEntry.getTaskDescriptor().getName() + "_"
+				+ new Date().getTime();
 		File taskDir = new File(hostInfo.getWorkingDirectory(), taskDirName);
 		taskDir.mkdirs();
 		return taskDir;
@@ -252,7 +275,9 @@ final class ProcessManager {
 		try {
 			FileUtils.deleteDirectory(taskDirectory);
 		} catch (IOException e) {
-			log.warn(String.format("Taks directory '%s' couldn't be deleted", taskDirectory), e);
+			log.warn(String.format(
+					"Taks directory '%s' couldn't be deleted",
+					taskDirectory), e);
 		}
 	}
 
@@ -263,7 +288,12 @@ final class ProcessManager {
 	private void changeTaskStateTo(TaskEntry taskEntry, TaskState state) {
 		String logMsgTemplate = "State of task '%s' has been changed to '%s'.";
 		log.info(String.format(logMsgTemplate, taskEntry.getId(), state));
-		tasks.updateTaskState(taskEntry, state, logMsgTemplate, taskEntry.getId(), getNodeId());
+		tasks.updateTaskState(
+				taskEntry,
+				state,
+				logMsgTemplate,
+				taskEntry.getId(),
+				getNodeId());
 	}
 
 	private void registerTaskMessageDispatcher() {

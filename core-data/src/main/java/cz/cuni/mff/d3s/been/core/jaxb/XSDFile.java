@@ -31,70 +31,74 @@ import java.io.InputStream;
 import java.nio.file.Files;
 
 /**
- * A simple list of XSD file names. A fine thing to avoid typos in file names. ;-)
+ * A simple list of XSD file names. A fine thing to avoid typos in file names.
+ * ;-)
  * 
  * @author Andrej Podzimek
  */
 public enum XSDFile {
-	
+
 	/** Included file with common attribute group definitions. */
-	ATTRTYPES( "attrtypes.xsd" ),
-	
+	ATTRTYPES("attrtypes.xsd"),
+
 	/** The schema for analyses (bechmarks) deinitions. */
-	BENCHMARK( "benchmark.xsd" ),
-	
+	BENCHMARK("benchmark.xsd"),
+
 	/** Imported file with common simple type definitions. */
-	COMMON( "common.xsd" ),
-	
+	COMMON("common.xsd"),
+
 	/** The schema for condition clause (tree) definitions. */
-	CONDITION( "condition.xsd" ),
-	
+	CONDITION("condition.xsd"),
+
 	/** The schema for generator and evaluator module configuration metadata. */
-	CONFIG( "config.xsd" ),
-	
+	CONFIG("config.xsd"),
+
 	/** The schema for dataset definitions (aka SQL table definitions). */
-	DATASET( "dataset.xsd" ),
-	
+	DATASET("dataset.xsd"),
+
 	/** The schema for host group definitions. */
-	GROUP( "group.xsd" ),
-	
+	GROUP("group.xsd"),
+
 	/** The schema for plugable module configuration files. */
-	PMC( "pmc.xsd" ),
-	
+	PMC("pmc.xsd"),
+
 	/** The schema for host property tree definitions. */
-	PROPERTIES( "properties.xsd" ),
-	
+	PROPERTIES("properties.xsd"),
+
 	/** Included file with string value / binary value definitions. */
-	STRBIN( "strbin.xsd" ),
-	
+	STRBIN("strbin.xsd"),
+
 	/** The schema for XML equivalents of task descriptors. */
-	TD( "td.xsd" ),
-	
+	TD("td.xsd"),
+
 	/** The schema for XML representation of triggers. */
-	TRIGGER( "trigger.xsd" ),
-	
+	TRIGGER("trigger.xsd"),
+
 	/** The schema for data handle tuple literals. */
-	TUPLIT( "tuplit.xsd" ),
+	TUPLIT("tuplit.xsd"),
 
-	TASKENTRY( "taskentry.xsd" ),
+	TASKENTRY("taskentry.xsd"),
 
-	RUNTIME( "runtimeinfo.xsd" );
-		
+	RUNTIME("runtimeinfo.xsd"),
+
+	HARDWARE_INFO("hardwareinfo.xsd");
+
 	/** A file instance pointing at the corresponding schema definition. */
 	final File FILE;
-	
+
 	/**
 	 * Initializes the enum member and stores a file name.
 	 * 
-	 * @param name Name of a XSD file.
+	 * @param name
+	 *          Name of a XSD file.
 	 */
-	private XSDFile( String name ) {
+	private XSDFile(String name) {
 		InputStream input = XSDFile.class.getClassLoader().getResourceAsStream("xsd/" + name);
 		try {
 			Files.copy(input, XSDRoot.ROOT.resolve(name));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		this.FILE = new File( XSDRoot.ROOT.toFile(), name );
+		this.FILE = new File(XSDRoot.ROOT.toFile(), name);
 	}
 }

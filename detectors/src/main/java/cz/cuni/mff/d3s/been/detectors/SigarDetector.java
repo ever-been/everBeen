@@ -5,7 +5,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
+import cz.cuni.mff.d3s.been.core.ri.OperatingSystem;
 import org.apache.commons.io.IOUtils;
 import org.hyperic.jni.ArchLoader;
 import org.hyperic.jni.ArchNotSupportedException;
@@ -111,6 +114,51 @@ public class SigarDetector {
 		}
 	}
 
+	public OperatingSystem detectOperatingSystem() {
+		OperatingSystem os = new OperatingSystem();
+
+		try {
+			loadSigar();
+
+			org.hyperic.sigar.OperatingSystem sys = org.hyperic.sigar.OperatingSystem.getInstance();
+			os.setName(sys.getName());
+			os.setVersion(sys.getVersion());
+			os.setArch(sys.getArch());
+			os.setVendor(sys.getVendor());
+			os.setVendorVersion(sys.getVendorVersion());
+			os.setDataModel(sys.getDataModel());
+			os.setEndian(sys.getCpuEndian());
+		} catch (SigarException e) {
+			// do nothing
+		}
+
+		return os;
+	}
+
+	public List<Filesystem> detectFilesystems() {
+		ArrayList<Filesystem> fslist = new ArrayList<>();
+
+		try {
+			loadSigar();
+
+			for (FileSystem fs : sigar.getFileSystemList()) {
+				FileSystemUsage usage = sigar.getFileSystemUsage(fs.getDirName());
+
+				Filesystem f = new Filesystem();
+				f.setDeviceName(fs.getDevName());
+				f.setDirectory(fs.getDirName());
+				f.setType(fs.getTypeName());
+				f.setTotal(usage.getTotal() * 1024);
+				f.setFree(usage.getFree() * 1024);
+				fslist.add(f);
+			}
+		} catch (SigarException e) {
+			// do nothing
+		}
+
+		return fslist;
+	}
+
 	public MonitorSample generateSample() {
 		MonitorSample sample = new MonitorSample();
 
@@ -120,10 +168,22 @@ public class SigarDetector {
 			if (sigar == null)
 				return null;
 
+			// load average
+			double[] avg = sigar.getLoadAverage();
+			LoadAverage la = new LoadAverage();
+			la.setLoad1(avg[0]);
+			la.setLoad5(avg[1]);
+			la.setLoad15(avg[2]);
+			sample.setLoadAverage(la);
+
+			// memory
 			Mem mem = sigar.getMem();
 			sample.setFreeMemory(mem.getFree());
+
+			// processes
 			sample.setProcessCount(sigar.getProcList().length);
 
+			// network interfaces
 			for (String ifname : sigar.getNetInterfaceList()) {
 				NetworkSample networkSample = new NetworkSample();
 				NetInterfaceStat stat = sigar.getNetInterfaceStat(ifname);
@@ -132,6 +192,23 @@ public class SigarDetector {
 				networkSample.setBytesOut(stat.getTxBytes());
 
 				sample.getInterfaces().add(networkSample);
+			}
+
+			// filesystems
+			for (FileSystem fs : sigar.getFileSystemList()) {
+				if (fs.getType() == FileSystem.TYPE_LOCAL_DISK) {
+					FileSystemUsage usage = sigar.getFileSystemUsage(fs.getDirName());
+					FilesystemSample fsSample = new FilesystemSample();
+
+					fsSample.setDeviceName(fs.getDevName());
+					fsSample.setDirectory(fs.getDirName());
+					fsSample.setReadBytes(usage.getDiskReadBytes());
+					fsSample.setReads(usage.getDiskReads());
+					fsSample.setWriteBytes(usage.getDiskWriteBytes());
+					fsSample.setWrites(usage.getDiskWrites());
+
+					sample.getFilesystems().add(fsSample);
+				}
 			}
 
 		} catch (SigarException e) {

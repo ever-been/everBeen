@@ -2,7 +2,6 @@ package cz.cuni.mff.d3s.been.resultsrepository.mongo;
 
 import org.junit.Assert;
 import org.junit.Rule;
-import org.junit.Test;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -88,7 +87,7 @@ public final class MongoStorageTest extends Assert {
 	@Rule
 	public StorageAllocatorRule storageAllocatorRule = new StorageAllocatorRule();
 
-	@Test
+	//@Test
 	public void testSubmitAndRetrieveItem() throws JSONSerializerException, DAOException {
 		storage.storeResult(dummyId, JSONUtils.serialize(new DummyResult()));
 	}

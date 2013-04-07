@@ -100,7 +100,7 @@
 		</plugins>
 	</reporting>
 
-	
+
 	<profiles>
 		<profile>
 			<id>buildCore</id>
@@ -129,8 +129,7 @@
 				<module>results-repository-storage</module>
 				<module>results-repository</module>
 				<module>results-repository-mongo-storage</module>
-                		<module>demo-srclient</module>
-		                <module>task-api</module>
+				<module>task-api</module>
 				<module>task-test</module>
 			</modules>
 		</profile>

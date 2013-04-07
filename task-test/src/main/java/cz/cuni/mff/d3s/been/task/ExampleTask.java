@@ -3,8 +3,9 @@ package cz.cuni.mff.d3s.been.task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cz.cuni.mff.d3s.been.results.DAOException;
 import cz.cuni.mff.d3s.been.taskapi.Task;
-import cz.cuni.mff.d3s.been.taskapi.mq.MessagingSystem;
+import cz.cuni.mff.d3s.been.taskapi.results.ResultPersister;
 
 /**
  * @author Martin Sixta
@@ -18,12 +19,14 @@ public class ExampleTask extends Task {
 
 	@Override
 	public void run() {
-		MessagingSystem.connect();
-
+		final ResultPersister rp = results.createResultPersister(new TestContainerId());
 		System.out.println("Hello world!");
+		try {
+			rp.persist(new TestResult());
+		} catch (DAOException e) {
+			log.error("OMG, Result persistence got mashed!");
+		}
 		log.info("task is logging");
 		System.err.println("Output to stderr");
-
-		MessagingSystem.disconnect();
 	}
 }

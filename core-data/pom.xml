@@ -12,12 +12,7 @@
 	</parent>
 
 	<dependencies>
-		<!-- BEEN --> 
-		<dependency>
-			<groupId>cz.cuni.mff.d3s.been</groupId>
-			<artifactId>task-api</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+		<!-- BEEN -->
 
 		<!-- THIRD PARTY -->
 		<dependency>
@@ -203,7 +198,7 @@
 							<goal>xjc</goal>
 						</goals>
 						<configuration>
-							<schemaDirectory> ${project.basedir}/src/main/resources/xsd</schemaDirectory>
+							<schemaDirectory>${project.basedir}/src/main/resources/xsd</schemaDirectory>
 							<staleFile>${project.build.directory}/jaxb2/.riXjcStaleFlag</staleFile>
 							<clearOutputDir>false</clearOutputDir>
 							<schemaFiles>runtimeinfo.xsd, hardwareinfo.xsd, monitor.xsd, common.xsd</schemaFiles>
@@ -211,14 +206,14 @@
 							<extension>true</extension>
 						</configuration>
 					</execution>
-					
+
 					<execution>
 						<id>swrepositoryinfo-xjc</id>
 						<goals>
 							<goal>xjc</goal>
 						</goals>
 						<configuration>
-							<schemaDirectory> ${project.basedir}/src/main/resources/xsd</schemaDirectory>
+							<schemaDirectory>${project.basedir}/src/main/resources/xsd</schemaDirectory>
 							<staleFile>${project.build.directory}/jaxb2/.sriXjcStaleFlag</staleFile>
 							<clearOutputDir>false</clearOutputDir>
 							<schemaFiles>swrepositoryinfo.xsd, common.xsd</schemaFiles>
@@ -237,7 +232,7 @@
 							<schemaDirectory>${project.basedir}/src/main/resources/xsd</schemaDirectory>
 							<staleFile>${project.build.directory}/jaxb2/.tdXjcStaleFlag</staleFile>
 							<clearOutputDir>false</clearOutputDir>
-							<schemaFiles>td.xsd,  taskentry.xsd, common.xsd</schemaFiles>
+							<schemaFiles>td.xsd, taskentry.xsd, common.xsd</schemaFiles>
 							<packageName>cz.cuni.mff.d3s.been.core.task</packageName>
 							<extension>true</extension>
 						</configuration>
