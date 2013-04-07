@@ -21,13 +21,14 @@
         <commons-io.version>2.4</commons-io.version>
         <commons-compress.version>1.4.1</commons-compress.version>
         <junit.version>4.11</junit.version>
-        <maven.version>3.0.4</maven.version>
+        <maven.version>3.0.5</maven.version>
 
         <!-- PLUGIN VERSION CONTROL -->
         <jaxb2-maven-plugin.version>1.5</jaxb2-maven-plugin.version>
         <maven-assembly-plugin.version>2.3</maven-assembly-plugin.version>
         <maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
         <maven-jar-plugin.version>2.4</maven-jar-plugin.version>
+	<maven-plugin-annotations.version>3.2</maven-plugin-annotations.version>
         <maven-resources-plugin.version>2.6</maven-resources-plugin.version>
         <one.jar.version>0.97</one.jar.version>
         <args4j.version>2.0.16</args4j.version>
