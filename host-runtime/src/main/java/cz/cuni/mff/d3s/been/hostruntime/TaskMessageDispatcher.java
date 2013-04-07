@@ -20,7 +20,7 @@ import cz.cuni.mff.d3s.been.core.TaskMessageType;
  */
 public class TaskMessageDispatcher {
 
-	private static final Logger log = LoggerFactory.getLogger(TaskMessageDispatcher.class);
+	static final Logger log = LoggerFactory.getLogger(TaskMessageDispatcher.class);
 
 	/**
 	 * Address on which the receiver is bound
@@ -31,22 +31,24 @@ public class TaskMessageDispatcher {
 	 * THIS MESSAGE STRING IS FOR PRIVATE USE ONLY. Purpose of this message is to
 	 * kill the receiver immediately.
 	 */
-	private static final String STOP_MESSAGE = "XX1456123_STOP_RECEIVER_MESSAGE";
+	static final String STOP_MESSAGE = "XX1456123_STOP_RECEIVER_MESSAGE";
 
 	/**
 	 * identification of not bounded port
 	 */
-	private static final int NOT_BOUND_PORT = -1;
+	static final int NOT_BOUND_PORT = -1;
 
 	/**
 	 * Message queue context for sender and receiver.
 	 */
-	private volatile ZMQ.Context context;
+	volatile ZMQ.Context context;
 
 	/**
 	 * Random generated port on which the receiver is running
 	 */
-	private int receiverPort = NOT_BOUND_PORT;
+	int receiverPort = NOT_BOUND_PORT;
+
+	Thread msgQueueReader;
 
 	/**
 	 * Registered message listeners (key is messageType, value is listener itself)
@@ -61,37 +63,17 @@ public class TaskMessageDispatcher {
 		final ZMQ.Socket receiver = context.socket(ZMQ.PULL);
 		receiverPort = receiver.bindToRandomPort(BIND_ADDR);
 
-		new Thread() {
-			@Override
-			public void run() {
-				boolean run = true;
-				while (run) {
-					String message = new String(receiver.recv(0)).trim();
-					log.debug(message);
-					if (STOP_MESSAGE.equals(message)) {
-						run = false;
-					} else {
-						processMessage(message);
-					}
-				}
-				synchronized (TaskMessageDispatcher.this) {
-					receiver.close();
-					context.term();
-					context = null;
-					receiverPort = NOT_BOUND_PORT;
-				}
-			}
-		}.start();
+		msgQueueReader = new QueueReaderThread(this, receiver);
+		msgQueueReader.start();
 
 		Runtime.getRuntime().addShutdownHook(createShutdownHook());
 
 	}
-
 	private Thread createShutdownHook() {
 		return new Thread() {
 			@Override
 			public void run() {
-				TaskMessageDispatcher.this.terminate();
+				TaskMessageDispatcher.this.sendStopMessage();
 			}
 		};
 	}
@@ -103,7 +85,7 @@ public class TaskMessageDispatcher {
 	 * @param message
 	 *          to be processed
 	 */
-	private void processMessage(String message) {
+	void processMessage(String message) {
 		String messageType = getMessageType(message);
 		getMessageBody(message);
 		MessageListener listener = listeners.get(messageType);
@@ -139,10 +121,24 @@ public class TaskMessageDispatcher {
 	}
 
 	/**
-	 * Terminates running receiver thread and underlying connection. Does nothing
-	 * if receiver thread is not running.
+	 * Stop the task message listener.
 	 */
-	public void terminate() {
+	public void stop() {
+		sendStopMessage();
+		try {
+			msgQueueReader.join();
+		} catch (InterruptedException e) {
+			log.warn("Interrupted while closing task message listener connections.");
+		}
+		context.term();
+		context = null;
+		receiverPort = TaskMessageDispatcher.NOT_BOUND_PORT;
+	}
+
+	/**
+	 * Send a poison message to running receiver thread.
+	 */
+	private void sendStopMessage() {
 		synchronized (this) {
 			if (context != null) {
 				ZMQ.Socket sender = context.socket(ZMQ.PUSH);
@@ -186,48 +182,5 @@ public class TaskMessageDispatcher {
 	 */
 	public int getReceiverPort() {
 		return receiverPort;
-	}
-
-	/**
-	 * 
-	 * Implementations of this listener are used in {@link TaskMessageDispatcher}
-	 * and are responsible for processing of received messages.
-	 * 
-	 * @author Tadeáš Palusga
-	 * 
-	 */
-	public static interface MessageListener {
-		/**
-		 * This method should {@link TaskMessageType} for which the listener is
-		 * designed for
-		 * 
-		 * @return message type of the listener
-		 */
-		TaskMessageType getMessageType();
-
-		/**
-		 * Implement process logic in body of this method.
-		 * 
-		 * @param message
-		 */
-		void processMessage(String message);
-	}
-
-	/**
-	 * This exception is thrown only by methods of {@link TaskMessageDispatcher}.
-	 * 
-	 * @author Tadeáš Palusga
-	 * 
-	 */
-	public static class TaskLogProcessorException extends Exception {
-		/**
-		 * SERIAL VERSION UID
-		 */
-		private static final long serialVersionUID = 1L;
-
-		private TaskLogProcessorException(String message) {
-			//cctor is private because we don't want to allow external instantiation
-			super(message);
-		}
 	}
 }

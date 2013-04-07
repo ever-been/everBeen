@@ -12,6 +12,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.zip.ZipException;
 
 import org.apache.commons.exec.CommandLine;
@@ -24,6 +26,7 @@ import cz.cuni.mff.d3s.been.bpk.BpkConfigUtils;
 import cz.cuni.mff.d3s.been.bpk.BpkConfiguration;
 import cz.cuni.mff.d3s.been.bpk.BpkConfigurationException;
 import cz.cuni.mff.d3s.been.bpk.PackageNames;
+import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.cluster.context.Tasks;
 import cz.cuni.mff.d3s.been.core.protocol.messages.KillTaskMessage;
@@ -36,6 +39,7 @@ import cz.cuni.mff.d3s.been.debugassistant.DebugAssistant;
 import cz.cuni.mff.d3s.been.hostruntime.proc.JavaBasedProcess;
 import cz.cuni.mff.d3s.been.hostruntime.proc.Processes;
 import cz.cuni.mff.d3s.been.hostruntime.proc.TaskProcess;
+import cz.cuni.mff.d3s.been.mq.MessagingException;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
 
 /**
@@ -78,9 +82,19 @@ final class ProcessManager {
 	private Tasks tasks;
 
 	/**
+	 * Threading service
+	 */
+	private ExecutorService executorService;
+
+	/**
 	 * Listens and takes care of task messages.
 	 */
 	private TaskMessageDispatcher taskMessageDispatcher;
+
+	/**
+	 * Collect results from tasks and dispatch them
+	 */
+	private ResultsDispatcher resultsDispatcher;
 
 	/**
 	 * Creates new instance.
@@ -99,20 +113,22 @@ final class ProcessManager {
 		this.hostInfo = hostInfo;
 		this.softwareResolver = new SoftwareResolver(clusterContext.getServicesUtils(), swRepoClientFactory);
 		this.tasks = clusterContext.getTasksUtils();
+		this.executorService = Executors.newFixedThreadPool(1);
 	}
 
 	/**
 	 * Starts processing messages and tasks.
 	 */
-	public void start() {
+	public void start() throws ServiceException {
 		registerTaskMessageDispatcher();
+		registerResultsDispatcher();
 	}
 
 	/**
 	 * Stops processing, kills all remaining running processes
 	 */
 	public void stop() {
-		// TODO this should kill/flush all remaining processes
+		unregisterResultsDispatcher();
 		unregisterTaskMessageDispatcher();
 	}
 
@@ -259,7 +275,9 @@ final class ProcessManager {
 		properties.put(
 				HR_COMM_PORT,
 				Integer.toString(taskMessageDispatcher.getReceiverPort()));
-		properties.put(HR_RESULTS_PORT, System.getProperty(HR_RESULTS_PORT));
+		properties.put(
+				HR_RESULTS_PORT,
+				Integer.toString(resultsDispatcher.getPort()));
 		return properties;
 	}
 
@@ -296,13 +314,25 @@ final class ProcessManager {
 				getNodeId());
 	}
 
-	private void registerTaskMessageDispatcher() {
+	private void registerTaskMessageDispatcher() throws ServiceException {
 		taskMessageDispatcher = new TaskMessageDispatcher();
 		taskMessageDispatcher.start();
 	}
 
 	private void unregisterTaskMessageDispatcher() {
-		taskMessageDispatcher.terminate();
+		taskMessageDispatcher.stop();
 	}
 
+	private void registerResultsDispatcher() throws ServiceException {
+		resultsDispatcher = new ResultsDispatcher(clusterContext, "localhost");
+		try {
+			resultsDispatcher.start();
+		} catch (MessagingException e) {
+			throw new ServiceException("Failed to register result dispatcher", e);
+		}
+		executorService.submit(resultsDispatcher);
+	}
+	private void unregisterResultsDispatcher() {
+		resultsDispatcher.stop();
+	}
 }

@@ -70,13 +70,14 @@ public class TcpMessageReceiver implements IMessageReceiver<String> {
 			throw new MessagingException("Cannot bind socket.");
 		}
 
-		log.debug("TcpMessageReceiver is bind to address {}:{} ", connection, port);
+		log.debug("TcpMessageReceiver is bound to address {}:{} ", connection, port);
 
 	}
 
+	@Override
 	public String receive() throws MessagingException {
 		if (!isConnected()) {
-			throw new MessagingException("Receive on unbind socket.");
+			throw new MessagingException("Receive on unbound socket.");
 		}
 
 		byte[] bytes = socket.recv();
