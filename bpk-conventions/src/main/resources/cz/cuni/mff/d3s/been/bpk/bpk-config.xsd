@@ -79,11 +79,12 @@
 		</xsd:sequence>
 	</xsd:complexType>
 	
-	<xsd:complexType name="JavaBasedRuntime">
+	<xsd:complexType name="JavaRuntime">
 		<xsd:complexContent>
 			<xsd:extension base="bpk:BpkRuntime">
 				<xsd:sequence>
 					<xsd:element ref="bpk:bpkArtifacts"  minOccurs="0" />
+					<xsd:element name="jarFile" type="xsd:string" />
 				</xsd:sequence>
 			</xsd:extension>
 		</xsd:complexContent>
@@ -91,29 +92,7 @@
 	
 	<xsd:element name="runtime" type="bpk:BpkRuntime" />
 	
-	<xsd:complexType name="JavaRuntime">
-		<xsd:complexContent>
-			<xsd:extension base="bpk:JavaBasedRuntime">
-				<xsd:sequence>
-					<xsd:element name="jarFile" type="xsd:string" />
-				</xsd:sequence>
-			</xsd:extension>
-		</xsd:complexContent>
-	</xsd:complexType>
-	
 	<xsd:element name="java" type="bpk:JavaRuntime" />
-	
-	<xsd:complexType name="JythonRuntime">
-		<xsd:complexContent>
-			<xsd:extension base="bpk:JavaBasedRuntime">
-				<xsd:sequence>
-					<xsd:element name="mainScript" type="xsd:string" />
-				</xsd:sequence>
-			</xsd:extension>
-		</xsd:complexContent>
-	</xsd:complexType>
-	
-	<xsd:element name="jython" type="bpk:JythonRuntime" />
 	
 	<xsd:complexType name="NativeRuntime">
 		<xsd:complexContent>
