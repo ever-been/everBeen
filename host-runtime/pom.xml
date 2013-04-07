@@ -15,50 +15,56 @@
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
 			<artifactId>core-protocol</artifactId>
-			<version>3.0.0</version>
+			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
 			<artifactId>software-repository-client</artifactId>
-			<version>3.0.0</version>
+			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
 			<artifactId>core-cluster</artifactId>
-			<version>3.0.0</version>
+			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
 			<artifactId>core-utils</artifactId>
-			<version>3.0.0</version>
+			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
 			<artifactId>core-data</artifactId>
-			<version>3.0.0</version>
+			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
 			<artifactId>bpk-conventions</artifactId>
-			<version>3.0.0</version>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>results</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
 			<artifactId>detectors</artifactId>
-			<version>${project.parent.version}</version>
+			<version>${project.version}</version>
 		</dependency>
 
-        <dependency>
-            <groupId>cz.cuni.mff.d3s.been</groupId>
-            <artifactId>debug-assistant</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>debug-assistant</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
 		<!-- EXTERNAL -->
 		<dependency>
@@ -98,7 +104,5 @@
 			<artifactId>mockito-all</artifactId>
 			<version>1.9.5</version>
 		</dependency>
-
-
 	</dependencies>
 </project>

@@ -55,24 +55,14 @@ public final class MongoStorageTest extends Assert {
 	}
 
 	private MongoStorage storage;
-	private final ResultContainerId dummyId = new ResultContainerId() {
+	private final ResultContainerId dummyId;
 
-		@Override
-		public String getContainerName() {
-			return "testStorage";
-		}
-
-		@Override
-		public String getDatabaseName() {
-			return "results";
-		}
-
-		@Override
-		public String getEntityName() {
-			return "dummy";
-		}
-
-	};
+	MongoStorageTest() {
+		dummyId = new ResultContainerId();
+		dummyId.setDatabaseName("results");
+		dummyId.setCollectionName("testStorage");
+		dummyId.setEntityName("dummy");
+	}
 
 	private void connectStorage() throws ServiceException {
 		storage = new MongoStorage();

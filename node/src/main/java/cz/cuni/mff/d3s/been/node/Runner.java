@@ -3,6 +3,8 @@ package cz.cuni.mff.d3s.been.node;
 import static cz.cuni.mff.d3s.been.core.StatusCode.EX_OK;
 import static cz.cuni.mff.d3s.been.core.StatusCode.EX_USAGE;
 
+import java.util.Stack;
+
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -15,8 +17,11 @@ import cz.cuni.mff.d3s.been.cluster.IClusterService;
 import cz.cuni.mff.d3s.been.cluster.Instance;
 import cz.cuni.mff.d3s.been.cluster.NodeType;
 import cz.cuni.mff.d3s.been.cluster.ServiceException;
+import cz.cuni.mff.d3s.been.cluster.StopClusterServicesHook;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.hostruntime.HostRuntimes;
+import cz.cuni.mff.d3s.been.resultsrepository.ResultsRepositories;
+import cz.cuni.mff.d3s.been.resultsrepository.ResultsRepository;
 import cz.cuni.mff.d3s.been.swrepository.SoftwareRepositories;
 import cz.cuni.mff.d3s.been.swrepository.SoftwareRepository;
 import cz.cuni.mff.d3s.been.task.Managers;
@@ -67,6 +72,9 @@ public class Runner {
 	@Option(name = "-sw", aliases = { "--software-repository" }, usage = "Whether to run Software Repository on this node")
 	private boolean runSWRepository = false;
 
+	@Option(name = "-rr", aliases = { "--results-repository" }, usage = "Whether to run Results Repository on this node. Requires a running persistence layer")
+	private boolean runResultsRepository = false;
+
 	@Option(name = "-ehl", aliases = { "--enable-hazelcast-logging" }, usage = "Turns on Hazelcast logging")
 	private boolean enableHazelcastLogging = false;
 
@@ -84,6 +92,7 @@ public class Runner {
 	public void doMain(final String[] args) {
 
 		parseCmdLineArguments(args);
+		final Stack<IClusterService> runningServices = new Stack<IClusterService>();
 
 		if (printHelp) {
 			printUsage();
@@ -99,19 +108,27 @@ public class Runner {
 
 		// Run Task Manager on DATA nodes
 		if (nodeType == NodeType.DATA) {
-			startTaskManager(instance);
+			runningServices.push(startTaskManager(instance));
 		}
 
 		// Software Repository
 		if (runSWRepository) {
-			startSWRepository(instance);
+			runningServices.push(startSWRepository(instance));
 		}
 
 		// Host Runtime
 		if (runHostRuntime) {
-			startHostRuntime(instance);
+			runningServices.push(startHostRuntime(instance));
 		}
+
+		if (runResultsRepository) {
+			runningServices.push(startResultsRepository(instance));
+		}
+
+		Runtime.getRuntime().addShutdownHook(
+				new StopClusterServicesHook(runningServices, instance));
 	}
+
 	private void printUsage() {
 		CmdLineParser parser = new CmdLineParser(this);
 		parser.printUsage(System.out);
@@ -147,7 +164,7 @@ public class Runner {
 
 	}
 
-	private void startTaskManager(final HazelcastInstance instance) {
+	private IClusterService startTaskManager(final HazelcastInstance instance) {
 		log.info("Starting Task Manager.");
 		IClusterService taskManager = Managers.getManager(instance);
 		try {
@@ -157,43 +174,57 @@ public class Runner {
 			log.error("Task Manager could not be started - {}", e.getMessage());
 			log.debug("Reasons for Task Manager not starting:", e);
 		}
+		return taskManager;
 	}
 
-	private void startHostRuntime(final HazelcastInstance instance) {
+	private IClusterService startHostRuntime(final HazelcastInstance instance) {
 		log.warn("Starting Host Runtime");
 
+		IClusterService hostRuntime = HostRuntimes.getRuntime(instance);
 		try {
-			IClusterService hostRuntime = HostRuntimes.getRuntime(instance);
 			hostRuntime.start();
-
 			log.info("Host Runtime Started");
-		} catch (Exception e) {
+		} catch (ServiceException e) {
 			log.error("Host Runtime cannot be started", e.getMessage());
 			log.debug("Reasons for Host Runtime not starting:", e);
 		}
+		return hostRuntime;
 	}
 
-	private void startSWRepository(HazelcastInstance instance) {
+	private IClusterService startSWRepository(HazelcastInstance instance) {
 		log.info("Starting Software repository");
 		ClusterContext ctx = new ClusterContext(instance);
 
 		String host = ctx.getInetSocketAddress().getHostName();
 		int port = 8000;
-
-		SoftwareRepository swRepo = SoftwareRepositories.createSWRepository(
+		SoftwareRepository softwareRepository = SoftwareRepositories.createSWRepository(
 				ctx,
 				host,
 				port);
+		softwareRepository.init();
 
-		swRepo.init();
 		try {
-			swRepo.start();
+			softwareRepository.start();
 			log.info("Software Repository successfully started.");
 		} catch (ServiceException e) {
 			log.error("Software Repository could not be started - {}", e.getMessage());
 			log.debug("Reasons for Software Repository not starting:", e);
 		}
+		return softwareRepository;
+	}
 
+	private IClusterService startResultsRepository(HazelcastInstance instance) {
+		log.info("Starting Results repository");
+		ClusterContext ctx = new ClusterContext(instance);
+		ResultsRepository resultsRepository = ResultsRepositories.createResultsRepository(ctx);
+		try {
+			resultsRepository.start();
+			log.info("Results Repository successfully started.");
+		} catch (ServiceException e) {
+			log.error("Results Repository could not be started - {}", e.getMessage());
+			log.debug("Reasons for Results Repository not starting:", e);
+		}
+		return resultsRepository;
 	}
 
 	private HazelcastInstance getInstance(final NodeType nodeType) {

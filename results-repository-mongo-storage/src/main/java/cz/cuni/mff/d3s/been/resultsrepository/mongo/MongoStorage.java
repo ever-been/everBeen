@@ -50,7 +50,7 @@ public final class MongoStorage implements Storage {
 	@Override
 	public void storeResult(ResultContainerId containerId, String json) throws DAOException {
 		DB resdb = client.getDB(containerId.getDatabaseName());
-		DBCollection coll = resdb.getCollection(containerId.getContainerName());
+		DBCollection coll = resdb.getCollection(containerId.getCollectionName());
 		coll.insert(new BasicDBObject(containerId.getEntityName(), json));
 	}
 }

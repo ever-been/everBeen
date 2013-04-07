@@ -15,6 +15,14 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
+	<dependencies>
+		<dependency>
+			<groupId>org.jvnet.jaxb2_commons</groupId>
+			<artifactId>jaxb2-basics-runtime</artifactId>
+			<version>0.6.4</version>
+		</dependency>
+	</dependencies>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -40,6 +48,42 @@
 						<goals>
 							<goal>single</goal>
 						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jaxb2-maven-plugin</artifactId>
+				<version>${jaxb2-maven-plugin.version}</version>
+
+				<dependencies>
+					<dependency>
+						<groupId>org.jvnet.jaxb2_commons</groupId>
+						<artifactId>jaxb2-basics</artifactId>
+						<version>0.6.4</version>
+					</dependency>
+					<dependency>
+						<groupId>org.jvnet.jaxb2_commons</groupId>
+						<artifactId>jaxb2-fluent-api</artifactId>
+						<version>3.0</version>
+					</dependency>
+				</dependencies>
+
+				<executions>
+					<execution>
+						<id>packageConfig-xjc</id>
+						<goals>
+							<goal>xjc</goal>
+						</goals>
+						<configuration>
+							<staleFile>${project.build.directory}/jaxb2/.benchmarkXjcStaleFlag</staleFile>
+							<schemaDirectory>${project.basedir}/src/main/resources/cz/cuni/mff/d3s/been/results</schemaDirectory>
+							<clearOutputDir>true</clearOutputDir>
+							<schemaFiles>results.xsd</schemaFiles>
+							<packageName>cz.cuni.mff.d3s.been.results</packageName>
+							<extension>true</extension>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>

@@ -30,7 +30,9 @@ final class JSONResultFacade implements ResultFacade {
 		}
 		ResultCarrier rc = null;
 		try {
-			rc = new ResultCarrier(containerId, om.writeValueAsString(result));
+			rc = new ResultCarrier();
+			rc.setContainerId(containerId);
+			rc.setData(om.writeValueAsString(result));
 		} catch (IOException e) {
 			throw new DAOException(String.format(
 					"Unable to serialize Result %s to JSON.",
@@ -85,7 +87,10 @@ final class JSONResultFacade implements ResultFacade {
 						result.toString()), e);
 			}
 			try {
-				sender.send(om.writeValueAsString(new ResultCarrier(containerId, serializedResult)));
+				final ResultCarrier rc = new ResultCarrier();
+				rc.setContainerId(containerId);
+				rc.setData(serializedResult);
+				sender.send(om.writeValueAsString(rc));
 			} catch (IOException e) {
 				throw new DAOException("Unable to serialize result carrier to JSON", e);
 			} catch (MessagingException e) {

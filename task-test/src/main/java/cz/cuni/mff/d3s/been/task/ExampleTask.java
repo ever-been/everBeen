@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.d3s.been.results.DAOException;
+import cz.cuni.mff.d3s.been.results.ResultContainerId;
 import cz.cuni.mff.d3s.been.taskapi.Task;
 import cz.cuni.mff.d3s.been.taskapi.results.ResultPersister;
 
@@ -19,7 +20,11 @@ public class ExampleTask extends Task {
 
 	@Override
 	public void run() {
-		final ResultPersister rp = results.createResultPersister(new TestContainerId());
+		final ResultContainerId cid = new ResultContainerId();
+		cid.setDatabaseName("results");
+		cid.setCollectionName("testStorage");
+		cid.setEntityName("testResult");
+		final ResultPersister rp = results.createResultPersister(cid);
 		System.out.println("Hello world!");
 		try {
 			rp.persist(new TestResult());

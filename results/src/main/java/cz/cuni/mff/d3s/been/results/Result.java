@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.results;
 
+
 /**
  * A skeletal benchmark result. Extend this class with benchmarking results.
  * 
@@ -7,6 +8,7 @@ package cz.cuni.mff.d3s.been.results;
  * 
  */
 public abstract class Result {
+
 	/**
 	 * @return The name of the collection this result should be stored in. May be
 	 *         a NoSQL collection name or an SQL database name, for example.

@@ -1,16 +1,18 @@
 package cz.cuni.mff.d3s.been.cluster;
 
+import java.util.Stack;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hazelcast.core.HazelcastInstance;
 
-public class StopClusterServiceHook extends Thread {
+public class StopClusterServicesHook extends Thread {
 
-	private static final Logger log = LoggerFactory.getLogger(StopClusterServiceHook.class);
+	private static final Logger log = LoggerFactory.getLogger(StopClusterServicesHook.class);
 
 	/** Service to shutdown on SIGINT */
-	private final IClusterService service;
+	private final Stack<IClusterService> services;
 	/** Hazelcast instance to shutdown on SIGINT */
 	private final HazelcastInstance instance;
 
@@ -21,21 +23,21 @@ public class StopClusterServiceHook extends Thread {
 	 * @param service
 	 * @param inst
 	 */
-	public StopClusterServiceHook(
-			IClusterService service,
+	public StopClusterServicesHook(
+			Stack<IClusterService> services,
 			HazelcastInstance instance) {
-		this.service = service;
+		this.services = services;
 		this.instance = instance;
 	}
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
 		super.run();
-		log.info("Stopping BEEN service {}", service.toString());
-		service.stop();
+		while (!services.isEmpty()) {
+			services.pop().stop();
+		}
 		log.info("Stopping Hazelczast instance {}", instance.toString());
 		instance.getLifecycleService().shutdown();
-		log.info("Service stopped.");
+		log.info("Cluster services stopped.");
 	}
 }

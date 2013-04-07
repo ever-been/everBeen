@@ -15,12 +15,12 @@ final class QueueReaderThread extends Thread {
 			String message = new String(receiver.recv(0)).trim();
 			TaskMessageDispatcher.log.debug(message);
 			if (TaskMessageDispatcher.STOP_MESSAGE.equals(message)) {
-				this.interrupt();
+				break;
 			} else {
 				this.taskMessageDispatcher.processMessage(message);
 			}
 		}
-
 		receiver.close();
+		this.interrupt();
 	}
 }

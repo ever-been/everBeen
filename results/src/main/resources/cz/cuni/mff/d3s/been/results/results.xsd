@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+		targetNamespace="http://been.d3s.mff.cuni.cz/results"
+		elementFormDefault="unqualified"
+		attributeFormDefault="unqualified"
+		xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+		xmlns:res="http://been.d3s.mff.cuni.cz/results"
+		xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+		jaxb:extensionBindingPrefixes="xjc"
+		jaxb:version="2.0">
+
+	<xs:annotation>
+		<xs:appinfo>
+			<jaxb:globalBindings>
+				<xjc:serializable />
+			</jaxb:globalBindings>
+		</xs:appinfo>
+	</xs:annotation>
+
+	<xs:complexType name="ResultContainerId">
+		<xs:sequence>
+			<xs:element name="databaseName" type="xs:string" />
+			<xs:element name="collectionName" type="xs:string"/>
+			<xs:element name="entityName" type="xs:string" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="ResultCarrier">
+		<xs:sequence>
+			<xs:element name="containerId" type="res:ResultContainerId" />
+			<xs:element name="data" type="xs:string" />
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>
