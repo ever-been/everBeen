@@ -1,23 +1,28 @@
 package cz.cuni.mff.d3s.been.core;
 
 /**
- *
+ * 
  * Defines property names for running task. Host Runtime must define these
  * properties in order to be used in tasks.
- *
+ * 
  * @author Martin Sixta
  */
 public class TaskPropertyNames {
 	/**
 	 * System property with Task ID
 	 */
-	public static String TASK_ID = "been.task.id";
+	public static final String TASK_ID = "been.task.id";
 
 	/**
-	 *
-	 * System property with Host Runtime Communication Port (aka sink)
-	 *
+	 * System property with Host Runtime Communication Port (aka sink). Through
+	 * this port is realized for example logging.
 	 */
-	public static String HR_COMM_PORT = "been.task.mq.sink.port";
+	public static final String HR_COMM_PORT = "been.task.mq.sink.port";
+
+	/**
+	 * System property with alias for absolute path to logger script for native
+	 * tasks.
+	 */
+	public static final String LOGGER = "logger";
 
 }
