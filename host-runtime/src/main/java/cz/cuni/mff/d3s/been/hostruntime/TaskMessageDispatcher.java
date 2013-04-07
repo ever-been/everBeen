@@ -3,11 +3,11 @@ package cz.cuni.mff.d3s.been.hostruntime;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jeromq.ZMQ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.d3s.been.core.TaskMessageType;
+import cz.cuni.mff.d3s.been.mq.*;
 
 /**
  * Purpose of this service is to allow communication between HostRuntime and
@@ -23,11 +23,6 @@ public class TaskMessageDispatcher {
 	private static final Logger log = LoggerFactory.getLogger(TaskMessageDispatcher.class);
 
 	/**
-	 * Address on which the receiver is bound
-	 */
-	private static final String BIND_ADDR = "tcp://localhost";
-
-	/**
 	 * THIS MESSAGE STRING IS FOR PRIVATE USE ONLY. Purpose of this message is to
 	 * kill the receiver immediately.
 	 */
@@ -39,14 +34,19 @@ public class TaskMessageDispatcher {
 	private static final int NOT_BOUND_PORT = -1;
 
 	/**
-	 * Message queue context for sender and receiver.
-	 */
-	private volatile ZMQ.Context context;
-
-	/**
 	 * Random generated port on which the receiver is running
 	 */
 	private int receiverPort = NOT_BOUND_PORT;
+
+	/**
+	 * Message queue listening for message from tasks.
+	 */
+	IMessageQueue<String> taskMQ;
+
+	/**
+	 * Receiver of task messages.
+	 */
+	IMessageReceiver<String> receiver;
 
 	/**
 	 * Registered message listeners (key is messageType, value is listener itself)
@@ -56,28 +56,36 @@ public class TaskMessageDispatcher {
 	/**
 	 * Starts new receiver thread if not already running.
 	 */
-	public void start() {
-		context = ZMQ.context();
-		final ZMQ.Socket receiver = context.socket(ZMQ.PULL);
-		receiverPort = receiver.bindToRandomPort(BIND_ADDR);
+	public void start() throws MessagingException {
+		taskMQ = Messaging.createTcpQueue("localhost");
+		receiver = taskMQ.getReceiver();
+
+		receiverPort = receiver.getPort();
 
 		new Thread() {
 			@Override
 			public void run() {
 				boolean run = true;
 				while (run) {
-					String message = new String(receiver.recv(0)).trim();
-					log.debug(message);
-					if (STOP_MESSAGE.equals(message)) {
-						run = false;
-					} else {
-						processMessage(message);
+					String message;
+					try {
+						message = receiver.receive();
+						log.debug(message);
+
+						if (STOP_MESSAGE.equals(message)) {
+							run = false;
+						} else {
+							processMessage(message);
+						}
+					} catch (MessagingException e) {
+						log.error("Cannot receive message", e);
 					}
+
 				}
 				synchronized (TaskMessageDispatcher.this) {
-					receiver.close();
-					context.term();
-					context = null;
+					taskMQ.terminate();
+					taskMQ = null;
+					receiver = null;
 					receiverPort = NOT_BOUND_PORT;
 				}
 			}
@@ -144,11 +152,17 @@ public class TaskMessageDispatcher {
 	 */
 	public void terminate() {
 		synchronized (this) {
-			if (context != null) {
-				ZMQ.Socket sender = context.socket(ZMQ.PUSH);
-				sender.connect(String.format("%s:%d", BIND_ADDR, receiverPort));
-				sender.send(STOP_MESSAGE);
-				sender.close();
+			if (taskMQ != null) {
+				IMessageSender<String> sender = null;
+				try {
+					sender = taskMQ.createSender();
+				} catch (MessagingException e) {
+					e.printStackTrace();
+				} finally {
+					if (sender != null) {
+						sender.close();
+					}
+				}
 			}
 		}
 	}

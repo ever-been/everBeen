@@ -1,18 +1,20 @@
 package cz.cuni.mff.d3s.been.hostruntime;
 
-import cz.cuni.mff.d3s.been.detectors.Monitoring;
+import java.io.File;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
+import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
+import cz.cuni.mff.d3s.been.detectors.Monitoring;
+import cz.cuni.mff.d3s.been.mq.MessagingException;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
-
-import java.io.File;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
 
 /**
  * 
@@ -81,25 +83,29 @@ class HostRuntime implements IClusterService {
 	 * itself in cluster.
 	 */
 	@Override
-	public void start() {
-		// create ".HostRuntime" working directory
-		File workingDir = new File(hostRuntimeInfo.getWorkingDirectory());
-		workingDir.mkdirs();
+	public void start() throws ServiceException {
+		try {
+			// create ".HostRuntime" working directory
+			File workingDir = new File(hostRuntimeInfo.getWorkingDirectory());
+			workingDir.mkdirs();
 
-		startProcessManager();
+			startProcessManager();
 
-		// All listeners must be initialized before any message will be
-		// received.
-		registerListeners();
+			// All listeners must be initialized before any message will be
+			// received.
+			registerListeners();
 
-		// Now, we can register the runtime without missing any messages.
-		registerHostRuntime();
+			// Now, we can register the runtime without missing any messages.
+			registerHostRuntime();
 
-		// HR is now prepared to consume all important messages.
+			// HR is now prepared to consume all important messages.
 
-		// start monitoring
-		Path monitoringLogPath = FileSystems.getDefault().getPath(hostRuntimeInfo.getWorkingDirectory(), "monitoring.log");
-		Monitoring.startMonitoring(monitoringLogPath);
+			// start monitoring
+			Path monitoringLogPath = FileSystems.getDefault().getPath(hostRuntimeInfo.getWorkingDirectory(), "monitoring.log");
+			Monitoring.startMonitoring(monitoringLogPath);
+		} catch (Exception e) {
+			throw new ServiceException("Cannot start Host Runtime", e);
+		}
 	}
 
 	/**
@@ -121,7 +127,7 @@ class HostRuntime implements IClusterService {
 	/**
 	 * Starts process manger.
 	 */
-	private void startProcessManager() {
+	private void startProcessManager() throws MessagingException {
 		processManager = new ProcessManager(clusterContext, swRepoClientFactory, hostRuntimeInfo);
 		processManager.start();
 	}
@@ -162,6 +168,5 @@ class HostRuntime implements IClusterService {
 	private void unregisterHostRuntime() {
 		clusterContext.getRuntimesUtils().removeRuntimeInfo(hostRuntimeInfo.getId());
 	}
-
 
 }

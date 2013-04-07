@@ -10,8 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.ZipException;
 
-import cz.cuni.mff.d3s.been.debugassistant.DebugAssistant;
-import cz.cuni.mff.d3s.been.hostruntime.proc.JavaBasedProcess;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -27,8 +25,11 @@ import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
+import cz.cuni.mff.d3s.been.debugassistant.DebugAssistant;
+import cz.cuni.mff.d3s.been.hostruntime.proc.JavaBasedProcess;
 import cz.cuni.mff.d3s.been.hostruntime.proc.Processes;
 import cz.cuni.mff.d3s.been.hostruntime.proc.TaskProcess;
+import cz.cuni.mff.d3s.been.mq.MessagingException;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
 
 /**
@@ -94,7 +95,7 @@ final class ProcessManager {
 	/**
 	 * Starts processing messages and tasks.
 	 */
-	public void start() {
+	public void start() throws MessagingException {
 		registerTaskMessageDispatcher();
 	}
 
@@ -266,7 +267,7 @@ final class ProcessManager {
 		tasks.updateTaskState(taskEntry, state, logMsgTemplate, taskEntry.getId(), getNodeId());
 	}
 
-	private void registerTaskMessageDispatcher() {
+	private void registerTaskMessageDispatcher() throws MessagingException {
 		taskMessageDispatcher = new TaskMessageDispatcher();
 		taskMessageDispatcher.start();
 	}
