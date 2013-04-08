@@ -25,15 +25,15 @@ final class ZipUtil {
 	 * 
 	 * @param files
 	 *          files to archive
-	 * @param output
+	 * @param outputFile
 	 *          archive output file
 	 * @throws IOException
 	 *           when some of specified files is missing, cannot be read or output
 	 *           file cannot be opened with WRITE privileges.
 	 */
-	public void createZip(Collection<ItemToArchive> items, File output) throws IOException {
+	public static void createZip(Collection<ItemToArchive> items, File outputFile) throws IOException {
 		// initialize 
-		ZipOutputStream out = new ZipOutputStream(new FileOutputStream(output));
+		ZipOutputStream out = new ZipOutputStream(new FileOutputStream(outputFile));
 
 		// The directory entry must be present in the ZIP file
 		out.putNextEntry(new ZipEntry(FILES_DIR + File.separator));
@@ -46,7 +46,7 @@ final class ZipUtil {
 		out.close();
 	}
 
-	private void addFilesToZip(Collection<ItemToArchive> items,
+	private static void addFilesToZip(Collection<ItemToArchive> items,
 			ZipOutputStream out) throws IOException {
 		// Create a buffer for reading the files
 		byte[] buf = new byte[1024];

@@ -32,8 +32,8 @@ import zmq
 
 
 ''' CONSTANTS '''
-TASK_ID_ENVPROP_NAME = "BEEN_TASK_ID"
-PORT_ENVPROP_NAME = "BEEN_PORT"
+TASK_ID_ENVPROP_NAME = "been.task.id"
+PORT_ENVPROP_NAME = "been.task.mq.sink.port"
 
 TRACE = 1
 DEBUG = 2
@@ -66,22 +66,23 @@ ERROR = 5
 def send(logLevel, msg):
     # construct the msg in proper json format
     senderId = os.environ.get(TASK_ID_ENVPROP_NAME)
-    jsonMessage = "{logLevel:" + str(logLevel) + ",msg:\"" + msg + "\",senderId:\"" + str(senderId) + "\"}"
+    jsonMessage = "{logLevel:" + str(logLevel) + ",msg:\"" + msg.strip() + "\",senderId:\"" + str(senderId) + "\"}"
     
     # open socket connection to running host runtime
     context = zmq.Context()
-    # The default LINGER is -1, which means wait until all
-    # messages have been sent before allowing termination.
-    # Set to 0 to discard unsent messages immediately, 
-    # and any positive integer will be the number of 
-    # milliseconds to keep trying to send before discard. 
-    context.setsockopt(zmq.LINGER, 0)
     sender = context.socket(zmq.PUSH)
     
     port = os.environ.get(PORT_ENVPROP_NAME)
     sender.connect("tcp://localhost:" + str(port))
  
     sender.send(jsonMessage)
+     
+    # The default LINGER is -1, which means wait until all
+    # messages have been sent before allowing termination.
+    # Set to 0 to discard unsent messages immediately, 
+    # and any positive integer will be the number of 
+    # milliseconds to keep trying to send before discard.
+    context.setsockopt(zmq.LINGER, 0)
     
     sender.close()
     context.term()

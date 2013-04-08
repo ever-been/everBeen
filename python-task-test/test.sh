@@ -1,7 +1,7 @@
 #!/bin/bash
 
-echo "error" | python logger.py -e
-echo "warn"  | python logger.py -w
-echo "info"  | python logger.py -i
-echo "debug" | python logger.py -d
-echo "trace" | python logger.py -t
+echo "error" | python $logger -e
+echo "warn"  | python $logger -w
+echo "info"  | python $logger -i
+echo "debug" | python $logger -d
+echo "trace" | python $logger -t
