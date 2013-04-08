@@ -12,7 +12,7 @@ import cz.cuni.mff.d3s.been.bpk.JavaRuntime;
 import cz.cuni.mff.d3s.been.bpk.MetaInf;
 import cz.cuni.mff.d3s.been.bpk.NativeRuntime;
 import cz.cuni.mff.d3s.been.bpk.ObjectFactory;
-import cz.cuni.mff.d3s.been.bpk.PackageNames;
+import cz.cuni.mff.d3s.been.bpk.BpkNames;
 
 /**
  * 
@@ -64,7 +64,7 @@ public abstract class GeneratorImpl implements Generator {
 
 		Collection<ItemToArchive> items = getItemsForArchivation(configuration);
 		// we have to add generated config.xml file
-		items.add(new StringToArchive(PackageNames.CONFIG_FILE, toXml(bpkCfg)));
+		items.add(new StringToArchive(BpkNames.CONFIG_FILE, toXml(bpkCfg)));
 
 		try {
 			save(items, configuration);

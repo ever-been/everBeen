@@ -27,7 +27,7 @@ public class BpkResolver {
 		BpkConfiguration config = null;
 		try (ZipArchiveInputStream bpkZipStream = new ZipArchiveInputStream(new BufferedInputStream(bpkIs))) {
 			for (ArchiveEntry entry = bpkZipStream.getNextEntry(); entry != null; entry = bpkZipStream.getNextEntry()) {
-				if (PackageNames.CONFIG_FILE.equals(entry.getName()) && bpkZipStream.canReadEntryData(entry)) {
+				if (BpkNames.CONFIG_FILE.equals(entry.getName()) && bpkZipStream.canReadEntryData(entry)) {
 					config = BpkConfigUtils.fromXml(bpkZipStream);
 					break;
 				}

@@ -15,7 +15,11 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cz.cuni.mff.d3s.been.bpk.*;
+import cz.cuni.mff.d3s.been.bpk.Bpk;
+import cz.cuni.mff.d3s.been.bpk.BpkConfigUtils;
+import cz.cuni.mff.d3s.been.bpk.BpkConfiguration;
+import cz.cuni.mff.d3s.been.bpk.BpkConfigurationException;
+import cz.cuni.mff.d3s.been.bpk.BpkNames;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.cluster.context.Tasks;
 import cz.cuni.mff.d3s.been.core.TaskPropertyNames;
@@ -192,15 +196,12 @@ final class ProcessManager {
 
 		TaskDescriptor td = taskEntry.getTaskDescriptor();
 
-		// obtain bpk
 		Bpk bpk = softwareResolver.getBpk(td);
-
-		// unzip to task dir
 		ZipFileUtil.unzipToDir(bpk.getInputStream(), taskDirectory);
 
 		// obtain bpk configuration
 		Path dir = Paths.get(taskDirectory.toString());
-		Path configPath = dir.resolve(PackageNames.CONFIG_FILE); // TODO use bpk convetions
+		Path configPath = dir.resolve(BpkNames.CONFIG_FILE); // TODO use bpk convetions
 		BpkConfiguration bpkConfiguration = BpkConfigUtils.fromXml(configPath);
 
 		// create process for the task

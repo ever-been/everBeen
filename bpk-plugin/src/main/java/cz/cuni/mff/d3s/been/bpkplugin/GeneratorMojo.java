@@ -22,7 +22,7 @@ import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
  * @author Tadeas Palusga
  * 
  */
-@Mojo(name = "buildpackage", defaultPhase = LifecyclePhase.PACKAGE, requiresDependencyCollection = ResolutionScope.RUNTIME)
+@Mojo(name = "buildpackage", defaultPhase = LifecyclePhase.PACKAGE, requiresDependencyCollection = ResolutionScope.RUNTIME, threadSafe = true)
 @Execute(phase = LifecyclePhase.COMPILE)
 public class GeneratorMojo extends AbstractMojo {
 

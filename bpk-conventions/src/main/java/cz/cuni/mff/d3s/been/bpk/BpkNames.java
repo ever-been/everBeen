@@ -1,14 +1,16 @@
 package cz.cuni.mff.d3s.been.bpk;
 
 /**
- * The class should hold all constants related to SR Packages.
+ * The class should hold all constants related to BPK Packages.
  * 
  * @author Martin Sixta
  */
-public class PackageNames {
+public class BpkNames {
+
 	/** Name of the directory with real content in packages. */
 	public static final String FILES_DIR = "files";
 
+	/** Name of the directory with jar libraries */
 	public static final String LIB_DIR = "lib";
 
 	/** Name of the file with metadata in packages. */
