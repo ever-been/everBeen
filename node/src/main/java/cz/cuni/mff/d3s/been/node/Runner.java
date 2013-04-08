@@ -3,8 +3,6 @@ package cz.cuni.mff.d3s.been.node;
 import static cz.cuni.mff.d3s.been.core.StatusCode.EX_OK;
 import static cz.cuni.mff.d3s.been.core.StatusCode.EX_USAGE;
 
-import java.util.Stack;
-
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -13,11 +11,12 @@ import org.slf4j.LoggerFactory;
 
 import com.hazelcast.core.HazelcastInstance;
 
+import cz.cuni.mff.d3s.been.cluster.ClusterReaper;
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
 import cz.cuni.mff.d3s.been.cluster.Instance;
 import cz.cuni.mff.d3s.been.cluster.NodeType;
+import cz.cuni.mff.d3s.been.cluster.Reaper;
 import cz.cuni.mff.d3s.been.cluster.ServiceException;
-import cz.cuni.mff.d3s.been.cluster.StopClusterServicesHook;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.hostruntime.HostRuntimes;
 import cz.cuni.mff.d3s.been.resultsrepository.ResultsRepositories;
@@ -92,7 +91,6 @@ public class Runner {
 	public void doMain(final String[] args) {
 
 		parseCmdLineArguments(args);
-		final Stack<IClusterService> runningServices = new Stack<IClusterService>();
 
 		if (printHelp) {
 			printUsage();
@@ -106,27 +104,26 @@ public class Runner {
 		HazelcastInstance instance = getInstance(nodeType);
 		log.info("The node is now connected to the cluster");
 
+		Reaper clusterReaper = new ClusterReaper(instance);
+
 		// Run Task Manager on DATA nodes
 		if (nodeType == NodeType.DATA) {
-			runningServices.push(startTaskManager(instance));
+			clusterReaper.pushTarget(startTaskManager(instance));
 		}
 
-		// Software Repository
 		if (runSWRepository) {
-			runningServices.push(startSWRepository(instance));
+			clusterReaper.pushTarget(startSWRepository(instance));
 		}
 
-		// Host Runtime
 		if (runHostRuntime) {
-			runningServices.push(startHostRuntime(instance));
+			clusterReaper.pushTarget(startHostRuntime(instance));
 		}
 
 		if (runResultsRepository) {
-			runningServices.push(startResultsRepository(instance));
+			clusterReaper.pushTarget(startResultsRepository(instance));
 		}
 
-		Runtime.getRuntime().addShutdownHook(
-				new StopClusterServicesHook(runningServices, instance));
+		Runtime.getRuntime().addShutdownHook(clusterReaper);
 	}
 
 	private void printUsage() {

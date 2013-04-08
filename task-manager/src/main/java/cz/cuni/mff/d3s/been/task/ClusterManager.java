@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
+import cz.cuni.mff.d3s.been.cluster.Reaper;
 import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.mq.IMessageQueue;
@@ -88,4 +89,14 @@ final class ClusterManager implements IClusterService {
 		actionQueue.terminate();
 	}
 
+	@Override
+	public Reaper createReaper() {
+		return new Reaper() {
+
+			@Override
+			protected void reap() throws InterruptedException {
+				// TODO Auto-generated method stub
+			}
+		};
+	}
 }

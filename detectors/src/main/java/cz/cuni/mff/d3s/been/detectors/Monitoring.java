@@ -1,23 +1,22 @@
 package cz.cuni.mff.d3s.been.detectors;
 
-import cz.cuni.mff.d3s.been.core.ri.MonitorSample;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static java.nio.file.StandardOpenOption.CREATE;
+import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import static java.nio.file.StandardOpenOption.*;
+
+import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import cz.cuni.mff.d3s.been.core.ri.MonitorSample;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Kuba
- * Date: 06.04.13
- * Time: 14:29
- * To change this template use File | Settings | File Templates.
+ * Created with IntelliJ IDEA. User: Kuba Date: 06.04.13 Time: 14:29 To change
+ * this template use File | Settings | File Templates.
  */
 public class Monitoring {
 	private static final Logger log = LoggerFactory.getLogger(Monitoring.class);
@@ -28,7 +27,8 @@ public class Monitoring {
 	private static Thread monitoringThread;
 
 	public static void setMonitoringInterval(int milliseconds) {
-		if (milliseconds < 10) milliseconds = 10;
+		if (milliseconds < 10)
+			milliseconds = 10;
 
 		monitorInterval = milliseconds;
 	}
@@ -39,16 +39,21 @@ public class Monitoring {
 
 	public static synchronized void startMonitoring(final Path logPath) {
 
-		if (monitoringRunning) return;
+		if (monitoringRunning)
+			return;
 
 		monitoringRunning = true;
 
 		monitoringThread = new Thread() {
+			@Override
 			public void run() {
 				Detector detector = new Detector();
 
 				try {
-					OutputStream out = Files.newOutputStream(logPath, CREATE, TRUNCATE_EXISTING);
+					OutputStream out = Files.newOutputStream(
+							logPath,
+							CREATE,
+							TRUNCATE_EXISTING);
 					ObjectMapper mapper = new ObjectMapper();
 
 					while (monitoringRunning) {
@@ -70,7 +75,7 @@ public class Monitoring {
 			}
 		};
 
-		monitoringThread.run();
+		monitoringThread.start();
 	}
 
 	public static synchronized void stopMonitoring() {

@@ -47,6 +47,7 @@ public class TcpMessageQueue implements IMessageQueue<String> {
 
 	@Override
 	public void terminate() {
+		receiver.close();
 		context.term();
 	}
 }

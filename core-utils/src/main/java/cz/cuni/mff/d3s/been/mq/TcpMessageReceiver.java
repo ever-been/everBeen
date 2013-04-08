@@ -86,6 +86,14 @@ public class TcpMessageReceiver implements IMessageReceiver<String> {
 	}
 
 	public TcpMessageSender createSender() {
-		return new TcpMessageSender(context, connection);
+		return new TcpMessageSender(context, String.format(
+				"%s:%d",
+				connection,
+				port));
 	}
+
+	public void close() {
+		socket.close();
+	}
+
 }

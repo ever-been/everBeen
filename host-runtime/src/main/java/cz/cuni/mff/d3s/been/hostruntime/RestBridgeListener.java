@@ -6,7 +6,7 @@ import com.hazelcast.core.ItemEvent;
 import com.hazelcast.core.ItemListener;
 import com.hazelcast.impl.ascii.rest.RestValue;
 
-import cz.cuni.mff.d3s.been.cluster.IClusterService;
+import cz.cuni.mff.d3s.been.cluster.Service;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.protocol.Context;
 import cz.cuni.mff.d3s.been.core.protocol.messages.BaseMessage;
@@ -20,7 +20,7 @@ import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
  * 
  */
 @Deprecated
-final class RestBridgeListener implements ItemListener<RestValue>, IClusterService {
+final class RestBridgeListener implements ItemListener<RestValue>, Service {
 
 	final IQueue<RestValue> restQueue;
 	final ITopic<BaseMessage> globalTopic;
@@ -57,7 +57,9 @@ final class RestBridgeListener implements ItemListener<RestValue>, IClusterServi
 			Class<?> messageClass;
 			try {
 				messageClass = Class.forName(messageType);
-				BaseMessage messageValue = (BaseMessage) JSONUtils.deserialize(text, messageClass);
+				BaseMessage messageValue = (BaseMessage) JSONUtils.deserialize(
+						text,
+						messageClass);
 				globalTopic.publish(messageValue);
 			} catch (ClassNotFoundException e) {
 				// FIXME logging

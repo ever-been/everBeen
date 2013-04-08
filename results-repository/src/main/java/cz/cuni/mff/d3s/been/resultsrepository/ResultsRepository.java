@@ -7,6 +7,7 @@ import com.hazelcast.core.IQueue;
 import com.hazelcast.core.ItemListener;
 
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
+import cz.cuni.mff.d3s.been.cluster.Reaper;
 import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.results.ResultCarrier;
@@ -60,5 +61,15 @@ public class ResultsRepository implements IClusterService {
 		digester.stop();
 		storage.stop();
 		log.info("Results repository stopped.");
+	}
+
+	@Override
+	public Reaper createReaper() {
+		return new Reaper() {
+			@Override
+			protected void reap() throws InterruptedException {
+				ResultsRepository.this.stop();
+			}
+		};
 	}
 }

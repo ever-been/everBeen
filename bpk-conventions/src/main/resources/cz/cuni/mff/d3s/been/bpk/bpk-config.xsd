@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema
+<xsd:schema
 		targetNamespace="http://been.d3s.mff.cuni.cz/bpk/config"
 		elementFormDefault="unqualified"
 		attributeFormDefault="unqualified"
-		xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 		xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
 		xmlns:bpk="http://been.d3s.mff.cuni.cz/bpk/config"
 		xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
@@ -11,131 +11,110 @@
 		jaxb:version="2.0">
 
 
-	<xs:element name="bpkConfiguration">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element ref="bpk:metaInf" minOccurs="1" maxOccurs="1"/>
-				<xs:element ref="bpk:runtime" minOccurs="1" maxOccurs="1"/>
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
+	<xsd:element name="bpkConfiguration">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="bpk:metaInf" minOccurs="1" maxOccurs="1"/>
+				<xsd:element ref="bpk:runtime" minOccurs="1" maxOccurs="1"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
 	
-	<xs:element name="metaInf">
-		<xs:complexType>
-			<xs:all>
-				<xs:element name="groupId" type="xs:string" />
-				<xs:element name="bpkId" type="xs:string" />
-				<xs:element name="version" type="xs:string" />
-			</xs:all>
-		</xs:complexType>
-	</xs:element>
+	<xsd:element name="metaInf">
+		<xsd:complexType>
+			<xsd:all>
+				<xsd:element name="groupId" type="xsd:string" />
+				<xsd:element name="bpkId" type="xsd:string" />
+				<xsd:element name="version" type="xsd:string" />
+			</xsd:all>
+		</xsd:complexType>
+	</xsd:element>
 	
 	<!-- Collections -->
-	<xs:element name="bpkDependencies">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="dependency" type="bpk:BpkIdentifier" minOccurs="0" maxOccurs="unbounded" />
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
+	<xsd:element name="bpkDependencies">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="dependency" type="bpk:BpkIdentifier" minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
 	
-	<xs:element name="bpkArtifacts">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="artifact" type="bpk:ArtifactIdentifier" minOccurs="0" maxOccurs="unbounded" />
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
+	<xsd:element name="bpkArtifacts">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="artifact" type="bpk:ArtifactIdentifier" minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
 	
-	<xs:element name="providedInterfaces">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="interface" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
+	<xsd:element name="providedInterfaces">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="interface" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
 	
 	<!-- Data holders -->
-	<xs:complexType name="BpkIdentifier">
-		<xs:sequence>
-			<xs:element name="groupId" type="xs:string" />
-			<xs:element name="bpkId" type="xs:string"/>
-			<xs:element name="version" type="xs:string" />
-		</xs:sequence>
-	</xs:complexType>
+	<xsd:complexType name="BpkIdentifier">
+		<xsd:sequence>
+			<xsd:element name="groupId" type="xsd:string" />
+			<xsd:element name="bpkId" type="xsd:string"/>
+			<xsd:element name="version" type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
 	
-	<xs:complexType name="ArtifactIdentifier">
-		<xs:sequence>
-			<xs:element name="groupId" type="xs:string" />
-			<xs:element name="artifactId" type="xs:string" />
-			<xs:element name="version" type="xs:string" />
-		</xs:sequence>
-	</xs:complexType>
+	<xsd:complexType name="ArtifactIdentifier">
+		<xsd:sequence>
+			<xsd:element name="groupId" type="xsd:string" />
+			<xsd:element name="artifactId" type="xsd:string" />
+			<xsd:element name="version" type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
 		
 	<!-- Possible package types -->
-	<xs:complexType name="BpkRuntime">
-		<xs:sequence>
-			<xs:element ref="bpk:bpkDependencies" minOccurs="0" />
-		</xs:sequence>
-	</xs:complexType>
+	<xsd:complexType name="BpkRuntime">
+		<xsd:sequence>
+			<xsd:element ref="bpk:bpkDependencies" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
 	
-	<xs:complexType name="JavaBasedRuntime">
-		<xs:complexContent>
-			<xs:extension base="bpk:BpkRuntime">
-				<xs:sequence>
-					<xs:element ref="bpk:bpkArtifacts"  minOccurs="0" />
-				</xs:sequence>
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
+	<xsd:complexType name="JavaRuntime">
+		<xsd:complexContent>
+			<xsd:extension base="bpk:BpkRuntime">
+				<xsd:sequence>
+					<xsd:element ref="bpk:bpkArtifacts"  minOccurs="0" />
+					<xsd:element name="jarFile" type="xsd:string" />
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
 	
-	<xs:element name="runtime" type="bpk:BpkRuntime" />
+	<xsd:element name="runtime" type="bpk:BpkRuntime" />
 	
-	<xs:complexType name="JavaRuntime">
-		<xs:complexContent>
-			<xs:extension base="bpk:JavaBasedRuntime">
-				<xs:sequence>
-					<xs:element name="jarFile" type="xs:string" />
-				</xs:sequence>
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
+	<xsd:element name="java" type="bpk:JavaRuntime" />
 	
-	<xs:element name="java" type="bpk:JavaRuntime" />
+	<xsd:complexType name="NativeRuntime">
+		<xsd:complexContent>
+			<xsd:extension base="bpk:BpkRuntime">
+				<xsd:sequence>
+					<xsd:element name="binary" type="xsd:string" />
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
 	
-	<xs:complexType name="JythonRuntime">
-		<xs:complexContent>
-			<xs:extension base="bpk:JavaBasedRuntime">
-				<xs:sequence>
-					<xs:element name="mainScript" type="xs:string" />
-				</xs:sequence>
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
+	<xsd:element name="native" type="bpk:NativeRuntime" />
 	
-	<xs:element name="jython" type="bpk:JythonRuntime" />
+	<xsd:complexType name="Module">
+		<xsd:complexContent>
+			<xsd:extension base="bpk:BpkRuntime">
+				<xsd:sequence>
+					<xsd:element ref="bpk:providedInterfaces" minOccurs="0" />
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
 	
-	<xs:complexType name="NativeRuntime">
-		<xs:complexContent>
-			<xs:extension base="bpk:BpkRuntime">
-				<xs:sequence>
-					<xs:element name="binary" type="xs:string" />
-				</xs:sequence>
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
-	
-	<xs:element name="native" type="bpk:NativeRuntime" />
-	
-	<xs:complexType name="Module">
-		<xs:complexContent>
-			<xs:extension base="bpk:BpkRuntime">
-				<xs:sequence>
-					<xs:element ref="bpk:providedInterfaces" minOccurs="0" />
-				</xs:sequence>
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
-	
-	<xs:element name="module" type="bpk:Module" />
-</xs:schema>
+	<xsd:element name="module" type="bpk:Module" />
+</xsd:schema>

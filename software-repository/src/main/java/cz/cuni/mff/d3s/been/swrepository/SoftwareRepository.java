@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
 import cz.cuni.mff.d3s.been.cluster.Names;
+import cz.cuni.mff.d3s.been.cluster.Reaper;
 import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.sri.SWRepositoryInfo;
@@ -63,8 +64,25 @@ public class SoftwareRepository implements IClusterService {
 	}
 	@Override
 	public void stop() {
-		clusterCtx.unregisterService(Names.SWREPOSITORY_SERVICES_MAP_KEY);
+		try {
+			clusterCtx.unregisterService(Names.SWREPOSITORY_SERVICES_MAP_KEY);
+		} catch (IllegalStateException e) {
+			// unregistering over a Hazelcast instance that is no longer active
+			log.warn(
+					"Failed to unhook SoftwareRepository from the cluster. SoftwareRepository info is likely to linger.",
+					e);
+		}
 		httpServer.stop();
+	}
+
+	@Override
+	public Reaper createReaper() {
+		return new Reaper() {
+			@Override
+			protected void reap() throws InterruptedException {
+				SoftwareRepository.this.stop();
+			}
+		};
 	}
 
 	/**

@@ -23,7 +23,7 @@ import cz.cuni.mff.d3s.been.results.ResultCarrier;
  * 
  * @author Martin Sixta
  */
-final class ResultsDispatcher implements Runnable {
+final class ResultsDispatcher extends Thread {
 
 	private static final Logger log = LoggerFactory.getLogger(ResultsDispatcher.class);
 
@@ -48,14 +48,8 @@ final class ResultsDispatcher implements Runnable {
 		return receiver.getPort();
 	}
 
-	public void start() throws MessagingException {
+	public void init() throws MessagingException {
 		receiver = resultsMessages.getReceiver();
-		resultQueue.add(new ResultCarrier());
-		resultQueue.add(new ResultCarrier());
-	}
-
-	public void stop() {
-		Thread.currentThread().interrupt();
 	}
 
 	@Override

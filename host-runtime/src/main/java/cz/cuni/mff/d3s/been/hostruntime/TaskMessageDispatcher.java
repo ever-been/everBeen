@@ -3,11 +3,19 @@ package cz.cuni.mff.d3s.been.hostruntime;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jeromq.ZMQ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cz.cuni.mff.d3s.been.cluster.Reapable;
+import cz.cuni.mff.d3s.been.cluster.Reaper;
+import cz.cuni.mff.d3s.been.cluster.Service;
+import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.core.TaskMessageType;
+import cz.cuni.mff.d3s.been.mq.IMessageQueue;
+import cz.cuni.mff.d3s.been.mq.IMessageReceiver;
+import cz.cuni.mff.d3s.been.mq.IMessageSender;
+import cz.cuni.mff.d3s.been.mq.Messaging;
+import cz.cuni.mff.d3s.been.mq.MessagingException;
 
 /**
  * Purpose of this service is to allow communication between HostRuntime and
@@ -18,14 +26,9 @@ import cz.cuni.mff.d3s.been.core.TaskMessageType;
  * @author Tadeáš Palusga
  * 
  */
-public class TaskMessageDispatcher {
+public class TaskMessageDispatcher implements Service, Reapable {
 
 	static final Logger log = LoggerFactory.getLogger(TaskMessageDispatcher.class);
-
-	/**
-	 * Address on which the receiver is bound
-	 */
-	private static final String BIND_ADDR = "tcp://localhost";
 
 	/**
 	 * THIS MESSAGE STRING IS FOR PRIVATE USE ONLY. Purpose of this message is to
@@ -39,16 +42,17 @@ public class TaskMessageDispatcher {
 	static final int NOT_BOUND_PORT = -1;
 
 	/**
-	 * Message queue context for sender and receiver.
-	 */
-	volatile ZMQ.Context context;
-
-	/**
-	 * Random generated port on which the receiver is running
+	 * Message queue listening for message from tasks.
 	 */
 	int receiverPort = NOT_BOUND_PORT;
 
 	Thread msgQueueReader;
+	IMessageQueue<String> taskMQ;
+
+	/**
+	 * Receiver of task messages.
+	 */
+	IMessageReceiver<String> receiver;
 
 	/**
 	 * Registered message listeners (key is messageType, value is listener itself)
@@ -58,24 +62,67 @@ public class TaskMessageDispatcher {
 	/**
 	 * Starts new receiver thread if not already running.
 	 */
-	public void start() {
-		context = ZMQ.context();
-		final ZMQ.Socket receiver = context.socket(ZMQ.PULL);
-		receiverPort = receiver.bindToRandomPort(BIND_ADDR);
+	@Override
+	public void start() throws ServiceException {
+		taskMQ = Messaging.createTcpQueue("localhost");
+		try {
+			receiver = taskMQ.getReceiver();
+		} catch (MessagingException e) {
+			throw new ServiceException("Cannot initialize ZMQ message reciever", e);
+		}
+
+		receiverPort = receiver.getPort();
 
 		msgQueueReader = new QueueReaderThread(this, receiver);
 		msgQueueReader.start();
-
-		Runtime.getRuntime().addShutdownHook(createShutdownHook());
-
 	}
-	private Thread createShutdownHook() {
-		return new Thread() {
+
+	/**
+	 * Stop the task message listener.
+	 */
+	@Override
+	public void stop() {
+		try {
+			msgQueueReader.interrupt();
+			try {
+				poisonReader();
+				msgQueueReader.join();
+			} catch (MessagingException e) {
+				log.warn("Failed to poison task log reader, socket leak is likely.", e);
+			}
+		} catch (InterruptedException e) {
+			log.warn("Interrupted while closing task message listener connections. Socket leaks are likely.");
+		}
+		taskMQ.terminate();
+		taskMQ = null;
+		receiverPort = TaskMessageDispatcher.NOT_BOUND_PORT;
+	}
+
+	@Override
+	public Reaper createReaper() {
+		return new Reaper() {
 			@Override
-			public void run() {
-				TaskMessageDispatcher.this.sendStopMessage();
+			protected void reap() throws InterruptedException {
+				//msgQueueReader.interrupt();
+				try {
+					poisonReader();
+					msgQueueReader.join();
+				} catch (MessagingException e) {
+					log.warn(
+							"Failed to poison task log reader, socket leak is likely.",
+							e);
+				}
+				taskMQ.terminate();
+				taskMQ = null;
+				receiverPort = TaskMessageDispatcher.NOT_BOUND_PORT;
 			}
 		};
+	}
+
+	private void poisonReader() throws MessagingException {
+		IMessageSender<String> sender = taskMQ.createSender();
+		sender.send(STOP_MESSAGE);
+		sender.close();
 	}
 
 	/**
@@ -118,35 +165,6 @@ public class TaskMessageDispatcher {
 		// TODO ...
 
 		return null;
-	}
-
-	/**
-	 * Stop the task message listener.
-	 */
-	public void stop() {
-		sendStopMessage();
-		try {
-			msgQueueReader.join();
-		} catch (InterruptedException e) {
-			log.warn("Interrupted while closing task message listener connections.");
-		}
-		context.term();
-		context = null;
-		receiverPort = TaskMessageDispatcher.NOT_BOUND_PORT;
-	}
-
-	/**
-	 * Send a poison message to running receiver thread.
-	 */
-	private void sendStopMessage() {
-		synchronized (this) {
-			if (context != null) {
-				ZMQ.Socket sender = context.socket(ZMQ.PUSH);
-				sender.connect(String.format("%s:%d", BIND_ADDR, receiverPort));
-				sender.send(STOP_MESSAGE);
-				sender.close();
-			}
-		}
 	}
 
 	/**

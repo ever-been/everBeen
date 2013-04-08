@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.hazelcast.core.Client;
 
-import cz.cuni.mff.d3s.been.cluster.IClusterService;
+import cz.cuni.mff.d3s.been.cluster.Service;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.mq.IMessageSender;
 
@@ -17,7 +17,7 @@ import cz.cuni.mff.d3s.been.mq.IMessageSender;
  * 
  * @author Martin Sixta
  */
-final class ClientListener implements com.hazelcast.core.ClientListener, IClusterService {
+final class ClientListener implements com.hazelcast.core.ClientListener, Service {
 
 	private ClusterContext clusterCtx;
 	private IMessageSender inprocMessaging;

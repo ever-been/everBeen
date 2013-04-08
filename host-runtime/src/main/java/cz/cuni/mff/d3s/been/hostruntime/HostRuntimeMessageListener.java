@@ -7,14 +7,14 @@ import com.hazelcast.core.ITopic;
 import com.hazelcast.core.Message;
 import com.hazelcast.core.MessageListener;
 
-import cz.cuni.mff.d3s.been.cluster.IClusterService;
+import cz.cuni.mff.d3s.been.cluster.Service;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.protocol.Context;
 import cz.cuni.mff.d3s.been.core.protocol.messages.BaseMessage;
 import cz.cuni.mff.d3s.been.core.protocol.messages.KillTaskMessage;
 import cz.cuni.mff.d3s.been.core.protocol.messages.RunTaskMessage;
 
-final class HostRuntimeMessageListener implements MessageListener<BaseMessage>, IClusterService {
+final class HostRuntimeMessageListener implements MessageListener<BaseMessage>, Service {
 
 	private static final Logger log = LoggerFactory.getLogger(HostRuntimeMessageListener.class);
 
@@ -22,7 +22,9 @@ final class HostRuntimeMessageListener implements MessageListener<BaseMessage>, 
 
 	final ITopic<BaseMessage> globalTopic;
 
-	public HostRuntimeMessageListener(final ProcessManager hostRuntime, final ClusterContext clusterContext) {
+	public HostRuntimeMessageListener(
+			final ProcessManager hostRuntime,
+			final ClusterContext clusterContext) {
 		this.hostRuntime = hostRuntime;
 		globalTopic = clusterContext.getTopic(Context.GLOBAL_TOPIC.getName());
 	}

@@ -1,35 +1,47 @@
 package cz.cuni.mff.d3s.been.bpkplugin;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
- * Simple POJO file which represents file in generated bpk archive.
- * @author donarus
- *
+ * Simple POJO file which represents file in generated BPK archive.
+ * 
+ * @author Tadeas Palusga
+ * 
  */
-final class FileToArchive {
+final class FileToArchive implements ItemToArchive {
 
-	//file on disk which should be added to bpk archive
+	/**
+	 * file on disk which should be added to BPK archive
+	 */
 	private File file;
 
-	//path in bpk archive
+	/**
+	 * path in BPK archive
+	 */
 	private String pathInZip;
 
 	/**
-	 * @param pathInZip path in bpk archive
-	 * @param file file on disk which should be added to bpk archive
+	 * @param pathInZip
+	 *          path in BPK archive
+	 * @param file
+	 *          file on disk which should be added to BPK archive
 	 */
 	public FileToArchive(String pathInZip, File file) {
 		this.pathInZip = pathInZip;
 		this.file = file;
 	}
 
-	public String getPathInZip() {
-		return pathInZip;
+	@Override
+	public InputStream getInputStream() throws IOException {
+		return new FileInputStream(file);
 	}
 
-	public File getFile() {
-		return file;
+	@Override
+	public String getPathInZip() {
+		return pathInZip;
 	}
 
 }

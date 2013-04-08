@@ -28,7 +28,6 @@ public class TcpMessageSender implements IMessageSender<String> {
 
 	public TcpMessageSender(ZMQ.Context context, String connection) {
 		this.context = context;
-
 		this.connection = connection;
 	}
 
@@ -41,15 +40,27 @@ public class TcpMessageSender implements IMessageSender<String> {
 	public void connect() throws MessagingException {
 		if (socket == null) {
 			socket = context.socket(ZMQ.PUSH);
-			boolean connected = socket.connect(connection);
+			boolean connected;
+			try {
+				if (Thread.currentThread().isInterrupted()) {
+					connected = socket.connect(connection);
+					Thread.currentThread().interrupt();
+				} else {
+					connected = socket.connect(connection);
+				}
+			} catch (IllegalArgumentException e) {
+				throw new MessagingException(String.format(
+						"Failed to connect to %s",
+						connection), e);
+			}
 
 			if (!connected) {
-				String msg = String.format("Cannot connect to %s", connection);
-				throw new MessagingException(msg);
+				throw new MessagingException(String.format(
+						"Cannot connect to %s",
+						connection));
 			}
 		}
 	}
-
 	/**
 	 * Disconnects the sender from the queue. Subsequent calls to
 	 * {@link #send(java.io.Serializable)} will throw an exception.
@@ -93,7 +104,9 @@ public class TcpMessageSender implements IMessageSender<String> {
 	 */
 	private void checkIsConnected() throws MessagingException {
 		if (socket == null) {
-			throw new MessagingException(String.format("Not connected to %s!", connection));
+			throw new MessagingException(String.format(
+					"Not connected to %s!",
+					connection));
 		}
 	}
 

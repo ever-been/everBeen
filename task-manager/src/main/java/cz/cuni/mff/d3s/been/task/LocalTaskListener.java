@@ -8,7 +8,7 @@ import com.hazelcast.core.EntryEvent;
 import com.hazelcast.core.EntryListener;
 import com.hazelcast.core.IMap;
 
-import cz.cuni.mff.d3s.been.cluster.IClusterService;
+import cz.cuni.mff.d3s.been.cluster.Service;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.mq.IMessageSender;
@@ -20,7 +20,7 @@ import cz.cuni.mff.d3s.been.mq.MessagingException;
  * 
  * @author Martin Sixta
  */
-final class LocalTaskListener implements EntryListener<String, TaskEntry>, IClusterService {
+final class LocalTaskListener implements EntryListener<String, TaskEntry>, Service {
 	private static final Logger log = LoggerFactory.getLogger(LocalTaskListener.class);
 
 	private IMap<String, TaskEntry> taskMap;
@@ -57,7 +57,9 @@ final class LocalTaskListener implements EntryListener<String, TaskEntry>, IClus
 		try {
 			sender.send(new NewTaskMessage(entry));
 		} catch (MessagingException e) {
-			String msg = String.format("Cannot send message to '%s'", sender.getConnection());
+			String msg = String.format(
+					"Cannot send message to '%s'",
+					sender.getConnection());
 			log.error(msg, e);
 		}
 	}

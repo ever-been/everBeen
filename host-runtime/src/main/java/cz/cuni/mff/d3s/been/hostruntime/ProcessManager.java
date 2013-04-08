@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipException;
 
 import org.apache.commons.exec.CommandLine;
@@ -26,6 +27,9 @@ import cz.cuni.mff.d3s.been.bpk.BpkConfigUtils;
 import cz.cuni.mff.d3s.been.bpk.BpkConfiguration;
 import cz.cuni.mff.d3s.been.bpk.BpkConfigurationException;
 import cz.cuni.mff.d3s.been.bpk.PackageNames;
+import cz.cuni.mff.d3s.been.cluster.Reapable;
+import cz.cuni.mff.d3s.been.cluster.Reaper;
+import cz.cuni.mff.d3s.been.cluster.Service;
 import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.cluster.context.Tasks;
@@ -51,7 +55,7 @@ import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
  * @author Martin Sixta
  * @author Tadeáš Palusga
  */
-final class ProcessManager {
+final class ProcessManager implements Service, Reapable {
 
 	/** Logger */
 	private static final Logger log = LoggerFactory.getLogger(ProcessManager.class);
@@ -119,6 +123,7 @@ final class ProcessManager {
 	/**
 	 * Starts processing messages and tasks.
 	 */
+	@Override
 	public void start() throws ServiceException {
 		registerTaskMessageDispatcher();
 		registerResultsDispatcher();
@@ -127,9 +132,24 @@ final class ProcessManager {
 	/**
 	 * Stops processing, kills all remaining running processes
 	 */
+	@Override
 	public void stop() {
 		unregisterResultsDispatcher();
 		unregisterTaskMessageDispatcher();
+	}
+
+	@Override
+	public Reaper createReaper() {
+		final Reaper reaper = new Reaper() {
+			@Override
+			protected void reap() throws InterruptedException {
+				resultsDispatcher.interrupt();
+				executorService.shutdown();
+				executorService.awaitTermination(300, TimeUnit.MILLISECONDS);
+			}
+		};
+		reaper.pushTarget(taskMessageDispatcher);
+		return reaper;
 	}
 
 	/**
@@ -320,19 +340,30 @@ final class ProcessManager {
 	}
 
 	private void unregisterTaskMessageDispatcher() {
+		log.debug("Stopping task message dispatcher...");
 		taskMessageDispatcher.stop();
+		log.debug("Result dispatcher stopped.");
 	}
 
 	private void registerResultsDispatcher() throws ServiceException {
 		resultsDispatcher = new ResultsDispatcher(clusterContext, "localhost");
 		try {
-			resultsDispatcher.start();
+			resultsDispatcher.init();
 		} catch (MessagingException e) {
 			throw new ServiceException("Failed to register result dispatcher", e);
 		}
 		executorService.submit(resultsDispatcher);
 	}
 	private void unregisterResultsDispatcher() {
-		resultsDispatcher.stop();
+		log.debug("Stopping result dispatcher...");
+		executorService.shutdown();
+		try {
+			executorService.awaitTermination(1, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			log.warn(
+					"Results dispatcher interrupted during shutdown sequence. Socket leaks are likely.",
+					e);
+		}
+		log.debug("Result dispatcher stopped.");
 	}
 }

@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
+import cz.cuni.mff.d3s.been.cluster.Reaper;
 import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
@@ -86,7 +87,6 @@ class HostRuntime implements IClusterService {
 	 */
 	@Override
 	public void start() throws ServiceException {
-
 		try {
 			// create ".HostRuntime" working directory
 			File workingDir = new File(hostRuntimeInfo.getWorkingDirectory());
@@ -102,16 +102,15 @@ class HostRuntime implements IClusterService {
 			registerHostRuntime();
 
 			// HR is now prepared to consume all important messages.
-		} catch (Exception e) {
-			throw new ServiceException("Cannot start HostRuntime", e);
-		}
-		// HR is now prepared to consume all important messages.
 
-		// start monitoring
-		Path monitoringLogPath = FileSystems.getDefault().getPath(
-				hostRuntimeInfo.getWorkingDirectory(),
-				"monitoring.log");
-		Monitoring.startMonitoring(monitoringLogPath);
+			// start monitoring
+			Path monitoringLogPath = FileSystems.getDefault().getPath(
+					hostRuntimeInfo.getWorkingDirectory(),
+					"monitoring.log");
+			Monitoring.startMonitoring(monitoringLogPath);
+		} catch (Exception e) {
+			throw new ServiceException("Cannot start Host Runtime", e);
+		}
 	}
 
 	/**
@@ -119,17 +118,25 @@ class HostRuntime implements IClusterService {
 	 */
 	@Override
 	public void stop() {
-		// Runtime must be unregistered first
+		log.info("Stopping Host Runtime...");
 		unregisterHostRuntime();
-
-		// Now, no new message should be received and we can unregister
-		// listeners
 		unregisterListeners();
-
-		// stops processes
 		stopProcessManager();
+		log.info("Host Runtime stopped.");
 	}
 
+	@Override
+	public Reaper createReaper() {
+		final Reaper reaper = new Reaper() {
+			@Override
+			protected void reap() throws InterruptedException {
+				unregisterHostRuntime();
+				unregisterListeners();
+			}
+		};
+		reaper.pushTarget(processManager);
+		return reaper;
+	}
 	/**
 	 * Starts process manger.
 	 */
@@ -142,8 +149,10 @@ class HostRuntime implements IClusterService {
 	 * Stops process manager.
 	 */
 	private void stopProcessManager() {
+		log.debug("Stopping process manager...");
 		processManager.stop();
 		processManager = null;
+		log.debug("Process manager stopped.");
 	}
 
 	/**
@@ -172,7 +181,16 @@ class HostRuntime implements IClusterService {
 	 * Removes {@link RuntimeInfo} (created in constructor) from cluster.
 	 */
 	private void unregisterHostRuntime() {
-		clusterContext.getRuntimesUtils().removeRuntimeInfo(hostRuntimeInfo.getId());
+		try {
+			clusterContext.getRuntimesUtils().removeRuntimeInfo(
+					hostRuntimeInfo.getId());
+		} catch (IllegalStateException e) {
+			// an attempt is made to unregister on a cluster instance that is no longer active
+			// this happens when Hazelcast shutdown hook snags runtime control before BEEN shutdown hooks
+			log.warn(
+					"Failed to unhook HostRuntime from the cluster. HostRuntime data is likely to linger.",
+					e);
+		}
 	}
 
 }
