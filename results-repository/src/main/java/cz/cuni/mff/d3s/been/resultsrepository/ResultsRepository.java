@@ -29,7 +29,7 @@ public class ResultsRepository implements IClusterService {
 
 	/** Result queue this repository is listening on */
 	private IQueue<ResultCarrier> resQueue;
-	private final ResultQueueDigester digester;
+	private ResultQueueDigester digester;
 	private final ItemListener<ResultCarrier> resQueueListener;
 
 	/** The cluster instance in which this repository is running */
@@ -40,15 +40,18 @@ public class ResultsRepository implements IClusterService {
 	ResultsRepository(ClusterContext clusterCtx, Storage storage) {
 		this.clusterCtx = clusterCtx;
 		this.storage = storage;
-		this.digester = new ResultQueueDigester(resQueue, storage);
 		this.resQueueListener = new ResultCounterListener(digester);
 	}
 
 	@Override
 	public void start() throws ServiceException {
 		log.info("Starting results repository...");
+		if (storage == null) {
+			throw new ServiceException("Results Repository presistence layer is unavailable.");
+		}
 		storage.start();
 		resQueue = clusterCtx.getInstance().getQueue(RESULT_QUEUE);
+		digester = new ResultQueueDigester(resQueue, storage);
 		digester.start();
 		resQueue.addItemListener(resQueueListener, false);
 		log.info("Results repository successfully started!");
