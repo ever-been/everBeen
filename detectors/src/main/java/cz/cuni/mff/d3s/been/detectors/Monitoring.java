@@ -70,7 +70,7 @@ public class Monitoring {
 			}
 		};
 
-		monitoringThread.run();
+		monitoringThread.start();
 	}
 
 	public static synchronized void stopMonitoring() {

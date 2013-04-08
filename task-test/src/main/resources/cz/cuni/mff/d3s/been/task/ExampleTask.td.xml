@@ -1,20 +1,20 @@
 <?xml version="1.0"?>
 <taskDescriptor xmlns="http://been.d3s.mff.cuni.cz/taskmanager/td"
-                groupId="cz.cuni.mff.d3s.been" bpkId="task-test" version="3.0.0"
-                name="echo">
-	<package>
-		<name>task-test-3.0.0.bpk</name>
-	</package>
+				groupId="cz.cuni.mff.d3s.been" bpkId="task-test" version="3.0.0"
+				name="echo">
 
 	<hostRuntimes>
 
 	</hostRuntimes>
 
+
+	<!--
 	<debug>
 		<mode>listen</mode>
 		<host>0.0.0.0</host>
 		<port>0</port>
 		<suspend>true</suspend>
 	</debug>
+	-->
 
 </taskDescriptor>
