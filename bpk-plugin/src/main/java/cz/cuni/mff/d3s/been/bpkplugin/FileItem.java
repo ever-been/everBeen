@@ -9,7 +9,7 @@ import java.util.List;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.maven.plugins.annotations.Parameter;
 
-import cz.cuni.mff.d3s.been.bpk.PackageNames;
+import cz.cuni.mff.d3s.been.bpk.BpkNames;
 
 /**
  * Represents wildcard or file which will be added into generated BPK bundle
@@ -51,7 +51,7 @@ public final class FileItem {
 	public List<FileToArchive> getFilesToArchive() {
 		checkParameters();
 
-		String folderName = PackageNames.FILES_DIR;
+		String folderName = BpkNames.FILES_DIR;
 		List<File> files = collectFilesForAdding();
 
 		List<FileToArchive> filesToArchive = new ArrayList<FileToArchive>();

@@ -1,6 +1,6 @@
 package cz.cuni.mff.d3s.been.bpkplugin;
 
-import static cz.cuni.mff.d3s.been.bpk.PackageNames.FILES_DIR;
+import static cz.cuni.mff.d3s.been.bpk.BpkNames.FILES_DIR;
 
 import java.io.File;
 import java.util.ArrayList;

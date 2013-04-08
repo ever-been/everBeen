@@ -103,7 +103,6 @@ public class TaskMessageDispatcher implements Service, Reapable {
 		return new Reaper() {
 			@Override
 			protected void reap() throws InterruptedException {
-				//msgQueueReader.interrupt();
 				try {
 					poisonReader();
 					msgQueueReader.join();

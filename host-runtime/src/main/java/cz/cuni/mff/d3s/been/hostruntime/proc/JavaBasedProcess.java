@@ -1,8 +1,5 @@
 package cz.cuni.mff.d3s.been.hostruntime.proc;
 
-import static cz.cuni.mff.d3s.been.bpk.PackageNames.FILES_DIR;
-import static cz.cuni.mff.d3s.been.bpk.PackageNames.LIB_DIR;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -12,17 +9,18 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.jar.JarFile;
 
-import cz.cuni.mff.d3s.been.core.task.ModeEnum;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.d3s.been.bpk.ArtifactIdentifier;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
+import cz.cuni.mff.d3s.been.bpk.BpkNames;
 import cz.cuni.mff.d3s.been.bpk.JavaRuntime;
+import cz.cuni.mff.d3s.been.core.task.ModeEnum;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.hostruntime.TaskException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -90,8 +88,8 @@ public class JavaBasedProcess implements TaskProcess {
 
 	@Override
 	public CommandLine createCommandLine() throws TaskException {
-		Path filesDir = Paths.get(FILES_DIR);
-		Path libDir = Paths.get(LIB_DIR);
+		Path filesDir = Paths.get(BpkNames.FILES_DIR);
+		Path libDir = Paths.get(BpkNames.LIB_DIR);
 		Path jarPath = taskDir.resolve("files").resolve(runtime.getJarFile());
 
 		String filesCp = filesDir.resolve(CP_WILDCARD).toString(); // dirty tricks

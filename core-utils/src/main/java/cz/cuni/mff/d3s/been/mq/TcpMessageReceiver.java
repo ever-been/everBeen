@@ -57,6 +57,14 @@ public class TcpMessageReceiver implements IMessageReceiver<String> {
 		return port;
 	}
 
+	@Override
+	public void close() {
+		if (isConnected()) {
+			socket.close();
+			socket = null;
+		}
+	}
+
 	public void bind() throws MessagingException {
 		if (isConnected()) {
 			return; // already connected
@@ -90,10 +98,6 @@ public class TcpMessageReceiver implements IMessageReceiver<String> {
 				"%s:%d",
 				connection,
 				port));
-	}
-
-	public void close() {
-		socket.close();
 	}
 
 }

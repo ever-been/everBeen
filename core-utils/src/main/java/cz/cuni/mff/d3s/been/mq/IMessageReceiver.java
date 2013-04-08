@@ -30,6 +30,20 @@ public interface IMessageReceiver<T extends Serializable> {
 	 */
 	public boolean isConnected();
 
+	/**
+	 * Returns port the receiver is bind to.
+	 * 
+	 * The port does not make always sense, as in inproc case.
+	 * 
+	 * @return port the receiver is bind to
+	 */
 	public int getPort();
+
+	/**
+	 * Closes the receiver.
+	 * 
+	 * @throws MessagingException
+	 */
+	public void close();
 
 }

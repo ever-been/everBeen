@@ -1,6 +1,6 @@
 package cz.cuni.mff.d3s.been.bpkplugin;
 
-import static cz.cuni.mff.d3s.been.bpk.PackageNames.FILES_DIR;
+import static cz.cuni.mff.d3s.been.bpk.BpkNames.FILES_DIR;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import cz.cuni.mff.d3s.been.bpk.ArtifactIdentifier;
 import cz.cuni.mff.d3s.been.bpk.BpkArtifacts;
 import cz.cuni.mff.d3s.been.bpk.JavaRuntime;
 import cz.cuni.mff.d3s.been.bpk.ObjectFactory;
-import cz.cuni.mff.d3s.been.bpk.PackageNames;
+import cz.cuni.mff.d3s.been.bpk.BpkNames;
 
 /**
  * 
@@ -106,7 +106,7 @@ class JavaGenerator extends GeneratorImpl {
 
 		for (Artifact artifact : config.artifacts) {
 			File artifactFile = artifact.getFile();
-			File destinationFile = new File(PackageNames.LIB_DIR, artifactFile.getName());
+			File destinationFile = new File(BpkNames.LIB_DIR, artifactFile.getName());
 			libs.add(new FileToArchive(destinationFile.getPath(), artifactFile));
 		}
 

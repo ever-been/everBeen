@@ -26,7 +26,7 @@ import cz.cuni.mff.d3s.been.bpk.Bpk;
 import cz.cuni.mff.d3s.been.bpk.BpkConfigUtils;
 import cz.cuni.mff.d3s.been.bpk.BpkConfiguration;
 import cz.cuni.mff.d3s.been.bpk.BpkConfigurationException;
-import cz.cuni.mff.d3s.been.bpk.PackageNames;
+import cz.cuni.mff.d3s.been.bpk.BpkNames;
 import cz.cuni.mff.d3s.been.cluster.Reapable;
 import cz.cuni.mff.d3s.been.cluster.Reaper;
 import cz.cuni.mff.d3s.been.cluster.Service;
@@ -240,15 +240,12 @@ final class ProcessManager implements Service, Reapable {
 
 		TaskDescriptor td = taskEntry.getTaskDescriptor();
 
-		// obtain bpk
 		Bpk bpk = softwareResolver.getBpk(td);
-
-		// unzip to task dir
 		ZipFileUtil.unzipToDir(bpk.getInputStream(), taskDirectory);
 
 		// obtain bpk configuration
 		Path dir = Paths.get(taskDirectory.toString());
-		Path configPath = dir.resolve(PackageNames.CONFIG_FILE); // TODO use bpk convetions
+		Path configPath = dir.resolve(BpkNames.CONFIG_FILE); // TODO use bpk convetions
 		BpkConfiguration bpkConfiguration = BpkConfigUtils.fromXml(configPath);
 
 		// create process for the task
