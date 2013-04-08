@@ -7,6 +7,7 @@ import com.hazelcast.core.IQueue;
 import com.hazelcast.core.ItemListener;
 
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
+import cz.cuni.mff.d3s.been.cluster.Names;
 import cz.cuni.mff.d3s.been.cluster.Reaper;
 import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
@@ -24,8 +25,6 @@ public class ResultsRepository implements IClusterService {
 
 	/** Results repository logger */
 	private static final Logger log = LoggerFactory.getLogger(ResultsRepository.class);
-
-	public static final String RESULT_QUEUE = "results";
 
 	/** Result queue this repository is listening on */
 	private IQueue<ResultCarrier> resQueue;
@@ -50,7 +49,7 @@ public class ResultsRepository implements IClusterService {
 			throw new ServiceException("Results Repository presistence layer is unavailable.");
 		}
 		storage.start();
-		resQueue = clusterCtx.getInstance().getQueue(RESULT_QUEUE);
+		resQueue = clusterCtx.getInstance().getQueue(Names.RESULT_QUEUE_NAME);
 		digester = new ResultQueueDigester(resQueue, storage);
 		digester.start();
 		resQueue.addItemListener(resQueueListener, false);
@@ -68,11 +67,18 @@ public class ResultsRepository implements IClusterService {
 
 	@Override
 	public Reaper createReaper() {
-		return new Reaper() {
+		final Reaper reaper = new Reaper() {
 			@Override
 			protected void reap() throws InterruptedException {
-				ResultsRepository.this.stop();
+				resQueue.removeItemListener(resQueueListener);
+			}
+
+			@Override
+			protected void shutdown() throws InterruptedException {
+				storage.stop();
 			}
 		};
+		reaper.pushTarget(digester);
+		return reaper;
 	}
 }

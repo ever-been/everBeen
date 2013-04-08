@@ -34,7 +34,6 @@ public abstract class Reaper extends Thread {
 		try {
 			log.debug("Reaper is on the move.");
 			reap();
-			log.debug("Reaper has taken his toll.");
 		} catch (InterruptedException e) {
 			log.warn("Reaper was interrupted during his reaping.", e);
 		}
@@ -46,6 +45,7 @@ public abstract class Reaper extends Thread {
 		} catch (InterruptedException e) {
 			log.warn("{} was interrupted during shutdown.", e);
 		}
+		log.debug("Reaper has taken his toll.");
 	}
 
 	/**
