@@ -25,10 +25,14 @@ final class TaskMessageProcessor extends Thread {
 
 	@Override
 	public void run() {
-		// TODO add poison
 		while (true) {
 			try {
 				TaskMessage message = receiver.receive();
+
+				if (message instanceof PoisonMessage) {
+					log.info("Poison received, exiting");
+					break;
+				}
 
 				log.debug("Task Action of type '{}' received", message.getClass());
 

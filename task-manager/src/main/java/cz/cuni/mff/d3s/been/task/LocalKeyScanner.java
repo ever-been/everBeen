@@ -1,10 +1,16 @@
 package cz.cuni.mff.d3s.been.task;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hazelcast.core.IMap;
 
+import cz.cuni.mff.d3s.been.cluster.Service;
+import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.mq.IMessageSender;
@@ -27,39 +33,46 @@ import cz.cuni.mff.d3s.been.mq.IMessageSender;
  * 
  * @author Martin Sixta
  */
-final class LocalKeyScanner implements Runnable {
+final class LocalKeyScanner implements Service {
 	private static final Logger log = LoggerFactory.getLogger(LocalKeyScanner.class);
 
 	private final ClusterContext clusterCtx;
 	private IMessageSender<TaskMessage> sender;
+
+	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+	private final LocalKeyScannerRunnable runnable;
 
 	private final String nodeId;
 
 	public LocalKeyScanner(ClusterContext clusterCtx) {
 		this.clusterCtx = clusterCtx;
 		this.nodeId = clusterCtx.getId();
+		this.runnable = new LocalKeyScannerRunnable();
 	}
 
-	@Override
-	public void run() {
+	private class LocalKeyScannerRunnable implements Runnable {
 
-		IMap<String, TaskEntry> map = clusterCtx.getTasksUtils().getTasksMap();
+		@Override
+		public void run() {
 
-		for (String taskId : map.localKeySet()) {
-			TaskEntry entry = map.get(taskId);
+			IMap<String, TaskEntry> map = clusterCtx.getTasksUtils().getTasksMap();
 
-			if (entry == null) {
-				continue;
-			}
+			for (String taskId : map.localKeySet()) {
+				TaskEntry entry = map.get(taskId);
 
-			try {
-				checkEntry(entry);
-			} catch (Exception e) {
-				log.error("Error when checking TaskEntry " + taskId, e);
+				if (entry == null) {
+					continue;
+				}
+
+				try {
+					checkEntry(entry);
+				} catch (Exception e) {
+					log.error("Error when checking TaskEntry " + taskId, e);
+				}
+
 			}
 
 		}
-
 	}
 
 	private void checkEntry(TaskEntry entry) throws Exception {
@@ -74,5 +87,17 @@ final class LocalKeyScanner implements Runnable {
 
 	public void withSender(IMessageSender<TaskMessage> sender) {
 		this.sender = sender;
+	}
+
+	@Override
+	public void start() throws ServiceException {
+		scheduler.scheduleAtFixedRate(runnable, 5, 10, TimeUnit.SECONDS);
+
+	}
+
+	@Override
+	public void stop() {
+		scheduler.shutdown();
+		sender.close();
 	}
 }

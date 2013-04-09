@@ -49,6 +49,7 @@ final class LocalTaskListener implements EntryListener<String, TaskEntry>, Servi
 	@Override
 	public void stop() {
 		taskMap.removeEntryListener(this);
+		sender.close();
 	}
 
 	@Override
@@ -57,9 +58,7 @@ final class LocalTaskListener implements EntryListener<String, TaskEntry>, Servi
 		try {
 			sender.send(new NewTaskMessage(entry));
 		} catch (MessagingException e) {
-			String msg = String.format(
-					"Cannot send message to '%s'",
-					sender.getConnection());
+			String msg = String.format("Cannot send message to '%s'", sender.getConnection());
 			log.error(msg, e);
 		}
 	}

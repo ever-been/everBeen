@@ -1,9 +1,5 @@
 package cz.cuni.mff.d3s.been.task;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,10 +7,7 @@ import cz.cuni.mff.d3s.been.cluster.IClusterService;
 import cz.cuni.mff.d3s.been.cluster.Reaper;
 import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
-import cz.cuni.mff.d3s.been.mq.IMessageQueue;
-import cz.cuni.mff.d3s.been.mq.IMessageReceiver;
-import cz.cuni.mff.d3s.been.mq.Messaging;
-import cz.cuni.mff.d3s.been.mq.MessagingException;
+import cz.cuni.mff.d3s.been.mq.*;
 
 /**
  * 
@@ -31,12 +24,11 @@ final class ClusterManager implements IClusterService {
 	private final MembershipListener membershipListener;
 	private final ClientListener clientListener;
 	private final ClusterContext clusterCtx;
+	LocalKeyScanner keyScanner;
 
 	private static final String ACTION_QUEUE_NAME = "been.tm.queue";
 
 	private final IMessageQueue<TaskMessage> actionQueue;
-
-	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
 	public ClusterManager(ClusterContext clusterCtx) {
 		this.clusterCtx = clusterCtx;
@@ -55,7 +47,7 @@ final class ClusterManager implements IClusterService {
 	public void start() throws ServiceException {
 
 		IMessageReceiver<TaskMessage> receiver;
-		LocalKeyScanner keyScanner = new LocalKeyScanner(clusterCtx);
+		keyScanner = new LocalKeyScanner(clusterCtx);
 		try {
 			receiver = actionQueue.getReceiver();
 
@@ -71,22 +63,33 @@ final class ClusterManager implements IClusterService {
 		taskMessageProcessor = new TaskMessageProcessor(clusterCtx, receiver);
 
 		taskMessageProcessor.start();
-
 		localTaskListener.start();
 		membershipListener.start();
 		clientListener.start();
-
-		scheduler.scheduleAtFixedRate(keyScanner, 5, 10, TimeUnit.SECONDS);
+		keyScanner.start();
 
 	}
 
 	@Override
 	public void stop() {
+		keyScanner.stop();
 		clientListener.stop();
-		membershipListener.stop();
 		localTaskListener.stop();
-		scheduler.shutdown();
-		actionQueue.terminate();
+		membershipListener.stop();
+
+		try {
+			IMessageSender sender = actionQueue.createSender();
+			sender.send(new PoisonMessage());
+			sender.close();
+			taskMessageProcessor.join();
+		} catch (MessagingException | InterruptedException e) {
+			log.error("Cannot stop Task Message Processor.", e);
+		} finally {
+			actionQueue.terminate();
+		}
+
+		log.info("Task Manager stopped.");
+
 	}
 
 	@Override
@@ -95,7 +98,7 @@ final class ClusterManager implements IClusterService {
 
 			@Override
 			protected void reap() throws InterruptedException {
-				// TODO Auto-generated method stub
+				ClusterManager.this.stop();
 			}
 		};
 	}
