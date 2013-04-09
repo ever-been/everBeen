@@ -119,7 +119,7 @@ final class InprocMessageReceiver<T extends Serializable> implements IMessageRec
 
 	@Override
 	public void close() {
-		if (!isConnected()) {
+		if (isConnected()) {
 			socket.close();
 			socket = null;
 		}
