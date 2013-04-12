@@ -5,6 +5,7 @@ package cz.cuni.mff.d3s.been.mq;
  * 
  * @author Martin Sixta
  */
+@SuppressWarnings("serial")
 public class MessagingException extends Exception {
 
 	/** {@inheritDoc} */

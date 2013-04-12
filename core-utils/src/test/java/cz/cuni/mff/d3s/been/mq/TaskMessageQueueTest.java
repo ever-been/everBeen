@@ -2,12 +2,16 @@ package cz.cuni.mff.d3s.been.mq;
 
 import static cz.cuni.mff.d3s.been.mq.TestParams.HOSTNAME;
 
+import org.junit.Test;
+
 /**
  * Simulates and tests Task-to-HR message queue.
  * 
  * @author Martin Sixta
  */
 public class TaskMessageQueueTest extends BasicQueueTests {
+	
+	
 	/**
 	 * Simulates Task-to-HR message queue.
 	 */
@@ -43,5 +47,10 @@ public class TaskMessageQueueTest extends BasicQueueTests {
 
 	protected IMessageQueue<String> getQueue() throws MessagingException {
 		return new TestTaskQueue();
+	}
+	
+	@Test(expected = UnsupportedOperationException.class)
+	public void testname() throws Exception {
+		Messaging.createTaskQueue(1234).getReceiver();
 	}
 }

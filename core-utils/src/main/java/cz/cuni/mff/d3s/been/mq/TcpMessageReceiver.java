@@ -21,11 +21,6 @@ public class TcpMessageReceiver implements IMessageReceiver<String> {
 	private final ZMQ.Context context;
 
 	/**
-	 * Name of the host.
-	 */
-	private final String host;
-
-	/**
 	 * ZMQ.Socket to communicate with.
 	 */
 	private ZMQ.Socket socket;
@@ -42,8 +37,6 @@ public class TcpMessageReceiver implements IMessageReceiver<String> {
 
 	TcpMessageReceiver(final ZMQ.Context context, String host) {
 		this.context = context;
-		this.host = host;
-
 		this.connection = Messaging.createTcpConnection(host);
 	}
 

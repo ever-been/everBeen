@@ -1,8 +1,8 @@
 package cz.cuni.mff.d3s.been.mq;
 
 import static cz.cuni.mff.d3s.been.mq.TestParams.TEST_TIMEOUT;
-import static junit.framework.Assert.assertEquals;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -12,7 +12,7 @@ import org.junit.Test;
  * 
  * @author Martin Sixta
  */
-public abstract class BasicQueueTests {
+public abstract class BasicQueueTests extends Assert {
 
 	/**
 	 * 
@@ -33,6 +33,7 @@ public abstract class BasicQueueTests {
 	@Test(timeout = TEST_TIMEOUT)
 	public void testQueueTerminationWithNoSenders() throws MessagingException {
 		IMessageQueue<String> queue = getQueue();
+		@SuppressWarnings("unused") // lazy bind receiver to the socket
 		IMessageReceiver<String> receiver = queue.getReceiver();
 
 		queue.terminate();
@@ -46,7 +47,8 @@ public abstract class BasicQueueTests {
 	@Test(timeout = TEST_TIMEOUT)
 	public void testQueueTerminationWithSenders() throws MessagingException {
 		IMessageQueue<String> queue = getQueue();
-		IMessageReceiver<String> receiver = queue.getReceiver();
+		// we do not need to lazy bind receiver to the socket (as in prev. test)
+		// because createSender method calls getReciever() internally
 		IMessageSender<String> sender1 = queue.createSender();
 		IMessageSender<String> sender2 = queue.createSender();
 
