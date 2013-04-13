@@ -1,6 +1,7 @@
 package cz.cuni.mff.d3s.been.bpkplugin;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -74,6 +75,12 @@ public class GeneratorMojo extends AbstractMojo {
 	String finalName;
 
 	/**
+	 * Main class of the underlying main jar file.
+	 */
+	@Parameter
+	String mainClass;
+
+	/**
 	 * Jar file with classes for this package.
 	 */
 	@Parameter(defaultValue = "${project.build.directory}/${project.build.finalName}.jar")
@@ -133,8 +140,9 @@ public class GeneratorMojo extends AbstractMojo {
 	 * Returns Configuration wrapper object with values configured on this object
 	 * 
 	 * @return
+	 * @throws MojoFailureException
 	 */
-	Configuration getConfiguration() {
+	Configuration getConfiguration() throws ConfigurationException {
 		Configuration configuration = new Configuration();
 
 		configuration.groupId = groupId;
@@ -143,15 +151,22 @@ public class GeneratorMojo extends AbstractMojo {
 		configuration.buildDirectory = buildDirectory;
 		configuration.finalName = finalName;
 		configuration.packageJarFile = packageJarFile;
+
+		try {
+			configuration.mainClass = (mainClass == null
+					? MainClassExtractor.getMainClass(packageJarFile.toPath()) : mainClass);
+		} catch (IOException e) {
+			throw new ConfigurationException(String.format("Invalid configuration: ", e.getMessage()), e);
+		}
 		configuration.binary = binary;
 		configuration.artifacts = (artifacts == null
 				? Collections.<Artifact> emptyList() : artifacts);
 		configuration.filesToArchive = filesToArchive == null
 				? Collections.<FileItem> emptyList() : filesToArchive;
-		configuration.bpkDependencies = bpkDependencies == null
-				? Collections.<BpkIdentifier> emptyList() : bpkDependencies;
+				configuration.bpkDependencies = bpkDependencies == null
+						? Collections.<BpkIdentifier> emptyList() : bpkDependencies;
 
-		return configuration;
+						return configuration;
 	}
 
 }

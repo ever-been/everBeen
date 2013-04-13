@@ -53,6 +53,7 @@ public class GeneratorMojoTest extends Assert {
 		mojo.version = "version";
 		mojo.bpkDependencies = new ArrayList<>();
 		mojo.binary = new File("");
+		mojo.mainClass = "mainClass";
 
 		Configuration cfg = mojo.getConfiguration();
 
@@ -63,6 +64,7 @@ public class GeneratorMojoTest extends Assert {
 		assertSame(mojo.finalName, cfg.finalName);
 		assertSame(mojo.groupId, cfg.groupId);
 		assertSame(mojo.packageJarFile, cfg.packageJarFile);
+		assertSame(mojo.mainClass, cfg.mainClass);
 		assertSame(mojo.binary, cfg.binary);
 		assertSame(mojo.version, cfg.version);
 		assertSame(mojo.bpkDependencies, cfg.bpkDependencies);

@@ -77,6 +77,13 @@ public class JavaGeneratorTest extends Assert {
 		generator.validateRuntimeSpecific(cfg);
 	}
 
+	@Test(expected = ConfigurationException.class)
+	public void testValidationThrowsExceptionWhenMainClassIsMissing() throws Exception {
+		Configuration cfg = createValidJavaTaskCfg();
+		cfg.mainClass = null;
+		generator.validateRuntimeSpecific(cfg);
+	}
+
 	@Test
 	public void testCreatedRuntime() throws Exception {
 		Configuration config = createValidJavaTaskCfg();
@@ -88,6 +95,7 @@ public class JavaGeneratorTest extends Assert {
 	private Configuration createValidJavaTaskCfg() throws Exception {
 		Configuration cfg = new Configuration();
 		cfg.packageJarFile = tmpFolder.newFile();
+		cfg.mainClass = "mainClass";
 		Artifact artifact = mock(Artifact.class);
 		when(artifact.getArtifactId()).thenReturn("artifact1artifactId");
 		when(artifact.getGroupId()).thenReturn("artifact1groupId");

@@ -12,9 +12,9 @@ import org.apache.maven.plugin.logging.Log;
 
 import cz.cuni.mff.d3s.been.bpk.ArtifactIdentifier;
 import cz.cuni.mff.d3s.been.bpk.BpkArtifacts;
+import cz.cuni.mff.d3s.been.bpk.BpkNames;
 import cz.cuni.mff.d3s.been.bpk.JavaRuntime;
 import cz.cuni.mff.d3s.been.bpk.ObjectFactory;
-import cz.cuni.mff.d3s.been.bpk.BpkNames;
 
 /**
  * 
@@ -37,6 +37,10 @@ class JavaGenerator extends GeneratorImpl {
 			result.append("parameter 'packageJarFile' must not be null \n");
 		} else if (!config.packageJarFile.exists()) {
 			result.append(String.format("file '%s' specified in parameter 'packageJarFile' does not exists \n", config.packageJarFile));
+		}
+
+		if (config.mainClass == null) {
+			result.append("parameter 'mainClass' must not be null \n");
 		}
 
 		if (config.filesToArchive == null) {
@@ -118,6 +122,7 @@ class JavaGenerator extends GeneratorImpl {
 		JavaRuntime runtime = new ObjectFactory().createJavaRuntime();
 
 		runtime.setJarFile(config.packageJarFile.getName());
+		runtime.setMainClass(config.mainClass);
 		runtime.setBpkArtifacts(createBpkArtifacts(config));
 
 		return runtime;
