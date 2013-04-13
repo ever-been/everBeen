@@ -83,8 +83,9 @@
 		<xsd:complexContent>
 			<xsd:extension base="bpk:BpkRuntime">
 				<xsd:sequence>
-					<xsd:element ref="bpk:bpkArtifacts"  minOccurs="0" />
+					<xsd:element ref="bpk:bpkArtifacts" minOccurs="0" />
 					<xsd:element name="jarFile" type="xsd:string" />
+					<xsd:element name="mainClass" type="xsd:string" />
 				</xsd:sequence>
 			</xsd:extension>
 		</xsd:complexContent>
