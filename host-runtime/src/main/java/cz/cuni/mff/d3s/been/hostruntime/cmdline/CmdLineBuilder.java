@@ -4,6 +4,6 @@ import cz.cuni.mff.d3s.been.hostruntime.TaskException;
 
 public interface CmdLineBuilder {
 
-	public TaskCommandLine create() throws TaskException;
+	public TaskCommandLine build() throws TaskException;
 
 }

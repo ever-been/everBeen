@@ -41,7 +41,7 @@ class NativeCmdLineBuilder implements CmdLineBuilder {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public TaskCommandLine create() {
+	public TaskCommandLine build() {
 		File executable = taskDir.toPath().resolve(BpkNames.FILES_DIR).resolve(executableFileName).toFile();
 		executable.setExecutable(true);
 		TaskCommandLine cmdLine = new TaskCommandLine(executable);

@@ -28,7 +28,7 @@ public class TaskCommandLine extends CommandLine {
 	}
 
 	/**
-	 * Tells if command line has been created wit debug parameter which tells that
+	 * Tells if command line has been created with debug parameter which tells that
 	 * the task should be listening for debug connections.
 	 * 
 	 * @return

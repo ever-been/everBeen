@@ -5,10 +5,12 @@ import java.io.IOException;
 import java.net.ServerSocket;
 
 import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.d3s.been.bpk.BpkNames;
+import cz.cuni.mff.d3s.been.bpk.JavaRuntime;
 import cz.cuni.mff.d3s.been.core.task.ModeEnum;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.hostruntime.TaskException;
@@ -22,6 +24,8 @@ import cz.cuni.mff.d3s.been.hostruntime.TaskException;
  * 
  */
 class JVMCmdLineBuilder implements CmdLineBuilder {
+
+	private static final String CP_WILDCARD = "*";
 
 	private static final Logger log = LoggerFactory.getLogger(JVMCmdLineBuilder.class);
 
@@ -67,33 +71,49 @@ class JVMCmdLineBuilder implements CmdLineBuilder {
 	/** task library directory */
 	private final File libDir;
 
+	private File fileDir;
+
 	/** underlying task descriptor */
 	private final TaskDescriptor taskDescriptor;
+
+	/** underlying java runtime */
+	private JavaRuntime runtime;
+
+
 
 	/**
 	 * @param taskDir
 	 *          task home directory - from this directory is determined library
 	 *          directory ({@link PackageNames#LIB_DIR})
 	 * @param taskDescriptor
+	 * @param jarFileName
 	 */
-	public JVMCmdLineBuilder(File taskDir, TaskDescriptor taskDescriptor) {
+	public JVMCmdLineBuilder(File taskDir, TaskDescriptor taskDescriptor, JavaRuntime runtime) {
 		this.taskDescriptor = taskDescriptor;
+		this.runtime = runtime;
 		this.libDir = new File(taskDir, BpkNames.LIB_DIR);
+		this.fileDir = new File(taskDir, BpkNames.FILES_DIR);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public TaskCommandLine create() throws TaskException {
+	public TaskCommandLine build() throws TaskException {
 		TaskCommandLine cmdLine = new TaskCommandLine(JAVA_EXECUTABLE);
 
 		addClassPath(cmdLine);
 		addJavaOptsFromTaskDescriptor(cmdLine);
 		addDebugParameters(cmdLine);
+		addMainClass(cmdLine);
 		addArgsFromTaskDescriptor(cmdLine);
 
 		return cmdLine;
+	}
+
+	private void addMainClass(TaskCommandLine cmdLine) throws TaskException {
+		String mainClass = runtime.getMainClass();
+		cmdLine.addArgument(mainClass);
 	}
 
 	/**
@@ -106,8 +126,13 @@ class JVMCmdLineBuilder implements CmdLineBuilder {
 	 *          command line to which the generated argument should be added
 	 */
 	private void addClassPath(TaskCommandLine cmdLine) {
-		String classpath = libDir.toPath().resolve("*").toString(); // dirty tricks (using *) :)
-		cmdLine.addArgument(JAVA_CLASSPATH_ARG).addArgument(classpath);
+		String filesClasspath = fileDir.toPath().resolve(CP_WILDCARD).toString(); // dirty tricks (using *) :)
+		String libClasspath = libDir.toPath().resolve(CP_WILDCARD).toString();
+		cmdLine.addArgument(JAVA_CLASSPATH_ARG).addArgument(concat(filesClasspath, libClasspath));
+	}
+
+	private String concat(String... paths) {
+		return StringUtils.toString(paths, File.pathSeparator);
 	}
 
 	/**

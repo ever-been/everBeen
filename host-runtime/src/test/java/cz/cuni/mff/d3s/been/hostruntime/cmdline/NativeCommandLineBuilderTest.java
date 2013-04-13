@@ -33,7 +33,7 @@ public class NativeCommandLineBuilderTest extends Assert {
 		td.setArguments(createArgs("arg1", "arg2"));
 
 		String executable = "executable";
-		CommandLine cmdLine = new NativeCmdLineBuilder(executable, taskDir, td).create();
+		CommandLine cmdLine = new NativeCmdLineBuilder(executable, taskDir, td).build();
 
 		assertEquals(2, cmdLine.getArguments().length);
 		assertEquals(new File(taskDir, "files/executable").getAbsolutePath(), cmdLine.getExecutable());
@@ -53,7 +53,7 @@ public class NativeCommandLineBuilderTest extends Assert {
 		executable.createNewFile();
 		assertFalse(executable.canExecute());
 
-		new NativeCmdLineBuilder(executable.getName(), taskDir, td).create();
+		new NativeCmdLineBuilder(executable.getName(), taskDir, td).build();
 
 		assertTrue(executable.canExecute());
 	}

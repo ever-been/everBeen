@@ -1,6 +1,8 @@
 package cz.cuni.mff.d3s.been.hostruntime;
 
-import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.*;
+import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.HR_COMM_PORT;
+import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.HR_RESULTS_PORT;
+import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.TASK_ID;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,12 +17,17 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipException;
 
-import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.ExecuteStreamHandler;
+import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cz.cuni.mff.d3s.been.bpk.*;
+import cz.cuni.mff.d3s.been.bpk.Bpk;
+import cz.cuni.mff.d3s.been.bpk.BpkConfigUtils;
+import cz.cuni.mff.d3s.been.bpk.BpkConfiguration;
+import cz.cuni.mff.d3s.been.bpk.BpkConfigurationException;
+import cz.cuni.mff.d3s.been.bpk.BpkNames;
 import cz.cuni.mff.d3s.been.cluster.Reapable;
 import cz.cuni.mff.d3s.been.cluster.Reaper;
 import cz.cuni.mff.d3s.been.cluster.Service;
@@ -35,9 +42,9 @@ import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
 import cz.cuni.mff.d3s.been.debugassistant.DebugAssistant;
-import cz.cuni.mff.d3s.been.hostruntime.proc.JavaBasedProcess;
-import cz.cuni.mff.d3s.been.hostruntime.proc.Processes;
-import cz.cuni.mff.d3s.been.hostruntime.proc.TaskProcess;
+import cz.cuni.mff.d3s.been.hostruntime.cmdline.CmdLineBuilderFactory;
+import cz.cuni.mff.d3s.been.hostruntime.cmdline.TaskCommandLine;
+import cz.cuni.mff.d3s.been.hostruntime.task.TaskProcess;
 import cz.cuni.mff.d3s.been.mq.IMessageReceiver;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
@@ -60,7 +67,7 @@ final class ProcessManager implements Service, Reapable {
 	/**
 	 * Represents running tasks.
 	 */
-	private final Map<String, Process> runningTasks = Collections.synchronizedMap(new HashMap<String, Process>());
+	private final Map<String, TaskProcess> runningTasks = Collections.synchronizedMap(new HashMap<String, TaskProcess>());
 
 	/**
 	 * Host Runtime info
@@ -195,8 +202,8 @@ final class ProcessManager implements Service, Reapable {
 		if (taskHandle == null) {
 			return;
 		} else {
-			Process taskProcess = runningTasks.get(taskHandle.getId());
-			taskProcess.destroy();
+			TaskProcess taskProcess = runningTasks.get(taskHandle.getId());
+			taskProcess.kill();
 		}
 	}
 
@@ -219,14 +226,15 @@ final class ProcessManager implements Service, Reapable {
 		changeTaskStateTo(taskHandle, TaskState.ACCEPTED);
 		File taskDirectory = createTaskDir(taskHandle);
 		try {
-			Process process = createAndStartTaskProcess(taskHandle, taskDirectory);
+			TaskProcess process = createAndStartTaskProcess(taskHandle, taskDirectory);
 			changeTaskStateTo(taskHandle, TaskState.RUNNING);
 			// FIXME martin, tadeas zpracovavat return kody - (napr. TaskState.FAILED)
 			runningTasks.put(taskHandle.getId(), process); // removed in finally
 
 			// we do not care if this method takes too long, because this method should be called
 			// asynchronously from parental methods
-			process.waitFor();
+
+			process.start();
 
 			DebugAssistant dbg = new DebugAssistant(clusterContext);
 			dbg.removeSuspendedTask(taskHandle.getId());
@@ -241,7 +249,7 @@ final class ProcessManager implements Service, Reapable {
 		deleteTaskDir(taskDirectory);
 	}
 
-	private Process createAndStartTaskProcess(TaskEntry taskEntry,
+	private TaskProcess createAndStartTaskProcess(TaskEntry taskEntry,
 			File taskDirectory) throws IOException, BpkConfigurationException, ZipException, TaskException {
 
 		TaskDescriptor td = taskEntry.getTaskDescriptor();
@@ -255,7 +263,7 @@ final class ProcessManager implements Service, Reapable {
 		BpkConfiguration bpkConfiguration = BpkConfigUtils.fromXml(configPath);
 
 		// create process for the task
-		TaskProcess taskProcess = Processes.createProcess(bpkConfiguration.getRuntime(), td, dir);
+		TaskCommandLine cmd = CmdLineBuilderFactory.create(bpkConfiguration.getRuntime(), td, dir.toFile()).build();
 
 		// TODO resolve dependencies
 		//Collection<ArtifactIdentifier> identifiers = taskProcess.getArtifactDependencies();
@@ -263,27 +271,19 @@ final class ProcessManager implements Service, Reapable {
 
 		// TODO move dependencies inside task's directory
 
-		// start the thing
-		CommandLine cmdLine = taskProcess.createCommandLine();
-		ProcessBuilder processBuilder = new ProcessBuilder(cmdLine.toStrings());
-		processBuilder.inheritIO();
-		processBuilder.directory(dir.toFile());
-
-		processBuilder.environment().putAll(createEnvironmentProperties(taskEntry));
-
 		// let debug assistant know about this process
-		if (taskProcess instanceof JavaBasedProcess) {
-			JavaBasedProcess jbp = ((JavaBasedProcess) taskProcess);
-			if (jbp.isDebugListeningMode()) {
-				DebugAssistant dbg = new DebugAssistant(clusterContext);
-				dbg.addSuspendedTask(taskEntry.getId(), clusterContext.getInetSocketAddress().getHostName(), jbp.getDebugPort());
-			}
+		if (cmd.isDebugListeningMode()) {
+			DebugAssistant dbg = new DebugAssistant(clusterContext);
+			dbg.addSuspendedTask(taskEntry.getId(), clusterContext.getInetSocketAddress().getHostName(), cmd.getDebugPort());
 		}
 
-		// run it
-		Process process = processBuilder.start();
+		ExecuteStreamHandler streamhandler = new PumpStreamHandler();
 
-		return process;
+		long timeout = td.isSetFailurePolicy() ? td.getFailurePolicy().getTimeoutRun() : TaskProcess.NO_TIMEOUT;
+		TaskProcess taskProcess = new TaskProcess(cmd, dir.toFile(), createEnvironmentProperties(taskEntry), streamhandler , timeout); // FIXMEProcesses.createProcess(bpkConfiguration.getRuntime(), td, dir);
+		// run it
+
+		return taskProcess;
 	}
 
 	private Map<String, String> createEnvironmentProperties(TaskEntry taskEntry) {
