@@ -32,4 +32,6 @@
 			<xs:element name="data" type="xs:string" />
 		</xs:sequence>
 	</xs:complexType>
+
+	<xs:complexType name="Result" />
 </xs:schema>

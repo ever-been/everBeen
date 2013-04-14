@@ -57,6 +57,10 @@
 				<artifactId>jaxb2-maven-plugin</artifactId>
 				<version>${jaxb2-maven-plugin.version}</version>
 
+				<configuration>
+					<arguments>-XtoString -Xfluent-api</arguments>
+				</configuration>
+
 				<dependencies>
 					<dependency>
 						<groupId>org.jvnet.jaxb2_commons</groupId>

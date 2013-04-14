@@ -4,6 +4,5 @@ import cz.cuni.mff.d3s.been.results.Result;
 
 public class TestResult extends Result {
 
-	private final String hello = "Hello buggers!";
-
+	private final String field = "Hello buggers!";
 }

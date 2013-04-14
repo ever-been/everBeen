@@ -29,7 +29,7 @@ public class ExampleTask extends Task {
 		try {
 			rp.persist(new TestResult());
 		} catch (DAOException e) {
-			log.error("OMG, Result persistence got mashed!");
+			log.error("OMG, Result persistence got mashed!", e);
 		}
 		log.info("task is logging");
 		System.err.println("Output to stderr");
