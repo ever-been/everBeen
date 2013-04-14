@@ -11,11 +11,7 @@ import cz.cuni.mff.d3s.been.cluster.Reaper;
 import cz.cuni.mff.d3s.been.cluster.Service;
 import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.core.TaskMessageType;
-import cz.cuni.mff.d3s.been.mq.IMessageQueue;
-import cz.cuni.mff.d3s.been.mq.IMessageReceiver;
-import cz.cuni.mff.d3s.been.mq.IMessageSender;
-import cz.cuni.mff.d3s.been.mq.Messaging;
-import cz.cuni.mff.d3s.been.mq.MessagingException;
+import cz.cuni.mff.d3s.been.mq.*;
 
 /**
  * Purpose of this service is to allow communication between HostRuntime and
@@ -26,6 +22,7 @@ import cz.cuni.mff.d3s.been.mq.MessagingException;
  * @author Tadeáš Palusga
  * 
  */
+
 public class TaskMessageDispatcher implements Service, Reapable {
 
 	static final Logger log = LoggerFactory.getLogger(TaskMessageDispatcher.class);
@@ -107,9 +104,7 @@ public class TaskMessageDispatcher implements Service, Reapable {
 					poisonReader();
 					msgQueueReader.join();
 				} catch (MessagingException e) {
-					log.warn(
-							"Failed to poison task log reader, socket leak is likely.",
-							e);
+					log.warn("Failed to poison task log reader, socket leak is likely.", e);
 				}
 				taskMQ.terminate();
 				taskMQ = null;

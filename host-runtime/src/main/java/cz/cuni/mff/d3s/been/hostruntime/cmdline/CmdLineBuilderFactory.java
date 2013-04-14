@@ -37,7 +37,7 @@ public final class CmdLineBuilderFactory {
 	public static CmdLineBuilder create(BpkRuntime runtime,
 			TaskDescriptor taskDescriptor, File taskDir) throws TaskException {
 		if (runtime instanceof JavaRuntime) {
-			return new JVMCmdLineBuilder(taskDir, taskDescriptor);
+			return new JVMCmdLineBuilder(taskDir, taskDescriptor, ((JavaRuntime) runtime));
 		} else if (runtime instanceof NativeRuntime) {
 			return new NativeCmdLineBuilder(((NativeRuntime) runtime).getBinary(), taskDir, taskDescriptor);
 		} else {

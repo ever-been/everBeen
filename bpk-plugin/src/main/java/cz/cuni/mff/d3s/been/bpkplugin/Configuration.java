@@ -20,6 +20,7 @@ public class Configuration {
 	public String bpkId;
 	public String version;
 	public String finalName;
+	public String mainClass;
 	public File binary;
 	public File buildDirectory;
 	public File packageJarFile;

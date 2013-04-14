@@ -38,7 +38,7 @@ public class TcpMessageQueue implements IMessageQueue<String> {
 	}
 
 	@Override
-	public IMessageSender createSender() throws MessagingException {
+	public IMessageSender<String> createSender() throws MessagingException {
 		TcpMessageSender sender = getReceiver().createSender();
 		sender.connect();
 

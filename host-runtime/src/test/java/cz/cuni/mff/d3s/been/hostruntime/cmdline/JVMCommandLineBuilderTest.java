@@ -9,6 +9,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import cz.cuni.mff.d3s.been.bpk.BpkNames;
+import cz.cuni.mff.d3s.been.bpk.JavaRuntime;
 import cz.cuni.mff.d3s.been.core.task.Arguments;
 import cz.cuni.mff.d3s.been.core.task.Debug;
 import cz.cuni.mff.d3s.been.core.task.Java;
@@ -21,11 +23,14 @@ public class JVMCommandLineBuilderTest extends Assert {
 	@Rule
 	public TemporaryFolder tmpFolder = new TemporaryFolder();
 
+	private JavaRuntime runtime;
+
 	private File taskDir;
 
 	@Before
 	public void setUp() throws Exception {
 		taskDir = tmpFolder.newFolder();
+		runtime = new JavaRuntime();
 	}
 
 	@Test
@@ -35,18 +40,25 @@ public class JVMCommandLineBuilderTest extends Assert {
 		td.setArguments(createArgs("arg1", "arg2"));
 		td.setDebug(createDebug(ModeEnum.CONNECT, "host", 124));
 
-		CommandLine cmdLine = new JVMCmdLineBuilder(taskDir, td).create();
+		JavaRuntime runtime = new JavaRuntime();
+		runtime.setJarFile("jarfile");
+		runtime.setMainClass("mainclass");
 
-		assertEquals(7, cmdLine.getArguments().length);
+		CommandLine cmdLine = new JVMCmdLineBuilder(taskDir, td, runtime).build();
+
+		assertEquals(8, cmdLine.getArguments().length);
 
 		assertEquals("java", cmdLine.getExecutable());
 		assertEquals("-cp", cmdLine.getArguments()[0]);
-		assertEquals(new File(taskDir, "lib/*").getAbsolutePath(), cmdLine.getArguments()[1]);
+		String filesCPart = new File(taskDir, BpkNames.FILES_DIR+ File.separator + "*").getAbsolutePath();
+		String libsCPart = new File(taskDir, BpkNames.LIB_DIR+ File.separator + "*").getAbsolutePath();
+		assertEquals(filesCPart + File.pathSeparator +libsCPart , cmdLine.getArguments()[1]);
 		assertEquals("opt1", cmdLine.getArguments()[2]);
 		assertEquals("opt2", cmdLine.getArguments()[3]);
 		assertEquals("-agentlib:jdwp=transport=dt_socket,server=n,address=host:124,suspend=n", cmdLine.getArguments()[4]);
-		assertEquals("arg1", cmdLine.getArguments()[5]);
-		assertEquals("arg2", cmdLine.getArguments()[6]);
+		assertEquals("mainclass", cmdLine.getArguments()[5]);
+		assertEquals("arg1", cmdLine.getArguments()[6]);
+		assertEquals("arg2", cmdLine.getArguments()[7]);
 	}
 
 	@Test
@@ -55,8 +67,7 @@ public class JVMCommandLineBuilderTest extends Assert {
 		String opt2 = "opt2";
 		TaskDescriptor td = new TaskDescriptor();
 		td.setJava(createJavaWithOpts(opt1, opt2));
-
-		CommandLine cmdLine = new JVMCmdLineBuilder(taskDir, td).create();
+		CommandLine cmdLine = new JVMCmdLineBuilder(taskDir, td, runtime).build();
 
 		assertEquals(opt1, cmdLine.getArguments()[2]);
 		assertEquals(opt2, cmdLine.getArguments()[3]);
@@ -68,8 +79,7 @@ public class JVMCommandLineBuilderTest extends Assert {
 		String arg2 = "arg2";
 		TaskDescriptor td = new TaskDescriptor();
 		td.setArguments(createArgs(arg1, arg2));
-
-		CommandLine cmdLine = new JVMCmdLineBuilder(taskDir, td).create();
+		CommandLine cmdLine = new JVMCmdLineBuilder(taskDir, td, runtime).build();
 
 		assertEquals(arg1, cmdLine.getArguments()[2]);
 		assertEquals(arg2, cmdLine.getArguments()[3]);
@@ -83,7 +93,7 @@ public class JVMCommandLineBuilderTest extends Assert {
 		TaskDescriptor td = new TaskDescriptor();
 		td.setDebug(createDebug(mode, host, port));
 
-		TaskCommandLine cmdLine = new JVMCmdLineBuilder(taskDir, td).create();
+		TaskCommandLine cmdLine = new JVMCmdLineBuilder(taskDir, td, runtime).build();
 
 		assertEquals("-agentlib:jdwp=transport=dt_socket,server=n,address=" + host + ":" + port + ",suspend=n", cmdLine.getArguments()[2]);
 		assertFalse(cmdLine.isDebugListeningMode());
@@ -98,7 +108,7 @@ public class JVMCommandLineBuilderTest extends Assert {
 		TaskDescriptor td = new TaskDescriptor();
 		td.setDebug(createDebug(mode, host, port));
 
-		TaskCommandLine cmdLine = new JVMCmdLineBuilder(taskDir, td).create();
+		TaskCommandLine cmdLine = new JVMCmdLineBuilder(taskDir, td, runtime).build();
 
 		assertEquals("-agentlib:jdwp=transport=dt_socket,server=n,address=" + port + ",suspend=n", cmdLine.getArguments()[2]);
 
@@ -114,7 +124,7 @@ public class JVMCommandLineBuilderTest extends Assert {
 		TaskDescriptor td = new TaskDescriptor();
 		td.setDebug(createDebug(mode, host, port));
 
-		TaskCommandLine cmdLine = new JVMCmdLineBuilder(taskDir, td).create();
+		TaskCommandLine cmdLine = new JVMCmdLineBuilder(taskDir, td, runtime).build();
 
 		assertEquals(2, cmdLine.getArguments().length);
 		assertFalse(cmdLine.isDebugListeningMode());

@@ -11,8 +11,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
+import cz.cuni.mff.d3s.been.core.protocol.messages.BaseMessage;
 import cz.cuni.mff.d3s.been.core.protocol.messages.KillTaskMessage;
 import cz.cuni.mff.d3s.been.core.protocol.messages.RunTaskMessage;
+import cz.cuni.mff.d3s.been.mq.IMessageSender;
 
 public class HostRuntimeMessageListenerTest extends Assert {
 
@@ -23,11 +25,18 @@ public class HostRuntimeMessageListenerTest extends Assert {
 	private ClusterContext clusterContext;
 
 	private HostRuntimeMessageListener listener;
+	@Mock
+	private ClusterContext ctx;
+
+	@Mock
+	private IMessageSender<BaseMessage> sender;
+
+	private String nodeId = "node id";
 
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
-		listener = new HostRuntimeMessageListener(processManager, clusterContext);
+		listener = new HostRuntimeMessageListener(ctx, sender, nodeId);
 	}
 
 	@Ignore
@@ -35,9 +44,10 @@ public class HostRuntimeMessageListenerTest extends Assert {
 	public void testKillTaskMessageWillCallCorrectMethod() throws Exception {
 		KillTaskMessage msg = new KillTaskMessage(null, null, null, null);
 
-		// TODO: FIXME onMessage signature changed after moving to pure Hazelcast interface
-		//Message<BaseMessage> message = new Message<BaseMessage>(...)
-		//listener.onMessage(msg);
+		// TODO: FIXME onMessage signature changed after moving to pure
+		// Hazelcast interface
+		// Message<BaseMessage> message = new Message<BaseMessage>(...)
+		// listener.onMessage(msg);
 
 		verify(processManager).onKillTask(msg);
 		verifyNoMoreInteractions(processManager);
@@ -48,9 +58,10 @@ public class HostRuntimeMessageListenerTest extends Assert {
 	public void testRunTaskMessageWillCallCorrectMethod() throws Exception {
 		RunTaskMessage msg = new RunTaskMessage(null, null, null);
 
-		// TODO: FIXME onMessage signature changed after moving to pure Hazelcast interface
-		//Message<BaseMessage> message = new Message<BaseMessage>(...)
-		//listener.onMessage(msg);
+		// TODO: FIXME onMessage signature changed after moving to pure
+		// Hazelcast interface
+		// Message<BaseMessage> message = new Message<BaseMessage>(...)
+		// listener.onMessage(msg);
 
 		verify(processManager).onRunTask(msg);
 		verifyNoMoreInteractions(processManager);

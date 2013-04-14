@@ -11,9 +11,7 @@ final class QueueReaderThread extends Thread {
 
 	private final IMessageReceiver<String> receiver;
 
-	QueueReaderThread(
-			TaskMessageDispatcher taskMessageDispatcher,
-			IMessageReceiver<String> receiver) {
+	QueueReaderThread(TaskMessageDispatcher taskMessageDispatcher, IMessageReceiver<String> receiver) {
 		this.receiver = receiver;
 	}
 
@@ -29,7 +27,7 @@ final class QueueReaderThread extends Thread {
 			} catch (RuntimeException e) {
 				break;
 			} catch (MessagingException e) {
-				log.warn("Task message log listener recieved invalid message.");
+				log.warn("Task message log listener received invalid message.");
 			}
 		}
 	}

@@ -55,6 +55,5 @@ final class InprocMessageQueue<T extends Serializable> implements IMessageQueue<
 	public void terminate() {
 		receiver.close();
 		context.term();
-
 	}
 }

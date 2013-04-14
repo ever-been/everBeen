@@ -17,7 +17,7 @@ import cz.cuni.mff.d3s.been.mq.IMessageSender;
 final class MembershipListener implements com.hazelcast.core.MembershipListener, Service {
 
 	private ClusterContext clusterCtx;
-	private IMessageSender inprocMessaging;
+	private IMessageSender sender;
 
 	public MembershipListener(ClusterContext clusterCtx) {
 		this.clusterCtx = clusterCtx;
@@ -33,6 +33,7 @@ final class MembershipListener implements com.hazelcast.core.MembershipListener,
 	@Override
 	public void stop() {
 		clusterCtx.getCluster().removeMembershipListener(this);
+		sender.close();
 	}
 
 	@Override
@@ -45,7 +46,7 @@ final class MembershipListener implements com.hazelcast.core.MembershipListener,
 		log.info("Member removed: {}", membershipEvent.getMember());
 	}
 
-	public void withSender(IMessageSender inprocMessaging) {
-		this.inprocMessaging = inprocMessaging;
+	public void withSender(IMessageSender sender) {
+		this.sender = sender;
 	}
 }

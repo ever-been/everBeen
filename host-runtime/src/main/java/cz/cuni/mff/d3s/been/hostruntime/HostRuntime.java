@@ -11,8 +11,13 @@ import cz.cuni.mff.d3s.been.cluster.IClusterService;
 import cz.cuni.mff.d3s.been.cluster.Reaper;
 import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
+import cz.cuni.mff.d3s.been.core.protocol.messages.BaseMessage;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.detectors.Monitoring;
+import cz.cuni.mff.d3s.been.mq.IMessageQueue;
+import cz.cuni.mff.d3s.been.mq.IMessageReceiver;
+import cz.cuni.mff.d3s.been.mq.IMessageSender;
+import cz.cuni.mff.d3s.been.mq.Messaging;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
 
@@ -20,7 +25,7 @@ import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
  * 
  * This is the main implementation of Host Runtime.
  * 
- * Host runtime is responsible for launching new tasks trigged by appropriate
+ * Host runtime is responsible for launching new tasks triggered by appropriate
  * message. It is also responsible for operating with already running tasks on
  * parent machine. Operation are as follows: killing tasks, allowing and
  * supporting communication between tasks and results repository, allowing
@@ -40,8 +45,8 @@ class HostRuntime implements IClusterService {
 	private final RuntimeInfo hostRuntimeInfo;
 
 	/**
-	 * Translates relevant messages sent via Hazelcast into corresponding method
-	 * calls.
+	 * Picks up relevant messages from Hazelcast and queues them for internal
+	 * processing.
 	 */
 	private HostRuntimeMessageListener messageListener;
 
@@ -62,6 +67,17 @@ class HostRuntime implements IClusterService {
 	private ProcessManager processManager;
 
 	/**
+	 * Queue used to send task action messages for processing.
+	 */
+	IMessageQueue<BaseMessage> taskActionQueue;
+
+	/**
+	 * Name of the task action queue.
+	 */
+
+	private static final String ACTION_QUEUE_NAME = "been.hostruntime.actions";
+
+	/**
 	 * Creates new {@link HostRuntime} with cluster-unique id.
 	 * 
 	 * @param clusterContext
@@ -72,10 +88,7 @@ class HostRuntime implements IClusterService {
 	 * @param hostRuntimeInfo
 	 *          object which stores basic information about HostRuntime
 	 */
-	public HostRuntime(
-			ClusterContext clusterContext,
-			SwRepoClientFactory swRepoClientFactory,
-			RuntimeInfo hostRuntimeInfo) {
+	public HostRuntime(ClusterContext clusterContext, SwRepoClientFactory swRepoClientFactory, RuntimeInfo hostRuntimeInfo) {
 		this.clusterContext = clusterContext;
 		this.hostRuntimeInfo = hostRuntimeInfo;
 		this.swRepoClientFactory = swRepoClientFactory;
@@ -88,15 +101,17 @@ class HostRuntime implements IClusterService {
 	@Override
 	public void start() throws ServiceException {
 		try {
+			taskActionQueue = Messaging.createInprocQueue(ACTION_QUEUE_NAME);
+
 			// create ".HostRuntime" working directory
 			File workingDir = new File(hostRuntimeInfo.getWorkingDirectory());
 			workingDir.mkdirs();
 
-			startProcessManager();
+			startProcessManager(taskActionQueue.getReceiver());
 
 			// All listeners must be initialized before any message will be
 			// received.
-			registerListeners();
+			registerListeners(taskActionQueue.createSender());
 
 			// Now, we can register the runtime without missing any messages.
 			registerHostRuntime();
@@ -104,9 +119,7 @@ class HostRuntime implements IClusterService {
 			// HR is now prepared to consume all important messages.
 
 			// start monitoring
-			Path monitoringLogPath = FileSystems.getDefault().getPath(
-					hostRuntimeInfo.getWorkingDirectory(),
-					"monitoring.log");
+			Path monitoringLogPath = FileSystems.getDefault().getPath(hostRuntimeInfo.getWorkingDirectory(), "monitoring.log");
 			Monitoring.startMonitoring(monitoringLogPath);
 		} catch (Exception e) {
 			throw new ServiceException("Cannot start Host Runtime", e);
@@ -122,6 +135,7 @@ class HostRuntime implements IClusterService {
 		unregisterHostRuntime();
 		unregisterListeners();
 		stopProcessManager();
+		taskActionQueue.terminate();
 		log.info("Host Runtime stopped.");
 	}
 
@@ -132,6 +146,7 @@ class HostRuntime implements IClusterService {
 			protected void reap() throws InterruptedException {
 				unregisterHostRuntime();
 				unregisterListeners();
+				taskActionQueue.terminate();
 			}
 		};
 		reaper.pushTarget(processManager);
@@ -140,8 +155,8 @@ class HostRuntime implements IClusterService {
 	/**
 	 * Starts process manger.
 	 */
-	private void startProcessManager() throws ServiceException {
-		processManager = new ProcessManager(clusterContext, swRepoClientFactory, hostRuntimeInfo);
+	private void startProcessManager(IMessageReceiver<BaseMessage> receiver) throws ServiceException {
+		processManager = new ProcessManager(clusterContext, swRepoClientFactory, hostRuntimeInfo, receiver);
 		processManager.start();
 	}
 
@@ -165,8 +180,8 @@ class HostRuntime implements IClusterService {
 	/**
 	 * Registers all needed cluster listeners.
 	 */
-	private void registerListeners() {
-		messageListener = new HostRuntimeMessageListener(processManager, clusterContext);
+	private void registerListeners(IMessageSender<BaseMessage> sender) {
+		messageListener = new HostRuntimeMessageListener(clusterContext, sender, processManager.getNodeId());
 		messageListener.start();
 	}
 
@@ -182,14 +197,11 @@ class HostRuntime implements IClusterService {
 	 */
 	private void unregisterHostRuntime() {
 		try {
-			clusterContext.getRuntimesUtils().removeRuntimeInfo(
-					hostRuntimeInfo.getId());
+			clusterContext.getRuntimesUtils().removeRuntimeInfo(hostRuntimeInfo.getId());
 		} catch (IllegalStateException e) {
 			// an attempt is made to unregister on a cluster instance that is no longer active
 			// this happens when Hazelcast shutdown hook snags runtime control before BEEN shutdown hooks
-			log.warn(
-					"Failed to unhook HostRuntime from the cluster. HostRuntime data is likely to linger.",
-					e);
+			log.warn("Failed to unhook HostRuntime from the cluster. HostRuntime data is likely to linger.", e);
 		}
 	}
 
