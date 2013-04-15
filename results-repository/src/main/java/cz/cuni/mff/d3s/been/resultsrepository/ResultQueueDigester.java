@@ -56,7 +56,7 @@ class ResultQueueDigester implements Service, Reapable {
 		return new Reaper() {
 			@Override
 			protected void reap() throws InterruptedException {
-				pool.shutdown();
+				pool.shutdownNow();
 				pool.awaitTermination(
 						POOL_SHUTDOWN_TIMEOUT_MILLIS,
 						TimeUnit.MILLISECONDS);
