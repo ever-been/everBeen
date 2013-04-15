@@ -8,11 +8,11 @@ import com.hazelcast.core.IQueue;
 import cz.cuni.mff.d3s.been.results.ResultCarrier;
 import cz.cuni.mff.d3s.been.resultsrepository.storage.Storage;
 
-public class ResultQueueDigesterEphemerousThread extends ResultQueueDigesterThread {
+public class ResultQueueEphemerousConsumer extends ResultQueueDigesterThread {
 
-	private static final Logger log = LoggerFactory.getLogger(ResultQueueDigesterEphemerousThread.class);
+	private static final Logger log = LoggerFactory.getLogger(ResultQueueEphemerousConsumer.class);
 
-	public ResultQueueDigesterEphemerousThread(
+	public ResultQueueEphemerousConsumer(
 			IQueue<ResultCarrier> resQueue,
 			Storage storage) {
 		super(resQueue, storage);
@@ -20,13 +20,12 @@ public class ResultQueueDigesterEphemerousThread extends ResultQueueDigesterThre
 
 	@Override
 	public void run() {
-		super.run();
 		log.debug("Thread starting.");
-		while (!interrupted()) {
+		while (!Thread.currentThread().isInterrupted()) {
 			final ResultCarrier rc = resQueue.poll();
 			if (rc == null) {
 				// there is nothing to do, end execution (this thread is ephemerous) 
-				this.interrupt();
+				Thread.currentThread().interrupt();
 			}
 			log.debug("Taken result {} from the queue.", rc);
 			persistAResult(rc);

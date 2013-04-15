@@ -8,11 +8,11 @@ import com.hazelcast.core.IQueue;
 import cz.cuni.mff.d3s.been.results.ResultCarrier;
 import cz.cuni.mff.d3s.been.resultsrepository.storage.Storage;
 
-public class ResultQueueDigesterLingeringThread extends ResultQueueDigesterThread {
+public class ResultQueueLingeringConsumer extends ResultQueueDigesterThread {
 
-	private static final Logger log = LoggerFactory.getLogger(ResultQueueDigesterLingeringThread.class);
+	private static final Logger log = LoggerFactory.getLogger(ResultQueueLingeringConsumer.class);
 
-	ResultQueueDigesterLingeringThread(
+	ResultQueueLingeringConsumer(
 			IQueue<ResultCarrier> resQueue,
 			Storage storage) {
 		super(resQueue, storage);
@@ -20,9 +20,8 @@ public class ResultQueueDigesterLingeringThread extends ResultQueueDigesterThrea
 
 	@Override
 	public void run() {
-		super.run();
 		log.debug("Thread starting.");
-		while (!this.isInterrupted()) {
+		while (!Thread.currentThread().isInterrupted()) {
 			try {
 				final ResultCarrier rc = resQueue.take();
 				if (rc == null) {
@@ -39,7 +38,7 @@ public class ResultQueueDigesterLingeringThread extends ResultQueueDigesterThrea
 			} catch (InterruptedException e) {
 				// the take has been interrupted - a signal that this repository is being terminated
 				log.debug("Queue take interrupted..");
-				this.interrupt();
+				Thread.currentThread().interrupt();
 			}
 		}
 		log.debug("Thread terminating.");

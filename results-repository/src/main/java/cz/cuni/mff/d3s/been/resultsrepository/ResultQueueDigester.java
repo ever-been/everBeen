@@ -17,7 +17,7 @@ import cz.cuni.mff.d3s.been.resultsrepository.storage.Storage;
 
 class ResultQueueDigester implements Service, Reapable {
 
-	private static final long POOL_SHUTDOWN_TIMEOUT_MILLIS = 5000;
+	private static final long POOL_SHUTDOWN_TIMEOUT_MILLIS = 3000;
 	private static final Logger log = LoggerFactory.getLogger(ResultQueueDigester.class);
 
 	private final ExecutorService pool;
@@ -31,18 +31,18 @@ class ResultQueueDigester implements Service, Reapable {
 	}
 
 	public void addNewWorkingThread() {
-		pool.execute(new ResultQueueDigesterEphemerousThread(resQueue, storage));
+		pool.execute(new ResultQueueEphemerousConsumer(resQueue, storage));
 	}
 
 	@Override
 	public void start() {
-		pool.execute(new ResultQueueDigesterLingeringThread(resQueue, storage));
+		pool.execute(new ResultQueueLingeringConsumer(resQueue, storage));
 	}
 
 	@Override
 	public void stop() {
 		log.debug("Result queue digester stopping...");
-		pool.shutdown();
+		pool.shutdownNow();
 		try {
 			pool.awaitTermination(POOL_SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
 		} catch (InterruptedException e) {

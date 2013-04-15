@@ -9,7 +9,7 @@ import cz.cuni.mff.d3s.been.results.DAOException;
 import cz.cuni.mff.d3s.been.results.ResultCarrier;
 import cz.cuni.mff.d3s.been.resultsrepository.storage.Storage;
 
-abstract class ResultQueueDigesterThread extends Thread {
+abstract class ResultQueueDigesterThread implements Runnable {
 
 	private static final Logger log = LoggerFactory.getLogger(ResultQueueDigesterThread.class);
 
