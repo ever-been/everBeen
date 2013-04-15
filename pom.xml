@@ -144,5 +144,13 @@
 			</modules>
 		</profile>
 
+		<profile>
+			<id>buildBenchmarks</id>
+
+			<modules>
+				<module>jackson</module>
+			</modules>
+		</profile>
+
 	</profiles>
 </project>
