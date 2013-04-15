@@ -44,7 +44,7 @@
 							<finalName>nginx-download-sources-0.0.1</finalName>
 							<archive>
 								<manifest>
-									<mainClass>cz.cuni.mff.d3s.been.nginx.NginxDownloadSourcesTask</mainClass>
+									<mainClass>cz.cuni.mff.d3s.been.nginx.NginxServerTask</mainClass>
 								</manifest>
 							</archive>
 						</configuration>

@@ -1,64 +1,25 @@
 <?xml version="1.0"?>
-<taskContext xmlns="http://been.d3s.mff.cuni.cz/taskmanager/tc"
-                name="nginx-context">
+<taskContext xmlns="http://been.d3s.mff.cuni.cz/taskmanager/tc" name="nginx-context">
 
 	<task>
-		<name>download-from-svn</name>
-		<type>nginx-download-sources</type>
+		<name>server</name>
+		<type>nginx-server</type>
 
 		<properties>
 			<svnPath>svn://svn.nginx.org/nginx/trunk</svnPath>
 			<revision>4032</revision>
+			<numberOfClients>2</numberOfClients>
 		</properties>
 	</task>
 
 	<task>
-		<dependency>
-			<taskName>download-from-svn</taskName>
-			<status>finished</status>
-		</dependency>
-
-		<name>build-nginx</name>
-		<type>nginx-build-sources</type>
-	</task>
-
-	<task>
-		<dependency>
-			<taskName>build-nginx</taskName>
-			<status>finished</status>
-		</dependency>
-
-		<name>run-server</name>
-		<type>nginx-execute-server</type>
-	</task>
-
-	<task>
-		<dependency>
-			<taskName>build-nginx</taskName>
-			<status>finished</status>
-		</dependency>
-
-		<name>run-client-1</name>
+		<name>client-1</name>
 		<type>nginx-client</type>
 	</task>
 
 	<task>
-		<name>run-client-2</name>
+		<name>client-2</name>
 		<type>nginx-client</type>
-	</task>
-
-	<task>
-		<dependency>
-			<taskName>run-client-1</taskName>
-			<status>finished</status>
-		</dependency>
-		<dependency>
-			<taskName>run-client-2</taskName>
-			<status>finished</status>
-		</dependency>
-
-		<name>stop-server</name>
-		<type>nginx-stop-server</type>
 	</task>
 
 </taskContext>

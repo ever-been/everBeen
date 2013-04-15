@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<taskDescriptor xmlns="http://been.d3s.mff.cuni.cz/taskmanager/td"
+                groupId="cz.cuni.mff.d3s.been.nginx" bpkId="nginx-client"
+                version="0.0.1" name="nginx-client">
+
+	<hostRuntimes></hostRuntimes>
+
+</taskDescriptor>
