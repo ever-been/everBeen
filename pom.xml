@@ -132,6 +132,7 @@
 				<module>results-repository-mongo-storage</module>
 				<module>task-api</module>
 				<module>task-test</module>
+				<module>benchmark-nginx</module>
 			</modules>
 		</profile>
 
@@ -141,6 +142,14 @@
 			<modules>
 				<module>bpk-conventions</module>
 				<module>bpk-plugin</module>
+			</modules>
+		</profile>
+
+		<profile>
+			<id>buildBenchmarks</id>
+
+			<modules>
+				<module>jackson</module>
 			</modules>
 		</profile>
 

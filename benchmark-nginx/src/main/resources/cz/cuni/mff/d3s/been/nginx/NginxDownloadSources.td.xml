@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<taskDescriptor xmlns="http://been.d3s.mff.cuni.cz/taskmanager/td"
+                groupId="cz.cuni.mff.d3s.been.nginx" bpkId="nginx-download-sources"
+                version="0.0.1"
+                name="nginx-download-sources">
+	<package>
+		<name>nginx-download-sources-0.0.1.bpk</name>
+	</package>
+
+	<hostRuntimes>
+
+	</hostRuntimes>
+
+	<!-- filled when instantiating the task -->
+	<!--
+	<properties>
+
+		<svnRevision></svnRevision>
+	</properties>
+	-->
+	
+	<debug>
+		<mode>connect</mode>
+		<host>localhost</host>
+		<port>5005</port>
+		<suspend>true</suspend>
+	</debug>
+</taskDescriptor>

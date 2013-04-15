@@ -8,8 +8,6 @@ import cz.cuni.mff.d3s.been.results.ResultContainerId;
 import cz.cuni.mff.d3s.been.taskapi.Task;
 import cz.cuni.mff.d3s.been.taskapi.results.ResultPersister;
 
-import java.util.Arrays;
-
 /**
  * @author Martin Sixta
  */
@@ -29,12 +27,7 @@ public class ExampleTask extends Task {
 		final ResultPersister rp = results.createResultPersister(cid);
 		System.out.println("Hello world!");
 		try {
-			TestResult r = new TestResult();
-			r.field = "Hello lols!";
-			r.values = Arrays.asList((int)(Math.random() * 100), (int)(Math.random() * 100));
-			r.i.a = 7;
-			r.i.b = 17;
-			rp.persist(r);
+			rp.persist(new TestResult());
 		} catch (DAOException e) {
 			log.error("OMG, Result persistence got mashed!", e);
 		}

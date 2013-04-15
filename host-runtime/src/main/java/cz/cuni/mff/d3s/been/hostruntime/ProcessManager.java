@@ -1,8 +1,6 @@
 package cz.cuni.mff.d3s.been.hostruntime;
 
-import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.HR_COMM_PORT;
-import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.HR_RESULTS_PORT;
-import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.TASK_ID;
+import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,11 +21,7 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cz.cuni.mff.d3s.been.bpk.Bpk;
-import cz.cuni.mff.d3s.been.bpk.BpkConfigUtils;
-import cz.cuni.mff.d3s.been.bpk.BpkConfiguration;
-import cz.cuni.mff.d3s.been.bpk.BpkConfigurationException;
-import cz.cuni.mff.d3s.been.bpk.BpkNames;
+import cz.cuni.mff.d3s.been.bpk.*;
 import cz.cuni.mff.d3s.been.cluster.Reapable;
 import cz.cuni.mff.d3s.been.cluster.Reaper;
 import cz.cuni.mff.d3s.been.cluster.Service;
@@ -40,6 +34,7 @@ import cz.cuni.mff.d3s.been.core.protocol.messages.RunTaskMessage;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
+import cz.cuni.mff.d3s.been.core.task.TaskProperty;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
 import cz.cuni.mff.d3s.been.debugassistant.DebugAssistant;
 import cz.cuni.mff.d3s.been.hostruntime.cmdline.CmdLineBuilderFactory;
@@ -279,18 +274,28 @@ final class ProcessManager implements Service, Reapable {
 
 		ExecuteStreamHandler streamhandler = new PumpStreamHandler();
 
-		long timeout = td.isSetFailurePolicy() ? td.getFailurePolicy().getTimeoutRun() : TaskProcess.NO_TIMEOUT;
-		TaskProcess taskProcess = new TaskProcess(cmd, dir.toFile(), createEnvironmentProperties(taskEntry), streamhandler , timeout); // FIXMEProcesses.createProcess(bpkConfiguration.getRuntime(), td, dir);
+		long timeout = td.isSetFailurePolicy()
+				? td.getFailurePolicy().getTimeoutRun() : TaskProcess.NO_TIMEOUT;
+		TaskProcess taskProcess = new TaskProcess(cmd, dir.toFile(), createEnvironmentProperties(taskEntry), streamhandler, timeout); // FIXMEProcesses.createProcess(bpkConfiguration.getRuntime(), td, dir);
 		// run it
 
 		return taskProcess;
 	}
 
 	private Map<String, String> createEnvironmentProperties(TaskEntry taskEntry) {
+
 		Map<String, String> properties = new HashMap<>();
 		properties.put(TASK_ID, taskEntry.getId());
 		properties.put(HR_COMM_PORT, Integer.toString(taskMessageDispatcher.getReceiverPort()));
 		properties.put(HR_RESULTS_PORT, Integer.toString(resultsDispatcher.getPort()));
+
+		// add properties specified in TaskDescriptor
+		TaskDescriptor td = taskEntry.getTaskDescriptor();
+		if (td.isSetTaskProperties() && td.getTaskProperties().isSetTaskProperty()) {
+			for (TaskProperty property : td.getTaskProperties().getTaskProperty()) {
+				properties.put(property.getKey(), property.getValue());
+			}
+		}
 		return properties;
 	}
 
