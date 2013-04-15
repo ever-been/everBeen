@@ -20,6 +20,8 @@ import org.junit.rules.TemporaryFolder;
 
 public class ZipUtilTest extends Assert {
 
+	private static final char SLASH = File.separatorChar;
+
 	@Rule
 	public TemporaryFolder tmpFolder = new TemporaryFolder();
 
@@ -28,9 +30,9 @@ public class ZipUtilTest extends Assert {
 	@Before
 	public void setUp() {
 		exampleContents.put("root.xxx", "root example content");
-		exampleContents.put("root/subdir.xxx", "subdir1 example content");
-		exampleContents.put("root/subdir.xxx", "subdir2  example content");
-		exampleContents.put("x/x/x/x/x/x/x/x/x/x/x.xxx", "mega nested example content");
+		exampleContents.put("root"+SLASH+"subdir.xxx", "subdir1 example content");
+		exampleContents.put("root"+SLASH+"subdir.xxx", "subdir2  example content");
+		exampleContents.put("x"+SLASH+"x"+SLASH+"x"+SLASH+"x"+SLASH+"x"+SLASH+"x.xxx", "mega nested example content");
 	}
 
 	@Test
