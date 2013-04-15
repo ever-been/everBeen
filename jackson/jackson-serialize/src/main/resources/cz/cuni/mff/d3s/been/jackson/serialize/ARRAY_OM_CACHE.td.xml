@@ -4,9 +4,9 @@
 				name="jackson-serialize">
 	<hostRuntimes />
 	<taskProperties>
-		<taskProperty key="dataType" value="SMALL_POJO" />
+		<taskProperty key="dataType" value="ARRAY" />
 		
-		<taskProperty key="cachePolicy" value="NO_CACHE" />
+		<taskProperty key="cachePolicy" value="OM_CACHE" />
 		
 		<taskProperty key="repetitions" value="10000" />
 	</taskProperties>

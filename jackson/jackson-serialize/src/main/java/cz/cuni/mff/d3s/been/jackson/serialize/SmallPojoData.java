@@ -1,12 +1,18 @@
 package cz.cuni.mff.d3s.been.jackson.serialize;
 
+import java.util.Calendar;
+
 class SmallPojoData implements DataGenerator {
 
-	SmallPojoData() {}
+	private final Calendar calendar;
+
+	SmallPojoData() {
+		calendar = Calendar.getInstance();
+	}
 
 	@Override
 	public Object generate() {
-		return new TimeResult(System.currentTimeMillis());
+		calendar.setTimeInMillis(System.currentTimeMillis());
+		return calendar.getTime();
 	}
-
 }

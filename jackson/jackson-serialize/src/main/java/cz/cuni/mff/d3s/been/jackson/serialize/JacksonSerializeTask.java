@@ -24,9 +24,9 @@ public class JacksonSerializeTask extends Task {
 	public void run() {
 		log.info(System.getProperties().toString());
 		log.info(System.getenv().toString());
-		final DataType dataType = DataType.valueOf(System.getProperty("dataType"));
-		final CachePolicy cachePolicy = CachePolicy.valueOf(System.getProperty("cachePolicy"));
-		final Long repetitions = Long.valueOf(System.getProperty("repetitions"));
+		final DataType dataType = DataType.valueOf(System.getenv("dataType"));
+		final CachePolicy cachePolicy = CachePolicy.valueOf(System.getenv("cachePolicy"));
+		final Long repetitions = Long.valueOf(System.getenv("repetitions"));
 
 		final ResultContainerId cid = new ResultContainerId();
 		cid.setDatabaseName("results");
