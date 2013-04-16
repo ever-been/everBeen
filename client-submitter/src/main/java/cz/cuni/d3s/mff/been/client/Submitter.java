@@ -1,7 +1,14 @@
 package cz.cuni.d3s.mff.been.client;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
+import cz.cuni.mff.d3s.been.core.jaxb.ConvertorException;
+import cz.cuni.mff.d3s.been.core.task.TaskEntries;
+import cz.cuni.mff.d3s.been.core.taskcontext.*;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -23,6 +30,9 @@ import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.datastore.SoftwareStoreFactory;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
+import org.xml.sax.SAXException;
+
+import javax.xml.bind.JAXBException;
 
 /**
  * 
@@ -42,7 +52,10 @@ public class Submitter {
 	private int port = 5701;
 
 	@Option(name = "-td", aliases = { "--task-descriptor" }, required = true, usage = "TaskDescriptor to submit")
-	private String tdPath;
+	private List<String> tdPaths;
+
+	@Option(name = "-tcd", aliases = { "--task-context-descriptor" }, usage = "TaskContextDescriptor to submit")
+	private String tcdPath;
 
 	@Option(name = "-gn", aliases = { "--group-name" }, usage = "Group Name")
 	private String groupName = "dev";
@@ -57,13 +70,77 @@ public class Submitter {
 	private boolean printEntry = false;
 
 	@Option(name = "-bpk", aliases = { "--been-package" }, usage = "Upload BPK to Software Repository first.")
-	private String bpkFile;
+	private List<String> bpkFiles;
 
 	public static void main(String[] args) {
 		new Submitter().doMain(args);
 	}
 
-	public Submitter() {}
+	private ClusterContext clusterContext;
+
+	private void initializeCluster() {
+		if (debug) {
+			System.setProperty("hazelcast.logging.type", "slf4j");
+		} else {
+			System.setProperty("hazelcast.logging.type", "none");
+		}
+
+		// connect to the cluster
+		HazelcastInstance instance = Instance.newNativeInstance(host, port, groupName, groupPassword);
+		clusterContext = new ClusterContext(instance);
+	}
+
+	private void submitSingleTask(File tdFile) throws JAXBException, SAXException, ConvertorException {
+		TaskDescriptor td = createTaskDescriptor(tdFile);
+
+		// submit
+		String taskId = clusterContext.getTasksUtils().submit(td);
+
+		System.out.println("Task was submitted with id: " + taskId);
+
+		if (printEntry) {
+			TaskEntry entry = clusterContext.getTasksUtils().getTask(taskId);
+
+			BindingComposer<TaskEntry> composer = XSD.TASKENTRY.createComposer(TaskEntry.class);
+			composer.compose(entry, System.out);
+		}
+	}
+
+	private TaskDescriptor createTaskDescriptor(File tdFile) throws SAXException, JAXBException, ConvertorException {
+		// parse task descriptor
+		BindingParser<TaskDescriptor> bindingComposer = XSD.TD.createParser(TaskDescriptor.class);
+		System.out.println(tdPaths);
+		return bindingComposer.parse(tdFile);
+	}
+
+	private void submitTaskContext(File tcdFile) throws JAXBException, SAXException, ConvertorException {
+		Map<String, TaskDescriptor> descriptors = new HashMap<>();
+
+		for (String tdPath : tdPaths) {
+			TaskDescriptor td = createTaskDescriptor(new File(tdPath));
+			descriptors.put(td.getName(), td);
+		}
+
+		// create TCD
+		BindingParser<TaskContextDescriptor> bindingComposer = XSD.TCD.createParser(TaskContextDescriptor.class);
+		TaskContextDescriptor taskContextDescriptor = bindingComposer.parse(tcdFile);
+
+		// create TCE
+		TaskContextEntry taskContextEntry = new TaskContextEntry();
+		taskContextEntry.setId(UUID.randomUUID().toString());
+
+		for (Task t : taskContextDescriptor.getTask()) {
+			String type = t.getType();
+			TaskDescriptor td = descriptors.get(type);
+			TaskEntry taskEntry = clusterContext.getTasksUtils().createAndPut(td);
+			taskEntry.setTaskContextId(taskContextEntry.getId());
+
+			taskContextEntry.getContainedTask().add(taskEntry.getId());
+		}
+
+		// submit it
+		clusterContext.getTasksUtils().submit(taskContextEntry);
+	}
 
 	private void doMain(String[] args) {
 
@@ -73,36 +150,19 @@ public class Submitter {
 			// parse the arguments.
 			parser.parseArgument(args);
 
-			// parse task descriptor
-			BindingParser<TaskDescriptor> bindingComposer = XSD.TD.createParser(TaskDescriptor.class);
-			System.out.println(tdPath);
-			TaskDescriptor td = bindingComposer.parse(new java.io.File(tdPath));
-
-			if (debug) {
-				System.setProperty("hazelcast.logging.type", "slf4j");
-			} else {
-				System.setProperty("hazelcast.logging.type", "none");
-			}
-
-			// connect to the cluster
-			HazelcastInstance instance = Instance.newNativeInstance(host, port, groupName, groupPassword);
-			ClusterContext clusterContext = new ClusterContext(instance);
+			initializeCluster();
 
 			// upload BPK
-			if (bpkFile != null) {
+			for (String bpkFile : bpkFiles) {
 				uploadBpk(bpkFile, clusterContext);
 			}
 
-			// submit
-			String taskId = clusterContext.getTasksUtils().submit(td);
-
-			System.out.println("Task was submitted with id: " + taskId);
-
-			if (printEntry) {
-				TaskEntry entry = clusterContext.getTasksUtils().getTask(taskId);
-
-				BindingComposer<TaskEntry> composer = XSD.TASKENTRY.createComposer(TaskEntry.class);
-				composer.compose(entry, System.out);
+			if (tcdPath == null) {
+				for (String tdPath : tdPaths) {
+					submitSingleTask(new File(tdPath));
+				}
+			} else {
+				submitTaskContext(new File(tcdPath));
 			}
 
 		} catch (CmdLineException e) {

@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<taskContextDescriptor xmlns="http://been.d3s.mff.cuni.cz/taskmanager/tcd" name="nginx-context">
+
+	<task>
+		<name>server</name>
+		<type>nginx-server</type>
+
+		<properties>
+			<property name="svnPath">svn://svn.nginx.org/nginx/trunk</property>
+			<property name="revision">4032</property>
+			<property name="numberOfClients">2</property>
+		</properties>
+	</task>
+
+	<task>
+		<name>client-1</name>
+		<type>nginx-client</type>
+	</task>
+
+	<task>
+		<name>client-2</name>
+		<type>nginx-client</type>
+	</task>
+
+</taskContextDescriptor>

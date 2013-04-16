@@ -41,7 +41,7 @@
 							<goal>jar</goal>
 						</goals>
 						<configuration>
-							<finalName>nginx-download-sources-0.0.1</finalName>
+							<finalName>nginx-server-0.0.1</finalName>
 							<archive>
 								<manifest>
 									<mainClass>cz.cuni.mff.d3s.been.nginx.NginxServerTask</mainClass>
@@ -55,10 +55,10 @@
 							<goal>jar</goal>
 						</goals>
 						<configuration>
-							<finalName>nginx-build-sources-0.0.1</finalName>
+							<finalName>nginx-client-0.0.1</finalName>
 							<archive>
 								<manifest>
-									<mainClass>cz.cuni.mff.d3s.been.nginx.NginxBuildSourcesTask</mainClass>
+									<mainClass>cz.cuni.mff.d3s.been.nginx.NginxClientTask</mainClass>
 								</manifest>
 							</archive>
 						</configuration>
@@ -77,15 +77,15 @@
 							<goal>buildpackage</goal>
 						</goals>
 						<configuration>
-							<humanName>Nginx Download Sources Task</humanName>
+							<humanName>Nginx Benchmark Server Task</humanName>
 							<runtime>java</runtime>
-							<packageJarFile>target/nginx-download-sources-0.0.1.jar</packageJarFile>
+							<packageJarFile>target/nginx-server-0.0.1.jar</packageJarFile>
 							<filesToArchive></filesToArchive>
 							<bpkDependencies></bpkDependencies>
 							<groupId>cz.cuni.mff.d3s.been.nginx</groupId>
-							<bpkId>nginx-download-sources</bpkId>
+							<bpkId>nginx-server</bpkId>
 							<version>0.0.1</version>
-							<finalName>nginx-download-sources-0.0.1</finalName>
+							<finalName>nginx-server-0.0.1</finalName>
 						</configuration>
 					</execution>
 					<execution>
@@ -94,15 +94,15 @@
 							<goal>buildpackage</goal>
 						</goals>
 						<configuration>
-							<humanName>Nginx Build Sources Task</humanName>
+							<humanName>Nginx Benchmark Client Task</humanName>
 							<runtime>java</runtime>
-							<packageJarFile>target/nginx-build-sources-0.0.1.jar</packageJarFile>
+							<packageJarFile>target/nginx-client-0.0.1.jar</packageJarFile>
 							<filesToArchive></filesToArchive>
 							<bpkDependencies></bpkDependencies>
 							<groupId>cz.cuni.mff.d3s.been.nginx</groupId>
-							<bpkId>nginx-build-sources</bpkId>
+							<bpkId>nginx-client</bpkId>
 							<version>0.0.1</version>
-							<finalName>nginx-build-sources-0.0.1</finalName>
+							<finalName>nginx-client-0.0.1</finalName>
 						</configuration>
 					</execution>
 				</executions>

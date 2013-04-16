@@ -12,6 +12,8 @@ import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntries;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
+import cz.cuni.mff.d3s.been.core.taskcontext.TaskContextDescriptor;
+import cz.cuni.mff.d3s.been.core.taskcontext.TaskContextEntry;
 
 /**
  * 
@@ -35,6 +37,10 @@ public class Tasks {
 	 * @return tasks map
 	 */
 	public IMap<String, TaskEntry> getTasksMap() {
+		return clusterCtx.getMap(Names.TASKS_MAP_NAME);
+	}
+
+	public IMap<String, TaskContextEntry> getTaskContextsMap() {
 		return clusterCtx.getMap(Names.TASKS_MAP_NAME);
 	}
 
@@ -89,6 +95,12 @@ public class Tasks {
 		return getTasksMap().put(entry.getId(), entry, ttl, timeUnit);
 	}
 
+	public TaskEntry createAndPut(TaskDescriptor taskDescriptor) {
+		TaskEntry taskEntry = TaskEntries.create(taskDescriptor);
+		getTasksMap().put(taskEntry.getId(), taskEntry);
+		return taskEntry;
+	}
+
 	/**
 	 * Submits a task described by the taskDescriptor to Task Manager to be
 	 * scheduled.
@@ -109,6 +121,16 @@ public class Tasks {
 
 		return taskEntry.getId();
 
+	}
+
+	public void submit(TaskContextEntry taskContextEntry) {
+		getTaskContextsMap().put(taskContextEntry.getId(), taskContextEntry);
+
+		for (String taskId : taskContextEntry.getContainedTask()) {
+			TaskEntry te = getTasksMap().get(taskId);
+			TaskEntries.setState(te, TaskState.SUBMITTED, "Submitted from context " + taskContextEntry.getId());
+			getTasksMap().put(te.getId(), te);
+		}
 	}
 
 	/**

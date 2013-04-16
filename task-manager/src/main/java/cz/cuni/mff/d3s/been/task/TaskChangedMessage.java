@@ -7,9 +7,9 @@ import cz.cuni.mff.d3s.been.core.task.TaskState;
 /**
  * @author Martin Sixta
  */
-final class NewTaskMessage extends AbstractEntryTaskMessage {
+final class TaskChangedMessage extends AbstractEntryTaskMessage {
 
-	public NewTaskMessage(TaskEntry entry) {
+	public TaskChangedMessage(TaskEntry entry) {
 		super(entry);
 	}
 

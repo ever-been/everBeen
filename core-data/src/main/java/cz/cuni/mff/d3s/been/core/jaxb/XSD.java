@@ -99,10 +99,18 @@ public enum XSD {
 			XSDFile.HARDWARE_INFO.FILE, XSDFile.RUNTIME.FILE),
 
 	TASKENTRY("http://been.d3s.mff.cuni.cz/taskentry", XSDFile.COMMON.FILE,
-			XSDFile.TD.FILE, XSDFile.TASKENTRY.FILE), TD(
+			XSDFile.TD.FILE, XSDFile.TASKENTRY.FILE),
+
+	TD(
 			"http://been.d3s.mff.cuni.cz/taskmanager/td", XSDFile.COMMON.FILE,
 			//XSDFile.STRBIN.FILE,
-			XSDFile.TD.FILE);
+			XSDFile.TD.FILE),
+
+	TCD(
+			"http://been.d3s.mff.cuni.cz/taskmanager/tcd", XSDFile.COMMON.FILE,
+			XSDFile.TCD.FILE)
+
+	;
 
 	/**
 	 * A simple class that holds a list of XSD files and can initialize the XML

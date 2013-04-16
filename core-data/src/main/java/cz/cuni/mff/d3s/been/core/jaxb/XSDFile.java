@@ -71,6 +71,8 @@ public enum XSDFile {
 	/** The schema for XML equivalents of task descriptors. */
 	TD("td.xsd"),
 
+	TCD("tcd.xsd"),
+
 	/** The schema for XML representation of triggers. */
 	TRIGGER("trigger.xsd"),
 

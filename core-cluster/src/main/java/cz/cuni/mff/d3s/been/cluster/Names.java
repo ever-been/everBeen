@@ -26,6 +26,11 @@ public class Names {
 	public static final String TASKS_MAP_NAME = "BEEN_MAP_TASKS";
 
 	/**
+	 * Map storing current task contexts.
+	 */
+	public static final String TASK_CONTEXTS_MAP_NAME = "BEEN_MAP_TASK_CONTEXTS";
+
+	/**
 	 * This queue holds results awaiting to be stored persistently.
 	 */
 	public static final String RESULT_QUEUE_NAME = "BEEN_QUEUE_RESULTS";
