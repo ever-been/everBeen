@@ -41,7 +41,7 @@ public class Tasks {
 	}
 
 	public IMap<String, TaskContextEntry> getTaskContextsMap() {
-		return clusterCtx.getMap(Names.TASKS_MAP_NAME);
+		return clusterCtx.getMap(Names.TASK_CONTEXTS_MAP_NAME);
 	}
 
 	public Collection<TaskEntry> getTasks() {
