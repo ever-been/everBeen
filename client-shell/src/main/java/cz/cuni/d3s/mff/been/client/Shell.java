@@ -3,6 +3,7 @@ package cz.cuni.d3s.mff.been.client;
 import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 
+import com.hazelcast.core.HazelcastInstance;
 import jline.console.ConsoleReader;
 
 import org.kohsuke.args4j.CmdLineException;
@@ -35,14 +36,10 @@ public class Shell {
 	@Option(name = "-gp", aliases = { "--group-password" }, usage = "Group Password")
 	private String groupPassword = "dev-pass";
 
-	private final ClusterContext clusterContext;
+	private ClusterContext clusterContext;
 
 	public static void main(String[] args) {
-		new Shell(new ClusterContext(cz.cuni.mff.d3s.been.cluster.Instance.getInstance())).doMain(args);
-	}
-
-	public Shell(ClusterContext clusterContext) {
-		this.clusterContext = clusterContext;
+		new Shell().doMain(args);
 	}
 
 	private void doMain(String[] args) {
@@ -86,8 +83,6 @@ public class Shell {
 	private void connectClient(String[] args) {
 		CmdLineParser parser = new CmdLineParser(this);
 
-		HazelcastClient hazelcastClient = null;
-
 		try {
 			// parse the arguments.
 			parser.parseArgument(args);
@@ -100,15 +95,8 @@ public class Shell {
 				System.setProperty("hazelcast.logging.type", "none");
 			}
 
-			InetSocketAddress socketAddress = new InetSocketAddress(host, port);
-
-			ClientConfig clientConfig = new ClientConfig();
-			clientConfig.getGroupConfig().setName(groupName).setPassword(groupPassword);
-			clientConfig.addInetSocketAddress(socketAddress);
-
-			hazelcastClient = HazelcastClient.newHazelcastClient(clientConfig);
-
-			Instance.registerInstance(hazelcastClient, NodeType.NATIVE);
+			HazelcastInstance instance = Instance.newNativeInstance(host, port, groupName, groupPassword);
+			clusterContext = new ClusterContext(instance);
 
 		} catch (CmdLineException e) {
 
