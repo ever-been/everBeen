@@ -2,11 +2,11 @@ package cz.cuni.mff.d3s.been.cluster.action;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import com.hazelcast.core.EntryEvent;
 import com.hazelcast.core.EntryListener;
 import com.hazelcast.core.IMap;
-import com.hazelcast.core.Instance;
 
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.mq.rep.Replay;
@@ -16,12 +16,12 @@ import cz.cuni.mff.d3s.been.mq.req.Request;
 /**
  * @author Martin Sixta
  */
-final class WaitAction implements Action {
+final class WaitMapAction implements Action {
 	private final Request request;
 	private final ClusterContext ctx;
 	BlockingQueue<String> queue = new LinkedBlockingQueue<>();
 
-	public WaitAction(Request request, ClusterContext ctx) {
+	public WaitMapAction(Request request, ClusterContext ctx) {
 		this.request = request;
 		this.ctx = ctx;
 	}
@@ -63,9 +63,10 @@ final class WaitAction implements Action {
 		String map = args[0];
 		String key = args[1];
 
-		if (!ctx.containsInstance(Instance.InstanceType.MAP, map)) {
-			//return Replays.createErrorReplay("No such map %s", map);
-		}
+		//if (!ctx.containsInstance(Instance.InstanceType.MAP, map)) {
+		//	return Replays.createErrorReplay("No such map %s", map);
+		//}
+
 		Replay replay = null;
 
 		final MapWaiter waiter = new MapWaiter();
@@ -78,7 +79,7 @@ final class WaitAction implements Action {
 
 		if (value == null) {
 			try {
-				value = queue.take();
+				value = queue.poll(request.getTimeout(), TimeUnit.MILLISECONDS);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

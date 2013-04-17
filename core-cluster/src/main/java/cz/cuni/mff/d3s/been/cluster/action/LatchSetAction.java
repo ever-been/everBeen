@@ -1,7 +1,5 @@
 package cz.cuni.mff.d3s.been.cluster.action;
 
-import static com.hazelcast.core.Instance.InstanceType.COUNT_DOWN_LATCH;
-
 import com.hazelcast.core.ICountDownLatch;
 
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
@@ -24,9 +22,6 @@ final class LatchSetAction implements Action {
 	@Override
 	public Replay goGetSome() {
 		String latchName = request.getSelector();
-		if (!ctx.containsInstance(COUNT_DOWN_LATCH, latchName)) {
-			//return Replays.createErrorReplay("No such Count Down Latch '%s'", latchName);
-		}
 
 		int count;
 		try {
@@ -39,7 +34,7 @@ final class LatchSetAction implements Action {
 		boolean isCountSet = countDownLatch.setCount(count);
 
 		if (isCountSet) {
-			return Replays.createOkReplay("");
+			return Replays.createOkReplay(Boolean.TRUE.toString());
 		} else {
 			return Replays.createErrorReplay(Boolean.FALSE.toString());
 		}

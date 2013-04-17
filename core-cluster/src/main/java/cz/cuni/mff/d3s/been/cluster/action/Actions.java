@@ -17,7 +17,7 @@ public class Actions {
 		switch (request.getType()) {
 
 			case WAIT:
-				return new WaitAction(request, ctx);
+				return new WaitMapAction(request, ctx);
 			case GET:
 				return new MapGetAction(request, ctx);
 			case SET:

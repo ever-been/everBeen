@@ -4,10 +4,6 @@ import org.jeromq.ZMQ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cz.cuni.mff.d3s.been.mq.rep.Replay;
-import cz.cuni.mff.d3s.been.mq.rep.ReplayType;
-import cz.cuni.mff.d3s.been.mq.req.Request;
-import cz.cuni.mff.d3s.been.mq.req.RequestType;
 import cz.cuni.mff.d3s.been.taskapi.Requestor;
 import cz.cuni.mff.d3s.been.taskapi.Task;
 
@@ -72,41 +68,45 @@ public class ExampleSyncTask extends Task {
 	 */
 	private void runClient() {
 		// get server address and port
-		String address = waitCheckPoint(CHECKPOINT_ADDRESS);
+		String address = requestor.checkPointWait(CHECKPOINT_ADDRESS);
 
 		// connect to the server
 		ZMQ.Context context = ZMQ.context();
 		ZMQ.Socket socket = context.socket(ZMQ.REQ);
 		socket.connect(address);
 
-		// count down
-		countDown(RENDEZVOUS);
+		try {
+			// count down
+			requestor.latchCountDown(RENDEZVOUS);
 
-		// wait for others
-		waitCheckPoint(CHECKPOINT_GO);
-		log.info("CHECKPOINT_GO reached");
+			// wait for others
+			requestor.checkPointWait(CHECKPOINT_GO);
+			log.info("CHECKPOINT_GO reached");
 
-		// --------------------------------------------------------------------
-		// test
-		// --------------------------------------------------------------------
-		int runs = Integer.valueOf(System.getenv(CLIENT_RUNS_KEY));
+			// --------------------------------------------------------------------
+			// test
+			// --------------------------------------------------------------------
+			int runs = Integer.valueOf(System.getenv(CLIENT_RUNS_KEY));
 
-		long start = System.nanoTime();
-		for (int run = 0; run < runs; ++run) {
-			String msg = String.format("CLIENT: %s, RUN: %d", getId(), run);
-			socket.send(msg);
+			long start = System.nanoTime();
+			for (int run = 0; run < runs; ++run) {
+				String msg = String.format("CLIENT: %s, RUN: %d", getId(), run);
+				socket.send(msg);
 
-			//do nothing with the replay
-			socket.recvStr();
+				//do nothing with the replay
+				socket.recvStr();
+			}
+
+			// print something
+			long end = System.nanoTime();
+			log.info("Test complected in {} ms", (end - start) / 1000000);
+
+		} finally {
+			// don't forget to close the connection
+			socket.close();
+			context.term();
+
 		}
-
-		// don't forget to close the connection
-		socket.close();
-		context.term();
-
-		// print something
-		long end = System.nanoTime();
-		log.info("Test complected in {} ms", (end - start) / 1000000);
 
 	}
 
@@ -123,31 +123,34 @@ public class ExampleSyncTask extends Task {
 
 		address = String.format("%s:%d", address, port);
 
-		// set count down latch, this must be done before address checkpoint!
-		countSet(RENDEZVOUS, getNumberOfClients());
+		try {
+			// set count down latch, this must be done before address checkpoint!
+			requestor.latchSet(RENDEZVOUS, getNumberOfClients());
 
-		// set checkpoint
-		setCheckPoint(CHECKPOINT_ADDRESS, address);
+			// set checkpoint
+			requestor.checkPointSet(CHECKPOINT_ADDRESS, address);
 
-		// wait for all clients
-		countWait(RENDEZVOUS);
+			// wait for all clients
+			requestor.latchWait(RENDEZVOUS);
 
-		setCheckPoint(CHECKPOINT_GO, "go");
+			requestor.checkPointSet(CHECKPOINT_GO, "go");
 
-		int totalNumberOfConnections = getTotalNumberOfConnections();
-		long start = System.nanoTime();
-		for (int i = 0; i < totalNumberOfConnections; ++i) {
-			String msg = socket.recvStr();
-			socket.send("OK: " + msg);
+			int totalNumberOfConnections = getTotalNumberOfConnections();
+			long start = System.nanoTime();
+			for (int i = 0; i < totalNumberOfConnections; ++i) {
+				String msg = socket.recvStr();
+				socket.send("OK: " + msg);
+			}
+
+			// print something
+			long end = System.nanoTime();
+			log.info("Server completed test in {} ms ", (end - start) / 1000000);
+
+		} finally {
+			// don't forget to close the connection
+			socket.close();
+			context.term();
 		}
-
-		// don't forget to close the connection
-		socket.close();
-		context.term();
-
-		// print something
-		long end = System.nanoTime();
-		log.info("Server completed test in {} ms ", (end - start) / 1000000);
 
 	}
 
@@ -166,59 +169,4 @@ public class ExampleSyncTask extends Task {
 		return getNumberOfClients() * getNumberOfRuns();
 	}
 
-	// ------------------------------------------------------------------------
-	// TODO: following should be part of task-api, this is a scatch
-	// ------------------------------------------------------------------------
-
-	private void setCheckPoint(String key, String value) {
-		Request request = new Request(RequestType.SET, "cp#" + key, value);
-		Replay replay = requestor.send(request);
-
-		if (replay.getReplayType() != ReplayType.OK) {
-			log.error(replay.getValue());
-			throw new RuntimeException("Address set failed");
-		}
-	}
-
-	private String waitCheckPoint(String key) {
-		Request request = new Request(RequestType.WAIT, "cp#" + key, null);
-		Replay replay = requestor.send(request);
-
-		if (replay.getReplayType() != ReplayType.OK) {
-			log.error(replay.getValue());
-			throw new RuntimeException("Wait failed");
-		}
-
-		return replay.getValue();
-	}
-
-	private void countWait(String name) {
-		Request request = new Request(RequestType.LATCH_WAIT, name, null);
-		Replay replay = requestor.send(request);
-
-		if (replay.getReplayType() != ReplayType.OK) {
-			log.error(replay.getValue());
-			throw new RuntimeException("Wait for count down failed");
-		}
-	}
-
-	private void countDown(String name) {
-		Request request = new Request(RequestType.LATCH_DOWN, name, null);
-		Replay replay = requestor.send(request);
-
-		if (replay.getReplayType() != ReplayType.OK) {
-			log.error(replay.getValue());
-			throw new RuntimeException("Wait failed");
-		}
-	}
-
-	private void countSet(String name, int count) {
-		Request request = new Request(RequestType.LATCH_SET, name, Integer.toString(count));
-		Replay replay = requestor.send(request);
-
-		if (replay.getReplayType() != ReplayType.OK) {
-			log.error(replay.getValue());
-			throw new RuntimeException("Wait failed");
-		}
-	}
 }

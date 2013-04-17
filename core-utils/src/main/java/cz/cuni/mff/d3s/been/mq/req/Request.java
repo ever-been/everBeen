@@ -9,14 +9,34 @@ public final class Request {
 	private RequestType type;
 	private String selector;
 	private String value;
+	private long timeout;
 
 	public Request() {
 
 	}
+
+	public Request(RequestType type, String selector) {
+		this.type = type;
+		this.selector = selector;
+	}
+
 	public Request(RequestType type, String selector, String value) {
 		this.type = type;
 		this.selector = selector;
 		this.value = value;
+	}
+
+	public Request(RequestType type, String selector, long timeout) {
+		this.type = type;
+		this.selector = selector;
+		this.timeout = timeout;
+	}
+
+	public Request(RequestType type, String selector, String value, long timeout) {
+		this.type = type;
+		this.selector = selector;
+		this.value = value;
+		this.timeout = timeout;
 	}
 
 	public String toJson() {
@@ -29,7 +49,7 @@ public final class Request {
 	}
 
 	public static Request fromJson(String json) throws JSONUtils.JSONSerializerException {
-		return JSONUtils.<Request> deserialize(json, Request.class);
+		return JSONUtils.deserialize(json, Request.class);
 	}
 
 	public RequestType getType() {
@@ -54,5 +74,16 @@ public final class Request {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public long getTimeout() {
+		return timeout;
+	}
+
+	public void setTimeout(long timeout) {
+		if (timeout < 0) {
+			timeout = 0;
+		}
+		this.timeout = timeout;
 	}
 }
