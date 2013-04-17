@@ -72,6 +72,14 @@ final class LocalTaskListener implements EntryListener<String, TaskEntry>, Servi
 	public void entryUpdated(EntryEvent<String, TaskEntry> event) {
 		// TODO more useful debug message?
 		log.debug("TaskEntry {} updated", event.getKey());
+
+		TaskEntry entry = event.getValue();
+		try {
+			sender.send(new TaskChangedMessage(entry));
+		} catch (MessagingException e) {
+			String msg = String.format("Cannot send message to '%s'", sender.getConnection());
+			log.error(msg, e);
+		}
 	}
 
 	@Override

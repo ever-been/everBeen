@@ -34,11 +34,13 @@ final class TaskMessageProcessor extends Thread {
 					break;
 				}
 
-				log.debug("Task Action of type '{}' received", message.getClass());
+				log.debug("Task message of type '{}' received", message.getClass());
 
 				TaskAction action = message.createAction(clusterCtx);
 
-				action.execute();
+				if (action != null) {
+					action.execute();
+				}
 
 			} catch (MessagingException e) {
 				log.error("Cannot receive a message", e);

@@ -54,7 +54,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>cz.cuni.d3s.mff.been.client.Submitter</mainClass>
+							<mainClass>cz.cuni.mff.d3s.been.submitter.Submitter</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

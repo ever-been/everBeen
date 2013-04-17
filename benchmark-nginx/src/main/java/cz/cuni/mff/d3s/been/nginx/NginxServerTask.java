@@ -24,15 +24,11 @@ public class NginxServerTask extends Task {
 		new NginxServerTask().doMain(args);
 	}
 
-	private String getProperty(String name) {
-		return null; // TODO
-	}
+	private File workingDirectory = new File(".");
 
 	private void downloadSources() {
-		String svnPath = this.getProperty("svnPath");
-		int currentRevision = Integer.parseInt(this.getProperty("svnRevision"));
-
-		File contextWorkingDir = null; // TODO, myContext.getWorkingDirectory();
+		String svnPath = "svn://svn.nginx.org/nginx/trunk"; //this.getProperty("svnPath");
+		int currentRevision = 4532; //Integer.parseInt(this.getProperty("svnRevision"));
 
 		CommandLine cmdLine = new CommandLine("svn");
 		cmdLine.addArgument("checkout");
@@ -42,7 +38,7 @@ public class NginxServerTask extends Task {
 		cmdLine.addArgument("nginx");
 
 		DefaultExecutor executor = new DefaultExecutor();
-		executor.setWorkingDirectory(contextWorkingDir);
+		executor.setWorkingDirectory(workingDirectory);
 		int exitValue = 0;
 
 		try {
@@ -56,8 +52,7 @@ public class NginxServerTask extends Task {
 	}
 
 	private void buildSources() {
-		File contextWorkingDir = null; // TODO, myContext.getWorkingDirectory();
-		File sourcesDir = new File(contextWorkingDir, "nginx");
+		File sourcesDir = new File(workingDirectory, "nginx");
 
 		CommandLine cmdLine = new CommandLine("auto/configure");
 		DefaultExecutor executor = new DefaultExecutor();
@@ -111,7 +106,7 @@ public class NginxServerTask extends Task {
 		log.info("RunServer finished successfully.");
 		log.info("Waiting for clients...");
 
-		int numberOfClients = Integer.parseInt(this.getProperty("numberOfClients"));
+		int numberOfClients = 2; //Integer.parseInt(this.getProperty("numberOfClients"));
 		this.waitForCheckpointValue("rendezvous", numberOfClients);
 		this.checkpointReached("server-running", hostname + ":" + port);
 
