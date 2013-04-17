@@ -7,7 +7,6 @@ import java.util.Set;
 
 import com.hazelcast.config.Config;
 import com.hazelcast.core.*;
-
 import cz.cuni.mff.d3s.been.cluster.Names;
 
 /**
@@ -35,6 +34,9 @@ public class ClusterContext {
 		this.servicesUtils = new Services(this);
 	}
 
+	public ICountDownLatch getCountDownLatch(String name) {
+		return getInstance().getCountDownLatch(name);
+	}
 	public Tasks getTasksUtils() {
 		return tasksUtils;
 	}
@@ -155,9 +157,10 @@ public class ClusterContext {
 	}
 
 	/**
-	 *
-	 * Returns all queue, map, set, list, topic, lock, multimap instances created by Hazelcast.
-	 *
+	 * 
+	 * Returns all queue, map, set, list, topic, lock, multimap instances created
+	 * by Hazelcast.
+	 * 
 	 * @return the collection of instances created by Hazelcast.
 	 */
 	public Collection<Instance> getInstances() {
@@ -165,9 +168,9 @@ public class ClusterContext {
 	}
 
 	/**
-	 *
+	 * 
 	 * Returns instances of specified type created by Hazelcast.
-	 *
+	 * 
 	 * @return the collection of instances of specified type created by Hazelcast.
 	 */
 
@@ -184,12 +187,15 @@ public class ClusterContext {
 	}
 
 	/**
-	 *
-	 * Checks for existence of an instance (queue, map, set, list, topic, lock, multimap).
-	 *
-	 * @param instanceType type of the instance
-	 * @param name name of the instance
-	 * @return  true if the instance exists, false otherwise
+	 * 
+	 * Checks for existence of an instance (queue, map, set, list, topic, lock,
+	 * multimap).
+	 * 
+	 * @param instanceType
+	 *          type of the instance
+	 * @param name
+	 *          name of the instance
+	 * @return true if the instance exists, false otherwise
 	 */
 	public boolean containsInstance(Instance.InstanceType instanceType,
 			String name) {
@@ -206,7 +212,7 @@ public class ClusterContext {
 
 	/**
 	 * Returns the configuration of this Hazelcast instance.
-	 *
+	 * 
 	 * @return configuration of this Hazelcast instance
 	 */
 	public Config getConfig() {
@@ -215,11 +221,13 @@ public class ClusterContext {
 
 	/**
 	 * Registers a service.
-	 *
-	 * @param serviceName name of the service
-	 * @param serviceInfo information about the service (service specific)
-	 *
-	 * TODO: check for concurency issues
+	 * 
+	 * @param serviceName
+	 *          name of the service
+	 * @param serviceInfo
+	 *          information about the service (service specific)
+	 * 
+	 *          TODO: check for concurency issues
 	 */
 	public void registerService(String serviceName, Object serviceInfo) {
 		getMap(Names.SERVICES_MAP_NAME).put(serviceName, serviceInfo);
@@ -227,11 +235,12 @@ public class ClusterContext {
 
 	/**
 	 * Un-registers a service.
-	 *
-	 *
-	 * @param serviceName name of the service
-	 *
-	 * TODO: check for concurency issues
+	 * 
+	 * 
+	 * @param serviceName
+	 *          name of the service
+	 * 
+	 *          TODO: check for concurency issues
 	 */
 	public void unregisterService(String serviceName) {
 		getMap(Names.SERVICES_MAP_NAME).remove(serviceName);

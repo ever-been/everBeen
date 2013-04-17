@@ -18,6 +18,7 @@ import java.util.zip.ZipException;
 import org.apache.commons.exec.ExecuteStreamHandler;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.io.FileUtils;
+import org.jeromq.ZMQ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -109,6 +110,8 @@ final class ProcessManager implements Service, Reapable {
 	 */
 	private ResultsDispatcher resultsDispatcher;
 
+	private ZMQ.Context zmqContext;
+
 	/**
 	 * Creates new instance.
 	 * <p/>
@@ -126,6 +129,9 @@ final class ProcessManager implements Service, Reapable {
 		this.softwareResolver = new SoftwareResolver(clusterContext.getServicesUtils(), swRepoClientFactory);
 		this.tasks = clusterContext.getTasksUtils();
 		this.executorService = Executors.newFixedThreadPool(1);
+
+		this.zmqContext = ZMQ.context();
+
 	}
 
 	/**
@@ -220,8 +226,18 @@ final class ProcessManager implements Service, Reapable {
 		// FIXME tadeas
 		changeTaskStateTo(taskHandle, TaskState.ACCEPTED);
 		File taskDirectory = createTaskDir(taskHandle);
+		TaskRequestThread reqThread = null;
 		try {
-			TaskProcess process = createAndStartTaskProcess(taskHandle, taskDirectory);
+
+			reqThread = new TaskRequestThread(zmqContext, clusterContext);
+
+			reqThread.start();
+
+			int port = reqThread.getPort();
+
+			log.info("Task Request socket listens on port {}", port);
+
+			TaskProcess process = createAndStartTaskProcess(taskHandle, taskDirectory, port);
 			changeTaskStateTo(taskHandle, TaskState.RUNNING);
 			// FIXME martin, tadeas zpracovavat return kody - (napr. TaskState.FAILED)
 			runningTasks.put(taskHandle.getId(), process); // removed in finally
@@ -229,6 +245,7 @@ final class ProcessManager implements Service, Reapable {
 			// we do not care if this method takes too long, because this method should be called
 			// asynchronously from parental methods
 
+			// spawn a new thread for the task, it might take a while
 			process.start();
 
 			DebugAssistant dbg = new DebugAssistant(clusterContext);
@@ -240,12 +257,20 @@ final class ProcessManager implements Service, Reapable {
 			log.error(String.format("Task '%s' has been aborted due to underlying exception.", taskHandle.getId()), e);
 		} finally {
 			runningTasks.remove(taskHandle.getId());
+			if (reqThread != null) {
+				reqThread.interrupt();
+				try {
+					reqThread.join();
+				} catch (InterruptedException e) {
+					e.printStackTrace(); //To change body of catch statement use File | Settings | File Templates.
+				}
+			}
 		}
 		deleteTaskDir(taskDirectory);
 	}
 
 	private TaskProcess createAndStartTaskProcess(TaskEntry taskEntry,
-			File taskDirectory) throws IOException, BpkConfigurationException, ZipException, TaskException {
+			File taskDirectory, int port) throws IOException, BpkConfigurationException, ZipException, TaskException {
 
 		TaskDescriptor td = taskEntry.getTaskDescriptor();
 
@@ -276,15 +301,21 @@ final class ProcessManager implements Service, Reapable {
 
 		long timeout = td.isSetFailurePolicy()
 				? td.getFailurePolicy().getTimeoutRun() : TaskProcess.NO_TIMEOUT;
-		TaskProcess taskProcess = new TaskProcess(cmd, dir.toFile(), createEnvironmentProperties(taskEntry), streamhandler, timeout); // FIXMEProcesses.createProcess(bpkConfiguration.getRuntime(), td, dir);
+		TaskProcess taskProcess = new TaskProcess(cmd, dir.toFile(), createEnvironmentProperties(taskEntry, port), streamhandler, timeout); // FIXMEProcesses.createProcess(bpkConfiguration.getRuntime(), td, dir);
 		// run it
+
+		for (String arg : cmd.getArguments()) {
+			log.debug(arg);
+		}
 
 		return taskProcess;
 	}
 
-	private Map<String, String> createEnvironmentProperties(TaskEntry taskEntry) {
+	private Map<String, String> createEnvironmentProperties(TaskEntry taskEntry,
+			int port) {
 
 		Map<String, String> properties = new HashMap<>();
+		properties.put("REQUEST_PORT", Integer.toString(port));
 		properties.put(TASK_ID, taskEntry.getId());
 		properties.put(HR_COMM_PORT, Integer.toString(taskMessageDispatcher.getReceiverPort()));
 		properties.put(HR_RESULTS_PORT, Integer.toString(resultsDispatcher.getPort()));

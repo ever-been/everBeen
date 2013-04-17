@@ -132,6 +132,7 @@
 				<module>results-repository-mongo-storage</module>
 				<module>task-api</module>
 				<module>task-test</module>
+				<module>task-sync-test</module>
 				<module>benchmark-nginx</module>
 			</modules>
 		</profile>
