@@ -1,5 +1,7 @@
 package cz.cuni.mff.d3s.been.task;
 
+import static cz.cuni.mff.d3s.been.task.TaskManagerNames.ACTION_QUEUE_NAME;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -7,7 +9,8 @@ import cz.cuni.mff.d3s.been.cluster.IClusterService;
 import cz.cuni.mff.d3s.been.cluster.Reaper;
 import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
-import cz.cuni.mff.d3s.been.mq.*;
+import cz.cuni.mff.d3s.been.mq.MessageQueues;
+import cz.cuni.mff.d3s.been.mq.MessagingException;
 
 /**
  * 
@@ -26,9 +29,7 @@ final class ClusterManager implements IClusterService {
 	private final ClusterContext clusterCtx;
 	LocalKeyScanner keyScanner;
 
-	private static final String ACTION_QUEUE_NAME = "been.tm.queue";
-
-	private final IMessageQueue<TaskMessage> actionQueue;
+	private final MessageQueues messageQueues = MessageQueues.getInstance();
 
 	public ClusterManager(ClusterContext clusterCtx) {
 		this.clusterCtx = clusterCtx;
@@ -37,8 +38,6 @@ final class ClusterManager implements IClusterService {
 		membershipListener = new MembershipListener(clusterCtx);
 		clientListener = new ClientListener(clusterCtx);
 
-		this.actionQueue = Messaging.createInprocQueue(ACTION_QUEUE_NAME);
-
 	}
 
 	private TaskMessageProcessor taskMessageProcessor;
@@ -46,21 +45,14 @@ final class ClusterManager implements IClusterService {
 	@Override
 	public void start() throws ServiceException {
 
-		IMessageReceiver<TaskMessage> receiver;
 		keyScanner = new LocalKeyScanner(clusterCtx);
 		try {
-			receiver = actionQueue.getReceiver();
-
-			localTaskListener.withSender(actionQueue.createSender());
-			membershipListener.withSender(actionQueue.createSender());
-			clientListener.withSender(actionQueue.createSender());
-			keyScanner.withSender(actionQueue.createSender());
-
+			messageQueues.createInprocQueue(ACTION_QUEUE_NAME);
 		} catch (MessagingException e) {
 			throw new ServiceException("Cannot start clustered Task Manager", e);
 		}
 
-		taskMessageProcessor = new TaskMessageProcessor(clusterCtx, receiver);
+		taskMessageProcessor = new TaskMessageProcessor(clusterCtx);
 
 		taskMessageProcessor.start();
 		localTaskListener.start();
@@ -76,17 +68,7 @@ final class ClusterManager implements IClusterService {
 		clientListener.stop();
 		localTaskListener.stop();
 		membershipListener.stop();
-
-		try {
-			IMessageSender sender = actionQueue.createSender();
-			sender.send(new PoisonMessage());
-			sender.close();
-			taskMessageProcessor.join();
-		} catch (MessagingException | InterruptedException e) {
-			log.error("Cannot stop Task Message Processor.", e);
-		} finally {
-			actionQueue.terminate();
-		}
+		taskMessageProcessor.poison();
 
 		log.info("Task Manager stopped.");
 

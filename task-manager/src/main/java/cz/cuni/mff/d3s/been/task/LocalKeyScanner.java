@@ -9,11 +9,11 @@ import org.slf4j.LoggerFactory;
 
 import com.hazelcast.core.IMap;
 
-import cz.cuni.mff.d3s.been.cluster.Service;
 import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.mq.IMessageSender;
+import cz.cuni.mff.d3s.been.mq.MessageQueues;
 
 /**
  * 
@@ -33,7 +33,7 @@ import cz.cuni.mff.d3s.been.mq.IMessageSender;
  * 
  * @author Martin Sixta
  */
-final class LocalKeyScanner implements Service {
+final class LocalKeyScanner extends TaskManagerService {
 	private static final Logger log = LoggerFactory.getLogger(LocalKeyScanner.class);
 
 	private final ClusterContext clusterCtx;
@@ -43,6 +43,7 @@ final class LocalKeyScanner implements Service {
 	private final LocalKeyScannerRunnable runnable;
 
 	private final String nodeId;
+	private final MessageQueues messageQueues = MessageQueues.getInstance();
 
 	public LocalKeyScanner(ClusterContext clusterCtx) {
 		this.clusterCtx = clusterCtx;
@@ -77,7 +78,7 @@ final class LocalKeyScanner implements Service {
 
 	private void checkEntry(TaskEntry entry) throws Exception {
 
-		// log.debug("TaskEntry ID: {}, status: {}", entry.getId(), entry.getState().toString());
+		log.debug("TaskEntry ID: {}, status: {}", entry.getId(), entry.getState().toString());
 
 		if (!TMUtils.isOwner(entry, nodeId)) {
 			log.debug("Will take over the task {}", entry.getId());
@@ -85,12 +86,9 @@ final class LocalKeyScanner implements Service {
 		}
 	}
 
-	public void withSender(IMessageSender<TaskMessage> sender) {
-		this.sender = sender;
-	}
-
 	@Override
 	public void start() throws ServiceException {
+		sender = createSender();
 		scheduler.scheduleAtFixedRate(runnable, 5, 10, TimeUnit.SECONDS);
 
 	}

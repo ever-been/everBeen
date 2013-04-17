@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.hazelcast.core.Client;
 
-import cz.cuni.mff.d3s.been.cluster.Service;
+import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.mq.IMessageSender;
 
@@ -17,7 +17,7 @@ import cz.cuni.mff.d3s.been.mq.IMessageSender;
  * 
  * @author Martin Sixta
  */
-final class ClientListener implements com.hazelcast.core.ClientListener, Service {
+final class ClientListener extends TaskManagerService implements com.hazelcast.core.ClientListener {
 
 	private ClusterContext clusterCtx;
 	private IMessageSender sender;
@@ -39,7 +39,8 @@ final class ClientListener implements com.hazelcast.core.ClientListener, Service
 	}
 
 	@Override
-	public void start() {
+	public void start() throws ServiceException {
+		sender = createSender();
 		clusterCtx.getClientService().addClientListener(this);
 	}
 
@@ -49,7 +50,4 @@ final class ClientListener implements com.hazelcast.core.ClientListener, Service
 		sender.close();
 	}
 
-	public void withSender(IMessageSender sender) {
-		this.sender = sender;
-	}
 }

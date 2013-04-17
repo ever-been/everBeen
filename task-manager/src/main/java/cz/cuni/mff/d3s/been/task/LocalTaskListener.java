@@ -8,7 +8,7 @@ import com.hazelcast.core.EntryEvent;
 import com.hazelcast.core.EntryListener;
 import com.hazelcast.core.IMap;
 
-import cz.cuni.mff.d3s.been.cluster.Service;
+import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.mq.IMessageSender;
@@ -20,7 +20,7 @@ import cz.cuni.mff.d3s.been.mq.MessagingException;
  * 
  * @author Martin Sixta
  */
-final class LocalTaskListener implements EntryListener<String, TaskEntry>, Service {
+final class LocalTaskListener extends TaskManagerService implements EntryListener<String, TaskEntry> {
 	private static final Logger log = LoggerFactory.getLogger(LocalTaskListener.class);
 
 	private IMap<String, TaskEntry> taskMap;
@@ -42,7 +42,9 @@ final class LocalTaskListener implements EntryListener<String, TaskEntry>, Servi
 	}
 
 	@Override
-	public void start() {
+	public void start() throws ServiceException {
+		sender = createSender();
+
 		taskMap.addLocalEntryListener(this);
 	}
 
@@ -88,9 +90,5 @@ final class LocalTaskListener implements EntryListener<String, TaskEntry>, Servi
 
 		// TODO figure out why the entry was evicted (i.e. stale task)
 
-	}
-
-	public void withSender(IMessageSender<TaskMessage> sender) {
-		this.sender = sender;
 	}
 }

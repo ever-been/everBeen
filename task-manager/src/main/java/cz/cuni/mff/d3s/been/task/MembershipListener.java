@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.hazelcast.core.MembershipEvent;
 
-import cz.cuni.mff.d3s.been.cluster.Service;
+import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.mq.IMessageSender;
 
@@ -14,7 +14,7 @@ import cz.cuni.mff.d3s.been.mq.IMessageSender;
  * 
  * @author Martin Sixta
  */
-final class MembershipListener implements com.hazelcast.core.MembershipListener, Service {
+final class MembershipListener extends TaskManagerService implements com.hazelcast.core.MembershipListener {
 
 	private ClusterContext clusterCtx;
 	private IMessageSender sender;
@@ -26,7 +26,8 @@ final class MembershipListener implements com.hazelcast.core.MembershipListener,
 	private static final Logger log = LoggerFactory.getLogger(LocalTaskListener.class);
 
 	@Override
-	public void start() {
+	public void start() throws ServiceException {
+		sender = createSender();
 		clusterCtx.getCluster().addMembershipListener(this);
 	}
 
@@ -46,7 +47,4 @@ final class MembershipListener implements com.hazelcast.core.MembershipListener,
 		log.info("Member removed: {}", membershipEvent.getMember());
 	}
 
-	public void withSender(IMessageSender sender) {
-		this.sender = sender;
-	}
 }
