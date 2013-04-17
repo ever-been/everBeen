@@ -11,12 +11,7 @@ import org.junit.rules.TemporaryFolder;
 
 import cz.cuni.mff.d3s.been.bpk.BpkNames;
 import cz.cuni.mff.d3s.been.bpk.JavaRuntime;
-import cz.cuni.mff.d3s.been.core.task.Arguments;
-import cz.cuni.mff.d3s.been.core.task.Debug;
-import cz.cuni.mff.d3s.been.core.task.Java;
-import cz.cuni.mff.d3s.been.core.task.JavaOptions;
-import cz.cuni.mff.d3s.been.core.task.ModeEnum;
-import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
+import cz.cuni.mff.d3s.been.core.task.*;
 
 public class JVMCommandLineBuilderTest extends Assert {
 
@@ -50,9 +45,9 @@ public class JVMCommandLineBuilderTest extends Assert {
 
 		assertEquals("java", cmdLine.getExecutable());
 		assertEquals("-cp", cmdLine.getArguments()[0]);
-		String filesCPart = new File(taskDir, BpkNames.FILES_DIR+ File.separator + "*").getAbsolutePath();
-		String libsCPart = new File(taskDir, BpkNames.LIB_DIR+ File.separator + "*").getAbsolutePath();
-		assertEquals(filesCPart + File.pathSeparator +libsCPart , cmdLine.getArguments()[1]);
+		String filesCPart = new File(taskDir, BpkNames.FILES_DIR + File.separator + "*").getAbsolutePath();
+		String libsCPart = new File(taskDir, BpkNames.LIB_DIR + File.separator + "*").getAbsolutePath();
+		assertEquals(filesCPart + File.pathSeparator + libsCPart, cmdLine.getArguments()[1]);
 		assertEquals("opt1", cmdLine.getArguments()[2]);
 		assertEquals("opt2", cmdLine.getArguments()[3]);
 		assertEquals("-agentlib:jdwp=transport=dt_socket,server=n,address=host:124,suspend=n", cmdLine.getArguments()[4]);
@@ -110,7 +105,7 @@ public class JVMCommandLineBuilderTest extends Assert {
 
 		TaskCommandLine cmdLine = new JVMCmdLineBuilder(taskDir, td, runtime).build();
 
-		assertEquals("-agentlib:jdwp=transport=dt_socket,server=n,address=" + port + ",suspend=n", cmdLine.getArguments()[2]);
+		assertEquals("-agentlib:jdwp=transport=dt_socket,server=y,address=" + port + ",suspend=n", cmdLine.getArguments()[2]);
 
 		assertTrue(cmdLine.isDebugListeningMode());
 		assertTrue(cmdLine.getDebugPort() > 0);
