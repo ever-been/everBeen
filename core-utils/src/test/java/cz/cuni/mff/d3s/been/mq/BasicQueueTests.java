@@ -33,7 +33,8 @@ public abstract class BasicQueueTests extends Assert {
 	@Test(timeout = TEST_TIMEOUT)
 	public void testQueueTerminationWithNoSenders() throws MessagingException {
 		IMessageQueue<String> queue = getQueue();
-		@SuppressWarnings("unused") // lazy bind receiver to the socket
+		@SuppressWarnings("unused")
+		// lazy bind receiver to the socket
 		IMessageReceiver<String> receiver = queue.getReceiver();
 
 		queue.terminate();
@@ -48,7 +49,7 @@ public abstract class BasicQueueTests extends Assert {
 	public void testQueueTerminationWithSenders() throws MessagingException {
 		IMessageQueue<String> queue = getQueue();
 		// we do not need to lazy bind receiver to the socket (as in prev. test)
-		// because createSender method calls getReciever() internally
+		// because createSender method calls getReceiver() internally
 		IMessageSender<String> sender1 = queue.createSender();
 		IMessageSender<String> sender2 = queue.createSender();
 
