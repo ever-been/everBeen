@@ -79,14 +79,12 @@ class JVMCmdLineBuilder implements CmdLineBuilder {
 	/** underlying java runtime */
 	private JavaRuntime runtime;
 
-
-
 	/**
 	 * @param taskDir
 	 *          task home directory - from this directory is determined library
-	 *          directory ({@link PackageNames#LIB_DIR})
+	 *          directory ({@link BpkNames#LIB_DIR})
 	 * @param taskDescriptor
-	 * @param jarFileName
+	 * @param runtime
 	 */
 	public JVMCmdLineBuilder(File taskDir, TaskDescriptor taskDescriptor, JavaRuntime runtime) {
 		this.taskDescriptor = taskDescriptor;
@@ -182,7 +180,7 @@ class JVMCmdLineBuilder implements CmdLineBuilder {
 					cmdLine.debugPort = port;
 					cmdLine.debugListeningMode = true;
 					boolean suspend = taskDescriptor.getDebug().isSuspend();
-					cmdLine.addArgument(createDebugParam(false, "" + port, suspend));
+					cmdLine.addArgument(createDebugParam(true, "" + port, suspend));
 					log.info("Debugged process is listening on port {}", port);
 					break;
 				}
