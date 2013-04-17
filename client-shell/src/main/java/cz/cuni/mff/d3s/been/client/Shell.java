@@ -1,7 +1,6 @@
-package cz.cuni.d3s.mff.been.client;
+package cz.cuni.mff.d3s.been.client;
 
 import java.io.PrintWriter;
-import java.net.InetSocketAddress;
 
 import com.hazelcast.core.HazelcastInstance;
 import jline.console.ConsoleReader;
@@ -10,11 +9,7 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import com.hazelcast.client.ClientConfig;
-import com.hazelcast.client.HazelcastClient;
-
 import cz.cuni.mff.d3s.been.cluster.Instance;
-import cz.cuni.mff.d3s.been.cluster.NodeType;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 
 /**

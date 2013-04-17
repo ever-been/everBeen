@@ -1,4 +1,4 @@
-package cz.cuni.d3s.mff.been.client;
+package cz.cuni.mff.d3s.been.client;
 
 import jline.console.ConsoleReader;
 import jline.console.completer.Completer;

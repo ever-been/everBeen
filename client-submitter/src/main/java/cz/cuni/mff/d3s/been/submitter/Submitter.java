@@ -1,4 +1,4 @@
-package cz.cuni.d3s.mff.been.client;
+package cz.cuni.mff.d3s.been.submitter;
 
 import java.io.File;
 import java.util.HashMap;
