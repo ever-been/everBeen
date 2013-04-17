@@ -65,8 +65,6 @@ public class ExampleSyncTask extends Task {
 
 		log.info("END-OF-TIME-AS-WE-KNOW-IT");
 
-		System.exit(0);
-
 	}
 
 	/**
