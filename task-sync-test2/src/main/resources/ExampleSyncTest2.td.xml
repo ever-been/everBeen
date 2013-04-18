@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<taskDescriptor xmlns="http://been.d3s.mff.cuni.cz/taskmanager/td"
+				groupId="cz.cuni.mff.d3s.been" bpkId="task-sync-test2" version="3.0.0"
+				name="server">
+
+	<hostRuntimes>
+
+	</hostRuntimes>
+
+
+</taskDescriptor>

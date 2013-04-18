@@ -10,11 +10,11 @@ import cz.cuni.mff.d3s.been.mq.req.Request;
 /**
  * @author Martin Sixta
  */
-final class SetMapAction implements Action {
+final class MapSetAction implements Action {
 	private final Request request;
 	private final ClusterContext ctx;
 
-	public SetMapAction(Request request, ClusterContext ctx) {
+	public MapSetAction(Request request, ClusterContext ctx) {
 		this.request = request;
 		this.ctx = ctx;
 	}

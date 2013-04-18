@@ -17,11 +17,11 @@ public class Actions {
 		switch (request.getType()) {
 
 			case WAIT:
-				return new WaitMapAction(request, ctx);
+				return new MapWaitAction(request, ctx);
 			case GET:
 				return new MapGetAction(request, ctx);
 			case SET:
-				return new SetMapAction(request, ctx);
+				return new MapSetAction(request, ctx);
 			case LATCH_DOWN:
 				return new LatchDownAction(request, ctx);
 			case LATCH_WAIT:

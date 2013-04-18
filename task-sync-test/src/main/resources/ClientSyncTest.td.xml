@@ -5,7 +5,7 @@
 
 	<taskProperties>
 		<taskProperty key="been.task.sync.type" value="CLIENT"/>
-		<taskProperty key="been.task.sync.count" value="3"/>
+		<taskProperty key="been.task.sync.count" value="2"/>
 		<taskProperty key="been.task.sync.runs" value="10000"/>
 	</taskProperties>
 
@@ -13,11 +13,13 @@
 
 	</hostRuntimes>
 
+	<!--
 	<debug>
 		<mode>listen</mode>
 		<host>0.0.0.0</host>
 		<port>0</port>
 		<suspend>false</suspend>
 	</debug>
+	-->
 
 </taskDescriptor>

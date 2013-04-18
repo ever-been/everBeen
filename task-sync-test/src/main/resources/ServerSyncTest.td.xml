@@ -5,7 +5,7 @@
 
 	<taskProperties>
 		<taskProperty key="been.task.sync.type" value="SERVER"/>
-		<taskProperty key="been.task.sync.count" value="3"/>
+		<taskProperty key="been.task.sync.count" value="2"/>
 		<taskProperty key="been.task.sync.runs" value="10000"/>
 	</taskProperties>
 

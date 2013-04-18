@@ -18,7 +18,6 @@ import java.util.zip.ZipException;
 import org.apache.commons.exec.ExecuteStreamHandler;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.io.FileUtils;
-import org.jeromq.ZMQ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -110,8 +109,6 @@ final class ProcessManager implements Service, Reapable {
 	 */
 	private ResultsDispatcher resultsDispatcher;
 
-	private ZMQ.Context zmqContext;
-
 	/**
 	 * Creates new instance.
 	 * <p/>
@@ -130,15 +127,19 @@ final class ProcessManager implements Service, Reapable {
 		this.tasks = clusterContext.getTasksUtils();
 		this.executorService = Executors.newFixedThreadPool(1);
 
-		this.zmqContext = ZMQ.context();
-
 	}
 
+	private TaskRequestBrokerThread reqThread;
 	/**
 	 * Starts processing messages and tasks.
 	 */
 	@Override
 	public void start() throws ServiceException {
+
+		reqThread = new TaskRequestBrokerThread(clusterContext);
+
+		reqThread.start();
+
 		taskActionThread = new TaskActionThread(receiver);
 		taskActionThread.start();
 
@@ -226,12 +227,8 @@ final class ProcessManager implements Service, Reapable {
 		// FIXME tadeas
 		changeTaskStateTo(taskHandle, TaskState.ACCEPTED);
 		File taskDirectory = createTaskDir(taskHandle);
-		TaskRequestThread reqThread = null;
+
 		try {
-
-			reqThread = new TaskRequestThread(zmqContext, clusterContext);
-
-			reqThread.start();
 
 			int port = reqThread.getPort();
 
@@ -257,14 +254,6 @@ final class ProcessManager implements Service, Reapable {
 			log.error(String.format("Task '%s' has been aborted due to underlying exception.", taskHandle.getId()), e);
 		} finally {
 			runningTasks.remove(taskHandle.getId());
-			if (reqThread != null) {
-				reqThread.interrupt();
-				try {
-					reqThread.join();
-				} catch (InterruptedException e) {
-					e.printStackTrace(); //To change body of catch statement use File | Settings | File Templates.
-				}
-			}
 		}
 		deleteTaskDir(taskDirectory);
 	}
@@ -303,10 +292,6 @@ final class ProcessManager implements Service, Reapable {
 				? td.getFailurePolicy().getTimeoutRun() : TaskProcess.NO_TIMEOUT;
 		TaskProcess taskProcess = new TaskProcess(cmd, dir.toFile(), createEnvironmentProperties(taskEntry, port), streamhandler, timeout); // FIXMEProcesses.createProcess(bpkConfiguration.getRuntime(), td, dir);
 		// run it
-
-		for (String arg : cmd.getArguments()) {
-			log.debug(arg);
-		}
 
 		return taskProcess;
 	}

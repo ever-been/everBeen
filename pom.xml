@@ -133,6 +133,7 @@
 				<module>task-api</module>
 				<module>task-test</module>
 				<module>task-sync-test</module>
+				<module>task-sync-test2</module>
 				<module>benchmark-nginx</module>
 			</modules>
 		</profile>

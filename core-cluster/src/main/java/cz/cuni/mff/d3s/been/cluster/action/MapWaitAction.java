@@ -4,6 +4,9 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.hazelcast.core.EntryEvent;
 import com.hazelcast.core.EntryListener;
 import com.hazelcast.core.IMap;
@@ -16,12 +19,13 @@ import cz.cuni.mff.d3s.been.mq.req.Request;
 /**
  * @author Martin Sixta
  */
-final class WaitMapAction implements Action {
+final class MapWaitAction implements Action {
+	private static final Logger log = LoggerFactory.getLogger(MapWaitAction.class);
 	private final Request request;
 	private final ClusterContext ctx;
 	BlockingQueue<String> queue = new LinkedBlockingQueue<>();
 
-	public WaitMapAction(Request request, ClusterContext ctx) {
+	public MapWaitAction(Request request, ClusterContext ctx) {
 		this.request = request;
 		this.ctx = ctx;
 	}
@@ -30,11 +34,7 @@ final class WaitMapAction implements Action {
 
 		@Override
 		public void entryAdded(EntryEvent<String, String> event) {
-			try {
-				queue.put(event.getValue());
-			} catch (InterruptedException e) {
-
-			}
+			queue.add(event.getValue());
 		}
 
 		@Override
@@ -42,11 +42,7 @@ final class WaitMapAction implements Action {
 
 		@Override
 		public void entryUpdated(EntryEvent<String, String> event) {
-			try {
-				queue.put(event.getValue());
-			} catch (InterruptedException e) {
-
-			}
+			queue.add(event.getValue());
 		}
 
 		@Override
@@ -79,9 +75,13 @@ final class WaitMapAction implements Action {
 
 		if (value == null) {
 			try {
-				value = queue.poll(request.getTimeout(), TimeUnit.MILLISECONDS);
+				if (request.getTimeout() <= 0) {
+					value = queue.take();
+				} else {
+					value = queue.poll(request.getTimeout(), TimeUnit.MILLISECONDS);
+				}
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				log.warn("Poll interrupted", e);
 			}
 		}
 
