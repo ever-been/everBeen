@@ -43,7 +43,10 @@ final class LatchWaitAction implements Action {
 			boolean waitResult;
 
 			if (request.getTimeout() == 0) {
-				countDownLatch.await();
+				// await() will return after hazelcast.max.operation.timeout no matter what
+				while (countDownLatch.hasCount()) {
+					countDownLatch.await();
+				}
 				waitResult = true;
 			} else {
 				waitResult = countDownLatch.await(timeout, MILLISECONDS);
