@@ -46,55 +46,6 @@ import org.xml.sax.SAXException;
  */
 public enum XSD {
 
-	/** Analysis definitions. */
-	BENCHMARK("http://been.d3s.mff.cuni.cz/benchmarkmanagerng/benchmark",
-			XSDFile.COMMON.FILE,
-			//XSDFile.ATTRTYPES.FILE,
-			XSDFile.BENCHMARK.FILE),
-
-	/** Generator and evaluator configuration description. */
-	CONFIG("http://been.d3s.mff.cuni.cz/benchmarkmanagerng/config",
-			XSDFile.COMMON.FILE,
-			//XSDFile.ATTRTYPES.FILE,
-			XSDFile.CONFIG.FILE),
-
-	/** Results Repository data retrieval condition. */
-	CONDITION("http://been.d3s.mff.cuni.cz/taskmanager/td", XSDFile.COMMON.FILE,
-	//XSDFile.STRBIN.FILE,
-			XSDFile.CONDITION.FILE),
-
-	/** Dataset metadata description. */
-	DATASET("http://been.d3s.mff.cuni.cz/resultsrepositoryng/dataset",
-			XSDFile.COMMON.FILE,
-			//XSDFile.ATTRTYPES.FILE,
-			XSDFile.DATASET.FILE),
-
-	/** Host group definition. */
-	GROUP("http://been.d3s.mff.cuni.cz/hostmanager/group", XSDFile.COMMON.FILE,
-	//XSDFile.ATTRTYPES.FILE,
-			XSDFile.GROUP.FILE),
-
-	/** Pluggable module configuration description. */
-	PMC("http://been.d3s.mff.cuni.cz/pluggablemodule/pmc", XSDFile.COMMON.FILE,
-			XSDFile.PMC.FILE),
-
-	/** Object properties tree, restrictions and aliases description. */
-	PROPERTIES("http://been.d3s.mff.cuni.cz/hostmanager/properties",
-			XSDFile.COMMON.FILE,
-			//XSDFile.ATTRTYPES.FILE,
-			XSDFile.PROPERTIES.FILE),
-
-	/** Trigger description. */
-	TRIGGER("http://been.d3s.mff.cuni.cz/taskmanager/td", XSDFile.COMMON.FILE,
-	//XSDFile.STRBIN.FILE,
-			XSDFile.TRIGGER.FILE, XSDFile.CONDITION.FILE, XSDFile.TD.FILE),
-
-	/** Tuple literal representation. */
-	TUPLIT("http://been.d3s.mff.cuni.cz/resultsrepositoryng/tuplit",
-			XSDFile.COMMON.FILE,
-			//XSDFile.ATTRTYPES.FILE,
-			XSDFile.TUPLIT.FILE),
-
 	RUNTIME("http://been.d3s.mff.cuni.cz/runtimeinfo", XSDFile.COMMON.FILE,
 			XSDFile.HARDWARE_INFO.FILE, XSDFile.RUNTIME.FILE),
 

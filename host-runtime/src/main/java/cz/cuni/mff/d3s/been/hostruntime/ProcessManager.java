@@ -34,7 +34,7 @@ import cz.cuni.mff.d3s.been.core.protocol.messages.RunTaskMessage;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
-import cz.cuni.mff.d3s.been.core.task.TaskProperty;
+import cz.cuni.mff.d3s.been.core.task.Property;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
 import cz.cuni.mff.d3s.been.debugassistant.DebugAssistant;
 import cz.cuni.mff.d3s.been.hostruntime.cmdline.CmdLineBuilderFactory;
@@ -291,9 +291,9 @@ final class ProcessManager implements Service, Reapable {
 
 		// add properties specified in TaskDescriptor
 		TaskDescriptor td = taskEntry.getTaskDescriptor();
-		if (td.isSetTaskProperties() && td.getTaskProperties().isSetTaskProperty()) {
-			for (TaskProperty property : td.getTaskProperties().getTaskProperty()) {
-				properties.put(property.getKey(), property.getValue());
+		if (td.isSetProperties() && td.getProperties().isSetProperty()) {
+			for (Property property : td.getProperties().getProperty()) {
+				properties.put(property.getName(), property.getValue());
 			}
 		}
 		return properties;
