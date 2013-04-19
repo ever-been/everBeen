@@ -1,25 +1,46 @@
 <?xml version="1.0"?>
-<taskContextDescriptor xmlns="http://been.d3s.mff.cuni.cz/taskmanager/tcd" name="nginx-context">
+<taskContextDescriptor xmlns="http://been.d3s.mff.cuni.cz/taskmanager/tcd"
+                       xmlns:td="http://been.d3s.mff.cuni.cz/taskmanager/td"
+                       name="nginx-context">
+
+	<properties>
+		<property name="lol">rus</property>
+	</properties>
 
 	<task>
 		<name>server</name>
-		<type>nginx-server</type>
 
 		<properties>
 			<property name="svnPath">svn://svn.nginx.org/nginx/trunk</property>
 			<property name="revision">4032</property>
 			<property name="numberOfClients">2</property>
 		</properties>
+
+		<td:taskDescriptor
+		                groupId="cz.cuni.mff.d3s.been.nginx" bpkId="nginx-server"
+		                version="0.0.1" name="nginx-server">
+			<td:hostRuntimes></td:hostRuntimes>
+		</td:taskDescriptor>
 	</task>
 
 	<task>
 		<name>client-1</name>
-		<type>nginx-client</type>
+		<templateName>nginx-client</templateName>
 	</task>
 
 	<task>
 		<name>client-2</name>
-		<type>nginx-client</type>
+		<templateName>nginx-client</templateName>
 	</task>
+
+	<templates>
+		<template name="nginx-client">
+			<td:taskDescriptor xmlns="http://been.d3s.mff.cuni.cz/taskmanager/td"
+			                groupId="cz.cuni.mff.d3s.been.nginx" bpkId="nginx-client"
+			                version="0.0.1" name="nginx-client">
+				<td:hostRuntimes></td:hostRuntimes>
+			</td:taskDescriptor>
+		</template>
+	</templates>
 
 </taskContextDescriptor>

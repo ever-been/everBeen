@@ -46,20 +46,23 @@ import org.xml.sax.SAXException;
  */
 public enum XSD {
 
-	RUNTIME("http://been.d3s.mff.cuni.cz/runtimeinfo", XSDFile.COMMON.FILE,
-			XSDFile.HARDWARE_INFO.FILE, XSDFile.RUNTIME.FILE),
+	RUNTIME("http://been.d3s.mff.cuni.cz/runtimeinfo",
+			XSDFile.COMMON.FILE,
+			XSDFile.HARDWARE_INFO.FILE,
+			XSDFile.RUNTIME.FILE),
 
-	TASKENTRY("http://been.d3s.mff.cuni.cz/taskentry", XSDFile.COMMON.FILE,
-			XSDFile.TD.FILE, XSDFile.TASKENTRY.FILE),
+	TASKENTRY("http://been.d3s.mff.cuni.cz/taskentry",
+			XSDFile.COMMON.FILE,
+			XSDFile.TASK_DESCRIPTOR.FILE,
+			XSDFile.TASKENTRY.FILE),
 
-	TD(
-			"http://been.d3s.mff.cuni.cz/taskmanager/td", XSDFile.COMMON.FILE,
-			//XSDFile.STRBIN.FILE,
-			XSDFile.TD.FILE),
+	TASK_DESCRIPTOR("http://been.d3s.mff.cuni.cz/taskmanager/td",
+			XSDFile.COMMON.FILE,
+			XSDFile.TASK_DESCRIPTOR.FILE),
 
-	TCD(
-			"http://been.d3s.mff.cuni.cz/taskmanager/tcd", XSDFile.COMMON.FILE,
-			XSDFile.TCD.FILE)
+	TASK_CONTEXT_DESCRIPTOR("http://been.d3s.mff.cuni.cz/taskmanager/tcd",
+			XSDFile.COMMON.FILE,
+			XSDFile.TASK_CONTEXT_DESCRIPTOR.FILE)
 
 	;
 

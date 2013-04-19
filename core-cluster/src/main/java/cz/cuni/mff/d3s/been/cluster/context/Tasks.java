@@ -12,8 +12,8 @@ import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntries;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
-import cz.cuni.mff.d3s.been.core.taskcontext.TaskContextDescriptor;
-import cz.cuni.mff.d3s.been.core.taskcontext.TaskContextEntry;
+import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
+import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
 
 /**
  * 

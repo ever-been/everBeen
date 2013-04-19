@@ -7,8 +7,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import cz.cuni.mff.d3s.been.core.jaxb.ConvertorException;
-import cz.cuni.mff.d3s.been.core.task.TaskEntries;
-import cz.cuni.mff.d3s.been.core.taskcontext.*;
+import cz.cuni.mff.d3s.been.core.task.*;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -108,7 +107,7 @@ public class Submitter {
 
 	private TaskDescriptor createTaskDescriptor(File tdFile) throws SAXException, JAXBException, ConvertorException {
 		// parse task descriptor
-		BindingParser<TaskDescriptor> bindingComposer = XSD.TD.createParser(TaskDescriptor.class);
+		BindingParser<TaskDescriptor> bindingComposer = XSD.TASK_DESCRIPTOR.createParser(TaskDescriptor.class);
 		System.out.println(tdPaths);
 		return bindingComposer.parse(tdFile);
 	}
@@ -121,14 +120,15 @@ public class Submitter {
 			descriptors.put(td.getName(), td);
 		}
 
-		// create TCD
-		BindingParser<TaskContextDescriptor> bindingComposer = XSD.TCD.createParser(TaskContextDescriptor.class);
+		// create TASK_CONTEXT_DESCRIPTOR
+		BindingParser<TaskContextDescriptor> bindingComposer = XSD.TASK_CONTEXT_DESCRIPTOR.createParser(TaskContextDescriptor.class);
 		TaskContextDescriptor taskContextDescriptor = bindingComposer.parse(tcdFile);
 
 		// create TCE
 		TaskContextEntry taskContextEntry = new TaskContextEntry();
 		taskContextEntry.setId(UUID.randomUUID().toString());
 
+		/* TODO
 		for (Task t : taskContextDescriptor.getTask()) {
 			String type = t.getType();
 			TaskDescriptor td = descriptors.get(type);
@@ -137,6 +137,7 @@ public class Submitter {
 
 			taskContextEntry.getContainedTask().add(taskEntry.getId());
 		}
+		*/
 
 		// submit it
 		clusterContext.getTasksUtils().submit(taskContextEntry);

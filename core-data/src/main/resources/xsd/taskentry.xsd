@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <xs:schema
-		xmlns="http://been.d3s.mff.cuni.cz/taskentry"
 		targetNamespace="http://been.d3s.mff.cuni.cz/taskentry"
 		elementFormDefault="unqualified"
 		attributeFormDefault="unqualified"
@@ -9,15 +8,13 @@
 		xmlns:xs="http://www.w3.org/2001/XMLSchema"
 		xmlns:td="http://been.d3s.mff.cuni.cz/taskmanager/td"
 		xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
-		xmlns:common="http://been.d3s.mff.cuni.cz/common"
 		xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
 		jaxb:extensionBindingPrefixes="xjc"
 		jaxb:version="2.0">
 
-	<xs:import schemaLocation="common.xsd" namespace="http://been.d3s.mff.cuni.cz/common"/>
-	<xs:import schemaLocation="td.xsd" namespace="http://been.d3s.mff.cuni.cz/taskmanager/td"/>
+	<xs:import schemaLocation="common.xsd" />
+	<xs:import schemaLocation="taskdescriptor.xsd" namespace="http://been.d3s.mff.cuni.cz/taskmanager/td"/>
 
-	<xs:element name="id" type="xs:string"/>
 	<xs:element name="taskContextId" type="xs:string"/>
 	<xs:element name="ownerId" type="xs:string"/>
 	<xs:element name="runtimeId" type="xs:string" />
@@ -84,7 +81,7 @@
 	<xs:element name="taskEntry">
 		<xs:complexType>
 			<xs:all>
-				<xs:element ref="taskentry:id" minOccurs="1" maxOccurs="1">
+				<xs:element ref="id" minOccurs="1" maxOccurs="1">
 					<xs:annotation>
 						<xs:appinfo>
 							<jaxb:property>
@@ -134,7 +131,7 @@
 					</xs:annotation>
 				</xs:element>
 
-				<xs:element name="exitCode" type="common:nonnegativeInt" default="0" minOccurs="0" maxOccurs="1">
+				<xs:element name="exitCode" type="nonnegativeInt" default="0" minOccurs="0" maxOccurs="1">
 					<xs:annotation>
 						<xs:appinfo>
 							<jaxb:property>
