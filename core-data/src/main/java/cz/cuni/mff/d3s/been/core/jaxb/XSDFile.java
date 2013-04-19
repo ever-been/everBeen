@@ -42,9 +42,9 @@ public enum XSDFile {
 	COMMON("common.xsd"),
 
 	/** The schema for XML equivalents of task descriptors. */
-	TASK_DESCRIPTOR("taskdescriptor.xsd"),
+	TD("td.xsd"),
 
-	TASK_CONTEXT_DESCRIPTOR("taskcontextdescriptor.xsd"),
+	TCD("tcd.xsd"),
 
 	TASKENTRY("taskentry.xsd"),
 
