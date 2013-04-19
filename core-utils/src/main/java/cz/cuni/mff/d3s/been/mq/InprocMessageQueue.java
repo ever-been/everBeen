@@ -31,7 +31,7 @@ final class InprocMessageQueue<T extends Serializable> implements IMessageQueue<
 	 *          name of the queue
 	 */
 	InprocMessageQueue(String queueName) {
-		this.context = ZMQ.context();
+		this.context = Context.getReference();
 		this.receiver = new InprocMessageReceiver<>(context, queueName);
 	}
 
@@ -54,6 +54,6 @@ final class InprocMessageQueue<T extends Serializable> implements IMessageQueue<
 	@Override
 	public void terminate() {
 		receiver.close();
-		context.term();
+		Context.releaseContext();
 	}
 }

@@ -25,7 +25,7 @@ public class TcpMessageQueue implements IMessageQueue<String> {
 	 * @param host
 	 */
 	public TcpMessageQueue(String host) {
-		this.context = ZMQ.context();
+		this.context = Context.getReference();
 		this.receiver = new TcpMessageReceiver(context, host);
 	}
 
@@ -48,6 +48,6 @@ public class TcpMessageQueue implements IMessageQueue<String> {
 	@Override
 	public void terminate() {
 		receiver.close();
-		context.term();
+		Context.releaseContext();
 	}
 }

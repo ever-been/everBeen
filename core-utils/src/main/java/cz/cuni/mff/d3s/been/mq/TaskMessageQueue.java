@@ -18,7 +18,7 @@ final class TaskMessageQueue implements IMessageQueue<String> {
 	private String SINK_CONN_FORMAT = "tcp://%s:%d";
 
 	TaskMessageQueue(String host, int port) {
-		context = ZMQ.context();
+		context = Context.getReference();
 		SINK_CONN = String.format(SINK_CONN_FORMAT, host, port);
 	}
 
@@ -37,7 +37,7 @@ final class TaskMessageQueue implements IMessageQueue<String> {
 
 	@Override
 	public void terminate() {
-		context.term();
+		Context.releaseContext();
 	}
 
 }

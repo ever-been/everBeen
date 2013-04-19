@@ -15,6 +15,7 @@ import cz.cuni.mff.d3s.been.cluster.action.Action;
 import cz.cuni.mff.d3s.been.cluster.action.Actions;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
+import cz.cuni.mff.d3s.been.mq.Context;
 import cz.cuni.mff.d3s.been.mq.rep.Replay;
 import cz.cuni.mff.d3s.been.mq.rep.Replays;
 import cz.cuni.mff.d3s.been.mq.req.Request;
@@ -39,7 +40,7 @@ public class TaskRequestBrokerThread extends Thread {
 	private int clientsPort = UNBOUNDED_PORT;
 
 	TaskRequestBrokerThread(ClusterContext ctx) {
-		this.context = ZMQ.context();
+		this.context = Context.getReference();
 		this.ctx = ctx;
 
 		executorService = Executors.newCachedThreadPool();
@@ -63,7 +64,7 @@ public class TaskRequestBrokerThread extends Thread {
 		} finally {
 			clients.close();
 			workers.close();
-			context.term();
+			Context.releaseContext();
 		}
 
 		log.debug("{} exiting.", TaskRequestBrokerThread.class);

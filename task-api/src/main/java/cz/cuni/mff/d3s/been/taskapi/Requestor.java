@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.d3s.been.annotation.NotThreadSafe;
 import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
+import cz.cuni.mff.d3s.been.mq.Context;
 import cz.cuni.mff.d3s.been.mq.rep.Replay;
 import cz.cuni.mff.d3s.been.mq.rep.ReplayType;
 import cz.cuni.mff.d3s.been.mq.rep.Replays;
@@ -18,29 +19,15 @@ import cz.cuni.mff.d3s.been.mq.req.RequestType;
 @NotThreadSafe
 public class Requestor {
 	private static Logger log = LoggerFactory.getLogger(Requestor.class);
-
-	private static ZMQ.Context context = null;
-	private static int count = 0;
-
 	private static String address = String.format("tcp://localhost:%s", System.getenv("REQUEST_PORT"));
-
-	private static synchronized ZMQ.Context getContext() {
-		if (context == null) {
-			context = ZMQ.context();
-		}
-
-		++count;
-		return context;
-	}
 
 	ZMQ.Socket socket;
 
 	public Requestor() {
-		ZMQ.Context ctx = getContext();
+		ZMQ.Context ctx = Context.getReference();
 		this.socket = ctx.socket(ZMQ.REQ);
 		socket.setLinger(0);
 		socket.connect(address);
-		socket.setLinger(0);
 	}
 
 	public Replay send(Request request) {
@@ -59,15 +46,7 @@ public class Requestor {
 
 	public void close() {
 		socket.close();
-		releaseContext();
-	}
-
-	private static synchronized void releaseContext() {
-		if (--count == 0) {
-			context.term();
-			log.debug("Requestor context terminated");
-			context = null;
-		}
+		Context.releaseContext();
 	}
 
 	public void checkPointSet(String key, String value) {
