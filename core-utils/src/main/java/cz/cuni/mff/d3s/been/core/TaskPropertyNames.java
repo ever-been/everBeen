@@ -14,6 +14,11 @@ public class TaskPropertyNames {
 	public static final String TASK_ID = "been.task.id";
 
 	/**
+	 * System property with Task Context ID
+	 */
+	public static final String TASK_CONTEXT_ID = "been.taskcontext.id";
+
+	/**
 	 * System property with Host Runtime Communication Port (aka sink). Through
 	 * this port is realized for example logging.
 	 */

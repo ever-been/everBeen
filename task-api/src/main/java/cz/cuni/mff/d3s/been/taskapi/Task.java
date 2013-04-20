@@ -20,6 +20,7 @@ public abstract class Task {
 	private static final Logger log = LoggerFactory.getLogger(Task.class);
 
 	private String id;
+	private String taskContextId;
 	private IMessageQueue<String> resQueue;
 	private IMessageSender<String> resSender;
 	protected final ResultFacade results = new TaskFieldResultFacadeWrapper();
@@ -32,6 +33,7 @@ public abstract class Task {
 
 	private void initialize() {
 		this.id = System.getenv(TaskPropertyNames.TASK_ID);
+		this.taskContextId = System.getenv(TaskPropertyNames.TASK_CONTEXT_ID);
 		final String resultPort = System.getenv(TaskPropertyNames.HR_RESULTS_PORT);
 		resQueue = Messaging.createTaskQueue(Integer.valueOf(resultPort));
 		try {
