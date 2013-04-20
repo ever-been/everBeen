@@ -28,6 +28,7 @@ public class Context {
 
 		if (refCount == 0) {
 			context.term();
+			context = null;
 		}
 	}
 }
