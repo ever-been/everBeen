@@ -3,11 +3,11 @@
 				groupId="cz.cuni.mff.d3s.been" bpkId="task-sync-test" version="3.0.0"
 				name="server">
 
-	<taskProperties>
-		<taskProperty key="been.task.sync.type" value="SERVER"/>
-		<taskProperty key="been.task.sync.count" value="2"/>
-		<taskProperty key="been.task.sync.runs" value="10000"/>
-	</taskProperties>
+	<properties>
+		<property name="been.task.sync.type">SERVER</property>
+		<property name="been.task.sync.count">2</property>
+		<property name="been.task.sync.runs">10000</property>
+	</properties>
 
 	<hostRuntimes>
 
