@@ -1,7 +1,5 @@
 package cz.cuni.mff.d3s.been.cluster.action;
 
-import com.hazelcast.core.Instance;
-
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.mq.rep.Replay;
 import cz.cuni.mff.d3s.been.mq.rep.Replays;
@@ -21,17 +19,20 @@ final class MapSetAction implements Action {
 
 	@Override
 	public Replay goGetSome() {
-		String[] args = request.getSelector().split("#");
-		if (args.length != 2 || args[0].isEmpty() || args[1].isEmpty()) {
-			return Replays.createErrorReplay("Wrong selector specified: %s. Format is 'map#key'");
+		String[] args;
+
+		try {
+			args = MapActionUtils.parseSelector(request.getSelector());
+		} catch (Exception e) {
+			return Replays.createErrorReplay(e.getMessage());
 		}
 
 		String map = args[0];
 		String key = args[1];
 
-		if (!ctx.containsInstance(Instance.InstanceType.MAP, map)) {
-			//return Replays.createErrorReplay("No such map %s", map);
-		}
+		//if (!ctx.containsInstance(Instance.InstanceType.MAP, map)) {
+		//	return Replays.createErrorReplay("No such map %s", map);
+		//}
 
 		Object mapValue = ctx.getMap(map).put(key, request.getValue());
 

@@ -51,9 +51,12 @@ final class MapWaitAction implements Action {
 
 	@Override
 	public Replay goGetSome() {
-		String[] args = request.getSelector().split("#");
-		if (args.length != 2 || args[0].isEmpty() || args[1].isEmpty()) {
-			return Replays.createErrorReplay("Wrong selector specified: %s. Format is 'map#key'");
+		String[] args;
+
+		try {
+			args = MapActionUtils.parseSelector(request.getSelector());
+		} catch (Exception e) {
+			return Replays.createErrorReplay(e.getMessage());
 		}
 
 		String map = args[0];
@@ -67,11 +70,13 @@ final class MapWaitAction implements Action {
 
 		final MapWaiter waiter = new MapWaiter();
 
-		IMap<String, String> imap = ctx.getMap(map);
+		IMap<String, String> iMap = ctx.getMap(map);
 
-		imap.addEntryListener(waiter, key, true);
+		iMap.addEntryListener(waiter, key, true);
 
-		String value = imap.get(key);
+		String value = iMap.get(key);
+
+		boolean timeout = false;
 
 		if (value == null) {
 			try {
@@ -79,6 +84,9 @@ final class MapWaitAction implements Action {
 					value = queue.take();
 				} else {
 					value = queue.poll(request.getTimeout(), TimeUnit.MILLISECONDS);
+					if (value == null) {
+						timeout = true;
+					}
 				}
 			} catch (InterruptedException e) {
 				log.warn("Poll interrupted", e);
@@ -86,12 +94,17 @@ final class MapWaitAction implements Action {
 		}
 
 		if (value == null) {
-			replay = Replays.createErrorReplay("Unknown error");
+			if (timeout) {
+				replay = Replays.createErrorReplay("TIMEOUT");
+
+			} else {
+				replay = Replays.createErrorReplay("Unknown error");
+			}
 		} else {
 			replay = Replays.createOkReplay(value);
 		}
 
-		imap.removeEntryListener(waiter);
+		iMap.removeEntryListener(waiter);
 		queue.clear();
 
 		return replay;
