@@ -8,6 +8,7 @@
 		xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
 		xmlns:td="http://been.d3s.mff.cuni.cz/taskmanager/td"
 		xmlns:tcd="http://been.d3s.mff.cuni.cz/taskmanager/tcd"
+		xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
 		jaxb:extensionBindingPrefixes="xjc"
 		jaxb:version="2.0"
 		xmlns:xsd="http://www.w3.org/2001/XMLSchema">
