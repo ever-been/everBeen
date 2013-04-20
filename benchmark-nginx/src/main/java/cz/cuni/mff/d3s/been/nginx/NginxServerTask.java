@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.nginx;
 
+import cz.cuni.mff.d3s.been.taskapi.Requestor;
 import cz.cuni.mff.d3s.been.taskapi.Task;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
@@ -93,6 +94,8 @@ public class NginxServerTask extends Task {
 
 	@Override
 	public void run() {
+		Requestor requestor = new Requestor();
+
 		downloadSources();
 
 		log.info("DownloadSources finished successfully.");
@@ -107,12 +110,15 @@ public class NginxServerTask extends Task {
 		log.info("Waiting for clients...");
 
 		int numberOfClients = Integer.parseInt(this.getProperty("numberOfClients"));
-		this.waitForCheckpointValue("rendezvous", numberOfClients);
-		this.checkpointReached("server-running", hostname + ":" + port);
+		requestor.latchSet("rendezvous-latch", numberOfClients);
+		requestor.checkPointSet("rendezvous-checkpoint", "1");
+		requestor.latchWait("rendezvous-latch");
+		requestor.latchSet("shutdown-latch", numberOfClients);
+		requestor.checkPointSet("server-address", hostname + ":" + port);
 
 		log.info("Server is running, waiting for clients to finish...");
 
-		this.waitForCheckpointValue("client-finished", numberOfClients);
+		requestor.latchWait("shutdown-latch");
 
 		log.info("All clients finished.");
 

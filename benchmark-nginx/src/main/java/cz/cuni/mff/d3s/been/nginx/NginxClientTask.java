@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.nginx;
 
+import cz.cuni.mff.d3s.been.taskapi.Requestor;
 import cz.cuni.mff.d3s.been.taskapi.Task;
 
 /**
@@ -25,14 +26,18 @@ public class NginxClientTask extends Task {
 
 	@Override
 	public void run() {
+		Requestor requestor = new Requestor();
+
 		downloadClientScript();
 
-		this.checkpointIncrement("rendezvous");
+		requestor.checkPointWait("rendezvous-checkpoint");
+		requestor.latchCountDown("rendezvous-latch");
+		String serverAddress = requestor.checkPointGet("server-address");
 
-		String address = this.waitForCheckpoint("server-running");
+		System.out.println(serverAddress);
 
-		runClientScript(address);
+		runClientScript(serverAddress);
 
-		this.checkpointIncrement("client-finished");
+		requestor.latchCountDown("shutdown-latch");
 	}
 }

@@ -4,7 +4,7 @@
                        name="nginx-context">
 
 	<properties>
-		<property name="revision">4032</property>
+		<property name="revision">4532</property>
 		<property name="numberOfClients">2</property>
 	</properties>
 

@@ -59,27 +59,6 @@ public abstract class Task {
 		tearDown();
 	}
 
-	protected String waitForCheckpoint(String name) {
-		// TODO
-		return "";
-	}
-
-	protected void checkpointReached(String name) {
-		checkpointReached(name, "");
-	}
-
-	protected void checkpointReached(String name, String value) {
-		// TODO
-	}
-
-	protected void waitForCheckpointValue(String name, int value) {
-		// TODO
-	}
-
-	protected void checkpointIncrement(String name) {
-		// TODO
-	}
-
 	public String getProperty(String propertyName) {
 		return System.getenv(propertyName);
 	}
