@@ -39,5 +39,7 @@ public class NginxClientTask extends Task {
 		runClientScript(serverAddress);
 
 		requestor.latchCountDown("shutdown-latch");
+
+		requestor.close();
 	}
 }

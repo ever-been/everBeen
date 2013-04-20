@@ -125,5 +125,7 @@ public class NginxServerTask extends Task {
 		shutdownServer();
 
 		log.info("ShutdownServer finished successfully.");
+
+		requestor.close();
 	}
 }
