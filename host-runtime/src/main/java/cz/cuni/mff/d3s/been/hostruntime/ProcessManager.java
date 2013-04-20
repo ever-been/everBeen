@@ -15,6 +15,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipException;
 
+import cz.cuni.mff.d3s.been.core.task.*;
 import org.apache.commons.exec.ExecuteStreamHandler;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.io.FileUtils;
@@ -32,10 +33,6 @@ import cz.cuni.mff.d3s.been.core.protocol.messages.BaseMessage;
 import cz.cuni.mff.d3s.been.core.protocol.messages.KillTaskMessage;
 import cz.cuni.mff.d3s.been.core.protocol.messages.RunTaskMessage;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
-import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
-import cz.cuni.mff.d3s.been.core.task.TaskEntry;
-import cz.cuni.mff.d3s.been.core.task.Property;
-import cz.cuni.mff.d3s.been.core.task.TaskState;
 import cz.cuni.mff.d3s.been.debugassistant.DebugAssistant;
 import cz.cuni.mff.d3s.been.hostruntime.cmdline.CmdLineBuilderFactory;
 import cz.cuni.mff.d3s.been.hostruntime.cmdline.TaskCommandLine;
@@ -308,7 +305,7 @@ final class ProcessManager implements Service, Reapable {
 		// add properties specified in TaskDescriptor
 		TaskDescriptor td = taskEntry.getTaskDescriptor();
 		if (td.isSetProperties() && td.getProperties().isSetProperty()) {
-			for (Property property : td.getProperties().getProperty()) {
+			for (TaskProperty property : td.getProperties().getProperty()) {
 				properties.put(property.getName(), property.getValue());
 			}
 		}

@@ -10,7 +10,7 @@
 		xmlns:common="http://been.d3s.mff.cuni.cz/common"
 		xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
 		jaxb:extensionBindingPrefixes="xjc"
-		jaxb:version="2.0">
+		jaxb:version="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
 	<xs:import schemaLocation="common.xsd" namespace="http://been.d3s.mff.cuni.cz/common"/>
 
@@ -90,6 +90,11 @@
 	</xs:attributeGroup>
 
 	<xs:complexType name="Property">
+		<xsd:annotation>
+			<xs:appinfo>
+				<jaxb:class name="TaskProperty" />
+			</xs:appinfo>
+		</xsd:annotation>
 		<xs:simpleContent>
 			<xs:extension base="xs:string">
 				<xs:attribute name="name" type="xs:string" />
@@ -97,9 +102,20 @@
 		</xs:simpleContent>
 	</xs:complexType>
 
-	<xs:element name="property" type="td:Property" />
+	<xs:element name="property" type="td:Property">
+		<xsd:annotation>
+			<xs:appinfo>
+				<jaxb:factoryMethod name="taskProperty" />
+			</xs:appinfo>
+		</xsd:annotation>
+	</xs:element>
 
 	<xs:element name="properties">
+		<xsd:annotation>
+			<xs:appinfo>
+				<jaxb:class name="TaskProperties" />
+			</xs:appinfo>
+		</xsd:annotation>
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element ref="td:property" minOccurs="0" maxOccurs="unbounded" />
@@ -109,7 +125,13 @@
 
 	<xs:element name="asTask" type="common:IDStringRelaxed"/>
 
-	<xs:element name="name" type="common:IDStringRelaxed"/>
+	<xs:element name="name" type="common:IDStringRelaxed">
+		<xsd:annotation>
+			<xs:appinfo>
+				<jaxb:factoryMethod name="taskName" />
+			</xs:appinfo>
+		</xsd:annotation>
+	</xs:element>
 
 	<xs:element name="xpath" type="xs:string"/>
 

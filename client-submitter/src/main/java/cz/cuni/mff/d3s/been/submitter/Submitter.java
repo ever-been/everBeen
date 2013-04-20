@@ -8,7 +8,7 @@ import java.util.UUID;
 
 import cz.cuni.mff.d3s.been.core.jaxb.ConvertorException;
 import cz.cuni.mff.d3s.been.core.task.TaskEntries;
-import cz.cuni.mff.d3s.been.core.taskcontext.*;
+import cz.cuni.mff.d3s.been.core.task.*;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -130,7 +130,7 @@ public class Submitter {
 		taskContextEntry.setId(UUID.randomUUID().toString());
 
 		for (Task t : taskContextDescriptor.getTask()) {
-			String type = t.getType();
+			String type = t.getTemplateName();
 			TaskDescriptor td = descriptors.get(type);
 			TaskEntry taskEntry = clusterContext.getTasksUtils().createAndPut(td);
 			taskEntry.setTaskContextId(taskContextEntry.getId());

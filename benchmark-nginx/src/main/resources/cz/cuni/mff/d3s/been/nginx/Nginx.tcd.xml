@@ -4,7 +4,8 @@
                        name="nginx-context">
 
 	<properties>
-		<property name="lol">rus</property>
+		<property name="revision">4032</property>
+		<property name="numberOfClients">2</property>
 	</properties>
 
 	<task>
@@ -12,25 +13,28 @@
 
 		<properties>
 			<property name="svnPath">svn://svn.nginx.org/nginx/trunk</property>
-			<property name="revision">4032</property>
-			<property name="numberOfClients">2</property>
 		</properties>
 
 		<td:taskDescriptor
 				groupId="cz.cuni.mff.d3s.been.nginx" bpkId="nginx-server"
 				version="0.0.1" name="nginx-server">
-			<td:hostRuntimes></td:hostRuntimes>
 		</td:taskDescriptor>
 	</task>
 
 	<task>
 		<name>client-1</name>
 		<templateName>nginx-client</templateName>
+		<properties>
+			<property name="client-number">1</property>
+		</properties>
 	</task>
 
 	<task>
 		<name>client-2</name>
 		<templateName>nginx-client</templateName>
+		<properties>
+			<property name="client-number">2</property>
+		</properties>
 	</task>
 
 	<templates>
@@ -38,7 +42,9 @@
 			<td:taskDescriptor xmlns="http://been.d3s.mff.cuni.cz/taskmanager/td"
 			                   groupId="cz.cuni.mff.d3s.been.nginx" bpkId="nginx-client"
 			                   version="0.0.1" name="nginx-client">
-				<td:hostRuntimes></td:hostRuntimes>
+				<td:properties>
+					<td:property name="constProperty">value</td:property>
+				</td:properties>
 			</td:taskDescriptor>
 		</template>
 	</templates>

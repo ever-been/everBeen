@@ -11,13 +11,21 @@
 		xmlns:common="http://been.d3s.mff.cuni.cz/common"
 		xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
 		jaxb:extensionBindingPrefixes="xjc"
-		jaxb:version="2.0">
+		jaxb:version="2.0"
+		xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
 	<xs:import schemaLocation="common.xsd" namespace="http://been.d3s.mff.cuni.cz/common"/>
+	<xs:import schemaLocation="taskdescriptor.xsd" namespace="http://been.d3s.mff.cuni.cz/taskmanager/td"/>
 	
 	<xs:element name="name" type="xs:string" />
-	<xs:element name="type" type="xs:string" />
-	<xs:element name="id" type="xs:string" />
+	<xs:element name="id" type="xs:string">
+		<xsd:annotation>
+			<xs:appinfo>
+				<jaxb:factoryMethod name="contextId" />
+			</xs:appinfo>
+		</xsd:annotation>
+	</xs:element>
+	<xs:element name="templateName" type="xs:string" />
 
 	<xs:complexType name="Property">
 		<xs:simpleContent>
@@ -41,8 +49,28 @@
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element ref="tcd:name" />
-				<xs:element ref="tcd:type" />
 				<xs:element ref="tcd:properties" minOccurs="0" maxOccurs="1" />
+				<xs:choice>
+					<xs:element ref="td:taskDescriptor" />
+					<xs:element ref="tcd:templateName" />
+				</xs:choice>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="template">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="td:taskDescriptor" />
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:string" />
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="templates">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="tcd:template" minOccurs="0" maxOccurs="unbounded" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -50,9 +78,11 @@
 	<xs:element name="taskContextDescriptor">
 		<xs:complexType>
 			<xs:sequence>
+				<xs:element ref="tcd:properties" minOccurs="0" maxOccurs="1" />
 				<xs:element ref="tcd:task" minOccurs="0" maxOccurs="unbounded" />
+				<xs:element ref="tcd:templates" minOccurs="0" maxOccurs="1" />
 			</xs:sequence>
-			<xs:attribute name="name" type="common:IDStringRelaxed" default="_NO_NAME_"/>
+			<xs:attribute name="name" type="xs:string" />
 		</xs:complexType>
 	</xs:element>
 
