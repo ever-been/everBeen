@@ -1,17 +1,14 @@
 package cz.cuni.mff.d3s.been.submitter;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
-import cz.cuni.mff.d3s.been.core.jaxb.ConvertorException;
-import cz.cuni.mff.d3s.been.core.task.TaskEntries;
-import cz.cuni.mff.d3s.been.core.task.*;
+import javax.xml.bind.JAXBException;
+
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
+import org.xml.sax.SAXException;
 
 import com.hazelcast.core.HazelcastInstance;
 
@@ -21,18 +18,17 @@ import cz.cuni.mff.d3s.been.bpk.BpkResolver;
 import cz.cuni.mff.d3s.been.bpk.MetaInf;
 import cz.cuni.mff.d3s.been.cluster.Instance;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
-import cz.cuni.mff.d3s.been.core.jaxb.BindingComposer;
 import cz.cuni.mff.d3s.been.core.jaxb.BindingParser;
+import cz.cuni.mff.d3s.been.core.jaxb.ConvertorException;
 import cz.cuni.mff.d3s.been.core.jaxb.XSD;
 import cz.cuni.mff.d3s.been.core.sri.SWRepositoryInfo;
+import cz.cuni.mff.d3s.been.core.task.Descriptor;
+import cz.cuni.mff.d3s.been.core.task.Task;
+import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
-import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.datastore.SoftwareStoreFactory;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
-import org.xml.sax.SAXException;
-
-import javax.xml.bind.JAXBException;
 
 /**
  * 
@@ -51,7 +47,7 @@ public class Submitter {
 	@Option(name = "-p", aliases = { "--port" }, usage = "Port of the host")
 	private int port = 5701;
 
-	@Option(name = "-td", aliases = { "--task-descriptor" }, required = true, usage = "TaskDescriptor to submit")
+	@Option(name = "-td", aliases = { "--task-descriptor" }, usage = "TaskDescriptor to submit")
 	private List<String> tdPaths;
 
 	@Option(name = "-tcd", aliases = { "--task-context-descriptor" }, usage = "TaskContextDescriptor to submit")
