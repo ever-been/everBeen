@@ -15,7 +15,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipException;
 
-import cz.cuni.mff.d3s.been.core.task.*;
 import org.apache.commons.exec.ExecuteStreamHandler;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.io.FileUtils;
@@ -33,6 +32,10 @@ import cz.cuni.mff.d3s.been.core.protocol.messages.BaseMessage;
 import cz.cuni.mff.d3s.been.core.protocol.messages.KillTaskMessage;
 import cz.cuni.mff.d3s.been.core.protocol.messages.RunTaskMessage;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
+import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
+import cz.cuni.mff.d3s.been.core.task.TaskEntry;
+import cz.cuni.mff.d3s.been.core.task.TaskProperty;
+import cz.cuni.mff.d3s.been.core.task.TaskState;
 import cz.cuni.mff.d3s.been.debugassistant.DebugAssistant;
 import cz.cuni.mff.d3s.been.hostruntime.cmdline.CmdLineBuilderFactory;
 import cz.cuni.mff.d3s.been.hostruntime.cmdline.TaskCommandLine;
@@ -296,7 +299,7 @@ final class ProcessManager implements Service, Reapable {
 	private Map<String, String> createEnvironmentProperties(TaskEntry taskEntry,
 			int port) {
 
-		Map<String, String> properties = new HashMap<>();
+		Map<String, String> properties = new HashMap<>(System.getenv());
 		properties.put("REQUEST_PORT", Integer.toString(port));
 		properties.put(TASK_ID, taskEntry.getId());
 		properties.put(TASK_CONTEXT_ID, taskEntry.getTaskContextId());
