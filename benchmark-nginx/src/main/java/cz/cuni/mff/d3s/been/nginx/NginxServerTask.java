@@ -27,8 +27,8 @@ public class NginxServerTask extends Task {
 	private File workingDirectory = new File(".");
 
 	private void downloadSources() {
-		String svnPath = "svn://svn.nginx.org/nginx/trunk"; //this.getProperty("svnPath");
-		int currentRevision = 4532; //Integer.parseInt(this.getProperty("svnRevision"));
+		String svnPath = this.getProperty("svnPath");
+		int currentRevision = Integer.parseInt(this.getProperty("revision"));
 
 		CommandLine cmdLine = new CommandLine("svn");
 		cmdLine.addArgument("checkout");
@@ -106,7 +106,7 @@ public class NginxServerTask extends Task {
 		log.info("RunServer finished successfully.");
 		log.info("Waiting for clients...");
 
-		int numberOfClients = 2; //Integer.parseInt(this.getProperty("numberOfClients"));
+		int numberOfClients = Integer.parseInt(this.getProperty("numberOfClients"));
 		this.waitForCheckpointValue("rendezvous", numberOfClients);
 		this.checkpointReached("server-running", hostname + ":" + port);
 

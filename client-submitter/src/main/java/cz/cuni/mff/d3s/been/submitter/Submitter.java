@@ -108,6 +108,7 @@ public class Submitter {
 
 	private void submitTaskContext(File tcdFile) throws JAXBException, SAXException, ConvertorException {
 		// create TCD
+
 		BindingParser<TaskContextDescriptor> bindingComposer = XSD.TASK_CONTEXT_DESCRIPTOR.createParser(TaskContextDescriptor.class);
 		TaskContextDescriptor taskContextDescriptor = bindingComposer.parse(tcdFile);
 

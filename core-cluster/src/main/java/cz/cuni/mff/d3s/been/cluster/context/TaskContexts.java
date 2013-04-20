@@ -6,9 +6,7 @@ import cz.cuni.mff.d3s.been.core.task.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -49,7 +47,7 @@ public class TaskContexts {
 				td = cloneTemplateWithName(descriptor, templateName);
 			}
 
-			// TODO properties
+			setTaskProperties(descriptor, t, td);
 
 			TaskEntry taskEntry = TaskEntries.create(td, taskContextEntry.getId());
 			taskEntry.setTaskContextId(taskContextEntry.getId());
@@ -62,9 +60,44 @@ public class TaskContexts {
 
 		for (TaskEntry taskEntry : entriesToSubmit) {
 			clusterContext.getTasksUtils().submit(taskEntry);
+			log.info("Task was submitted with ID {}", taskEntry.getId());
 		}
 
 		log.info("Task context was submitted with ID {}", taskContextEntry.getId());
+	}
+
+	private void setTaskProperties(TaskContextDescriptor descriptor, Task task, TaskDescriptor td) {
+		HashMap<String, String> properties = new HashMap<>();
+
+		if (descriptor.isSetProperties()) {
+			for (Property property : descriptor.getProperties().getProperty()) {
+				properties.put(property.getName(), property.getValue());
+			}
+		}
+
+		if (td.isSetProperties()) {
+			for (TaskProperty property : td.getProperties().getProperty()) {
+				properties.put(property.getName(), property.getValue());
+			}
+		}
+
+		if (task.isSetProperties()) {
+			for (Property property : task.getProperties().getProperty()) {
+				properties.put(property.getName(), property.getValue());
+			}
+		}
+
+		if (! td.isSetProperties()) {
+			td.setProperties(new TaskProperties());
+		}
+
+		td.getProperties().getProperty().clear();
+		for (Map.Entry<String, String> property : properties.entrySet()) {
+			TaskProperty taskProperty = new TaskProperty();
+			taskProperty.setName(property.getKey());
+			taskProperty.setValue(property.getValue());
+			td.getProperties().getProperty().add(taskProperty);
+		}
 	}
 
 	private TaskDescriptor cloneTemplateWithName(TaskContextDescriptor descriptor, String templateName) {

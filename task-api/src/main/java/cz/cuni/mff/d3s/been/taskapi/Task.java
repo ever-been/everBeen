@@ -79,4 +79,8 @@ public abstract class Task {
 	protected void checkpointIncrement(String name) {
 		// TODO
 	}
+
+	public String getProperty(String propertyName) {
+		return System.getenv(propertyName);
+	}
 }
