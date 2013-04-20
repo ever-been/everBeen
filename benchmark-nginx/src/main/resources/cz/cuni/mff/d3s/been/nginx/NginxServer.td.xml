@@ -5,4 +5,8 @@
 
 	<hostRuntimes></hostRuntimes>
 
+	<properties>
+		<property name="asd">asd</property>
+	</properties>
+
 </taskDescriptor>

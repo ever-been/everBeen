@@ -38,46 +38,13 @@ import java.nio.file.Files;
  */
 public enum XSDFile {
 
-	/** Included file with common attribute group definitions. */
-	ATTRTYPES("attrtypes.xsd"),
-
-	/** The schema for analyses (bechmarks) deinitions. */
-	BENCHMARK("benchmark.xsd"),
-
 	/** Imported file with common simple type definitions. */
 	COMMON("common.xsd"),
-
-	/** The schema for condition clause (tree) definitions. */
-	CONDITION("condition.xsd"),
-
-	/** The schema for generator and evaluator module configuration metadata. */
-	CONFIG("config.xsd"),
-
-	/** The schema for dataset definitions (aka SQL table definitions). */
-	DATASET("dataset.xsd"),
-
-	/** The schema for host group definitions. */
-	GROUP("group.xsd"),
-
-	/** The schema for plugable module configuration files. */
-	PMC("pmc.xsd"),
-
-	/** The schema for host property tree definitions. */
-	PROPERTIES("properties.xsd"),
-
-	/** Included file with string value / binary value definitions. */
-	STRBIN("strbin.xsd"),
 
 	/** The schema for XML equivalents of task descriptors. */
 	TD("td.xsd"),
 
 	TCD("tcd.xsd"),
-
-	/** The schema for XML representation of triggers. */
-	TRIGGER("trigger.xsd"),
-
-	/** The schema for data handle tuple literals. */
-	TUPLIT("tuplit.xsd"),
 
 	TASKENTRY("taskentry.xsd"),
 
