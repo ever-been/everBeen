@@ -15,7 +15,7 @@
 		jaxb:version="2.0">
 
 	<xs:import schemaLocation="common.xsd" namespace="http://been.d3s.mff.cuni.cz/common"/>
-	<xs:import schemaLocation="td.xsd" namespace="http://been.d3s.mff.cuni.cz/taskmanager/td"/>
+	<xs:import schemaLocation="taskdescriptor.xsd" namespace="http://been.d3s.mff.cuni.cz/taskmanager/td"/>
 
 	<xs:element name="id" type="xs:string"/>
 	<xs:element name="taskContextId" type="xs:string"/>

@@ -108,7 +108,7 @@ public class Submitter {
 
 	private TaskDescriptor createTaskDescriptor(File tdFile) throws SAXException, JAXBException, ConvertorException {
 		// parse task descriptor
-		BindingParser<TaskDescriptor> bindingComposer = XSD.TD.createParser(TaskDescriptor.class);
+		BindingParser<TaskDescriptor> bindingComposer = XSD.TASK_DESCRIPTOR.createParser(TaskDescriptor.class);
 		System.out.println(tdPaths);
 		return bindingComposer.parse(tdFile);
 	}
@@ -122,7 +122,7 @@ public class Submitter {
 		}
 
 		// create TCD
-		BindingParser<TaskContextDescriptor> bindingComposer = XSD.TCD.createParser(TaskContextDescriptor.class);
+		BindingParser<TaskContextDescriptor> bindingComposer = XSD.TASK_CONTEXT_DESCRIPTOR.createParser(TaskContextDescriptor.class);
 		TaskContextDescriptor taskContextDescriptor = bindingComposer.parse(tcdFile);
 
 		// create TCE
