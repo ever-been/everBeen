@@ -45,16 +45,24 @@
 		</xs:complexType>
 	</xs:element>
 
+	<xs:element name="fromTemplate" type="xs:string" />
+
+	<xs:element name="descriptor">
+		<xs:complexType>
+			<xs:choice>
+				<xs:element ref="td:taskDescriptor" />
+				<xs:element ref="tcd:fromTemplate" />
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+
 	<xs:element name="task">
 		<xs:complexType>
-			<xs:sequence>
-				<xs:element ref="tcd:name" />
+			<xs:all>
+				<xs:element ref="tcd:name" minOccurs="1" />
 				<xs:element ref="tcd:properties" minOccurs="0" maxOccurs="1" />
-				<xs:choice>
-					<xs:element ref="td:taskDescriptor" />
-					<xs:element ref="tcd:templateName" />
-				</xs:choice>
-			</xs:sequence>
+				<xs:element ref="tcd:descriptor" minOccurs="1" />
+			</xs:all>
 		</xs:complexType>
 	</xs:element>
 

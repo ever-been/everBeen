@@ -95,25 +95,16 @@ public class Tasks {
 		return getTasksMap().put(entry.getId(), entry, ttl, timeUnit);
 	}
 
-	public TaskEntry createAndPut(TaskDescriptor taskDescriptor) {
-		TaskEntry taskEntry = TaskEntries.create(taskDescriptor);
-		getTasksMap().put(taskEntry.getId(), taskEntry);
-		return taskEntry;
-	}
-
 	/**
 	 * Submits a task described by the taskDescriptor to Task Manager to be
 	 * scheduled.
 	 * 
-	 * @param taskDescriptor
-	 *          descriptor of a task
+	 * @param taskEntry
+	 *          TaskEntry of a task
 	 * 
 	 * @return id of the submitted task
 	 */
-	public String submit(TaskDescriptor taskDescriptor) {
-		// create task entry
-		TaskEntry taskEntry = TaskEntries.create(taskDescriptor);
-
+	public String submit(TaskEntry taskEntry) {
 		// TODO
 		TaskEntries.setState(taskEntry, TaskState.SUBMITTED, "Submitted by ...");
 
@@ -121,16 +112,6 @@ public class Tasks {
 
 		return taskEntry.getId();
 
-	}
-
-	public void submit(TaskContextEntry taskContextEntry) {
-		getTaskContextsMap().put(taskContextEntry.getId(), taskContextEntry);
-
-		for (String taskId : taskContextEntry.getContainedTask()) {
-			TaskEntry te = getTasksMap().get(taskId);
-			TaskEntries.setState(te, TaskState.SUBMITTED, "Submitted from context " + taskContextEntry.getId());
-			getTasksMap().put(te.getId(), te);
-		}
 	}
 
 	/**

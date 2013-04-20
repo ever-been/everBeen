@@ -18,7 +18,7 @@
 	<xs:import schemaLocation="taskdescriptor.xsd" namespace="http://been.d3s.mff.cuni.cz/taskmanager/td"/>
 
 	<xs:element name="id" type="xs:string"/>
-	<xs:element name="taskContextId" type="xs:string"/>
+	<xs:element name="taskContextId" type="xs:string" default=""/>
 	<xs:element name="ownerId" type="xs:string"/>
 	<xs:element name="runtimeId" type="xs:string" />
 
@@ -114,7 +114,7 @@
 					</xs:annotation>
 				</xs:element>
 
-				<xs:element ref="taskentry:taskContextId" minOccurs="0" maxOccurs="1">
+				<xs:element ref="taskentry:taskContextId" minOccurs="1" maxOccurs="1">
 					<xs:annotation>
 						<xs:appinfo>
 							<jaxb:property>

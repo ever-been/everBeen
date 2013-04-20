@@ -93,17 +93,14 @@ public class Submitter {
 	private void submitSingleTask(File tdFile) throws JAXBException, SAXException, ConvertorException {
 		TaskDescriptor td = createTaskDescriptor(tdFile);
 
-		// submit
-		String taskId = clusterContext.getTasksUtils().submit(td);
+		TaskContextDescriptor contextDescriptor = new TaskContextDescriptor();
+		Task t = new Task();
+		Descriptor d = new Descriptor();
+		d.setTaskDescriptor(td);
+		t.setDescriptor(d);
+		contextDescriptor.getTask().add(t);
 
-		System.out.println("Task was submitted with id: " + taskId);
-
-		if (printEntry) {
-			TaskEntry entry = clusterContext.getTasksUtils().getTask(taskId);
-
-			BindingComposer<TaskEntry> composer = XSD.TASKENTRY.createComposer(TaskEntry.class);
-			composer.compose(entry, System.out);
-		}
+		clusterContext.getTaskContextsUtils().submit(contextDescriptor);
 	}
 
 	private TaskDescriptor createTaskDescriptor(File tdFile) throws SAXException, JAXBException, ConvertorException {
@@ -114,32 +111,12 @@ public class Submitter {
 	}
 
 	private void submitTaskContext(File tcdFile) throws JAXBException, SAXException, ConvertorException {
-		Map<String, TaskDescriptor> descriptors = new HashMap<>();
-
-		for (String tdPath : tdPaths) {
-			TaskDescriptor td = createTaskDescriptor(new File(tdPath));
-			descriptors.put(td.getName(), td);
-		}
-
 		// create TCD
 		BindingParser<TaskContextDescriptor> bindingComposer = XSD.TASK_CONTEXT_DESCRIPTOR.createParser(TaskContextDescriptor.class);
 		TaskContextDescriptor taskContextDescriptor = bindingComposer.parse(tcdFile);
 
-		// create TCE
-		TaskContextEntry taskContextEntry = new TaskContextEntry();
-		taskContextEntry.setId(UUID.randomUUID().toString());
-
-		for (Task t : taskContextDescriptor.getTask()) {
-			String type = t.getTemplateName();
-			TaskDescriptor td = descriptors.get(type);
-			TaskEntry taskEntry = clusterContext.getTasksUtils().createAndPut(td);
-			taskEntry.setTaskContextId(taskContextEntry.getId());
-
-			taskContextEntry.getContainedTask().add(taskEntry.getId());
-		}
-
 		// submit it
-		clusterContext.getTasksUtils().submit(taskContextEntry);
+		clusterContext.getTaskContextsUtils().submit(taskContextDescriptor);
 	}
 
 	private void doMain(String[] args) {

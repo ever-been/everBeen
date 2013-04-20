@@ -15,23 +15,29 @@
 			<property name="svnPath">svn://svn.nginx.org/nginx/trunk</property>
 		</properties>
 
-		<td:taskDescriptor
-				groupId="cz.cuni.mff.d3s.been.nginx" bpkId="nginx-server"
-				version="0.0.1" name="nginx-server">
-		</td:taskDescriptor>
+		<descriptor>
+			<td:taskDescriptor
+					groupId="cz.cuni.mff.d3s.been.nginx" bpkId="nginx-server"
+					version="0.0.1" name="nginx-server">
+			</td:taskDescriptor>
+		</descriptor>
 	</task>
 
 	<task>
 		<name>client-1</name>
-		<templateName>nginx-client</templateName>
 		<properties>
 			<property name="client-number">1</property>
 		</properties>
+		<descriptor>
+			<fromTemplate>nginx-client</fromTemplate>
+		</descriptor>
 	</task>
 
 	<task>
 		<name>client-2</name>
-		<templateName>nginx-client</templateName>
+		<descriptor>
+			<fromTemplate>nginx-client</fromTemplate>
+		</descriptor>
 		<properties>
 			<property name="client-number">2</property>
 		</properties>

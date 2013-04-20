@@ -6,13 +6,11 @@
 		
 	</hostRuntimes>
 
-	<!--
 	<debug>
 		<mode>connect</mode>
 		<host>localhost</host>
-		<port>12345</port>
+		<port>5006</port>
 		<suspend>true</suspend>
 	</debug>
-	-->
 
 </taskDescriptor>

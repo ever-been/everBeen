@@ -33,11 +33,20 @@ public class TaskEntries {
 	 *          for which the new entry is created
 	 * @return initialized entry
 	 */
-	public static TaskEntry create(TaskDescriptor taskDescriptor) {
+	public static TaskEntry create(TaskDescriptor taskDescriptor, String taskContextId) {
+		if (taskContextId == null) {
+			throw new NullPointerException("Task context ID cannot be null.");
+		}
+
+		if (taskDescriptor == null) {
+			throw new NullPointerException("Task descriptor cannot be null.");
+		}
+
 		TaskEntry entry = TASK.createTaskEntry();
 
 		entry.setState(TaskState.CREATED);
 		entry.setId(UUID.randomUUID().toString());
+		entry.setTaskContextId(taskContextId);
 		entry.setTaskDescriptor(taskDescriptor);
 
 		// id of the data node which owns this entry

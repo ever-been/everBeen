@@ -213,7 +213,7 @@
 				<xs:element ref="td:arguments" minOccurs="0" maxOccurs="1"/>
 				<xs:element ref="td:java" minOccurs="0" maxOccurs="1"/>
 				<xs:element ref="td:properties" minOccurs="0" maxOccurs="1"/>
-				<xs:element ref="td:hostRuntimes" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="td:hostRuntimes" minOccurs="0" maxOccurs="1"/>
 				<xs:element ref="td:failurePolicy" minOccurs="0" maxOccurs="1"/>
 				<xs:element ref="td:loadMonitoring" minOccurs="0" maxOccurs="1"/>
 				<xs:element ref="td:debug" minOccurs="0" maxOccurs="1"/>

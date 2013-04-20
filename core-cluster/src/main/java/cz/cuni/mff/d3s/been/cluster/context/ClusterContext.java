@@ -21,6 +21,7 @@ public class ClusterContext {
 	private final Maps mapUtils;
 	private final Runtimes runtimesUtils;
 	private final Tasks tasksUtils;
+	private final TaskContexts taskContextsUtils;
 	private final Topics topicUtils;
 	private final Services servicesUtils;
 	private final HazelcastInstance hcInstance;
@@ -30,6 +31,7 @@ public class ClusterContext {
 		this.mapUtils = new Maps(this);
 		this.runtimesUtils = new Runtimes(this);
 		this.tasksUtils = new Tasks(this);
+		this.taskContextsUtils = new TaskContexts(this);
 		this.topicUtils = new Topics(this);
 		this.servicesUtils = new Services(this);
 	}
@@ -39,6 +41,10 @@ public class ClusterContext {
 	}
 	public Tasks getTasksUtils() {
 		return tasksUtils;
+	}
+
+	public TaskContexts getTaskContextsUtils() {
+		return taskContextsUtils;
 	}
 
 	public Maps getMapUtils() {
