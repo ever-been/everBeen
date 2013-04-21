@@ -30,7 +30,7 @@ public class TaskRunnerTest extends Assert {
 		}
 
 		@Override
-		public void run() {
+		public void run(String[] args) {
 
 		}
 	}
@@ -43,7 +43,7 @@ public class TaskRunnerTest extends Assert {
 		}
 
 		@Override
-		public void run() {
+		public void run(String[] args) {
 
 		}
 	}
@@ -56,7 +56,7 @@ public class TaskRunnerTest extends Assert {
 		}
 
 		@Override
-		public void run() {
+		public void run(String[] args) {
 
 		}
 	}
@@ -70,7 +70,7 @@ public class TaskRunnerTest extends Assert {
 		}
 
 		@Override
-		public void run() {
+		public void run(String[] args) {
 
 		}
 	}

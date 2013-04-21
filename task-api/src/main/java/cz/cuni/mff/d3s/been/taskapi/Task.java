@@ -12,8 +12,8 @@ import cz.cuni.mff.d3s.been.taskapi.results.ResultFacade;
 import cz.cuni.mff.d3s.been.taskapi.results.ResultFacadeFactory;
 
 /**
- * Created with IntelliJ IDEA. User: Kuba Date: 11.03.13 Time: 10:50 To change
- * this template use File | Settings | File Templates.
+ * 
+ * @author Kuba Břečka
  */
 public abstract class Task {
 
@@ -26,19 +26,82 @@ public abstract class Task {
 	protected final ResultFacade results = new TaskFieldResultFacadeWrapper();
 	private final String hostname = System.getenv(TaskPropertyNames.HR_HOSTNAME);
 
+	/**
+	 * Returns ID of the running task.
+	 * 
+	 * @return ID of the running task
+	 */
 	public String getId() {
 		return id;
 	}
 
+	/**
+	 * Returns context ID the running task is associated with.
+	 * 
+	 * @return context ID associated with the running task
+	 */
 	public String getTaskContextId() {
 		return taskContextId;
 	}
 
+	/**
+	 * Returns host name of the Host Runtime under which the task is running.
+	 * 
+	 * @return host name of the associated Host Runtime
+	 */
 	public String getHostName() {
 		return hostname;
 	}
 
-	public abstract void run();
+	/**
+	 * Returns system property associated with the running task.
+	 * 
+	 * @param propertyName
+	 *          name of the property
+	 * 
+	 * @return value associated with the name
+	 */
+	public String getProperty(String propertyName) {
+		return System.getenv(propertyName);
+	}
+
+	/**
+	 * Returns system property associated with the running task or default value
+	 * 
+	 * @param propertyName
+	 *          name of the property
+	 * 
+	 * @return value associated with the name or the default value when the
+	 *         property is not set
+	 */
+	public String getProperty(String propertyName, String defaultValue) {
+		String propertyValue = System.getenv(propertyName);
+		if (propertyValue == null) {
+			return defaultValue;
+		} else {
+			return propertyValue;
+		}
+	}
+
+	/**
+	 * The method subclasses override to implement task's functionality.
+	 * 
+	 * To execute a task {@link #doMain(String[])} will be called.
+	 */
+	public abstract void run(String[] args);
+
+	/**
+	 * 
+	 * The method which sets up task's environment and calls
+	 * {@link #run(String[])}.
+	 * 
+	 * @param args
+	 */
+	public void doMain(String[] args) {
+		initialize();
+		run(args);
+		tearDown();
+	}
 
 	private void initialize() {
 		this.id = System.getenv(TaskPropertyNames.TASK_ID);
@@ -62,13 +125,4 @@ public abstract class Task {
 		Messages.terminate();
 	}
 
-	public void doMain(String[] args) {
-		initialize();
-		run();
-		tearDown();
-	}
-
-	public String getProperty(String propertyName) {
-		return System.getenv(propertyName);
-	}
 }

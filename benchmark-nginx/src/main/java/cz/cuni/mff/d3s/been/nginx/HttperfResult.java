@@ -1,17 +1,12 @@
 package cz.cuni.mff.d3s.been.nginx;
 
-import cz.cuni.mff.d3s.been.results.Result;
-
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Date;
 
+import cz.cuni.mff.d3s.been.results.Result;
+
 /**
- * Created with IntelliJ IDEA.
- * User: Kuba
- * Date: 21.04.13
- * Time: 16:54
- * To change this template use File | Settings | File Templates.
+ * Created with IntelliJ IDEA. User: Kuba Date: 21.04.13 Time: 16:54 To change
+ * this template use File | Settings | File Templates.
  */
 public class HttperfResult extends Result {
 

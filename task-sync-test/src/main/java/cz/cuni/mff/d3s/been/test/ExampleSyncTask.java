@@ -43,7 +43,7 @@ public class ExampleSyncTask extends Task {
 	}
 
 	@Override
-	public void run() {
+	public void run(String[] args) {
 		requestor = new Requestor();
 		TaskType type = TaskType.valueOf(System.getenv(TYPE_KEY));
 
