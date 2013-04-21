@@ -16,8 +16,8 @@ import cz.cuni.mff.d3s.been.cluster.action.Actions;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
 import cz.cuni.mff.d3s.been.mq.Context;
-import cz.cuni.mff.d3s.been.mq.rep.Replay;
-import cz.cuni.mff.d3s.been.mq.rep.Replays;
+import cz.cuni.mff.d3s.been.mq.rep.Replies;
+import cz.cuni.mff.d3s.been.mq.rep.Reply;
 import cz.cuni.mff.d3s.been.mq.req.Request;
 
 /**
@@ -137,7 +137,7 @@ public class TaskRequestBrokerThread extends Thread {
 			this.frames = frames;
 		}
 
-		private Replay handleRequestor(String json) {
+		private Reply handleRequestor(String json) {
 			log.debug("REQUEST FROM A TASK: {}", json);
 
 			Request request = null;
@@ -145,7 +145,7 @@ public class TaskRequestBrokerThread extends Thread {
 			try {
 				request = Request.fromJson(json);
 			} catch (JSONUtils.JSONSerializerException e) {
-				return Replays.createErrorReplay("Cannot deserialize");
+				return Replies.createErrorReply("Cannot deserialize");
 			}
 
 			Action action = Actions.createAction(request, ctx);
@@ -156,18 +156,18 @@ public class TaskRequestBrokerThread extends Thread {
 		@Override
 		public void run() {
 			String json = new String(frames.get(2));
-			Replay replay = handleRequestor(json);
-			sendReplay(replay);
+			Reply reply = handleRequestor(json);
+			sendReply(reply);
 
 		}
 
-		private void sendReplay(Replay replay) {
+		private void sendReply(Reply reply) {
 			ZMQ.Socket socket = context.socket(ZMQ.DEALER);
 			try {
 				socket.connect(WORKERS_ADDRESS);
 				socket.send(frames.get(0), ZMQ.SNDMORE);
 				socket.send(frames.get(1), ZMQ.SNDMORE);
-				socket.send(replay.toJson().getBytes(), 0);
+				socket.send(reply.toJson().getBytes(), 0);
 			} catch (Exception e) {
 				//TODO
 			} finally {

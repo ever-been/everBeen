@@ -1,6 +1,6 @@
 package cz.cuni.mff.d3s.been.cluster.action;
 
-import cz.cuni.mff.d3s.been.mq.rep.Replay;
+import cz.cuni.mff.d3s.been.mq.rep.Reply;
 
 /**
  * @author Martin Sixta
@@ -12,7 +12,7 @@ public interface Action {
 	 * 
 	 * TODO figure out better name or one that actually is funny
 	 * 
-	 * @return replay to the request
+	 * @return reply to the request
 	 */
-	public Replay goGetSome();
+	public Reply goGetSome();
 }

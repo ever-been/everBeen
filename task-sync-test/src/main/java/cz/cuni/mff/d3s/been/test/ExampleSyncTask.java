@@ -93,7 +93,7 @@ public class ExampleSyncTask extends Task {
 				String msg = String.format("CLIENT: %s, RUN: %d", getId(), run);
 				socket.send(msg);
 
-				//do nothing with the replay
+				//do nothing with the reply
 				socket.recvStr();
 			}
 

@@ -12,8 +12,8 @@ import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.impl.GroupProperties;
 
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
-import cz.cuni.mff.d3s.been.mq.rep.Replay;
-import cz.cuni.mff.d3s.been.mq.rep.ReplayType;
+import cz.cuni.mff.d3s.been.mq.rep.Reply;
+import cz.cuni.mff.d3s.been.mq.rep.ReplyType;
 import cz.cuni.mff.d3s.been.mq.req.Request;
 import cz.cuni.mff.d3s.been.mq.req.RequestType;
 
@@ -62,10 +62,10 @@ public class MapGetActionTest extends Assert {
 		Request request = new Request(RequestType.GET, getSelector("nonExistingKey"));
 		Action action = Actions.createAction(request, ctx);
 
-		Replay replay = action.goGetSome();
+		Reply reply = action.goGetSome();
 
-		assertSame(ReplayType.OK, replay.getReplayType());
-		assertSame("", replay.getValue());
+		assertSame(ReplyType.OK, reply.getReplyType());
+		assertSame("", reply.getValue());
 	}
 
 	@Test
@@ -74,10 +74,10 @@ public class MapGetActionTest extends Assert {
 		Request request = new Request(RequestType.GET, getSelector(KEY1));
 		Action action = Actions.createAction(request, ctx);
 
-		Replay replay = action.goGetSome();
+		Reply reply = action.goGetSome();
 
-		assertSame(ReplayType.OK, replay.getReplayType());
-		assertEquals(VALUE1, replay.getValue());
+		assertSame(ReplyType.OK, reply.getReplyType());
+		assertEquals(VALUE1, reply.getValue());
 	}
 
 	@Test
@@ -85,9 +85,9 @@ public class MapGetActionTest extends Assert {
 		Request request = new Request(RequestType.GET, "testMapkey1");
 		Action action = Actions.createAction(request, ctx);
 
-		Replay replay = action.goGetSome();
+		Reply reply = action.goGetSome();
 
-		assertSame(ReplayType.ERROR, replay.getReplayType());
+		assertSame(ReplyType.ERROR, reply.getReplyType());
 	}
 
 	@Test
@@ -95,9 +95,9 @@ public class MapGetActionTest extends Assert {
 		Request request = new Request(RequestType.GET, null);
 		Action action = Actions.createAction(request, ctx);
 
-		Replay replay = action.goGetSome();
+		Reply reply = action.goGetSome();
 
-		assertSame(ReplayType.ERROR, replay.getReplayType());
+		assertSame(ReplyType.ERROR, reply.getReplyType());
 	}
 
 	@Test
@@ -105,9 +105,9 @@ public class MapGetActionTest extends Assert {
 		Request request = new Request(RequestType.GET, concat("", KEY1));
 		Action action = Actions.createAction(request, ctx);
 
-		Replay replay = action.goGetSome();
+		Reply reply = action.goGetSome();
 
-		assertSame(ReplayType.ERROR, replay.getReplayType());
+		assertSame(ReplyType.ERROR, reply.getReplyType());
 	}
 
 	@Test
@@ -115,9 +115,9 @@ public class MapGetActionTest extends Assert {
 		Request request = new Request(RequestType.GET, concat(MAP, ""));
 		Action action = Actions.createAction(request, ctx);
 
-		Replay replay = action.goGetSome();
+		Reply reply = action.goGetSome();
 
-		assertSame(ReplayType.ERROR, replay.getReplayType());
+		assertSame(ReplyType.ERROR, reply.getReplyType());
 	}
 
 	// ------------------------------------------------------------------------

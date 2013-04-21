@@ -10,8 +10,8 @@ import com.hazelcast.core.IMap;
 
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
-import cz.cuni.mff.d3s.been.mq.rep.Replay;
-import cz.cuni.mff.d3s.been.mq.rep.Replays;
+import cz.cuni.mff.d3s.been.mq.rep.Replies;
+import cz.cuni.mff.d3s.been.mq.rep.Reply;
 import cz.cuni.mff.d3s.been.mq.req.Request;
 
 /**
@@ -20,7 +20,7 @@ import cz.cuni.mff.d3s.been.mq.req.Request;
 final class TaskStatusWaitAction implements Action {
 	private final Request request;
 	private final ClusterContext ctx;
-	BlockingQueue<Replay> queue = new LinkedBlockingQueue<>();
+	BlockingQueue<Reply> queue = new LinkedBlockingQueue<>();
 
 	public TaskStatusWaitAction(Request request, ClusterContext ctx) {
 		this.request = request;
@@ -50,25 +50,25 @@ final class TaskStatusWaitAction implements Action {
 		}
 
 		private void add(TaskEntry entry) {
-			Replay replay = createOkReplay(entry);
-			queue.add(replay);
+			Reply reply = createOkReply(entry);
+			queue.add(reply);
 		}
 
 		private void addFailure(String msg) {
-			Replay replay = Replays.createErrorReplay(msg);
-			queue.add(replay);
+			Reply reply = Replies.createErrorReply(msg);
+			queue.add(reply);
 		}
 	}
 
 	@Override
-	public Replay goGetSome() {
+	public Reply goGetSome() {
 		String taskId = request.getSelector();
 
 		if (taskId == null || taskId.isEmpty()) {
-			return Replays.createErrorReplay("No such '%s' task id", taskId);
+			return Replies.createErrorReply("No such '%s' task id", taskId);
 		}
 
-		Replay replay = null;
+		Reply reply = null;
 
 		final TaskWaiter waiter = new TaskWaiter();
 
@@ -80,25 +80,25 @@ final class TaskStatusWaitAction implements Action {
 
 		if (value == null) {
 			try {
-				replay = queue.poll(request.getTimeout(), TimeUnit.MILLISECONDS);
+				reply = queue.poll(request.getTimeout(), TimeUnit.MILLISECONDS);
 			} catch (InterruptedException e) {
 				// TODO error msg?
 				e.printStackTrace();
 			}
 		}
 
-		if (replay == null) {
-			replay = Replays.createErrorReplay("TIMEOUT");
+		if (reply == null) {
+			reply = Replies.createErrorReply("TIMEOUT");
 		}
 
 		map.removeEntryListener(waiter);
 		queue.clear();
 
-		return replay;
+		return reply;
 	}
 
-	private Replay createOkReplay(TaskEntry entry) {
-		return Replays.createOkReplay(entry.getState().toString());
+	private Reply createOkReply(TaskEntry entry) {
+		return Replies.createOkReply(entry.getState().toString());
 	}
 
 }

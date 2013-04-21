@@ -3,8 +3,8 @@ package cz.cuni.mff.d3s.been.cluster.action;
 import com.hazelcast.core.ICountDownLatch;
 
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
-import cz.cuni.mff.d3s.been.mq.rep.Replay;
-import cz.cuni.mff.d3s.been.mq.rep.Replays;
+import cz.cuni.mff.d3s.been.mq.rep.Replies;
+import cz.cuni.mff.d3s.been.mq.rep.Reply;
 import cz.cuni.mff.d3s.been.mq.req.Request;
 
 /**
@@ -20,23 +20,23 @@ final class LatchSetAction implements Action {
 	}
 
 	@Override
-	public Replay goGetSome() {
+	public Reply goGetSome() {
 		String latchName = request.getSelector();
 
 		int count;
 		try {
 			count = Integer.valueOf(request.getValue());
 		} catch (NumberFormatException e) {
-			return Replays.createErrorReplay("Cannot convert to int: %s", request.getValue());
+			return Replies.createErrorReply("Cannot convert to int: %s", request.getValue());
 		}
 
 		final ICountDownLatch countDownLatch = ctx.getCountDownLatch(latchName);
 		boolean isCountSet = countDownLatch.setCount(count);
 
 		if (isCountSet) {
-			return Replays.createOkReplay(Boolean.TRUE.toString());
+			return Replies.createOkReply(Boolean.TRUE.toString());
 		} else {
-			return Replays.createErrorReplay(Boolean.FALSE.toString());
+			return Replies.createErrorReply(Boolean.FALSE.toString());
 		}
 	}
 }
