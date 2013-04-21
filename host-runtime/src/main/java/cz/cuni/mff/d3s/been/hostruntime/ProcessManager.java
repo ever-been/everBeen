@@ -317,7 +317,7 @@ final class ProcessManager implements Service, Reapable {
 	}
 
 	private File createTaskDir(TaskEntry taskEntry) {
-		String taskDirName = taskEntry.getTaskDescriptor().getName() + "_" + new Date().getTime();
+		String taskDirName = taskEntry.getTaskDescriptor().getName() + "_" + taskEntry.getId();
 		File taskDir = new File(hostInfo.getWorkingDirectory(), taskDirName);
 		taskDir.mkdirs();
 		return taskDir;
