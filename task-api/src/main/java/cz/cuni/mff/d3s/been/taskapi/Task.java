@@ -30,6 +30,10 @@ public abstract class Task {
 		return id;
 	}
 
+	public String getTaskContextId() {
+		return taskContextId;
+	}
+
 	public String getHostName() {
 		return hostname;
 	}
