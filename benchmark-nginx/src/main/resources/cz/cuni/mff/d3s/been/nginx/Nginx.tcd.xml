@@ -49,7 +49,11 @@
 			                   groupId="cz.cuni.mff.d3s.been.nginx" bpkId="nginx-client"
 			                   version="0.0.1" name="nginx-client">
 				<td:properties>
-					<td:property name="constProperty">value</td:property>
+					<td:property name="numberOfRuns">10</td:property>
+					<td:property name="numberOfConnections">1000</td:property>
+					<td:property name="requestsPerConnection">10</td:property>
+					<td:property name="sendBuffer">4096</td:property>
+					<td:property name="recvBuffer">16384</td:property>
 				</td:properties>
 			</td:taskDescriptor>
 		</template>

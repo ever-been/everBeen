@@ -2,13 +2,11 @@ package cz.cuni.mff.d3s.been.nginx;
 
 import cz.cuni.mff.d3s.been.taskapi.Requestor;
 import cz.cuni.mff.d3s.been.taskapi.Task;
-import org.apache.commons.exec.CommandLine;
-import org.apache.commons.exec.DefaultExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,7 +17,7 @@ import java.io.IOException;
  */
 public class NginxServerTask extends Task {
 
-	private static final Logger log = LoggerFactory.getLogger(Task.class);
+	private static final Logger log = LoggerFactory.getLogger(NginxServerTask.class);
 
 	public static void main(String[] args) {
 		new NginxServerTask().doMain(args);
@@ -31,101 +29,96 @@ public class NginxServerTask extends Task {
 		String svnPath = this.getProperty("svnPath");
 		int currentRevision = Integer.parseInt(this.getProperty("revision"));
 
-		CommandLine cmdLine = new CommandLine("svn");
-		cmdLine.addArgument("checkout");
-		cmdLine.addArgument("-r");
-		cmdLine.addArgument(Integer.toString(currentRevision));
-		cmdLine.addArgument(svnPath);
-		cmdLine.addArgument("nginx");
-
-		DefaultExecutor executor = new DefaultExecutor();
-		executor.setWorkingDirectory(workingDirectory);
-		int exitValue = 0;
-
-		try {
-			exitValue = executor.execute(cmdLine);
-		} catch (IOException e) {
-			throw new RuntimeException("Executing 'svn' failed.", e);
-		}
-
-		if (exitValue != 0)
-			throw new RuntimeException("Svn returned an error (exit code " + exitValue + ").");
+		MyUtils.exec(".", "svn", new String[] {
+				"checkout", "-r", Integer.toString(currentRevision), svnPath, "nginx"
+		});
 	}
 
 	private void buildSources() {
 		File sourcesDir = new File(workingDirectory, "nginx");
 
-		CommandLine cmdLine = new CommandLine("auto/configure");
-		DefaultExecutor executor = new DefaultExecutor();
-		executor.setWorkingDirectory(sourcesDir);
-		int exitValue = 0;
-
-		try {
-			exitValue = executor.execute(cmdLine);
-		} catch (IOException e) {
-			throw new RuntimeException("Executing 'auto/configure' failed.", e);
-		}
-
-		if (exitValue != 0)
-			throw new RuntimeException("Configure returned an error (exit code " + exitValue + ").");
-
-		cmdLine = new CommandLine("make");
-		exitValue = 0;
-		try {
-			exitValue = executor.execute(cmdLine);
-		} catch (IOException e) {
-			throw new RuntimeException("Executing 'make' failed.", e);
-		}
-
-		if (exitValue != 0)
-			throw new RuntimeException("Make returned an error (exit code " + exitValue + ").");
+		MyUtils.exec("./nginx", "auto/configure", new String[] {});
+		MyUtils.exec("./nginx", "make", new String[] {});
 	}
 
 	private String hostname;
 	private int port;
+	Thread runnerThread;
 
 	private void runServer() {
-		// TODO
+		// create logs dir
+		try {
+			final File sourcesDir = new File(workingDirectory, "nginx");
+			Files.createDirectory(new File(sourcesDir, "logs").toPath());
+		} catch (IOException e) {
+			throw new RuntimeException("Cannot create logs directory.", e);
+		}
+
+		port = MyUtils.findRandomPort();
+		hostname = MyUtils.getHostname();
+
+		String configuration = MyUtils.getResourceAsString("nginx.conf");
+		configuration = configuration.replace("listen 8000", "listen " + port);
+		MyUtils.saveFileFromString(new File("./nginx/conf/nginx.conf"), configuration);
+
+		// run the server from a separate thread
+		runnerThread = new Thread() {
+			@Override
+			public void run() {
+				MyUtils.exec("./nginx", "objs/nginx", new String[] { "-p", "." });
+			}
+		};
+		runnerThread.start();
+
 	}
 
 	private void shutdownServer() {
-
+		MyUtils.exec("./nginx", "objs/nginx", new String[] { "-p", ".", "-s", "stop" });
+		try {
+			runnerThread.join();
+		} catch (InterruptedException e) {
+			throw new RuntimeException("Cannot join runnerThread.", e);
+		}
 	}
 
 	@Override
 	public void run() {
 		Requestor requestor = new Requestor();
+		try {
+			log.info("Nginx Server Task started.");
 
-		downloadSources();
+			downloadSources();
 
-		log.info("DownloadSources finished successfully.");
+			log.info("DownloadSources finished successfully.");
 
-		buildSources();
+			buildSources();
 
-		log.info("BuildSources finished successfully.");
+			log.info("BuildSources finished successfully.");
 
-		runServer();
+			runServer();
 
-		log.info("RunServer finished successfully.");
-		log.info("Waiting for clients...");
+			log.info("RunServer finished successfully.");
+			log.info("Waiting for clients...");
 
-		int numberOfClients = Integer.parseInt(this.getProperty("numberOfClients"));
-		requestor.latchSet("rendezvous-latch", numberOfClients);
-		requestor.checkPointSet("rendezvous-checkpoint", "1");
-		requestor.latchWait("rendezvous-latch");
-		requestor.latchSet("shutdown-latch", numberOfClients);
-		requestor.checkPointSet("server-address", hostname + ":" + port);
+			int numberOfClients = Integer.parseInt(this.getProperty("numberOfClients"));
+			requestor.latchSet("rendezvous-latch", numberOfClients);
+			requestor.checkPointSet("rendezvous-checkpoint", "ok");
+			requestor.latchWait("rendezvous-latch");
+			requestor.latchSet("shutdown-latch", numberOfClients);
 
-		log.info("Server is running, waiting for clients to finish...");
+			requestor.checkPointSet("server-address", hostname + ":" + port);
 
-		requestor.latchWait("shutdown-latch");
+			log.info("Server is running, waiting for clients to finish...");
 
-		log.info("All clients finished.");
+			requestor.latchWait("shutdown-latch");
 
-		shutdownServer();
+			log.info("All clients finished.");
 
-		log.info("ShutdownServer finished successfully.");
+			shutdownServer();
 
-		requestor.close();
+			log.info("ShutdownServer finished successfully.");
+		} finally {
+			requestor.close();
+		}
 	}
 }
