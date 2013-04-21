@@ -1,7 +1,15 @@
 package cz.cuni.mff.d3s.been.nginx;
 
+import cz.cuni.mff.d3s.been.results.DAOException;
+import cz.cuni.mff.d3s.been.results.ResultContainerId;
 import cz.cuni.mff.d3s.been.taskapi.Requestor;
 import cz.cuni.mff.d3s.been.taskapi.Task;
+import cz.cuni.mff.d3s.been.taskapi.results.ResultPersister;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,34 +20,144 @@ import cz.cuni.mff.d3s.been.taskapi.Task;
  */
 public class NginxClientTask extends Task {
 
+	private static final Logger log = LoggerFactory.getLogger(NginxClientTask.class);
+
 	public static void main(String[] args) {
 		new NginxClientTask().doMain(args);
 	}
 
 	private void downloadClientScript() {
-		// TODO
+		MyUtils.exec(".", "wget", new String[]{"http://httperf.googlecode.com/files/httperf-0.9.0.tar.gz"});
+		MyUtils.exec(".", "tar", new String[]{"xzvf", "httperf-0.9.0.tar.gz"});
+		MyUtils.exec("./httperf-0.9.0", "./configure", new String[]{});
+		MyUtils.exec("./httperf-0.9.0", "make", new String[]{});
 	}
 
 	private void runClientScript(String address) {
-		// TODO
+		String[] splitted = address.split(":");
+		String hostname = splitted[0];
+		int port = Integer.parseInt(splitted[1]);
+
+		String output = MyUtils.exec("./httperf-0.9.0", "src/httperf", new String[]{
+				"--client=0/1",
+				"--server=" + hostname,
+				"--port=" + port,
+				"--uri=/",
+				"--send-buffer=" + this.getProperty("sendBuffer"),
+				"--recv-buffer=" + this.getProperty("recvBuffer"),
+				"--num-conns=" + this.getProperty("numberOfConnections"),
+				"--num-calls=" + this.getProperty("requestsPerConnection")
+		});
+
+		HttperfResult result = parseOutput(output);
+
+		storeResult(result);
+	}
+
+	private void storeResult(HttperfResult result) {
+		final ResultContainerId cid = new ResultContainerId();
+		cid.setDatabaseName("results");
+		cid.setCollectionName("nginx-results");
+		cid.setEntityName("result");
+
+		final ResultPersister rp = results.createResultPersister(cid);
+		try {
+			rp.persist(result);
+			log.info("Result stored.");
+		} catch (DAOException e) {
+			throw new RuntimeException("Cannot persist result.", e);
+		}
+	}
+
+	private HttperfResult parseOutput(String output) {
+		HttperfResult result = new HttperfResult(this);
+
+		Matcher m = Pattern.compile("Total: connections ([0-9]+) requests ([0-9]+) replies ([0-9]+) test-duration ([0-9.]+) s").matcher(output);
+		if (! m.find()) throw new RuntimeException("Cannot parse result.");
+		result.connections = Integer.parseInt(m.group(1));
+		result.requests = Integer.parseInt(m.group(2));
+		result.replies = Integer.parseInt(m.group(3));
+		result.testDuration = Double.parseDouble(m.group(4));
+
+		m = Pattern.compile("Connection rate: ([0-9.]+) conn/s").matcher(output);
+		if (! m.find()) throw new RuntimeException("Cannot parse result.");
+		result.connectionRate = Double.parseDouble(m.group(1));
+
+		m = Pattern.compile("Connection time \\[ms\\]: min ([0-9.]+) avg ([0-9.]+) max ([0-9.]+) median ([0-9.]+) stddev ([0-9.]+)").matcher(output);
+		if (! m.find()) throw new RuntimeException("Cannot parse result.");
+		result.connectionTimeMin = Double.parseDouble(m.group(1));
+		result.connectionTimeAvg = Double.parseDouble(m.group(2));
+		result.connectionTimeMax = Double.parseDouble(m.group(3));
+		result.connectionTimeMedian = Double.parseDouble(m.group(4));
+		result.connectionTimeStdDev = Double.parseDouble(m.group(5));
+
+		m = Pattern.compile("Connection time \\[ms\\]: connect ([0-9.]+)").matcher(output);
+		if (! m.find()) throw new RuntimeException("Cannot parse result.");
+		result.connectionTimeConnect = Double.parseDouble(m.group(1));
+
+		m = Pattern.compile("Request rate: ([0-9.]+) req/s").matcher(output);
+		if (! m.find()) throw new RuntimeException("Cannot parse result.");
+		result.requestRate = Double.parseDouble(m.group(1));
+
+		m = Pattern.compile("Request size \\[B\\]: ([0-9.]+)").matcher(output);
+		if (! m.find()) throw new RuntimeException("Cannot parse result.");
+		result.requestSize = (int)Double.parseDouble(m.group(1));
+
+		m = Pattern.compile("Reply size \\[B\\]: header ([0-9.]+) content ([0-9.]+) footer ([0-9.]+) \\(total ([0-9.]+)\\)").matcher(output);
+		if (! m.find()) throw new RuntimeException("Cannot parse result.");
+		result.replySizeTotal = (int)Double.parseDouble(m.group(4));
+
+		m = Pattern.compile("Reply status: 1xx=([0-9]+) 2xx=([0-9]+) 3xx=([0-9]+) 4xx=([0-9]+) 5xx=([0-9]+)").matcher(output);
+		if (! m.find()) throw new RuntimeException("Cannot parse result.");
+		result.numberOf1xx = Integer.parseInt(m.group(1));
+		result.numberOf2xx = Integer.parseInt(m.group(2));
+		result.numberOf3xx = Integer.parseInt(m.group(3));
+		result.numberOf4xx = Integer.parseInt(m.group(4));
+		result.numberOf5xx = Integer.parseInt(m.group(5));
+
+		m = Pattern.compile("CPU time \\[s\\]: user ([0-9.]+) system ([0-9.]+) \\(user ([0-9.]+)% system ([0-9.]+)% total ([0-9.]+)%\\)").matcher(output);
+		if (! m.find()) throw new RuntimeException("Cannot parse result.");
+		result.cpuUser = Double.parseDouble(m.group(1));
+		result.cpuSystem = Double.parseDouble(m.group(2));
+		result.cpuPercentUser = Double.parseDouble(m.group(3));
+		result.cpuPercentSystem = Double.parseDouble(m.group(4));
+		result.cpuPercentTotal = Double.parseDouble(m.group(5));
+
+		m = Pattern.compile("Net I/O: ([0-9.]+) KB/s").matcher(output);
+		if (! m.find()) throw new RuntimeException("Cannot parse result.");
+		result.netIO = Double.parseDouble(m.group(1));
+
+		return result;
 	}
 
 	@Override
 	public void run() {
 		Requestor requestor = new Requestor();
+		try {
+			log.info("Nginx Client Task started.");
 
-		downloadClientScript();
+			downloadClientScript();
 
-		requestor.checkPointWait("rendezvous-checkpoint");
-		requestor.latchCountDown("rendezvous-latch");
-		String serverAddress = requestor.checkPointGet("server-address");
+			log.info("DownloadClientScript finished.");
 
-		System.out.println(serverAddress);
+			requestor.checkPointWait("rendezvous-checkpoint");
+			requestor.latchCountDown("rendezvous-latch");
+			String serverAddress = requestor.checkPointWait("server-address");
 
-		runClientScript(serverAddress);
+			log.info("Client got server address: {}", serverAddress);
 
-		requestor.latchCountDown("shutdown-latch");
+			int numberOfRuns = Integer.parseInt(this.getProperty("numberOfRuns"));
 
-		requestor.close();
+			for (int i = 0; i < numberOfRuns; i++) {
+				log.info("Starting run number {}", i);
+				runClientScript(serverAddress);
+			}
+
+			log.info("Client finished benchmarking.");
+
+			requestor.latchCountDown("shutdown-latch");
+		} finally {
+			requestor.close();
+		}
 	}
 }
