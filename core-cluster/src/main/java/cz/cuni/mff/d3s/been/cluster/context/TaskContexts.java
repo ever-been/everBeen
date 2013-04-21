@@ -47,6 +47,7 @@ public class TaskContexts {
 				td = cloneTemplateWithName(descriptor, templateName);
 			}
 
+			td.setName(t.getName());
 			setTaskProperties(descriptor, t, td);
 
 			TaskEntry taskEntry = TaskEntries.create(td, taskContextEntry.getId());
