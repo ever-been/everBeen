@@ -1,17 +1,16 @@
 package cz.cuni.mff.d3s.been.hostruntime.task;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.exec.CommandLine;
-import org.apache.commons.exec.DefaultExecutor;
-import org.apache.commons.exec.ExecuteException;
-import org.apache.commons.exec.ExecuteStreamHandler;
-import org.apache.commons.exec.ExecuteWatchdog;
-import org.apache.commons.exec.Executor;
+import org.apache.commons.exec.*;
+import org.apache.commons.io.FileUtils;
 
+import cz.cuni.mff.d3s.been.bpk.ArtifactIdentifier;
+import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.hostruntime.TaskException;
 
 /**
@@ -19,16 +18,16 @@ import cz.cuni.mff.d3s.been.hostruntime.TaskException;
  * @author "Tadeas Palusga"
  * 
  */
-public class TaskProcess {
+public class TaskProcess implements AutoCloseable {
 
 	/** magic constant which is used to set process timeout to infinite */
 	public static final long NO_TIMEOUT = ExecuteWatchdog.INFINITE_TIMEOUT;
 
 	/** process working directory */
-	private final File wrkDir;
+	private final Path wrkDir;
 
 	/** prepared command line for the process */
-	private final CommandLine cmd;
+	private final TaskCommandLine cmd;
 
 	/** environment variables set for the process */
 	private final Map<String, String> environment;
@@ -40,36 +39,52 @@ public class TaskProcess {
 	private long timeoutInMillis;
 
 	/** long time run watchdog. */
-	private final ExecuteWatchdog watchdog;
+	private ExecuteWatchdog watchdog;
 
+	/**
+	 * All identifiers of Bpks needed by the process.
+	 */
+	private final Collection<BpkIdentifier> bkpDependencies;
+
+	/**
+	 * All identifiers of Artifacts needed by the process.
+	 */
+	private final Collection<ArtifactIdentifier> artifactDependencies;
+
+	/** tells if manual shutdown has been requested */
 	private boolean killed;
 
 	/**
 	 * Creates new task process.
 	 * 
-	 * @param cmd
-	 *          process command line
+	 * @param cmdLineBuilder
+	 *          process command line builder
 	 * @param wrkDir
 	 *          working directory of the process
 	 * @param environment
 	 *          environment variables for process to be set
-	 * @param timeout
-	 *          in seconds - process will be terminated after this timeout
+	 * @param artifactDownloader
 	 */
-	public TaskProcess(CommandLine cmd, File wrkDir, Map<String, String> environment, ExecuteStreamHandler streamhandler, long timeout) {
-		this.cmd = cmd;
+	public TaskProcess(CmdLineBuilder cmdLineBuilder, Path wrkDir, Map<String, String> environment, ExecuteStreamHandler streamhandler, DependencyDownloader artifactDownloader)
+			throws TaskException {
+		this.artifactDependencies = artifactDownloader.getArtifactDependencies();
+		this.bkpDependencies = artifactDownloader.getBkpDependencies();
+		this.cmd = cmdLineBuilder.build();
 		this.wrkDir = wrkDir;
+		if (!wrkDir.toFile().exists()) {
+			wrkDir.toFile().mkdirs();
+		}
 		this.environment = environment;
 		this.streamhandler = streamhandler;
-		this.timeoutInMillis = timeout <= 0 ? NO_TIMEOUT : TimeUnit.SECONDS.toMillis(timeout);
-		this.watchdog = new ExecuteWatchdog(this.timeoutInMillis);
+        this.watchdog = new ExecuteWatchdog(NO_TIMEOUT);
 	}
 
 	/**
 	 * Starts process using Apache {@link Executor}.
 	 * 
-	 * @return process exit value (throws {@link TaskException} on error exit
-	 *         values)
+	 * @return process exit value (throws {@link TaskException}
+	 *         //To change body of implemented methods use File | Settings | File
+	 *         Templates. on error exit values)
 	 * @throws TaskException
 	 *           when process cannot be started from some reason or process ends
 	 *           with error exit value
@@ -87,7 +102,7 @@ public class TaskProcess {
 	 */
 	private Executor prepare() {
 		Executor executor = new DefaultExecutor();
-		executor.setWorkingDirectory(wrkDir);
+		executor.setWorkingDirectory(wrkDir.toFile());
 		executor.setWatchdog(watchdog);
 		executor.setStreamHandler(streamhandler);
 		// FIXME issue #84 - we should be able to set expected process exit values
@@ -146,4 +161,28 @@ public class TaskProcess {
 		watchdog.destroyProcess();
 	}
 
+	@Override
+	public void close() throws Exception {
+		if (!this.killed) {
+			watchdog.destroyProcess();
+		}
+
+		if (wrkDir.toFile().exists()) {
+			FileUtils.deleteDirectory(wrkDir.toFile());
+		}
+	}
+
+	public boolean isDebugListeningMode() {
+		return cmd.isDebugListeningMode();
+	}
+
+	public int getDebugPort() {
+		return cmd.getDebugPort();
+	}
+
+	public void setTimeout(long timeout) {
+		timeoutInMillis = timeout <= 0 ? NO_TIMEOUT
+				: TimeUnit.SECONDS.toMillis(timeout);
+        this.watchdog = new ExecuteWatchdog(timeoutInMillis);
+	}
 }

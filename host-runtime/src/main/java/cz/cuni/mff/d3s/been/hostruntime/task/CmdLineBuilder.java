@@ -1,4 +1,4 @@
-package cz.cuni.mff.d3s.been.hostruntime.cmdline;
+package cz.cuni.mff.d3s.been.hostruntime.task;
 
 import cz.cuni.mff.d3s.been.hostruntime.TaskException;
 

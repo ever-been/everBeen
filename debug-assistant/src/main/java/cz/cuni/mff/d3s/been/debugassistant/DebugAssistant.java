@@ -27,7 +27,8 @@ public class DebugAssistant {
 		this.ctx = clusterContext;
 	}
 
-	public void addSuspendedTask(String taskId, String hostName, int debugPort) {
+	public void addSuspendedTask(String taskId, int debugPort) {
+        String hostName = ctx.getInetSocketAddress().getHostName();
 		DebugListItem item = new DebugListItem(taskId, hostName, debugPort);
 		this.ctx.getMap(DEBUG_ASSISTANT_MAP_NAME).put(taskId, item);
 	}

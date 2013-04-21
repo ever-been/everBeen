@@ -12,11 +12,9 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.zip.ZipException;
 
 import org.apache.commons.exec.ExecuteStreamHandler;
 import org.apache.commons.exec.PumpStreamHandler;
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,9 +34,7 @@ import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskProperty;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
 import cz.cuni.mff.d3s.been.debugassistant.DebugAssistant;
-import cz.cuni.mff.d3s.been.hostruntime.cmdline.CmdLineBuilderFactory;
-import cz.cuni.mff.d3s.been.hostruntime.cmdline.TaskCommandLine;
-import cz.cuni.mff.d3s.been.hostruntime.task.TaskProcess;
+import cz.cuni.mff.d3s.been.hostruntime.task.*;
 import cz.cuni.mff.d3s.been.mq.IMessageReceiver;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
@@ -108,6 +104,8 @@ final class ProcessManager implements Service, Reapable {
 	 */
 	private ResultsDispatcher resultsDispatcher;
 
+	private TaskRequestBrokerThread reqThread;
+
 	/**
 	 * Creates new instance.
 	 * <p/>
@@ -125,18 +123,14 @@ final class ProcessManager implements Service, Reapable {
 		this.softwareResolver = new SoftwareResolver(clusterContext.getServicesUtils(), swRepoClientFactory);
 		this.tasks = clusterContext.getTasksUtils();
 		this.executorService = Executors.newFixedThreadPool(1);
-
 	}
 
-	private TaskRequestBrokerThread reqThread;
 	/**
 	 * Starts processing messages and tasks.
 	 */
 	@Override
 	public void start() throws ServiceException {
-
 		reqThread = new TaskRequestBrokerThread(clusterContext);
-
 		reqThread.start();
 
 		taskActionThread = new TaskActionThread(receiver);
@@ -165,6 +159,7 @@ final class ProcessManager implements Service, Reapable {
 				executorService.awaitTermination(300, TimeUnit.MILLISECONDS);
 			}
 		};
+
 		reaper.pushTarget(taskMessageDispatcher);
 		return reaper;
 	}
@@ -223,29 +218,20 @@ final class ProcessManager implements Service, Reapable {
 	}
 
 	private void runTask(TaskEntry taskHandle) {
-		// FIXME tadeas
 		changeTaskStateTo(taskHandle, TaskState.ACCEPTED);
-		File taskDirectory = createTaskDir(taskHandle);
+		File taskDir = createTaskDir(taskHandle);
 
-		try {
-
-			int port = reqThread.getPort();
-
-			log.info("Task Request socket listens on port {}", port);
-
-			TaskProcess process = createAndStartTaskProcess(taskHandle, taskDirectory, port);
+		int port = reqThread.getPort();
+		log.info("Task Request socket listens on port {}", port);
+		try (TaskProcess process = createTaskProcess(taskHandle, taskDir, port)) {
 			changeTaskStateTo(taskHandle, TaskState.RUNNING);
-			// FIXME martin, tadeas zpracovavat return kody - (napr. TaskState.FAILED)
-			runningTasks.put(taskHandle.getId(), process); // removed in finally
+			runningTasks.put(taskHandle.getId(), process);
 
-			// we do not care if this method takes too long, because this method should be called
-			// asynchronously from parental methods
-
-			// spawn a new thread for the task, it might take a while
+			if (process.isDebugListeningMode()) {
+                DebugAssistant debugAssistant = new DebugAssistant(clusterContext);
+				debugAssistant.addSuspendedTask(taskHandle.getId(), process.getDebugPort());
+			}
 			process.start();
-
-			DebugAssistant dbg = new DebugAssistant(clusterContext);
-			dbg.removeSuspendedTask(taskHandle.getId());
 
 			changeTaskStateTo(taskHandle, TaskState.FINISHED);
 		} catch (Exception e) {
@@ -253,53 +239,51 @@ final class ProcessManager implements Service, Reapable {
 			log.error(String.format("Task '%s' has been aborted due to underlying exception.", taskHandle.getId()), e);
 		} finally {
 			runningTasks.remove(taskHandle.getId());
+			DebugAssistant debugAssistant = new DebugAssistant(clusterContext);
+			debugAssistant.removeSuspendedTask(taskHandle.getId());
 		}
-		deleteTaskDir(taskDirectory);
 	}
 
-	private TaskProcess createAndStartTaskProcess(TaskEntry taskEntry,
-			File taskDirectory, int port) throws IOException, BpkConfigurationException, ZipException, TaskException {
+	private TaskProcess createTaskProcess(TaskEntry taskEntry,
+			File taskDirectory, int port) throws IOException, BpkConfigurationException, TaskException {
 
-		TaskDescriptor td = taskEntry.getTaskDescriptor();
+		TaskDescriptor taskDescriptor = taskEntry.getTaskDescriptor();
+        BpkIdentifier bpkIdentifier = BpkIdentifierCreator.createBpkIdentifier(taskDescriptor);
+        Bpk bpk = softwareResolver.getBpk(bpkIdentifier);
 
-		Bpk bpk = softwareResolver.getBpk(td);
 		ZipFileUtil.unzipToDir(bpk.getInputStream(), taskDirectory);
 
-		// obtain bpk configuration
-		Path dir = Paths.get(taskDirectory.toString());
-		Path configPath = dir.resolve(BpkNames.CONFIG_FILE); // TODO use bpk convetions
-		BpkConfiguration bpkConfiguration = BpkConfigUtils.fromXml(configPath);
+        // obtain bpk configuration
+        Path taskWrkDir = Paths.get(taskDirectory.toString());
+        Path configPath = taskWrkDir.resolve(BpkNames.CONFIG_FILE);
+        BpkConfiguration bpkConfiguration = BpkConfigUtils.fromXml(configPath);
 
-		// create process for the task
-		TaskCommandLine cmd = CmdLineBuilderFactory.create(bpkConfiguration.getRuntime(), td, dir.toFile()).build();
+        // create process for the task
+        CmdLineBuilder cmdLineBuilder = CmdLineBuilderFactory.create(bpkConfiguration.getRuntime(), taskDescriptor, taskWrkDir.toFile());
+        DependencyDownloader dependencyDownloader = DependencyDownloaderFactory.create(bpkConfiguration.getRuntime());
+        ExecuteStreamHandler streamhandler = new PumpStreamHandler();
+        Map<String, String> environment = createEnvironmentProperties(taskEntry, port);
 
-		// TODO resolve dependencies
-		//Collection<ArtifactIdentifier> identifiers = taskProcess.getArtifactDependencies();
-		//Collection<Artifact> artifacts = softwareResolver.resolveArtifacts(identifiers);
 
-		// TODO move dependencies inside task's directory
+        TaskProcess taskProcess = new TaskProcess(
+                cmdLineBuilder,
+                taskWrkDir,
+                environment,
+                streamhandler,
+                dependencyDownloader);
 
-		// let debug assistant know about this process
-		if (cmd.isDebugListeningMode()) {
-			DebugAssistant dbg = new DebugAssistant(clusterContext);
-			dbg.addSuspendedTask(taskEntry.getId(), clusterContext.getInetSocketAddress().getHostName(), cmd.getDebugPort());
-		}
+        long timeout = taskDescriptor.isSetFailurePolicy()
+                ? taskDescriptor.getFailurePolicy().getTimeoutRun() : TaskProcess.NO_TIMEOUT;
+        taskProcess.setTimeout(timeout);
 
-		ExecuteStreamHandler streamhandler = new PumpStreamHandler();
-
-		long timeout = td.isSetFailurePolicy()
-				? td.getFailurePolicy().getTimeoutRun() : TaskProcess.NO_TIMEOUT;
-		TaskProcess taskProcess = new TaskProcess(cmd, dir.toFile(), createEnvironmentProperties(taskEntry, port), streamhandler, timeout); // FIXMEProcesses.createProcess(bpkConfiguration.getRuntime(), td, dir);
-		// run it
-
-		return taskProcess;
+        return taskProcess;
 	}
 
 	private Map<String, String> createEnvironmentProperties(TaskEntry taskEntry,
 			int port) {
 
 		Map<String, String> properties = new HashMap<>(System.getenv());
-		properties.put("REQUEST_PORT", Integer.toString(port));
+		properties.put(REQUEST_PORT, Integer.toString(port));
 		properties.put(TASK_ID, taskEntry.getId());
 		properties.put(TASK_CONTEXT_ID, taskEntry.getTaskContextId());
 		properties.put(HR_COMM_PORT, Integer.toString(taskMessageDispatcher.getReceiverPort()));
@@ -322,14 +306,6 @@ final class ProcessManager implements Service, Reapable {
 		File taskDir = new File(hostInfo.getWorkingDirectory(), taskDirName);
 		taskDir.mkdirs();
 		return taskDir;
-	}
-
-	private void deleteTaskDir(File taskDirectory) {
-		try {
-			FileUtils.deleteDirectory(taskDirectory);
-		} catch (IOException e) {
-			log.warn(String.format("Taks directory '%s' couldn't be deleted", taskDirectory), e);
-		}
 	}
 
 	private TaskEntry loadTask(String taskId) {
