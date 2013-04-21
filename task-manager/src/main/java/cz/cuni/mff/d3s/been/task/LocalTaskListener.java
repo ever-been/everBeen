@@ -55,7 +55,7 @@ final class LocalTaskListener extends TaskManagerService implements EntryListene
 	}
 
 	@Override
-	public void entryAdded(EntryEvent<String, TaskEntry> event) {
+	public synchronized void entryAdded(EntryEvent<String, TaskEntry> event) {
 		TaskEntry entry = event.getValue();
 		try {
 			sender.send(new NewTaskMessage(entry));
@@ -66,12 +66,12 @@ final class LocalTaskListener extends TaskManagerService implements EntryListene
 	}
 
 	@Override
-	public void entryRemoved(EntryEvent<String, TaskEntry> event) {
+	public synchronized void entryRemoved(EntryEvent<String, TaskEntry> event) {
 		log.info("TaskEntry {} removed ", event.getKey());
 	}
 
 	@Override
-	public void entryUpdated(EntryEvent<String, TaskEntry> event) {
+	public synchronized void entryUpdated(EntryEvent<String, TaskEntry> event) {
 		// TODO more useful debug message?
 		log.debug("TaskEntry {} updated", event.getKey());
 
@@ -85,7 +85,7 @@ final class LocalTaskListener extends TaskManagerService implements EntryListene
 	}
 
 	@Override
-	public void entryEvicted(EntryEvent<String, TaskEntry> event) {
+	public synchronized void entryEvicted(EntryEvent<String, TaskEntry> event) {
 		log.info("TaskEntry {} evicted", event.getKey());
 
 		// TODO figure out why the entry was evicted (i.e. stale task)

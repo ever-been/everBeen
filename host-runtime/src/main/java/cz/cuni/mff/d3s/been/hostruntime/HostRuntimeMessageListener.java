@@ -57,7 +57,7 @@ final class HostRuntimeMessageListener implements MessageListener<BaseMessage>, 
 	 * @param message
 	 */
 	@Override
-	public void onMessage(Message<BaseMessage> message) {
+	public synchronized void onMessage(Message<BaseMessage> message) {
 		final BaseMessage messageObject = message.getMessageObject();
 
 		String receiverId = messageObject.recieverId;
