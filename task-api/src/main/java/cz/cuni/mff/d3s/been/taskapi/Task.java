@@ -24,9 +24,14 @@ public abstract class Task {
 	private IMessageQueue<String> resQueue;
 	private IMessageSender<String> resSender;
 	protected final ResultFacade results = new TaskFieldResultFacadeWrapper();
+	private final String hostname = System.getenv(TaskPropertyNames.HR_HOSTNAME);
 
 	public String getId() {
 		return id;
+	}
+
+	public String getHostName() {
+		return hostname;
 	}
 
 	public abstract void run();
