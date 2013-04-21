@@ -8,6 +8,12 @@ package cz.cuni.mff.d3s.been.core;
  * @author Martin Sixta
  */
 public class TaskPropertyNames {
+
+    /**
+     * port used for checkpoint synchronization
+     */
+    public static final String REQUEST_PORT = "REQUEST_PORT";
+
 	/**
 	 * System property with Task ID
 	 */

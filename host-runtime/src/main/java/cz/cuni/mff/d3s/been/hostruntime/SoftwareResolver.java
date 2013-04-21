@@ -57,26 +57,6 @@ class SoftwareResolver {
 		return bpk;
 	}
 
-	/**
-	 * Returns bpk handle.
-	 * 
-	 * The process may include downloading files from Software Repository.
-	 * 
-	 * Unfortunately TaskDescriptor does not use BpkIdentifier directly, but it's
-	 * pain in the a*s to create it manually. So this function is provided.
-	 * 
-	 * 
-	 * @param td
-	 *          what to download
-	 * @throws TaskException
-	 *           when bpk cannot be obtained
-	 */
-	@Deprecated
-	public Bpk getBpk(TaskDescriptor td) throws TaskException {
-		BpkIdentifier bpkIdentifier = createBpkIdentifier(td);
-		return getBpk(bpkIdentifier);
-	}
-
 	public Artifact getArtifact(ArtifactIdentifier artifactIdentifier) throws TaskException {
 		Artifact artifact = getClient().getArtifact(artifactIdentifier);
 
@@ -108,22 +88,6 @@ class SoftwareResolver {
 
 	public void resolveBpks() throws TaskException {
 		throw new UnsupportedOperationException("Not implemented yet!");
-	}
-
-	/**
-	 * Creates BpkIdentifier from values in a TaskDescriptor.
-	 * 
-	 * @param td
-	 *          where to take values from
-	 * @return BpkIdentifier corresponding to the TaskDescriptor
-	 */
-	private BpkIdentifier createBpkIdentifier(TaskDescriptor td) {
-		BpkIdentifier bpkIdentifier = new BpkIdentifier();
-		bpkIdentifier.setGroupId(td.getGroupId());
-		bpkIdentifier.setBpkId(td.getBpkId());
-		bpkIdentifier.setVersion(td.getVersion());
-
-		return bpkIdentifier;
 	}
 
 	/**

@@ -1,7 +1,10 @@
-package cz.cuni.mff.d3s.been.hostruntime.cmdline;
+package cz.cuni.mff.d3s.been.hostruntime.task;
 
 import java.io.File;
 
+import cz.cuni.mff.d3s.been.hostruntime.task.CmdLineBuilderFactory;
+import cz.cuni.mff.d3s.been.hostruntime.task.JVMCmdLineBuilder;
+import cz.cuni.mff.d3s.been.hostruntime.task.NativeCmdLineBuilder;
 import org.junit.Assert;
 import org.junit.Test;
 
