@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<taskContextDescriptor xmlns="http://been.d3s.mff.cuni.cz/taskmanager/tcd"
+					   xmlns:td="http://been.d3s.mff.cuni.cz/taskmanager/td"
+					   name="nginx-context">
+
+	<properties>
+		<property name="been.task.sync.count">2</property>
+		<property name="been.task.sync.runs">10000</property>
+	</properties>
+
+	<task>
+		<name>server</name>
+
+		<descriptor>
+			<fromTemplate>server</fromTemplate>
+		</descriptor>
+	</task>
+
+	<task>
+		<name>client-1</name>
+		<descriptor>
+			<fromTemplate>client</fromTemplate>
+		</descriptor>
+	</task>
+
+
+	<task>
+		<name>client-2</name>
+		<descriptor>
+			<fromTemplate>client</fromTemplate>
+		</descriptor>
+	</task>
+
+	<templates>
+		<template name="server">
+			<td:taskDescriptor groupId="cz.cuni.mff.d3s.been" bpkId="task-sync-test" version="3.0.0">
+				<td:properties>
+					<td:property name="been.task.sync.type">SERVER</td:property>
+				</td:properties>
+			</td:taskDescriptor>
+		</template>
+
+		<template name="client">
+			<td:taskDescriptor groupId="cz.cuni.mff.d3s.been" bpkId="task-sync-test" version="3.0.0">
+				<td:properties>
+					<td:property name="been.task.sync.type">CLIENT</td:property>
+				</td:properties>
+			</td:taskDescriptor>
+		</template>
+	</templates>
+
+</taskContextDescriptor>

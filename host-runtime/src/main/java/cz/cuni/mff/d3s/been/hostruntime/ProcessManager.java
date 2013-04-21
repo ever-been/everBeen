@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -305,6 +304,8 @@ final class ProcessManager implements Service, Reapable {
 		properties.put(TASK_CONTEXT_ID, taskEntry.getTaskContextId());
 		properties.put(HR_COMM_PORT, Integer.toString(taskMessageDispatcher.getReceiverPort()));
 		properties.put(HR_RESULTS_PORT, Integer.toString(resultsDispatcher.getPort()));
+
+		properties.put(HR_HOSTNAME, clusterContext.getInetSocketAddress().getHostName());
 
 		// add properties specified in TaskDescriptor
 		TaskDescriptor td = taskEntry.getTaskDescriptor();

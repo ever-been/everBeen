@@ -1,4 +1,4 @@
-package cz.cuni.mff.d3s.been.task;
+package cz.cuni.mff.d3s.been.test;
 
 import org.jeromq.ZMQ;
 import org.slf4j.Logger;
@@ -19,13 +19,13 @@ public class ExampleSyncTask extends Task {
 	}
 
 	// what am i?
-	private static final String TYPE_KEY = "been.task.sync.type";
+	static final String TYPE_KEY = "been.task.sync.type";
 
 	// how many clients
-	private static final String CLIENT_COUNT_KEY = "been.task.sync.count";
+	static final String CLIENT_COUNT_KEY = "been.task.sync.count";
 
 	// how many runs a client should do
-	private static final String CLIENT_RUNS_KEY = "been.task.sync.runs";
+	static final String CLIENT_RUNS_KEY = "been.task.sync.runs";
 
 	// where to get the address of the server
 	private static final String CHECKPOINT_ADDRESS = "been.task.sync.address";
@@ -115,7 +115,11 @@ public class ExampleSyncTask extends Task {
 	 */
 	private void runServer() {
 		// prepare the server
-		String address = "tcp://localhost";
+		String host = getHostName();
+		if (host == null) {
+			host = "localhost";
+		}
+		String address = String.format("tcp://%s", host);
 		ZMQ.Context context = ZMQ.context();
 
 		ZMQ.Socket socket = context.socket(ZMQ.REP);

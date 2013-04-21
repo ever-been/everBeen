@@ -35,6 +35,11 @@ public class TaskPropertyNames {
 	 * System property with Host Runtime Results Port
 	 * 
 	 */
-	public static String HR_RESULTS_PORT = "been.task.mq.results.port";
+	public static final String HR_RESULTS_PORT = "been.task.mq.results.port";
+
+	/**
+	 * System property with value of Host Runtime host name.
+	 */
+	public static final String HR_HOSTNAME = "been.task.hr.hostname";
 
 }

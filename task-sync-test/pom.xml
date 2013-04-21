@@ -18,6 +18,11 @@
 			<artifactId>task-api</artifactId>
 			<version>3.0.0</version>
 		</dependency>
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>core-data</artifactId>
+			<version>3.0.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -29,7 +34,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>cz.cuni.mff.d3s.been.task.ExampleSyncTask</mainClass>
+							<mainClass>cz.cuni.mff.d3s.been.test.ExampleSyncTask</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
