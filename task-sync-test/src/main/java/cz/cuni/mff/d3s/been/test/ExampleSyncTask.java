@@ -36,7 +36,7 @@ public class ExampleSyncTask extends Task {
 	// wait for all clients to connect
 	private static final String RENDEZVOUS = "been.task.sync.rendezvous";
 
-	private static final Logger log = LoggerFactory.getLogger(Task.class);
+	private static final Logger log = LoggerFactory.getLogger(ExampleSyncTask.class);
 
 	public static void main(String[] args) {
 		new ExampleSyncTask().doMain(args);
