@@ -1,7 +1,9 @@
 package cz.cuni.mff.d3s.been.client;
 
 import java.util.Collection;
+import java.util.Map;
 
+import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
 import jline.console.ConsoleReader;
 
 import com.hazelcast.core.Instance;
@@ -20,7 +22,7 @@ class ClusterMode extends AbstractMode {
 	private final ClusterContext clusterContext;
 
 	private enum Action {
-		TASKS, RUNTIMES, BREAK, INSTANCES;
+		HELP, TASKS, TASKCONTEXTS, RUNTIMES, BREAK, INSTANCES;
 	}
 
 	private static String[] getActionStrings() {
@@ -52,8 +54,14 @@ class ClusterMode extends AbstractMode {
 		Action action = Action.valueOf(args[0].toUpperCase());
 
 		switch (action) {
+			case HELP:
+				handleHelp(args);
+				break;
 			case TASKS:
 				handleTasks(args);
+				break;
+			case TASKCONTEXTS:
+				handleTaskContexts(args);
 				break;
 			case RUNTIMES:
 				handleRuntimes(args);
@@ -70,6 +78,15 @@ class ClusterMode extends AbstractMode {
 
 	}
 
+	private void handleHelp(String[] args) {
+		out.println("Available commands:");
+		out.println("help");
+		out.println("tasks [task-id]");
+		out.println("taskcontexts");
+		out.println("runtimes");
+		out.println("instances [instance-type] [instance-name]");
+	}
+
 	private void handleRuntimes(String[] args) {
 		if (args.length == 1) {
 			Collection<RuntimeInfo> runtimes = clusterContext.getRuntimesUtils().getRuntimes();
@@ -83,7 +100,31 @@ class ClusterMode extends AbstractMode {
 		if (args.length == 1) {
 			Collection<TaskEntry> entries = clusterContext.getTasksUtils().getTasks();
 			for (TaskEntry entry : entries) {
-				out.println(TaskEntries.toXml(entry));
+				out.println("Task ID: " + entry.getId());
+				out.println("Task Context ID: " + entry.getTaskContextId());
+				out.println("Runtime ID: " + entry.getRuntimeId());
+				out.println("Name: " + entry.getTaskDescriptor().getName());
+				out.println("BPK ID: " + entry.getTaskDescriptor().getBpkId());
+				out.println("State: " + entry.getState());
+				out.println("-----------------------------------");
+			}
+		} else if (args.length == 2) {
+			TaskEntry entry = clusterContext.getTasksUtils().getTask(args[1]);
+			out.println(TaskEntries.toXml(entry));
+		}
+	}
+
+	private void handleTaskContexts(String[] args) {
+		if (args.length == 1) {
+			Collection<TaskContextEntry> entries = clusterContext.getTaskContextsUtils().getTaskContexts();
+			for (TaskContextEntry entry : entries) {
+				out.println("Task Context ID: " + entry.getId());
+				out.println("Name: " + entry.getTaskContextDescriptor().getName());
+				out.println("Contained tasks: ");
+				for (String taskId : entry.getContainedTask()) {
+					out.println("  " + taskId);
+				}
+				out.println("-----------------------------------");
 			}
 		}
 	}
@@ -91,6 +132,18 @@ class ClusterMode extends AbstractMode {
 	protected void handleInstances(String[] args) {
 
 		Instance.InstanceType instanceType = null;
+
+		if (args.length == 3) {
+			if (args[1].toUpperCase().equals("MAP")) {
+				Map<Object, Object> m = clusterContext.getMap(args[2]);
+				for (Map.Entry<Object, Object> entry : m.entrySet()) {
+					out.println(entry.getKey() + ": " + entry.getValue());
+				}
+			} else {
+				throw new IllegalArgumentException("Only 'MAP' is supported.");
+			}
+			return;
+		}
 
 		if (args.length == 2) {
 			try {
@@ -124,14 +177,5 @@ class ClusterMode extends AbstractMode {
 
 		return sb.toString();
 
-	}
-
-	private void printInstances(Instance.InstanceType instanceType) {
-		Collection<Instance> instances = clusterContext.getInstance().getInstances();
-		for (Instance instance : instances) {
-			if (instanceType == null || instance.getInstanceType() == instanceType) {
-				out.printf("%s [%s]\n", instance.getInstanceType().toString(), instance.getId());
-			}
-		}
 	}
 }

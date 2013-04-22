@@ -35,9 +35,14 @@ public class TaskContexts {
 		return getTaskContextsMap().get(id);
 	}
 
+	public Collection<TaskContextEntry> getTaskContexts() {
+		return getTaskContextsMap().values();
+	}
+
 	public void submit(TaskContextDescriptor descriptor) {
 
 		TaskContextEntry taskContextEntry = new TaskContextEntry();
+		taskContextEntry.setTaskContextDescriptor(descriptor);
 		taskContextEntry.setId(UUID.randomUUID().toString());
 
 		Collection<TaskEntry> entriesToSubmit = new ArrayList<>();
