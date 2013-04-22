@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.d3s.been.bpk.BpkNames;
 import cz.cuni.mff.d3s.been.bpk.JavaRuntime;
+import cz.cuni.mff.d3s.been.core.task.Java;
 import cz.cuni.mff.d3s.been.core.task.ModeEnum;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.hostruntime.TaskException;
@@ -34,6 +35,9 @@ class JVMCmdLineBuilder implements CmdLineBuilder {
 
 	/** Name of Java's classpath argument. See {@link #JAVA_EXECUTABLE}. */
 	private static final String JAVA_CLASSPATH_ARG = "-cp";
+
+	/** Name of the java Task Runner */
+	static final String TASK_RUNNER_CLASS = "cz.cuni.mff.d3s.been.taskapi.TaskRunner";
 
 	/**
 	 * Java debug parameter template of Java's classpath argument. See
@@ -110,8 +114,39 @@ class JVMCmdLineBuilder implements CmdLineBuilder {
 	}
 
 	private void addMainClass(TaskCommandLine cmdLine) throws TaskException {
-		String mainClass = runtime.getMainClass();
-		cmdLine.addArgument(mainClass);
+		Java java = taskDescriptor.getJava();
+
+		if (useTaskRunner(java)) {
+			log.debug("!!!!!!!!!!!!!!!!!!!!!!!!TaskRunner used: {}", TASK_RUNNER_CLASS);
+			cmdLine.addArgument(TASK_RUNNER_CLASS);
+		} else {
+			log.debug("!!!!!!!!!!!!!!!!!!!!!!!!TaskRunner NOT used");
+		}
+
+		String finalMainClass = getFinalMainClass(java, runtime.getMainClass());
+		cmdLine.addArgument(finalMainClass);
+
+	}
+
+	private boolean useTaskRunner(Java java) {
+		boolean isValueSpecified = java != null && java.isSetUseTaskRunner();
+
+		if (isValueSpecified) {
+			return java.isUseTaskRunner();
+		} else {
+			return true; // default to true
+		}
+
+	}
+
+	private String getFinalMainClass(Java java, String bpkMainClass) {
+		boolean isOverridden = java != null && java.isSetMainClass();
+
+		if (isOverridden) {
+			return java.getMainClass();
+		} else {
+			return bpkMainClass;
+		}
 	}
 
 	/**

@@ -1,9 +1,9 @@
 package cz.cuni.mff.d3s.been.hostruntime.task;
 
+import static cz.cuni.mff.d3s.been.hostruntime.task.JVMCmdLineBuilder.TASK_RUNNER_CLASS;
+
 import java.io.File;
 
-import cz.cuni.mff.d3s.been.hostruntime.task.JVMCmdLineBuilder;
-import cz.cuni.mff.d3s.been.hostruntime.task.TaskCommandLine;
 import org.apache.commons.exec.CommandLine;
 import org.junit.Assert;
 import org.junit.Before;
@@ -43,7 +43,7 @@ public class JVMCommandLineBuilderTest extends Assert {
 
 		CommandLine cmdLine = new JVMCmdLineBuilder(taskDir, td, runtime).build();
 
-		assertEquals(8, cmdLine.getArguments().length);
+		assertEquals(9, cmdLine.getArguments().length);
 
 		assertEquals("java", cmdLine.getExecutable());
 		assertEquals("-cp", cmdLine.getArguments()[0]);
@@ -53,9 +53,10 @@ public class JVMCommandLineBuilderTest extends Assert {
 		assertEquals("opt1", cmdLine.getArguments()[2]);
 		assertEquals("opt2", cmdLine.getArguments()[3]);
 		assertEquals("-agentlib:jdwp=transport=dt_socket,server=n,address=host:124,suspend=n", cmdLine.getArguments()[4]);
-		assertEquals("mainclass", cmdLine.getArguments()[5]);
-		assertEquals("arg1", cmdLine.getArguments()[6]);
-		assertEquals("arg2", cmdLine.getArguments()[7]);
+		assertEquals(TASK_RUNNER_CLASS, cmdLine.getArguments()[5]);
+		assertEquals("mainclass", cmdLine.getArguments()[6]);
+		assertEquals("arg1", cmdLine.getArguments()[7]);
+		assertEquals("arg2", cmdLine.getArguments()[8]);
 	}
 
 	@Test
@@ -78,8 +79,9 @@ public class JVMCommandLineBuilderTest extends Assert {
 		td.setArguments(createArgs(arg1, arg2));
 		CommandLine cmdLine = new JVMCmdLineBuilder(taskDir, td, runtime).build();
 
-		assertEquals(arg1, cmdLine.getArguments()[2]);
-		assertEquals(arg2, cmdLine.getArguments()[3]);
+		assertEquals(TASK_RUNNER_CLASS, cmdLine.getArguments()[2]);
+		assertEquals(arg1, cmdLine.getArguments()[3]);
+		assertEquals(arg2, cmdLine.getArguments()[4]);
 	}
 
 	@Test
@@ -123,7 +125,7 @@ public class JVMCommandLineBuilderTest extends Assert {
 
 		TaskCommandLine cmdLine = new JVMCmdLineBuilder(taskDir, td, runtime).build();
 
-		assertEquals(2, cmdLine.getArguments().length);
+		assertEquals(3, cmdLine.getArguments().length);
 		assertFalse(cmdLine.isDebugListeningMode());
 		assertEquals(0, cmdLine.getDebugPort());
 	}

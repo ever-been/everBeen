@@ -8,7 +8,6 @@
 		xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
 		xmlns:td="http://been.d3s.mff.cuni.cz/taskmanager/td"
 		xmlns:common="http://been.d3s.mff.cuni.cz/common"
-		xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
 		jaxb:extensionBindingPrefixes="xjc"
 		jaxb:version="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
@@ -75,9 +74,34 @@
 	</xs:complexType>
 
 	<xs:element name="javaOptions" type="td:JavaOptions"/>
+	<xs:element name="useTaskRunner" type="xs:boolean" default="true">
+
+		<xs:annotation>
+			<xs:appinfo>
+				<jaxb:property>
+					<jaxb:javadoc>Whether the task should be run with BEEN's TaskRunner. Default is true.</jaxb:javadoc>
+				</jaxb:property>
+			</xs:appinfo>
+		</xs:annotation>
+	</xs:element>
+
+	<xs:element name="mainClass" type="xs:string">
+
+		<xs:annotation>
+			<xs:appinfo>
+				<jaxb:property>
+					<jaxb:javadoc>If specified the main class of the task will be overridden by the specified class.
+					</jaxb:javadoc>
+				</jaxb:property>
+			</xs:appinfo>
+		</xs:annotation>
+	</xs:element>
+
 
 	<xs:complexType name="Java">
 		<xs:all>
+			<xs:element ref="td:useTaskRunner" minOccurs="0" maxOccurs="1"/>
+			<xs:element ref="td:mainClass" minOccurs="0" maxOccurs="1"/>
 			<xs:element ref="td:javaOptions" minOccurs="0" maxOccurs="1"/>
 		</xs:all>
 	</xs:complexType>
