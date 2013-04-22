@@ -1,6 +1,7 @@
 package cz.cuni.mff.d3s.been.cluster.context;
 
 import com.hazelcast.core.IMap;
+import com.hazelcast.core.Instance;
 import cz.cuni.mff.d3s.been.cluster.Names;
 import cz.cuni.mff.d3s.been.core.task.*;
 import org.slf4j.Logger;
@@ -28,6 +29,10 @@ public class TaskContexts {
 
 	public IMap<String, TaskContextEntry> getTaskContextsMap() {
 		return clusterContext.getMap(Names.TASK_CONTEXTS_MAP_NAME);
+	}
+
+	public TaskContextEntry getTaskContext(String id) {
+		return getTaskContextsMap().get(id);
 	}
 
 	public void submit(TaskContextDescriptor descriptor) {
@@ -111,4 +116,25 @@ public class TaskContexts {
 		throw new IllegalArgumentException(String.format("Cannot find template with name '%s'", templateName));
 	}
 
+	/**
+	 * Destroys allocated cluster-wide instances (checkpoint map, latches) for a given
+	 * TaskContextEntry.
+	 *
+	 * @param taskContextEntry
+	 */
+	public void cleanupTaskContext(TaskContextEntry taskContextEntry) {
+		log.info("Destroying cluster instances for task context {}", taskContextEntry.getId());
+
+		// destroy the checkpoint map
+		clusterContext.getMap("checkpointmap_" + taskContextEntry.getId()).destroy();
+
+		// destroy latches
+		Collection<Instance> latches =  clusterContext.getInstances(Instance.InstanceType.COUNT_DOWN_LATCH);
+		for (Instance instance : latches) {
+			String latchName = instance.getId().toString();
+			if (latchName.startsWith("d:latch_" + taskContextEntry.getId() + "_")) {
+				instance.destroy();
+			}
+		}
+	}
 }

@@ -19,16 +19,8 @@ final class MapGetAction implements Action {
 
 	@Override
 	public Reply goGetSome() {
-		String[] args;
-
-		try {
-			args = MapActionUtils.parseSelector(request.getSelector());
-		} catch (Exception e) {
-			return Replies.createErrorReply(e.getMessage());
-		}
-
-		String map = args[0];
-		String key = args[1];
+		String map = Actions.checkpointMapNameForRequest(request);
+		String key = request.getSelector();
 
 		// TODO later migh be a good idea to add it back
 		//if (!ctx.containsInstance(Instance.InstanceType.MAP, map)) {

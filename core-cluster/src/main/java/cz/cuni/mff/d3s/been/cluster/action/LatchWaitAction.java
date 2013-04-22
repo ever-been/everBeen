@@ -26,7 +26,8 @@ final class LatchWaitAction implements Action {
 
 	@Override
 	public Reply goGetSome() {
-		String latchName = request.getSelector();
+		String latchName = Actions.latchNameForRequest(request);
+
 		if (!ctx.containsInstance(COUNT_DOWN_LATCH, latchName)) {
 			return Replies.createErrorReply("No such Count Down Latch '%s'", latchName);
 		}

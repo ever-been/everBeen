@@ -16,8 +16,12 @@ final class TaskChangedMessage extends AbstractEntryTaskMessage {
 	@Override
 	public TaskAction createAction(ClusterContext ctx) {
 		TaskState state = this.getEntry().getState();
+
 		if (state == TaskState.SUBMITTED)
 			return new ScheduleTaskAction(ctx, getEntry());
+
+		if (state == TaskState.FINISHED)
+			return new TaskContextCheckerAction(ctx, getEntry());
 
 		return null;
 	}

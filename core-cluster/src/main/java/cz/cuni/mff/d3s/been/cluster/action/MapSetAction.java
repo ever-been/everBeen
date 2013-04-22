@@ -19,16 +19,8 @@ final class MapSetAction implements Action {
 
 	@Override
 	public Reply goGetSome() {
-		String[] args;
-
-		try {
-			args = MapActionUtils.parseSelector(request.getSelector());
-		} catch (Exception e) {
-			return Replies.createErrorReply(e.getMessage());
-		}
-
-		String map = args[0];
-		String key = args[1];
+		String map = Actions.checkpointMapNameForRequest(request);
+		String key = request.getSelector();
 
 		//if (!ctx.containsInstance(Instance.InstanceType.MAP, map)) {
 		//	return Replies.createErrorReply("No such map %s", map);

@@ -65,7 +65,8 @@ public class Requestor {
 	 *          a request
 	 * @return reply for the request
 	 */
-	public Reply send(Request request) {
+	private Reply send(Request request) {
+		request.fillInTaskAndContextId();
 		String json = request.toJson();
 
 		socket.send(json);
@@ -101,8 +102,7 @@ public class Requestor {
 	 *           when the request fails
 	 */
 	public void checkPointSet(String checkPointName, String value) throws RequestException {
-		//TODO the selector must be context specific
-		Request request = new Request(RequestType.SET, "cp#" + checkPointName, value);
+		Request request = new Request(RequestType.SET, checkPointName, value);
 		Reply reply = send(request);
 
 		// TODO handle error reply better
@@ -121,7 +121,7 @@ public class Requestor {
 	 *           when the request fails
 	 */
 	public String checkPointGet(String name) throws RequestException {
-		Request request = new Request(RequestType.GET, "cp#" + name);
+		Request request = new Request(RequestType.GET, name);
 		Reply reply = send(request);
 
 		if (reply.getReplyType() != ReplyType.OK) {
@@ -147,7 +147,7 @@ public class Requestor {
 	 *           when the request timeouts
 	 */
 	public String checkPointWait(String name, long timeout) throws RequestException, TimeoutException {
-		Request request = new Request(RequestType.WAIT, "cp#" + name, timeout);
+		Request request = new Request(RequestType.WAIT, name, timeout);
 		Reply reply = send(request);
 
 		if (reply.getReplyType() == ReplyType.ERROR) {

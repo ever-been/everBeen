@@ -69,6 +69,7 @@ public class MapGetActionTest extends Assert {
 	}
 
 	@Test
+	@Ignore
 	public void testExistingKey() {
 		ctx.getMap(MAP).put(KEY1, VALUE1);
 		Request request = new Request(RequestType.GET, getSelector(KEY1));
@@ -81,6 +82,7 @@ public class MapGetActionTest extends Assert {
 	}
 
 	@Test
+	@Ignore
 	public void testMalformedSelectorNoSeparator() {
 		Request request = new Request(RequestType.GET, "testMapkey1");
 		Action action = Actions.createAction(request, ctx);
@@ -91,6 +93,7 @@ public class MapGetActionTest extends Assert {
 	}
 
 	@Test
+	@Ignore
 	public void testMalformedSelectorNull() {
 		Request request = new Request(RequestType.GET, null);
 		Action action = Actions.createAction(request, ctx);
@@ -101,6 +104,7 @@ public class MapGetActionTest extends Assert {
 	}
 
 	@Test
+	@Ignore
 	public void testMalformedSelectorNoMap() {
 		Request request = new Request(RequestType.GET, concat("", KEY1));
 		Action action = Actions.createAction(request, ctx);
@@ -111,6 +115,7 @@ public class MapGetActionTest extends Assert {
 	}
 
 	@Test
+	@Ignore
 	public void testMalformedSelectorNoKey() {
 		Request request = new Request(RequestType.GET, concat(MAP, ""));
 		Action action = Actions.createAction(request, ctx);
