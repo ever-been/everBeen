@@ -1,7 +1,6 @@
 package cz.cuni.mff.d3s.been.bpkplugin;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -10,11 +9,7 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.plugins.annotations.Execute;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.plugins.annotations.*;
 
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 
@@ -151,22 +146,17 @@ public class GeneratorMojo extends AbstractMojo {
 		configuration.buildDirectory = buildDirectory;
 		configuration.finalName = finalName;
 		configuration.packageJarFile = packageJarFile;
+		configuration.mainClass = mainClass;
 
-		try {
-			configuration.mainClass = (mainClass == null
-					? MainClassExtractor.getMainClass(packageJarFile.toPath()) : mainClass);
-		} catch (IOException e) {
-			throw new ConfigurationException(String.format("Invalid configuration: ", e.getMessage()), e);
-		}
 		configuration.binary = binary;
 		configuration.artifacts = (artifacts == null
 				? Collections.<Artifact> emptyList() : artifacts);
 		configuration.filesToArchive = filesToArchive == null
 				? Collections.<FileItem> emptyList() : filesToArchive;
-				configuration.bpkDependencies = bpkDependencies == null
-						? Collections.<BpkIdentifier> emptyList() : bpkDependencies;
+		configuration.bpkDependencies = bpkDependencies == null
+				? Collections.<BpkIdentifier> emptyList() : bpkDependencies;
 
-						return configuration;
+		return configuration;
 	}
 
 }
