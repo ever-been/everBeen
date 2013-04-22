@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!--suppress XmlUnusedNamespaceDeclaration -->
 <xs:schema
         xmlns="http://been.d3s.mff.cuni.cz/hardwareinfo"
         targetNamespace="http://been.d3s.mff.cuni.cz/hardwareinfo"
         elementFormDefault="unqualified"
         attributeFormDefault="unqualified"
-        xmlns:hardwareinfo="http://been.d3s.mff.cuni.cz/hardwareinfo"
         xmlns:xs="http://www.w3.org/2001/XMLSchema"
         xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
         xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
