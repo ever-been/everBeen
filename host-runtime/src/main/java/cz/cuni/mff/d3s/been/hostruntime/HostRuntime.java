@@ -1,7 +1,10 @@
 package cz.cuni.mff.d3s.been.hostruntime;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.slf4j.Logger;
@@ -11,6 +14,7 @@ import cz.cuni.mff.d3s.been.cluster.IClusterService;
 import cz.cuni.mff.d3s.been.cluster.Reaper;
 import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
+import cz.cuni.mff.d3s.been.core.TaskPropertyNames;
 import cz.cuni.mff.d3s.been.core.protocol.messages.BaseMessage;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.detectors.Monitoring;
@@ -78,6 +82,11 @@ class HostRuntime implements IClusterService {
 	private static final String ACTION_QUEUE_NAME = "been.hostruntime.actions";
 
 	/**
+	 * Name of the resource with the logger.py
+	 */
+	private static final String LOGGER_RESOURCE_NAME = "scripts/logger.py";
+
+	/**
 	 * Creates new {@link HostRuntime} with cluster-unique id.
 	 * 
 	 * @param clusterContext
@@ -107,6 +116,8 @@ class HostRuntime implements IClusterService {
 			File workingDir = new File(hostRuntimeInfo.getWorkingDirectory());
 			workingDir.mkdirs();
 
+			extractLogger(workingDir);
+
 			startProcessManager(taskActionQueue.getReceiver());
 
 			// All listeners must be initialized before any message will be
@@ -126,6 +137,27 @@ class HostRuntime implements IClusterService {
 		}
 	}
 
+	/**
+	 * Extracts logger and exports logger property setting
+	 * 
+	 * @param workingDir
+	 */
+	private void extractLogger(File workingDir) {
+
+		InputStream input = HostRuntime.class.getClassLoader().getResourceAsStream(LOGGER_RESOURCE_NAME);
+		try {
+			Path scriptDir = workingDir.toPath().resolve("scripts").toAbsolutePath();
+			Path resourcePath = workingDir.toPath().resolve(LOGGER_RESOURCE_NAME).toAbsolutePath();
+			Files.createDirectories(scriptDir);
+			Files.deleteIfExists(resourcePath);
+			Files.copy(input, resourcePath);
+			System.setProperty(TaskPropertyNames.LOGGER, resourcePath.toString());
+		} catch (IOException e) {
+			String msg = String.format("Cannot extract %s. Native task logging will not work", LOGGER_RESOURCE_NAME);
+			log.error(msg, e);
+		}
+
+	}
 	/**
 	 * Causes clean hostruntime shutdown.
 	 */

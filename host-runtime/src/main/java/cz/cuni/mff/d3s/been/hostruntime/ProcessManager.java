@@ -228,7 +228,7 @@ final class ProcessManager implements Service, Reapable {
 			runningTasks.put(taskHandle.getId(), process);
 
 			if (process.isDebugListeningMode()) {
-                DebugAssistant debugAssistant = new DebugAssistant(clusterContext);
+				DebugAssistant debugAssistant = new DebugAssistant(clusterContext);
 				debugAssistant.addSuspendedTask(taskHandle.getId(), process.getDebugPort());
 			}
 			process.start();
@@ -248,41 +248,37 @@ final class ProcessManager implements Service, Reapable {
 			File taskDirectory, int port) throws IOException, BpkConfigurationException, TaskException {
 
 		TaskDescriptor taskDescriptor = taskEntry.getTaskDescriptor();
-        BpkIdentifier bpkIdentifier = BpkIdentifierCreator.createBpkIdentifier(taskDescriptor);
-        Bpk bpk = softwareResolver.getBpk(bpkIdentifier);
+		BpkIdentifier bpkIdentifier = BpkIdentifierCreator.createBpkIdentifier(taskDescriptor);
+		Bpk bpk = softwareResolver.getBpk(bpkIdentifier);
 
 		ZipFileUtil.unzipToDir(bpk.getInputStream(), taskDirectory);
 
-        // obtain bpk configuration
-        Path taskWrkDir = Paths.get(taskDirectory.toString());
-        Path configPath = taskWrkDir.resolve(BpkNames.CONFIG_FILE);
-        BpkConfiguration bpkConfiguration = BpkConfigUtils.fromXml(configPath);
+		// obtain bpk configuration
+		Path taskWrkDir = Paths.get(taskDirectory.toString());
+		Path configPath = taskWrkDir.resolve(BpkNames.CONFIG_FILE);
+		BpkConfiguration bpkConfiguration = BpkConfigUtils.fromXml(configPath);
 
-        // create process for the task
-        CmdLineBuilder cmdLineBuilder = CmdLineBuilderFactory.create(bpkConfiguration.getRuntime(), taskDescriptor, taskWrkDir.toFile());
-        DependencyDownloader dependencyDownloader = DependencyDownloaderFactory.create(bpkConfiguration.getRuntime());
-        ExecuteStreamHandler streamhandler = new PumpStreamHandler();
-        Map<String, String> environment = createEnvironmentProperties(taskEntry, port);
+		// create process for the task
+		CmdLineBuilder cmdLineBuilder = CmdLineBuilderFactory.create(bpkConfiguration.getRuntime(), taskDescriptor, taskWrkDir.toFile());
+		DependencyDownloader dependencyDownloader = DependencyDownloaderFactory.create(bpkConfiguration.getRuntime());
+		ExecuteStreamHandler streamhandler = new PumpStreamHandler();
+		Map<String, String> environment = createEnvironmentProperties(taskEntry, port);
 
+		TaskProcess taskProcess = new TaskProcess(cmdLineBuilder, taskWrkDir, environment, streamhandler, dependencyDownloader);
 
-        TaskProcess taskProcess = new TaskProcess(
-                cmdLineBuilder,
-                taskWrkDir,
-                environment,
-                streamhandler,
-                dependencyDownloader);
+		long timeout = taskDescriptor.isSetFailurePolicy()
+				? taskDescriptor.getFailurePolicy().getTimeoutRun()
+				: TaskProcess.NO_TIMEOUT;
+		taskProcess.setTimeout(timeout);
 
-        long timeout = taskDescriptor.isSetFailurePolicy()
-                ? taskDescriptor.getFailurePolicy().getTimeoutRun() : TaskProcess.NO_TIMEOUT;
-        taskProcess.setTimeout(timeout);
-
-        return taskProcess;
+		return taskProcess;
 	}
 
 	private Map<String, String> createEnvironmentProperties(TaskEntry taskEntry,
 			int port) {
 
 		Map<String, String> properties = new HashMap<>(System.getenv());
+		properties.put(LOGGER, System.getProperty(LOGGER));
 		properties.put(REQUEST_PORT, Integer.toString(port));
 		properties.put(TASK_ID, taskEntry.getId());
 		properties.put(TASK_CONTEXT_ID, taskEntry.getTaskContextId());
