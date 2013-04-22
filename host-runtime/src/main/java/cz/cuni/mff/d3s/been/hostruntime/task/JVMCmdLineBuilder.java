@@ -117,10 +117,7 @@ class JVMCmdLineBuilder implements CmdLineBuilder {
 		Java java = taskDescriptor.getJava();
 
 		if (useTaskRunner(java)) {
-			log.debug("!!!!!!!!!!!!!!!!!!!!!!!!TaskRunner used: {}", TASK_RUNNER_CLASS);
 			cmdLine.addArgument(TASK_RUNNER_CLASS);
-		} else {
-			log.debug("!!!!!!!!!!!!!!!!!!!!!!!!TaskRunner NOT used");
 		}
 
 		String finalMainClass = getFinalMainClass(java, runtime.getMainClass());
