@@ -1,5 +1,7 @@
 package cz.cuni.mff.d3s.been.taskapi;
 
+import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.REQUEST_PORT;
+
 import java.util.concurrent.TimeoutException;
 
 import org.jeromq.ZMQ;
@@ -39,7 +41,7 @@ public class Requestor {
 	private static Logger log = LoggerFactory.getLogger(Requestor.class);
 
 	/** Address of the Host Runtime request handler. */
-	private static String address = String.format("tcp://localhost:%s", System.getenv("REQUEST_PORT"));
+	private static String address = String.format("tcp://localhost:%s", System.getenv(REQUEST_PORT));
 
 	/** The socket used to communicate with a Host Runtime. */
 	private ZMQ.Socket socket;
