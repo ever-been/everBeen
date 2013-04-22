@@ -20,10 +20,6 @@ public class NginxClientTask extends Task {
 
 	private static final Logger log = LoggerFactory.getLogger(NginxClientTask.class);
 
-	public static void main(String[] args) {
-		new NginxClientTask().doMain(args);
-	}
-
 	private void downloadClientScript() {
 		MyUtils.exec(".", "wget", new String[] { "http://httperf.googlecode.com/files/httperf-0.9.0.tar.gz" });
 		MyUtils.exec(".", "tar", new String[] { "xzvf", "httperf-0.9.0.tar.gz" });
