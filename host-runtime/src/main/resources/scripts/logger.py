@@ -70,6 +70,15 @@ def send(logLevel, msg):
     
     # open socket connection to running host runtime
     context = zmq.Context()
+
+    # The default LINGER is -1, which means wait until all
+    # messages have been sent before allowing termination.
+    # Set to 0 to discard unsent messages immediately,
+    # and any positive integer will be the number of
+    # milliseconds to keep trying to send before discard.
+    # TODO not sure we want to do this, causes problems for me: cannot find setsockopt
+    #context.setsockopt(zmq.LINGER, 0)
+
     sender = context.socket(zmq.PUSH)
     
     port = os.environ.get(PORT_ENVPROP_NAME)
@@ -77,12 +86,7 @@ def send(logLevel, msg):
  
     sender.send(jsonMessage)
      
-    # The default LINGER is -1, which means wait until all
-    # messages have been sent before allowing termination.
-    # Set to 0 to discard unsent messages immediately, 
-    # and any positive integer will be the number of 
-    # milliseconds to keep trying to send before discard.
-    context.setsockopt(zmq.LINGER, 0)
+
     
     sender.close()
     context.term()
