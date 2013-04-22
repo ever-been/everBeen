@@ -18,10 +18,6 @@ public class NginxServerTask extends Task {
 
 	private static final Logger log = LoggerFactory.getLogger(NginxServerTask.class);
 
-	public static void main(String[] args) {
-		new NginxServerTask().doMain(args);
-	}
-
 	private File workingDirectory = new File(".");
 
 	private void downloadSources() {
