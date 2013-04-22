@@ -91,7 +91,9 @@ class ClusterMode extends AbstractMode {
 		if (args.length == 1) {
 			Collection<RuntimeInfo> runtimes = clusterContext.getRuntimesUtils().getRuntimes();
 			for (RuntimeInfo runtime : runtimes) {
-				out.println(RuntimeInfos.toXml(runtime));
+				out.println("Runtime ID: " + runtime.getId());
+				out.println("Operating system: " + runtime.getOperatingSystem().getName());
+				out.println("-----------------------------------");
 			}
 		}
 	}
