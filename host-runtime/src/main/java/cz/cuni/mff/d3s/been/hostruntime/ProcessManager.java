@@ -173,6 +173,10 @@ final class ProcessManager implements Service {
 		stopTaskMessageDispatcher();
 		stopTaskActionThread();
 		stopTaskRequestBroker();
+
+		// Kill all remaining running tasks
+		killRunningTasks();
+
 	}
 
 	/** Stops the {@link ResultsDispatcher} */
@@ -209,6 +213,24 @@ final class ProcessManager implements Service {
 	/** Stops the {@link TaskRequestBrokerThread} */
 	private void stopTaskRequestBroker() {
 		// TODO
+	}
+
+	/**
+	 * Kills all running tasks
+	 */
+	private void killRunningTasks() {
+		try {
+			for (TaskProcess process : runningTasks.values()) {
+				log.debug("Killing task process {}", process);
+				process.kill();
+			}
+
+			while (!runningTasks.isEmpty()) {
+				Thread.sleep(500);
+			}
+		} catch (InterruptedException e) {
+			// give up
+		}
 	}
 
 	/**
