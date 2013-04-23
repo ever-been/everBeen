@@ -27,11 +27,15 @@ final class MapGetAction implements Action {
 		//return Replies.createErrorReply("No such map %s", map);
 		//}
 
+		if (key == null || key.isEmpty()) {
+			return Replies.createErrorReply("Key must be non-empty");
+		}
+
 		Object mapValue = ctx.getMap(map).get(key);
 
 		String replyValue;
 		if (mapValue == null) {
-			replyValue = "";
+			replyValue = null;
 		} else {
 			replyValue = mapValue.toString();
 		}
