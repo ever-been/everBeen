@@ -80,7 +80,6 @@ public class TaskMessageDispatcher implements Service, Reapable {
 	@Override
 	public void stop() {
 		try {
-			msgQueueReader.interrupt();
 			try {
 				poisonReader();
 				msgQueueReader.join();
@@ -100,15 +99,7 @@ public class TaskMessageDispatcher implements Service, Reapable {
 		return new Reaper() {
 			@Override
 			protected void reap() throws InterruptedException {
-				try {
-					poisonReader();
-					msgQueueReader.join();
-				} catch (MessagingException e) {
-					log.warn("Failed to poison task log reader, socket leak is likely.", e);
-				}
-				taskMQ.terminate();
-				taskMQ = null;
-				receiverPort = TaskMessageDispatcher.NOT_BOUND_PORT;
+				TaskMessageDispatcher.this.stop();
 			}
 		};
 	}

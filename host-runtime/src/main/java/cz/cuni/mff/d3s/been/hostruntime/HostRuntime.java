@@ -1,11 +1,11 @@
 package cz.cuni.mff.d3s.been.hostruntime;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,9 +19,8 @@ import cz.cuni.mff.d3s.been.core.protocol.messages.BaseMessage;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.detectors.Monitoring;
 import cz.cuni.mff.d3s.been.mq.IMessageQueue;
-import cz.cuni.mff.d3s.been.mq.IMessageReceiver;
-import cz.cuni.mff.d3s.been.mq.IMessageSender;
-import cz.cuni.mff.d3s.been.mq.Messaging;
+import cz.cuni.mff.d3s.been.mq.MessageQueues;
+import cz.cuni.mff.d3s.been.mq.MessagingException;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
 
@@ -71,15 +70,14 @@ class HostRuntime implements IClusterService {
 	private ProcessManager processManager;
 
 	/**
-	 * Queue used to send task action messages for processing.
+	 * Message Queues manager.
 	 */
-	IMessageQueue<BaseMessage> taskActionQueue;
+	private final MessageQueues messageQueues;
 
 	/**
 	 * Name of the task action queue.
 	 */
-
-	private static final String ACTION_QUEUE_NAME = "been.hostruntime.actions";
+	static final String ACTION_QUEUE_NAME = "been.hostruntime.actions";
 
 	/**
 	 * Name of the resource with the logger.py
@@ -101,6 +99,7 @@ class HostRuntime implements IClusterService {
 		this.clusterContext = clusterContext;
 		this.hostRuntimeInfo = hostRuntimeInfo;
 		this.swRepoClientFactory = swRepoClientFactory;
+		this.messageQueues = MessageQueues.getInstance();
 	}
 
 	/**
@@ -110,19 +109,15 @@ class HostRuntime implements IClusterService {
 	@Override
 	public void start() throws ServiceException {
 		try {
-			taskActionQueue = Messaging.createInprocQueue(ACTION_QUEUE_NAME);
 
-			// create ".HostRuntime" working directory
-			File workingDir = new File(hostRuntimeInfo.getWorkingDirectory());
-			workingDir.mkdirs();
+			// creates necessary files and directories
+			prepareFiles(hostRuntimeInfo.getWorkingDirectory());
 
-			extractLogger(workingDir);
-
-			startProcessManager(taskActionQueue.getReceiver());
+			startProcessManager();
 
 			// All listeners must be initialized before any message will be
 			// received.
-			registerListeners(taskActionQueue.createSender());
+			startListeners();
 
 			// Now, we can register the runtime without missing any messages.
 			registerHostRuntime();
@@ -137,17 +132,25 @@ class HostRuntime implements IClusterService {
 		}
 	}
 
+	private void prepareFiles(String workingDirName) throws IOException {
+		Path workingDir = Paths.get(workingDirName).toAbsolutePath();
+		Files.createDirectories(workingDir);
+
+		extractLogger(workingDir);
+
+	}
+
 	/**
 	 * Extracts logger and exports logger property setting
 	 * 
 	 * @param workingDir
 	 */
-	private void extractLogger(File workingDir) {
+	private void extractLogger(Path workingDir) {
 
 		InputStream input = HostRuntime.class.getClassLoader().getResourceAsStream(LOGGER_RESOURCE_NAME);
 		try {
-			Path scriptDir = workingDir.toPath().resolve("scripts").toAbsolutePath();
-			Path resourcePath = workingDir.toPath().resolve(LOGGER_RESOURCE_NAME).toAbsolutePath();
+			Path scriptDir = workingDir.resolve("scripts");
+			Path resourcePath = workingDir.resolve(LOGGER_RESOURCE_NAME);
 			Files.createDirectories(scriptDir);
 			Files.deleteIfExists(resourcePath);
 			Files.copy(input, resourcePath);
@@ -159,15 +162,14 @@ class HostRuntime implements IClusterService {
 
 	}
 	/**
-	 * Causes clean hostruntime shutdown.
+	 * Causes clean Host Runtime shutdown.
 	 */
 	@Override
 	public void stop() {
 		log.info("Stopping Host Runtime...");
 		unregisterHostRuntime();
-		unregisterListeners();
+		stopListeners();
 		stopProcessManager();
-		taskActionQueue.terminate();
 		log.info("Host Runtime stopped.");
 	}
 
@@ -176,20 +178,26 @@ class HostRuntime implements IClusterService {
 		final Reaper reaper = new Reaper() {
 			@Override
 			protected void reap() throws InterruptedException {
-				unregisterHostRuntime();
-				unregisterListeners();
-				taskActionQueue.terminate();
+				HostRuntime.this.stop();
 			}
 		};
-		reaper.pushTarget(processManager);
 		return reaper;
 	}
 	/**
 	 * Starts process manger.
 	 */
-	private void startProcessManager(IMessageReceiver<BaseMessage> receiver) throws ServiceException {
-		processManager = new ProcessManager(clusterContext, swRepoClientFactory, hostRuntimeInfo, receiver);
-		processManager.start();
+	private void startProcessManager() throws ServiceException {
+		try {
+			IMessageQueue<BaseMessage> queue = messageQueues.createInprocQueue(ACTION_QUEUE_NAME);
+			queue.getReceiver(); //binds receiver
+
+			processManager = new ProcessManager(clusterContext, swRepoClientFactory, hostRuntimeInfo);
+			processManager.start();
+		} catch (MessagingException e) {
+			String msg = String.format("Cannot start %s queue", ACTION_QUEUE_NAME);
+			throw new ServiceException(msg, e);
+		}
+
 	}
 
 	/**
@@ -199,21 +207,28 @@ class HostRuntime implements IClusterService {
 		log.debug("Stopping process manager...");
 		processManager.stop();
 		processManager = null;
+		try {
+			messageQueues.terminate(ACTION_QUEUE_NAME);
+		} catch (MessagingException e) {
+			String msg = String.format("Cannot terminate %s", ACTION_QUEUE_NAME);
+			log.error(msg, e);
+		}
 		log.debug("Process manager stopped.");
 	}
 
 	/**
-	 * Unregisters all cluster listeners.
+	 * Stops all cluster listeners.
 	 */
-	private void unregisterListeners() {
+	private void stopListeners() {
 		messageListener.stop();
+		messageListener = null;
 	}
 
 	/**
 	 * Registers all needed cluster listeners.
 	 */
-	private void registerListeners(IMessageSender<BaseMessage> sender) {
-		messageListener = new HostRuntimeMessageListener(clusterContext, sender, processManager.getNodeId());
+	private void startListeners() throws ServiceException {
+		messageListener = new HostRuntimeMessageListener(clusterContext, processManager.getNodeId());
 		messageListener.start();
 	}
 

@@ -11,10 +11,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
-import cz.cuni.mff.d3s.been.core.protocol.messages.BaseMessage;
 import cz.cuni.mff.d3s.been.core.protocol.messages.KillTaskMessage;
 import cz.cuni.mff.d3s.been.core.protocol.messages.RunTaskMessage;
-import cz.cuni.mff.d3s.been.mq.IMessageSender;
+import cz.cuni.mff.d3s.been.mq.MessagingException;
 
 public class HostRuntimeMessageListenerTest extends Assert {
 
@@ -28,15 +27,12 @@ public class HostRuntimeMessageListenerTest extends Assert {
 	@Mock
 	private ClusterContext ctx;
 
-	@Mock
-	private IMessageSender<BaseMessage> sender;
-
 	private String nodeId = "node id";
 
 	@Before
-	public void setUp() {
+	public void setUp() throws MessagingException {
 		MockitoAnnotations.initMocks(this);
-		listener = new HostRuntimeMessageListener(ctx, sender, nodeId);
+		listener = new HostRuntimeMessageListener(ctx, nodeId);
 	}
 
 	@Ignore
