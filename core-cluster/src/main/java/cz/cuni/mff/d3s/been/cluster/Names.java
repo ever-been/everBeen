@@ -35,6 +35,11 @@ public class Names {
 	 */
 	public static final String RESULT_QUEUE_NAME = "BEEN_QUEUE_RESULTS";
 
+	/**
+	 * MultiMap storing logs, stdout and stderr of tasks.
+	 */
+	public static final String LOGS_MULTIMAP_NAME = "been.task.logs";
+
 	// TOPIC NAMES
 	/**
 	 * In the topic with this name should be published complete communication

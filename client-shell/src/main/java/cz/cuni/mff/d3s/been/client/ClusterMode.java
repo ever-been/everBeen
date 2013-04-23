@@ -3,16 +3,19 @@ package cz.cuni.mff.d3s.been.client;
 import java.util.Collection;
 import java.util.Map;
 
-import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
 import jline.console.ConsoleReader;
 
 import com.hazelcast.core.Instance;
+import com.hazelcast.core.MultiMap;
 
+import cz.cuni.mff.d3s.been.cluster.Names;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
+import cz.cuni.mff.d3s.been.core.LogMessage;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
-import cz.cuni.mff.d3s.been.core.runtime.RuntimeInfos;
+import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskEntries;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
+import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
 
 /**
  * @author Martin Sixta
@@ -22,7 +25,7 @@ class ClusterMode extends AbstractMode {
 	private final ClusterContext clusterContext;
 
 	private enum Action {
-		HELP, TASKS, TASKCONTEXTS, RUNTIMES, BREAK, INSTANCES;
+		HELP, TASKS, TASKCONTEXTS, RUNTIMES, BREAK, INSTANCES, LOGS;
 	}
 
 	private static String[] getActionStrings() {
@@ -69,6 +72,9 @@ class ClusterMode extends AbstractMode {
 			case INSTANCES:
 				handleInstances(args);
 				break;
+			case LOGS:
+				handleLogs(args);
+				break;
 			case BREAK:
 				System.exit(0);
 				break;
@@ -78,6 +84,21 @@ class ClusterMode extends AbstractMode {
 
 	}
 
+	private void handleLogs(String[] args) {
+		final MultiMap<String, LogMessage> logs = clusterContext.getInstance().getMultiMap(Names.LOGS_MULTIMAP_NAME);
+
+		for (String id : logs.keySet()) {
+			out.printf("ID: %s\n", id);
+			for (LogMessage msg : logs.get(id)) {
+				try {
+					out.printf("\t%s\n", JSONUtils.serialize(msg));
+				} catch (JSONUtils.JSONSerializerException e) {
+					out.println("\tERROR: Cannot deserialize the message!");
+				}
+			}
+		}
+	}
+
 	private void handleHelp(String[] args) {
 		out.println("Available commands:");
 		out.println("help");
@@ -85,6 +106,7 @@ class ClusterMode extends AbstractMode {
 		out.println("taskcontexts");
 		out.println("runtimes");
 		out.println("instances [instance-type] [instance-name]");
+		out.println("logs [taskId]");
 	}
 
 	private void handleRuntimes(String[] args) {

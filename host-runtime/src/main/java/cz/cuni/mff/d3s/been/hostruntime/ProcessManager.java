@@ -149,7 +149,7 @@ final class ProcessManager implements Service {
 
 	/** Starts the {@link TaskMessageDispatcher} */
 	private void startTaskMessageDispatcher() throws ServiceException {
-		taskMessageDispatcher = new TaskMessageDispatcher();
+		taskMessageDispatcher = new TaskMessageDispatcher(clusterContext);
 		taskMessageDispatcher.start();
 	}
 
@@ -317,10 +317,14 @@ final class ProcessManager implements Service {
 		Path configPath = taskWrkDir.resolve(BpkNames.CONFIG_FILE);
 		BpkConfiguration bpkConfiguration = BpkConfigUtils.fromXml(configPath);
 
+		BpkRuntime runtime = bpkConfiguration.getRuntime();
+
 		// create process for the task
-		CmdLineBuilder cmdLineBuilder = CmdLineBuilderFactory.create(bpkConfiguration.getRuntime(), taskDescriptor, taskWrkDir.toFile());
-		DependencyDownloader dependencyDownloader = DependencyDownloaderFactory.create(bpkConfiguration.getRuntime());
-		ExecuteStreamHandler streamHandler = new PumpStreamHandler();
+		CmdLineBuilder cmdLineBuilder = CmdLineBuilderFactory.create(runtime, taskDescriptor, taskWrkDir.toFile());
+		DependencyDownloader dependencyDownloader = DependencyDownloaderFactory.create(runtime);
+
+		ExecuteStreamHandler streamHandler = createStreamHandler(taskEntry);
+
 		Map<String, String> environment = createEnvironmentProperties(taskEntry);
 
 		TaskProcess taskProcess = new TaskProcess(cmdLineBuilder, taskWrkDir, environment, streamHandler, dependencyDownloader);
@@ -334,6 +338,15 @@ final class ProcessManager implements Service {
 	private long determineTimeout(TaskDescriptor td) {
 		return td.isSetFailurePolicy() ? td.getFailurePolicy().getTimeoutRun()
 				: TaskProcess.NO_TIMEOUT;
+	}
+
+	private ExecuteStreamHandler createStreamHandler(TaskEntry entry) {
+		ClusterStreamHandler stdOutHandler = new ClusterStreamHandler(clusterContext, entry.getId(), entry.getTaskContextId(), "stdout");
+		ClusterStreamHandler stdErrHandler = new ClusterStreamHandler(clusterContext, entry.getId(), entry.getTaskContextId(), "stderr");
+		ExecuteStreamHandler streamHandler = new PumpStreamHandler(stdOutHandler, stdErrHandler);
+
+		return streamHandler;
+
 	}
 
 	private Map<String, String> createEnvironmentProperties(TaskEntry taskEntry) {

@@ -10,6 +10,7 @@ import cz.cuni.mff.d3s.been.cluster.Reapable;
 import cz.cuni.mff.d3s.been.cluster.Reaper;
 import cz.cuni.mff.d3s.been.cluster.Service;
 import cz.cuni.mff.d3s.been.cluster.ServiceException;
+import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.TaskMessageType;
 import cz.cuni.mff.d3s.been.mq.*;
 
@@ -38,6 +39,9 @@ public class TaskMessageDispatcher implements Service, Reapable {
 	 */
 	static final int NOT_BOUND_PORT = -1;
 
+	/** Cluster context */
+	private final ClusterContext clusterContext;
+
 	/**
 	 * Message queue listening for message from tasks.
 	 */
@@ -56,6 +60,10 @@ public class TaskMessageDispatcher implements Service, Reapable {
 	 */
 	private Map<TaskMessageType, MessageListener> listeners = new HashMap<>();
 
+	public TaskMessageDispatcher(ClusterContext clusterContext) {
+
+		this.clusterContext = clusterContext;
+	}
 	/**
 	 * Starts new receiver thread if not already running.
 	 */
@@ -65,12 +73,12 @@ public class TaskMessageDispatcher implements Service, Reapable {
 		try {
 			receiver = taskMQ.getReceiver();
 		} catch (MessagingException e) {
-			throw new ServiceException("Cannot initialize ZMQ message reciever", e);
+			throw new ServiceException("Cannot initialize ZMQ message receiver", e);
 		}
 
 		receiverPort = receiver.getPort();
 
-		msgQueueReader = new QueueReaderThread(this, receiver);
+		msgQueueReader = new QueueReaderThread(clusterContext, receiver);
 		msgQueueReader.start();
 	}
 

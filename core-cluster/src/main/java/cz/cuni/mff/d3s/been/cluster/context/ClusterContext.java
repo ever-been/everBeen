@@ -150,6 +150,10 @@ public class ClusterContext {
 		return getInstance().getMap(name);
 	}
 
+	public <K, V> MultiMap<K, V> getMultiMap(String name) {
+		return getInstance().getMultiMap(name);
+	}
+
 	public <E> IList<E> getList(String name) {
 		return getInstance().getList(name);
 	}
