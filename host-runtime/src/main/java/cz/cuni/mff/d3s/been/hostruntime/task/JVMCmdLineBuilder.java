@@ -200,8 +200,8 @@ class JVMCmdLineBuilder implements CmdLineBuilder {
 				case CONNECT: {
 					String host = taskDescriptor.getDebug().getHost();
 					int port = taskDescriptor.getDebug().getPort();
-					boolean suspend = taskDescriptor.getDebug().isSuspend();
-					cmdLine.addArgument(createDebugParam(false, host + ":" + port, suspend));
+					cmdLine.suspended = taskDescriptor.getDebug().isSuspend();
+					cmdLine.addArgument(createDebugParam(false, host + ":" + port, cmdLine.suspended));
 					break;
 				}
 				case LISTEN: {
@@ -211,8 +211,8 @@ class JVMCmdLineBuilder implements CmdLineBuilder {
 					}
 					cmdLine.debugPort = port;
 					cmdLine.debugListeningMode = true;
-					boolean suspend = taskDescriptor.getDebug().isSuspend();
-					cmdLine.addArgument(createDebugParam(true, "" + port, suspend));
+					cmdLine.suspended = taskDescriptor.getDebug().isSuspend();
+					cmdLine.addArgument(createDebugParam(true, "" + port, cmdLine.suspended));
 					log.info("Debugged process is listening on port {}", port);
 					break;
 				}

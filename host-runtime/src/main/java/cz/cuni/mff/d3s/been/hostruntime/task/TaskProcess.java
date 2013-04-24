@@ -76,7 +76,7 @@ public class TaskProcess implements AutoCloseable {
 		}
 		this.environment = environment;
 		this.streamhandler = streamhandler;
-        this.watchdog = new ExecuteWatchdog(NO_TIMEOUT);
+		this.watchdog = new ExecuteWatchdog(NO_TIMEOUT);
 	}
 
 	/**
@@ -180,9 +180,13 @@ public class TaskProcess implements AutoCloseable {
 		return cmd.getDebugPort();
 	}
 
+	public boolean isSuspended() {
+		return cmd.isSuspended();
+	}
+
 	public void setTimeout(long timeout) {
 		timeoutInMillis = timeout <= 0 ? NO_TIMEOUT
 				: TimeUnit.SECONDS.toMillis(timeout);
-        this.watchdog = new ExecuteWatchdog(timeoutInMillis);
+		this.watchdog = new ExecuteWatchdog(timeoutInMillis);
 	}
 }

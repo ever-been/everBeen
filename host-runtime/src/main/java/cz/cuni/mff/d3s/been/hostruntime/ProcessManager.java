@@ -289,7 +289,7 @@ final class ProcessManager implements Service {
 
 			if (process.isDebugListeningMode()) {
 				DebugAssistant debugAssistant = new DebugAssistant(clusterContext);
-				debugAssistant.addSuspendedTask(taskHandle.getId(), process.getDebugPort());
+				debugAssistant.addSuspendedTask(taskHandle.getId(), process.getDebugPort(), process.isSuspended());
 			}
 			process.start();
 

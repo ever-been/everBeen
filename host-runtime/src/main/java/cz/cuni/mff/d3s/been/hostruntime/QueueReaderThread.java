@@ -10,17 +10,20 @@ import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.LogMessage;
 import cz.cuni.mff.d3s.been.core.TaskMessageType;
 import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
+import cz.cuni.mff.d3s.been.debugassistant.DebugAssistant;
 import cz.cuni.mff.d3s.been.mq.IMessageReceiver;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
 
 final class QueueReaderThread extends Thread {
 	private static final Logger log = LoggerFactory.getLogger(QueueReaderThread.class);
 
+	private final ClusterContext clusterContext;
 	private final IMessageReceiver<String> receiver;
 	private final MultiMap<String, LogMessage> logMap;
 	private static final String PREFIX_SEPARATOR = "#";
 
 	QueueReaderThread(ClusterContext clusterContext, IMessageReceiver<String> receiver) {
+		this.clusterContext = clusterContext;
 		this.receiver = receiver;
 		this.logMap = clusterContext.getMultiMap(Names.LOGS_MULTIMAP_NAME);
 
@@ -53,12 +56,11 @@ final class QueueReaderThread extends Thread {
 
 				TaskMessageType messageType = getType(message);
 
-				switch (messageType) {
-					case LOG_MESSAGE:
-						handleLogMessage(message);
-						break;
-					case UNKNOWN:
-						break;
+				try {
+					handleMessage(messageType, message);
+				} catch (Exception e) {
+					String msg = String.format("Cannot handle message '%s' of type %s", message, messageType.toString());
+					log.error(msg, e);
 				}
 
 			} catch (RuntimeException e) {
@@ -69,10 +71,30 @@ final class QueueReaderThread extends Thread {
 		}
 	}
 
-	private void handleLogMessage(String message) {
-		String prefix = TaskMessageType.LOG_MESSAGE.toString() + PREFIX_SEPARATOR;
+	private void handleMessage(TaskMessageType messageType, String message) {
+		switch (messageType) {
+			case LOG_MESSAGE:
+				handleLogMessage(message);
+				break;
+			case TASK_RUNNING:
+				handleTaskRunningMessage(message);
+				break;
+			case UNKNOWN:
+				break;
+		}
+	}
 
-		String json = message.substring(prefix.length());
+	private void handleTaskRunningMessage(String message) {
+		String taskId = stripPrefix(TaskMessageType.TASK_RUNNING, message);
+
+		DebugAssistant debugAssistant = new DebugAssistant(clusterContext);
+		debugAssistant.setSuspended(taskId, false);
+	}
+
+	private void handleLogMessage(String message) {
+
+		String json = stripPrefix(TaskMessageType.LOG_MESSAGE, message);
+
 		try {
 			LogMessage logMessage = JSONUtils.deserialize(json, LogMessage.class);
 			logMap.put(logMessage.getSenderId(), logMessage);
@@ -92,4 +114,21 @@ final class QueueReaderThread extends Thread {
 		return TaskMessageType.UNKNOWN;
 
 	}
+
+	/**
+	 * Strips prefix from the message.
+	 * 
+	 * The message must contain the prefix.
+	 * 
+	 * @param type
+	 *          message type
+	 * @param message
+	 *          message to strip the prefix from
+	 * @return message without prefix
+	 */
+	private String stripPrefix(TaskMessageType type, String message) {
+		String prefix = type.toString() + PREFIX_SEPARATOR;
+		return message.substring(prefix.length());
+	}
+
 }

@@ -13,6 +13,11 @@ public enum TaskMessageType {
 	LOG_MESSAGE,
 
 	/**
+	 * Signal that the task is running (used in case of initially suspended tasks)
+	 */
+	TASK_RUNNING,
+
+	/**
 	 * Unknown message type.
 	 */
 

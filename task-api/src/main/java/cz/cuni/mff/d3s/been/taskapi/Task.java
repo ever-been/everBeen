@@ -3,6 +3,7 @@ package cz.cuni.mff.d3s.been.taskapi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cz.cuni.mff.d3s.been.core.TaskMessageType;
 import cz.cuni.mff.d3s.been.core.TaskPropertyNames;
 import cz.cuni.mff.d3s.been.mq.IMessageQueue;
 import cz.cuni.mff.d3s.been.mq.IMessageSender;
@@ -116,8 +117,13 @@ public abstract class Task {
 			log.debug("Reasons for Task setup failing:", e);
 			// TODO exit with code
 		}
-		// TODO notify HostManager that the task is no longer suspended
-		// Messages.send("TASK_RUNNING#");
+
+		try {
+			Messages.send(String.format("%s#%s", TaskMessageType.TASK_RUNNING, id));
+		} catch (MessagingException e) {
+			// message passing does not work, try it with stderr ...
+			System.err.println("Cannot send 'i'm running' message");
+		}
 	}
 	private void tearDown() {
 		resSender.close();

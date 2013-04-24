@@ -18,6 +18,12 @@ public class TaskCommandLine extends CommandLine {
 
 	int debugPort;
 
+	boolean suspended = false;
+
+	public boolean isSuspended() {
+		return suspended;
+	}
+
 	/**
 	 * Returns debug port on which the java task will be running.
 	 * 
@@ -28,8 +34,8 @@ public class TaskCommandLine extends CommandLine {
 	}
 
 	/**
-	 * Tells if command line has been created with debug parameter which tells that
-	 * the task should be listening for debug connections.
+	 * Tells if command line has been created with debug parameter which tells
+	 * that the task should be listening for debug connections.
 	 * 
 	 * @return
 	 */

@@ -16,6 +16,8 @@ import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskEntries;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
+import cz.cuni.mff.d3s.been.debugassistant.DebugAssistant;
+import cz.cuni.mff.d3s.been.debugassistant.DebugListItem;
 
 /**
  * @author Martin Sixta
@@ -25,7 +27,7 @@ class ClusterMode extends AbstractMode {
 	private final ClusterContext clusterContext;
 
 	private enum Action {
-		HELP, TASKS, TASKCONTEXTS, RUNTIMES, BREAK, INSTANCES, LOGS;
+		HELP, TASKS, TASKCONTEXTS, RUNTIMES, BREAK, INSTANCES, LOGS, DEBUG;
 	}
 
 	private static String[] getActionStrings() {
@@ -75,6 +77,9 @@ class ClusterMode extends AbstractMode {
 			case LOGS:
 				handleLogs(args);
 				break;
+			case DEBUG:
+				handleDebug(args);
+				break;
 			case BREAK:
 				System.exit(0);
 				break;
@@ -82,6 +87,15 @@ class ClusterMode extends AbstractMode {
 
 		return this;
 
+	}
+
+	private void handleDebug(String[] args) {
+		DebugAssistant debugAssistant = new DebugAssistant(clusterContext);
+
+		for (DebugListItem item : debugAssistant.listWaitingProcesses()) {
+			out.printf("id: %s, host: %s, port: %s, suspended: %s\n", item.getTaskId(), item.getHostName(), item.getDebugPort(), item.isSuspended());
+
+		}
 	}
 
 	private void handleLogs(String[] args) {
