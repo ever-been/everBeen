@@ -5,7 +5,6 @@ import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +29,6 @@ import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskProperty;
-import cz.cuni.mff.d3s.been.core.task.TaskState;
 import cz.cuni.mff.d3s.been.debugassistant.DebugAssistant;
 import cz.cuni.mff.d3s.been.hostruntime.task.*;
 import cz.cuni.mff.d3s.been.mq.IMessageReceiver;
@@ -279,60 +277,112 @@ final class ProcessManager implements Service {
 		return hostInfo.getId();
 	}
 
-	private void runTask(TaskEntry taskHandle) {
-		changeTaskStateTo(taskHandle, TaskState.ACCEPTED);
-		File taskDir = createTaskDir(taskHandle);
+	private void runTask(TaskEntry taskEntry) {
 
-		try (TaskProcess process = createTaskProcess(taskHandle, taskDir)) {
-			changeTaskStateTo(taskHandle, TaskState.RUNNING);
-			runningTasks.put(taskHandle.getId(), process);
+		String id = taskEntry.getId();
+		TaskHandle taskHandle = new TaskHandle(taskEntry, clusterContext);
+
+		// TODO check whether the task can be accepted to run on the Host Runtime
+		// the check must be synchronized since runTask can run in several threads
+
+		try {
+			taskHandle.setAccepted();
+		} catch (IllegalStateException e) {
+			String msg = String.format("Was about to accept a task %s but could not make it happen.", taskEntry.getId());
+			log.debug(msg, e);
+			return;
+		}
+
+		File taskDir = createTaskDir(taskEntry);
+
+		try (TaskProcess process = createTaskProcess(taskEntry, taskDir)) {
+			runningTasks.put(id, process);
 
 			if (process.isDebugListeningMode()) {
-				DebugAssistant debugAssistant = new DebugAssistant(clusterContext);
-				debugAssistant.addSuspendedTask(taskHandle.getId(), process.getDebugPort(), process.isSuspended());
+				taskHandle.setDebug(process.getDebugPort(), process.isSuspended());
 			}
-			process.start();
 
-			changeTaskStateTo(taskHandle, TaskState.FINISHED);
+			taskHandle.setRunning(process);
+
+			int exitValue = process.start();
+
+			taskHandle.setFinished(exitValue);
+
 		} catch (Exception e) {
-			changeTaskStateTo(taskHandle, TaskState.ABORTED);
-			log.error(String.format("Task '%s' has been aborted due to underlying exception.", taskHandle.getId()), e);
+			String msg = String.format("Task '%s' has been aborted due to underlying exception.", id);
+			taskHandle.setAborted(msg);
+			log.error(msg, e);
 		} finally {
-			runningTasks.remove(taskHandle.getId());
+			runningTasks.remove(id);
 			DebugAssistant debugAssistant = new DebugAssistant(clusterContext);
-			debugAssistant.removeSuspendedTask(taskHandle.getId());
+			debugAssistant.removeSuspendedTask(taskEntry.getId());
 		}
 	}
 
+	/**
+	 * Creates a new task processes.
+	 * 
+	 * TODO: Refactoring might be useful. Fortunately the mess is concentrated
+	 * only in this function
+	 * 
+	 * @param taskEntry
+	 *          entry associated with the new process
+	 * @param taskDirectory
+	 *          root directory of the task
+	 * 
+	 * @return task process representation
+	 * 
+	 * @throws IOException
+	 * @throws BpkConfigurationException
+	 * @throws TaskException
+	 */
 	private TaskProcess createTaskProcess(TaskEntry taskEntry, File taskDirectory) throws IOException, BpkConfigurationException, TaskException {
 
 		TaskDescriptor taskDescriptor = taskEntry.getTaskDescriptor();
-		BpkIdentifier bpkIdentifier = BpkIdentifierCreator.createBpkIdentifier(taskDescriptor);
-		Bpk bpk = softwareResolver.getBpk(bpkIdentifier);
+
+		Bpk bpk = getBpk(taskDescriptor);
 
 		ZipFileUtil.unzipToDir(bpk.getInputStream(), taskDirectory);
 
 		// obtain bpk configuration
-		Path taskWrkDir = Paths.get(taskDirectory.toString());
-		Path configPath = taskWrkDir.resolve(BpkNames.CONFIG_FILE);
-		BpkConfiguration bpkConfiguration = BpkConfigUtils.fromXml(configPath);
+		Path taskWrkDir = taskDirectory.toPath();
 
-		BpkRuntime runtime = bpkConfiguration.getRuntime();
+		// obtain runtime information
+		BpkRuntime runtime = getBpkRuntime(taskDirectory);
 
 		// create process for the task
-		CmdLineBuilder cmdLineBuilder = CmdLineBuilderFactory.create(runtime, taskDescriptor, taskWrkDir.toFile());
+		CmdLineBuilder cmdLineBuilder = CmdLineBuilderFactory.create(runtime, taskDescriptor, taskDirectory);
+
+		// create dependency downloader
 		DependencyDownloader dependencyDownloader = DependencyDownloaderFactory.create(runtime);
 
+		// create output handler
 		ExecuteStreamHandler streamHandler = createStreamHandler(taskEntry);
 
+		// create environment properties
 		Map<String, String> environment = createEnvironmentProperties(taskEntry);
 
 		TaskProcess taskProcess = new TaskProcess(cmdLineBuilder, taskWrkDir, environment, streamHandler, dependencyDownloader);
 
 		long timeout = determineTimeout(taskDescriptor);
+
 		taskProcess.setTimeout(timeout);
 
 		return taskProcess;
+	}
+
+	private Bpk getBpk(TaskDescriptor taskDescriptor) throws TaskException {
+		BpkIdentifier bpkIdentifier = BpkIdentifierCreator.createBpkIdentifier(taskDescriptor);
+		return softwareResolver.getBpk(bpkIdentifier);
+	}
+
+	private BpkRuntime getBpkRuntime(File workingDirectory) throws BpkConfigurationException {
+		// obtain bpk configuration
+		Path configPath = workingDirectory.toPath().resolve(BpkNames.CONFIG_FILE);
+		BpkConfiguration bpkConfiguration = BpkConfigUtils.fromXml(configPath);
+
+		return bpkConfiguration.getRuntime();
+
 	}
 
 	private long determineTimeout(TaskDescriptor td) {
@@ -343,9 +393,8 @@ final class ProcessManager implements Service {
 	private ExecuteStreamHandler createStreamHandler(TaskEntry entry) {
 		ClusterStreamHandler stdOutHandler = new ClusterStreamHandler(clusterContext, entry.getId(), entry.getTaskContextId(), "stdout");
 		ClusterStreamHandler stdErrHandler = new ClusterStreamHandler(clusterContext, entry.getId(), entry.getTaskContextId(), "stderr");
-		ExecuteStreamHandler streamHandler = new PumpStreamHandler(stdOutHandler, stdErrHandler);
 
-		return streamHandler;
+		return new PumpStreamHandler(stdOutHandler, stdErrHandler);
 
 	}
 
@@ -361,7 +410,7 @@ final class ProcessManager implements Service {
 
 		properties.put(HR_HOSTNAME, clusterContext.getInetSocketAddress().getHostName());
 
-		// add properties specified in TaskDescriptor
+		// add properties specified in the TaskDescriptor
 		TaskDescriptor td = taskEntry.getTaskDescriptor();
 		if (td.isSetProperties() && td.getProperties().isSetProperty()) {
 			for (TaskProperty property : td.getProperties().getProperty()) {
@@ -374,18 +423,13 @@ final class ProcessManager implements Service {
 	private File createTaskDir(TaskEntry taskEntry) {
 		String taskDirName = taskEntry.getTaskDescriptor().getName() + "_" + taskEntry.getId();
 		File taskDir = new File(hostInfo.getWorkingDirectory(), taskDirName);
+		// TODO check return value
 		taskDir.mkdirs();
 		return taskDir;
 	}
 
 	private TaskEntry loadTask(String taskId) {
 		return tasks.getTask(taskId);
-	}
-
-	private void changeTaskStateTo(TaskEntry taskEntry, TaskState state) {
-		String logMsgTemplate = "State of task '%s' has been changed to '%s'.";
-		log.info(String.format(logMsgTemplate, taskEntry.getId(), state));
-		tasks.updateTaskState(taskEntry, state, logMsgTemplate, taskEntry.getId(), getNodeId());
 	}
 
 	/**
@@ -470,8 +514,8 @@ final class ProcessManager implements Service {
 
 	/** Poison message for the task action thread */
 	private static class PoisonMessage extends BaseMessage {
-		public PoisonMessage(String senderId, String recieverId) {
-			super(senderId, recieverId);
+		public PoisonMessage(String senderId, String receiverId) {
+			super(senderId, receiverId);
 		}
 	}
 }

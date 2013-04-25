@@ -144,6 +144,16 @@ class ClusterMode extends AbstractMode {
 				out.println("Name: " + entry.getTaskDescriptor().getName());
 				out.println("BPK ID: " + entry.getTaskDescriptor().getBpkId());
 				out.println("State: " + entry.getState());
+				if (entry.isSetArgs()) {
+					out.println("Arguments: ");
+					for (String arg : entry.getArgs().getArg()) {
+						out.printf("\t%s\n", arg);
+					}
+				}
+
+				if (entry.isSetWorkingDirectory()) {
+					out.println("Working Directory: " + entry.getWorkingDirectory());
+				}
 				out.println("-----------------------------------");
 			}
 		} else if (args.length == 2) {

@@ -1,15 +1,17 @@
 package cz.cuni.mff.d3s.been.core.task;
 
-import cz.cuni.mff.d3s.been.core.jaxb.BindingComposer;
-import cz.cuni.mff.d3s.been.core.jaxb.XSD;
-import org.xml.sax.SAXException;
+import static cz.cuni.mff.d3s.been.core.jaxb.Factory.TASK;
 
-import javax.xml.bind.JAXBException;
 import java.io.StringWriter;
 import java.util.List;
 import java.util.UUID;
 
-import static cz.cuni.mff.d3s.been.core.jaxb.Factory.TASK;
+import javax.xml.bind.JAXBException;
+
+import org.xml.sax.SAXException;
+
+import cz.cuni.mff.d3s.been.core.jaxb.BindingComposer;
+import cz.cuni.mff.d3s.been.core.jaxb.XSD;
 
 /**
  * Convenient functions for TaskEntry.
@@ -33,7 +35,8 @@ public class TaskEntries {
 	 *          for which the new entry is created
 	 * @return initialized entry
 	 */
-	public static TaskEntry create(TaskDescriptor taskDescriptor, String taskContextId) {
+	public static TaskEntry create(TaskDescriptor taskDescriptor,
+			String taskContextId) {
 		if (taskContextId == null) {
 			throw new NullPointerException("Task context ID cannot be null.");
 		}
@@ -102,7 +105,7 @@ public class TaskEntries {
 	 *           if the transition to a new state is illegal.
 	 */
 	public static void setState(TaskEntry entry, TaskState newState,
-			String reasonFormat, Object... reasonArgs) throws IllegalArgumentException {
+			String reasonFormat, Object... reasonArgs) throws IllegalStateException {
 		TaskState oldState = entry.getState();
 
 		if (oldState == null || !oldState.canChangeTo(newState)) {
@@ -116,15 +119,14 @@ public class TaskEntries {
 		entry.setState(newState);
 	}
 
-
 	/**
-	 *
+	 * 
 	 * Returns collection of transition taken by a {@link TaskEntry}.
-	 *
+	 * 
 	 * @param entry
 	 * @return mutable list of transitions
-	 *
-	 * TODO: sixtm make it imutable/collection
+	 * 
+	 *         TODO: sixtm make it imutable/collection
 	 */
 	public static List<StateChangeEntry> getStateChangeEntries(TaskEntry entry) {
 		if (!entry.isSetStateChangeLog()) {
@@ -136,14 +138,14 @@ public class TaskEntries {
 
 	/**
 	 * Creates StateChangeEntry.
-	 *
+	 * 
 	 * @param state
 	 * @param reasonFormat
 	 * @param reasonArgs
 	 * @return
 	 */
 	private static StateChangeEntry createStateChangeEntry(TaskState state,
-														   String reasonFormat, Object... reasonArgs) {
+			String reasonFormat, Object... reasonArgs) {
 		StateChangeEntry logEntry = TASK.createStateChangeEntry();
 		logEntry.setState(state);
 		logEntry.setReason(String.format(reasonFormat, reasonArgs));
