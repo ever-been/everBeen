@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+
+<html t:type="layout" xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd">
+
+<t:form t:id="webSocketForm">
+    <t:textfield value="webSocketFormMessage"></t:textfield>
+    <t:submit></t:submit>
+
+</t:form>
+
+</html>
