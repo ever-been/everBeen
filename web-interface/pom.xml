@@ -99,6 +99,12 @@
             <version>1.0-b08</version>
         </dependency>
 
+        <dependency>
+            <groupId>cz.cuni.mff.d3s.been</groupId>
+            <artifactId>been-api</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
     </dependencies>
 
     <build>

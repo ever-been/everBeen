@@ -9,6 +9,7 @@ import com.hazelcast.core.IMap;
 /**
  * @author Martin Sixta
  */
+/*FIXME - move to tests*/
 public class Test {
 	public static void main(String[] args) {
 		IMap<String, Serializable> aMap = Hazelcast.getMap("mymap");
