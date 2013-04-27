@@ -3,12 +3,20 @@
 <html t:type="layout" section="tasks"
       xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd" xmlns:p="tapestry:parameter">
 
-
-<t:grid source="tasks" row="task" inPlace="true">
-	<p:idCell>
-		<t:pagelink page="task" context="task.id">${task.id}</t:pagelink>
-	</p:idCell>
-</t:grid>
-
+	<t:grid source="tasks" row="task" inPlace="true" include="id,runtimeId,taskContextId,state" add="name"
+			reorder="id,name,state,runtimeId,taskContextId">
+		<p:idCell>
+			<t:pagelink page="task" context="task.id">${task.id}</t:pagelink>
+		</p:idCell>
+		<p:taskContextIdCell>
+			<t:pagelink page="context" context="task.taskContextId">${task.taskContextId}</t:pagelink>
+		</p:taskContextIdCell>
+		<p:runtimeIdCell>
+			<t:pagelink page="runtime" context="task.runtimeId">${task.runtimeId}</t:pagelink>
+		</p:runtimeIdCell>
+		<p:nameCell>
+			${task.taskDescriptor.name}
+		</p:nameCell>
+	</t:grid>
 
 </html>

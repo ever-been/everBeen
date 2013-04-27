@@ -73,6 +73,7 @@ public class TaskContexts {
 			entriesToSubmit.add(taskEntry);
 		}
 
+		taskContextEntry.setContextState(TaskContextState.RUNNING);
 		getTaskContextsMap().put(taskContextEntry.getId(), taskContextEntry);
 
 		for (TaskEntry taskEntry : entriesToSubmit) {

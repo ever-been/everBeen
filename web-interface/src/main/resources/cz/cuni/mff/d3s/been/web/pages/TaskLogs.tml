@@ -3,9 +3,7 @@
 <html t:type="layout" section="tasks"
       xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd" xmlns:p="tapestry:parameter">
 
-<t:beandisplay object="task">
-</t:beandisplay>
-
-<t:pagelink page="tasklogs" context="task.id">show logs</t:pagelink>
+	<t:grid source="logs" row="log" inPlace="true">
+	</t:grid>
 
 </html>
