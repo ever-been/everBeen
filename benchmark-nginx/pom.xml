@@ -30,40 +30,6 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.4</version>
-				<executions>
-					<execution>
-						<id>default-jar</id>
-						<phase>none</phase>
-					</execution>
-					<execution>
-						<id>exec1</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-						<configuration>
-							<finalName>nginx-server-0.0.1</finalName>
-							<archive>
-								<manifest>
-									<mainClass>cz.cuni.mff.d3s.been.nginx.NginxServerTask</mainClass>
-								</manifest>
-							</archive>
-						</configuration>
-					</execution>
-					<execution>
-						<id>exec2</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-						<configuration>
-							<finalName>nginx-client-0.0.1</finalName>
-							<archive>
-								<manifest>
-									<mainClass>cz.cuni.mff.d3s.been.nginx.NginxClientTask</mainClass>
-								</manifest>
-							</archive>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 
 			<plugin>
@@ -72,40 +38,14 @@
 				<version>3.0.0</version>
 				<executions>
 					<execution>
-						<id>exec1</id>
 						<goals>
 							<goal>buildpackage</goal>
 						</goals>
-						<configuration>
-							<humanName>Nginx Benchmark Server Task</humanName>
-							<runtime>java</runtime>
-							<packageJarFile>target/nginx-server-0.0.1.jar</packageJarFile>
-							<filesToArchive></filesToArchive>
-							<bpkDependencies></bpkDependencies>
-							<groupId>cz.cuni.mff.d3s.been.nginx</groupId>
-							<bpkId>nginx-server</bpkId>
-							<version>0.0.1</version>
-							<finalName>nginx-server-0.0.1</finalName>
-						</configuration>
-					</execution>
-					<execution>
-						<id>exec2</id>
-						<goals>
-							<goal>buildpackage</goal>
-						</goals>
-						<configuration>
-							<humanName>Nginx Benchmark Client Task</humanName>
-							<runtime>java</runtime>
-							<packageJarFile>target/nginx-client-0.0.1.jar</packageJarFile>
-							<filesToArchive></filesToArchive>
-							<bpkDependencies></bpkDependencies>
-							<groupId>cz.cuni.mff.d3s.been.nginx</groupId>
-							<bpkId>nginx-client</bpkId>
-							<version>0.0.1</version>
-							<finalName>nginx-client-0.0.1</finalName>
-						</configuration>
 					</execution>
 				</executions>
+				<configuration>
+					<mainClass>cz.cuni.mff.d3s.been.taskapi.TaskRunner</mainClass>
+				</configuration>
 			</plugin>
 
 		</plugins>

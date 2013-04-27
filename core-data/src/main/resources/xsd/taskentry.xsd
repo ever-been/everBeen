@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!--suppress XmlUnusedNamespaceDeclaration -->
 <xs:schema
 		xmlns="http://been.d3s.mff.cuni.cz/taskentry"
 		targetNamespace="http://been.d3s.mff.cuni.cz/taskentry"
@@ -20,7 +21,7 @@
 	<xs:element name="id" type="xs:string"/>
 	<xs:element name="taskContextId" type="xs:string" default=""/>
 	<xs:element name="ownerId" type="xs:string"/>
-	<xs:element name="runtimeId" type="xs:string" />
+	<xs:element name="runtimeId" type="xs:string"/>
 
 	<xs:element name="state" type="xs:string">
 		<xs:annotation>
@@ -138,7 +139,9 @@
 					<xs:annotation>
 						<xs:appinfo>
 							<jaxb:property>
-								<jaxb:javadoc>Exit code of the task. The value has meaning only if task ends up in TaskState.FINISHED</jaxb:javadoc>
+								<jaxb:javadoc>Exit code of the task. The value has meaning only if task ends up in
+									TaskState.FINISHED
+								</jaxb:javadoc>
 							</jaxb:property>
 						</xs:appinfo>
 					</xs:annotation>
@@ -154,7 +157,7 @@
 					</xs:annotation>
 				</xs:element>
 
-				<xs:element ref="taskentry:stateChangeLog"  minOccurs="0" maxOccurs="1">
+				<xs:element ref="taskentry:stateChangeLog" minOccurs="0" maxOccurs="1">
 					<xs:annotation>
 						<xs:appinfo>
 							<jaxb:property>
@@ -162,6 +165,32 @@
 							</jaxb:property>
 						</xs:appinfo>
 					</xs:annotation>
+				</xs:element>
+
+				<xs:element name="workingDirectory" type="xs:string" minOccurs="0" maxOccurs="1">
+					<xs:annotation>
+						<xs:appinfo>
+							<jaxb:property>
+								<jaxb:javadoc>Working directory of the task.</jaxb:javadoc>
+							</jaxb:property>
+						</xs:appinfo>
+					</xs:annotation>
+				</xs:element>
+
+				<xs:element name="args" minOccurs="0" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="arg" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:appinfo>
+										<jaxb:property>
+											<jaxb:javadoc>Argument of a task</jaxb:javadoc>
+										</jaxb:property>
+									</xs:appinfo>
+								</xs:annotation>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
 				</xs:element>
 
 			</xs:all>

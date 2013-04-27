@@ -3,6 +3,7 @@ package cz.cuni.mff.d3s.been.bpkplugin;
 import static cz.cuni.mff.d3s.been.bpk.BpkNames.FILES_DIR;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -10,11 +11,7 @@ import java.util.List;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.logging.Log;
 
-import cz.cuni.mff.d3s.been.bpk.ArtifactIdentifier;
-import cz.cuni.mff.d3s.been.bpk.BpkArtifacts;
-import cz.cuni.mff.d3s.been.bpk.BpkNames;
-import cz.cuni.mff.d3s.been.bpk.JavaRuntime;
-import cz.cuni.mff.d3s.been.bpk.ObjectFactory;
+import cz.cuni.mff.d3s.been.bpk.*;
 
 /**
  * 
@@ -37,6 +34,14 @@ class JavaGenerator extends GeneratorImpl {
 			result.append("parameter 'packageJarFile' must not be null \n");
 		} else if (!config.packageJarFile.exists()) {
 			result.append(String.format("file '%s' specified in parameter 'packageJarFile' does not exists \n", config.packageJarFile));
+		}
+
+		try {
+			config.mainClass = (config.mainClass == null
+					? MainClassExtractor.getMainClass(config.packageJarFile.toPath())
+					: config.mainClass);
+		} catch (IOException e) {
+			throw new ConfigurationException(String.format("Invalid configuration: ", e.getMessage()), e);
 		}
 
 		if (config.mainClass == null) {

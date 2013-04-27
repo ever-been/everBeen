@@ -3,13 +3,12 @@ package cz.cuni.mff.d3s.been.task;
 import static cz.cuni.mff.d3s.been.core.task.TaskState.SCHEDULED;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
-import java.util.ConcurrentModificationException;
+import java.util.concurrent.TimeoutException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hazelcast.core.IMap;
-import com.hazelcast.core.Transaction;
 
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.cluster.context.Tasks;
@@ -25,7 +24,25 @@ import cz.cuni.mff.d3s.been.core.task.TaskState;
  */
 final class ScheduleTaskAction implements TaskAction {
 
+	public static final String TM_LOCK_TIMEOUT = "been.schedule.timeout";
+
+	private static final int LOCK_TIMEOUT;
+
 	private static Logger log = LoggerFactory.getLogger(ScheduleTaskAction.class);
+
+	// really?
+	static {
+		Integer timeout = 20;
+		String property = System.getProperty(TM_LOCK_TIMEOUT, timeout.toString());
+
+		try {
+			timeout = Integer.valueOf(property);
+		} catch (NumberFormatException e) {
+			log.warn("{} expects a positive integer", TM_LOCK_TIMEOUT);
+		}
+
+		LOCK_TIMEOUT = timeout;
+	}
 
 	private final ClusterContext ctx;
 	private TaskEntry entry;
@@ -47,77 +64,57 @@ final class ScheduleTaskAction implements TaskAction {
 
 		log.info("Received new task " + taskId);
 
-		// TODO explain how/why concurrent modification detection works
-		// TODO write down that assertClusterEqual does not work with ttl ...
-
-		Transaction txn = null;
+		String id = entry.getId();
 
 		try {
 
 			// 1) Find suitable Host Runtime
 			String receiverId = findHostRuntime(entry);
+			TaskEntry entryCopy = map.tryLockAndGet(id, LOCK_TIMEOUT, SECONDS);
 
-			String id = entry.getId();
-
-			TaskEntry entryCopy = map.get(id);
-
-			assertEqual(entry, entryCopy);
+			if (!areEqual(entry, entryCopy)) {
+				//
+				map.unlock(id);
+				return;
+			}
 
 			// 2) Change task state to SCHEDULED and send message to the Host Runtime
-			txn = ctx.getTransaction();
 
-			{
-				txn.begin(); // BEGIN TRANSACTION -----------------------------
+			// Claim ownership of the node
+			entry.setOwnerId(nodeId);
 
-				// Claim ownership of the node
-				entry.setOwnerId(nodeId);
+			// Update content of the entry
+			TaskEntries.setState(entry, SCHEDULED, "Task scheduled on %s", receiverId);
 
-				// Update content of the entry
-				TaskEntries.setState(entry, SCHEDULED, "Task scheduled on %s", receiverId);
+			entry.setRuntimeId(receiverId);
 
-				entry.setRuntimeId(receiverId);
+			// Update entry
+			tasks.putTask(entry, 60, SECONDS);
 
-				// Update entry
-				TaskEntry oldValue = tasks.putTask(entry, 30, SECONDS);
-
-				// Make sure there was no concurrent modification
-				assertEqual(entryCopy, oldValue);
-
-				txn.commit(); // END TRANSACTION ------------------------------
-			}
+			map.unlock(id);
 
 			// Send a message to the runtime
 			ctx.getTopicUtils().publish(RUNTIME_TOPIC, newRunTaskMessage(entry));
 
-			log.info("Task " + taskId + " scheduled on " + receiverId);
+			log.info("Task %s scheduled on %s", taskId, receiverId);
 
 		} catch (NoRuntimeFoundException e) {
-			// TODO: Abort the task ...
 			String msg = String.format("No runtime found for task %s", entry.getId());
 			log.warn(msg, e);
 
 			abortTask(msg);
-
-		} catch (Throwable e) {
-			String msg = String.format("Rollback while scheduling task %s", taskId);
-			log.error(msg, e);
-
-			if (txn != null) {
-				try {
-					txn.rollback();
-				} catch (Throwable t) {
-					//quell
-				};
-			}
-
-			abortTask(msg);
+		} catch (TimeoutException e) {
+			log.warn("Could not lock task {} in {}. Will try later if needed.", id, LOCK_TIMEOUT);
+			// will get to it later
 		}
 
 	}
 
 	private void abortTask(String msg) {
+		// TODO this needs more careful approach!
 		log.warn("Aborting task {}", entry.getId());
-		ctx.getTasksUtils().updateTaskState(entry, TaskState.ABORTED, msg);
+		TaskEntries.setState(entry, TaskState.ABORTED, msg);
+		ctx.getTasksUtils().putTask(entry);
 	}
 
 	private String findHostRuntime(final TaskEntry entry) throws NoRuntimeFoundException {
@@ -143,10 +140,7 @@ final class ScheduleTaskAction implements TaskAction {
 		return new RunTaskMessage(senderId, receiverId, taskId);
 	}
 
-	private void assertEqual(TaskEntry entry1, TaskEntry entry2) {
-		if (!entry1.equals(entry2)) {
-			// TODO msg
-			throw new ConcurrentModificationException("Task modified");
-		}
+	private boolean areEqual(TaskEntry entry1, TaskEntry entry2) {
+		return entry1.equals(entry2);
 	}
 }

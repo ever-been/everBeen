@@ -19,27 +19,23 @@ final class MapGetAction implements Action {
 
 	@Override
 	public Reply goGetSome() {
-		String[] args;
-
-		try {
-			args = MapActionUtils.parseSelector(request.getSelector());
-		} catch (Exception e) {
-			return Replies.createErrorReply(e.getMessage());
-		}
-
-		String map = args[0];
-		String key = args[1];
+		String map = Actions.checkpointMapNameForRequest(request);
+		String key = request.getSelector();
 
 		// TODO later migh be a good idea to add it back
 		//if (!ctx.containsInstance(Instance.InstanceType.MAP, map)) {
 		//return Replies.createErrorReply("No such map %s", map);
 		//}
 
+		if (key == null || key.isEmpty()) {
+			return Replies.createErrorReply("Key must be non-empty");
+		}
+
 		Object mapValue = ctx.getMap(map).get(key);
 
 		String replyValue;
 		if (mapValue == null) {
-			replyValue = "";
+			replyValue = null;
 		} else {
 			replyValue = mapValue.toString();
 		}

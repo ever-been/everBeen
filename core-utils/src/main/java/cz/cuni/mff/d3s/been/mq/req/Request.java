@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.mq.req;
 
+import cz.cuni.mff.d3s.been.core.TaskPropertyNames;
 import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
 
 /**
@@ -10,6 +11,9 @@ public final class Request {
 	private String selector;
 	private String value;
 	private long timeout;
+
+	private String taskId;
+	private String taskContextId;
 
 	public Request() {
 
@@ -37,6 +41,11 @@ public final class Request {
 		this.selector = selector;
 		this.value = value;
 		this.timeout = timeout;
+	}
+
+	public void fillInTaskAndContextId() {
+		this.taskId = System.getenv(TaskPropertyNames.TASK_ID);
+		this.taskContextId = System.getenv(TaskPropertyNames.TASK_CONTEXT_ID);
 	}
 
 	public String toJson() {
@@ -85,5 +94,21 @@ public final class Request {
 			timeout = 0;
 		}
 		this.timeout = timeout;
+	}
+
+	public String getTaskId() {
+		return taskId;
+	}
+
+	public void setTaskId(String taskId) {
+		this.taskId = taskId;
+	}
+
+	public String getTaskContextId() {
+		return taskContextId;
+	}
+
+	public void setTaskContextId(String taskContextId) {
+		this.taskContextId = taskContextId;
 	}
 }

@@ -25,8 +25,12 @@ public class MapGetActionTest extends Assert {
 	private static final String KEY1 = "key1";
 	private static final String VALUE1 = "value1";
 
-	private static final String MAP = "map1";
 	private static final String SELECTOR_SEPARATOR = "#";
+
+	private static final String TASK_ID = "abc-def";
+	private static final String CONTEXT_ID = "fed-cba";
+
+	private static final String MAP = String.format("checkpointmap_%s", CONTEXT_ID);
 
 	private static HazelcastInstance hazelcastInstance;
 	private static ClusterContext ctx;
@@ -59,19 +63,21 @@ public class MapGetActionTest extends Assert {
 
 	@Test
 	public void testNonExistingKey() {
-		Request request = new Request(RequestType.GET, getSelector("nonExistingKey"));
+		Request request = new Request(RequestType.GET, "nonExistingKey");
+		fillIds(request);
 		Action action = Actions.createAction(request, ctx);
 
 		Reply reply = action.goGetSome();
 
 		assertSame(ReplyType.OK, reply.getReplyType());
-		assertSame("", reply.getValue());
+		assertSame(null, reply.getValue());
 	}
 
 	@Test
 	public void testExistingKey() {
 		ctx.getMap(MAP).put(KEY1, VALUE1);
-		Request request = new Request(RequestType.GET, getSelector(KEY1));
+		Request request = new Request(RequestType.GET, KEY1);
+		fillIds(request);
 		Action action = Actions.createAction(request, ctx);
 
 		Reply reply = action.goGetSome();
@@ -81,38 +87,10 @@ public class MapGetActionTest extends Assert {
 	}
 
 	@Test
-	public void testMalformedSelectorNoSeparator() {
-		Request request = new Request(RequestType.GET, "testMapkey1");
-		Action action = Actions.createAction(request, ctx);
-
-		Reply reply = action.goGetSome();
-
-		assertSame(ReplyType.ERROR, reply.getReplyType());
-	}
-
-	@Test
 	public void testMalformedSelectorNull() {
-		Request request = new Request(RequestType.GET, null);
-		Action action = Actions.createAction(request, ctx);
+		Request request = new Request(RequestType.GET, "");
+		fillIds(request);
 
-		Reply reply = action.goGetSome();
-
-		assertSame(ReplyType.ERROR, reply.getReplyType());
-	}
-
-	@Test
-	public void testMalformedSelectorNoMap() {
-		Request request = new Request(RequestType.GET, concat("", KEY1));
-		Action action = Actions.createAction(request, ctx);
-
-		Reply reply = action.goGetSome();
-
-		assertSame(ReplyType.ERROR, reply.getReplyType());
-	}
-
-	@Test
-	public void testMalformedSelectorNoKey() {
-		Request request = new Request(RequestType.GET, concat(MAP, ""));
 		Action action = Actions.createAction(request, ctx);
 
 		Reply reply = action.goGetSome();
@@ -130,6 +108,11 @@ public class MapGetActionTest extends Assert {
 
 	private String getSelector(String key) {
 		return concat(MAP, key);
+	}
+
+	private void fillIds(Request request) {
+		request.setTaskId(TASK_ID);
+		request.setTaskContextId(CONTEXT_ID);
 	}
 
 	private static Config buildConfig(boolean multicastEnabled) {

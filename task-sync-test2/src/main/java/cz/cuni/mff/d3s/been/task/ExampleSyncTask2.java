@@ -28,7 +28,7 @@ public class ExampleSyncTask2 extends Task {
 	}
 
 	@Override
-	public void run() {
+	public void run(String[] args) {
 		Thread setter = new Thread() {
 			@Override
 			public void run() {

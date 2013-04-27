@@ -21,7 +21,7 @@ final class LatchSetAction implements Action {
 
 	@Override
 	public Reply goGetSome() {
-		String latchName = request.getSelector();
+		String latchName = Actions.latchNameForRequest(request);
 
 		int count;
 		try {

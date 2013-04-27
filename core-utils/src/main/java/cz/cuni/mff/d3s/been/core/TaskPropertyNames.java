@@ -9,10 +9,10 @@ package cz.cuni.mff.d3s.been.core;
  */
 public class TaskPropertyNames {
 
-    /**
-     * port used for checkpoint synchronization
-     */
-    public static final String REQUEST_PORT = "REQUEST_PORT";
+	/**
+	 * port used for checkpoint synchronization
+	 */
+	public static final String REQUEST_PORT = "been.task.hr.request.port";
 
 	/**
 	 * System property with Task ID

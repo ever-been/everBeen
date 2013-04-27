@@ -1,0 +1,196 @@
+package cz.cuni.mff.d3s.been.hostruntime.task;
+
+import static cz.cuni.mff.d3s.been.core.task.TaskState.ACCEPTED;
+
+import java.util.Collection;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.hazelcast.core.IMap;
+
+import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
+import cz.cuni.mff.d3s.been.cluster.context.Tasks;
+import cz.cuni.mff.d3s.been.core.task.TaskEntries;
+import cz.cuni.mff.d3s.been.core.task.TaskEntry;
+import cz.cuni.mff.d3s.been.core.task.TaskState;
+import cz.cuni.mff.d3s.been.debugassistant.DebugAssistant;
+
+/**
+ * Utility class which encapsulate manipulation of {@link TaskEntry} of a given
+ * task.
+ * 
+ * @author Martin Sixta
+ */
+public class TaskHandle {
+
+	/** logging */
+	private static final Logger log = LoggerFactory.getLogger(TaskHandle.class);
+
+	/** the entry to take care of */
+	private final TaskEntry entry;
+
+	/** connection to the cluster */
+	private final ClusterContext ctx;
+
+	/** The map with task entries. */
+	private final IMap<String, TaskEntry> map;
+
+	/** ID of the task */
+	private final String id;
+
+	/** Tasks utility functions */
+	private final Tasks tasks;
+
+	/**
+	 * Creates new handle.
+	 * 
+	 * @param entry
+	 *          entry to manipulate upon
+	 * @param ctx
+	 *          connection to the cluster
+	 */
+	public TaskHandle(TaskEntry entry, ClusterContext ctx) {
+		this.entry = entry;
+		this.ctx = ctx;
+		this.id = entry.getId();
+		this.map = ctx.getTasksUtils().getTasksMap();
+		this.tasks = ctx.getTasksUtils();
+	}
+
+	/**
+	 * 
+	 * Sets state of the entry to ACCEPTED.
+	 * 
+	 * The change is cluster visible.
+	 * 
+	 */
+	public void setAccepted() throws IllegalStateException {
+		updateEntry(ACCEPTED, "Task has been accepted on %s", entry.getRuntimeId());
+	}
+
+	/**
+	 * 
+	 * Sets state of the entry to RUNNING.
+	 * 
+	 * The change is cluster visible.
+	 * 
+	 * @param process
+	 *          where to get runtime information to be updated in the entry
+	 */
+	public void setRunning(TaskProcess process) throws IllegalStateException {
+		entry.setWorkingDirectory(process.getWorkingDirectory());
+		setTaskEntryArgs(process.getArgs());
+		updateEntry(TaskState.RUNNING, "Task is going to be run on %s", entry.getRuntimeId());
+	}
+
+	/**
+	 * Sets state of the entry to FINISHED.
+	 * 
+	 * The change is cluster visible.
+	 * 
+	 * @param exitValue
+	 *          the exit value of the task
+	 */
+	public void setFinished(int exitValue) throws IllegalStateException {
+		entry.setExitCode(exitValue);
+		updateEntry(TaskState.FINISHED, "Task has finished with exit value %d", exitValue);
+	}
+
+	/**
+	 * Sets state of the entry to ABORTED
+	 * 
+	 * @param format
+	 *          formatted message of why the change happened
+	 * @param args
+	 *          arguments for the formatted message
+	 */
+	public void setAborted(String format, Object... args) throws IllegalStateException {
+		updateEntry(TaskState.ABORTED, format, args);
+	}
+
+	/**
+	 * Updates the entry in the cluster.
+	 * 
+	 * @param state
+	 *          new state of the task
+	 * @param format
+	 *          formatted message of why the change happened
+	 * @param args
+	 *          arguments for the formatted message
+	 * 
+	 * @throws IllegalStateException
+	 *           if the current entry has been concurrently modified
+	 */
+	private void updateEntry(TaskState state, String format, Object... args) throws IllegalStateException {
+
+		map.lock(id);
+
+		try {
+			TaskEntry clusterEntry = map.get(id);
+
+			if (clusterEntry == null) {
+				String msg = String.format("No such task entry: %s", id);
+				throw new IllegalStateException(msg);
+			}
+
+			if (!isSame(clusterEntry)) {
+				String msg = String.format("Task entry '%s' concurrently modified.", id);
+				throw new IllegalStateException(msg);
+			}
+
+			// change state of the entry
+			TaskEntries.setState(entry, state, format, args);
+
+			tasks.putTask(entry);
+		} finally {
+			map.unlock(id);
+		}
+
+		log.debug("State of task {} has been changed to {}", id, state.toString());
+
+	}
+
+	/**
+	 * Checks whether the current entry is still valid.
+	 * 
+	 * @param clusterEntry
+	 *          entry to compare against
+	 * @return true if the current entry has not been modified from the outside,
+	 *         false otherwise
+	 */
+	private boolean isSame(TaskEntry clusterEntry) {
+		boolean isScheduledHere = entry.getRuntimeId().equals(clusterEntry.getRuntimeId());
+		boolean sameState = (entry.getState() == clusterEntry.getState());
+		boolean sameContext = (entry.getTaskContextId().equals(clusterEntry.getTaskContextId()));
+
+		return (isScheduledHere && sameState && sameContext);
+	}
+
+	/**
+	 * 
+	 * Adds necessary debug information to the cluster.
+	 * 
+	 * @param debugPort
+	 *          debug port
+	 * @param suspended
+	 *          whether the task has been started suspended
+	 */
+	public void setDebug(int debugPort, boolean suspended) {
+		DebugAssistant debugAssistant = new DebugAssistant(ctx);
+		debugAssistant.addSuspendedTask(id, debugPort, suspended);
+	}
+
+	/**
+	 * Adds command line arguments information to the entry
+	 * 
+	 * @param taskArguments
+	 *          task command line arguments
+	 */
+	private void setTaskEntryArgs(Collection<String> taskArguments) {
+		TaskEntry.Args args = new TaskEntry.Args();
+		args.getArg().addAll(taskArguments);
+		entry.setArgs(args);
+	}
+
+}

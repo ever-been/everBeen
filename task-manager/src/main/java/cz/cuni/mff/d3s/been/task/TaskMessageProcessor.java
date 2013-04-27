@@ -72,7 +72,7 @@ final class TaskMessageProcessor extends Thread {
 	 */
 	public void poison() {
 		try {
-			IMessageSender sender = messageQueues.createSender(ACTION_QUEUE_NAME);
+			IMessageSender<TaskMessage> sender = messageQueues.createSender(ACTION_QUEUE_NAME);
 			sender.send(new PoisonMessage());
 			sender.close();
 			this.join();

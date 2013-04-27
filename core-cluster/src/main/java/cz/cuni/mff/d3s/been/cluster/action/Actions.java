@@ -36,4 +36,12 @@ public class Actions {
 				return new ErrorAction(msg);
 		}
 	}
+
+	public static String latchNameForRequest(Request request) {
+		return "latch_" + request.getTaskContextId() + "_" + request.getSelector();
+	}
+
+	public static String checkpointMapNameForRequest(Request request) {
+		return "checkpointmap_" + request.getTaskContextId();
+	}
 }

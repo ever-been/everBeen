@@ -3,11 +3,12 @@
 				groupId="cz.cuni.mff.d3s.been" bpkId="task-test" version="3.0.0"
 				name="echo">
 	<hostRuntimes>
-		
+
 	</hostRuntimes>
 
+
 	<debug>
-		<mode>connect</mode>
+		<mode>listen</mode>
 		<host>localhost</host>
 		<port>5006</port>
 		<suspend>true</suspend>

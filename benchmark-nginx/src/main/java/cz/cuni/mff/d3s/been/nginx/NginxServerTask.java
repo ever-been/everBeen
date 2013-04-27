@@ -1,27 +1,22 @@
 package cz.cuni.mff.d3s.been.nginx;
 
-import cz.cuni.mff.d3s.been.taskapi.Requestor;
-import cz.cuni.mff.d3s.been.taskapi.Task;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
-import java.nio.file.Files;
+import cz.cuni.mff.d3s.been.taskapi.Requestor;
+import cz.cuni.mff.d3s.been.taskapi.Task;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Kuba
- * Date: 07.04.13
- * Time: 18:43
- * To change this template use File | Settings | File Templates.
+ * Created with IntelliJ IDEA. User: Kuba Date: 07.04.13 Time: 18:43 To change
+ * this template use File | Settings | File Templates.
  */
 public class NginxServerTask extends Task {
 
 	private static final Logger log = LoggerFactory.getLogger(NginxServerTask.class);
-
-	public static void main(String[] args) {
-		new NginxServerTask().doMain(args);
-	}
 
 	private File workingDirectory = new File(".");
 
@@ -29,9 +24,8 @@ public class NginxServerTask extends Task {
 		String svnPath = this.getProperty("svnPath");
 		int currentRevision = Integer.parseInt(this.getProperty("revision"));
 
-		MyUtils.exec(".", "svn", new String[] {
-				"checkout", "-r", Integer.toString(currentRevision), svnPath, "nginx"
-		});
+		MyUtils.exec(".", "svn", new String[] { "checkout", "-r",
+				Integer.toString(currentRevision), svnPath, "nginx" });
 	}
 
 	private void buildSources() {
@@ -73,7 +67,8 @@ public class NginxServerTask extends Task {
 	}
 
 	private void shutdownServer() {
-		MyUtils.exec("./nginx", "objs/nginx", new String[] { "-p", ".", "-s", "stop" });
+		MyUtils.exec("./nginx", "objs/nginx", new String[] { "-p", ".", "-s",
+				"stop" });
 		try {
 			runnerThread.join();
 		} catch (InterruptedException e) {
@@ -82,7 +77,7 @@ public class NginxServerTask extends Task {
 	}
 
 	@Override
-	public void run() {
+	public void run(String[] args) {
 		Requestor requestor = new Requestor();
 		try {
 			log.info("Nginx Server Task started.");

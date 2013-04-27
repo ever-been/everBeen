@@ -2,7 +2,9 @@ package cz.cuni.mff.d3s.been.hostruntime.task;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -33,7 +35,7 @@ public class TaskProcess implements AutoCloseable {
 	private final Map<String, String> environment;
 
 	/** std/err output stream handlers for the process */
-	private final ExecuteStreamHandler streamhandler;
+	private final ExecuteStreamHandler streamHandler;
 
 	/** process timeout in seconds */
 	private long timeoutInMillis;
@@ -41,14 +43,10 @@ public class TaskProcess implements AutoCloseable {
 	/** long time run watchdog. */
 	private ExecuteWatchdog watchdog;
 
-	/**
-	 * All identifiers of Bpks needed by the process.
-	 */
+	/** all identifiers of Bpks needed by the process. */
 	private final Collection<BpkIdentifier> bkpDependencies;
 
-	/**
-	 * All identifiers of Artifacts needed by the process.
-	 */
+	/** All identifiers of Artifacts needed by the process. */
 	private final Collection<ArtifactIdentifier> artifactDependencies;
 
 	/** tells if manual shutdown has been requested */
@@ -65,7 +63,7 @@ public class TaskProcess implements AutoCloseable {
 	 *          environment variables for process to be set
 	 * @param artifactDownloader
 	 */
-	public TaskProcess(CmdLineBuilder cmdLineBuilder, Path wrkDir, Map<String, String> environment, ExecuteStreamHandler streamhandler, DependencyDownloader artifactDownloader)
+	public TaskProcess(CmdLineBuilder cmdLineBuilder, Path wrkDir, Map<String, String> environment, ExecuteStreamHandler streamHandler, DependencyDownloader artifactDownloader)
 			throws TaskException {
 		this.artifactDependencies = artifactDownloader.getArtifactDependencies();
 		this.bkpDependencies = artifactDownloader.getBkpDependencies();
@@ -75,8 +73,8 @@ public class TaskProcess implements AutoCloseable {
 			wrkDir.toFile().mkdirs();
 		}
 		this.environment = environment;
-		this.streamhandler = streamhandler;
-        this.watchdog = new ExecuteWatchdog(NO_TIMEOUT);
+		this.streamHandler = streamHandler;
+		this.watchdog = new ExecuteWatchdog(NO_TIMEOUT);
 	}
 
 	/**
@@ -104,7 +102,7 @@ public class TaskProcess implements AutoCloseable {
 		Executor executor = new DefaultExecutor();
 		executor.setWorkingDirectory(wrkDir.toFile());
 		executor.setWatchdog(watchdog);
-		executor.setStreamHandler(streamhandler);
+		executor.setStreamHandler(streamHandler);
 		// FIXME issue #84 - we should be able to set expected process exit values
 
 		return executor;
@@ -128,9 +126,9 @@ public class TaskProcess implements AutoCloseable {
 	 */
 	private int start(Executor executor) throws TaskException {
 		try {
-			int exitValue = executor.execute(cmd, environment);
 
-			return exitValue;
+			return executor.execute(cmd, environment);
+
 		} catch (ExecuteException e) {
 			if (killed) {
 				throw new TaskException(String.format("Task has been killed with exit value %d", e.getExitValue()));
@@ -149,7 +147,7 @@ public class TaskProcess implements AutoCloseable {
 			throw new TaskException("Execution of task process failed", e);
 		} catch (Throwable t) {
 			// should not happen, but one never knows :)
-			throw new TaskException("Execution of task process failed from unknowh reason", t);
+			throw new TaskException("Execution of task process failed from unknown reason", t);
 		}
 	}
 
@@ -180,9 +178,73 @@ public class TaskProcess implements AutoCloseable {
 		return cmd.getDebugPort();
 	}
 
+	/**
+	 * Whether the process is started suspended.
+	 * 
+	 * This is currently supported only for JVM based processes.
+	 * 
+	 * @return whether the process is started suspended
+	 */
+	public boolean isSuspended() {
+		return cmd.isSuspended();
+	}
+
+	/**
+	 * 
+	 * Sets timeout for the process.
+	 * 
+	 * @param timeout
+	 *          timeout in seconds
+	 */
 	public void setTimeout(long timeout) {
 		timeoutInMillis = timeout <= 0 ? NO_TIMEOUT
 				: TimeUnit.SECONDS.toMillis(timeout);
-        this.watchdog = new ExecuteWatchdog(timeoutInMillis);
+		this.watchdog = new ExecuteWatchdog(timeoutInMillis);
+	}
+
+	/**
+	 * Returns task arguments including executable name.
+	 * 
+	 * @return task arguments including executable name
+	 */
+	public List<String> getArgs() {
+		return Arrays.asList(cmd.toStrings());
+
+	}
+
+	/**
+	 * Returns task's working directory.
+	 * 
+	 * @return task's working directory
+	 */
+	public String getWorkingDirectory() {
+		return wrkDir.toAbsolutePath().toString();
+	}
+
+	/**
+	 * Returns all BPK dependencies of the process
+	 * 
+	 * @return BPK dependencies of the process
+	 */
+	public Collection<BpkIdentifier> getBkpDependencies() {
+		return bkpDependencies;
+	}
+
+	/**
+	 * Returns all Artifact dependencies of the process
+	 * 
+	 * @return Artifact dependencies of the process
+	 */
+	public Collection<ArtifactIdentifier> getArtifactDependencies() {
+		return artifactDependencies;
+	}
+
+	/**
+	 * Returns environment properties of the process
+	 * 
+	 * @return environment properties of the process
+	 */
+	public Map<String, String> getEnvironmentProperties() {
+		return this.environment;
 	}
 }
