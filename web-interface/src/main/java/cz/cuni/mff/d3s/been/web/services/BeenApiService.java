@@ -10,11 +10,11 @@ import java.net.InetSocketAddress;
  * Date: 4/27/13
  * Time: 11:48 AM
  */
-public interface BeenApiService extends BeenApi {
+public interface BeenApiService {
 
 
     public boolean isConnected();
 
-    public boolean connect(InetSocketAddress address);
+    public boolean connect(String host, int port, String groupName, String groupPassword);
 
 }

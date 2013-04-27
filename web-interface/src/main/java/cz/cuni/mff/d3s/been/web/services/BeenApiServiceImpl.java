@@ -2,6 +2,7 @@ package cz.cuni.mff.d3s.been.web.services;
 
 import cz.cuni.mff.d3s.been.api.BeenApi;
 import cz.cuni.mff.d3s.been.api.BeenApiImpl;
+import cz.cuni.mff.d3s.been.api.ServiceUnavailableException;
 
 import java.net.InetSocketAddress;
 
@@ -20,8 +21,15 @@ public class BeenApiServiceImpl implements BeenApiService {
     }
 
     @Override
-    public boolean connect(InetSocketAddress address) {
-        api = new BeenApiImpl(address);
+    public boolean connect(String host, int port, String groupName, String groupPassword) {
+        api = new BeenApiImpl(host, port, groupName, groupPassword);
         return true;
     }
+
+	public BeenApi getApi() {
+		if (! isConnected())
+			throw new ServiceUnavailableException("API is not connected.");
+
+		return api;
+	}
 }

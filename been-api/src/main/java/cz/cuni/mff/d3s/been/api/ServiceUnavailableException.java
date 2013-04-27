@@ -6,4 +6,7 @@ package cz.cuni.mff.d3s.been.api;
  * Time: 11:54 AM
  */
 public class ServiceUnavailableException extends RuntimeException {
+	public ServiceUnavailableException(String message) {
+		super(message);
+	}
 }
