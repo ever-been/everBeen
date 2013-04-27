@@ -94,12 +94,29 @@
 		</xs:complexType>
 	</xs:element>
 
+	<xs:element name="contextState" type="xs:string">
+		<xs:annotation>
+			<xs:appinfo>
+				<jaxb:property name="contextState">
+					<jaxb:baseType>
+						<jaxb:javaType
+								name="cz.cuni.mff.d3s.been.core.task.TaskContextState"
+								parseMethod="cz.cuni.mff.d3s.been.core.task.TaskContextState.valueOf"
+								printMethod="String.valueOf"
+								/>
+					</jaxb:baseType>
+				</jaxb:property>
+			</xs:appinfo>
+		</xs:annotation>
+	</xs:element>
+
 	<xs:element name="containedTask" type="xs:string"/>
 
 	<xs:element name="taskContextEntry">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element ref="tcd:id"/>
+				<xs:element ref="tcd:contextState"/>
 				<xs:element ref="tcd:taskContextDescriptor"/>
 				<xs:element ref="tcd:containedTask" minOccurs="0" maxOccurs="unbounded"/>
 			</xs:sequence>
