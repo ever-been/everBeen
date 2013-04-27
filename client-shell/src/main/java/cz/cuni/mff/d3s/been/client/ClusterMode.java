@@ -129,6 +129,9 @@ class ClusterMode extends AbstractMode {
 			for (RuntimeInfo runtime : runtimes) {
 				out.println("Runtime ID: " + runtime.getId());
 				out.println("Operating system: " + runtime.getOperatingSystem().getName());
+				out.printf("Exclusivity: %s\n", runtime.getExclusivity());
+				out.printf("Exclusive ID: %s\n", runtime.getExclusiveId());
+				out.printf("Tasks: %d\n", runtime.getTaskCount());
 				out.println("-----------------------------------");
 			}
 		}

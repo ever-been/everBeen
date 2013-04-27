@@ -6,23 +6,23 @@
 		elementFormDefault="unqualified"
 		attributeFormDefault="unqualified"
 		xmlns:runtimeinfo="http://been.d3s.mff.cuni.cz/runtimeinfo"
-        xmlns:hardwareinfo="http://been.d3s.mff.cuni.cz/hardwareinfo"
+		xmlns:hardwareinfo="http://been.d3s.mff.cuni.cz/hardwareinfo"
 		xmlns:xs="http://www.w3.org/2001/XMLSchema"
 		xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
 		xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
 		jaxb:extensionBindingPrefixes="xjc"
 		jaxb:version="2.0">
 
-    <xs:annotation>
-        <xs:appinfo>
-            <jaxb:globalBindings generateIsSetMethod="false">
-                <xjc:serializable uid="-9223372036854775808"/>
-                <xjc:superClass name="cz.cuni.mff.d3s.been.core.jaxb.AbstractSerializable"/>
-            </jaxb:globalBindings>
-        </xs:appinfo>
-    </xs:annotation>
+	<xs:annotation>
+		<xs:appinfo>
+			<jaxb:globalBindings generateIsSetMethod="false">
+				<xjc:serializable uid="-9223372036854775808"/>
+				<xjc:superClass name="cz.cuni.mff.d3s.been.core.jaxb.AbstractSerializable"/>
+			</jaxb:globalBindings>
+		</xs:appinfo>
+	</xs:annotation>
 
-    <xs:import schemaLocation="hardwareinfo.xsd" namespace="http://been.d3s.mff.cuni.cz/hardwareinfo"/>
+	<xs:import schemaLocation="hardwareinfo.xsd" namespace="http://been.d3s.mff.cuni.cz/hardwareinfo"/>
 
 	<xs:element name="id" type="xs:string">
 		<xs:annotation>
@@ -33,12 +33,14 @@
 			</xs:appinfo>
 		</xs:annotation>
 	</xs:element>
-	
+
 	<xs:element name="workingDirectory" type="xs:string">
 		<xs:annotation>
 			<xs:appinfo>
 				<jaxb:property>
-					<jaxb:javadoc>Host runtime working directory. Subworking directories for all tasks are created here.</jaxb:javadoc>
+					<jaxb:javadoc>Host runtime working directory. Subworking directories for all tasks are created
+						here.
+					</jaxb:javadoc>
 				</jaxb:property>
 			</xs:appinfo>
 		</xs:annotation>
@@ -53,91 +55,130 @@
 			</xs:appinfo>
 		</xs:annotation>
 	</xs:element>
-	
+
 	<xs:element name="host" type="xs:string">
 		<xs:annotation>
 			<xs:appinfo>
 				<jaxb:property>
-					<jaxb:javadoc>Host(IP/FQDN) on which the hazelcast instance for this HostRuntime is running.</jaxb:javadoc>
+					<jaxb:javadoc>Host(IP/FQDN) on which the hazelcast instance for this HostRuntime is running.
+					</jaxb:javadoc>
 				</jaxb:property>
 			</xs:appinfo>
 		</xs:annotation>
 	</xs:element>
 
+	<xs:element name="exclusivity" type="xs:string">
+		<xs:annotation>
+			<xs:appinfo>
+				<jaxb:property>
+					<jaxb:javadoc>Exclusivity of the Host Runtime.</jaxb:javadoc>
+				</jaxb:property>
+			</xs:appinfo>
+		</xs:annotation>
+	</xs:element>
+
+	<xs:element name="exclusiveId" type="xs:string" default="NON_EXCLUSIVE">
+		<xs:annotation>
+			<xs:appinfo>
+				<jaxb:property>
+					<jaxb:javadoc>ID of the exclusive context or task.</jaxb:javadoc>
+				</jaxb:property>
+			</xs:appinfo>
+		</xs:annotation>
+	</xs:element>
+
+	<xs:element name="taskCount" type="xs:int">
+		<xs:annotation>
+			<xs:appinfo>
+				<jaxb:property>
+					<jaxb:javadoc>ID of the exclusive context or task.</jaxb:javadoc>
+				</jaxb:property>
+			</xs:appinfo>
+		</xs:annotation>
+	</xs:element>
+
+
 	<xs:complexType name="java">
 		<xs:annotation>
 			<xs:appinfo>
 				<jaxb:class>
-					<jaxb:javadoc>A Java object stores information about vendor and version of JRE on target HostRuntime.</jaxb:javadoc>
+					<jaxb:javadoc>A Java object stores information about vendor and version of JRE on target
+						HostRuntime.
+					</jaxb:javadoc>
 				</jaxb:class>
 			</xs:appinfo>
 		</xs:annotation>
 		<xs:all>
 			<xs:element name="version" type="xs:string"/>
 			<xs:element name="vendor" type="xs:string"/>
-            <xs:element name="runtimeName" type="xs:string"/>
-            <xs:element name="VMVersion" type="xs:string"/>
-            <xs:element name="VMVendor" type="xs:string"/>
-            <xs:element name="runtimeVersion" type="xs:string"/>
-            <xs:element name="specificationVersion" type="xs:string"/>
+			<xs:element name="runtimeName" type="xs:string"/>
+			<xs:element name="VMVersion" type="xs:string"/>
+			<xs:element name="VMVendor" type="xs:string"/>
+			<xs:element name="runtimeVersion" type="xs:string"/>
+			<xs:element name="specificationVersion" type="xs:string"/>
 		</xs:all>
 	</xs:complexType>
 
-    <xs:complexType name="operatingSystem">
-        <xs:annotation>
-            <xs:appinfo>
-                <jaxb:property>
-                    <jaxb:javadoc>Operating system information (distribution, kernel version, etc.).</jaxb:javadoc>
-                </jaxb:property>
-            </xs:appinfo>
-        </xs:annotation>
-        <xs:all>
-            <xs:element name="name" type="xs:string"/>
-            <xs:element name="version" type="xs:string"/>
-            <xs:element name="arch" type="xs:string"/>
-            <xs:element name="vendor" type="xs:string"/>
-            <xs:element name="vendorVersion" type="xs:string" />
-            <xs:element name="dataModel" type="xs:string" />
-            <xs:element name="endian" type="xs:string" />
-        </xs:all>
-    </xs:complexType>
+	<xs:complexType name="operatingSystem">
+		<xs:annotation>
+			<xs:appinfo>
+				<jaxb:property>
+					<jaxb:javadoc>Operating system information (distribution, kernel version, etc.).</jaxb:javadoc>
+				</jaxb:property>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:all>
+			<xs:element name="name" type="xs:string"/>
+			<xs:element name="version" type="xs:string"/>
+			<xs:element name="arch" type="xs:string"/>
+			<xs:element name="vendor" type="xs:string"/>
+			<xs:element name="vendorVersion" type="xs:string"/>
+			<xs:element name="dataModel" type="xs:string"/>
+			<xs:element name="endian" type="xs:string"/>
+		</xs:all>
+	</xs:complexType>
 
-    <xs:complexType name="filesystem">
-        <xs:annotation>
-            <xs:appinfo>
-                <jaxb:property>
-                    <jaxb:javadoc>Information about a single filesystem.</jaxb:javadoc>
-                </jaxb:property>
-            </xs:appinfo>
-        </xs:annotation>
-        <xs:all>
-            <xs:element name="deviceName" type="xs:string" />
-            <xs:element name="directory" type="xs:string" />
-            <xs:element name="type" type="xs:string" />
-            <xs:element name="free" type="xs:long" />
-            <xs:element name="total" type="xs:long" />
-        </xs:all>
-    </xs:complexType>
+	<xs:complexType name="filesystem">
+		<xs:annotation>
+			<xs:appinfo>
+				<jaxb:property>
+					<jaxb:javadoc>Information about a single filesystem.</jaxb:javadoc>
+				</jaxb:property>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:all>
+			<xs:element name="deviceName" type="xs:string"/>
+			<xs:element name="directory" type="xs:string"/>
+			<xs:element name="type" type="xs:string"/>
+			<xs:element name="free" type="xs:long"/>
+			<xs:element name="total" type="xs:long"/>
+		</xs:all>
+	</xs:complexType>
 
 	<xs:element name="runtimeInfo">
 		<xs:annotation>
 			<xs:appinfo>
 				<jaxb:class>
-					<jaxb:javadoc>Stores basic information about HostRuntime (name/id/host/port/os/memory/java version and vendor).</jaxb:javadoc>
+					<jaxb:javadoc>Stores basic information about HostRuntime (name/id/host/port/os/memory/java version
+						and vendor).
+					</jaxb:javadoc>
 				</jaxb:class>
 			</xs:appinfo>
 		</xs:annotation>
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element ref="runtimeinfo:id" minOccurs="1" maxOccurs="1" />
-				<xs:element ref="runtimeinfo:port" minOccurs="1" maxOccurs="1" />
-				<xs:element ref="runtimeinfo:host" minOccurs="1" maxOccurs="1" />
-				<xs:element ref="runtimeinfo:workingDirectory" minOccurs="1" maxOccurs="1" />
+				<xs:element ref="runtimeinfo:id" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="runtimeinfo:port" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="runtimeinfo:host" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="runtimeinfo:workingDirectory" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="runtimeinfo:exclusivity" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="runtimeinfo:exclusiveId" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="runtimeinfo:taskCount" minOccurs="1" maxOccurs="1"/>
 
-                <xs:element ref="hardwareinfo:hardware" minOccurs="1" maxOccurs="1" />
-				<xs:element name="java" type="runtimeinfo:java" minOccurs="0" maxOccurs="1" />
-                <xs:element name="operatingSystem" type="runtimeinfo:operatingSystem" minOccurs="1" maxOccurs="1" />
-                <xs:element name="filesystem" type="runtimeinfo:filesystem" minOccurs="0" maxOccurs="unbounded" />
+				<xs:element ref="hardwareinfo:hardware" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="java" type="runtimeinfo:java" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="operatingSystem" type="runtimeinfo:operatingSystem" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="filesystem" type="runtimeinfo:filesystem" minOccurs="0" maxOccurs="unbounded"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>

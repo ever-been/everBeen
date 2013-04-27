@@ -5,7 +5,6 @@ import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -29,7 +28,6 @@ import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskProperty;
-import cz.cuni.mff.d3s.been.debugassistant.DebugAssistant;
 import cz.cuni.mff.d3s.been.hostruntime.task.*;
 import cz.cuni.mff.d3s.been.mq.IMessageReceiver;
 import cz.cuni.mff.d3s.been.mq.IMessageSender;
@@ -38,7 +36,7 @@ import cz.cuni.mff.d3s.been.mq.MessagingException;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
 
 /**
- * Manages all Host Runtime's task processes.
+ * Manages all Host Runtime task processes.
  * <p/>
  * All good names taken, so 'Process' is used.
  * 
@@ -51,11 +49,6 @@ final class ProcessManager implements Service {
 	 * Logger
 	 */
 	private static final Logger log = LoggerFactory.getLogger(ProcessManager.class);
-
-	/**
-	 * Represents running tasks.
-	 */
-	private final Map<String, TaskProcess> runningTasks = Collections.synchronizedMap(new HashMap<String, TaskProcess>());
 
 	/**
 	 * Host Runtime info
@@ -75,7 +68,7 @@ final class ProcessManager implements Service {
 	/**
 	 * Shortcut to task cluster context.
 	 */
-	private Tasks tasks;
+	private Tasks clusterTasks;
 
 	/**
 	 * Threading service
@@ -97,7 +90,13 @@ final class ProcessManager implements Service {
 	 */
 	private ResultsDispatcher resultsDispatcher;
 
-	private TaskRequestBrokerThread reqThread;
+	/**
+	 * Thread handling request from tasks.
+	 */
+	private TaskRequestBrokerThread requestBrokerThread;
+
+	/** Context of the Host Runtime */
+	private ProcessManagerContext tasks;
 
 	/**
 	 * Creates new instance.
@@ -105,15 +104,20 @@ final class ProcessManager implements Service {
 	 * Call {@link #start()} to fire it up, {@link #stop()} to get rid of it.
 	 * 
 	 * @param clusterContext
+	 *          connection to the cluster
 	 * @param swRepoClientFactory
+	 *          connection to the Software Repository
 	 * @param hostInfo
+	 *          Information about the current Host Runtime
 	 */
 	ProcessManager(ClusterContext clusterContext, SwRepoClientFactory swRepoClientFactory, RuntimeInfo hostInfo) {
 		this.clusterContext = clusterContext;
 		this.hostInfo = hostInfo;
 		this.softwareResolver = new SoftwareResolver(clusterContext.getServicesUtils(), swRepoClientFactory);
-		this.tasks = clusterContext.getTasksUtils();
+		this.clusterTasks = clusterContext.getTasksUtils();
 		this.executorService = Executors.newFixedThreadPool(1);
+
+		this.tasks = new ProcessManagerContext(clusterContext, hostInfo);
 	}
 
 	/**
@@ -129,10 +133,10 @@ final class ProcessManager implements Service {
 
 	/** Starts the {@link TaskRequestBrokerThread} */
 	private void startTaskRequestBroker() {
-		reqThread = new TaskRequestBrokerThread(clusterContext);
-		reqThread.start();
+		requestBrokerThread = new TaskRequestBrokerThread(clusterContext);
+		requestBrokerThread.start();
 
-		int port = reqThread.getPort();
+		int port = requestBrokerThread.getPort();
 
 		// register the property so it can be passed to tasks
 		System.setProperty(REQUEST_PORT, Integer.toString(port));
@@ -172,8 +176,8 @@ final class ProcessManager implements Service {
 		stopTaskActionThread();
 		stopTaskRequestBroker();
 
-		// Kill all remaining running tasks
-		killRunningTasks();
+		// Kill all remaining running clusterTasks
+		tasks.killRunningTasks();
 
 	}
 
@@ -214,29 +218,12 @@ final class ProcessManager implements Service {
 	}
 
 	/**
-	 * Kills all running tasks
-	 */
-	private void killRunningTasks() {
-		try {
-			for (TaskProcess process : runningTasks.values()) {
-				log.debug("Killing task process {}", process);
-				process.kill();
-			}
-
-			while (!runningTasks.isEmpty()) {
-				Thread.sleep(500);
-			}
-		} catch (InterruptedException e) {
-			// give up
-		}
-	}
-
-	/**
 	 * Handles RunTaskMessage.
 	 * 
 	 * Tries to run a task.
 	 * 
 	 * @param message
+	 *          message carrying the information
 	 */
 	void onRunTask(RunTaskMessage message) {
 		TaskEntry taskHandle = loadTask(message.taskId);
@@ -253,23 +240,20 @@ final class ProcessManager implements Service {
 	 * Tries to kill a task.
 	 * 
 	 * @param message
+	 *          message carrying the information
 	 */
 	synchronized void onKillTask(KillTaskMessage message) {
-		TaskEntry taskHandle = loadTask(message.taskId);
-		if (taskHandle == null) {
+		TaskEntry taskEntry = loadTask(message.taskId);
+		if (taskEntry == null) {
 			log.warn("No such task to kill: {}", message.taskId);
 		} else {
-			TaskProcess taskProcess = runningTasks.get(taskHandle.getId());
-			if (taskProcess != null) {
-				taskProcess.kill();
-			}
+			tasks.killTask(taskEntry.getId());
+
 		}
 	}
 
 	/**
-	 * Returns cluster-wide identifier of this hostruntime node.
-	 * <p/>
-	 * TODO should not be here
+	 * Returns cluster-wide identifier of this Host Runtime.
 	 * 
 	 * @return node identifier
 	 */
@@ -282,21 +266,18 @@ final class ProcessManager implements Service {
 		String id = taskEntry.getId();
 		TaskHandle taskHandle = new TaskHandle(taskEntry, clusterContext);
 
-		// TODO check whether the task can be accepted to run on the Host Runtime
-		// the check must be synchronized since runTask can run in several threads
-
 		try {
-			taskHandle.setAccepted();
-		} catch (IllegalStateException e) {
-			String msg = String.format("Was about to accept a task %s but could not make it happen.", taskEntry.getId());
-			log.debug(msg, e);
+			tasks.tryAcceptTask(taskHandle);
+		} catch (Exception e) {
+			taskHandle.reSubmit("Cannot accept the task on %s. Reason: %s", getNodeId(), e.getMessage());
+			log.info("Cannot run task {}", taskHandle.getTaskId());
 			return;
 		}
 
 		File taskDir = createTaskDir(taskEntry);
 
 		try (TaskProcess process = createTaskProcess(taskEntry, taskDir)) {
-			runningTasks.put(id, process);
+			tasks.addTask(id, process);
 
 			if (process.isDebugListeningMode()) {
 				taskHandle.setDebug(process.getDebugPort(), process.isSuspended());
@@ -313,9 +294,7 @@ final class ProcessManager implements Service {
 			taskHandle.setAborted(msg);
 			log.error(msg, e);
 		} finally {
-			runningTasks.remove(id);
-			DebugAssistant debugAssistant = new DebugAssistant(clusterContext);
-			debugAssistant.removeSuspendedTask(taskEntry.getId());
+			tasks.removeTask(taskHandle);
 		}
 	}
 
@@ -429,7 +408,7 @@ final class ProcessManager implements Service {
 	}
 
 	private TaskEntry loadTask(String taskId) {
-		return tasks.getTask(taskId);
+		return clusterTasks.getTask(taskId);
 	}
 
 	/**

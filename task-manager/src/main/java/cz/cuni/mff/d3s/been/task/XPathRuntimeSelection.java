@@ -10,6 +10,7 @@ import cz.cuni.mff.d3s.been.cluster.query.XPathPredicate;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
+import cz.cuni.mff.d3s.been.core.task.TaskExclusivity;
 
 /**
  * @author Martin Sixta
@@ -34,12 +35,14 @@ final class XPathRuntimeSelection implements IRuntimeSelection {
 			xpath = "/";
 		}
 
-		Predicate<?, ?> predicate = new XPathPredicate(xpath);
+		TaskExclusivity exclusivity = td.getExclusive();
+		String contextId = taskEntry.getTaskContextId();
+		Predicate<?, ?> predicate = new XPathPredicate(contextId, xpath, exclusivity);
 
 		Collection<RuntimeInfo> infos = clusterCtx.getRuntimesUtils().getRuntimeMap().values(predicate);
 
 		if (infos.size() == 0) {
-			throw new NoRuntimeFoundException();
+			throw new NoRuntimeFoundException("Cannot find suitable Host Runtime");
 		}
 
 		// Stupid Java

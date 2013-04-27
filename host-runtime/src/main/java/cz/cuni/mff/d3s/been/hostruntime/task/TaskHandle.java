@@ -11,9 +11,7 @@ import com.hazelcast.core.IMap;
 
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.cluster.context.Tasks;
-import cz.cuni.mff.d3s.been.core.task.TaskEntries;
-import cz.cuni.mff.d3s.been.core.task.TaskEntry;
-import cz.cuni.mff.d3s.been.core.task.TaskState;
+import cz.cuni.mff.d3s.been.core.task.*;
 import cz.cuni.mff.d3s.been.debugassistant.DebugAssistant;
 
 /**
@@ -107,6 +105,55 @@ public class TaskHandle {
 	 */
 	public void setAborted(String format, Object... args) throws IllegalStateException {
 		updateEntry(TaskState.ABORTED, format, args);
+	}
+
+	/**
+	 * Sets the state of the entry to SUBMITTED. This causes the task to be
+	 * rescheduled.
+	 * 
+	 * No further manipulation of the entry is allowed after calling the function
+	 * in this context of execution.
+	 * 
+	 * @param format
+	 *          formatted message of why the change happened
+	 * @param args
+	 *          arguments for the formatted message
+	 * 
+	 * @throws IllegalArgumentException
+	 */
+	public void reSubmit(String format, Object... args) throws IllegalArgumentException {
+		updateEntry(TaskState.SUBMITTED, format, args);
+	}
+
+	/**
+	 * Returns TaskDescriptor associated with the entry.
+	 * 
+	 * @return TaskDescriptor associated with the entry
+	 */
+	public TaskDescriptor getTaskDescriptor() {
+		return entry.getTaskDescriptor();
+	}
+
+	/**
+	 * Returns context ID of the task.
+	 * 
+	 * @return context ID of the task
+	 */
+	public String getContextId() {
+		return entry.getTaskContextId();
+	}
+
+	/**
+	 * Returns ID of the task.
+	 * 
+	 * @return ID of the task
+	 */
+	public String getTaskId() {
+		return entry.getId();
+	}
+
+	public TaskExclusivity getExclusivity() {
+		return getTaskDescriptor().getExclusive();
 	}
 
 	/**
