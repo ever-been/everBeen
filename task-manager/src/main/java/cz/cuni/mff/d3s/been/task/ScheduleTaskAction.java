@@ -96,7 +96,7 @@ final class ScheduleTaskAction implements TaskAction {
 			// Send a message to the runtime
 			ctx.getTopicUtils().publish(RUNTIME_TOPIC, newRunTaskMessage(entry));
 
-			log.info("Task %s scheduled on %s", taskId, receiverId);
+			log.info("Task {} scheduled on {}", taskId, receiverId);
 
 		} catch (NoRuntimeFoundException e) {
 			String msg = String.format("No runtime found for task %s", entry.getId());
