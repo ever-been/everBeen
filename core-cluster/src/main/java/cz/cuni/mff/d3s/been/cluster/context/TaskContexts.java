@@ -3,11 +3,13 @@ package cz.cuni.mff.d3s.been.cluster.context;
 import com.hazelcast.core.IMap;
 import com.hazelcast.core.Instance;
 import cz.cuni.mff.d3s.been.cluster.Names;
+import cz.cuni.mff.d3s.been.core.SystemProperties;
 import cz.cuni.mff.d3s.been.core.task.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created with IntelliJ IDEA.
@@ -37,6 +39,10 @@ public class TaskContexts {
 
 	public Collection<TaskContextEntry> getTaskContexts() {
 		return getTaskContextsMap().values();
+	}
+
+	public TaskContextEntry putTaskContext(TaskContextEntry entry, long ttl, TimeUnit timeUnit) {
+		return getTaskContextsMap().put(entry.getId(), entry, ttl, timeUnit);
 	}
 
 	public void submit(TaskContextDescriptor descriptor) {
@@ -141,5 +147,19 @@ public class TaskContexts {
 				instance.destroy();
 			}
 		}
+
+		int contextTtlSeconds = SystemProperties.getInteger("been.context.ttl", 300);
+		int taskTtlSeconds = SystemProperties.getInteger("been.task.ttl", 300);
+
+		log.info("Removing tasks contained in context {} after {} seconds", taskContextEntry.getId(), taskTtlSeconds);
+
+		for (String taskId : taskContextEntry.getContainedTask()) {
+			TaskEntry taskEntry = clusterContext.getTasksUtils().getTask(taskId);
+			clusterContext.getTasksUtils().putTask(taskEntry, taskTtlSeconds, TimeUnit.SECONDS);
+		}
+
+		log.info("Removing task context entry {} after {} seconds", taskContextEntry.getId(), contextTtlSeconds);
+
+		putTaskContext(taskContextEntry, contextTtlSeconds, TimeUnit.SECONDS);
 	}
 }

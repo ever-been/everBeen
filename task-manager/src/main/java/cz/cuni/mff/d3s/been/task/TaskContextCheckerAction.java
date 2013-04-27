@@ -2,6 +2,7 @@ package cz.cuni.mff.d3s.been.task;
 
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
+import cz.cuni.mff.d3s.been.core.task.TaskContextState;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
 import org.slf4j.Logger;
@@ -21,10 +22,22 @@ public class TaskContextCheckerAction implements TaskAction {
 		this.entry = entry;
 	}
 
+	/**
+	 * Checks if the finished context of the task is completely finished (all tasks
+	 * from it are finished). If yes, calls the context cleanup procedure. Needs to
+	 * be serialized and for local keys only, so that we don't accidentally clean
+	 * up twice.
+	 *
+	 * @throws TaskActionException
+	 */
 	@Override
 	public void execute() throws TaskActionException {
 		String taskContextId = entry.getTaskContextId();
 		TaskContextEntry taskContextEntry = ctx.getTaskContextsUtils().getTaskContext(taskContextId);
+
+		if (taskContextEntry.getContextState() == TaskContextState.FINISHED) {
+			return;
+		}
 
 		boolean allTasksFinished = true;
 		for (String taskId : taskContextEntry.getContainedTask()) {
@@ -37,6 +50,8 @@ public class TaskContextCheckerAction implements TaskAction {
 		}
 
 		if (! allTasksFinished) return;
+
+		taskContextEntry.setContextState(TaskContextState.FINISHED);
 
 		ctx.getTaskContextsUtils().cleanupTaskContext(taskContextEntry);
 	}

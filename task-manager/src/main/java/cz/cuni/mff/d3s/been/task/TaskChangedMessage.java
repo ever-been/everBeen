@@ -1,6 +1,7 @@
 package cz.cuni.mff.d3s.been.task;
 
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
+import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
 
@@ -20,8 +21,17 @@ final class TaskChangedMessage extends AbstractEntryTaskMessage {
 		if (state == TaskState.SUBMITTED)
 			return new ScheduleTaskAction(ctx, getEntry());
 
-		if (state == TaskState.FINISHED)
-			return new TaskContextCheckerAction(ctx, getEntry());
+		if (state == TaskState.FINISHED || state == TaskState.ABORTED) {
+			/*
+				Check that the Task Context is in our local keyset, so that
+				we only delete a context once.
+			 */
+			TaskEntry taskEntry = getEntry();
+			String taskContextId = taskEntry.getTaskContextId();
+			if (ctx.getTaskContextsUtils().getTaskContextsMap().localKeySet().contains(taskContextId)) {
+				return new TaskContextCheckerAction(ctx, taskEntry);
+			}
+		}
 
 		return null;
 	}
