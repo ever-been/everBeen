@@ -7,6 +7,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import cz.cuni.mff.d3s.been.core.ri.MonitorSample;
+import cz.cuni.mff.d3s.been.detectors.MonitoringListener;
+import cz.cuni.mff.d3s.been.mq.IMessageSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -123,13 +126,34 @@ class HostRuntime implements IClusterService {
 			registerHostRuntime();
 
 			// HR is now prepared to consume all important messages.
+			startMonitoring();
 
-			// start monitoring
-			Path monitoringLogPath = FileSystems.getDefault().getPath(hostRuntimeInfo.getWorkingDirectory(), "monitoring.log");
-			Monitoring.startMonitoring(monitoringLogPath);
+
 		} catch (Exception e) {
 			throw new ServiceException("Cannot start Host Runtime", e);
 		}
+	}
+
+	private void startMonitoring() {
+		Path monitoringLogPath = FileSystems.getDefault().getPath(hostRuntimeInfo.getWorkingDirectory(), "monitoring.log");
+
+		try {
+			final IMessageSender<BaseMessage> sender = MessageQueues.getInstance().createSender(ACTION_QUEUE_NAME);
+			Monitoring.addListener(new MonitoringListener() {
+				@Override
+				public void sampleGenerated(MonitorSample sample) {
+					try {
+						sender.send(new MonitoringSampleMessage(sample));
+					} catch (MessagingException e) {
+						throw new RuntimeException("Cannot send message.", e);
+					}
+				}
+			});
+		} catch (MessagingException e) {
+			throw new RuntimeException("Cannot send message.", e);
+		}
+
+		Monitoring.startMonitoring(monitoringLogPath);
 	}
 
 	private void prepareFiles(String workingDirName) throws IOException {

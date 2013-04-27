@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import cz.cuni.mff.d3s.been.core.ri.MonitorSample;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -162,6 +163,11 @@ final class ProcessManagerContext {
 		if (taskProcess != null) {
 			taskProcess.kill();
 		}
+	}
+
+	public synchronized void updateMonitoringSample(MonitorSample sample) {
+		hostInfo.setMonitorSample(sample);
+		clusterContext.getRuntimesUtils().storeRuntimeInfo(hostInfo);
 	}
 
 	/**

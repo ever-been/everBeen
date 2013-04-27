@@ -459,6 +459,8 @@ final class ProcessManager implements Service {
 						onKillTask((KillTaskMessage) msg);
 					} else if (msg instanceof PoisonMessage) {
 						break;
+					} else if (msg instanceof MonitoringSampleMessage) {
+						tasks.updateMonitoringSample(((MonitoringSampleMessage) msg).getSample());
 					} else {
 						log.warn("Host Runtime does not know how to handle message of type {}", msg.getClass());
 					}

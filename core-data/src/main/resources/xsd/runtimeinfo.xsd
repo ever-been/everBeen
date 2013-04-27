@@ -7,6 +7,7 @@
 		attributeFormDefault="unqualified"
 		xmlns:runtimeinfo="http://been.d3s.mff.cuni.cz/runtimeinfo"
 		xmlns:hardwareinfo="http://been.d3s.mff.cuni.cz/hardwareinfo"
+		xmlns:monitor="http://been.d3s.mff.cuni.cz/monitor"
 		xmlns:xs="http://www.w3.org/2001/XMLSchema"
 		xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
 		xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
@@ -23,6 +24,7 @@
 	</xs:annotation>
 
 	<xs:import schemaLocation="hardwareinfo.xsd" namespace="http://been.d3s.mff.cuni.cz/hardwareinfo"/>
+	<xs:import schemaLocation="monitor.xsd" namespace="http://been.d3s.mff.cuni.cz/monitor"/>
 
 	<xs:element name="id" type="xs:string">
 		<xs:annotation>
@@ -179,6 +181,7 @@
 				<xs:element name="java" type="runtimeinfo:java" minOccurs="0" maxOccurs="1"/>
 				<xs:element name="operatingSystem" type="runtimeinfo:operatingSystem" minOccurs="1" maxOccurs="1"/>
 				<xs:element name="filesystem" type="runtimeinfo:filesystem" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="monitor:monitorSample" minOccurs="0" maxOccurs="1"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
