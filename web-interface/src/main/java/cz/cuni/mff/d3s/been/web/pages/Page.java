@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.web.pages;
 
+import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.annotations.SetupRender;
 import org.apache.tapestry5.ioc.annotations.Inject;
 
@@ -12,6 +13,7 @@ import org.slf4j.Logger;
 public abstract class Page {
 
 	@Inject
+    @Property
 	protected BeenApiService api;
 
     @Inject

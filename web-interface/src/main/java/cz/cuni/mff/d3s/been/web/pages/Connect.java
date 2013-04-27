@@ -7,19 +7,12 @@ import org.apache.tapestry5.annotations.InjectComponent;
 import org.apache.tapestry5.annotations.Persist;
 import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.corelib.components.BeanEditForm;
-import org.apache.tapestry5.corelib.components.Form;
 import org.apache.tapestry5.corelib.components.Zone;
-import org.apache.tapestry5.ioc.annotations.Inject;
-
-import cz.cuni.mff.d3s.been.web.services.BeenApiService;
 
 /**
  * User: donarus Date: 4/27/13 Time: 11:29 AM
  */
-public class Connect {
-
-	@Inject
-	private BeenApiService api;
+public class Connect extends Page {
 
 	@Persist
 	@Property
@@ -31,28 +24,32 @@ public class Connect {
 	@InjectComponent
 	private Zone connectFormZone;
 
+    @Override
+	Object onActivate() {
+		return null;
+	}
+
 	void onValidateFromConnectForm() {
 		try {
-            api.connect(connectionProperties.toInetSocketAddress());
+			api.connect(connectionProperties.hostname, connectionProperties.port, connectionProperties.groupName, connectionProperties.groupPassword);
 		} catch (Exception e) {
 			connectForm.recordError(e.getMessage());
 		}
 	}
 
-	Object onSuccess() {
+	Object onSuccessFromConnectForm() {
 		return Index.class;
 	}
 
-	Object onFailure() {
+	Object onFailureFromConnectForm() {
 		return connectFormZone.getBody();
 	}
 
 	public static final class ConnectionProperties {
-		public String hostname;
-		public int port;
+		public String hostname = "localhost";
+		public int port = 5701;
+        public String groupName = "dev";
+        public String groupPassword = "dev-pass";
 
-		public InetSocketAddress toInetSocketAddress() throws IllegalArgumentException {
-			return new InetSocketAddress(hostname, port);
-		}
 	}
 }

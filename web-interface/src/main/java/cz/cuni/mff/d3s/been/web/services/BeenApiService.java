@@ -17,4 +17,6 @@ public interface BeenApiService {
 
     public boolean connect(String host, int port, String groupName, String groupPassword);
 
+    public BeenApi getApi();
+
 }

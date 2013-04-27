@@ -26,6 +26,7 @@ public class BeenApiServiceImpl implements BeenApiService {
         return true;
     }
 
+    @Override
 	public BeenApi getApi() {
 		if (! isConnected())
 			throw new ServiceUnavailableException("API is not connected.");

@@ -3,8 +3,5 @@
 <html t:type="layout" xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd">
 
 
-<t:grid source="api.api.tasks" row="task">
-
-</t:grid>
 
 </html>
