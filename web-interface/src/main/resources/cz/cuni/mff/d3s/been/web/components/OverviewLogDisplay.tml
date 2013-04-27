@@ -1,9 +1,0 @@
-<t:component xmlns:t="http://tapestry.apache.org/schema/tapestry_5_1_0.xsd">
-
-    <!-- FIXME fix inline css -->
-    <div style="border: 1px solid black">
-
-
-    </div>
-
-</t:component>

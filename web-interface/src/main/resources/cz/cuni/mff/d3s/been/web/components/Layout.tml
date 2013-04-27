@@ -19,26 +19,33 @@
 <body id="been-body">
 
 <div id="header">
-    <t:pagelink id="logo" t:page="Index"></t:pagelink>
+    <t:pagelink id="logo" t:page="index"></t:pagelink>
     <ul>
 
-        <li>
-            <t:pagelink t:page="Overview">Overview</t:pagelink>
+        <li class="${classNameForSection('overview')}">
+            <t:pagelink t:page="index">Overview</t:pagelink>
         </li>
-        <li>
-            <t:pagelink t:page="Configuration">Configuration</t:pagelink>
+	    <li class="${classNameForSection('tasks')}">
+		    <t:pagelink t:page="tasks">Tasks</t:pagelink>
+	    </li>
+	    <li class="${classNameForSection('contexts')}">
+		    <t:pagelink t:page="contexts">Contexts</t:pagelink>
+	    </li>
+	    <li class="${classNameForSection('runtimes')}">
+		    <t:pagelink t:page="runtimes">Runtimes</t:pagelink>
+	    </li>
+	    <li class="${classNameForSection('configuration')}">
+            <t:pagelink t:page="configuration">Configuration</t:pagelink>
         </li>
-        <li>
-            <t:pagelink t:page="Logs">Logs</t:pagelink>
+	    <li class="${classNameForSection('logs')}">
+            <t:pagelink t:page="logs">Logs</t:pagelink>
         </li>
-        <li>
-            <t:pagelink t:page="Tasks">Tasks</t:pagelink>
+
+	    <li class="${classNameForSection('documentation')}">
+            <t:pagelink t:page="documentation">Documentation</t:pagelink>
         </li>
-        <li>
-            <t:pagelink t:page="Documentation">Documentation</t:pagelink>
-        </li>
-        <li>
-            <t:pagelink t:page="About">About</t:pagelink>
+	    <li class="${classNameForSection('about')}">
+            <t:pagelink t:page="about">About</t:pagelink>
         </li>
 
     </ul>

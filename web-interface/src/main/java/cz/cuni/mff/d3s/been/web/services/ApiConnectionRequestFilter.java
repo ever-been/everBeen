@@ -29,7 +29,6 @@ public class ApiConnectionRequestFilter implements RequestFilter {
 	public boolean service(Request request, Response response,
 			RequestHandler handler) throws IOException {
 		try {
-            log.error("ratata");
 			return handler.service(request, response);
 		} catch (ServiceUnavailableException e) {
 			log.error(

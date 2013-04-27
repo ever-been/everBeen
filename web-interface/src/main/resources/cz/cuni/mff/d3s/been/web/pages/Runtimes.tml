@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+
+<html t:type="layout" section="runtimes"
+      xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd" xmlns:p="tapestry:parameter">
+
+
+<t:grid source="runtimes" row="runtime" inPlace="true">
+	<p:idCell>
+		<t:pagelink page="runtime" context="runtime.id">${runtime.id}</t:pagelink>
+	</p:idCell>
+</t:grid>
+
+
+</html>

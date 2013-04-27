@@ -1,5 +1,7 @@
 package cz.cuni.mff.d3s.been.api;
 
+import cz.cuni.mff.d3s.been.core.LogMessage;
+import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 
@@ -20,5 +22,13 @@ public interface BeenApi {
 	public Collection<TaskContextEntry> getTaskContexts();
 
 	public TaskContextEntry getTaskContext(String id);
+
+	public Collection<RuntimeInfo> getRuntimes();
+
+	public RuntimeInfo getRuntime(String id);
+
+	public Collection<String> getLogSets();
+
+	public Collection<LogMessage> getLogs(String setId);
 
 }

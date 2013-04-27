@@ -11,7 +11,12 @@ import org.apache.tapestry5.annotations.Property;
  */
 public class Tasks extends Page {
 
+	public Collection<TaskEntry> getTasks() {
+		return this.api.getApi().getTasks();
+	}
+
 	@Property
 	private TaskEntry task;
+
 
 }

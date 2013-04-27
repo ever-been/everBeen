@@ -1,10 +1,15 @@
 package cz.cuni.mff.d3s.been.api;
 
 import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.MultiMap;
 import cz.cuni.mff.d3s.been.cluster.Instance;
+import cz.cuni.mff.d3s.been.cluster.Names;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
+import cz.cuni.mff.d3s.been.core.LogMessage;
+import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
+import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
 
 import java.net.InetSocketAddress;
 import java.util.Collection;
@@ -41,5 +46,27 @@ public class BeenApiImpl implements BeenApi {
 	@Override
 	public TaskContextEntry getTaskContext(String id) {
 		return clusterContext.getTaskContextsUtils().getTaskContext(id);
+	}
+
+	@Override
+	public Collection<RuntimeInfo> getRuntimes() {
+		return clusterContext.getRuntimesUtils().getRuntimes();
+	}
+
+	@Override
+	public RuntimeInfo getRuntime(String id) {
+		return clusterContext.getRuntimesUtils().getRuntimeInfo(id);
+	}
+
+	@Override
+	public Collection<String> getLogSets() {
+		MultiMap<String, LogMessage> logs = clusterContext.getInstance().getMultiMap(Names.LOGS_MULTIMAP_NAME);
+		return logs.keySet();
+	}
+
+	@Override
+	public Collection<LogMessage> getLogs(String setId) {
+		MultiMap<String, LogMessage> logs = clusterContext.getInstance().getMultiMap(Names.LOGS_MULTIMAP_NAME);
+		return logs.get(setId);
 	}
 }

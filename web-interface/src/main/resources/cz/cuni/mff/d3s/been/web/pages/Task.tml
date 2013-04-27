@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 
-<html t:type="layout" xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd">
+<html t:type="layout" section="tasks"
+      xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd" xmlns:p="tapestry:parameter">
 
-
+<t:beandisplay object="task">
+</t:beandisplay>
 
 </html>

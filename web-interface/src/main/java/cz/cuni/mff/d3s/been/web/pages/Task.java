@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.web.pages;
 
+import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import org.apache.tapestry5.annotations.Property;
 
 import java.util.List;
@@ -9,7 +10,10 @@ import java.util.List;
  */
 public class Task extends Page {
 
+	@Property
+	private TaskEntry task;
 
-
-
+	void onActivate(String taskId) {
+		task = api.getApi().getTask(taskId);
+	}
 }

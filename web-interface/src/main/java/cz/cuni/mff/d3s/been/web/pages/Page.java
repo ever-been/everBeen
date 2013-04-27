@@ -19,7 +19,6 @@ public abstract class Page {
     @Inject
     protected Logger log;
 
-
 	Object onActivate() {
 		if (!api.isConnected()) {
             log.info("Been Api is not connected. Redirecting to Connect page.");

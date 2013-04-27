@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 
-<html t:type="layout" xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd">
+<html t:type="layout" section="tasks"
+      xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd" xmlns:p="tapestry:parameter">
 
 
-<t:grid source="api.api.tasks" row="task">
-
+<t:grid source="tasks" row="task" inPlace="true">
+	<p:idCell>
+		<t:pagelink page="task" context="task.id">${task.id}</t:pagelink>
+	</p:idCell>
 </t:grid>
+
 
 </html>
