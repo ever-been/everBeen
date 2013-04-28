@@ -59,7 +59,7 @@ final class TaskMessageProcessor extends Thread {
 			} catch (TaskActionException e) {
 				log.error("Cannot execute action for received message", e);
 			} catch (Exception e) {
-				log.error("Unknown error, will exit the thread.", e);
+				log.error("Unknown error", e);
 			}
 		}
 
