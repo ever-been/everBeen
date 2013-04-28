@@ -1,9 +1,8 @@
 package cz.cuni.mff.d3s.been.task;
 
-import cz.cuni.mff.d3s.been.results.Result;
-
-import java.util.Arrays;
 import java.util.List;
+
+import cz.cuni.mff.d3s.been.results.Result;
 
 public class TestResult extends Result {
 

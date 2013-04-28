@@ -6,8 +6,8 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cz.cuni.mff.d3s.been.core.persistence.EntityID;
 import cz.cuni.mff.d3s.been.results.DAOException;
-import cz.cuni.mff.d3s.been.results.ResultContainerId;
 import cz.cuni.mff.d3s.been.taskapi.Requestor;
 import cz.cuni.mff.d3s.been.taskapi.Task;
 import cz.cuni.mff.d3s.been.taskapi.results.ResultPersister;
@@ -21,7 +21,10 @@ public class NginxClientTask extends Task {
 	private static final Logger log = LoggerFactory.getLogger(NginxClientTask.class);
 
 	private void downloadClientScript() {
-		MyUtils.exec(".", "wget", new String[] { "http://httperf.googlecode.com/files/httperf-0.9.0.tar.gz" });
+		MyUtils.exec(
+				".",
+				"wget",
+				new String[] { "http://httperf.googlecode.com/files/httperf-0.9.0.tar.gz" });
 		MyUtils.exec(".", "tar", new String[] { "xzvf", "httperf-0.9.0.tar.gz" });
 		MyUtils.exec("./httperf-0.9.0", "./configure", new String[] {});
 		MyUtils.exec("./httperf-0.9.0", "make", new String[] {});
@@ -32,12 +35,15 @@ public class NginxClientTask extends Task {
 		String hostname = splitted[0];
 		int port = Integer.parseInt(splitted[1]);
 
-		String output = MyUtils.exec("./httperf-0.9.0", "src/httperf", new String[] {
-				"--client=0/1", "--server=" + hostname, "--port=" + port, "--uri=/",
-				"--send-buffer=" + this.getProperty("sendBuffer"),
-				"--recv-buffer=" + this.getProperty("recvBuffer"),
-				"--num-conns=" + this.getProperty("numberOfConnections"),
-				"--num-calls=" + this.getProperty("requestsPerConnection") });
+		String output = MyUtils.exec(
+				"./httperf-0.9.0",
+				"src/httperf",
+				new String[] { "--client=0/1", "--server=" + hostname,
+						"--port=" + port, "--uri=/",
+						"--send-buffer=" + this.getProperty("sendBuffer"),
+						"--recv-buffer=" + this.getProperty("recvBuffer"),
+						"--num-conns=" + this.getProperty("numberOfConnections"),
+						"--num-calls=" + this.getProperty("requestsPerConnection") });
 
 		HttperfResult result = parseOutput(output);
 
@@ -45,12 +51,11 @@ public class NginxClientTask extends Task {
 	}
 
 	private void storeResult(HttperfResult result) {
-		final ResultContainerId cid = new ResultContainerId();
-		cid.setDatabaseName("results");
-		cid.setCollectionName("nginx-results");
-		cid.setEntityName("result");
+		final EntityID eid = new EntityID();
+		eid.setKind("results");
+		eid.setGroup("nginx-results");
 
-		final ResultPersister rp = results.createResultPersister(cid);
+		final ResultPersister rp = results.createResultPersister(eid);
 		try {
 			rp.persist(result);
 			log.info("Result stored.");
@@ -62,7 +67,9 @@ public class NginxClientTask extends Task {
 	private HttperfResult parseOutput(String output) {
 		HttperfResult result = new HttperfResult(this);
 
-		Matcher m = Pattern.compile("Total: connections ([0-9]+) requests ([0-9]+) replies ([0-9]+) test-duration ([0-9.]+) s").matcher(output);
+		Matcher m = Pattern.compile(
+				"Total: connections ([0-9]+) requests ([0-9]+) replies ([0-9]+) test-duration ([0-9.]+) s").matcher(
+				output);
 		if (!m.find())
 			throw new RuntimeException("Cannot parse result.");
 		result.connections = Integer.parseInt(m.group(1));
@@ -75,7 +82,9 @@ public class NginxClientTask extends Task {
 			throw new RuntimeException("Cannot parse result.");
 		result.connectionRate = Double.parseDouble(m.group(1));
 
-		m = Pattern.compile("Connection time \\[ms\\]: min ([0-9.]+) avg ([0-9.]+) max ([0-9.]+) median ([0-9.]+) stddev ([0-9.]+)").matcher(output);
+		m = Pattern.compile(
+				"Connection time \\[ms\\]: min ([0-9.]+) avg ([0-9.]+) max ([0-9.]+) median ([0-9.]+) stddev ([0-9.]+)").matcher(
+				output);
 		if (!m.find())
 			throw new RuntimeException("Cannot parse result.");
 		result.connectionTimeMin = Double.parseDouble(m.group(1));
@@ -84,7 +93,8 @@ public class NginxClientTask extends Task {
 		result.connectionTimeMedian = Double.parseDouble(m.group(4));
 		result.connectionTimeStdDev = Double.parseDouble(m.group(5));
 
-		m = Pattern.compile("Connection time \\[ms\\]: connect ([0-9.]+)").matcher(output);
+		m = Pattern.compile("Connection time \\[ms\\]: connect ([0-9.]+)").matcher(
+				output);
 		if (!m.find())
 			throw new RuntimeException("Cannot parse result.");
 		result.connectionTimeConnect = Double.parseDouble(m.group(1));
@@ -99,12 +109,16 @@ public class NginxClientTask extends Task {
 			throw new RuntimeException("Cannot parse result.");
 		result.requestSize = (int) Double.parseDouble(m.group(1));
 
-		m = Pattern.compile("Reply size \\[B\\]: header ([0-9.]+) content ([0-9.]+) footer ([0-9.]+) \\(total ([0-9.]+)\\)").matcher(output);
+		m = Pattern.compile(
+				"Reply size \\[B\\]: header ([0-9.]+) content ([0-9.]+) footer ([0-9.]+) \\(total ([0-9.]+)\\)").matcher(
+				output);
 		if (!m.find())
 			throw new RuntimeException("Cannot parse result.");
 		result.replySizeTotal = (int) Double.parseDouble(m.group(4));
 
-		m = Pattern.compile("Reply status: 1xx=([0-9]+) 2xx=([0-9]+) 3xx=([0-9]+) 4xx=([0-9]+) 5xx=([0-9]+)").matcher(output);
+		m = Pattern.compile(
+				"Reply status: 1xx=([0-9]+) 2xx=([0-9]+) 3xx=([0-9]+) 4xx=([0-9]+) 5xx=([0-9]+)").matcher(
+				output);
 		if (!m.find())
 			throw new RuntimeException("Cannot parse result.");
 		result.numberOf1xx = Integer.parseInt(m.group(1));
@@ -113,7 +127,9 @@ public class NginxClientTask extends Task {
 		result.numberOf4xx = Integer.parseInt(m.group(4));
 		result.numberOf5xx = Integer.parseInt(m.group(5));
 
-		m = Pattern.compile("CPU time \\[s\\]: user ([0-9.]+) system ([0-9.]+) \\(user ([0-9.]+)% system ([0-9.]+)% total ([0-9.]+)%\\)").matcher(output);
+		m = Pattern.compile(
+				"CPU time \\[s\\]: user ([0-9.]+) system ([0-9.]+) \\(user ([0-9.]+)% system ([0-9.]+)% total ([0-9.]+)%\\)").matcher(
+				output);
 		if (!m.find())
 			throw new RuntimeException("Cannot parse result.");
 		result.cpuUser = Double.parseDouble(m.group(1));

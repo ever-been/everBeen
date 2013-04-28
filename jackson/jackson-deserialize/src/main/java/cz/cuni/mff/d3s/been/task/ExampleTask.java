@@ -19,7 +19,7 @@ public class ExampleTask extends Task {
 	}
 
 	@Override
-	public void run() {
+	public void run(String[] args) {
 		final EntityID eid = new EntityID();
 		eid.setKind("result");
 		eid.setGroup("test");

@@ -1,6 +1,8 @@
 package cz.cuni.mff.d3s.been.test;
 
-import static cz.cuni.mff.d3s.been.test.ExampleSyncTask.*;
+import static cz.cuni.mff.d3s.been.test.ExampleSyncTask.CLIENT_COUNT_KEY;
+import static cz.cuni.mff.d3s.been.test.ExampleSyncTask.CLIENT_RUNS_KEY;
+import static cz.cuni.mff.d3s.been.test.ExampleSyncTask.TYPE_KEY;
 import static cz.cuni.mff.d3s.been.test.ExampleSyncTask.TaskType.CLIENT;
 import static cz.cuni.mff.d3s.been.test.ExampleSyncTask.TaskType.SERVER;
 
@@ -13,7 +15,12 @@ import org.xml.sax.SAXException;
 
 import cz.cuni.mff.d3s.been.core.jaxb.BindingComposer;
 import cz.cuni.mff.d3s.been.core.jaxb.XSD;
-import cz.cuni.mff.d3s.been.core.task.*;
+import cz.cuni.mff.d3s.been.core.task.Descriptor;
+import cz.cuni.mff.d3s.been.core.task.Task;
+import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
+import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
+import cz.cuni.mff.d3s.been.core.task.TaskProperties;
+import cz.cuni.mff.d3s.been.core.task.TaskProperty;
 
 /**
  * @author Martin Sixta
@@ -35,7 +42,7 @@ public class SyncGenerator {
 		TaskContextDescriptor tcd = new TaskContextDescriptor();
 		Task serverTask = new Task();
 		serverTask.setName("server");
-		td = (TaskDescriptor) tdTemplate.clone();
+		td = (TaskDescriptor) tdTemplate.createCopy();
 		TaskProperties serverProperties = new TaskProperties();
 		List<TaskProperty> serverProps = serverProperties.getProperty();
 
@@ -53,7 +60,7 @@ public class SyncGenerator {
 			Task clientTask = new Task();
 
 			clientTask.setName("client-" + i);
-			td = (TaskDescriptor) tdTemplate.clone();
+			td = (TaskDescriptor) tdTemplate.createCopy();
 			TaskProperties clientProperties = new TaskProperties();
 			List<TaskProperty> props = clientProperties.getProperty();
 

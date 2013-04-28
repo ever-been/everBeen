@@ -21,7 +21,7 @@ public class JacksonSerializeTask extends Task {
 	}
 
 	@Override
-	public void run() {
+	public void run(String[] args) {
 		log.info(System.getProperties().toString());
 		log.info(System.getenv().toString());
 		final DataType dataType = DataType.valueOf(System.getenv("dataType"));
