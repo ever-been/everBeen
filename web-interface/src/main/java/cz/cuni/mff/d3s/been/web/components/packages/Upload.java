@@ -1,13 +1,8 @@
 package cz.cuni.mff.d3s.been.web.components.packages;
 
-import java.io.File;
 import java.util.ArrayList;
 
-import cz.cuni.mff.d3s.been.bpk.BpkConfigurationException;
-import cz.cuni.mff.d3s.been.web.components.Component;
 import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.tapestry5.ComponentResources;
 import org.apache.tapestry5.PersistenceConstants;
 import org.apache.tapestry5.annotations.*;
@@ -19,7 +14,8 @@ import org.apache.tapestry5.upload.services.UploadedFile;
 import org.got5.tapestry5.jquery.JQueryEventConstants;
 import org.got5.tapestry5.jquery.components.AjaxUpload;
 
-import cz.cuni.mff.d3s.been.api.BeenApi;
+import cz.cuni.mff.d3s.been.bpk.BpkConfigurationException;
+import cz.cuni.mff.d3s.been.web.components.Component;
 
 /**
  * User: donarus Date: 4/28/13 Time: 11:59 AM
@@ -42,7 +38,7 @@ public class Upload extends Component {
 	@Inject
 	private AjaxResponseRenderer ajaxResponseRenderer;
 
-    @SetupRender
+	@SetupRender
 	void setupRender() {
 		if (uploadedFiles == null) {
 			uploadedFiles = new ArrayList<UploadedFile>();
@@ -77,13 +73,13 @@ public class Upload extends Component {
 	}
 
 	private void storeInRepository(UploadedFile uploadedFile) {
-        try {
-            api.getApi().uploadBpk(uploadedFile.getStream());
-        } catch (BpkConfigurationException e) {
-            message = "Cannot store uploaded bpk in repository: " + e.getMessage();
-            ajaxResponseRenderer.addRender("uploadResult", uploadResult);
-        }
-    }
+		try {
+			api.getApi().uploadBpk(uploadedFile.getStream());
+		} catch (BpkConfigurationException e) {
+			message = "Cannot store uploaded bpk in repository: " + e.getMessage();
+			ajaxResponseRenderer.addRender("uploadResult", uploadResult);
+		}
+	}
 
 	@OnEvent(value = "uploadBpkEvent")
 	void onUploadBpkEvent(final String someParam) {

@@ -105,20 +105,16 @@ class ClusterMode extends AbstractMode {
 	}
 
 	private void handleDebug(String[] args) {
-		DebugAssistant debugAssistant = new DebugAssistant(clusterContext);
-
-		for (DebugListItem item : debugAssistant.listWaitingProcesses()) {
+		for (DebugListItem item : api.getDebugWaitingTasks()) {
 			out.printf("id: %s, host: %s, port: %s, suspended: %s\n", item.getTaskId(), item.getHostName(), item.getDebugPort(), item.isSuspended());
-
 		}
 	}
 
 	private void handleLogs(String[] args) {
-		final MultiMap<String, LogMessage> logs = clusterContext.getInstance().getMultiMap(Names.LOGS_MULTIMAP_NAME);
 
-		for (String id : logs.keySet()) {
+		for (String id : api.getLogSets()) {
 			out.printf("ID: %s\n", id);
-			for (LogMessage msg : logs.get(id)) {
+			for (LogMessage msg : api.getLogs(id)) {
 				try {
 					out.printf("\t%s\n", JSONUtils.serialize(msg));
 				} catch (JSONUtils.JSONSerializerException e) {
@@ -140,7 +136,7 @@ class ClusterMode extends AbstractMode {
 
 	private void handleRuntimes(String[] args) {
 		if (args.length == 1) {
-			Collection<RuntimeInfo> runtimes = clusterContext.getRuntimesUtils().getRuntimes();
+			Collection<RuntimeInfo> runtimes = api.getRuntimes();
 			for (RuntimeInfo runtime : runtimes) {
 				out.println("Runtime ID: " + runtime.getId());
 				out.println("Operating system: " + runtime.getOperatingSystem().getName());
@@ -154,7 +150,7 @@ class ClusterMode extends AbstractMode {
 
 	private void handleTasks(String[] args) {
 		if (args.length == 1) {
-			Collection<TaskEntry> entries = clusterContext.getTasksUtils().getTasks();
+			Collection<TaskEntry> entries = api.getTasks();
 			for (TaskEntry entry : entries) {
 				out.println("Task ID: " + entry.getId());
 				out.println("Task Context ID: " + entry.getTaskContextId());
@@ -175,14 +171,14 @@ class ClusterMode extends AbstractMode {
 				out.println("-----------------------------------");
 			}
 		} else if (args.length == 2) {
-			TaskEntry entry = clusterContext.getTasksUtils().getTask(args[1]);
+			TaskEntry entry = api.getTask(args[1]);
 			out.println(TaskEntries.toXml(entry));
 		}
 	}
 
 	private void handleTaskContexts(String[] args) {
 		if (args.length == 1) {
-			Collection<TaskContextEntry> entries = clusterContext.getTaskContextsUtils().getTaskContexts();
+			Collection<TaskContextEntry> entries = api.getTaskContexts();
 			for (TaskContextEntry entry : entries) {
 				out.println("Task Context ID: " + entry.getId());
 				out.println("Name: " + entry.getTaskContextDescriptor().getName());
