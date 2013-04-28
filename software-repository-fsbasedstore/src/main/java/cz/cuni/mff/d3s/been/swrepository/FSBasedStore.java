@@ -10,7 +10,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -187,5 +190,28 @@ public final class FSBasedStore implements SoftwareStore {
 				artifactIdentifier.getVersion());
 
 		return new File(itemPath, artifactFileName);
+	}
+
+	@Override
+	public List<BpkIdentifier> listBpks() {
+
+		String regexp = Pattern.quote(bpkFSRoot.getPath()) + File.separator + "([a-z0-9/]+)/([a-z0-9-]+)/([0-9.]+)/([a-z0-9-.]+)\\.bpk";
+		Pattern pattern = Pattern.compile(regexp);
+
+		List<BpkIdentifier> result = new ArrayList<BpkIdentifier>();
+		for (File f : FileUtils.listFiles(bpkFSRoot, new String[]{"bpk"}, true)) {
+			String path = f.getPath();
+			Matcher m = pattern.matcher(path);
+			if (m.find()) {
+				BpkIdentifier bpkIdentifier = new BpkIdentifier();
+				bpkIdentifier.setGroupId(m.group(1).replace(File.separator, "."));
+				bpkIdentifier.setBpkId(m.group(2));
+				bpkIdentifier.setVersion(m.group(3));
+
+				result.add(bpkIdentifier);
+			}
+		}
+
+		return result;
 	}
 }

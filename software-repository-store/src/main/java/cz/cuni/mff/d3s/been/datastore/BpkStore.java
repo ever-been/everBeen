@@ -2,6 +2,8 @@ package cz.cuni.mff.d3s.been.datastore;
 
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 
+import java.util.List;
+
 /**
  * Repository for BPKs - BEEN software packages.
  * 
@@ -29,4 +31,11 @@ public interface BpkStore {
 	 *         it could not be retrieved
 	 */
 	StorePersister getBpkPersister(BpkIdentifier bpkIdentifier);
+
+	/**
+	 * Return a list of available BPKs in the repository.
+	 *
+	 * @return List of BpkIdentifier objects
+	 */
+	List<BpkIdentifier> listBpks();
 }

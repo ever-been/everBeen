@@ -40,6 +40,10 @@ public class BeenApiImpl implements BeenApi {
 	    clusterContext = new ClusterContext(instance);
     }
 
+	public BeenApiImpl(ClusterContext clusterContext) {
+		this.clusterContext = clusterContext;
+	}
+
 	@Override
 	public Collection<TaskEntry> getTasks() {
 		return clusterContext.getTasksUtils().getTasks();

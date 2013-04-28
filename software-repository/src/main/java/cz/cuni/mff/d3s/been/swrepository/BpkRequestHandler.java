@@ -62,13 +62,8 @@ public class BpkRequestHandler extends SkeletalRequestHandler {
 	}
 
 	private void handleListBpks(HttpResponse response) {
-		// TODO
-		List<BpkIdentifier> list = new ArrayList<BpkIdentifier>();
-		BpkIdentifier b = new BpkIdentifier();
-		b.setBpkId("lol");
-		b.setGroupId("rus");
-		b.setVersion("wtf");
-		list.add(b);
+		List<BpkIdentifier> list = store.listBpks();
+
 		StringEntity entity = null;
 		try {
 			String jsonString = JSONUtils.serialize(list);

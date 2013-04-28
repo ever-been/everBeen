@@ -38,6 +38,12 @@
 			<version>${project.parent.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>been-api</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+
 		<!-- EXTERNAL -->
 		<dependency>
 			<groupId>args4j</groupId>

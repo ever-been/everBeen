@@ -3,6 +3,9 @@ package cz.cuni.mff.d3s.been.client;
 import java.util.Collection;
 import java.util.Map;
 
+import cz.cuni.mff.d3s.been.api.BeenApi;
+import cz.cuni.mff.d3s.been.api.BeenApiImpl;
+import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import jline.console.ConsoleReader;
 
 import com.hazelcast.core.Instance;
@@ -25,9 +28,10 @@ import cz.cuni.mff.d3s.been.debugassistant.DebugListItem;
 class ClusterMode extends AbstractMode {
 
 	private final ClusterContext clusterContext;
+	private final BeenApi api;
 
 	private enum Action {
-		HELP, TASKS, TASKCONTEXTS, RUNTIMES, BREAK, INSTANCES, LOGS, DEBUG;
+		HELP, TASKS, TASKCONTEXTS, RUNTIMES, BREAK, INSTANCES, BPKS, LOGS, DEBUG;
 	}
 
 	private static String[] getActionStrings() {
@@ -47,7 +51,7 @@ class ClusterMode extends AbstractMode {
 	public ClusterMode(ConsoleReader reader, ClusterContext clusterContext) {
 		super(reader, "> ", getActionStrings());
 		this.clusterContext = clusterContext;
-
+		this.api = new BeenApiImpl(clusterContext);
 	}
 
 	@Override
@@ -77,6 +81,9 @@ class ClusterMode extends AbstractMode {
 			case LOGS:
 				handleLogs(args);
 				break;
+			case BPKS:
+				handleBpks(args);
+				break;
 			case DEBUG:
 				handleDebug(args);
 				break;
@@ -86,7 +93,15 @@ class ClusterMode extends AbstractMode {
 		}
 
 		return this;
+	}
 
+	private void handleBpks(String[] args) {
+		for (BpkIdentifier bpk : api.getBpks()) {
+			out.println("Group ID: " + bpk.getGroupId());
+			out.println("Bpk ID: " + bpk.getBpkId());
+			out.println("Version: " + bpk.getVersion());
+			out.println("-----------------------------------");
+		}
 	}
 
 	private void handleDebug(String[] args) {
