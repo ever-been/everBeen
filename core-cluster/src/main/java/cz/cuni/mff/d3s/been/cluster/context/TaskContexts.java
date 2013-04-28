@@ -45,7 +45,7 @@ public class TaskContexts {
 		return getTaskContextsMap().put(entry.getId(), entry, ttl, timeUnit);
 	}
 
-	public void submit(TaskContextDescriptor descriptor) {
+	public TaskContextEntry submit(TaskContextDescriptor descriptor) {
 
 		TaskContextEntry taskContextEntry = new TaskContextEntry();
 		taskContextEntry.setTaskContextDescriptor(descriptor);
@@ -82,6 +82,8 @@ public class TaskContexts {
 		}
 
 		log.info("Task context was submitted with ID {}", taskContextEntry.getId());
+
+		return taskContextEntry;
 	}
 
 	private void setTaskProperties(TaskContextDescriptor descriptor, Task task, TaskDescriptor td) {

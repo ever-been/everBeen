@@ -5,6 +5,9 @@ import java.util.List;
 
 import javax.xml.bind.JAXBException;
 
+import cz.cuni.mff.d3s.been.api.BeenApi;
+import cz.cuni.mff.d3s.been.api.BeenApiImpl;
+import cz.cuni.mff.d3s.been.bpk.*;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -12,10 +15,6 @@ import org.xml.sax.SAXException;
 
 import com.hazelcast.core.HazelcastInstance;
 
-import cz.cuni.mff.d3s.been.bpk.BpkConfiguration;
-import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
-import cz.cuni.mff.d3s.been.bpk.BpkResolver;
-import cz.cuni.mff.d3s.been.bpk.MetaInf;
 import cz.cuni.mff.d3s.been.cluster.Instance;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.jaxb.BindingParser;
@@ -72,7 +71,7 @@ public class Submitter {
 		new Submitter().doMain(args);
 	}
 
-	private ClusterContext clusterContext;
+	private BeenApi api;
 
 	private void initializeCluster() {
 		if (debug) {
@@ -81,22 +80,12 @@ public class Submitter {
 			System.setProperty("hazelcast.logging.type", "none");
 		}
 
-		// connect to the cluster
-		HazelcastInstance instance = Instance.newNativeInstance(host, port, groupName, groupPassword);
-		clusterContext = new ClusterContext(instance);
+		api = new BeenApiImpl(host, port, groupName, groupPassword);
 	}
 
 	private void submitSingleTask(File tdFile) throws JAXBException, SAXException, ConvertorException {
 		TaskDescriptor td = createTaskDescriptor(tdFile);
-
-		TaskContextDescriptor contextDescriptor = new TaskContextDescriptor();
-		Task t = new Task();
-		Descriptor d = new Descriptor();
-		d.setTaskDescriptor(td);
-		t.setDescriptor(d);
-		contextDescriptor.getTask().add(t);
-
-		clusterContext.getTaskContextsUtils().submit(contextDescriptor);
+		api.submitTask(td);
 	}
 
 	private TaskDescriptor createTaskDescriptor(File tdFile) throws SAXException, JAXBException, ConvertorException {
@@ -107,13 +96,9 @@ public class Submitter {
 	}
 
 	private void submitTaskContext(File tcdFile) throws JAXBException, SAXException, ConvertorException {
-		// create TCD
-
 		BindingParser<TaskContextDescriptor> bindingComposer = XSD.TASK_CONTEXT_DESCRIPTOR.createParser(TaskContextDescriptor.class);
 		TaskContextDescriptor taskContextDescriptor = bindingComposer.parse(tcdFile);
-
-		// submit it
-		clusterContext.getTaskContextsUtils().submit(taskContextDescriptor);
+		api.submitTaskContext(taskContextDescriptor);
 	}
 
 	private void doMain(String[] args) {
@@ -128,7 +113,7 @@ public class Submitter {
 
 			// upload BPK
 			for (String bpkFile : bpkFiles) {
-				uploadBpk(bpkFile, clusterContext);
+				uploadBpk(bpkFile);
 			}
 
 			if (tcdPath == null) {
@@ -152,21 +137,8 @@ public class Submitter {
 		}
 	}
 
-	private void uploadBpk(String bpkFile, ClusterContext clusterContext) throws Exception {
-
-		SWRepositoryInfo swInfo = clusterContext.getServicesUtils().getSWRepositoryInfo();
-		SwRepoClient client = new SwRepoClientFactory(SoftwareStoreFactory.getDataStore()).getClient(swInfo.getHost(), swInfo.getHttpServerPort());
-
-		BpkIdentifier bpkIdentifier = new BpkIdentifier();
-
-		BpkConfiguration bpkConfiguration = BpkResolver.resolve(new File(bpkFile));
-		MetaInf metaInf = bpkConfiguration.getMetaInf();
-		bpkIdentifier.setGroupId(metaInf.getGroupId());
-		bpkIdentifier.setBpkId(metaInf.getBpkId());
-		bpkIdentifier.setVersion(metaInf.getVersion());
-
-		client.putBpk(bpkIdentifier, new File(bpkFile));
-
+	private void uploadBpk(String bpkFile) throws BpkConfigurationException {
+		api.uploadBpk(new File(bpkFile));
 		System.out.printf("%s uploaded to Software Repository\n", bpkFile);
 	}
 }

@@ -2,19 +2,22 @@ package cz.cuni.mff.d3s.been.api;
 
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.MultiMap;
+import cz.cuni.mff.d3s.been.bpk.*;
 import cz.cuni.mff.d3s.been.cluster.Instance;
 import cz.cuni.mff.d3s.been.cluster.Names;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.LogMessage;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
-import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
-import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
-import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
-import cz.cuni.mff.d3s.been.core.task.TaskEntry;
+import cz.cuni.mff.d3s.been.core.sri.SWRepositoryInfo;
+import cz.cuni.mff.d3s.been.core.task.*;
 import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
+import cz.cuni.mff.d3s.been.datastore.SoftwareStoreFactory;
+import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
+import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
 
 import java.io.File;
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -74,20 +77,50 @@ public class BeenApiImpl implements BeenApi {
 	}
 
 	@Override
-	public void uploadBpk(File bpkFile) {
+	public Collection<BpkIdentifier> getBpks() {
 		// TODO
-		throw new UnsupportedOperationException("lol");
+		return new ArrayList<>();
+	}
+
+	@Override
+	public void uploadBpk(File bpkFile) throws BpkConfigurationException {
+		SWRepositoryInfo swInfo = clusterContext.getServicesUtils().getSWRepositoryInfo();
+		SwRepoClient client = new SwRepoClientFactory(SoftwareStoreFactory.getDataStore()).getClient(swInfo.getHost(), swInfo.getHttpServerPort());
+
+		BpkIdentifier bpkIdentifier = new BpkIdentifier();
+
+		BpkConfiguration bpkConfiguration = BpkResolver.resolve(bpkFile);
+		MetaInf metaInf = bpkConfiguration.getMetaInf();
+		bpkIdentifier.setGroupId(metaInf.getGroupId());
+		bpkIdentifier.setBpkId(metaInf.getBpkId());
+		bpkIdentifier.setVersion(metaInf.getVersion());
+
+		client.putBpk(bpkIdentifier, bpkFile);
 	}
 
 	@Override
 	public String submitTask(TaskDescriptor taskDescriptor) {
-		// TODO
-		throw new UnsupportedOperationException("lol");
+		TaskContextDescriptor contextDescriptor = new TaskContextDescriptor();
+		Task taskInTaskContext = new Task();
+		Descriptor descriptorInTaskContext = new Descriptor();
+		descriptorInTaskContext.setTaskDescriptor(taskDescriptor);
+		taskInTaskContext.setDescriptor(descriptorInTaskContext);
+		contextDescriptor.getTask().add(taskInTaskContext);
+
+		TaskContextEntry taskContextEntry = clusterContext.getTaskContextsUtils().submit(contextDescriptor);
+
+		if (taskContextEntry.getContainedTask().size() == 0) {
+			throw new RuntimeException("Created task context does not contain a task.");
+		}
+
+		String taskId = taskContextEntry.getContainedTask().get(0);
+		return taskId;
 	}
 
 	@Override
 	public String submitTaskContext(TaskContextDescriptor taskContextDescriptor) {
-		// TODO
-		throw new UnsupportedOperationException("lol");
+		TaskContextEntry taskContextEntry = clusterContext.getTaskContextsUtils().submit(taskContextDescriptor);
+
+		return taskContextEntry.getId();
 	}
 }

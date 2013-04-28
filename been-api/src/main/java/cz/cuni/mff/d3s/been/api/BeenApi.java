@@ -1,5 +1,7 @@
 package cz.cuni.mff.d3s.been.api;
 
+import cz.cuni.mff.d3s.been.bpk.BpkConfigurationException;
+import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.core.LogMessage;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
@@ -34,7 +36,9 @@ public interface BeenApi {
 
 	public Collection<LogMessage> getLogs(String setId);
 
-	public void uploadBpk(File bpkFile);
+	public Collection<BpkIdentifier> getBpks();
+
+	public void uploadBpk(File bpkFile) throws BpkConfigurationException;
 
 	public String submitTask(TaskDescriptor taskDescriptor);
 
