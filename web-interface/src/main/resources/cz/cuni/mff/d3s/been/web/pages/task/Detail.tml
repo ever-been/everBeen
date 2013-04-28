@@ -6,6 +6,6 @@
 <t:beandisplay object="task">
 </t:beandisplay>
 
-<t:pagelink page="tasklogs" context="task.id">show logs</t:pagelink>
+<t:pagelink page="task/logs" context="task.id">show logs</t:pagelink>
 
 </html>
