@@ -2,9 +2,12 @@ package cz.cuni.mff.d3s.been.api;
 
 import cz.cuni.mff.d3s.been.core.LogMessage;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
+import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
+import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 
+import java.io.File;
 import java.net.InetSocketAddress;
 import java.util.Collection;
 
@@ -30,5 +33,11 @@ public interface BeenApi {
 	public Collection<String> getLogSets();
 
 	public Collection<LogMessage> getLogs(String setId);
+
+	public void uploadBpk(File bpkFile);
+
+	public String submitTask(TaskDescriptor taskDescriptor);
+
+	public String submitTaskContext(TaskContextDescriptor taskContextDescriptor);
 
 }

@@ -7,10 +7,13 @@ import cz.cuni.mff.d3s.been.cluster.Names;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.LogMessage;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
+import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
+import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
 
+import java.io.File;
 import java.net.InetSocketAddress;
 import java.util.Collection;
 
@@ -68,5 +71,23 @@ public class BeenApiImpl implements BeenApi {
 	public Collection<LogMessage> getLogs(String setId) {
 		MultiMap<String, LogMessage> logs = clusterContext.getInstance().getMultiMap(Names.LOGS_MULTIMAP_NAME);
 		return logs.get(setId);
+	}
+
+	@Override
+	public void uploadBpk(File bpkFile) {
+		// TODO
+		throw new UnsupportedOperationException("lol");
+	}
+
+	@Override
+	public String submitTask(TaskDescriptor taskDescriptor) {
+		// TODO
+		throw new UnsupportedOperationException("lol");
+	}
+
+	@Override
+	public String submitTaskContext(TaskContextDescriptor taskContextDescriptor) {
+		// TODO
+		throw new UnsupportedOperationException("lol");
 	}
 }
