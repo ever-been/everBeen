@@ -10,6 +10,7 @@ import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 
 import java.io.File;
+import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.util.Collection;
 
@@ -38,7 +39,7 @@ public interface BeenApi {
 
 	public Collection<BpkIdentifier> getBpks();
 
-	public void uploadBpk(File bpkFile) throws BpkConfigurationException;
+	public void uploadBpk(InputStream bpkInputStream) throws BpkConfigurationException;
 
 	public String submitTask(TaskDescriptor taskDescriptor);
 
