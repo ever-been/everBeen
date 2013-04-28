@@ -16,6 +16,7 @@ import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
 
 import java.io.File;
+import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -78,12 +79,15 @@ public class BeenApiImpl implements BeenApi {
 
 	@Override
 	public Collection<BpkIdentifier> getBpks() {
-		// TODO
-		return new ArrayList<>();
+		SWRepositoryInfo swInfo = clusterContext.getServicesUtils().getSWRepositoryInfo();
+		SwRepoClient client = new SwRepoClientFactory(SoftwareStoreFactory.getDataStore()).getClient(swInfo.getHost(), swInfo.getHttpServerPort());
+		return client.listBpks();
 	}
 
 	@Override
-	public void uploadBpk(File bpkFile) throws BpkConfigurationException {
+	public void uploadBpk(InputStream bpkInputStream) throws BpkConfigurationException {
+		// TODO
+		/*
 		SWRepositoryInfo swInfo = clusterContext.getServicesUtils().getSWRepositoryInfo();
 		SwRepoClient client = new SwRepoClientFactory(SoftwareStoreFactory.getDataStore()).getClient(swInfo.getHost(), swInfo.getHttpServerPort());
 
@@ -96,6 +100,7 @@ public class BeenApiImpl implements BeenApi {
 		bpkIdentifier.setVersion(metaInf.getVersion());
 
 		client.putBpk(bpkIdentifier, bpkFile);
+		*/
 	}
 
 	@Override
