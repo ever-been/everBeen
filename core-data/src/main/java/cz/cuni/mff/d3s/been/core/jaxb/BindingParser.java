@@ -25,44 +25,53 @@
  */
 package cz.cuni.mff.d3s.been.core.jaxb;
 
-import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.InputStream;
 import java.io.Reader;
+import java.io.Serializable;
+
+import javax.xml.bind.JAXBException;
 
 /**
  * JAXB-based XML parsers (unmarshallers) implement this interface.
  * 
  * @author Andrej Podzimek
  * 
- * @param <T> The binding class.
+ * @param <T>
+ *          The binding class.
  */
-public interface BindingParser< T extends AbstractSerializable > {
-	
+public interface BindingParser<T extends Serializable> {
+
 	/**
 	 * Parses an input stream.
 	 * 
-	 * @param stream The input stream to parse.
+	 * @param stream
+	 *          The input stream to parse.
 	 * @return A JAXB-based representation of the XML data.
-	 * @throws javax.xml.bind.JAXBException When unmarshalling fails.
+	 * @throws javax.xml.bind.JAXBException
+	 *           When unmarshalling fails.
 	 */
 	T parse(InputStream stream) throws JAXBException, ConvertorException;
 
 	/**
 	 * Parses a reader.
-	 *
-	 * @param reader The reader to parse.
+	 * 
+	 * @param reader
+	 *          The reader to parse.
 	 * @return A JAXB-based representation of the XML data.
-	 * @throws javax.xml.bind.JAXBException When unmarshalling fails.
+	 * @throws javax.xml.bind.JAXBException
+	 *           When unmarshalling fails.
 	 */
 	T parse(Reader reader) throws JAXBException, ConvertorException;
 
 	/**
 	 * Parses a file.
-	 *
-	 * @param file Name of the file to parse.
+	 * 
+	 * @param file
+	 *          Name of the file to parse.
 	 * @return A JAXB-based representation of the XML data.
-	 * @throws javax.xml.bind.JAXBException When unmarshalling fails.
+	 * @throws javax.xml.bind.JAXBException
+	 *           When unmarshalling fails.
 	 */
 	T parse(File file) throws JAXBException, ConvertorException;
 }

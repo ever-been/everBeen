@@ -1,15 +1,17 @@
 package cz.cuni.mff.d3s.been.core.task;
 
-import cz.cuni.mff.d3s.been.core.jaxb.BindingComposer;
-import cz.cuni.mff.d3s.been.core.jaxb.XSD;
-import org.xml.sax.SAXException;
+import static cz.cuni.mff.d3s.been.core.jaxb.Factory.TASK;
 
-import javax.xml.bind.JAXBException;
 import java.io.StringWriter;
 import java.util.List;
 import java.util.UUID;
 
-import static cz.cuni.mff.d3s.been.core.jaxb.Factory.TASK;
+import javax.xml.bind.JAXBException;
+
+import org.xml.sax.SAXException;
+
+import cz.cuni.mff.d3s.been.core.jaxb.BindingComposer;
+import cz.cuni.mff.d3s.been.core.jaxb.XSD;
 
 /**
  * Convenient functions for TaskEntry.

@@ -11,11 +11,11 @@ import com.hazelcast.core.IQueue;
 
 import cz.cuni.mff.d3s.been.cluster.Names;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
+import cz.cuni.mff.d3s.been.core.persistence.EntityCarrier;
 import cz.cuni.mff.d3s.been.mq.IMessageQueue;
 import cz.cuni.mff.d3s.been.mq.IMessageReceiver;
 import cz.cuni.mff.d3s.been.mq.Messaging;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
-import cz.cuni.mff.d3s.been.results.ResultCarrier;
 
 /**
  * This dispatcher recieves serialized results from the Task and queues them up
@@ -23,13 +23,13 @@ import cz.cuni.mff.d3s.been.results.ResultCarrier;
  * 
  * @author Martin Sixta
  */
-final class ResultsDispatcher extends Thread {
+final class ResultsDispatcher implements Runnable {
 
 	private static final Logger log = LoggerFactory.getLogger(ResultsDispatcher.class);
 
 	private final ClusterContext clusterContext;
 	private final String hostName;
-	private final IQueue<ResultCarrier> resultQueue;
+	private final IQueue<EntityCarrier> resultQueue;
 	private final ObjectMapper objectMapper;
 	private final ObjectReader resultReader;
 
@@ -42,7 +42,7 @@ final class ResultsDispatcher extends Thread {
 		this.resultsMessages = Messaging.createTcpQueue(host);
 		this.resultQueue = clusterContext.getQueue(Names.RESULT_QUEUE_NAME);
 		this.objectMapper = new ObjectMapper();
-		this.resultReader = objectMapper.reader(ResultCarrier.class);
+		this.resultReader = objectMapper.reader(EntityCarrier.class);
 	}
 	public int getPort() {
 		return receiver.getPort();
@@ -56,7 +56,7 @@ final class ResultsDispatcher extends Thread {
 	public void run() {
 		while (!Thread.currentThread().isInterrupted()) {
 			try {
-				final ResultCarrier rc = resultReader.readValue(receiver.receive());
+				final EntityCarrier rc = resultReader.readValue(receiver.receive());
 				if (resultQueue.add(rc)) {
 					log.debug("Queued result {}", rc.toString());
 				} else {

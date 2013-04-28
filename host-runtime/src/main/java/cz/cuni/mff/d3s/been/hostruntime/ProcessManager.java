@@ -158,9 +158,7 @@ final class ProcessManager implements Service, Reapable {
 		final Reaper reaper = new Reaper() {
 			@Override
 			protected void reap() throws InterruptedException {
-				resultsDispatcher.interrupt();
-				executorService.shutdown();
-				executorService.awaitTermination(300, TimeUnit.MILLISECONDS);
+				ProcessManager.this.stop();
 			}
 		};
 		reaper.pushTarget(taskMessageDispatcher);
@@ -361,7 +359,7 @@ final class ProcessManager implements Service, Reapable {
 
 	private void unregisterResultsDispatcher() {
 		log.debug("Stopping result dispatcher...");
-		executorService.shutdown();
+		executorService.shutdownNow();
 		try {
 			executorService.awaitTermination(1, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {

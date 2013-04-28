@@ -42,15 +42,15 @@ public enum XSDFile {
 	COMMON("common.xsd"),
 
 	/** The schema for XML equivalents of task descriptors. */
-	TASK_DESCRIPTOR("taskdescriptor.xsd"),
+	TASK_DESCRIPTOR("task-descriptor.xsd"),
 
-	TASK_CONTEXT_DESCRIPTOR("taskcontextdescriptor.xsd"),
+	TASK_CONTEXT_DESCRIPTOR("task-context-descriptor.xsd"),
 
-	TASKENTRY("taskentry.xsd"),
+	TASKENTRY("task-entry.xsd"),
 
-	RUNTIME("runtimeinfo.xsd"),
+	RUNTIME("runtime-info.xsd"),
 
-	HARDWARE_INFO("hardwareinfo.xsd");
+	HARDWARE_INFO("hardware-info.xsd");
 
 	/** A file instance pointing at the corresponding schema definition. */
 	final File FILE;
@@ -62,7 +62,8 @@ public enum XSDFile {
 	 *          Name of a XSD file.
 	 */
 	private XSDFile(String name) {
-		InputStream input = XSDFile.class.getClassLoader().getResourceAsStream("xsd/" + name);
+		InputStream input = XSDFile.class.getClassLoader().getResourceAsStream(
+				"xsd/" + name);
 		try {
 			Files.copy(input, XSDRoot.ROOT.resolve(name));
 		} catch (IOException e) {

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bindings
+	xmlns="http://java.sun.com/xml/ns/jaxb"
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	extensionBindingPrefixes="xjc"
+	version="2.0"
+	>
+	
+	<bindings schemaLocation="common.xsd">
+		<schemaBindings>
+			<package name="cz.cuni.mff.d3s.been.core.common" />
+		</schemaBindings>
+	</bindings>
+	
+</bindings>

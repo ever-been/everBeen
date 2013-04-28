@@ -2,9 +2,9 @@ package cz.cuni.mff.d3s.been.taskapi;
 
 import java.util.Collection;
 
+import cz.cuni.mff.d3s.been.core.persistence.EntityID;
 import cz.cuni.mff.d3s.been.results.DAOException;
 import cz.cuni.mff.d3s.been.results.Result;
-import cz.cuni.mff.d3s.been.results.ResultContainerId;
 import cz.cuni.mff.d3s.been.results.ResultFilter;
 import cz.cuni.mff.d3s.been.taskapi.results.ResultFacade;
 import cz.cuni.mff.d3s.been.taskapi.results.ResultPersister;
@@ -25,15 +25,17 @@ class TaskFieldResultFacadeWrapper implements ResultFacade {
 	}
 
 	@Override
-	public ResultPersister createResultPersister(ResultContainerId containerId) {
+	public ResultPersister createResultPersister(EntityID entityId) {
 		checkInitialized();
-		return results.createResultPersister(containerId);
+		return results.createResultPersister(entityId);
 	}
 
 	@Override
-	public void persistResult(Result result, ResultContainerId containerId) throws DAOException {
+	public
+			void
+			persistResult(Result result, EntityID entityId) throws DAOException {
 		checkInitialized();
-		results.persistResult(result, containerId);
+		results.persistResult(result, entityId);
 	}
 
 	@Override

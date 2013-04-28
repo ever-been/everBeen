@@ -1,21 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema
 		targetNamespace="http://been.d3s.mff.cuni.cz/common"
-		elementFormDefault="qualified"
 		xmlns:xs="http://www.w3.org/2001/XMLSchema"
-		xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
-		xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
-		jaxb:extensionBindingPrefixes="xjc"
-		jaxb:version="2.0">
-
-	<xs:annotation>
-		<xs:appinfo>
-			<jaxb:globalBindings generateIsSetMethod="true">
-				<xjc:serializable uid="-9223372036854775808"/>
-				<xjc:superClass name="cz.cuni.mff.d3s.been.core.jaxb.AbstractSerializable"/>
-			</jaxb:globalBindings>
-		</xs:appinfo>
-	</xs:annotation>
+		>
 
 	<xs:simpleType name="IDStringFree">
 		<xs:restriction base="xs:string">

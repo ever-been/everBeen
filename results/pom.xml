@@ -1,25 +1,28 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
 	<artifactId>results</artifactId>
 	<packaging>jar</packaging>
 
 	<parent>
-		<groupId>cz.cuni.mff.d3s.been</groupId>
 		<artifactId>clustered</artifactId>
+		<groupId>cz.cuni.mff.d3s.been</groupId>
 		<version>3.0.0</version>
 	</parent>
-
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.jvnet.jaxb2_commons</groupId>
-			<artifactId>jaxb2-basics-runtime</artifactId>
-			<version>0.6.4</version>
+			<artifactId>basic</artifactId>
+			<version>${jvnetbasics.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>core-data</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 
@@ -27,70 +30,74 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>${maven-assembly-plugin.version}</version>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>${maven-jar-plugin.version}</version>
+
 				<configuration>
-					<finalName>results-runnable</finalName>
-					<appendAssemblyId>false</appendAssemblyId>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-							<mainClass>cz.cuni.mff.d3s.been.resultsrepository.ResultsRepositoryRunner</mainClass>
-						</manifest>
-					</archive>
+					<includes>
+						<include>cz/cuni/mff/d3s/been/results/*</include>
+						<include>xsd/*</include>
+						<include>META-INF/*</include>
+					</includes>
 				</configuration>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>jaxb2-maven-plugin</artifactId>
-				<version>${jaxb2-maven-plugin.version}</version>
+				<groupId>org.jvnet.jaxb2.maven2</groupId>
+				<artifactId>maven-jaxb2-plugin</artifactId>
+				<version>${jvnetjaxb.version}</version>
 
 				<configuration>
-					<arguments>-XtoString -Xfluent-api</arguments>
-				</configuration>
+					<plugins>
+						<dependency>
+							<groupId>cz.cuni.mff.d3s.been</groupId>
+							<artifactId>xsd-catalog-resolver</artifactId>
+							<version>${project.version}</version>
+						</dependency>
 
-				<dependencies>
-					<dependency>
-						<groupId>org.jvnet.jaxb2_commons</groupId>
-						<artifactId>jaxb2-basics</artifactId>
-						<version>0.6.4</version>
-					</dependency>
-					<dependency>
-						<groupId>org.jvnet.jaxb2_commons</groupId>
-						<artifactId>jaxb2-fluent-api</artifactId>
-						<version>3.0</version>
-					</dependency>
-				</dependencies>
+						<!-- schema dependencies -->
+						<dependency>
+							<groupId>cz.cuni.mff.d3s.been</groupId>
+							<artifactId>core-data</artifactId>
+							<version>${project.version}</version>
+						</dependency>
+
+						<dependency>
+							<groupId>org.jvnet.jaxb2_commons</groupId>
+							<artifactId>jaxb2-fluent-api</artifactId>
+							<version>${jvnetfluent.version}</version>
+						</dependency>
+					</plugins>
+
+					<schemaDirectory>${project.basedir}/src/main/resources/xsd</schemaDirectory>
+					<args>
+						<arg>-XtoString</arg>
+						<arg>-Xfluent-api</arg>
+					</args>
+					<extension>true</extension>
+					<forceRegenerate>true</forceRegenerate>
+					<catalogResolver>cz.cuni.mff.d3s.been.xml.resolve.BEENClassPathCatalogResolver</catalogResolver>
+				</configuration>
 
 				<executions>
 					<execution>
-						<id>packageConfig-xjc</id>
+						<id>results-xjc</id>
 						<goals>
-							<goal>xjc</goal>
+							<goal>generate</goal>
 						</goals>
 						<configuration>
-							<staleFile>${project.build.directory}/jaxb2/.benchmarkXjcStaleFlag</staleFile>
-							<schemaDirectory>${project.basedir}/src/main/resources/cz/cuni/mff/d3s/been/results</schemaDirectory>
-							<clearOutputDir>true</clearOutputDir>
-							<schemaFiles>results.xsd</schemaFiles>
-							<packageName>cz.cuni.mff.d3s.been.results</packageName>
-							<extension>true</extension>
+							<episodes>
+								<dependency>
+									<groupId>cz.cuni.mff.d3s.been</groupId>
+									<artifactId>core-data</artifactId>
+									<version>${project.version}</version>
+								</dependency>
+							</episodes>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
 		</plugins>
 	</build>
+
 </project>

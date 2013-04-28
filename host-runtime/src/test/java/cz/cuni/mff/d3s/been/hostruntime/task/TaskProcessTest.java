@@ -26,24 +26,25 @@ import cz.cuni.mff.d3s.been.hostruntime.TaskException;
 public class TaskProcessTest extends Assert {
 
 	private String sourceWithTimeoutAsFirstArg = //
-			"public class Main {" + //
-			"	public static void main(String[] args) throws InterruptedException {" + //
-			"		Thread.sleep(new Integer(args[0]));" + //
-			"	}" + //
-			"}";
+	"public class Main {" + //
+	"	public static void main(String[] args) throws InterruptedException {" + //
+	"		Thread.sleep(new Integer(args[0]));" + //
+	"	}" + //
+	"}";
 
 	private String sourceDoingNothing = //
-			"public class Main {" + //
-			"	public static void main(String[] args) throws InterruptedException {" + //
-			"	}" + //
-			"}";
+	"public class Main {" + //
+	"	public static void main(String[] args) throws InterruptedException {" + //
+	"  System.out.println(\"Bjeste fsichni do drpele...\");" + //
+	"	}" + //
+	"}";
 
 	private String sourceWithBadExitCode = //
-			"public class Main {" + //
-			"	public static void main(String[] args) throws InterruptedException {" + //
-			"		System.exit(123);" + //
-			"	}" + //
-			"}";
+	"public class Main {" + //
+	"	public static void main(String[] args) throws InterruptedException {" + //
+	"		System.exit(123);" + //
+	"	}" + //
+	"}";
 
 	@Rule
 	public TemporaryFolder tmpFolder = new TemporaryFolder();
@@ -56,7 +57,9 @@ public class TaskProcessTest extends Assert {
 	}
 
 	@Test(expected = TaskException.class)
-	public void testExceptionIsThrownWhenProcessEndsWithErrorExitCode() throws Exception {
+	public
+			void
+			testExceptionIsThrownWhenProcessEndsWithErrorExitCode() throws Exception {
 		CommandLine cmd = cmdLine(sourceWithBadExitCode);
 		Map<String, String> environment = new HashMap<>();
 		ExecuteStreamHandler streamhandler = new PumpStreamHandler();
@@ -67,7 +70,9 @@ public class TaskProcessTest extends Assert {
 	}
 
 	@Test(expected = TaskException.class)
-	public void testExceptionIsThrownWhenInvalidCommandLineProvided() throws Exception {
+	public
+			void
+			testExceptionIsThrownWhenInvalidCommandLineProvided() throws Exception {
 		CommandLine cmd = new CommandLine("q w e r t y u i");
 		Map<String, String> environment = new HashMap<>();
 		ExecuteStreamHandler streamhandler = new PumpStreamHandler();
@@ -112,7 +117,9 @@ public class TaskProcessTest extends Assert {
 
 	@Test(timeout = 5000)
 	public void testProcessIsCorrectlyKilled() throws Exception {
-		CommandLine cmd = cmdLineWithExecutionTime(sourceWithTimeoutAsFirstArg, 100000);
+		CommandLine cmd = cmdLineWithExecutionTime(
+				sourceWithTimeoutAsFirstArg,
+				100000);
 		Map<String, String> environment = new HashMap<>();
 		ExecuteStreamHandler streamhandler = new PumpStreamHandler();
 		long processTimeout = TaskProcess.NO_TIMEOUT;
@@ -157,7 +164,9 @@ public class TaskProcessTest extends Assert {
 	 * I used this ugly hack because all tests should be runnable on all operating
 	 * systems and java is ideal candidate.
 	 */
-	private CommandLine cmdLineWithExecutionTime(String source, int execSeconds) throws Exception {
+	private
+			CommandLine
+			cmdLineWithExecutionTime(String source, int execSeconds) throws Exception {
 		return cmdLine(source).addArgument("" + execSeconds * 1000);
 	}
 
@@ -175,10 +184,21 @@ public class TaskProcessTest extends Assert {
 
 		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 		DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
-		StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null);
+		StandardJavaFileManager fileManager = compiler.getStandardFileManager(
+				diagnostics,
+				null,
+				null);
 		Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromStrings(Arrays.asList(javaFile.getAbsolutePath()));
-		JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, diagnostics, null, null, compilationUnits);
-		assertTrue("class " + source + " not compiled - check syntax in test definition", task.call());
+		JavaCompiler.CompilationTask task = compiler.getTask(
+				null,
+				fileManager,
+				diagnostics,
+				null,
+				null,
+				compilationUnits);
+		assertTrue(
+				"class " + source + " not compiled - check syntax in test definition",
+				task.call());
 		fileManager.close();
 	}
 }

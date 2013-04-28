@@ -1,21 +1,26 @@
 package cz.cuni.mff.d3s.been.cluster.context;
 
-import com.hazelcast.core.IMap;
-import cz.cuni.mff.d3s.been.cluster.Names;
-import cz.cuni.mff.d3s.been.core.task.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.hazelcast.core.IMap;
+
+import cz.cuni.mff.d3s.been.cluster.Names;
+import cz.cuni.mff.d3s.been.core.task.Task;
+import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
+import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
+import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
+import cz.cuni.mff.d3s.been.core.task.TaskEntries;
+import cz.cuni.mff.d3s.been.core.task.TaskEntry;
+import cz.cuni.mff.d3s.been.core.task.Template;
+
 /**
- * Created with IntelliJ IDEA.
- * User: Kuba
- * Date: 20.04.13
- * Time: 13:09
- * To change this template use File | Settings | File Templates.
+ * Created with IntelliJ IDEA. User: Kuba Date: 20.04.13 Time: 13:09 To change
+ * this template use File | Settings | File Templates.
  */
 public class TaskContexts {
 
@@ -67,14 +72,17 @@ public class TaskContexts {
 		log.info("Task context was submitted with ID {}", taskContextEntry.getId());
 	}
 
-	private TaskDescriptor cloneTemplateWithName(TaskContextDescriptor descriptor, String templateName) {
+	private TaskDescriptor cloneTemplateWithName(
+			TaskContextDescriptor descriptor, String templateName) {
 		for (Template t : descriptor.getTemplates().getTemplate()) {
 			if (t.getName().equals(templateName)) {
-				return (TaskDescriptor)t.getTaskDescriptor().clone();
+				return (TaskDescriptor) t.getTaskDescriptor().createCopy();
 			}
 		}
 
-		throw new IllegalArgumentException(String.format("Cannot find template with name '%s'", templateName));
+		throw new IllegalArgumentException(String.format(
+				"Cannot find template with name '%s'",
+				templateName));
 	}
 
 }

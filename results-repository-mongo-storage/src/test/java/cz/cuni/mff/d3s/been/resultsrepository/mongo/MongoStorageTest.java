@@ -7,10 +7,10 @@ import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
 import cz.cuni.mff.d3s.been.cluster.ServiceException;
+import cz.cuni.mff.d3s.been.core.persistence.EntityID;
 import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
 import cz.cuni.mff.d3s.been.core.utils.JSONUtils.JSONSerializerException;
 import cz.cuni.mff.d3s.been.results.DAOException;
-import cz.cuni.mff.d3s.been.results.ResultContainerId;
 
 public final class MongoStorageTest extends Assert {
 
@@ -55,13 +55,12 @@ public final class MongoStorageTest extends Assert {
 	}
 
 	private MongoStorage storage;
-	private final ResultContainerId dummyId;
+	private final EntityID dummyId;
 
 	MongoStorageTest() {
-		dummyId = new ResultContainerId();
-		dummyId.setDatabaseName("results");
-		dummyId.setCollectionName("testStorage");
-		dummyId.setEntityName("dummy");
+		dummyId = new EntityID();
+		dummyId.setKind("results");
+		dummyId.setGroup("test");
 	}
 
 	private void connectStorage() throws ServiceException {
@@ -78,8 +77,10 @@ public final class MongoStorageTest extends Assert {
 	public StorageAllocatorRule storageAllocatorRule = new StorageAllocatorRule();
 
 	//@Test
-	public void testSubmitAndRetrieveItem() throws JSONSerializerException, DAOException {
-		storage.storeResult(dummyId, JSONUtils.serialize(new DummyResult()));
+	public
+			void
+			testSubmitAndRetrieveItem() throws JSONSerializerException, DAOException {
+		storage.store(dummyId, JSONUtils.serialize(new DummyResult()));
 	}
 
 }

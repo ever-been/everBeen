@@ -63,13 +63,25 @@
 		<!-- OTHER BEEN DEPENDENCIES -->
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>core-data</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
 			<artifactId>results</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
-			<artifactId>results-repository-storage</artifactId>
+			<artifactId>persistence</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>storage</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 

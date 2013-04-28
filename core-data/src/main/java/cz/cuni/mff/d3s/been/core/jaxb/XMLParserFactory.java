@@ -25,9 +25,11 @@
  */
 package cz.cuni.mff.d3s.been.core.jaxb;
 
-import org.xml.sax.SAXException;
+import java.io.Serializable;
 
 import javax.xml.bind.JAXBException;
+
+import org.xml.sax.SAXException;
 
 /**
  * This interface is implemented by JAXB parser factories in the XSD enum.
@@ -39,13 +41,16 @@ interface XMLParserFactory {
 	/**
 	 * Creates a new Parser.
 	 * 
-	 * @param <T> Type of the binding class.
-	 * @param bindingClass The binding class.
+	 * @param <T>
+	 *          Type of the binding class.
+	 * @param bindingClass
+	 *          The binding class.
 	 * @return A Parser based o on the binding class.
-	 * @throws org.xml.sax.SAXException When some low-level XSD problems occur on initialization.
-	 * @throws javax.xml.bind.JAXBException When the binding class is refused.
+	 * @throws org.xml.sax.SAXException
+	 *           When some low-level XSD problems occur on initialization.
+	 * @throws javax.xml.bind.JAXBException
+	 *           When the binding class is refused.
 	 */
-	< T extends AbstractSerializable > BindingParser< T > internalCreateParser(
-			Class<T> bindingClass
-	) throws SAXException, JAXBException;	
+	<T extends Serializable> BindingParser<T> internalCreateParser(
+			Class<T> bindingClass) throws SAXException, JAXBException;
 }

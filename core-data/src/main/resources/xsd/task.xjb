@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bindings
+	xmlns="http://java.sun.com/xml/ns/jaxb"
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	extensionBindingPrefixes="xjc"
+	version="2.0">
+	
+	<bindings schemaLocation="task-descriptor.xsd">
+		<schemaBindings>
+			<package name="cz.cuni.mff.d3s.been.core.task" />
+		</schemaBindings>
+		
+		<bindings node="xs:simpleType[@name='ExclusiveString']">
+			<typesafeEnumClass name="TaskExclusivity" />
+			<bindings node="//xs:enumeration[@value='non-exclusive']">
+				<typesafeEnumMember name="NON_EXCLUSIVE"/>
+			</bindings>
+			<bindings node="//xs:enumeration[@value='context-exclusive']">
+				<typesafeEnumMember name="CONTEXT_EXCLUSIVE"/>
+			</bindings>
+			<bindings node="//xs:enumeration[@value='context-exclusive']">
+				<typesafeEnumMember name="exclusive"/>
+			</bindings>
+		</bindings>
+		
+		<bindings node="xs:complexType[@name='Property']">
+			<class name="TaskProperty" />
+		</bindings>
+		
+		<bindings node="xs:element[@name='property']">
+			<factoryMethod name="taskProperty" />
+		</bindings>
+		
+		<bindings node="xs:element[@name='properties']">
+			<class name="TaskProperties" />
+		</bindings>
+		
+		<bindings node="xs:element[@name='name']">
+			<factoryMethod name="taskName" />
+		</bindings>
+		
+		<bindings node="xs:element[@name='taskDescriptor']//xs:element[@ref='td:description']">
+			<property name="longDescription" />
+		</bindings>
+	</bindings>
+	
+	<bindings schemaLocation="task-context-descriptor.xsd">
+		<schemaBindings>
+				<package name="cz.cuni.mff.d3s.been.core.task" />
+		</schemaBindings>
+		
+		<bindings node="xs:element[@name='id']">
+			<factoryMethod name="contextId" />
+		</bindings>
+	</bindings>
+	
+	<bindings schemaLocation="task-entry.xsd">
+		<schemaBindings>
+			<package name="cz.cuni.mff.d3s.been.core.task" />
+		</schemaBindings>
+		
+		<bindings node="xs:element[@name='state']">
+			<property name="state">
+					<baseType>
+						<javaType
+								name="cz.cuni.mff.d3s.been.core.task.TaskState"
+								parseMethod="cz.cuni.mff.d3s.been.core.task.TaskState.valueOf"
+								printMethod="String.valueOf"
+								/>
+					</baseType>
+				</property>
+		</bindings>
+		
+		<bindings node="xs:element[@name='stateChangeLog']//xs:element[@ref='taskentry:stateChangeEntry']">
+			<property name="logEntries">
+				<javadoc>List of log entries.</javadoc>
+			</property>
+		</bindings>
+	</bindings>
+</bindings>

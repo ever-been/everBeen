@@ -57,7 +57,7 @@
 
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
-			<artifactId>results-repository-storage</artifactId>
+			<artifactId>storage</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 

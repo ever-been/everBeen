@@ -3,8 +3,8 @@ package cz.cuni.mff.d3s.been.task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cz.cuni.mff.d3s.been.core.persistence.EntityID;
 import cz.cuni.mff.d3s.been.results.DAOException;
-import cz.cuni.mff.d3s.been.results.ResultContainerId;
 import cz.cuni.mff.d3s.been.taskapi.Task;
 import cz.cuni.mff.d3s.been.taskapi.results.ResultPersister;
 
@@ -20,11 +20,10 @@ public class ExampleTask extends Task {
 
 	@Override
 	public void run() {
-		final ResultContainerId cid = new ResultContainerId();
-		cid.setDatabaseName("results");
-		cid.setCollectionName("testStorage");
-		cid.setEntityName("testResult");
-		final ResultPersister rp = results.createResultPersister(cid);
+		final EntityID eid = new EntityID();
+		eid.setKind("result");
+		eid.setGroup("test");
+		final ResultPersister rp = results.createResultPersister(eid);
 		System.out.println("Hello world!");
 		try {
 			rp.persist(new TestResult());

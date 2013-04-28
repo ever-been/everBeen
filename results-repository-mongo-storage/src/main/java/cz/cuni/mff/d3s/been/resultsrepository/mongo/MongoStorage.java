@@ -8,8 +8,8 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.util.JSON;
 
+import cz.cuni.mff.d3s.been.core.persistence.EntityID;
 import cz.cuni.mff.d3s.been.results.DAOException;
-import cz.cuni.mff.d3s.been.results.ResultContainerId;
 import cz.cuni.mff.d3s.been.resultsrepository.storage.Storage;
 import cz.cuni.mff.d3s.been.resultsrepository.storage.StorageException;
 
@@ -44,11 +44,10 @@ public final class MongoStorage implements Storage {
 	}
 
 	@Override
-	public void storeResult(ResultContainerId containerId, String json) throws DAOException {
-		final DB resdb = client.getDB(containerId.getDatabaseName());
-		final DBCollection coll = resdb.getCollection(containerId.getCollectionName());
-		final DBObject dbob = (DBObject) JSON.parse(json);
-		dbob.put("entity", containerId.getEntityName());
+	public void store(EntityID entityId, String entityJSON) throws DAOException {
+		final DB resdb = client.getDB(entityId.getKind());
+		final DBCollection coll = resdb.getCollection(entityId.getGroup());
+		final DBObject dbob = (DBObject) JSON.parse(entityJSON);
 		coll.insert(dbob);
 	}
 }

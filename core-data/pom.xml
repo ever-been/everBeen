@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>core-data</artifactId>
+	<packaging>jar</packaging>
 
 	<parent>
 		<artifactId>clustered</artifactId>
@@ -12,24 +13,38 @@
 	</parent>
 
 	<dependencies>
-		<!-- BEEN -->
-
-		<!-- THIRD PARTY -->
 		<dependency>
-			<groupId>org.eclipse.persistence</groupId>
-			<artifactId>eclipselink</artifactId>
-			<version>2.4.1</version>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>xsd-export</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.jvnet.jaxb2_commons</groupId>
-			<artifactId>jaxb2-basics-runtime</artifactId>
-			<version>0.6.4</version>
+			<artifactId>basic</artifactId>
+			<version>${jvnetbasics.version}</version>
 		</dependency>
 	</dependencies>
 
-
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources/xsd</directory>
+				<targetPath>xsd</targetPath>
+				<includes>
+					<include>*.xsd</include>
+				</includes>
+			</resource>
+
+			<resource>
+				<directory>META-INF/services</directory>
+				<targetPath>META-INF/services</targetPath>
+				<includes>
+					<include>*</include>
+				</includes>
+			</resource>
+		</resources>
+	
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -42,110 +57,49 @@
 			</plugin>
 
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>jaxb2-maven-plugin</artifactId>
-				<version>${jaxb2-maven-plugin.version}</version>
-
-				<configuration>
-					<arguments>-Xequals -XhashCode -XtoString -Xfluent-api -Xcopyable</arguments>
-				</configuration>
+				<groupId>org.jvnet.jaxb2.maven2</groupId>
+				<artifactId>maven-jaxb2-plugin</artifactId>
+				<version>${jvnetjaxb.version}</version>
 
 				<dependencies>
 					<dependency>
 						<groupId>org.jvnet.jaxb2_commons</groupId>
-						<artifactId>jaxb2-basics</artifactId>
-						<version>0.6.4</version>
+						<artifactId>basic</artifactId>
+						<version>${jvnetbasics.version}</version>
 					</dependency>
+
 					<dependency>
 						<groupId>org.jvnet.jaxb2_commons</groupId>
 						<artifactId>jaxb2-fluent-api</artifactId>
-						<version>3.0</version>
+						<version>${jvnetfluent.version}</version>
 					</dependency>
 				</dependencies>
 
+				<configuration>
+					<schemaDirectory>${project.basedir}/src/main/resources/xsd</schemaDirectory>
+					<clearOutputDir>false</clearOutputDir>
+					<extension>true</extension>
+					<forceRegenerate>true</forceRegenerate>
+					<episode>true</episode>
+					<catalog>${project.basedir}/src/main/resources/xsd/core-data.catalog.xml</catalog>
+					<args>
+						<arg>-Xequals</arg>
+						<arg>-XhashCode</arg>
+						<arg>-XtoString</arg>
+						<arg>-Xfluent-api</arg>
+						<arg>-Xcopyable</arg>
+					</args>
+				</configuration>
+
 				<executions>
 					<execution>
-						<id>runtimeinfo-xjc</id>
+						<id>all-xjc</id>
 						<goals>
-							<goal>xjc</goal>
-						</goals>
-						<configuration>
-							<schemaDirectory>${project.basedir}/src/main/resources/xsd</schemaDirectory>
-							<staleFile>${project.build.directory}/jaxb2/.riXjcStaleFlag</staleFile>
-							<clearOutputDir>false</clearOutputDir>
-							<schemaFiles>runtimeinfo.xsd, hardwareinfo.xsd, monitor.xsd</schemaFiles>
-							<packageName>cz.cuni.mff.d3s.been.core.ri</packageName>
-							<extension>true</extension>
-						</configuration>
-					</execution>
-
-					<execution>
-						<id>swrepositoryinfo-xjc</id>
-						<goals>
-							<goal>xjc</goal>
-						</goals>
-						<configuration>
-							<schemaDirectory>${project.basedir}/src/main/resources/xsd</schemaDirectory>
-							<staleFile>${project.build.directory}/jaxb2/.sriXjcStaleFlag</staleFile>
-							<clearOutputDir>false</clearOutputDir>
-							<schemaFiles>swrepositoryinfo.xsd, common.xsd</schemaFiles>
-							<packageName>cz.cuni.mff.d3s.been.core.sri</packageName>
-							<extension>true</extension>
-						</configuration>
-					</execution>
-
-					<execution>
-						<id>task-xjc</id>
-						<goals>
-							<goal>xjc</goal>
-						</goals>
-						<configuration>
-							<arguments></arguments>
-							<schemaDirectory>${project.basedir}/src/main/resources/xsd</schemaDirectory>
-							<staleFile>${project.build.directory}/jaxb2/.tdXjcStaleFlag</staleFile>
-							<clearOutputDir>false</clearOutputDir>
-							<schemaFiles>taskdescriptor.xsd, taskentry.xsd, taskcontextdescriptor.xsd, common.xsd</schemaFiles>
-							<packageName>cz.cuni.mff.d3s.been.core.task</packageName>
-							<extension>true</extension>
-						</configuration>
-					</execution>
-
-				</executions>
-
-			</plugin>
-
-			<plugin>
-				<groupId>org.dstovall</groupId>
-				<artifactId>onejar-maven-plugin</artifactId>
-				<version>1.4.4</version>
-				<executions>
-					<execution>
-						<configuration>
-							<onejarVersion>0.97</onejarVersion>
-							<attachToBuild>true</attachToBuild>
-							<classifier>onejar</classifier>
-						</configuration>
-						<goals>
-							<goal>one-jar</goal>
+							<goal>generate</goal>
 						</goals>
 					</execution>
 				</executions>
 			</plugin>
 		</plugins>
 	</build>
-
-	<repositories>
-		<repository>
-			<id>EclipseLink</id>
-			<url>http://download.eclipse.org/rt/eclipselink/maven.repo</url>
-		</repository>
-	</repositories>
-
-	<pluginRepositories>
-		<pluginRepository>
-			<id>onejar-maven-plugin.googlecode.com</id>
-			<url>http://onejar-maven-plugin.googlecode.com/svn/mavenrepo</url>
-		</pluginRepository>
-	</pluginRepositories>
-
 </project>

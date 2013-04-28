@@ -26,65 +26,71 @@
 
 package cz.cuni.mff.d3s.been.core.jaxb;
 
+import java.io.File;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.Serializable;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.validation.Schema;
-import java.io.File;
-import java.io.InputStream;
-import java.io.Reader;
 
 /**
  * A reference implementation of the {@link BindingParser} interface.
- *
+ * 
  * @author Andrej Podzimek
  */
-class XMLParser< T extends AbstractSerializable > implements BindingParser< T > {
+class XMLParser<T extends Serializable> implements BindingParser<T> {
 
 	/** The unmarshaller to parse XML data. */
 	private final Unmarshaller unmarshaller;
 
 	/**
-	 * Initializes a new XML parser implementation with a JAXB context and a schema.
-	 *
-	 * @param context The JAXB context from which an unmarshaller should be created.
-	 * @param schema The XML Schema the parsed data must honor.
-	 * @throws javax.xml.bind.JAXBException When the unmarshaller cannot be created.
+	 * Initializes a new XML parser implementation with a JAXB context and a
+	 * schema.
+	 * 
+	 * @param context
+	 *          The JAXB context from which an unmarshaller should be created.
+	 * @param schema
+	 *          The XML Schema the parsed data must honor.
+	 * @throws javax.xml.bind.JAXBException
+	 *           When the unmarshaller cannot be created.
 	 */
-	public XMLParser( JAXBContext context, Schema schema ) throws JAXBException {
+	public XMLParser(JAXBContext context, Schema schema) throws JAXBException {
 		this.unmarshaller = context.createUnmarshaller();
-		this.unmarshaller.setSchema( schema );
+		this.unmarshaller.setSchema(schema);
 		//unmarshaller.setProperty("eclipselink.media-type", "application/json");
 		//unmarshaller.setProperty("eclipselink.json.include-root", false);
 	}
 
-	@SuppressWarnings( "unchecked" )
+	@SuppressWarnings("unchecked")
 	@Override
-	public T parse( InputStream stream ) throws JAXBException, ConvertorException {
+	public T parse(InputStream stream) throws JAXBException, ConvertorException {
 		try {
-			return (T) unmarshaller.unmarshal( stream );
-		} catch ( ConvertorTransparentException exception ) {
-			throw new ConvertorException( exception );
+			return (T) unmarshaller.unmarshal(stream);
+		} catch (ConvertorTransparentException exception) {
+			throw new ConvertorException(exception);
 		}
 	}
 
-	@SuppressWarnings( "unchecked" )
+	@SuppressWarnings("unchecked")
 	@Override
-	public T parse( Reader reader ) throws JAXBException, ConvertorException {
+	public T parse(Reader reader) throws JAXBException, ConvertorException {
 		try {
-			return (T) unmarshaller.unmarshal( reader );
-		} catch ( ConvertorTransparentException exception ) {
-			throw new ConvertorException( exception );
+			return (T) unmarshaller.unmarshal(reader);
+		} catch (ConvertorTransparentException exception) {
+			throw new ConvertorException(exception);
 		}
 	}
 
-	@SuppressWarnings( "unchecked" )
+	@SuppressWarnings("unchecked")
 	@Override
-	public T parse( File file ) throws JAXBException, ConvertorException {
+	public T parse(File file) throws JAXBException, ConvertorException {
 		try {
-			return (T) unmarshaller.unmarshal( file );
-		} catch ( ConvertorTransparentException exception ) {
-			throw new ConvertorException( exception );
+			return (T) unmarshaller.unmarshal(file);
+		} catch (ConvertorTransparentException exception) {
+			throw new ConvertorException(exception);
 		}
 	}
 }

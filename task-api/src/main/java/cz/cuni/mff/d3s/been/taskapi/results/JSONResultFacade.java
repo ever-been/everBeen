@@ -8,12 +8,12 @@ import org.codehaus.jackson.map.SerializationConfig.Feature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cz.cuni.mff.d3s.been.core.persistence.EntityCarrier;
+import cz.cuni.mff.d3s.been.core.persistence.EntityID;
 import cz.cuni.mff.d3s.been.mq.IMessageSender;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
 import cz.cuni.mff.d3s.been.results.DAOException;
 import cz.cuni.mff.d3s.been.results.Result;
-import cz.cuni.mff.d3s.been.results.ResultCarrier;
-import cz.cuni.mff.d3s.been.results.ResultContainerId;
 import cz.cuni.mff.d3s.been.results.ResultFilter;
 
 final class JSONResultFacade implements ResultFacade {
@@ -31,11 +31,13 @@ final class JSONResultFacade implements ResultFacade {
 				new ResultFieldVisibilityChecker<>()));
 	}
 	@Override
-	public void persistResult(Result result, ResultContainerId containerId) throws DAOException {
+	public
+			void
+			persistResult(Result result, EntityID entityId) throws DAOException {
 		if (result == null) {
 			throw new DAOException("Cannot serialize a null object.");
 		}
-		ResultCarrier rc = null;
+		EntityCarrier ec = null;
 		String serializedResult = null;
 		try {
 			serializedResult = om.writeValueAsString(result);
@@ -44,11 +46,11 @@ final class JSONResultFacade implements ResultFacade {
 					"Unable to serialize Result %s to JSON.",
 					result.toString()), e);
 		}
-		rc = new ResultCarrier();
-		rc.setContainerId(containerId);
-		rc.setData(serializedResult);
+		ec = new EntityCarrier();
+		ec.setEntityId(entityId);
+		ec.setEntityJSON(serializedResult);
 		log.info("Facade serialized a result into >>{}<<", serializedResult);
-		sendRC(rc);
+		sendRC(ec);
 	}
 
 	@Override
@@ -57,8 +59,8 @@ final class JSONResultFacade implements ResultFacade {
 	}
 
 	@Override
-	public ResultPersister createResultPersister(ResultContainerId containerId) {
-		return new JSONResultPersister(containerId);
+	public ResultPersister createResultPersister(EntityID entityId) {
+		return new JSONResultPersister(entityId);
 	}
 
 	/**
@@ -68,15 +70,16 @@ final class JSONResultFacade implements ResultFacade {
 	 */
 	private class JSONResultPersister implements ResultPersister {
 
-		private final ResultContainerId containerId;
+		private final EntityID entityId;
 
 		/**
 		 * Initialize a JSON persister bound to a specific persistence collection.
 		 * 
-		 * @param containerId
+		 * @param entityId
+		 *          Persistent entity to bind to (determines target collection)
 		 */
-		public JSONResultPersister(ResultContainerId containerId) {
-			this.containerId = containerId;
+		JSONResultPersister(EntityID entityId) {
+			this.entityId = entityId;
 		}
 
 		@Override
@@ -90,14 +93,14 @@ final class JSONResultFacade implements ResultFacade {
 						result.toString()), e);
 			}
 			log.info("Persister serialized a result into >>{}<<", serializedResult);
-			final ResultCarrier rc = new ResultCarrier();
-			rc.setContainerId(containerId);
-			rc.setData(serializedResult);
+			final EntityCarrier rc = new EntityCarrier();
+			rc.setEntityId(entityId);
+			rc.setEntityJSON(serializedResult);
 			sendRC(rc);
 		}
 	}
 
-	private void sendRC(ResultCarrier rc) throws DAOException {
+	private void sendRC(EntityCarrier rc) throws DAOException {
 		try {
 			final String serializedRC = om.writeValueAsString(rc);
 			log.info(

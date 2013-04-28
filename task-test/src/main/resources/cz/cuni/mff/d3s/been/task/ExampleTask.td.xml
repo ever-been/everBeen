@@ -1,16 +1,18 @@
 <?xml version="1.0"?>
-<taskDescriptor xmlns="http://been.d3s.mff.cuni.cz/taskmanager/td"
+<taskDescriptor xmlns="http://been.d3s.mff.cuni.cz/task-descriptor"
 				groupId="cz.cuni.mff.d3s.been" bpkId="task-test" version="3.0.0"
 				name="echo">
 	<hostRuntimes>
 		
 	</hostRuntimes>
 
+	<!-- 
 	<debug>
 		<mode>connect</mode>
 		<host>localhost</host>
 		<port>5006</port>
 		<suspend>true</suspend>
 	</debug>
+	 -->
 
 </taskDescriptor>

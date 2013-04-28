@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jaxb:bindings
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	jaxb:extensionBindingPrefixes="xjc"
+	jaxb:version="2.0">
+	
+	<jaxb:bindings schemaLocation="swrepository-info.xsd">
+		<jaxb:schemaBindings>
+			<jaxb:package name="cz.cuni.mff.d3s.been.core.sri" />
+		</jaxb:schemaBindings>
+	</jaxb:bindings>
+</jaxb:bindings>

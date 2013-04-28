@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+		targetNamespace="http://been.d3s.mff.cuni.cz/results"
+		xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+		xmlns:res="http://been.d3s.mff.cuni.cz/results"
+		xmlns:common="http://been.d3s.mff.cuni.cz/common"
+		xmlns:taskentry="http://been.d3s.mff.cuni.cz/task-entry"
+		xmlns:entity="http://been.d3s.mff.cuni.cz/entity"
+		jaxb:version="2.0">
+	
+	<xs:import namespace="http://been.d3s.mff.cuni.cz/entity"  />
+	<xs:import namespace="http://been.d3s.mff.cuni.cz/task-entry" />
+	<xs:import namespace="http://been.d3s.mff.cuni.cz/task-descriptor" />
+	<xs:import namespace="http://been.d3s.mff.cuni.cz/task-context-descriptor" />
+	<xs:import namespace="http://been.d3s.mff.cuni.cz/hardware-info" />
+	<xs:import namespace="http://been.d3s.mff.cuni.cz/runtime-info" />
+	<xs:import namespace="http://been.d3s.mff.cuni.cz/monitor" />
+	<xs:import namespace="http://been.d3s.mff.cuni.cz/swrepository-info" />
+	
+	<xs:complexType name="Result">
+		<xs:complexContent>
+			<xs:extension base="entity:Entity">
+				<xs:all>
+					<xs:element ref="taskentry:id" />
+					<xs:element ref="taskentry:taskContextId" />
+				</xs:all>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

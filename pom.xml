@@ -24,6 +24,7 @@
 		<junit.version>4.11</junit.version>
 		<maven.version>3.0.5</maven.version>
 		<mongo.version>2.10.1</mongo.version>
+		<args4j.version>2.0.16</args4j.version>
 
 		<!-- PLUGIN VERSION CONTROL -->
 		<jaxb2-maven-plugin.version>1.5</jaxb2-maven-plugin.version>
@@ -32,8 +33,9 @@
 		<maven-jar-plugin.version>2.4</maven-jar-plugin.version>
 		<maven-resources-plugin.version>2.6</maven-resources-plugin.version>
 		<maven-plugin-annotations.version>3.2</maven-plugin-annotations.version>
-		<one.jar.version>0.97</one.jar.version>
-		<args4j.version>2.0.16</args4j.version>
+		<jvnetbasics.version>0.4.1.5</jvnetbasics.version>
+		<jvnetfluent.version>3.0</jvnetfluent.version>
+		<jvnetjaxb.version>0.8.3</jvnetjaxb.version>
 
 
 		<!-- SOURCE LEVEL CONTROL -->
@@ -111,6 +113,8 @@
 			</activation>
 
 			<modules>
+				<module>xsd-export</module>
+				<module>xsd-catalog-resolver</module>
 				<module>core-data</module>
 				<module>core-utils</module>
 				<module>core-protocol</module>
@@ -127,14 +131,14 @@
 				<module>software-repository</module>
 				<module>software-repository-fsbasedstore</module>
 				<module>results</module>
-				<module>results-repository-storage</module>
+				<module>persistence</module>
+				<module>storage</module>
 				<module>results-repository</module>
 				<module>results-repository-mongo-storage</module>
 				<module>task-api</module>
 				<module>task-test</module>
 				<module>task-sync-test</module>
 				<module>task-sync-test2</module>
-				<module>benchmark-nginx</module>
 			</modules>
 		</profile>
 
@@ -152,6 +156,7 @@
 
 			<modules>
 				<module>jackson</module>
+				<module>benchmark-nginx</module>
 			</modules>
 		</profile>
 

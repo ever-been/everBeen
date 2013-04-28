@@ -26,9 +26,11 @@
 
 package cz.cuni.mff.d3s.been.core.jaxb;
 
-import org.xml.sax.SAXException;
+import java.io.Serializable;
 
 import javax.xml.bind.JAXBException;
+
+import org.xml.sax.SAXException;
 
 /**
  * This interface is implemented by JAXB composer factories in the XSD enum
@@ -36,17 +38,20 @@ import javax.xml.bind.JAXBException;
  * @author Andrej Podzimek
  */
 interface XMLComposerFactory {
-	
+
 	/**
 	 * Creates a new Composer.
 	 * 
-	 * @param <T> Type of the binding and input class.
-	 * @param bindingClass The binding and input class.
+	 * @param <T>
+	 *          Type of the binding and input class.
+	 * @param bindingClass
+	 *          The binding and input class.
 	 * @return A Composer based on the binding and input class.
-	 * @throws org.xml.sax.SAXException When some low-level XSD problems occur on initialization.
-	 * @throws javax.xml.bind.JAXBException When the binding class is refused.
+	 * @throws org.xml.sax.SAXException
+	 *           When some low-level XSD problems occur on initialization.
+	 * @throws javax.xml.bind.JAXBException
+	 *           When the binding class is refused.
 	 */
-	< T extends AbstractSerializable > BindingComposer< T > internalCreateComposer(
-			Class<T> bindingClass
-	) throws SAXException, JAXBException;
+	<T extends Serializable> BindingComposer<T> internalCreateComposer(
+			Class<T> bindingClass) throws SAXException, JAXBException;
 }

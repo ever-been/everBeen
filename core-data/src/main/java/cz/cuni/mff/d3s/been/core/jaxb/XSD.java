@@ -27,6 +27,7 @@ package cz.cuni.mff.d3s.been.core.jaxb;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.HashMap;
 
 import javax.xml.XMLConstants;
@@ -46,27 +47,21 @@ import org.xml.sax.SAXException;
  */
 public enum XSD {
 
-	RUNTIME("http://been.d3s.mff.cuni.cz/runtimeinfo",
-			XSDFile.COMMON.FILE,
-			XSDFile.HARDWARE_INFO.FILE,
-			XSDFile.RUNTIME.FILE),
+	RUNTIME("http://been.d3s.mff.cuni.cz/runtime-info", XSDFile.COMMON.FILE,
+			XSDFile.HARDWARE_INFO.FILE, XSDFile.RUNTIME.FILE),
 
-	TASKENTRY("http://been.d3s.mff.cuni.cz/taskentry",
-			XSDFile.COMMON.FILE,
-			XSDFile.TASK_DESCRIPTOR.FILE,
-			XSDFile.TASKENTRY.FILE),
+	TASKENTRY("http://been.d3s.mff.cuni.cz/task-entry", XSDFile.COMMON.FILE,
+			XSDFile.TASK_DESCRIPTOR.FILE, XSDFile.TASKENTRY.FILE),
 
-	TASK_DESCRIPTOR("http://been.d3s.mff.cuni.cz/taskmanager/td",
-			XSDFile.COMMON.FILE,
-			XSDFile.TASK_DESCRIPTOR.FILE),
+	TASK_DESCRIPTOR("http://been.d3s.mff.cuni.cz/task-descriptor",
+			XSDFile.COMMON.FILE, XSDFile.TASK_DESCRIPTOR.FILE),
 
-	TASK_CONTEXT_DESCRIPTOR("http://been.d3s.mff.cuni.cz/taskmanager/tcd",
-			XSDFile.COMMON.FILE,
-			XSDFile.TASK_CONTEXT_DESCRIPTOR.FILE,
+	TASK_CONTEXT_DESCRIPTOR(
+			"http://been.d3s.mff.cuni.cz/task-context-descriptor",
+			XSDFile.COMMON.FILE, XSDFile.TASK_CONTEXT_DESCRIPTOR.FILE,
 			XSDFile.TASK_DESCRIPTOR.FILE)
 
 	;
-
 
 	/**
 	 * A simple class that holds a list of XSD files and can initialize the XML
@@ -104,7 +99,8 @@ public enum XSD {
 
 					sources = new StreamSource[files.length];
 					for (int i = 0; i < files.length; ++i) {
-						InputStream input = XSD.class.getClassLoader().getResourceAsStream("xsd/" + files[i].getName());
+						InputStream input = XSD.class.getClassLoader().getResourceAsStream(
+								"xsd/" + files[i].getName());
 
 						assert input != null;
 
@@ -138,12 +134,12 @@ public enum XSD {
 		}
 
 		@Override
-		public <T extends AbstractSerializable> BindingParser<T> internalCreateParser(
+		public <T extends Serializable> BindingParser<T> internalCreateParser(
 				Class<T> bindingClass) throws SAXException, JAXBException {
 			synchronized (XSD.this) { // Concurrent first calls.
 				if (null == parserContexts) { // Not initialized yet.
 					initializeSchema();
-					parserContexts = new HashMap<Class<? extends AbstractSerializable>, JAXBContext>();
+					parserContexts = new HashMap<Class<? extends Serializable>, JAXBContext>();
 					parserExecutor = new NextTimeXMLParserFactory();
 				}
 			}
@@ -172,7 +168,7 @@ public enum XSD {
 		}
 
 		@Override
-		public <T extends AbstractSerializable> BindingComposer<T> internalCreateComposer(
+		public <T extends Serializable> BindingComposer<T> internalCreateComposer(
 				Class<T> bindingClass) throws SAXException, JAXBException {
 			initialize();
 			return createComposer(bindingClass);
@@ -188,7 +184,7 @@ public enum XSD {
 			synchronized (XSD.this) { // Concurrent first calls.
 				if (null == composerContexts) { // Not initialized yet.
 					initializeSchema();
-					composerContexts = new HashMap<Class<? extends AbstractSerializable>, JAXBContext>();
+					composerContexts = new HashMap<Class<? extends Serializable>, JAXBContext>();
 					composerExecutor = new NextTimeXMLComposerFactory();
 				}
 			}
@@ -203,7 +199,7 @@ public enum XSD {
 	private class NextTimeXMLParserFactory implements XMLParserFactory {
 
 		@Override
-		public <T extends AbstractSerializable> BindingParser<T> internalCreateParser(
+		public <T extends Serializable> BindingParser<T> internalCreateParser(
 				Class<T> bindingClass) throws JAXBException {
 			JAXBContext context;
 
@@ -226,7 +222,7 @@ public enum XSD {
 	private class NextTimeXMLComposerFactory implements XMLComposerFactory {
 
 		@Override
-		public <T extends AbstractSerializable> BindingComposer<T> internalCreateComposer(
+		public <T extends Serializable> BindingComposer<T> internalCreateComposer(
 				Class<T> bindingClass) throws JAXBException {
 			JAXBContext context;
 
@@ -255,10 +251,10 @@ public enum XSD {
 	private Schema schema;
 
 	/** The contexts used to create unmarshallers. */
-	private HashMap<Class<? extends AbstractSerializable>, JAXBContext> parserContexts;
+	private HashMap<Class<? extends Serializable>, JAXBContext> parserContexts;
 
 	/** The contexts used to create marshallers. */
-	private HashMap<Class<? extends AbstractSerializable>, JAXBContext> composerContexts;
+	private HashMap<Class<? extends Serializable>, JAXBContext> composerContexts;
 
 	/**
 	 * The instance that actually answers factory requests. First request handled
@@ -302,7 +298,7 @@ public enum XSD {
 	 * @throws javax.xml.bind.JAXBException
 	 *           When the JAXB class is refused.
 	 */
-	public <T extends AbstractSerializable> BindingComposer<T> createComposer(
+	public <T extends Serializable> BindingComposer<T> createComposer(
 			Class<T> bindingClass) throws SAXException, JAXBException {
 		return composerExecutor.internalCreateComposer(bindingClass);
 	}
@@ -320,7 +316,7 @@ public enum XSD {
 	 * @throws javax.xml.bind.JAXBException
 	 *           When the JAXB class is refused.
 	 */
-	public <T extends AbstractSerializable> BindingParser<T> createParser(
+	public <T extends Serializable> BindingParser<T> createParser(
 			Class<T> bindingClass) throws SAXException, JAXBException {
 		return parserExecutor.internalCreateParser(bindingClass);
 	}

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema
+        xmlns="http://been.d3s.mff.cuni.cz/hardware-info"
+        targetNamespace="http://been.d3s.mff.cuni.cz/hardware-info"
+        xmlns:hardwareinfo="http://been.d3s.mff.cuni.cz/hardware-info"
+        xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        >
+
+    <xs:complexType name="cpu">
+        <xs:sequence>
+            <xs:element name="vendor" type="xs:string" />
+            <xs:element name="model" type="xs:string" />
+            <xs:element name="mhz" type="xs:int" />
+            <xs:element name="cacheSize" type="xs:long" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="networkInterface">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string" />
+            <xs:element name="hwaddr" type="xs:string" />
+            <xs:element name="type" type="xs:string" />
+            <xs:element name="mtu" type="xs:long" />
+            <xs:element name="address" type="xs:string" />
+            <xs:element name="netmask" type="xs:string" />
+            <xs:element name="broadcast" type="xs:string" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="memory">
+        <xs:sequence>
+            <xs:element name="ram" type="xs:long" />
+            <xs:element name="swap" type="xs:long" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="hardware">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="cpu" type="cpu" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="networkInterface" type="networkInterface" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="memory" type="memory" minOccurs="1" maxOccurs="1" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

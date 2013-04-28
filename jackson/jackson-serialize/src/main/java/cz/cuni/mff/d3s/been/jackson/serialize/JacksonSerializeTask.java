@@ -5,8 +5,8 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cz.cuni.mff.d3s.been.core.persistence.EntityID;
 import cz.cuni.mff.d3s.been.results.DAOException;
-import cz.cuni.mff.d3s.been.results.ResultContainerId;
 import cz.cuni.mff.d3s.been.taskapi.Task;
 import cz.cuni.mff.d3s.been.taskapi.results.ResultPersister;
 
@@ -28,12 +28,11 @@ public class JacksonSerializeTask extends Task {
 		final CachePolicy cachePolicy = CachePolicy.valueOf(System.getenv("cachePolicy"));
 		final Long repetitions = Long.valueOf(System.getenv("repetitions"));
 
-		final ResultContainerId cid = new ResultContainerId();
-		cid.setDatabaseName("results");
-		cid.setCollectionName("jackson-serialize");
-		cid.setEntityName(dataType + "-" + cachePolicy);
+		final EntityID eid = new EntityID();
+		eid.setKind("result");
+		eid.setGroup("jackson-serialize");
 
-		final ResultPersister rp = results.createResultPersister(cid);
+		final ResultPersister rp = results.createResultPersister(eid);
 
 		final SerializationUnit su = cachePolicy.getSerializationUnit();
 		final DataGenerator dg = dataType.getDataGenerator();

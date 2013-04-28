@@ -26,53 +26,58 @@
 
 package cz.cuni.mff.d3s.been.core.jaxb;
 
+import java.io.File;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.io.Writer;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.validation.Schema;
-import java.io.File;
-import java.io.OutputStream;
-import java.io.Writer;
 
 /**
  * A reference implementation of the {@link BindingComposer} interface.
- *
+ * 
  * @author Andrej Podzimek
  */
-class XMLComposer< T extends AbstractSerializable > implements BindingComposer< T > {
+class XMLComposer<T extends Serializable> implements BindingComposer<T> {
 
 	/** The marshaller to compose XML documents. */
 	private final Marshaller marshaller;
 
 	/**
-	 * Initializes a new XML composer implementation with a JAXB context and schema.
-	 *
-	 * @param context The JAXB context from which a marshaller should be created.
-	 * @param schema The XML schema the composed data must honor.
-	 * @throws javax.xml.bind.JAXBException When the marshaller cannot be created.
+	 * Initializes a new XML composer implementation with a JAXB context and
+	 * schema.
+	 * 
+	 * @param context
+	 *          The JAXB context from which a marshaller should be created.
+	 * @param schema
+	 *          The XML schema the composed data must honor.
+	 * @throws javax.xml.bind.JAXBException
+	 *           When the marshaller cannot be created.
 	 */
-	public XMLComposer( JAXBContext context, Schema schema ) throws JAXBException {
+	public XMLComposer(JAXBContext context, Schema schema) throws JAXBException {
 		this.marshaller = context.createMarshaller();
-		this.marshaller.setSchema( schema );
-		this.marshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, true );
-
+		this.marshaller.setSchema(schema);
+		this.marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
 		//marshaller.setProperty("eclipselink.media-type", "application/json");
 		//marshaller.setProperty("eclipselink.json.include-root", false);
 	}
-	
+
 	@Override
-	public void compose( T xml, OutputStream stream ) throws JAXBException {
-		marshaller.marshal( xml, stream );
+	public void compose(T xml, OutputStream stream) throws JAXBException {
+		marshaller.marshal(xml, stream);
 	}
 
 	@Override
-	public void compose( T xml, Writer writer ) throws JAXBException {
-		marshaller.marshal( xml, writer );
+	public void compose(T xml, Writer writer) throws JAXBException {
+		marshaller.marshal(xml, writer);
 	}
 
 	@Override
-	public void compose( T xml, File file ) throws JAXBException {
-		marshaller.marshal( xml, file );
+	public void compose(T xml, File file) throws JAXBException {
+		marshaller.marshal(xml, file);
 	}
 }

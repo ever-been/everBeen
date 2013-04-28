@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog
+    PUBLIC "-//OASIS//DTD Entity Resolution XML Catalog V1.0//EN"
+           "http://www.oasis-open.org/committees/entity/release/1.0/catalog.dtd">
+<catalog>
+	<public uri="common.xsd" publicId="http://been.d3s.mff.cuni.cz/common"/>
+	<public uri="entity.xsd" publicId="http://been.d3s.mff.cuni.cz/entity"/>
+	<public uri="hardware-info.xsd" publicId="http://been.d3s.mff.cuni.cz/hardware-info"/>
+	<public uri="task-descriptor.xsd" publicId="http://been.d3s.mff.cuni.cz/task-descriptor"/>
+	<public uri="task-entry.xsd" publicId="http://been.d3s.mff.cuni.cz/task-entry"/>
+</catalog>

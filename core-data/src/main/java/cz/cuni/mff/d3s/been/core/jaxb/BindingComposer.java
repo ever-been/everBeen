@@ -25,44 +25,57 @@
  */
 package cz.cuni.mff.d3s.been.core.jaxb;
 
-import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.io.Writer;
+
+import javax.xml.bind.JAXBException;
 
 /**
  * JAXB-based XML composers (marshallers) implement this interface.
  * 
  * @author Andrej Podzimek
- *
- * @param <T> The binding class.
+ * 
+ * @param <T>
+ *          The binding class.
  */
-public interface BindingComposer< T extends AbstractSerializable > {
+public interface BindingComposer<T extends Serializable> {
 
 	/**
 	 * Composes an XML document into an output stream.
 	 * 
-	 * @param xml A JAXB-based XML data representation.
-	 * @param stream An output stream to write the XML data.
-	 * @throws javax.xml.bind.JAXBException When data marshalling fails.
+	 * @param xml
+	 *          A JAXB-based XML data representation.
+	 * @param stream
+	 *          An output stream to write the XML data.
+	 * @throws javax.xml.bind.JAXBException
+	 *           When data marshalling fails.
 	 */
 	void compose(T xml, OutputStream stream) throws JAXBException;
 
 	/**
 	 * Composes an XML document into a writer.
-	 *
-	 * @param xml A JAXB-based XML data representation.
-	 * @param writer A writer to write the XML data.
-	 * @throws javax.xml.bind.JAXBException When data marshalling fails.
+	 * 
+	 * @param xml
+	 *          A JAXB-based XML data representation.
+	 * @param writer
+	 *          A writer to write the XML data.
+	 * @throws javax.xml.bind.JAXBException
+	 *           When data marshalling fails.
 	 */
 	void compose(T xml, Writer writer) throws JAXBException;
 
 	/**
 	 * Composes an XML document into a file.
-	 *
-	 * @param xml A JAXB-based XML data representation.
-	 * @param file A file to write the XML data. An existing file will be overwritten.
-	 * @throws javax.xml.bind.JAXBException When data marshalling fails.
+	 * 
+	 * @param xml
+	 *          A JAXB-based XML data representation.
+	 * @param file
+	 *          A file to write the XML data. An existing file will be
+	 *          overwritten.
+	 * @throws javax.xml.bind.JAXBException
+	 *           When data marshalling fails.
 	 */
 	void compose(T xml, File file) throws JAXBException;
 }
