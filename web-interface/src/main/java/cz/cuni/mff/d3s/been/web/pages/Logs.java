@@ -1,12 +1,12 @@
 package cz.cuni.mff.d3s.been.web.pages;
 
-import org.apache.tapestry5.ioc.annotations.Inject;
-
-import cz.cuni.mff.d3s.been.web.services.BeenApiService;
+import cz.cuni.mff.d3s.been.web.components.Layout;
 
 /**
  * User: donarus Date: 4/22/13 Time: 4:20 PM
  */
+
+@Page.Navigation(section = Layout.Section.LOGS)
 public class Logs extends Page  {
 
 }

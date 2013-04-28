@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html t:type="layout" section="logs" xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd">
+<html t:type="layout" section="section" xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd">
 
 
 <h2>Monitor logs... in realtime!</h2>

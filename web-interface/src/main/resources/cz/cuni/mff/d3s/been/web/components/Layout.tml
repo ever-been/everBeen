@@ -21,36 +21,17 @@
 <div id="header">
     <t:pagelink id="logo" t:page="index"></t:pagelink>
     <ul>
-
-        <li class="${classNameForSection('overview')}">
-            <t:pagelink t:page="index">Overview</t:pagelink>
-        </li>
-	    <li class="${classNameForSection('tasks')}">
-		    <t:pagelink t:page="tasks">Tasks</t:pagelink>
-	    </li>
-	    <li class="${classNameForSection('contexts')}">
-		    <t:pagelink t:page="contexts">Contexts</t:pagelink>
-	    </li>
-	    <li class="${classNameForSection('runtimes')}">
-		    <t:pagelink t:page="runtimes">Runtimes</t:pagelink>
-	    </li>
-	    <li class="${classNameForSection('configuration')}">
-            <t:pagelink t:page="configuration">Configuration</t:pagelink>
-        </li>
-	    <li class="${classNameForSection('logs')}">
-            <t:pagelink t:page="logs">Logs</t:pagelink>
-        </li>
-
-	    <li class="${classNameForSection('documentation')}">
-            <t:pagelink t:page="documentation">Documentation</t:pagelink>
-        </li>
-	    <li class="${classNameForSection('about')}">
-            <t:pagelink t:page="about">About</t:pagelink>
-        </li>
+        <t:loop t:source="availableSections" t:value="section">
+            <li class="${classNameForSection(section)}">
+                <a href="${getLink(section)}">${section.sectionName}</a>
+            </li>
+        </t:loop>
 
     </ul>
     <div id="menu">
-
+        <t:loop t:source="getAvailableSubSections(activeSection)" t:value="section">
+            <a href="${getLink(section)}">${section.subSectionName}</a> |
+        </t:loop>
         &nbsp;
 
     </div>
