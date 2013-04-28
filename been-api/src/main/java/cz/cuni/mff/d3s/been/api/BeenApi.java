@@ -41,6 +41,8 @@ public interface BeenApi {
 
 	public void uploadBpk(InputStream bpkInputStream) throws BpkConfigurationException;
 
+	public InputStream downloadBpk(BpkIdentifier bpkIdentifier);
+
 	public String submitTask(TaskDescriptor taskDescriptor);
 
 	public String submitTaskContext(TaskContextDescriptor taskContextDescriptor);

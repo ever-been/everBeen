@@ -1,6 +1,9 @@
 package cz.cuni.mff.d3s.been.submitter;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
@@ -137,8 +140,9 @@ public class Submitter {
 		}
 	}
 
-	private void uploadBpk(String bpkFile) throws BpkConfigurationException {
-		api.uploadBpk(new File(bpkFile));
+	private void uploadBpk(String bpkFile) throws BpkConfigurationException, FileNotFoundException {
+		FileInputStream fis = new FileInputStream(new File(bpkFile));
+		api.uploadBpk(fis);
 		System.out.printf("%s uploaded to Software Repository\n", bpkFile);
 	}
 }

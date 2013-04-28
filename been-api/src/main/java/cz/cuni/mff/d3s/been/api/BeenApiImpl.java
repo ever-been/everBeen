@@ -14,10 +14,13 @@ import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
 import cz.cuni.mff.d3s.been.datastore.SoftwareStoreFactory;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.InputStream;
+import java.io.*;
 import java.net.InetSocketAddress;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -27,6 +30,8 @@ import java.util.Collection;
  * Time: 11:50 AM
  */
 public class BeenApiImpl implements BeenApi {
+
+	private static final Logger log = LoggerFactory.getLogger(BeenApiImpl.class);
 
 	private final ClusterContext clusterContext;
 
@@ -86,21 +91,36 @@ public class BeenApiImpl implements BeenApi {
 
 	@Override
 	public void uploadBpk(InputStream bpkInputStream) throws BpkConfigurationException {
-		// TODO
-		/*
 		SWRepositoryInfo swInfo = clusterContext.getServicesUtils().getSWRepositoryInfo();
 		SwRepoClient client = new SwRepoClientFactory(SoftwareStoreFactory.getDataStore()).getClient(swInfo.getHost(), swInfo.getHttpServerPort());
 
 		BpkIdentifier bpkIdentifier = new BpkIdentifier();
 
-		BpkConfiguration bpkConfiguration = BpkResolver.resolve(bpkFile);
+		ByteArrayOutputStream tempStream = new ByteArrayOutputStream();
+		try {
+			IOUtils.copy(bpkInputStream, tempStream);
+		} catch (IOException e) {
+			log.error("Cannot upload BPK.", e);
+			return;
+		}
+
+		ByteArrayInputStream tempInputStream = new ByteArrayInputStream(tempStream.toByteArray());
+
+		BpkConfiguration bpkConfiguration = BpkResolver.resolve(tempInputStream);
 		MetaInf metaInf = bpkConfiguration.getMetaInf();
 		bpkIdentifier.setGroupId(metaInf.getGroupId());
 		bpkIdentifier.setBpkId(metaInf.getBpkId());
 		bpkIdentifier.setVersion(metaInf.getVersion());
 
-		client.putBpk(bpkIdentifier, bpkFile);
-		*/
+		tempInputStream.reset();
+
+		client.putBpk(bpkIdentifier, tempInputStream);
+	}
+
+	@Override
+	public InputStream downloadBpk(BpkIdentifier bpkIdentifier) {
+		// TODO
+		return new ByteArrayInputStream(new String("hello world").getBytes());
 	}
 
 	@Override

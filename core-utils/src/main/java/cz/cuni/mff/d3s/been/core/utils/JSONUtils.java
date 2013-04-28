@@ -3,6 +3,7 @@ package cz.cuni.mff.d3s.been.core.utils;
 import java.io.IOException;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 
 public class JSONUtils {
 
@@ -16,8 +17,7 @@ public class JSONUtils {
 		}
 	}
 
-	public static <T> T deserialize(String json, Class<T> to)
-			throws JSONSerializerException {
+	public static <T> T deserialize(String json, Class<T> to) throws JSONSerializerException {
 		ObjectMapper mapper = new ObjectMapper();
 		T deserialized;
 		try {
@@ -25,6 +25,17 @@ public class JSONUtils {
 		} catch (IOException e) {
 			throw new JSONSerializerException(
 					"Unable to deserialize JSON to JAVA object", e);
+		}
+		return deserialized;
+	}
+
+	public static <T> T deserialize(String json, TypeReference typeReference) throws JSONSerializerException {
+		ObjectMapper mapper = new ObjectMapper();
+		T deserialized;
+		try {
+			deserialized = mapper.readValue(json, typeReference);
+		} catch (IOException e) {
+			throw new JSONSerializerException("Unable to deserialize JSON to JAVA object", e);
 		}
 		return deserialized;
 	}

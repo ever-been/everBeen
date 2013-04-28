@@ -1,6 +1,8 @@
 package cz.cuni.mff.d3s.been.swrepoclient;
 
 import java.io.File;
+import java.io.InputStream;
+import java.util.Collection;
 
 import org.apache.maven.artifact.Artifact;
 
@@ -64,4 +66,20 @@ public interface SwRepoClient {
 	 *         <code>false</code> if not
 	 */
 	public boolean putBpk(BpkIdentifier bpkIdentifier, File bpkFile);
+
+	/**
+	 * Store a BEEN package from the input stream.
+	 *
+	 * @param bpkIdentifier Identifier for the stored artifact
+	 * @param bpkInputStream Input stream with the BPK data
+	 * @return
+	 */
+	public boolean putBpk(BpkIdentifier bpkIdentifier, InputStream bpkInputStream);
+
+	/**
+	 * List all uploaded BPK packages.
+	 *
+	 * @return collection of BpkIdentifier objects
+	 */
+	public Collection<BpkIdentifier> listBpks();
 }

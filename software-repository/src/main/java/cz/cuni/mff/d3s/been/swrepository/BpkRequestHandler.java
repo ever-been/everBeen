@@ -2,10 +2,14 @@ package cz.cuni.mff.d3s.been.swrepository;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.apache.http.protocol.HttpRequestHandler;
 import org.slf4j.Logger;
@@ -42,6 +46,46 @@ public class BpkRequestHandler extends SkeletalRequestHandler {
 
 	@Override
 	public void handleGet(HttpRequest request, HttpResponse response) {
+		if (request.getRequestLine().getUri().equals("/bpk")) {
+			handleGetSingleBpk(request, response);
+			return;
+		}
+
+		if (request.getRequestLine().getUri().equals("/bpklist")) {
+			handleListBpks(response);
+			return;
+		}
+
+		response.setStatusCode(400);
+		log.error("Unknown request");
+		return;
+	}
+
+	private void handleListBpks(HttpResponse response) {
+		// TODO
+		List<BpkIdentifier> list = new ArrayList<BpkIdentifier>();
+		BpkIdentifier b = new BpkIdentifier();
+		b.setBpkId("lol");
+		b.setGroupId("rus");
+		b.setVersion("wtf");
+		list.add(b);
+		StringEntity entity = null;
+		try {
+			String jsonString = JSONUtils.serialize(list);
+			entity = new StringEntity(jsonString);
+		} catch (UnsupportedEncodingException e) {
+			response.setStatusCode(400);
+			log.error("Cannot create string entity.", e);
+			return;
+		} catch (JSONSerializerException e) {
+			response.setStatusCode(400);
+			log.error("Cannot serialize BPK list.", e);
+			return;
+		}
+		response.setEntity(entity);
+	}
+
+	private void handleGetSingleBpk(HttpRequest request, HttpResponse response) {
 		BpkIdentifier bpkIdentifier = null;
 		try {
 			bpkIdentifier = JSONUtils.<BpkIdentifier> deserialize(

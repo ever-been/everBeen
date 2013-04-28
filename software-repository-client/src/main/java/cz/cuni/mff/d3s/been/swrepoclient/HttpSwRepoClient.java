@@ -1,11 +1,11 @@
 package cz.cuni.mff.d3s.been.swrepoclient;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
@@ -18,6 +18,7 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.maven.artifact.Artifact;
+import org.codehaus.jackson.type.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -144,20 +145,14 @@ class HttpSwRepoClient implements SwRepoClient {
 		}
 		return true;
 	}
-	@Override
-	public boolean putBpk(BpkIdentifier bpkMetaInfo, File bpkFile) {
 
-		if (bpkMetaInfo == null || bpkFile == null) {
+	@Override
+	public boolean putBpk(BpkIdentifier bpkMetaInfo, InputStream bpkInputStream) {
+
+		if (bpkMetaInfo == null || bpkInputStream == null) {
 			log.error(
 					"Failed to upload BPK {} - package object or its meta-info was null.",
 					bpkMetaInfo);
-			return false;
-		}
-
-		if (!bpkFile.exists()) {
-			log.error(
-					"Failed to upload BPK {} - file doesn't exist.",
-					bpkMetaInfo.toString());
 			return false;
 		}
 
@@ -184,7 +179,7 @@ class HttpSwRepoClient implements SwRepoClient {
 			return false;
 		}
 
-		InputStreamEntity sentEntity = createFileEntity(bpkFile);
+		InputStreamEntity sentEntity = new InputStreamEntity(bpkInputStream, -1);
 		if (sentEntity == null) {
 			return false;
 		}
@@ -216,6 +211,16 @@ class HttpSwRepoClient implements SwRepoClient {
 			return false;
 		} else {
 			return true;
+		}
+	}
+
+	@Override
+	public boolean putBpk(BpkIdentifier bpkMetaInfo, File bpkFile) {
+		try {
+			return putBpk(bpkMetaInfo, new FileInputStream(bpkFile));
+		} catch (FileNotFoundException e) {
+			log.error("Failed to upload BPK {} - file doesn't exist.", bpkMetaInfo.toString());
+			return false;
 		}
 	}
 
@@ -364,7 +369,7 @@ class HttpSwRepoClient implements SwRepoClient {
 		} catch (IOException e) {
 			log.error(String.format(
 					"Failed to retrieve BKP %s - I/O error or connection re-set",
-					bpkIdentifier.toString()));
+					bpkIdentifier.toString()), e);
 			return null;
 		}
 
@@ -400,4 +405,64 @@ class HttpSwRepoClient implements SwRepoClient {
 		return new BpkFromStore(softwareCache.getBpkReader(bpkIdentifier), bpkIdentifier);
 	}
 
+	/**
+	 * Return a list of all uploaded BPKs.
+	 */
+	@Override
+	public Collection<BpkIdentifier> listBpks() {
+		HttpUriRequest request = null;
+		try {
+			request = new HttpGet(createRepoUri() + "/bpklist");
+		} catch (URISyntaxException e) {
+			log.error(
+					"Failed to list BPKs - unable to synthesize get request URI ({})",
+					e.getMessage());
+			return null;
+		}
+
+		HttpClient httpCli = new DefaultHttpClient();
+		HttpResponse response;
+		try {
+			response = httpCli.execute(request);
+		} catch (ClientProtocolException e) {
+			log.error("Failed to list BPKs - unable to execute HTTP request ({})", e.getMessage());
+			return null;
+		} catch (IOException e) {
+			log.error("Failed to list BPKs - I/O error or connection re-set", e);
+			return null;
+		}
+
+		if (response.getStatusLine().getStatusCode() / 100 != 2) {
+			log.error(String.format(
+					"Failed to list BPKs - server refusal: \"%s\"",
+					response.getStatusLine().getReasonPhrase()));
+			return null;
+		}
+
+		InputStream is = null;
+		try {
+			is = response.getEntity().getContent();
+		} catch (IOException e) {
+			log.error("Failed to list BPKs - error opening SW repo response for reading", e);
+			return null;
+		}
+
+		String jsonString = null;
+		try {
+			jsonString = IOUtils.toString(is);
+		} catch (IOException e) {
+			log.error("Failed to list BPKs - unable to read output from stream", e);
+			return null;
+		}
+
+		List<BpkIdentifier> list = null;
+		try {
+			TypeReference t = new TypeReference<List<BpkIdentifier>>() {};
+			list = JSONUtils.deserialize(jsonString, t);
+		} catch (JSONSerializerException e) {
+			e.printStackTrace();
+		}
+
+		return list;
+	}
 }
