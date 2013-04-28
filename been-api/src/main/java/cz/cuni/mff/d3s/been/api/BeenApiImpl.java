@@ -119,8 +119,16 @@ public class BeenApiImpl implements BeenApi {
 
 	@Override
 	public InputStream downloadBpk(BpkIdentifier bpkIdentifier) {
-		// TODO
-		return new ByteArrayInputStream(new String("hello world").getBytes());
+		SWRepositoryInfo swInfo = clusterContext.getServicesUtils().getSWRepositoryInfo();
+		SwRepoClient client = new SwRepoClientFactory(SoftwareStoreFactory.getDataStore()).getClient(swInfo.getHost(), swInfo.getHttpServerPort());
+
+		Bpk bpk = client.getBpk(bpkIdentifier);
+		try {
+			return bpk.getInputStream();
+		} catch (IOException e) {
+			log.error("Cannot get input stream from BPK.", e);
+			return null;
+		}
 	}
 
 	@Override
