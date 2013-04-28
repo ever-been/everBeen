@@ -12,7 +12,7 @@ import java.util.Collection;
  * @author Kuba Brecka
  */
 @Page.Navigation(section = Layout.Section.TASK_LOGS)
-public class TaskLogs extends Page {
+public class Logs extends Page {
 
 	@Property
 	private TaskEntry task;

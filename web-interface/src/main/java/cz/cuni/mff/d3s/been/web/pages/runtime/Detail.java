@@ -10,7 +10,7 @@ import org.apache.tapestry5.annotations.Property;
  * @author Kuba Brecka
  */
 @Page.Navigation(section = Layout.Section.RUNTIME_DETAIL)
-public class Runtime extends Page {
+public class Detail extends Page {
 
 	@Property
 	private RuntimeInfo runtime;

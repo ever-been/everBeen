@@ -1,14 +1,9 @@
 package cz.cuni.mff.d3s.been.web.components;
 
 import java.util.*;
+import java.util.List;
 
-import cz.cuni.mff.d3s.been.web.pages.context.Context;
-import cz.cuni.mff.d3s.been.web.pages.context.Contexts;
-import cz.cuni.mff.d3s.been.web.pages.Logs;
-import cz.cuni.mff.d3s.been.web.pages.runtime.*;
-import cz.cuni.mff.d3s.been.web.pages.task.Task;
-import cz.cuni.mff.d3s.been.web.pages.task.TaskLogs;
-import cz.cuni.mff.d3s.been.web.pages.task.Tasks;
+import cz.cuni.mff.d3s.been.web.pages.task.*;
 import org.apache.tapestry5.annotations.Cached;
 import org.apache.tapestry5.annotations.Parameter;
 import org.apache.tapestry5.annotations.Property;
@@ -41,15 +36,15 @@ public class Layout {
 
 	public String getLink(Section mySection) {
 		if (!links.containsKey(mySection)) {
-			links.put(mySection, pageRenderLinkSource.createPageRenderLink(mySection.page).toAbsoluteURI().toString());
+			links.put(mySection, pageRenderLinkSource.createPageRenderLink(mySection.page).toString());//toAbsoluteURI().toString());
 		}
 		return links.get(mySection);
 	}
 
 	@Cached
-	public List<Section> getAvailableSections() {
-		List<String> listedSections = new ArrayList<>();
-		List<Section> sections = new ArrayList<>();
+	public java.util.List getAvailableSections() {
+		java.util.List listedSections = new ArrayList<>();
+		java.util.List sections = new ArrayList<>();
 		for (Section section : Section.values()) {
             if (section.hideInMenu) {
                 continue;
@@ -63,8 +58,8 @@ public class Layout {
 		return sections;
 	}
 
-	private static Map<String, List<Section>> subsectionsBySectionName = null; // for caching purposes
-	public List<Section> getAvailableSubSections(Section section) {
+	private static Map<String, java.util.List> subsectionsBySectionName = null; // for caching purposes
+	public java.util.List getAvailableSubSections(Section section) {
 		if (subsectionsBySectionName == null) {
 			generateSubSections(); // cache it
 		}
@@ -101,18 +96,18 @@ public class Layout {
 
 		ABOUT(cz.cuni.mff.d3s.been.web.pages.About.class, "About", null),
 
-		TASK_LIST(Tasks.class, "Tasks", "list"), TASK_DETAIL(
-				Task.class, "Tasks", null), TASK_LOGS(
-				TaskLogs.class, "Tasks", "logs"),
+		TASK_LIST(cz.cuni.mff.d3s.been.web.pages.task.List.class, "Tasks", "list"), TASK_DETAIL(
+				cz.cuni.mff.d3s.been.web.pages.task.Detail.class, "Tasks", null), TASK_LOGS(
+				Logs.class, "Tasks", "logs"),
 
-		RUNTIME_LIST(Runtimes.class, "Runtimes",
-				null), RUNTIME_DETAIL(cz.cuni.mff.d3s.been.web.pages.runtime.Runtime.class,
+		RUNTIME_LIST(cz.cuni.mff.d3s.been.web.pages.runtime.List.class, "Runtimes",
+				null), RUNTIME_DETAIL(cz.cuni.mff.d3s.been.web.pages.runtime.Detail.class,
 				"Runtimes", null),
 
-		LOGS(Logs.class, "Logs", null),
+		LOGS(cz.cuni.mff.d3s.been.web.pages.Logs.class, "Logs", null),
 
-		CONTEXT_LIST(Contexts.class, "Context", null), CONTEXT_DETAIL(
-				Context.class, "Context", null),
+		CONTEXT_LIST(cz.cuni.mff.d3s.been.web.pages.context.List.class, "Context", null), CONTEXT_DETAIL(
+				cz.cuni.mff.d3s.been.web.pages.context.Detail.class, "Context", null),
 
 		CONFIGURATION(cz.cuni.mff.d3s.been.web.pages.Configuration.class,
 				"Configuration", null);

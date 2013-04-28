@@ -6,7 +6,7 @@
 
 <t:grid source="runtimes" row="runtime" inPlace="true" add="load,memory">
 	<p:idCell>
-		<t:pagelink page="runtime" context="runtime.id">${runtime.id}</t:pagelink>
+		<a href="${getDetailLink(runtime.id)}">${runtime.id}</a>
 	</p:idCell>
 	<p:loadCell>
 		${runtime.monitorSample.loadAverage.load1}
