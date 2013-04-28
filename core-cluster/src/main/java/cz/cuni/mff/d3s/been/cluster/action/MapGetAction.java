@@ -1,8 +1,8 @@
 package cz.cuni.mff.d3s.been.cluster.action;
 
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
-import cz.cuni.mff.d3s.been.mq.rep.Replay;
-import cz.cuni.mff.d3s.been.mq.rep.Replays;
+import cz.cuni.mff.d3s.been.mq.rep.Replies;
+import cz.cuni.mff.d3s.been.mq.rep.Reply;
 import cz.cuni.mff.d3s.been.mq.req.Request;
 
 /**
@@ -18,33 +18,29 @@ final class MapGetAction implements Action {
 	}
 
 	@Override
-	public Replay goGetSome() {
-		String[] args;
-
-		try {
-			args = MapActionUtils.parseSelector(request.getSelector());
-		} catch (Exception e) {
-			return Replays.createErrorReplay(e.getMessage());
-		}
-
-		String map = args[0];
-		String key = args[1];
+	public Reply goGetSome() {
+		String map = Actions.checkpointMapNameForRequest(request);
+		String key = request.getSelector();
 
 		// TODO later migh be a good idea to add it back
 		//if (!ctx.containsInstance(Instance.InstanceType.MAP, map)) {
-		//return Replays.createErrorReplay("No such map %s", map);
+		//return Replies.createErrorReply("No such map %s", map);
 		//}
+
+		if (key == null || key.isEmpty()) {
+			return Replies.createErrorReply("Key must be non-empty");
+		}
 
 		Object mapValue = ctx.getMap(map).get(key);
 
-		String replayValue;
+		String replyValue;
 		if (mapValue == null) {
-			replayValue = "";
+			replyValue = null;
 		} else {
-			replayValue = mapValue.toString();
+			replyValue = mapValue.toString();
 		}
 
-		return Replays.createOkReplay(replayValue);
+		return Replies.createOkReply(replyValue);
 	}
 
 }

@@ -23,6 +23,7 @@ import cz.cuni.mff.d3s.been.mq.MessagingException;
 final class ClusterManager implements IClusterService {
 	private static final Logger log = LoggerFactory.getLogger(ClusterManager.class);
 
+	private final LocalRuntimeListener localRuntimeListener;
 	private final LocalTaskListener localTaskListener;
 	private final MembershipListener membershipListener;
 	private final ClientListener clientListener;
@@ -34,6 +35,7 @@ final class ClusterManager implements IClusterService {
 	public ClusterManager(ClusterContext clusterCtx) {
 		this.clusterCtx = clusterCtx;
 
+		localRuntimeListener = new LocalRuntimeListener(clusterCtx);
 		localTaskListener = new LocalTaskListener(clusterCtx);
 		membershipListener = new MembershipListener(clusterCtx);
 		clientListener = new ClientListener(clusterCtx);
@@ -55,6 +57,7 @@ final class ClusterManager implements IClusterService {
 		taskMessageProcessor = new TaskMessageProcessor(clusterCtx);
 
 		taskMessageProcessor.start();
+		localRuntimeListener.start();
 		localTaskListener.start();
 		membershipListener.start();
 		clientListener.start();
@@ -66,6 +69,7 @@ final class ClusterManager implements IClusterService {
 	public void stop() {
 		keyScanner.stop();
 		clientListener.stop();
+		localRuntimeListener.stop();
 		localTaskListener.stop();
 		membershipListener.stop();
 		taskMessageProcessor.poison();

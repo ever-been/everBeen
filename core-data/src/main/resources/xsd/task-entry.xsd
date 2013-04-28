@@ -48,6 +48,14 @@
 				<xs:element name="exitCode" type="common:nonnegativeInt" default="0" minOccurs="0" maxOccurs="1" />
 				<xs:element ref="td:taskDescriptor" minOccurs="1" maxOccurs="1" />
 				<xs:element ref="taskentry:stateChangeLog"  minOccurs="0" maxOccurs="1" />
+				<xs:element name="workingDirectory" type="xs:string" minOccurs="0" maxOccurs="1" />
+				<xs:element name="args" minOccurs="0" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="arg" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
 			</xs:all>
 		</xs:complexType>
 	</xs:element>

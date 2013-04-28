@@ -8,7 +8,7 @@
 	<artifactId>clustered</artifactId>
 	<version>3.0.0</version>
 
-	<packaging>pom</packaging>
+    <packaging>pom</packaging>
 
 	<properties>
 		<!-- BEEN DEPENDENCIES -->
@@ -137,8 +137,7 @@
 				<module>results-repository-mongo-storage</module>
 				<module>task-api</module>
 				<module>task-test</module>
-				<module>task-sync-test</module>
-				<module>task-sync-test2</module>
+				<module>been-api</module>
 			</modules>
 		</profile>
 
@@ -157,6 +156,16 @@
 			<modules>
 				<module>jackson</module>
 				<module>benchmark-nginx</module>
+				<module>task-sync-test</module>
+				<module>task-sync-test2</module>
+			</modules>
+		</profile>
+
+		<profile>
+			<id>buildWebInterface</id>
+
+			<modules>
+				<module>web-interface</module>
 			</modules>
 		</profile>
 

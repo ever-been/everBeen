@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+
+<html t:type="layout" section="section"
+      xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd" xmlns:p="tapestry:parameter">
+
+
+<t:grid source="runtimes" row="runtime" inPlace="true" add="load,memory">
+	<p:idCell>
+		<a href="${getDetailLink(runtime.id)}">${runtime.id}</a>
+	</p:idCell>
+	<p:loadCell>
+		${runtime.monitorSample.loadAverage.load1}
+	</p:loadCell>
+	<p:memoryCell>
+		${runtime.monitorSample.freeMemory}
+	</p:memoryCell>
+</t:grid>
+
+
+</html>

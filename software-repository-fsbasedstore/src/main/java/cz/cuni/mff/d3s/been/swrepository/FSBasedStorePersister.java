@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,12 +64,15 @@ public class FSBasedStorePersister implements StorePersister {
 					e.getMessage());
 			return false;
 		}
-		CopyStream copyStream = new CopyStream(content, true, os, true, true);
+
 		try {
-			copyStream.copy();
-			return true;
+			IOUtils.copy(content, os);
+			os.close();
 		} catch (IOException e) {
+			log.error("Cannot copy stream.", e);
 			return false;
 		}
+
+		return true;
 	}
 }

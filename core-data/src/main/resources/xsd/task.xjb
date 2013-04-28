@@ -53,6 +53,18 @@
 		<bindings node="xs:element[@name='id']">
 			<factoryMethod name="contextId" />
 		</bindings>
+		
+		<bindings node="xs:element[@name='contextState']">
+			<property name="contextState">
+					<baseType>
+						<javaType
+								name="cz.cuni.mff.d3s.been.core.task.TaskContextState"
+								parseMethod="cz.cuni.mff.d3s.been.core.task.TaskContextState.valueOf"
+								printMethod="String.valueOf"
+								/>
+					</baseType>
+				</property>
+		</bindings>
 	</bindings>
 	
 	<bindings schemaLocation="task-entry.xsd">

@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
@@ -25,6 +27,16 @@ public class Monitoring {
 
 	private static boolean monitoringRunning = false;
 	private static Thread monitoringThread;
+
+	private static Set<MonitoringListener> listeners = new HashSet<MonitoringListener>();
+
+	public static void addListener(MonitoringListener listener) {
+		listeners.add(listener);
+	}
+
+	public static void removeListener(MonitoringListener listener) {
+		listeners.remove(listener);
+	}
 
 	public static void setMonitoringInterval(int milliseconds) {
 		if (milliseconds < 10)
@@ -60,6 +72,10 @@ public class Monitoring {
 						MonitorSample sample = detector.generateSample(true);
 						out.write(mapper.writeValueAsBytes(sample));
 						out.write('\n');
+
+						for (MonitoringListener listener : listeners) {
+							listener.sampleGenerated(sample);
+						}
 
 						try {
 							Thread.sleep(monitorInterval);

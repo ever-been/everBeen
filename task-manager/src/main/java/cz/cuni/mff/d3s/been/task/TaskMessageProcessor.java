@@ -59,7 +59,7 @@ final class TaskMessageProcessor extends Thread {
 			} catch (TaskActionException e) {
 				log.error("Cannot execute action for received message", e);
 			} catch (Exception e) {
-				log.error("Unknown error, will exit the thread.", e);
+				log.error("Unknown error", e);
 			}
 		}
 
@@ -72,7 +72,7 @@ final class TaskMessageProcessor extends Thread {
 	 */
 	public void poison() {
 		try {
-			IMessageSender sender = messageQueues.createSender(ACTION_QUEUE_NAME);
+			IMessageSender<TaskMessage> sender = messageQueues.createSender(ACTION_QUEUE_NAME);
 			sender.send(new PoisonMessage());
 			sender.close();
 			this.join();

@@ -8,6 +8,7 @@ import com.hazelcast.core.HazelcastInstance;
 
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
+import cz.cuni.mff.d3s.been.core.task.TaskExclusivity;
 import cz.cuni.mff.d3s.been.datastore.SoftwareStoreFactory;
 import cz.cuni.mff.d3s.been.detectors.Detector;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
@@ -63,6 +64,7 @@ public class HostRuntimes {
 
 		Detector detector = new Detector();
 		detector.detectAll(ri);
+		ri.setExclusivity(TaskExclusivity.NON_EXCLUSIVE.toString());
 
 		return ri;
 	}

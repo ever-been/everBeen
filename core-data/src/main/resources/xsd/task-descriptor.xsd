@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!--suppress XmlUnusedNamespaceDeclaration -->
 <xs:schema
 		targetNamespace="http://been.d3s.mff.cuni.cz/task-descriptor"
 		xmlns:xs="http://www.w3.org/2001/XMLSchema"
@@ -48,9 +49,13 @@
 	</xs:complexType>
 
 	<xs:element name="javaOptions" type="td:JavaOptions"/>
+	<xs:element name="useTaskRunner" type="xs:boolean" default="true"/>
+	<xs:element name="mainClass" type="xs:string"/>
 
 	<xs:complexType name="Java">
 		<xs:all>
+			<xs:element ref="td:useTaskRunner" minOccurs="0" maxOccurs="1"/>
+			<xs:element ref="td:mainClass" minOccurs="0" maxOccurs="1"/>
 			<xs:element ref="td:javaOptions" minOccurs="0" maxOccurs="1"/>
 		</xs:all>
 	</xs:complexType>
@@ -65,24 +70,22 @@
 	<xs:complexType name="Property">
 		<xs:simpleContent>
 			<xs:extension base="xs:string">
-				<xs:attribute name="name" type="xs:string" />
+				<xs:attribute name="name" type="xs:string" use="required"/>
 			</xs:extension>
 		</xs:simpleContent>
 	</xs:complexType>
 
 	<xs:element name="property" type="td:Property" />
-
 	<xs:element name="properties">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element ref="td:property" minOccurs="0" maxOccurs="unbounded" />
+				<xs:element ref="td:property" minOccurs="0" maxOccurs="unbounded"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
 
 	<xs:element name="asTask" type="common:IDStringRelaxed"/>
 	<xs:element name="name" type="common:IDStringRelaxed" />
-
 	<xs:element name="xpath" type="xs:string"/>
 
 

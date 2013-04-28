@@ -8,12 +8,9 @@ import com.hazelcast.core.IMap;
 import com.hazelcast.query.SqlPredicate;
 
 import cz.cuni.mff.d3s.been.cluster.Names;
-import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntries;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
-import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
-import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
 
 /**
  * 
@@ -38,10 +35,6 @@ public class Tasks {
 	 */
 	public IMap<String, TaskEntry> getTasksMap() {
 		return clusterCtx.getMap(Names.TASKS_MAP_NAME);
-	}
-
-	public IMap<String, TaskContextEntry> getTaskContextsMap() {
-		return clusterCtx.getMap(Names.TASK_CONTEXTS_MAP_NAME);
 	}
 
 	public Collection<TaskEntry> getTasks() {
@@ -143,24 +136,6 @@ public class Tasks {
 		if (!isClusterEqual(entry)) {
 			throw new IllegalStateException(String.format("Entry '%s' has changed!", entry.getId()));
 		}
-	}
-
-	/**
-	 * 
-	 * Updates state of a task.
-	 * 
-	 * @param entry
-	 * @param newState
-	 * @param reasonFormat
-	 * @param reasonArgs
-	 * @throws IllegalArgumentException
-	 * 
-	 *           TODO: sixtam resolve concurrency issues
-	 */
-	public void updateTaskState(TaskEntry entry, TaskState newState,
-			String reasonFormat, Object... reasonArgs) throws IllegalArgumentException {
-		TaskEntries.setState(entry, newState, reasonFormat, reasonArgs);
-		putTask(entry);
 	}
 
 }

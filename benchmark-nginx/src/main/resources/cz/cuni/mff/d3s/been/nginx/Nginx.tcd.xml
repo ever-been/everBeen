@@ -4,7 +4,7 @@
                        name="nginx-context">
 
 	<properties>
-		<property name="revision">4032</property>
+		<property name="revision">4532</property>
 		<property name="numberOfClients">2</property>
 	</properties>
 
@@ -17,8 +17,12 @@
 
 		<descriptor>
 			<td:taskDescriptor
-					groupId="cz.cuni.mff.d3s.been.nginx" bpkId="nginx-server"
-					version="0.0.1" name="nginx-server">
+					groupId="cz.cuni.mff.d3s.been" bpkId="benchmark-nginx"
+					version="3.0.0" name="nginx-server">
+				<td:java>
+					<td:useTaskRunner>true</td:useTaskRunner>
+					<td:mainClass>cz.cuni.mff.d3s.been.nginx.NginxServerTask</td:mainClass>
+				</td:java>
 			</td:taskDescriptor>
 		</descriptor>
 	</task>
@@ -46,11 +50,19 @@
 	<templates>
 		<template name="nginx-client">
 			<td:taskDescriptor xmlns="http://been.d3s.mff.cuni.cz/taskmanager/td"
-			                   groupId="cz.cuni.mff.d3s.been.nginx" bpkId="nginx-client"
-			                   version="0.0.1" name="nginx-client">
+			                   groupId="cz.cuni.mff.d3s.been" bpkId="benchmark-nginx"
+			                   version="3.0.0" name="nginx-client">
 				<td:properties>
-					<td:property name="constProperty">value</td:property>
+					<td:property name="numberOfRuns">10</td:property>
+					<td:property name="numberOfConnections">1000</td:property>
+					<td:property name="requestsPerConnection">10</td:property>
+					<td:property name="sendBuffer">4096</td:property>
+					<td:property name="recvBuffer">16384</td:property>
 				</td:properties>
+				<td:java>
+					<td:useTaskRunner>true</td:useTaskRunner>
+					<td:mainClass>cz.cuni.mff.d3s.been.nginx.NginxClientTask</td:mainClass>
+				</td:java>
 			</td:taskDescriptor>
 		</template>
 	</templates>

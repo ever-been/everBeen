@@ -2,16 +2,17 @@ package cz.cuni.mff.d3s.been.core.task;
 
 /**
  * Different states a BEEN task can happen to be in.
- *
- * To change the state of a {@link TaskEntry} use {@link TaskEntries.setState()}, as it will
- * also create a log entry with the reason for the task state change.
- *
+ * 
+ * To change the state of a {@link TaskEntry} use {@link
+ * TaskEntries.setState();}, as it will also create a log entry with the reason
+ * for the task state change.
+ * 
  * @author Martin Sixta
- *
+ * 
  */
 public enum TaskState {
 	/**
-	 *  The initial state after creating a {@link TaskEntry}
+	 * The initial state after creating a {@link TaskEntry}
 	 */
 	CREATED,
 
@@ -21,14 +22,14 @@ public enum TaskState {
 	SUBMITTED,
 
 	/**
-	 *  Indicates that a task has been scheduled on a Host Runtime. The Host Runtime needs to
-	 * accept the task before running it.
+	 * Indicates that a task has been scheduled on a Host Runtime. The Host
+	 * Runtime needs to accept the task before running it.
 	 */
 	SCHEDULED,
 
 	/**
-	 *  Indicates that a task has been accepted by a Host Runtime and will be run after creating
-	 * suitable environment for it .
+	 * Indicates that a task has been accepted by a Host Runtime and will be run
+	 * after creating suitable environment for it .
 	 */
 	ACCEPTED,
 
@@ -38,7 +39,7 @@ public enum TaskState {
 	WAITING,
 
 	/**
-	 *  Indicates that a task is currently running.
+	 * Indicates that a task is currently running.
 	 */
 	RUNNING,
 
@@ -53,10 +54,11 @@ public enum TaskState {
 	ABORTED;
 
 	/**
-	 *
+	 * 
 	 * Checks whether task state can be changed from the current state.
-	 *
-	 * @param state state to change to
+	 * 
+	 * @param state
+	 *          state to change to
 	 * @return true if the change is legal, false otherwise
 	 */
 	public boolean canChangeTo(TaskState state) {
@@ -78,6 +80,14 @@ public enum TaskState {
 
 		// Runtime can decline to run the new task ...
 		if (this == TaskState.SCHEDULED && state == SUBMITTED) {
+			return true;
+		}
+
+		if (this == SUBMITTED && state == WAITING) {
+			return true;
+		}
+
+		if (this == WAITING && state == SCHEDULED) {
 			return true;
 		}
 

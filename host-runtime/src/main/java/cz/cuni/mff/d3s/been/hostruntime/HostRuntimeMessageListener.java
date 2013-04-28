@@ -1,5 +1,7 @@
 package cz.cuni.mff.d3s.been.hostruntime;
 
+import static cz.cuni.mff.d3s.been.hostruntime.HostRuntime.ACTION_QUEUE_NAME;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,10 +10,12 @@ import com.hazelcast.core.Message;
 import com.hazelcast.core.MessageListener;
 
 import cz.cuni.mff.d3s.been.cluster.Service;
+import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.protocol.Context;
 import cz.cuni.mff.d3s.been.core.protocol.messages.BaseMessage;
 import cz.cuni.mff.d3s.been.mq.IMessageSender;
+import cz.cuni.mff.d3s.been.mq.MessageQueues;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
 
 final class HostRuntimeMessageListener implements MessageListener<BaseMessage>, Service {
@@ -23,7 +27,7 @@ final class HostRuntimeMessageListener implements MessageListener<BaseMessage>, 
 	private final ClusterContext ctx;
 
 	/** Sender for task action messages */
-	private final IMessageSender<BaseMessage> sender;
+	private IMessageSender<BaseMessage> sender;
 
 	/** ID of this Host Runtime */
 	private final String nodeId;
@@ -31,21 +35,27 @@ final class HostRuntimeMessageListener implements MessageListener<BaseMessage>, 
 	/** The Hazelcast topic to listen for messages on */
 	final ITopic<BaseMessage> globalTopic;
 
-	public HostRuntimeMessageListener(final ClusterContext ctx, final IMessageSender<BaseMessage> sender, final String nodeId) {
+	public HostRuntimeMessageListener(final ClusterContext ctx, final String nodeId) {
 		this.ctx = ctx;
-		this.sender = sender;
 		this.nodeId = nodeId;
 
 		globalTopic = ctx.getTopic(Context.GLOBAL_TOPIC.getName());
 	}
 
 	@Override
-	public void start() {
+	public void start() throws ServiceException {
+
+		try {
+			this.sender = MessageQueues.getInstance().createSender(ACTION_QUEUE_NAME);
+		} catch (MessagingException e) {
+			String msg = String.format("Cannot connet to %s", ACTION_QUEUE_NAME);
+			throw new ServiceException(msg, e);
+		}
 		globalTopic.addMessageListener(this);
 	}
 
 	@Override
-	public void stop() {
+	public synchronized void stop() {
 		globalTopic.removeMessageListener(this);
 		sender.close();
 	}
@@ -57,7 +67,7 @@ final class HostRuntimeMessageListener implements MessageListener<BaseMessage>, 
 	 * @param message
 	 */
 	@Override
-	public void onMessage(Message<BaseMessage> message) {
+	public synchronized void onMessage(Message<BaseMessage> message) {
 		final BaseMessage messageObject = message.getMessageObject();
 
 		String receiverId = messageObject.recieverId;

@@ -150,7 +150,7 @@ public class BpkConfigUtils {
 			return (BpkConfiguration) unmarshaller.unmarshal(input);
 
 		} catch (Exception e) {
-			throw new BpkConfigurationException("Cannot parse BPK configruation XML.", e);
+			throw new BpkConfigurationException("Cannot parse BPK configuration XML.", e);
 		}
 	}
 

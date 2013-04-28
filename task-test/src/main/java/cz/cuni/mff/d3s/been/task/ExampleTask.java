@@ -21,7 +21,7 @@ public class ExampleTask extends Task {
 	}
 
 	@Override
-	public void run() {
+	public void run(String[] args) {
 		final EntityID eid = new EntityID();
 		eid.setKind("result");
 		eid.setGroup("test");
@@ -41,5 +41,10 @@ public class ExampleTask extends Task {
 		}
 		log.info("task is logging");
 		System.err.println("Output to stderr");
+		try {
+			Thread.sleep(30 * 1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace(); //To change body of catch statement use File | Settings | File Templates.
+		}
 	}
 }

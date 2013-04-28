@@ -12,7 +12,6 @@
 	</parent>
 
 
-
 	<dependencies>
 		<!-- BEEN -->
 		<dependency>
@@ -29,7 +28,19 @@
 
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>debug-assistant</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
 			<artifactId>core-cluster</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>been-api</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 

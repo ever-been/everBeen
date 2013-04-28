@@ -8,8 +8,8 @@ import com.hazelcast.core.InstanceDestroyedException;
 import com.hazelcast.core.MemberLeftException;
 
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
-import cz.cuni.mff.d3s.been.mq.rep.Replay;
-import cz.cuni.mff.d3s.been.mq.rep.Replays;
+import cz.cuni.mff.d3s.been.mq.rep.Replies;
+import cz.cuni.mff.d3s.been.mq.rep.Reply;
 import cz.cuni.mff.d3s.been.mq.req.Request;
 
 /**
@@ -25,16 +25,17 @@ final class LatchWaitAction implements Action {
 	}
 
 	@Override
-	public Replay goGetSome() {
-		String latchName = request.getSelector();
+	public Reply goGetSome() {
+		String latchName = Actions.latchNameForRequest(request);
+
 		if (!ctx.containsInstance(COUNT_DOWN_LATCH, latchName)) {
-			return Replays.createErrorReplay("No such Count Down Latch '%s'", latchName);
+			return Replies.createErrorReply("No such Count Down Latch '%s'", latchName);
 		}
 
 		long timeout = request.getTimeout();
 
 		if (timeout < 0) {
-			return Replays.createErrorReplay("Timeout must be >= 0, but was %d'", timeout);
+			return Replies.createErrorReply("Timeout must be >= 0, but was %d'", timeout);
 		}
 
 		final ICountDownLatch countDownLatch = ctx.getCountDownLatch(latchName);
@@ -53,14 +54,14 @@ final class LatchWaitAction implements Action {
 			}
 
 			if (waitResult) {
-				return Replays.createOkReplay(Boolean.toString(true));
+				return Replies.createOkReply(Boolean.toString(true));
 			} else {
-				return Replays.createErrorReplay("TIMEOUT");
+				return Replies.createErrorReply("TIMEOUT");
 			}
 
 		} catch (InstanceDestroyedException | MemberLeftException
 				| InterruptedException e) {
-			return Replays.createErrorReplay(e.getMessage());
+			return Replies.createErrorReply(e.getMessage());
 		}
 
 	}

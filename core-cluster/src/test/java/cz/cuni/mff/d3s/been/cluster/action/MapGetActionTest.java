@@ -12,8 +12,8 @@ import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.impl.GroupProperties;
 
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
-import cz.cuni.mff.d3s.been.mq.rep.Replay;
-import cz.cuni.mff.d3s.been.mq.rep.ReplayType;
+import cz.cuni.mff.d3s.been.mq.rep.Reply;
+import cz.cuni.mff.d3s.been.mq.rep.ReplyType;
 import cz.cuni.mff.d3s.been.mq.req.Request;
 import cz.cuni.mff.d3s.been.mq.req.RequestType;
 
@@ -25,8 +25,12 @@ public class MapGetActionTest extends Assert {
 	private static final String KEY1 = "key1";
 	private static final String VALUE1 = "value1";
 
-	private static final String MAP = "map1";
 	private static final String SELECTOR_SEPARATOR = "#";
+
+	private static final String TASK_ID = "abc-def";
+	private static final String CONTEXT_ID = "fed-cba";
+
+	private static final String MAP = String.format("checkpointmap_%s", CONTEXT_ID);
 
 	private static HazelcastInstance hazelcastInstance;
 	private static ClusterContext ctx;
@@ -59,65 +63,39 @@ public class MapGetActionTest extends Assert {
 
 	@Test
 	public void testNonExistingKey() {
-		Request request = new Request(RequestType.GET, getSelector("nonExistingKey"));
+		Request request = new Request(RequestType.GET, "nonExistingKey");
+		fillIds(request);
 		Action action = Actions.createAction(request, ctx);
 
-		Replay replay = action.goGetSome();
+		Reply reply = action.goGetSome();
 
-		assertSame(ReplayType.OK, replay.getReplayType());
-		assertSame("", replay.getValue());
+		assertSame(ReplyType.OK, reply.getReplyType());
+		assertSame(null, reply.getValue());
 	}
 
 	@Test
 	public void testExistingKey() {
 		ctx.getMap(MAP).put(KEY1, VALUE1);
-		Request request = new Request(RequestType.GET, getSelector(KEY1));
+		Request request = new Request(RequestType.GET, KEY1);
+		fillIds(request);
 		Action action = Actions.createAction(request, ctx);
 
-		Replay replay = action.goGetSome();
+		Reply reply = action.goGetSome();
 
-		assertSame(ReplayType.OK, replay.getReplayType());
-		assertEquals(VALUE1, replay.getValue());
-	}
-
-	@Test
-	public void testMalformedSelectorNoSeparator() {
-		Request request = new Request(RequestType.GET, "testMapkey1");
-		Action action = Actions.createAction(request, ctx);
-
-		Replay replay = action.goGetSome();
-
-		assertSame(ReplayType.ERROR, replay.getReplayType());
+		assertSame(ReplyType.OK, reply.getReplyType());
+		assertEquals(VALUE1, reply.getValue());
 	}
 
 	@Test
 	public void testMalformedSelectorNull() {
-		Request request = new Request(RequestType.GET, null);
+		Request request = new Request(RequestType.GET, "");
+		fillIds(request);
+
 		Action action = Actions.createAction(request, ctx);
 
-		Replay replay = action.goGetSome();
+		Reply reply = action.goGetSome();
 
-		assertSame(ReplayType.ERROR, replay.getReplayType());
-	}
-
-	@Test
-	public void testMalformedSelectorNoMap() {
-		Request request = new Request(RequestType.GET, concat("", KEY1));
-		Action action = Actions.createAction(request, ctx);
-
-		Replay replay = action.goGetSome();
-
-		assertSame(ReplayType.ERROR, replay.getReplayType());
-	}
-
-	@Test
-	public void testMalformedSelectorNoKey() {
-		Request request = new Request(RequestType.GET, concat(MAP, ""));
-		Action action = Actions.createAction(request, ctx);
-
-		Replay replay = action.goGetSome();
-
-		assertSame(ReplayType.ERROR, replay.getReplayType());
+		assertSame(ReplyType.ERROR, reply.getReplyType());
 	}
 
 	// ------------------------------------------------------------------------
@@ -130,6 +108,11 @@ public class MapGetActionTest extends Assert {
 
 	private String getSelector(String key) {
 		return concat(MAP, key);
+	}
+
+	private void fillIds(Request request) {
+		request.setTaskId(TASK_ID);
+		request.setTaskContextId(CONTEXT_ID);
 	}
 
 	private static Config buildConfig(boolean multicastEnabled) {

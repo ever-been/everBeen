@@ -95,8 +95,8 @@ public abstract class BasicQueueTests extends Assert {
 		final IMessageSender<String> sender = queue.createSender();
 		final String message = "MESSAGE";
 
-		ReceiverThread<String> receiverThread = new ReceiverThread<>(receiver);
-		SenderThread<String> senderThread = new SenderThread<>(sender, message);
+		ReceiverThread<String> receiverThread = new ReceiverThread<>(receiver, 1);
+		SenderThread<String> senderThread = new SenderThread<>(sender, message, 1);
 
 		receiverThread.start();
 		senderThread.start();
@@ -104,9 +104,80 @@ public abstract class BasicQueueTests extends Assert {
 		senderThread.join();
 		receiverThread.join();
 
-		assertEquals(message, receiverThread.getReceivedMessage());
+		assertEquals(1, receiverThread.getReceivedMessages().size());
+		for (String s : receiverThread.getReceivedMessages()) {
+			assertEquals(message, s);
+
+		}
 
 		sender.close();
+		queue.terminate();
+
+	}
+
+	/**
+	 * Tests simple push-pull on a queue with receiver and sender running in
+	 * different thread.
+	 * 
+	 * @throws MessagingException
+	 */
+	@Test(timeout = TEST_TIMEOUT)
+	public void testMultiThreadedPushPullMulti() throws MessagingException, InterruptedException {
+		IMessageQueue<String> queue = getQueue();
+		final IMessageReceiver<String> receiver = queue.getReceiver();
+		final IMessageSender<String> sender = queue.createSender();
+		final String message = "MESSAGE";
+
+		int count = 100000;
+		ReceiverThread<String> receiverThread = new ReceiverThread<>(receiver, count);
+		SenderThread<String> senderThread = new SenderThread<>(sender, message, count);
+
+		receiverThread.start();
+		senderThread.start();
+
+		senderThread.join();
+		receiverThread.join();
+
+		assertEquals(count, receiverThread.getReceivedMessages().size());
+		for (String s : receiverThread.getReceivedMessages()) {
+			assertEquals(message, s);
+
+		}
+
+		sender.close();
+		queue.terminate();
+
+	}
+
+	@Test(timeout = TEST_TIMEOUT)
+	public void testMultiThreadedPushPullMultiMulti() throws MessagingException, InterruptedException {
+		IMessageQueue<String> queue = getQueue();
+		final IMessageReceiver<String> receiver = queue.getReceiver();
+		final IMessageSender<String> sender1 = queue.createSender();
+		final IMessageSender<String> sender2 = queue.createSender();
+		final String message = "MESSAGE";
+
+		int count = 100000;
+		ReceiverThread<String> receiverThread = new ReceiverThread<>(receiver, count * 2);
+		SenderThread<String> senderThread1 = new SenderThread<>(sender1, message, count);
+		SenderThread<String> senderThread2 = new SenderThread<>(sender2, message, count);
+
+		receiverThread.start();
+		senderThread1.start();
+		senderThread2.start();
+
+		senderThread1.join();
+		senderThread2.join();
+		receiverThread.join();
+
+		assertEquals(count * 2, receiverThread.getReceivedMessages().size());
+		for (String s : receiverThread.getReceivedMessages()) {
+			assertEquals(message, s);
+
+		}
+
+		sender1.close();
+		sender2.close();
 		queue.terminate();
 
 	}

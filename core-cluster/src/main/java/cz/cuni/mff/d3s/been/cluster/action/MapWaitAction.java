@@ -12,8 +12,8 @@ import com.hazelcast.core.EntryListener;
 import com.hazelcast.core.IMap;
 
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
-import cz.cuni.mff.d3s.been.mq.rep.Replay;
-import cz.cuni.mff.d3s.been.mq.rep.Replays;
+import cz.cuni.mff.d3s.been.mq.rep.Replies;
+import cz.cuni.mff.d3s.been.mq.rep.Reply;
 import cz.cuni.mff.d3s.been.mq.req.Request;
 
 /**
@@ -50,23 +50,15 @@ final class MapWaitAction implements Action {
 	}
 
 	@Override
-	public Replay goGetSome() {
-		String[] args;
-
-		try {
-			args = MapActionUtils.parseSelector(request.getSelector());
-		} catch (Exception e) {
-			return Replays.createErrorReplay(e.getMessage());
-		}
-
-		String map = args[0];
-		String key = args[1];
+	public Reply goGetSome() {
+		String map = Actions.checkpointMapNameForRequest(request);
+		String key = request.getSelector();
 
 		//if (!ctx.containsInstance(Instance.InstanceType.MAP, map)) {
-		//	return Replays.createErrorReplay("No such map %s", map);
+		//	return Replies.createErrorReply("No such map %s", map);
 		//}
 
-		Replay replay = null;
+		Reply reply = null;
 
 		final MapWaiter waiter = new MapWaiter();
 
@@ -95,18 +87,18 @@ final class MapWaitAction implements Action {
 
 		if (value == null) {
 			if (timeout) {
-				replay = Replays.createErrorReplay("TIMEOUT");
+				reply = Replies.createErrorReply("TIMEOUT");
 
 			} else {
-				replay = Replays.createErrorReplay("Unknown error");
+				reply = Replies.createErrorReply("Unknown error");
 			}
 		} else {
-			replay = Replays.createOkReplay(value);
+			reply = Replies.createOkReply(value);
 		}
 
 		iMap.removeEntryListener(waiter);
 		queue.clear();
 
-		return replay;
+		return reply;
 	}
 }

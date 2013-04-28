@@ -11,12 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.hazelcast.core.HazelcastInstance;
 
-import cz.cuni.mff.d3s.been.cluster.ClusterReaper;
-import cz.cuni.mff.d3s.been.cluster.IClusterService;
-import cz.cuni.mff.d3s.been.cluster.Instance;
-import cz.cuni.mff.d3s.been.cluster.NodeType;
-import cz.cuni.mff.d3s.been.cluster.Reaper;
-import cz.cuni.mff.d3s.been.cluster.ServiceException;
+import cz.cuni.mff.d3s.been.cluster.*;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.hostruntime.HostRuntimes;
 import cz.cuni.mff.d3s.been.resultsrepository.ResultsRepositories;
@@ -175,7 +170,7 @@ public class Runner {
 	}
 
 	private IClusterService startHostRuntime(final HazelcastInstance instance) {
-		log.warn("Starting Host Runtime");
+		log.info("Starting Host Runtime");
 
 		IClusterService hostRuntime = HostRuntimes.getRuntime(instance);
 		try {
@@ -194,10 +189,7 @@ public class Runner {
 
 		String host = ctx.getInetSocketAddress().getHostName();
 		int port = 8000;
-		SoftwareRepository softwareRepository = SoftwareRepositories.createSWRepository(
-				ctx,
-				host,
-				port);
+		SoftwareRepository softwareRepository = SoftwareRepositories.createSWRepository(ctx, host, port);
 		softwareRepository.init();
 
 		try {

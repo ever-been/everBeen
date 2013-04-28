@@ -11,6 +11,7 @@ import com.hazelcast.core.IMap;
 import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
+import cz.cuni.mff.d3s.been.core.task.TaskState;
 import cz.cuni.mff.d3s.been.mq.IMessageSender;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
 
@@ -35,7 +36,7 @@ final class LocalTaskListener extends TaskManagerService implements EntryListene
 		if (cfg == null) {
 			throw new RuntimeException("BEEN_MAP_TASKS! does not have a config!");
 		}
-		if (cfg.isCacheValue() == true) {
+		if (cfg.isCacheValue()) {
 			throw new RuntimeException("Cache value == true for BEEN_MAP_TASKS!");
 		}
 
@@ -55,7 +56,9 @@ final class LocalTaskListener extends TaskManagerService implements EntryListene
 	}
 
 	@Override
-	public void entryAdded(EntryEvent<String, TaskEntry> event) {
+	public synchronized void entryAdded(EntryEvent<String, TaskEntry> event) {
+		log.debug("TaskEntry {} added", event.getKey());
+
 		TaskEntry entry = event.getValue();
 		try {
 			sender.send(new NewTaskMessage(entry));
@@ -66,16 +69,21 @@ final class LocalTaskListener extends TaskManagerService implements EntryListene
 	}
 
 	@Override
-	public void entryRemoved(EntryEvent<String, TaskEntry> event) {
+	public synchronized void entryRemoved(EntryEvent<String, TaskEntry> event) {
 		log.info("TaskEntry {} removed ", event.getKey());
 	}
 
 	@Override
-	public void entryUpdated(EntryEvent<String, TaskEntry> event) {
-		// TODO more useful debug message?
+	public synchronized void entryUpdated(EntryEvent<String, TaskEntry> event) {
 		log.debug("TaskEntry {} updated", event.getKey());
 
 		TaskEntry entry = event.getValue();
+
+		// skip waiting tasks
+		if (entry.getState() == TaskState.WAITING) {
+			return;
+		}
+
 		try {
 			sender.send(new TaskChangedMessage(entry));
 		} catch (MessagingException e) {
@@ -85,7 +93,7 @@ final class LocalTaskListener extends TaskManagerService implements EntryListene
 	}
 
 	@Override
-	public void entryEvicted(EntryEvent<String, TaskEntry> event) {
+	public synchronized void entryEvicted(EntryEvent<String, TaskEntry> event) {
 		log.info("TaskEntry {} evicted", event.getKey());
 
 		// TODO figure out why the entry was evicted (i.e. stale task)

@@ -1,6 +1,7 @@
 package cz.cuni.mff.d3s.been.hostruntime.task;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +12,6 @@ import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 
-import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.ExecuteStreamHandler;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.io.FileUtils;
@@ -20,10 +20,23 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
+import cz.cuni.mff.d3s.been.debugassistant.DebugAssistant;
 import cz.cuni.mff.d3s.been.hostruntime.TaskException;
 
 public class TaskProcessTest extends Assert {
+
+	@Mock
+	private DebugAssistant debugAssistant;
+
+	@Mock
+	private DependencyDownloader dependencyDownloader;
+
+	@Mock
+	private CmdLineBuilder cmdLineBuilder;
 
 	private String sourceWithTimeoutAsFirstArg = //
 	"public class Main {" + //
@@ -35,7 +48,6 @@ public class TaskProcessTest extends Assert {
 	private String sourceDoingNothing = //
 	"public class Main {" + //
 	"	public static void main(String[] args) throws InterruptedException {" + //
-	"  System.out.println(\"Bjeste fsichni do drpele...\");" + //
 	"	}" + //
 	"}";
 
@@ -51,20 +63,23 @@ public class TaskProcessTest extends Assert {
 
 	private File workingDirectory;
 
+	private Path wrkDirPath;
+
 	@Before
 	public void setUp() throws Exception {
+		MockitoAnnotations.initMocks(this);
 		workingDirectory = tmpFolder.getRoot();
+		wrkDirPath = workingDirectory.toPath();
 	}
 
 	@Test(expected = TaskException.class)
 	public
 			void
 			testExceptionIsThrownWhenProcessEndsWithErrorExitCode() throws Exception {
-		CommandLine cmd = cmdLine(sourceWithBadExitCode);
+		setUpCmdLineBuilder(sourceWithBadExitCode);
 		Map<String, String> environment = new HashMap<>();
 		ExecuteStreamHandler streamhandler = new PumpStreamHandler();
-		long processTimeout = TaskProcess.NO_TIMEOUT;
-		TaskProcess process = new TaskProcess(cmd, workingDirectory, environment, streamhandler, processTimeout);
+		TaskProcess process = new TaskProcess(cmdLineBuilder, workingDirectory.toPath(), environment, streamhandler, dependencyDownloader);
 
 		process.start();
 	}
@@ -73,57 +88,53 @@ public class TaskProcessTest extends Assert {
 	public
 			void
 			testExceptionIsThrownWhenInvalidCommandLineProvided() throws Exception {
-		CommandLine cmd = new CommandLine("q w e r t y u i");
+		Mockito.when(cmdLineBuilder.build()).thenReturn(
+				new TaskCommandLine("q w e r t y"));
 		Map<String, String> environment = new HashMap<>();
 		ExecuteStreamHandler streamhandler = new PumpStreamHandler();
-		long processTimeout = TaskProcess.NO_TIMEOUT;
-		final TaskProcess process = new TaskProcess(cmd, workingDirectory, environment, streamhandler, processTimeout);
+		final TaskProcess process = new TaskProcess(cmdLineBuilder, wrkDirPath, environment, streamhandler, dependencyDownloader);
 
 		process.start();
 	}
 
 	@Test(expected = TaskException.class)
 	public void testExceptionIsThrownOnTimeoutExceeded() throws Exception {
-		CommandLine cmd = cmdLineWithExecutionTime(sourceWithTimeoutAsFirstArg, 10);
+		setUpCmdLineBuilderWithExecTime(sourceWithTimeoutAsFirstArg, 10);
 		Map<String, String> environment = new HashMap<>();
 		ExecuteStreamHandler streamhandler = new PumpStreamHandler();
-		long processTimeout = 1;
-		TaskProcess process = new TaskProcess(cmd, workingDirectory, environment, streamhandler, processTimeout);
+		TaskProcess process = new TaskProcess(cmdLineBuilder, wrkDirPath, environment, streamhandler, dependencyDownloader);
+		process.setTimeout(1);
 
 		process.start();
 	}
 
 	@Test
 	public void testCorrectExitCodeIsReturned() throws Exception {
-		CommandLine cmd = cmdLine(sourceDoingNothing);
+		setUpCmdLineBuilder(sourceDoingNothing);
 		Map<String, String> environment = new HashMap<>();
 		ExecuteStreamHandler streamhandler = new PumpStreamHandler();
-		long processTimeout = TaskProcess.NO_TIMEOUT;
-		final TaskProcess process = new TaskProcess(cmd, workingDirectory, environment, streamhandler, processTimeout);
+		final TaskProcess process = new TaskProcess(cmdLineBuilder, wrkDirPath, environment, streamhandler, dependencyDownloader);
 
 		assertEquals(0, process.start());
 	}
 
 	@Test
 	public void testTaskSuccessfullyFinishedBeforeTimeout() throws Exception {
-		CommandLine cmd = cmdLineWithExecutionTime(sourceWithTimeoutAsFirstArg, 0);
+		setUpCmdLineBuilderWithExecTime(sourceWithTimeoutAsFirstArg, 0);
 		Map<String, String> environment = new HashMap<>();
 		ExecuteStreamHandler streamhandler = new PumpStreamHandler();
-		long processTimeout = 2;
-		TaskProcess process = new TaskProcess(cmd, workingDirectory, environment, streamhandler, processTimeout);
+		TaskProcess process = new TaskProcess(cmdLineBuilder, wrkDirPath, environment, streamhandler, dependencyDownloader);
+		process.setTimeout(2);
 
 		process.start();
 	}
 
 	@Test(timeout = 5000)
 	public void testProcessIsCorrectlyKilled() throws Exception {
-		CommandLine cmd = cmdLineWithExecutionTime(
-				sourceWithTimeoutAsFirstArg,
-				100000);
+		setUpCmdLineBuilderWithExecTime(sourceWithTimeoutAsFirstArg, 100000);
 		Map<String, String> environment = new HashMap<>();
 		ExecuteStreamHandler streamhandler = new PumpStreamHandler();
-		long processTimeout = TaskProcess.NO_TIMEOUT;
-		final TaskProcess process = new TaskProcess(cmd, workingDirectory, environment, streamhandler, processTimeout);
+		final TaskProcess process = new TaskProcess(cmdLineBuilder, wrkDirPath, environment, streamhandler, dependencyDownloader);
 
 		Thread t = new Thread() {
 			@Override
@@ -148,15 +159,16 @@ public class TaskProcessTest extends Assert {
 	//
 	///////
 
-	/**
-	 * Creates command line for process which will sleep given amount of seconds.
-	 * I used this ugly hack because all tests should be runnable on all operating
-	 * systems and java is ideal candidate.
-	 */
-	private CommandLine cmdLine(String source) throws Exception {
-		String className = "Main";
-		compile(source, className);
-		return new CommandLine("java").addArgument(className);
+	private void setUpCmdLineBuilder(String source) throws Exception {
+		TaskCommandLine cmd = cmdLine(source);
+		Mockito.when(cmdLineBuilder.build()).thenReturn(cmd);
+	}
+
+	private
+			void
+			setUpCmdLineBuilderWithExecTime(String source, int execTime) throws Exception {
+		TaskCommandLine cmd = cmdLineWithExecutionTime(source, execTime);
+		Mockito.when(cmdLineBuilder.build()).thenReturn(cmd);
 	}
 
 	/**
@@ -164,10 +176,24 @@ public class TaskProcessTest extends Assert {
 	 * I used this ugly hack because all tests should be runnable on all operating
 	 * systems and java is ideal candidate.
 	 */
-	private
-			CommandLine
-			cmdLineWithExecutionTime(String source, int execSeconds) throws Exception {
-		return cmdLine(source).addArgument("" + execSeconds * 1000);
+	private TaskCommandLine cmdLine(String source) throws Exception {
+		String className = "Main";
+		compile(source, className);
+		TaskCommandLine commandLine = new TaskCommandLine("java");
+		commandLine.addArgument(className);
+		return commandLine;
+	}
+
+	/**
+	 * Creates command line for process which will sleep given amount of seconds.
+	 * I used this ugly hack because all tests should be runnable on all operating
+	 * systems and java is ideal candidate.
+	 */
+	private TaskCommandLine cmdLineWithExecutionTime(String source,
+			int execSeconds) throws Exception {
+		TaskCommandLine commandLine = cmdLine(source);
+		commandLine.addArgument("" + execSeconds * 1000);
+		return commandLine;
 	}
 
 	/**

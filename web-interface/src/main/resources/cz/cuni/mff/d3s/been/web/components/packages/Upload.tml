@@ -1,0 +1,29 @@
+<t:container xmlns="http://www.w3.org/1999/xhtml"
+             xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd"
+             xmlns:p="tapestry:parameter">
+
+    <t:jquery.ajaxUpload t:id="uploadBpk"
+                         t:multiple="true"
+                         t:allowedExtensions="[bpk]">
+        <noscript>
+            <p>JavaScript must be activated!</p>
+        </noscript>
+    </t:jquery.ajaxUpload>
+
+    <t:zone t:id="uploadResult">
+        <div>
+            <t:if test="message">
+                <p>
+                    <strong>${message}</strong>
+                </p>
+            </t:if>
+
+            <t:if test="uploadedFiles">
+                <h4>Uploaded files</h4>
+
+                <t:grid source="uploadedFiles"></t:grid>
+            </t:if>
+        </div>
+    </t:zone>
+
+</t:container>

@@ -1,7 +1,7 @@
 package cz.cuni.mff.d3s.been.cluster.action;
 
-import cz.cuni.mff.d3s.been.mq.rep.Replay;
-import cz.cuni.mff.d3s.been.mq.rep.Replays;
+import cz.cuni.mff.d3s.been.mq.rep.Replies;
+import cz.cuni.mff.d3s.been.mq.rep.Reply;
 
 /**
  * @author Martin Sixta
@@ -14,7 +14,7 @@ public class ErrorAction implements Action {
 	}
 
 	@Override
-	public Replay goGetSome() {
-		return Replays.createErrorReplay(msg);
+	public Reply goGetSome() {
+		return Replies.createErrorReply(msg);
 	}
 }
