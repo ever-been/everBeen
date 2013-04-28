@@ -2,6 +2,13 @@ package cz.cuni.mff.d3s.been.web.components;
 
 import java.util.*;
 
+import cz.cuni.mff.d3s.been.web.pages.context.Context;
+import cz.cuni.mff.d3s.been.web.pages.context.Contexts;
+import cz.cuni.mff.d3s.been.web.pages.Logs;
+import cz.cuni.mff.d3s.been.web.pages.runtime.*;
+import cz.cuni.mff.d3s.been.web.pages.task.Task;
+import cz.cuni.mff.d3s.been.web.pages.task.TaskLogs;
+import cz.cuni.mff.d3s.been.web.pages.task.Tasks;
 import org.apache.tapestry5.annotations.Cached;
 import org.apache.tapestry5.annotations.Parameter;
 import org.apache.tapestry5.annotations.Property;
@@ -87,25 +94,25 @@ public class Layout {
 
 		CONNECT(cz.cuni.mff.d3s.been.web.pages.Connect.class, "Connect", null, true),
 
-		PACKAGE_LIST(cz.cuni.mff.d3s.been.web.pages.packages.List.class,
+		PACKAGE_LIST(cz.cuni.mff.d3s.been.web.pages.bpkpackage.List.class,
 				"Packages", "list"), PACKAGE_UPLOAD(
-				cz.cuni.mff.d3s.been.web.pages.packages.Upload.class, "Packages",
+				cz.cuni.mff.d3s.been.web.pages.bpkpackage.Upload.class, "Packages",
 				"upload"),
 
 		ABOUT(cz.cuni.mff.d3s.been.web.pages.About.class, "About", null),
 
-		TASK_LIST(cz.cuni.mff.d3s.been.web.pages.Tasks.class, "Tasks", "list"), TASK_DETAIL(
-				cz.cuni.mff.d3s.been.web.pages.Task.class, "Tasks", null), TASK_LOGS(
-				cz.cuni.mff.d3s.been.web.pages.TaskLogs.class, "Tasks", "logs"),
+		TASK_LIST(Tasks.class, "Tasks", "list"), TASK_DETAIL(
+				Task.class, "Tasks", null), TASK_LOGS(
+				TaskLogs.class, "Tasks", "logs"),
 
-		RUNTIME_LIST(cz.cuni.mff.d3s.been.web.pages.Runtimes.class, "Runtimes",
-				null), RUNTIME_DETAIL(cz.cuni.mff.d3s.been.web.pages.Runtime.class,
+		RUNTIME_LIST(Runtimes.class, "Runtimes",
+				null), RUNTIME_DETAIL(cz.cuni.mff.d3s.been.web.pages.runtime.Runtime.class,
 				"Runtimes", null),
 
-		LOGS(cz.cuni.mff.d3s.been.web.pages.Logs.class, "Logs", null),
+		LOGS(Logs.class, "Logs", null),
 
-		CONTEXT_LIST(cz.cuni.mff.d3s.been.web.pages.Contexts.class, "Context", null), CONTEXT_DETAIL(
-				cz.cuni.mff.d3s.been.web.pages.Context.class, "Context", null),
+		CONTEXT_LIST(Contexts.class, "Context", null), CONTEXT_DETAIL(
+				Context.class, "Context", null),
 
 		CONFIGURATION(cz.cuni.mff.d3s.been.web.pages.Configuration.class,
 				"Configuration", null);

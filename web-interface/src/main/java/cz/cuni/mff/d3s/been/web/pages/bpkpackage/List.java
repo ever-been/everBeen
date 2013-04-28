@@ -1,4 +1,4 @@
-package cz.cuni.mff.d3s.been.web.pages.packages;
+package cz.cuni.mff.d3s.been.web.pages.bpkpackage;
 
 import cz.cuni.mff.d3s.been.web.pages.Page;
 
