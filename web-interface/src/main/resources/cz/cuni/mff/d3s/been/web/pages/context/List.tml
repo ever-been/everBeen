@@ -6,7 +6,7 @@
 
 <t:grid source="contexts" row="context" inPlace="true">
     <p:idCell>
-        <t:pagelink page="context" context="context.id">${context.id}</t:pagelink>
+        <t:pagelink page="context/detail" context="context.id">${context.id}</t:pagelink>
     </p:idCell>
 </t:grid>
 

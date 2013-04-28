@@ -6,13 +6,13 @@
 <t:grid source="tasks" row="task" inPlace="true" include="id,runtimeId,taskContextId,state" add="name"
         reorder="id,name,state,runtimeId,taskContextId">
     <p:idCell>
-        <t:pagelink page="task" context="task.id">${task.id}</t:pagelink>
+        <t:pagelink page="task/detail" context="task.id">${task.id}</t:pagelink>
     </p:idCell>
     <p:taskContextIdCell>
-        <t:pagelink page="context" context="task.taskContextId">${task.taskContextId}</t:pagelink>
+        <t:pagelink page="context/detail" context="task.taskContextId">${task.taskContextId}</t:pagelink>
     </p:taskContextIdCell>
     <p:runtimeIdCell>
-        <t:pagelink page="runtime" context="task.runtimeId">${task.runtimeId}</t:pagelink>
+        <t:pagelink page="runtime/detail" context="task.runtimeId">${task.runtimeId}</t:pagelink>
     </p:runtimeIdCell>
     <p:nameCell>
         ${task.taskDescriptor.name}
