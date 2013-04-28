@@ -12,6 +12,8 @@ import cz.cuni.mff.d3s.been.core.sri.SWRepositoryInfo;
 import cz.cuni.mff.d3s.been.core.task.*;
 import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
 import cz.cuni.mff.d3s.been.datastore.SoftwareStoreFactory;
+import cz.cuni.mff.d3s.been.debugassistant.DebugAssistant;
+import cz.cuni.mff.d3s.been.debugassistant.DebugListItem;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
 import org.apache.commons.io.IOUtils;
@@ -177,5 +179,11 @@ public class BeenApiImpl implements BeenApi {
 	public void killTaskContext(String taskId) {
 		// TODO
 		throw new UnsupportedOperationException("Not yet implemented.");
+	}
+
+	@Override
+	public Collection<DebugListItem> getDebugWaitingTasks() {
+		DebugAssistant debugAssistant = new DebugAssistant(clusterContext);
+		return debugAssistant.listWaitingProcesses();
 	}
 }

@@ -8,6 +8,7 @@ import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
+import cz.cuni.mff.d3s.been.debugassistant.DebugListItem;
 
 import java.io.File;
 import java.io.InputStream;
@@ -41,4 +42,5 @@ public interface BeenApi {
 	public InputStream downloadBpk(BpkIdentifier bpkIdentifier);
 	public void deleteBpk(BpkIdentifier bpkIdentifier);
 
+	public Collection<DebugListItem> getDebugWaitingTasks();
 }
