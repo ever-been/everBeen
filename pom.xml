@@ -8,7 +8,7 @@
 	<artifactId>clustered</artifactId>
 	<version>3.0.0</version>
 
-    <packaging>pom</packaging>
+	<packaging>pom</packaging>
 
 	<properties>
 		<!-- BEEN DEPENDENCIES -->
@@ -16,7 +16,7 @@
 		<been.task.version>3.0.0</been.task.version>
 
 		<!-- 3RD PARTY DEPENDENCIES -->
-		<hazelcast.version>2.5</hazelcast.version>
+		<hazelcast.version>2.5.1</hazelcast.version>
 		<httpclient.version>4.2.3</httpclient.version>
 		<httpcore.version>4.2.3</httpcore.version>
 		<commons-io.version>2.4</commons-io.version>
@@ -135,7 +135,7 @@
 				<module>task-sync-test</module>
 				<module>task-sync-test2</module>
 				<module>benchmark-nginx</module>
-                <module>been-api</module>
+				<module>been-api</module>
 			</modules>
 		</profile>
 
