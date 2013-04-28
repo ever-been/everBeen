@@ -22,29 +22,23 @@ import java.util.Collection;
 public interface BeenApi {
 
 	public Collection<TaskEntry> getTasks();
-
 	public TaskEntry getTask(String id);
-
 	public Collection<TaskContextEntry> getTaskContexts();
-
 	public TaskContextEntry getTaskContext(String id);
+	public String submitTask(TaskDescriptor taskDescriptor);
+	public void killTask(String taskId);
+	public String submitTaskContext(TaskContextDescriptor taskContextDescriptor);
+	public void killTaskContext(String taskId);
 
 	public Collection<RuntimeInfo> getRuntimes();
-
 	public RuntimeInfo getRuntime(String id);
 
 	public Collection<String> getLogSets();
-
 	public Collection<LogMessage> getLogs(String setId);
 
 	public Collection<BpkIdentifier> getBpks();
-
 	public void uploadBpk(InputStream bpkInputStream) throws BpkConfigurationException;
-
 	public InputStream downloadBpk(BpkIdentifier bpkIdentifier);
-
-	public String submitTask(TaskDescriptor taskDescriptor);
-
-	public String submitTaskContext(TaskContextDescriptor taskContextDescriptor);
+	public void deleteBpk(BpkIdentifier bpkIdentifier);
 
 }
