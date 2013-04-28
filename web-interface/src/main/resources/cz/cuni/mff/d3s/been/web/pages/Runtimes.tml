@@ -4,13 +4,16 @@
       xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd" xmlns:p="tapestry:parameter">
 
 
-<t:grid source="runtimes" row="runtime" inPlace="true" add="load">
+<t:grid source="runtimes" row="runtime" inPlace="true" add="load,memory">
 	<p:idCell>
 		<t:pagelink page="runtime" context="runtime.id">${runtime.id}</t:pagelink>
 	</p:idCell>
 	<p:loadCell>
 		${runtime.monitorSample.loadAverage.load1}
 	</p:loadCell>
+	<p:memoryCell>
+		${runtime.monitorSample.freeMemory}
+	</p:memoryCell>
 </t:grid>
 
 
