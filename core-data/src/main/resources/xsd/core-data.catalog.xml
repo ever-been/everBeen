@@ -5,7 +5,8 @@
 <catalog>
 	<public uri="common.xsd" publicId="http://been.d3s.mff.cuni.cz/common"/>
 	<public uri="entity.xsd" publicId="http://been.d3s.mff.cuni.cz/entity"/>
-	<public uri="hardware-info.xsd" publicId="http://been.d3s.mff.cuni.cz/hardware-info"/>
+    <public uri="hardware-info.xsd" publicId="http://been.d3s.mff.cuni.cz/hardware-info"/>
+    <public uri="monitor.xsd" publicId="http://been.d3s.mff.cuni.cz/monitor"/>
 	<public uri="task-descriptor.xsd" publicId="http://been.d3s.mff.cuni.cz/task-descriptor"/>
 	<public uri="task-entry.xsd" publicId="http://been.d3s.mff.cuni.cz/task-entry"/>
 </catalog>
