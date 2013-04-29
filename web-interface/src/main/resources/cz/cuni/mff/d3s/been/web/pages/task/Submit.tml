@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+
+<html t:type="layout" section="section"
+      xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd" xmlns:p="tapestry:parameter">
+
+<t:task.submit t:detailPage="detailpage"></t:task.submit>
+
+</html>

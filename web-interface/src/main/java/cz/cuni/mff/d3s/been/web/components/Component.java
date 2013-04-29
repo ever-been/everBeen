@@ -13,5 +13,7 @@ public abstract class Component {
 	@Inject
 	protected BeenApiService api;
 
+	@Inject
+	protected AlertManager alertManager;
 
 }

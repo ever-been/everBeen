@@ -21,8 +21,6 @@ public class ConnectFormComponent extends Component {
     @Parameter(required = true)
     private Class<?> successPage;
 
-    @Inject
-    private AlertManager alertManager;
 
     @Persist
     @Property

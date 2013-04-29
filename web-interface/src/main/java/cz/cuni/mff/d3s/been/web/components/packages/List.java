@@ -25,9 +25,6 @@ import cz.cuni.mff.d3s.been.web.components.Component;
  */
 public class List extends Component {
 
-	@Inject
-	private AlertManager alertManager;
-
 	@Property
 	private BpkIdentifier bpkIdentifier;
 

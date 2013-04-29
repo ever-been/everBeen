@@ -1,10 +1,10 @@
 package cz.cuni.mff.d3s.been.web.components;
 
-import java.util.*;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
-import cz.cuni.mff.d3s.been.web.pages.task.*;
-import org.apache.tapestry5.alerts.AlertManager;
 import org.apache.tapestry5.annotations.Cached;
 import org.apache.tapestry5.annotations.Parameter;
 import org.apache.tapestry5.annotations.Property;
@@ -12,10 +12,10 @@ import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.services.PageRenderLinkSource;
 
 import cz.cuni.mff.d3s.been.web.pages.Page;
+import cz.cuni.mff.d3s.been.web.pages.task.Logs;
+import cz.cuni.mff.d3s.been.web.pages.task.Submit;
 
 public class Layout {
-
-
 
 	@Inject
 	private PageRenderLinkSource pageRenderLinkSource;
@@ -28,7 +28,7 @@ public class Layout {
 	private Section section;
 
 	public String classNameForSection(Section mySection) {
-		if (activeSection != null && activeSection.equals(mySection)) {
+		if (activeSection != null && activeSection.sectionName.equals(mySection.sectionName)) {
 			return "active";
 		}
 
@@ -39,7 +39,9 @@ public class Layout {
 
 	public String getLink(Section mySection) {
 		if (!links.containsKey(mySection)) {
-			links.put(mySection, pageRenderLinkSource.createPageRenderLink(mySection.page).toString());//toAbsoluteURI().toString());
+			links.put(
+					mySection,
+					pageRenderLinkSource.createPageRenderLink(mySection.page).toString());//toAbsoluteURI().toString());
 		}
 		return links.get(mySection);
 	}
@@ -49,9 +51,9 @@ public class Layout {
 		java.util.List listedSections = new ArrayList<>();
 		java.util.List sections = new ArrayList<>();
 		for (Section section : Section.values()) {
-            if (section.hideInMenu) {
-                continue;
-            }
+			if (section.hideInMenu) {
+				continue;
+			}
 			if (!listedSections.contains(section.sectionName)) {
 				sections.add(section);
 			}
@@ -79,7 +81,9 @@ public class Layout {
 		for (Section subSection : Section.values()) {
 			if (subSection.subsectionName != null) {
 				if (!subsectionsBySectionName.containsKey(subSection.sectionName)) {
-					subsectionsBySectionName.put(subSection.sectionName, new ArrayList<Section>());
+					subsectionsBySectionName.put(
+							subSection.sectionName,
+							new ArrayList<Section>());
 				}
 				subsectionsBySectionName.get(subSection.sectionName).add(subSection);
 			}
@@ -93,28 +97,37 @@ public class Layout {
 		CONNECT(cz.cuni.mff.d3s.been.web.pages.Connect.class, "Connect", null, true),
 
 		PACKAGE_LIST(cz.cuni.mff.d3s.been.web.pages.bpkpackage.List.class,
-				"Packages", "list"), PACKAGE_UPLOAD(
-				cz.cuni.mff.d3s.been.web.pages.bpkpackage.Upload.class, "Packages",
-				"upload"),
+				"Packages", "list"),
+
+		PACKAGE_UPLOAD(cz.cuni.mff.d3s.been.web.pages.bpkpackage.Upload.class,
+				"Packages", "upload"),
 
 		ABOUT(cz.cuni.mff.d3s.been.web.pages.About.class, "About", null),
 
-		TASK_LIST(cz.cuni.mff.d3s.been.web.pages.task.List.class, "Tasks", "list"), TASK_DETAIL(
-				cz.cuni.mff.d3s.been.web.pages.task.Detail.class, "Tasks", null), TASK_LOGS(
-				Logs.class, "Tasks", "logs"),
+		TASK_LIST(cz.cuni.mff.d3s.been.web.pages.task.List.class, "Tasks", "list"),
+
+		TASK_DETAIL(cz.cuni.mff.d3s.been.web.pages.task.Detail.class, "Tasks", null),
+
+		TASK_LOGS(Logs.class, "Tasks", "logs"),
+
+		TASK_SUBMIT(Submit.class, "Tasks", "submit"),
 
 		RUNTIME_LIST(cz.cuni.mff.d3s.been.web.pages.runtime.List.class, "Runtimes",
-				null), RUNTIME_DETAIL(cz.cuni.mff.d3s.been.web.pages.runtime.Detail.class,
+				null),
+
+		RUNTIME_DETAIL(cz.cuni.mff.d3s.been.web.pages.runtime.Detail.class,
 				"Runtimes", null),
 
 		LOGS(cz.cuni.mff.d3s.been.web.pages.Logs.class, "Logs", null),
 
-		CONTEXT_LIST(cz.cuni.mff.d3s.been.web.pages.context.List.class, "Contexts", null), CONTEXT_DETAIL(
-				cz.cuni.mff.d3s.been.web.pages.context.Detail.class, "Contexts", null),
+		CONTEXT_LIST(cz.cuni.mff.d3s.been.web.pages.context.List.class, "Contexts",
+				null),
+
+		CONTEXT_DETAIL(cz.cuni.mff.d3s.been.web.pages.context.Detail.class,
+				"Contexts", null),
 
 		CONFIGURATION(cz.cuni.mff.d3s.been.web.pages.Configuration.class,
 				"Configuration", null);
-
 
 		public final Class<? extends Page> page;
 
@@ -122,21 +135,28 @@ public class Layout {
 
 		public final String subsectionName;
 
-        private final boolean hideInMenu;
+		private final boolean hideInMenu;
 
-        Section(Class<? extends Page> page, String sectionName, String subsectionName) {
-            this.page = page;
-            this.sectionName = sectionName;
-            this.subsectionName = subsectionName;
-            this.hideInMenu = false;
-        }
+		Section(
+				Class<? extends Page> page,
+				String sectionName,
+				String subsectionName) {
+			this.page = page;
+			this.sectionName = sectionName;
+			this.subsectionName = subsectionName;
+			this.hideInMenu = false;
+		}
 
-        Section(Class<? extends Page> page, String sectionName, String subsectionName, boolean hideInMenu) {
-            this.page = page;
-            this.sectionName = sectionName;
-            this.subsectionName = subsectionName;
-            this.hideInMenu = hideInMenu;
-        }
+		Section(
+				Class<? extends Page> page,
+				String sectionName,
+				String subsectionName,
+				boolean hideInMenu) {
+			this.page = page;
+			this.sectionName = sectionName;
+			this.subsectionName = subsectionName;
+			this.hideInMenu = hideInMenu;
+		}
 
 		public Section fromString(String s) {
 			return (s != null) ? Section.valueOf(s.trim().toUpperCase()) : null;
