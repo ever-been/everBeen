@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <xs:schema
-		xmlns="http://been.d3s.mff.cuni.cz/taskentry"
+		xmlns="http://been.d3s.mff.cuni.cz/task-entry"
 		targetNamespace="http://been.d3s.mff.cuni.cz/task-entry"
 		xmlns:taskentry="http://been.d3s.mff.cuni.cz/task-entry"
 		xmlns:xs="http://www.w3.org/2001/XMLSchema"
