@@ -3,7 +3,7 @@
              xmlns:p="tapestry:parameter">
 
     <t:zone t:id="connectFormZone" id="connectFormZone">
-        <t:beanEditForm t:id="connectForm" id="connectForm" t:object="connectionProperties" t:zone="^"/>
+        <t:beanEditForm t:id="connectForm" id="connectForm" t:object="connectionProperties" t:zone="^" t:submitValue="connect"/>
     </t:zone>
 
     <t:block t:id="connectingBlock" id="connectingBlock">

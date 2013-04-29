@@ -3,6 +3,9 @@ package cz.cuni.mff.d3s.been.web.components;
 import cz.cuni.mff.d3s.been.web.pages.Index;
 import org.apache.tapestry5.Block;
 import org.apache.tapestry5.EventConstants;
+import org.apache.tapestry5.alerts.AlertManager;
+import org.apache.tapestry5.alerts.Duration;
+import org.apache.tapestry5.alerts.Severity;
 import org.apache.tapestry5.annotations.*;
 import org.apache.tapestry5.corelib.components.BeanEditForm;
 import org.apache.tapestry5.corelib.components.Zone;
@@ -17,6 +20,9 @@ public class ConnectFormComponent extends Component {
 
     @Parameter(required = true)
     private Class<?> successPage;
+
+    @Inject
+    private AlertManager alertManager;
 
     @Persist
     @Property
@@ -37,7 +43,7 @@ public class ConnectFormComponent extends Component {
         try {
             api.connect(connectionProperties.hostname, connectionProperties.port, connectionProperties.groupName, connectionProperties.groupPassword);
         } catch (Exception e) {
-            connectForm.recordError(e.getMessage());
+            alertManager.alert(Duration.TRANSIENT, Severity.WARN, e.getMessage());
             return connectFormZone.getBody();
         }
         return successPage;

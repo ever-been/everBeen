@@ -7,13 +7,19 @@
     <t:block id="packagesBlock">
         <t:zone t:id="packagesZone" id="packagesZone">
             <p>${message}</p>
-            <t:grid source="bpkIdentifiers" row="bpkIdentifier" inPlace="true" add="delete">
+            <t:grid source="bpkIdentifiers" row="bpkIdentifier" inPlace="true" add="delete, download">
                 <p:deleteCell>
                     <t:actionLink t:id="delete"
                                   t:context="[bpkIdentifier.groupId, bpkIdentifier.bpkId, bpkIdentifier.version]"
                                   t:zone="packagesZone">delete
                     </t:actionLink>
                 </p:deleteCell>
+                <p:downloadCell>
+                    <t:actionLink t:id="download"
+                                  t:context="[bpkIdentifier.groupId, bpkIdentifier.bpkId, bpkIdentifier.version]">
+                        download
+                    </t:actionLink>
+                </p:downloadCell>
             </t:grid>
         </t:zone>
     </t:block>

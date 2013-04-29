@@ -33,7 +33,7 @@ public class AppModule {
 		// (a random hexadecimal number), but may be further overriden by DevelopmentModule or
 		// QaModule.
 		configuration.override(SymbolConstants.APPLICATION_VERSION, "1.0");
-	}
+    }
 
 	public static void contributeApplicationDefaults(
 			MappedConfiguration<String, Object> configuration) {
@@ -44,6 +44,16 @@ public class AppModule {
 		// the first locale name is the default when there's no reasonable match).
 
 		configuration.add(SymbolConstants.SUPPORTED_LOCALES, "en");
+        // The plaintext phrase used to set the key for
+        // HMAC securing of serialized object data. The
+        // default is blank, which causes a runtime alert
+        // and console error. You should set this to a
+        // reasonably unique, private value, and ensure  s
+        // (in a cluster) that all servers use the same
+        // value – typically by making a contribution in
+        // your applications module class (normally
+        // AppModule.java).*/
+        configuration.add(SymbolConstants.HMAC_PASSPHRASE, "alI87U3Jzbhdsjf12POksldqmlp9");
 	}
 
 	public void contributeRequestHandler(
