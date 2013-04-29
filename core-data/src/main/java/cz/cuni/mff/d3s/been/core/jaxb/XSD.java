@@ -58,8 +58,8 @@ public enum XSD {
 
 	TASK_CONTEXT_DESCRIPTOR(
 			"http://been.d3s.mff.cuni.cz/task-context-descriptor",
-			XSDFile.COMMON.FILE, XSDFile.TASK_CONTEXT_DESCRIPTOR.FILE,
-			XSDFile.TASK_DESCRIPTOR.FILE);
+			XSDFile.COMMON.FILE, XSDFile.TASK_DESCRIPTOR.FILE,
+			XSDFile.TASK_CONTEXT_DESCRIPTOR.FILE);
 
 	/**
 	 * A simple class that holds a list of XSD files and can initialize the XML
@@ -97,8 +97,7 @@ public enum XSD {
 
 					sources = new StreamSource[files.length];
 					for (int i = 0; i < files.length; ++i) {
-						InputStream input = XSD.class.getClassLoader().getResourceAsStream(
-								"xsd/" + files[i].getName());
+						InputStream input = XSD.class.getClassLoader().getResourceAsStream("xsd/" + files[i].getName());
 
 						assert input != null;
 

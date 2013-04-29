@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
-<taskContextDescriptor xmlns="http://been.d3s.mff.cuni.cz/taskmanager/tcd"
-					   xmlns:td="http://been.d3s.mff.cuni.cz/taskmanager/td"
-					   name="nginx-context">
+<taskContextDescriptor xmlns="http://been.d3s.mff.cuni.cz/task-context-descriptor"
+					   xmlns:td="http://been.d3s.mff.cuni.cz/task-descriptor"
+					   name="sync-task-test">
 
 	<properties>
 		<property name="been.task.sync.count">2</property>
-		<property name="been.task.sync.runs">10000</property>
+		<property name="been.task.sync.runs">300000</property>
 	</properties>
 
 	<task>
@@ -33,10 +33,17 @@
 
 	<templates>
 		<template name="server">
-			<td:taskDescriptor groupId="cz.cuni.mff.d3s.been" bpkId="task-sync-test" version="3.0.0">
+			<td:taskDescriptor groupId="cz.cuni.mff.d3s.been" bpkId="task-sync-test" version="3.0.0"
+							   exclusive="exclusive">
 				<td:properties>
 					<td:property name="been.task.sync.type">SERVER</td:property>
 				</td:properties>
+
+				<td:hostRuntimes>
+					<td:xpath>//operatingSystem/vendor='Ubuntu'</td:xpath>
+				</td:hostRuntimes>
+
+
 			</td:taskDescriptor>
 		</template>
 
