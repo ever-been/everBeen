@@ -21,7 +21,7 @@
 
 		<dependency>
 			<groupId>org.jvnet.jaxb2_commons</groupId>
-			<artifactId>basic</artifactId>
+			<artifactId>jaxb2-basics</artifactId>
 			<version>${jvnetbasics.version}</version>
 		</dependency>
 	</dependencies>
@@ -64,7 +64,7 @@
 				<dependencies>
 					<dependency>
 						<groupId>org.jvnet.jaxb2_commons</groupId>
-						<artifactId>basic</artifactId>
+						<artifactId>jaxb2-basics</artifactId>
 						<version>${jvnetbasics.version}</version>
 					</dependency>
 
@@ -77,7 +77,6 @@
 
 				<configuration>
 					<schemaDirectory>${project.basedir}/src/main/resources/xsd</schemaDirectory>
-					<clearOutputDir>false</clearOutputDir>
 					<extension>true</extension>
 					<forceRegenerate>true</forceRegenerate>
 					<episode>true</episode>
