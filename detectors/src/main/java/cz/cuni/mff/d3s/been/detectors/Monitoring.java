@@ -23,7 +23,7 @@ import cz.cuni.mff.d3s.been.core.ri.MonitorSample;
 public class Monitoring {
 	private static final Logger log = LoggerFactory.getLogger(Monitoring.class);
 
-	private static int monitorInterval = 10000;
+	private static int monitorInterval = 5000;
 
 	private static boolean monitoringRunning = false;
 	private static Thread monitoringThread;

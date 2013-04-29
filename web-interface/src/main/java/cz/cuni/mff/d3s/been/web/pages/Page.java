@@ -1,12 +1,20 @@
 package cz.cuni.mff.d3s.been.web.pages;
 
+import cz.cuni.mff.d3s.been.core.task.TaskEntry;
+import cz.cuni.mff.d3s.been.core.task.TaskState;
+import cz.cuni.mff.d3s.been.web.pages.runtime.Detail;
 import cz.cuni.mff.d3s.been.web.services.BeenApiService;
 import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.ioc.annotations.Inject;
+import org.apache.tapestry5.services.PageRenderLinkSource;
 import org.slf4j.Logger;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.text.DecimalFormat;
+import java.text.FieldPosition;
+import java.text.Format;
+import java.text.ParsePosition;
 
 import static cz.cuni.mff.d3s.been.web.components.Layout.Section;
 
@@ -22,6 +30,8 @@ public abstract class Page {
 	@Inject
 	protected Logger log;
 
+	@Inject
+	private PageRenderLinkSource pageRenderLinkSource;
 
     public Section getSection() {
 
@@ -48,4 +58,57 @@ public abstract class Page {
     public static @interface Navigation {
         public Section section();
     }
+
+	public String getRuntimeLink(String runtimeId) {
+		return pageRenderLinkSource.createPageRenderLinkWithContext(cz.cuni.mff.d3s.been.web.pages.runtime.Detail.class, runtimeId).toString();
+	}
+
+	/*
+		Common formatters.
+	 */
+
+	public Format getLoadFormat() {
+		return new DecimalFormat("#.##");
+	}
+
+	public Format getCpuUsageFormat() {
+		return new Format() {
+			@Override
+			public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
+				double d = ((double)obj) * 100.0;
+				return new StringBuffer(String.format("%.2f", d));
+			}
+
+			@Override
+			public Object parseObject(String source, ParsePosition pos) {
+				return null;
+			}
+		};
+	}
+
+	public Format getIdFormat() {
+		return new Format() {
+			@Override
+			public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
+				return new StringBuffer(((String)obj).substring(0, 8));
+			}
+
+			@Override
+			public Object parseObject(String source, ParsePosition pos) {
+				return null;
+			}
+		};
+	}
+
+	public boolean taskRunning(TaskEntry taskEntry) {
+		return taskEntry.getState() == TaskState.RUNNING;
+	}
+
+	public boolean taskFinished(TaskEntry taskEntry) {
+		return taskEntry.getState() == TaskState.FINISHED;
+	}
+
+	public boolean taskWaiting(TaskEntry taskEntry) {
+		return taskEntry.getState() == TaskState.WAITING;
+	}
 }
