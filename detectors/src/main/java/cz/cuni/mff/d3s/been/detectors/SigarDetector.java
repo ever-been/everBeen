@@ -176,6 +176,10 @@ public class SigarDetector {
 			la.setLoad15(avg[2]);
 			sample.setLoadAverage(la);
 
+			// CPU usage
+			CpuPerc cpuPerc = sigar.getCpuPerc();
+			sample.setCpuUsage(cpuPerc.getCombined());
+
 			// memory
 			Mem mem = sigar.getMem();
 			sample.setFreeMemory(mem.getFree());

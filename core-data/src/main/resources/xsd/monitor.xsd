@@ -43,6 +43,7 @@
                 <xs:element name="processCount" type="xs:int" />
                 <xs:element name="interfaces" type="networkSample" minOccurs="0" maxOccurs="unbounded" />
                 <xs:element name="filesystems" type="filesystemSample" minOccurs="0" maxOccurs="unbounded" />
+	            <xs:element name="cpuUsage" type="xs:double" />
                 <xs:element name="loadAverage" type="loadAverage" />
             </xs:sequence>
         </xs:complexType>

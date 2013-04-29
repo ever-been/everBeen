@@ -57,6 +57,7 @@ public class Detector {
 		diff.setTimestamp(newSample.getTimestamp());
 		diff.setFreeMemory(newSample.getFreeMemory());
 		diff.setProcessCount(newSample.getProcessCount());
+		diff.setCpuUsage(newSample.getCpuUsage());
 
 		// network
 		for (int i = 0; i < newSample.getInterfaces().size(); i++) {
