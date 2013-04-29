@@ -1,10 +1,6 @@
 package cz.cuni.mff.d3s.been.cluster.context;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -15,17 +11,7 @@ import com.hazelcast.core.Instance;
 
 import cz.cuni.mff.d3s.been.cluster.Names;
 import cz.cuni.mff.d3s.been.core.SystemProperties;
-import cz.cuni.mff.d3s.been.core.task.Property;
-import cz.cuni.mff.d3s.been.core.task.Task;
-import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
-import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
-import cz.cuni.mff.d3s.been.core.task.TaskContextState;
-import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
-import cz.cuni.mff.d3s.been.core.task.TaskEntries;
-import cz.cuni.mff.d3s.been.core.task.TaskEntry;
-import cz.cuni.mff.d3s.been.core.task.TaskProperties;
-import cz.cuni.mff.d3s.been.core.task.TaskProperty;
-import cz.cuni.mff.d3s.been.core.task.Template;
+import cz.cuni.mff.d3s.been.core.task.*;
 
 /**
  * Created with IntelliJ IDEA. User: Kuba Date: 20.04.13 Time: 13:09 To change
@@ -153,6 +139,7 @@ public class TaskContexts {
 	 * given TaskContextEntry.
 	 * 
 	 * @param taskContextEntry
+	 *          entry to clean up
 	 */
 	public void cleanupTaskContext(TaskContextEntry taskContextEntry) {
 		log.info(

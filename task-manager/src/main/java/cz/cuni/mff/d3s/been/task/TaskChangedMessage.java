@@ -21,15 +21,9 @@ final class TaskChangedMessage extends AbstractEntryTaskMessage {
 			return new ScheduleTaskAction(ctx, getEntry());
 
 		if (state == TaskState.FINISHED || state == TaskState.ABORTED) {
-			/*
-				Check that the Task Context is in our local keyset, so that
-				we only delete a context once.
-			 */
-			TaskEntry taskEntry = getEntry();
-			String taskContextId = taskEntry.getTaskContextId();
-			if (ctx.getTaskContextsUtils().getTaskContextsMap().localKeySet().contains(taskContextId)) {
-				return new TaskContextCheckerAction(ctx, taskEntry);
-			}
+
+			return new TaskContextCheckerAction(ctx, getEntry());
+
 		}
 
 		return null;
