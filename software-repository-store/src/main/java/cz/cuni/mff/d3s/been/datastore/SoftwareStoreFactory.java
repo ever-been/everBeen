@@ -22,6 +22,8 @@ public final class SoftwareStoreFactory {
 			log.error(String.format("Could not find implementation for %s. Software repository will not start.", SoftwareStore.class.toString()));
 			return null;
 		}
-		return dsit.next();
+		SoftwareStore store = dsit.next();
+		store.init();
+		return store;
 	}
 }

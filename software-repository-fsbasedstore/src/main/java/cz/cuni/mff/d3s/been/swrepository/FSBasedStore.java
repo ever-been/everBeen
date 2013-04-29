@@ -64,6 +64,7 @@ public final class FSBasedStore implements SoftwareStore {
 	/**
 	 * Initialize the FS store in the app's run directory.
 	 */
+	@Override
 	public void init() {
 		if (!fsRoot.exists()) {
 			fsRoot.mkdir();
@@ -200,8 +201,6 @@ public final class FSBasedStore implements SoftwareStore {
 		Pattern pattern = Pattern.compile(regexp);
 
 		List<BpkIdentifier> result = new ArrayList<BpkIdentifier>();
-
-		if (!bpkFSRoot.exists()) return result;
 
 		for (File f : FileUtils.listFiles(bpkFSRoot, new String[]{"bpk"}, true)) {
 			String path = f.getPath();
