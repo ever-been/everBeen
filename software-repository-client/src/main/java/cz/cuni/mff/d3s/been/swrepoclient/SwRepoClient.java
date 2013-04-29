@@ -1,14 +1,13 @@
 package cz.cuni.mff.d3s.been.swrepoclient;
 
-import java.io.File;
-import java.io.InputStream;
-import java.util.Collection;
-
-import org.apache.maven.artifact.Artifact;
-
 import cz.cuni.mff.d3s.been.bpk.ArtifactIdentifier;
 import cz.cuni.mff.d3s.been.bpk.Bpk;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
+import org.apache.maven.artifact.Artifact;
+
+import java.io.File;
+import java.io.InputStream;
+import java.util.Collection;
 
 /**
  * A client to the software repository, this object servers to retrieve BEEN
@@ -57,7 +56,7 @@ public interface SwRepoClient {
 	/**
 	 * Store a BEEN package
 	 * 
-	 * @param bpkMetaInfo
+	 * @param bpkIdentifier
 	 *          Identifier of the stored package
 	 * @param bpkFile
 	 *          File to put
@@ -82,4 +81,5 @@ public interface SwRepoClient {
 	 * @return collection of BpkIdentifier objects
 	 */
 	public Collection<BpkIdentifier> listBpks();
+
 }
