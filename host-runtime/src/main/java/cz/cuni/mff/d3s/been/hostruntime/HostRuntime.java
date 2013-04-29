@@ -98,10 +98,7 @@ class HostRuntime implements IClusterService {
 	 * @param hostRuntimeInfo
 	 *          object which stores basic information about HostRuntime
 	 */
-	public HostRuntime(
-			ClusterContext clusterContext,
-			SwRepoClientFactory swRepoClientFactory,
-			RuntimeInfo hostRuntimeInfo) {
+	public HostRuntime(ClusterContext clusterContext, SwRepoClientFactory swRepoClientFactory, RuntimeInfo hostRuntimeInfo) {
 		this.clusterContext = clusterContext;
 		this.hostRuntimeInfo = hostRuntimeInfo;
 		this.swRepoClientFactory = swRepoClientFactory;
@@ -137,13 +134,10 @@ class HostRuntime implements IClusterService {
 	}
 
 	private void startMonitoring() {
-		Path monitoringLogPath = FileSystems.getDefault().getPath(
-				hostRuntimeInfo.getWorkingDirectory(),
-				"monitoring.log");
+		Path monitoringLogPath = FileSystems.getDefault().getPath(hostRuntimeInfo.getWorkingDirectory(), "monitoring.log");
 
 		try {
-			final IMessageSender<BaseMessage> sender = MessageQueues.getInstance().createSender(
-					ACTION_QUEUE_NAME);
+			final IMessageSender<BaseMessage> sender = MessageQueues.getInstance().createSender(ACTION_QUEUE_NAME);
 			Monitoring.addListener(new MonitoringListener() {
 				@Override
 				public void sampleGenerated(MonitorSample sample) {
@@ -176,8 +170,7 @@ class HostRuntime implements IClusterService {
 	 */
 	private void extractLogger(Path workingDir) {
 
-		InputStream input = HostRuntime.class.getClassLoader().getResourceAsStream(
-				LOGGER_RESOURCE_NAME);
+		InputStream input = HostRuntime.class.getClassLoader().getResourceAsStream(LOGGER_RESOURCE_NAME);
 		try {
 			Path scriptDir = workingDir.resolve("scripts");
 			Path resourcePath = workingDir.resolve(LOGGER_RESOURCE_NAME);
@@ -186,9 +179,7 @@ class HostRuntime implements IClusterService {
 			Files.copy(input, resourcePath);
 			System.setProperty(TaskPropertyNames.LOGGER, resourcePath.toString());
 		} catch (IOException e) {
-			String msg = String.format(
-					"Cannot extract %s. Native task logging will not work",
-					LOGGER_RESOURCE_NAME);
+			String msg = String.format("Cannot extract %s. Native task logging will not work", LOGGER_RESOURCE_NAME);
 			log.error(msg, e);
 		}
 
@@ -199,6 +190,7 @@ class HostRuntime implements IClusterService {
 	@Override
 	public void stop() {
 		log.info("Stopping Host Runtime...");
+		Monitoring.stopMonitoring();
 		unregisterHostRuntime();
 		stopListeners();
 		stopProcessManager();
@@ -280,9 +272,7 @@ class HostRuntime implements IClusterService {
 		} catch (IllegalStateException e) {
 			// an attempt is made to unregister on a cluster instance that is no longer active
 			// this happens when Hazelcast shutdown hook snags runtime control before BEEN shutdown hooks
-			log.warn(
-					"Failed to unhook HostRuntime from the cluster. HostRuntime data is likely to linger.",
-					e);
+			log.warn("Failed to unhook HostRuntime from the cluster. HostRuntime data is likely to linger.", e);
 		}
 	}
 
