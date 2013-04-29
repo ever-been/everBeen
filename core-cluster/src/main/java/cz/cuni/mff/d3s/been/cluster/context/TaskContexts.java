@@ -139,7 +139,7 @@ public class TaskContexts {
 			TaskContextDescriptor descriptor, String templateName) {
 		for (Template t : descriptor.getTemplates().getTemplate()) {
 			if (t.getName().equals(templateName)) {
-				return (TaskDescriptor) t.getTaskDescriptor().createCopy();
+				return (TaskDescriptor) t.getTaskDescriptor().clone();
 			}
 		}
 

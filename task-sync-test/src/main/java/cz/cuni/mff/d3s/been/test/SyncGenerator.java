@@ -42,7 +42,7 @@ public class SyncGenerator {
 		TaskContextDescriptor tcd = new TaskContextDescriptor();
 		Task serverTask = new Task();
 		serverTask.setName("server");
-		td = (TaskDescriptor) tdTemplate.createCopy();
+		td = (TaskDescriptor) tdTemplate.clone();
 		TaskProperties serverProperties = new TaskProperties();
 		List<TaskProperty> serverProps = serverProperties.getProperty();
 
@@ -60,7 +60,7 @@ public class SyncGenerator {
 			Task clientTask = new Task();
 
 			clientTask.setName("client-" + i);
-			td = (TaskDescriptor) tdTemplate.createCopy();
+			td = (TaskDescriptor) tdTemplate.clone();
 			TaskProperties clientProperties = new TaskProperties();
 			List<TaskProperty> props = clientProperties.getProperty();
 
