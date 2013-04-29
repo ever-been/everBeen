@@ -47,8 +47,9 @@ public final class XPathPredicate implements Predicate<String, RuntimeInfo> {
 
 		switch (runtimeExclusivity) {
 			case NON_EXCLUSIVE:
-				boolean isTaskExclusive = (taskExclusivity != NON_EXCLUSIVE);
-				if (!isTaskExclusive && info.getTaskCount() > 0) {
+				boolean isExclusive = (taskExclusivity != NON_EXCLUSIVE);
+				boolean hasTasks = (info.getTaskCount() > 0);
+				if (isExclusive && hasTasks) {
 					return false;
 				}
 				break;

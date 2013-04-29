@@ -33,15 +33,11 @@
 
 	<templates>
 		<template name="server">
-			<td:taskDescriptor groupId="cz.cuni.mff.d3s.been" bpkId="task-sync-test" version="3.0.0"
-							   exclusive="exclusive">
+			<td:taskDescriptor groupId="cz.cuni.mff.d3s.been" bpkId="task-sync-test" version="3.0.0">
+
 				<td:properties>
 					<td:property name="been.task.sync.type">SERVER</td:property>
 				</td:properties>
-
-				<td:hostRuntimes>
-					<td:xpath>//operatingSystem/vendor='Ubuntu'</td:xpath>
-				</td:hostRuntimes>
 
 
 			</td:taskDescriptor>

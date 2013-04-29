@@ -3,6 +3,7 @@ package cz.cuni.mff.d3s.been.task;
 import static cz.cuni.mff.d3s.been.core.task.TaskExclusivity.EXCLUSIVE;
 import static cz.cuni.mff.d3s.been.core.task.TaskExclusivity.NON_EXCLUSIVE;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Random;
 
@@ -35,16 +36,18 @@ final class RandomRuntimeSelection implements IRuntimeSelection {
 
 		Predicate<?, ?> predicate = new ExclusivityPredicate(exclusivity, contextId);
 
-		Collection<RuntimeInfo> infos = clusterCtx.getRuntimesUtils().getRuntimeMap().values(predicate);
+		Collection<RuntimeInfo> runtimes = clusterCtx.getRuntimesUtils().getRuntimeMap().values(predicate);
 
-		if (infos.size() == 0) {
+		if (runtimes.size() == 0) {
 			throw new NoRuntimeFoundException("Cannot find suitable Host Runtime");
 		}
 
 		// Stupid Java
-		RuntimeInfo[] ids = infos.toArray(new RuntimeInfo[infos.size()]);
+		RuntimeInfo[] ids = runtimes.toArray(new RuntimeInfo[runtimes.size()]);
 
-		return (ids[rnd.nextInt(ids.length)].getId());
+		Arrays.sort(ids, new RuntimesComparable());
+
+		return (ids[0].getId());
 
 	}
 
@@ -83,13 +86,11 @@ final class RandomRuntimeSelection implements IRuntimeSelection {
 
 			switch (runtimeExclusivity) {
 				case NON_EXCLUSIVE:
-					boolean isTaskExclusive = (taskExclusivity != NON_EXCLUSIVE);
-					return !isTaskExclusive || (info.getTaskCount() == 0);
+					boolean isExclusive = (taskExclusivity != NON_EXCLUSIVE);
+					boolean hasTasks = (info.getTaskCount() > 0);
+					return !(isExclusive && hasTasks);
 				case CONTEXT_EXCLUSIVE:
-					if (!contextId.equals(info.getExclusiveId())) {
-						return false; // different context
-					}
-					break;
+					return contextId.equals(info.getExclusiveId());
 				case EXCLUSIVE:
 					return false;
 			}
@@ -97,4 +98,5 @@ final class RandomRuntimeSelection implements IRuntimeSelection {
 			return true;
 		}
 	}
+
 }
