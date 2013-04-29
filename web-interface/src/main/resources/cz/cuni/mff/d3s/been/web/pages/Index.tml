@@ -1,9 +1,96 @@
 <!DOCTYPE html>
 
-<html t:type="layout" section="section" xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd">
+<html t:type="layout" section="section" xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd"
+      xmlns:p="tapestry:parameter">
 
+<div style="float: left; margin: 0 20px 0 0; width: 600px;">
+	<h2>Runtimes</h2>
+	<t:cometd.PushTarget topic="/runtimes" event="runtimesUpdated" update="replace"
+	                     style="border: 1px solid #ddd; overflow-y: scroll; height: 200px;">
+		<p>Loading live feed of runtimes...</p>
+	</t:cometd.PushTarget>
+</div>
 
-<div id="been"/>
+<t:block t:id="runtimesBlock">
+	<table class="list">
+		<thead>
+			<tr>
+				<th></th>
+				<th>ID</th>
+				<th>Hostname + Port</th>
+				<th>Operating system</th>
+				<th>CPU</th>
+				<th>Exclusive</th>
+				<th>Tasks</th>
+			</tr>
+		</thead>
+
+		<tr t:type="loop" source="runtimes" value="runtime">
+			<td><i class="icon-laptop"></i></td>
+			<td><a href="/runtime/detail/${runtime.id}"><t:output format="idFormat" value="runtime.id" /></a></td>
+			<td>${runtime.host}:${runtime.port}</td>
+			<td>${runtime.operatingSystem.name} (${runtime.operatingSystem.arch})</td>
+			<td><t:output format="cpuUsageFormat" value="runtime.monitorSample.cpuUsage" /> %</td>
+			<td>${runtime.exclusivity}</td>
+			<td>${runtime.taskCount}</td>
+		</tr>
+	</table>
+</t:block>
+
+<div style="float: left; margin: 0 0 0 0; width: 600px;">
+	<h2>Tasks</h2>
+	<t:cometd.PushTarget topic="/tasks" event="tasksUpdated" update="replace"
+	                     style="border: 1px solid #ddd; overflow-y: scroll; height: 200px;">
+		<p>Loading live feed of tasks...</p>
+	</t:cometd.PushTarget>
+</div>
+
+<t:block t:id="tasksBlock">
+	<table class="list">
+		<thead>
+		<tr>
+			<th>Context ID</th>
+			<th>Task ID</th>
+			<th>Name</th>
+			<th>State</th>
+		</tr>
+		</thead>
+
+		<t:loop source="contexts" value="context">
+		<t:loop source="context" value="task" index="taskIndex">
+			<tr>
+				<td>
+					<t:if test="isFirstInContext()">
+						<a href="/context/detail/${task.taskContextId}"><t:output format="idFormat" value="task.taskContextId" /></a>
+					</t:if>
+				</td>
+				<td><a href="/task/detail/${task.id}"><t:output format="idFormat" value="task.id" /></a></td>
+				<td>${task.taskDescriptor.name}</td>
+				<td>
+					<t:if test="taskRunning(task)">
+						<i class="icon-play" style="color: green;"></i>
+						<p:else>
+							<t:if test="taskFinished(task)">
+								<i class="icon-stop" style="color: gray;"></i>
+								<p:else>
+									<t:if test="taskWaiting(task)">
+										<i class="icon-pause" style="color: #eeaa00;"></i>
+										<p:else>
+											<i class="icon-warning-sign" style="color: red;"></i>
+										</p:else>
+									</t:if>
+								</p:else>
+							</t:if>
+						</p:else>
+					</t:if>
+
+					${task.state}
+				</td>
+			</tr>
+		</t:loop>
+		</t:loop>
+	</table>
+</t:block>
 
 
 </html>

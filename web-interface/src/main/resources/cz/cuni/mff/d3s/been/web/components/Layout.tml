@@ -13,7 +13,9 @@
     <link href="${context:layout/layout-ie.css}" rel="stylesheet" type="text/css" />
     <![endif]-->
 
-    <title>BEEN</title>
+	<link rel="stylesheet" href="${context:css/font-awesome.min.css}" />
+
+	<title>BEEN</title>
 </head>
 
 <body id="been-body">
