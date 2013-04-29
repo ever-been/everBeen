@@ -5,6 +5,7 @@ package cz.cuni.mff.d3s.been.swrepository;
 
 import java.io.File;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -199,6 +200,9 @@ public final class FSBasedStore implements SoftwareStore {
 		Pattern pattern = Pattern.compile(regexp);
 
 		List<BpkIdentifier> result = new ArrayList<BpkIdentifier>();
+
+		if (!bpkFSRoot.exists()) return result;
+
 		for (File f : FileUtils.listFiles(bpkFSRoot, new String[]{"bpk"}, true)) {
 			String path = f.getPath();
 			Matcher m = pattern.matcher(path);
