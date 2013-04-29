@@ -6,11 +6,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import cz.cuni.mff.d3s.been.core.ri.MonitorSample;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
+import cz.cuni.mff.d3s.been.core.ri.MonitorSample;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskExclusivity;
 import cz.cuni.mff.d3s.been.debugassistant.DebugAssistant;
@@ -165,6 +165,12 @@ final class ProcessManagerContext {
 		}
 	}
 
+	/**
+	 * Updates load information of the Host Runtime
+	 * 
+	 * @param sample
+	 *          monitoring sample
+	 */
 	public synchronized void updateMonitoringSample(MonitorSample sample) {
 		hostInfo.setMonitorSample(sample);
 		clusterContext.getRuntimesUtils().storeRuntimeInfo(hostInfo);
@@ -194,8 +200,24 @@ final class ProcessManagerContext {
 	}
 
 	/**
+	 * Sets current exclusivity from a task handle.
 	 * 
-	 * Tries to change current exclusivity/
+	 * @param taskHandle
+	 *          task handle
+	 */
+	private void setExclusivity(TaskHandle taskHandle) {
+		TaskExclusivity exclusivity = taskHandle.getExclusivity();
+
+		if (exclusivity == CONTEXT_EXCLUSIVE) {
+			setExclusivity(exclusivity, taskHandle.getContextId());
+		} else if (exclusivity == EXCLUSIVE) {
+			setExclusivity(exclusivity, taskHandle.getTaskId());
+		}
+	}
+
+	/**
+	 * 
+	 * Tries to change current exclusivity.
 	 * 
 	 * @param taskHandle
 	 *          task handle
@@ -207,12 +229,18 @@ final class ProcessManagerContext {
 
 		switch (currentExclusivity) {
 			case NON_EXCLUSIVE:
-				if (exclusivity == CONTEXT_EXCLUSIVE) {
-					setExclusivity(exclusivity, taskHandle.getContextId());
-				} else if (exclusivity == EXCLUSIVE) {
-					setExclusivity(exclusivity, taskHandle.getTaskId());
+				boolean isExclusive = (exclusivity != NON_EXCLUSIVE);
+				boolean isFree = (runningTasks.size() == 0);
+
+				if (isExclusive && isFree) {
+					setExclusivity(taskHandle);
+					return true;
+				} else if (isExclusive) {
+					return false; // there are running tasks
+				} else {
+					setExclusivity(taskHandle);
+					return true;
 				}
-				return true;
 			case CONTEXT_EXCLUSIVE:
 				return taskHandle.getContextId().equals(currentExclusiveId);
 			case EXCLUSIVE:
