@@ -109,8 +109,8 @@ public class Layout {
 
 		LOGS(cz.cuni.mff.d3s.been.web.pages.Logs.class, "Logs", null),
 
-		CONTEXT_LIST(cz.cuni.mff.d3s.been.web.pages.context.List.class, "Context", null), CONTEXT_DETAIL(
-				cz.cuni.mff.d3s.been.web.pages.context.Detail.class, "Context", null),
+		CONTEXT_LIST(cz.cuni.mff.d3s.been.web.pages.context.List.class, "Contexts", null), CONTEXT_DETAIL(
+				cz.cuni.mff.d3s.been.web.pages.context.Detail.class, "Contexts", null),
 
 		CONFIGURATION(cz.cuni.mff.d3s.been.web.pages.Configuration.class,
 				"Configuration", null);

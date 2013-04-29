@@ -38,6 +38,7 @@
 </div>
 
 <div id="content">
+    <t:alerts/>
     <t:body/>
 </div>
 </body>
