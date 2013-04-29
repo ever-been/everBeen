@@ -47,8 +47,8 @@ final class LocalRuntimeListener extends TaskManagerService implements EntryList
 	public LocalRuntimeListener(ClusterContext clusterCtx) {
 
 		this.clusterCtx = clusterCtx;
-		this.runtimesMap = clusterCtx.getRuntimesUtils().getRuntimeMap();
-		this.tasksMap = clusterCtx.getTasksUtils().getTasksMap();
+		this.runtimesMap = clusterCtx.getRuntimes().getRuntimeMap();
+		this.tasksMap = clusterCtx.getTasks().getTasksMap();
 
 	}
 
@@ -109,7 +109,9 @@ final class LocalRuntimeListener extends TaskManagerService implements EntryList
 			try {
 				sender.send(new TaskChangedMessage(entry));
 			} catch (MessagingException e) {
-				String msg = String.format("Cannot send message to '%s'", sender.getConnection());
+				String msg = String.format(
+						"Cannot send message to '%s'",
+						sender.getConnection());
 				log.error(msg, e);
 			}
 

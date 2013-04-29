@@ -18,49 +18,49 @@ import cz.cuni.mff.d3s.been.cluster.Names;
  */
 public class ClusterContext {
 
-	private final Maps mapUtils;
-	private final Runtimes runtimesUtils;
-	private final Tasks tasksUtils;
-	private final TaskContexts taskContextsUtils;
-	private final Topics topicUtils;
-	private final Services servicesUtils;
+	private final Maps maps;
+	private final Runtimes runtimes;
+	private final Tasks tasks;
+	private final TaskContexts taskContexts;
+	private final Topics topics;
+	private final Services services;
 	private final HazelcastInstance hcInstance;
 
 	public ClusterContext(HazelcastInstance hcInstance) {
 		this.hcInstance = hcInstance;
-		this.mapUtils = new Maps(this);
-		this.runtimesUtils = new Runtimes(this);
-		this.tasksUtils = new Tasks(this);
-		this.taskContextsUtils = new TaskContexts(this);
-		this.topicUtils = new Topics(this);
-		this.servicesUtils = new Services(this);
+		this.maps = new Maps(this);
+		this.runtimes = new Runtimes(this);
+		this.tasks = new Tasks(this);
+		this.taskContexts = new TaskContexts(this);
+		this.topics = new Topics(this);
+		this.services = new Services(this);
 	}
 
 	public ICountDownLatch getCountDownLatch(String name) {
 		return getInstance().getCountDownLatch(name);
 	}
-	public Tasks getTasksUtils() {
-		return tasksUtils;
+	public Tasks getTasks() {
+		return tasks;
 	}
 
-	public TaskContexts getTaskContextsUtils() {
-		return taskContextsUtils;
+	public TaskContexts getTaskContexts() {
+		return taskContexts;
 	}
 
-	public Maps getMapUtils() {
-		return mapUtils;
+	public Maps getMaps() {
+		return maps;
 	}
 
-	public Runtimes getRuntimesUtils() {
-		return runtimesUtils;
+	public Runtimes getRuntimes() {
+		return runtimes;
 	}
 
-	public Topics getTopicUtils() {
-		return topicUtils;
+	public Topics getTopics() {
+		return topics;
 	}
 
-	public Services getServicesUtils() {
-		return servicesUtils;
+	public Services getServices() {
+		return services;
 	}
 
 	public HazelcastInstance getInstance() {

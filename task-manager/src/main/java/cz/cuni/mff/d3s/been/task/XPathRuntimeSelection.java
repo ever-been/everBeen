@@ -40,7 +40,8 @@ final class XPathRuntimeSelection implements IRuntimeSelection {
 		String contextId = taskEntry.getTaskContextId();
 		Predicate<?, ?> predicate = new XPathPredicate(contextId, xpath, exclusivity);
 
-		Collection<RuntimeInfo> runtimes = clusterCtx.getRuntimesUtils().getRuntimeMap().values(predicate);
+		Collection<RuntimeInfo> runtimes = clusterCtx.getRuntimes().getRuntimeMap().values(
+				predicate);
 
 		if (runtimes.size() == 0) {
 			throw new NoRuntimeFoundException("Cannot find suitable Host Runtime");

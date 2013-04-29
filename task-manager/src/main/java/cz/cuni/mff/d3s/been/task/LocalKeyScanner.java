@@ -56,7 +56,7 @@ final class LocalKeyScanner extends TaskManagerService {
 		@Override
 		public void run() {
 
-			IMap<String, TaskEntry> map = clusterCtx.getTasksUtils().getTasksMap();
+			IMap<String, TaskEntry> map = clusterCtx.getTasks().getTasksMap();
 
 			for (String taskId : map.localKeySet()) {
 				TaskEntry entry = map.get(taskId);
@@ -78,7 +78,10 @@ final class LocalKeyScanner extends TaskManagerService {
 
 	private void checkEntry(TaskEntry entry) throws Exception {
 
-		log.debug("TaskEntry ID: {}, status: {}", entry.getId(), entry.getState().toString());
+		log.debug(
+				"TaskEntry ID: {}, status: {}",
+				entry.getId(),
+				entry.getState().toString());
 
 		if (!TMUtils.isOwner(entry, nodeId)) {
 			log.debug("Will take over the task {}", entry.getId());

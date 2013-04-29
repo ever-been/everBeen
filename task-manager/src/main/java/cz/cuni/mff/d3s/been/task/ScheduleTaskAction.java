@@ -68,7 +68,7 @@ final class ScheduleTaskAction implements TaskAction {
 	public ScheduleTaskAction(ClusterContext ctx, TaskEntry entry) {
 		this.ctx = ctx;
 		this.entry = entry;
-		this.tasks = ctx.getTasksUtils();
+		this.tasks = ctx.getTasks();
 		this.map = tasks.getTasksMap();
 	}
 
@@ -110,7 +110,7 @@ final class ScheduleTaskAction implements TaskAction {
 			map.unlock(id);
 
 			// 5) Send a message to the runtime
-			ctx.getTopicUtils().publish(RUNTIME_TOPIC, newRunTaskMessage());
+			ctx.getTopics().publish(RUNTIME_TOPIC, newRunTaskMessage());
 
 			log.info("Task {} scheduled on {}", id, receiverId);
 
@@ -120,7 +120,10 @@ final class ScheduleTaskAction implements TaskAction {
 
 			stashTask("No suitable host found");
 		} catch (TimeoutException e) {
-			log.warn("Could not lock task {} in {}. Will try later if needed.", id, getLockTimeout());
+			log.warn(
+					"Could not lock task {} in {}. Will try later if needed.",
+					id,
+					getLockTimeout());
 			// will get to it later
 		}
 

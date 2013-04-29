@@ -69,7 +69,9 @@ final class ProcessManagerContext {
 	 * @throws IllegalStateException
 	 *           if a task cannot be accepted to run on this Host Runtime
 	 */
-	synchronized void tryAcceptTask(TaskHandle taskHandle) throws IllegalStateException {
+	synchronized
+			void
+			tryAcceptTask(TaskHandle taskHandle) throws IllegalStateException {
 		if (taskHandle.getTaskDescriptor() == null) {
 			throw new IllegalStateException("No Task descriptor");
 		}
@@ -173,7 +175,7 @@ final class ProcessManagerContext {
 	 */
 	public synchronized void updateMonitoringSample(MonitorSample sample) {
 		hostInfo.setMonitorSample(sample);
-		clusterContext.getRuntimesUtils().storeRuntimeInfo(hostInfo);
+		clusterContext.getRuntimes().storeRuntimeInfo(hostInfo);
 	}
 
 	/**
@@ -183,7 +185,7 @@ final class ProcessManagerContext {
 		hostInfo.setExclusivity(currentExclusivity.toString());
 		hostInfo.setExclusiveId(currentExclusiveId);
 		hostInfo.setTaskCount(runningTasks.size());
-		clusterContext.getRuntimesUtils().storeRuntimeInfo(hostInfo);
+		clusterContext.getRuntimes().storeRuntimeInfo(hostInfo);
 	}
 
 	/**

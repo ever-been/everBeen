@@ -30,8 +30,8 @@ final class LocalTaskListener extends TaskManagerService implements EntryListene
 
 	public LocalTaskListener(ClusterContext clusterCtx) {
 		this.clusterCtx = clusterCtx;
-		taskMap = clusterCtx.getTasksUtils().getTasksMap();
-		MapConfig cfg = clusterCtx.getTasksUtils().getTasksMapConfig();
+		taskMap = clusterCtx.getTasks().getTasksMap();
+		MapConfig cfg = clusterCtx.getTasks().getTasksMapConfig();
 
 		if (cfg == null) {
 			throw new RuntimeException("BEEN_MAP_TASKS! does not have a config!");
@@ -63,7 +63,9 @@ final class LocalTaskListener extends TaskManagerService implements EntryListene
 		try {
 			sender.send(new NewTaskMessage(entry));
 		} catch (MessagingException e) {
-			String msg = String.format("Cannot send message to '%s'", sender.getConnection());
+			String msg = String.format(
+					"Cannot send message to '%s'",
+					sender.getConnection());
 			log.error(msg, e);
 		}
 	}
@@ -87,7 +89,9 @@ final class LocalTaskListener extends TaskManagerService implements EntryListene
 		try {
 			sender.send(new TaskChangedMessage(entry));
 		} catch (MessagingException e) {
-			String msg = String.format("Cannot send message to '%s'", sender.getConnection());
+			String msg = String.format(
+					"Cannot send message to '%s'",
+					sender.getConnection());
 			log.error(msg, e);
 		}
 	}

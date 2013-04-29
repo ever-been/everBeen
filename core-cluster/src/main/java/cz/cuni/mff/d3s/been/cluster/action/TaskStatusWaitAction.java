@@ -72,7 +72,7 @@ final class TaskStatusWaitAction implements Action {
 
 		final TaskWaiter waiter = new TaskWaiter();
 
-		IMap<String, TaskEntry> map = ctx.getTasksUtils().getTasksMap();
+		IMap<String, TaskEntry> map = ctx.getTasks().getTasksMap();
 
 		map.addEntryListener(waiter, taskId, true);
 

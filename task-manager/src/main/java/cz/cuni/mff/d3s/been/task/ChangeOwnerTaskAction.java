@@ -36,7 +36,7 @@ public class ChangeOwnerTaskAction implements TaskAction {
 	 */
 	@Override
 	public void execute() throws TaskActionException {
-		final Tasks tasks = ctx.getTasksUtils();
+		final Tasks tasks = ctx.getTasks();
 		final String nodeId = ctx.getId();
 
 		Transaction txn = ctx.getTransaction();

@@ -1,12 +1,6 @@
 package cz.cuni.mff.d3s.been.hostruntime;
 
-import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.HR_COMM_PORT;
-import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.HR_HOSTNAME;
-import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.HR_RESULTS_PORT;
-import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.LOGGER;
-import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.REQUEST_PORT;
-import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.TASK_CONTEXT_ID;
-import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.TASK_ID;
+import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,13 +16,7 @@ import org.apache.commons.exec.PumpStreamHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cz.cuni.mff.d3s.been.bpk.Bpk;
-import cz.cuni.mff.d3s.been.bpk.BpkConfigUtils;
-import cz.cuni.mff.d3s.been.bpk.BpkConfiguration;
-import cz.cuni.mff.d3s.been.bpk.BpkConfigurationException;
-import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
-import cz.cuni.mff.d3s.been.bpk.BpkNames;
-import cz.cuni.mff.d3s.been.bpk.BpkRuntime;
+import cz.cuni.mff.d3s.been.bpk.*;
 import cz.cuni.mff.d3s.been.cluster.Reapable;
 import cz.cuni.mff.d3s.been.cluster.Reaper;
 import cz.cuni.mff.d3s.been.cluster.Service;
@@ -42,13 +30,7 @@ import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskProperty;
-import cz.cuni.mff.d3s.been.hostruntime.task.ClusterStreamHandler;
-import cz.cuni.mff.d3s.been.hostruntime.task.CmdLineBuilder;
-import cz.cuni.mff.d3s.been.hostruntime.task.CmdLineBuilderFactory;
-import cz.cuni.mff.d3s.been.hostruntime.task.DependencyDownloader;
-import cz.cuni.mff.d3s.been.hostruntime.task.DependencyDownloaderFactory;
-import cz.cuni.mff.d3s.been.hostruntime.task.TaskHandle;
-import cz.cuni.mff.d3s.been.hostruntime.task.TaskProcess;
+import cz.cuni.mff.d3s.been.hostruntime.task.*;
 import cz.cuni.mff.d3s.been.mq.IMessageReceiver;
 import cz.cuni.mff.d3s.been.mq.IMessageSender;
 import cz.cuni.mff.d3s.been.mq.MessageQueues;
@@ -136,8 +118,8 @@ final class ProcessManager implements Service, Reapable {
 			RuntimeInfo hostInfo) {
 		this.clusterContext = clusterContext;
 		this.hostInfo = hostInfo;
-		this.softwareResolver = new SoftwareResolver(clusterContext.getServicesUtils(), swRepoClientFactory);
-		this.clusterTasks = clusterContext.getTasksUtils();
+		this.softwareResolver = new SoftwareResolver(clusterContext.getServices(), swRepoClientFactory);
+		this.clusterTasks = clusterContext.getTasks();
 		this.executorService = Executors.newFixedThreadPool(1);
 
 		this.tasks = new ProcessManagerContext(clusterContext, hostInfo);

@@ -77,7 +77,7 @@ public class TaskContexts {
 		getTaskContextsMap().put(taskContextEntry.getId(), taskContextEntry);
 
 		for (TaskEntry taskEntry : entriesToSubmit) {
-			clusterContext.getTasksUtils().submit(taskEntry);
+			clusterContext.getTasks().submit(taskEntry);
 			log.info("Task was submitted with ID {}", taskEntry.getId());
 		}
 
@@ -167,8 +167,8 @@ public class TaskContexts {
 				taskTtlSeconds);
 
 		for (String taskId : taskContextEntry.getContainedTask()) {
-			TaskEntry taskEntry = clusterContext.getTasksUtils().getTask(taskId);
-			clusterContext.getTasksUtils().putTask(
+			TaskEntry taskEntry = clusterContext.getTasks().getTask(taskId);
+			clusterContext.getTasks().putTask(
 					taskEntry,
 					taskTtlSeconds,
 					TimeUnit.SECONDS);

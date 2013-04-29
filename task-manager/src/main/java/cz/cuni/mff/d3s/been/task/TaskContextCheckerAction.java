@@ -51,10 +51,10 @@ public class TaskContextCheckerAction implements TaskAction {
 	@Override
 	public void execute() throws TaskActionException {
 		final String taskContextId = entry.getTaskContextId();
-		final TaskContexts contexts = ctx.getTaskContextsUtils();
+		final TaskContexts contexts = ctx.getTaskContexts();
 
-		IMap<String, TaskContextEntry> contextsMap = ctx.getTaskContextsUtils().getTaskContextsMap();
-		IMap<String, TaskEntry> tasksMap = ctx.getTasksUtils().getTasksMap();
+		IMap<String, TaskContextEntry> contextsMap = ctx.getTaskContexts().getTaskContextsMap();
+		IMap<String, TaskEntry> tasksMap = ctx.getTasks().getTasksMap();
 
 		// fetch the entry
 		TaskContextEntry contextEntry = contexts.getTaskContext(taskContextId);
@@ -80,7 +80,7 @@ public class TaskContextCheckerAction implements TaskAction {
 
 			if (isFinished) {
 				contextEntry.setContextState(TaskContextState.FINISHED);
-				ctx.getTaskContextsUtils().cleanupTaskContext(contextEntry);
+				ctx.getTaskContexts().cleanupTaskContext(contextEntry);
 			}
 		} finally {
 			contextsMap.unlock(taskContextId); // LOCK END

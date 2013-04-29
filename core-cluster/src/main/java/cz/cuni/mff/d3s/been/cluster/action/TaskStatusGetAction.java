@@ -22,7 +22,7 @@ final class TaskStatusGetAction implements Action {
 	public Reply goGetSome() {
 		String taskId = request.getSelector();
 
-		TaskEntry taskEntry = ctx.getTasksUtils().getTask(taskId);
+		TaskEntry taskEntry = ctx.getTasks().getTask(taskId);
 
 		if (taskEntry == null) {
 			return Replies.createErrorReply("No such task '%s'", taskId);
