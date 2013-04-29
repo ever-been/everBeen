@@ -25,7 +25,7 @@ public class Monitoring {
 
 	private static int monitorInterval = 5000;
 
-	private static boolean monitoringRunning = false;
+	private static volatile boolean monitoringRunning = false;
 	private static Thread monitoringThread;
 
 	private static Set<MonitoringListener> listeners = new HashSet<MonitoringListener>();
@@ -62,10 +62,7 @@ public class Monitoring {
 				Detector detector = new Detector();
 
 				try {
-					OutputStream out = Files.newOutputStream(
-							logPath,
-							CREATE,
-							TRUNCATE_EXISTING);
+					OutputStream out = Files.newOutputStream(logPath, CREATE, TRUNCATE_EXISTING);
 					ObjectMapper mapper = new ObjectMapper();
 
 					while (monitoringRunning) {
@@ -96,6 +93,7 @@ public class Monitoring {
 
 	public static synchronized void stopMonitoring() {
 		monitoringRunning = false;
+		monitoringThread.interrupt();
 
 		try {
 			monitoringThread.join();
