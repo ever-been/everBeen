@@ -2,9 +2,9 @@
 
 <html t:type="layout" xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd">
 
-<t:zone t:id="connectFormZone" id="connectFormZone">
-    <t:beanEditForm  t:id="connectForm" id="connectForm" t:object="connectionProperties" t:zone="^" />
-</t:zone>
+
+<t:connectFormComponent t:successPage="successPage"></t:connectFormComponent>
+
 
 
 </html>

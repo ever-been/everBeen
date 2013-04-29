@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.List;
 
 import cz.cuni.mff.d3s.been.web.pages.task.*;
+import org.apache.tapestry5.alerts.AlertManager;
 import org.apache.tapestry5.annotations.Cached;
 import org.apache.tapestry5.annotations.Parameter;
 import org.apache.tapestry5.annotations.Property;
@@ -13,6 +14,8 @@ import org.apache.tapestry5.services.PageRenderLinkSource;
 import cz.cuni.mff.d3s.been.web.pages.Page;
 
 public class Layout {
+
+
 
 	@Inject
 	private PageRenderLinkSource pageRenderLinkSource;
