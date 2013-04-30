@@ -76,7 +76,7 @@ public abstract class Page {
 			@Override
 			public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
 				double d = ((double)obj) * 100.0;
-				return new StringBuffer(String.format("%.2f", d));
+				return new StringBuffer(String.format("%.1f", d));
 			}
 
 			@Override

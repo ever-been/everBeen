@@ -1,9 +1,7 @@
 package cz.cuni.mff.d3s.been.web.components;
 
-import cz.cuni.mff.d3s.been.web.pages.Index;
 import org.apache.tapestry5.Block;
 import org.apache.tapestry5.EventConstants;
-import org.apache.tapestry5.alerts.AlertManager;
 import org.apache.tapestry5.alerts.Duration;
 import org.apache.tapestry5.alerts.Severity;
 import org.apache.tapestry5.annotations.*;

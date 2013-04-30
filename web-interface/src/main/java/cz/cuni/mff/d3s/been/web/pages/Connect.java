@@ -1,12 +1,5 @@
 package cz.cuni.mff.d3s.been.web.pages;
 
-import org.apache.tapestry5.Block;
-import org.apache.tapestry5.EventConstants;
-import org.apache.tapestry5.annotations.*;
-import org.apache.tapestry5.corelib.components.BeanEditForm;
-import org.apache.tapestry5.corelib.components.Zone;
-import org.apache.tapestry5.ioc.annotations.Inject;
-
 import cz.cuni.mff.d3s.been.web.components.Layout;
 
 /**
@@ -21,8 +14,8 @@ public class Connect extends Page {
 		return null;
 	}
 
-    public Class<Index> getSuccessPage() {
-        return Index.class;
+    public Class<Overview> getSuccessPage() {
+        return Overview.class;
     }
 
 }

@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import cz.cuni.mff.d3s.been.web.pages.Overview;
 import org.apache.tapestry5.annotations.Cached;
 import org.apache.tapestry5.annotations.Parameter;
 import org.apache.tapestry5.annotations.Property;
@@ -92,7 +93,7 @@ public class Layout {
 
 	public enum Section {
 
-		OVERVIEW(cz.cuni.mff.d3s.been.web.pages.Index.class, "Overview", null),
+		OVERVIEW(Overview.class, "Overview", null),
 
 		CONNECT(cz.cuni.mff.d3s.been.web.pages.Connect.class, "Connect", null, true),
 
