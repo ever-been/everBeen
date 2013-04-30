@@ -79,10 +79,7 @@ public class TaskHandle {
 	public void setRunning(TaskProcess process) throws IllegalStateException {
 		entry.setWorkingDirectory(process.getWorkingDirectory());
 		setTaskEntryArgs(process.getArgs());
-		updateEntry(
-				TaskState.RUNNING,
-				"Task is going to be run on %s",
-				entry.getRuntimeId());
+		updateEntry(TaskState.RUNNING, "Task is going to be run on %s", entry.getRuntimeId());
 	}
 
 	/**
@@ -95,10 +92,7 @@ public class TaskHandle {
 	 */
 	public void setFinished(int exitValue) throws IllegalStateException {
 		entry.setExitCode(exitValue);
-		updateEntry(
-				TaskState.FINISHED,
-				"Task has finished with exit value %d",
-				exitValue);
+		updateEntry(TaskState.FINISHED, "Task has finished with exit value %d", exitValue);
 	}
 
 	/**
@@ -109,9 +103,7 @@ public class TaskHandle {
 	 * @param args
 	 *          arguments for the formatted message
 	 */
-	public
-			void
-			setAborted(String format, Object... args) throws IllegalStateException {
+	public void setAborted(String format, Object... args) throws IllegalStateException {
 		updateEntry(TaskState.ABORTED, format, args);
 	}
 
@@ -129,9 +121,7 @@ public class TaskHandle {
 	 * 
 	 * @throws IllegalArgumentException
 	 */
-	public
-			void
-			reSubmit(String format, Object... args) throws IllegalArgumentException {
+	public void reSubmit(String format, Object... args) throws IllegalArgumentException {
 		updateEntry(TaskState.SUBMITTED, format, args);
 	}
 
@@ -179,9 +169,7 @@ public class TaskHandle {
 	 * @throws IllegalStateException
 	 *           if the current entry has been concurrently modified
 	 */
-	private
-			void
-			updateEntry(TaskState state, String format, Object... args) throws IllegalStateException {
+	private void updateEntry(TaskState state, String format, Object... args) throws IllegalStateException {
 
 		map.lock(id);
 
@@ -219,8 +207,7 @@ public class TaskHandle {
 	 *         false otherwise
 	 */
 	private boolean isSame(TaskEntry clusterEntry) {
-		boolean isScheduledHere = entry.getRuntimeId().equals(
-				clusterEntry.getRuntimeId());
+		boolean isScheduledHere = entry.getRuntimeId().equals(clusterEntry.getRuntimeId());
 		boolean sameState = (entry.getState() == clusterEntry.getState());
 		boolean sameContext = (entry.getTaskContextId().equals(clusterEntry.getTaskContextId()));
 

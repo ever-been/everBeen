@@ -2,9 +2,7 @@ package cz.cuni.mff.d3s.been.hostruntime;
 
 import static cz.cuni.mff.d3s.been.core.task.TaskExclusivity.*;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +42,9 @@ final class ProcessManagerContext {
 	/** current exclusive ID (task or context) */
 	private volatile String currentExclusiveId = null;
 
+	/** set of reserved / accepted tasks */
+	Set<String> acceptedTasks = new HashSet<>();
+
 	/**
 	 * Creates new ProcessManagerContext
 	 * 
@@ -69,9 +70,7 @@ final class ProcessManagerContext {
 	 * @throws IllegalStateException
 	 *           if a task cannot be accepted to run on this Host Runtime
 	 */
-	synchronized
-			void
-			tryAcceptTask(TaskHandle taskHandle) throws IllegalStateException {
+	synchronized void tryAcceptTask(TaskHandle taskHandle) throws IllegalStateException {
 		if (taskHandle.getTaskDescriptor() == null) {
 			throw new IllegalStateException("No Task descriptor");
 		}
@@ -84,6 +83,7 @@ final class ProcessManagerContext {
 		if (canAccept) {
 			try {
 				taskHandle.setAccepted();
+				acceptedTasks.add(taskHandle.getTaskId());
 			} catch (IllegalStateException e) {
 				// reset exclusivity
 				setExclusivity(prevExclusivity, prevExclusiveId);
@@ -110,8 +110,6 @@ final class ProcessManagerContext {
 	 */
 	synchronized void addTask(String id, TaskProcess process) {
 		runningTasks.put(id, process);
-		hostInfo.setTaskCount(runningTasks.size());
-		updateHostInfo();
 	}
 
 	/**
@@ -125,8 +123,9 @@ final class ProcessManagerContext {
 	 */
 	synchronized void removeTask(TaskHandle taskHandle) {
 		runningTasks.remove(taskHandle.getTaskId());
+		acceptedTasks.remove(taskHandle.getTaskId());
 
-		if (runningTasks.size() == 0) {
+		if (getTasksCount() == 0) {
 			setExclusivity(NON_EXCLUSIVE, null);
 		}
 
@@ -134,6 +133,18 @@ final class ProcessManagerContext {
 
 		DebugAssistant debugAssistant = new DebugAssistant(clusterContext);
 		debugAssistant.removeSuspendedTask(taskHandle.getTaskId());
+	}
+
+	/**
+	 * Returns current count of accepted tasks.
+	 * 
+	 * Be aware that an accepted task does not have to have it's corresponding
+	 * {@link TaskProcess} created yet.
+	 * 
+	 * @return number of accepted tasks of the Host Runtime
+	 */
+	int getTasksCount() {
+		return acceptedTasks.size();
 	}
 
 	/**
@@ -184,7 +195,7 @@ final class ProcessManagerContext {
 	private void updateHostInfo() {
 		hostInfo.setExclusivity(currentExclusivity.toString());
 		hostInfo.setExclusiveId(currentExclusiveId);
-		hostInfo.setTaskCount(runningTasks.size());
+		hostInfo.setTaskCount(getTasksCount());
 		clusterContext.getRuntimes().storeRuntimeInfo(hostInfo);
 	}
 
@@ -232,7 +243,7 @@ final class ProcessManagerContext {
 		switch (currentExclusivity) {
 			case NON_EXCLUSIVE:
 				boolean isExclusive = (exclusivity != NON_EXCLUSIVE);
-				boolean isFree = (runningTasks.size() == 0);
+				boolean isFree = (getTasksCount() == 0);
 
 				if (isExclusive && isFree) {
 					setExclusivity(taskHandle);
