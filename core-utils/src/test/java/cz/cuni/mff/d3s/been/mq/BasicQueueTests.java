@@ -128,7 +128,7 @@ public abstract class BasicQueueTests extends Assert {
 		final IMessageSender<String> sender = queue.createSender();
 		final String message = "MESSAGE";
 
-		int count = 100000;
+		int count = 10000;
 		ReceiverThread<String> receiverThread = new ReceiverThread<>(receiver, count);
 		SenderThread<String> senderThread = new SenderThread<>(sender, message, count);
 
@@ -157,7 +157,7 @@ public abstract class BasicQueueTests extends Assert {
 		final IMessageSender<String> sender2 = queue.createSender();
 		final String message = "MESSAGE";
 
-		int count = 100000;
+		int count = 10000;
 		ReceiverThread<String> receiverThread = new ReceiverThread<>(receiver, count * 2);
 		SenderThread<String> senderThread1 = new SenderThread<>(sender1, message, count);
 		SenderThread<String> senderThread2 = new SenderThread<>(sender2, message, count);
