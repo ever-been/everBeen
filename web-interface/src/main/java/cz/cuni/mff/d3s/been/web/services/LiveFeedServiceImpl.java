@@ -1,5 +1,7 @@
 package cz.cuni.mff.d3s.been.web.services;
 
+import cz.cuni.mff.d3s.been.api.BeenApi;
+import cz.cuni.mff.d3s.been.core.LogMessage;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import org.apache.tapestry5.ioc.Invokable;
@@ -7,6 +9,7 @@ import org.apache.tapestry5.ioc.services.ParallelExecutor;
 import org.lazan.t5.cometd.services.PushManager;
 
 import java.util.Collection;
+import java.util.Date;
 
 /**
  * @author Kuba Brecka
@@ -28,20 +31,37 @@ public class LiveFeedServiceImpl implements LiveFeedService {
 
 	private class LogFeedWorker implements Invokable<Object> {
 
+		private synchronized void broadcast(String topic, Object object) {
+			pushManager.broadcast(topic, object);
+		}
+
 		@Override
 		public Object invoke() {
+
+			while (! api.isConnected()) {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+				}
+			}
+
+			api.getApi().addLogListener(new BeenApi.LogListener() {
+				@Override
+				public void logAdded(LogMessage log) {
+					broadcast("/logs", log);
+				}
+			});
+
 			while (true) {
 
-				if (api.isConnected()) {
-					try {
-						Collection<RuntimeInfo> runtimeInfoCollection = api.getApi().getRuntimes();
-						pushManager.broadcast("/runtimes", runtimeInfoCollection);
+				try {
+					Collection<RuntimeInfo> runtimeInfoCollection = api.getApi().getRuntimes();
+					broadcast("/runtimes", runtimeInfoCollection);
 
-						Collection<TaskEntry> taskEntries = api.getApi().getTasks();
-						pushManager.broadcast("/tasks", taskEntries);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+					Collection<TaskEntry> taskEntries = api.getApi().getTasks();
+					broadcast("/tasks", taskEntries);
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 
 				try {

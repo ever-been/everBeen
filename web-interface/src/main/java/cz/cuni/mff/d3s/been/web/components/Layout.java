@@ -7,6 +7,7 @@ import java.util.Map;
 
 import cz.cuni.mff.d3s.been.web.pages.Overview;
 import org.apache.tapestry5.annotations.Cached;
+import org.apache.tapestry5.annotations.Import;
 import org.apache.tapestry5.annotations.Parameter;
 import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.ioc.annotations.Inject;
@@ -16,6 +17,7 @@ import cz.cuni.mff.d3s.been.web.pages.Page;
 import cz.cuni.mff.d3s.been.web.pages.task.Logs;
 import cz.cuni.mff.d3s.been.web.pages.task.Submit;
 
+@Import(library={"context:js/sugar-1.3.5.min.js"})
 public class Layout {
 
 	@Inject

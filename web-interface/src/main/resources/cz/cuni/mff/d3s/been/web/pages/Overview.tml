@@ -3,10 +3,10 @@
 <html t:type="layout" section="section" xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd"
       xmlns:p="tapestry:parameter">
 
-<div style="float: left; margin: 0 20px 0 0; width: 600px;">
+<div style="float: left; margin: 0 20px 10px 0; width: 600px;">
 	<h2>Runtimes</h2>
 	<t:cometd.PushTarget topic="/runtimes" event="runtimesUpdated" update="replace"
-	                     style="border: 1px solid #ddd; overflow-y: scroll; height: 200px;">
+	                     style="border: 1px solid #ddd; overflow-y: scroll; height: 170px; padding: 10px;">
 		<p style="text-align: center;">
 			<i class="icon-spinner icon-spin"></i> Loading live feed of runtimes...
 		</p>
@@ -51,10 +51,10 @@
 	</table>
 </t:block>
 
-<div style="float: left; margin: 0 0 0 0; width: 600px;">
+<div style="float: left; margin: 0 0 10px 0; width: 600px;">
 	<h2>Tasks</h2>
 	<t:cometd.PushTarget topic="/tasks" event="tasksUpdated" update="replace"
-	                     style="border: 1px solid #ddd; overflow-y: scroll; height: 200px;">
+	                     style="border: 1px solid #ddd; overflow-y: scroll; height: 170px; padding: 10px;">
 		<p style="text-align: center;">
 			<i class="icon-spinner icon-spin"></i> Loading live feed of tasks...
 		</p>
@@ -115,5 +115,45 @@
 	</t:if>
 </t:block>
 
+<div style="clear: both;"></div>
+
+<div style="float: left; margin: 0 20px 0 0; width: 600px;">
+	<h2>Usage</h2>
+	<div class="btn-toolbar" style="text-align: center;">
+		<div class="btn-group" id="selectButtons">
+			<a class="btn active" href="#" onclick="return select(this, 'cpuUsage');">CPU usage</a>
+			<a class="btn" href="#" onclick="return select(this, 'freeMemory');">Free memory</a>
+			<a class="btn" href="#" onclick="return select(this, 'loadAverage');">Load average</a>
+			<a class="btn" href="#" onclick="return select(this, 'netBytes');">Network traffic</a>
+			<a class="btn" href="#" onclick="return select(this, 'fsBytes');">Filesystem traffic</a>
+		</div>
+	</div>
+
+	<div id="plot-placeholder" style="width: 550px; height: 240px; margin: 0 auto;"></div>
+</div>
+
+<div style="float: left; margin: 0 20px 10px 0; width: 600px;">
+	<h2>Logs</h2>
+	<t:cometd.PushTarget class="logsTarget" topic="/logs" event="logsUpdated"
+	                     style="border: 1px solid #ddd; overflow-y: scroll; height: 250px; padding: 10px;">
+		<p style="text-align: center;" id="logsLoading">
+			<i class="icon-spinner icon-spin"></i> Loading live feed of logs...
+		</p>
+		<table class="list" id="logsTable" style="white-space: nowrap; display: none;">
+			<thead>
+				<tr>
+					<th>Task ID</th>
+					<th>Name</th>
+					<th>Level</th>
+					<th>Message</th>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+	</t:cometd.PushTarget>
+
+
+</div>
 
 </html>

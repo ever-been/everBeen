@@ -27,6 +27,7 @@
 body, td, th, input, select {
 	font-family: Verdana, "Geneva CE", lucida, sans-serif;
 	font-size: 9pt;
+	line-height: 1.3em;
 }
 
 body {
@@ -214,6 +215,7 @@ h2 {
 	margin: 0 0 0.5em 0;
 	border-bottom: 2px solid #C2CAC3;
 	font-size: 11pt;
+	line-height: 1.3em;
 }
 
 h3 {
@@ -238,6 +240,10 @@ input.type-button, input.type-submit, button {
 	padding: .1em .5em;
 	background-color: #C2CAC3;
 	*/
+}
+
+.btn-group>.btn {
+	font-size: 12px;
 }
 
 hr {

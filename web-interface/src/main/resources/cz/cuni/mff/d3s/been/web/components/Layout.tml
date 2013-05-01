@@ -8,6 +8,8 @@
     <meta name="copyright" content="Copyright © 2004-05 BEEN Team"/>
     <link href="./favicon.ico" rel="shortcut icon" type="image/x-icon"/>
 
+	<link href="${context:css/bootstrap.min.css}" rel="stylesheet" media="screen" />
+
     <link href="${context:layout/layout.css}" rel="stylesheet" type="text/css"/>
     <!--[if lt IE 7]>
     <link href="${context:layout/layout-ie.css}" rel="stylesheet" type="text/css" />
