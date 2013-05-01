@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 
+import com.hazelcast.core.EntryEvent;
+import com.hazelcast.core.EntryListener;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,16 +38,8 @@ public class BeenApiImpl implements BeenApi {
 
 	private final ClusterContext clusterContext;
 
-	public BeenApiImpl(
-			String host,
-			int port,
-			String groupName,
-			String groupPassword) {
-		HazelcastInstance instance = Instance.newNativeInstance(
-				host,
-				port,
-				groupName,
-				groupPassword);
+	public BeenApiImpl(String host, int port, String groupName, String groupPassword) {
+		HazelcastInstance instance = Instance.newNativeInstance(host, port, groupName, groupPassword);
 		clusterContext = new ClusterContext(instance);
 	}
 
@@ -85,15 +79,39 @@ public class BeenApiImpl implements BeenApi {
 
 	@Override
 	public Collection<String> getLogSets() {
-		MultiMap<String, LogMessage> logs = clusterContext.getInstance().getMultiMap(
-				Names.LOGS_MULTIMAP_NAME);
+		MultiMap<String, LogMessage> logs = clusterContext.getInstance().getMultiMap(Names.LOGS_MULTIMAP_NAME);
 		return logs.keySet();
 	}
 
 	@Override
+	public void addLogListener(final LogListener listener) {
+		// TODO, refactor
+		EntryListener<String, LogMessage> entryListener = new EntryListener<String, LogMessage>() {
+
+			@Override
+			public void entryAdded(EntryEvent<String, LogMessage> event) {
+				listener.logAdded(event.getValue());
+			}
+
+			@Override
+			public void entryRemoved(EntryEvent<String, LogMessage> event) {}
+			@Override
+			public void entryUpdated(EntryEvent<String, LogMessage> event) {}
+			@Override
+			public void entryEvicted(EntryEvent<String, LogMessage> event) {}
+		};
+		MultiMap<String, LogMessage> logs = clusterContext.getInstance().getMultiMap(Names.LOGS_MULTIMAP_NAME);
+		logs.addEntryListener(entryListener, true);
+	}
+
+	@Override
+	public void removeLogListener(LogListener listener) {
+		// TODO
+	}
+
+	@Override
 	public Collection<LogMessage> getLogs(String setId) {
-		MultiMap<String, LogMessage> logs = clusterContext.getInstance().getMultiMap(
-				Names.LOGS_MULTIMAP_NAME);
+		MultiMap<String, LogMessage> logs = clusterContext.getInstance().getMultiMap(Names.LOGS_MULTIMAP_NAME);
 		return logs.get(setId);
 	}
 
@@ -107,9 +125,7 @@ public class BeenApiImpl implements BeenApi {
 	}
 
 	@Override
-	public
-			void
-			uploadBpk(InputStream bpkInputStream) throws BpkConfigurationException {
+	public void uploadBpk(InputStream bpkInputStream) throws BpkConfigurationException {
 		SWRepositoryInfo swInfo = clusterContext.getServices().getSWRepositoryInfo();
 		SwRepoClient client = new SwRepoClientFactory(SoftwareStoreFactory.getDataStore()).getClient(
 				swInfo.getHost(),
@@ -169,8 +185,7 @@ public class BeenApiImpl implements BeenApi {
 		taskInTaskContext.setDescriptor(descriptorInTaskContext);
 		contextDescriptor.getTask().add(taskInTaskContext);
 
-		TaskContextEntry taskContextEntry = clusterContext.getTaskContexts().submit(
-				contextDescriptor);
+		TaskContextEntry taskContextEntry = clusterContext.getTaskContexts().submit(contextDescriptor);
 
 		if (taskContextEntry.getContainedTask().size() == 0) {
 			throw new RuntimeException("Created task context does not contain a task.");
@@ -188,8 +203,7 @@ public class BeenApiImpl implements BeenApi {
 
 	@Override
 	public String submitTaskContext(TaskContextDescriptor taskContextDescriptor) {
-		TaskContextEntry taskContextEntry = clusterContext.getTaskContexts().submit(
-				taskContextDescriptor);
+		TaskContextEntry taskContextEntry = clusterContext.getTaskContexts().submit(taskContextDescriptor);
 
 		return taskContextEntry.getId();
 	}

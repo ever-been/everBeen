@@ -36,6 +36,8 @@ public interface BeenApi {
 
 	public Collection<String> getLogSets();
 	public Collection<LogMessage> getLogs(String setId);
+	public void addLogListener(LogListener listener);
+	public void removeLogListener(LogListener listener);
 
 	public Collection<BpkIdentifier> getBpks();
 	public void uploadBpk(InputStream bpkInputStream) throws BpkConfigurationException;
@@ -43,4 +45,8 @@ public interface BeenApi {
 	public void deleteBpk(BpkIdentifier bpkIdentifier);
 
 	public Collection<DebugListItem> getDebugWaitingTasks();
+
+	interface LogListener {
+		public void logAdded(LogMessage log);
+	}
 }
