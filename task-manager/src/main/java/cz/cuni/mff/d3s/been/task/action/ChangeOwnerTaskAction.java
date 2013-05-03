@@ -1,4 +1,4 @@
-package cz.cuni.mff.d3s.been.task;
+package cz.cuni.mff.d3s.been.task.action;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +24,7 @@ public class ChangeOwnerTaskAction implements TaskAction {
 	private final ClusterContext ctx;
 	private final TaskEntry entry;
 
-	ChangeOwnerTaskAction(ClusterContext ctx, TaskEntry entry) {
+	public ChangeOwnerTaskAction(ClusterContext ctx, TaskEntry entry) {
 		this.ctx = ctx;
 		this.entry = entry;
 	}

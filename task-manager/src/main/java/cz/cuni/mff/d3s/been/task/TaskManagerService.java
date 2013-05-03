@@ -5,6 +5,7 @@ import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.mq.IMessageSender;
 import cz.cuni.mff.d3s.been.mq.MessageQueues;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
+import cz.cuni.mff.d3s.been.task.msg.TaskMessage;
 
 /**
  * 

@@ -1,10 +1,10 @@
-package cz.cuni.mff.d3s.been.task;
+package cz.cuni.mff.d3s.been.task.action;
 
 /**
  * 
  * @author Martin Sixta
  */
-final class TaskActionException extends RuntimeException {
+public final class TaskActionException extends RuntimeException {
 
 	/** {@inheritDoc} */
 	public TaskActionException() {

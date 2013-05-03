@@ -184,7 +184,7 @@ final class ProcessManagerContext {
 	 */
 	public synchronized void updateMonitoringSample(MonitorSample sample) {
 		hostInfo.setMonitorSample(sample);
-		clusterContext.getRuntimes().storeRuntimeInfo(hostInfo);
+		updateHostInfo();
 	}
 
 	/**

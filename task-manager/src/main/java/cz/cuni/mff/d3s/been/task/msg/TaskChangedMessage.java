@@ -1,13 +1,16 @@
-package cz.cuni.mff.d3s.been.task;
+package cz.cuni.mff.d3s.been.task.msg;
 
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
+import cz.cuni.mff.d3s.been.task.action.ScheduleTaskAction;
+import cz.cuni.mff.d3s.been.task.action.TaskAction;
+import cz.cuni.mff.d3s.been.task.action.TaskContextCheckerAction;
 
 /**
  * @author Martin Sixta
  */
-final class TaskChangedMessage extends AbstractEntryTaskMessage {
+public final class TaskChangedMessage extends AbstractEntryTaskMessage {
 
 	public TaskChangedMessage(TaskEntry entry) {
 		super(entry);

@@ -1,4 +1,4 @@
-package cz.cuni.mff.d3s.been.task;
+package cz.cuni.mff.d3s.been.task.action;
 
 import static cz.cuni.mff.d3s.been.core.task.TaskState.SCHEDULED;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -20,6 +20,7 @@ import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntries;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
+import cz.cuni.mff.d3s.been.task.NoRuntimeFoundException;
 
 /**
  * 
@@ -31,7 +32,7 @@ import cz.cuni.mff.d3s.been.core.task.TaskState;
  * 
  * @author Martin Sixta
  */
-final class ScheduleTaskAction implements TaskAction {
+public final class ScheduleTaskAction implements TaskAction {
 
 	/** name of the lock timeout property */
 	public static final String TM_LOCK_TIMEOUT = "been.schedule.lock.timeout";
@@ -120,10 +121,7 @@ final class ScheduleTaskAction implements TaskAction {
 
 			stashTask("No suitable host found");
 		} catch (TimeoutException e) {
-			log.warn(
-					"Could not lock task {} in {}. Will try later if needed.",
-					id,
-					getLockTimeout());
+			log.warn("Could not lock task {} in {}. Will try later if needed.", id, getLockTimeout());
 			// will get to it later
 		}
 

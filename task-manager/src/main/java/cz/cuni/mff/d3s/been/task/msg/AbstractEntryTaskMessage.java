@@ -1,4 +1,4 @@
-package cz.cuni.mff.d3s.been.task;
+package cz.cuni.mff.d3s.been.task.msg;
 
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 

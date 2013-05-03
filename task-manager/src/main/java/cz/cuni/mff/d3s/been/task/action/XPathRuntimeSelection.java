@@ -1,4 +1,4 @@
-package cz.cuni.mff.d3s.been.task;
+package cz.cuni.mff.d3s.been.task.action;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -12,6 +12,8 @@ import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskExclusivity;
+import cz.cuni.mff.d3s.been.task.NoRuntimeFoundException;
+import cz.cuni.mff.d3s.been.task.RuntimesComparable;
 
 /**
  * @author Martin Sixta
@@ -40,8 +42,7 @@ final class XPathRuntimeSelection implements IRuntimeSelection {
 		String contextId = taskEntry.getTaskContextId();
 		Predicate<?, ?> predicate = new XPathPredicate(contextId, xpath, exclusivity);
 
-		Collection<RuntimeInfo> runtimes = clusterCtx.getRuntimes().getRuntimeMap().values(
-				predicate);
+		Collection<RuntimeInfo> runtimes = clusterCtx.getRuntimes().getRuntimeMap().values(predicate);
 
 		if (runtimes.size() == 0) {
 			throw new NoRuntimeFoundException("Cannot find suitable Host Runtime");

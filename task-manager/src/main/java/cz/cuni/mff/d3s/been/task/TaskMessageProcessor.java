@@ -10,6 +10,10 @@ import cz.cuni.mff.d3s.been.mq.IMessageReceiver;
 import cz.cuni.mff.d3s.been.mq.IMessageSender;
 import cz.cuni.mff.d3s.been.mq.MessageQueues;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
+import cz.cuni.mff.d3s.been.task.action.TaskAction;
+import cz.cuni.mff.d3s.been.task.action.TaskActionException;
+import cz.cuni.mff.d3s.been.task.msg.PoisonMessage;
+import cz.cuni.mff.d3s.been.task.msg.TaskMessage;
 
 /**
  * @author Martin Sixta

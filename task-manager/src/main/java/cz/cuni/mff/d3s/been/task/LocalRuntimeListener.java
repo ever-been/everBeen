@@ -17,6 +17,9 @@ import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.mq.IMessageSender;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
+import cz.cuni.mff.d3s.been.task.msg.AbortTaskMessage;
+import cz.cuni.mff.d3s.been.task.msg.TaskChangedMessage;
+import cz.cuni.mff.d3s.been.task.msg.TaskMessage;
 
 /**
  * Listens on local changes of Host Runtimes.
@@ -58,8 +61,6 @@ final class LocalRuntimeListener extends TaskManagerService implements EntryList
 
 		scheduleWaitingTasks();
 
-		log.debug("DONE");
-
 	}
 
 	@Override
@@ -86,6 +87,17 @@ final class LocalRuntimeListener extends TaskManagerService implements EntryList
 	@Override
 	public synchronized void entryEvicted(EntryEvent<String, RuntimeInfo> event) {
 		log.debug("Host Runtime evicted: {}", event.getKey());
+		Collection<TaskEntry> tasks = getTasksOnRuntime(event.getValue().getId());
+
+		for (TaskEntry entry : tasks) {
+			try {
+				sender.send(new AbortTaskMessage(entry, "Host Runtime Failed"));
+			} catch (MessagingException e) {
+				String msg = String.format("Cannot send message to '%s'", sender.getConnection());
+				log.error(msg, e);
+			}
+
+		}
 	}
 
 	@Override
@@ -109,9 +121,7 @@ final class LocalRuntimeListener extends TaskManagerService implements EntryList
 			try {
 				sender.send(new TaskChangedMessage(entry));
 			} catch (MessagingException e) {
-				String msg = String.format(
-						"Cannot send message to '%s'",
-						sender.getConnection());
+				String msg = String.format("Cannot send message to '%s'", sender.getConnection());
 				log.error(msg, e);
 			}
 
@@ -130,6 +140,25 @@ final class LocalRuntimeListener extends TaskManagerService implements EntryList
 
 		} catch (Exception e) {
 			log.error("Error while looking for waiting tasks", e);
+		}
+
+		return Collections.emptyList();
+
+	}
+
+	private static final String TASKS_ON_RUNTIME_FMT = "runtimeId = '%s'";
+
+	/**
+	 * Returns all waiting tasks
+	 * 
+	 * @return all waiting tasks
+	 */
+	private Collection<TaskEntry> getTasksOnRuntime(String runtimeId) {
+		try {
+			String query = String.format(TASKS_ON_RUNTIME_FMT, runtimeId);
+			return tasksMap.values(new SqlPredicate(query));
+		} catch (Exception e) {
+			log.error("Error while looking tasks on a runtime", e);
 		}
 
 		return Collections.emptyList();

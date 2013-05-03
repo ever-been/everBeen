@@ -14,6 +14,8 @@ import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.mq.IMessageSender;
 import cz.cuni.mff.d3s.been.mq.MessageQueues;
+import cz.cuni.mff.d3s.been.task.msg.NewOwnerTaskMessage;
+import cz.cuni.mff.d3s.been.task.msg.TaskMessage;
 
 /**
  * 
@@ -78,10 +80,7 @@ final class LocalKeyScanner extends TaskManagerService {
 
 	private void checkEntry(TaskEntry entry) throws Exception {
 
-		log.debug(
-				"TaskEntry ID: {}, status: {}",
-				entry.getId(),
-				entry.getState().toString());
+		log.debug("TaskEntry ID: {}, status: {}", entry.getId(), entry.getState().toString());
 
 		if (!TMUtils.isOwner(entry, nodeId)) {
 			log.debug("Will take over the task {}", entry.getId());

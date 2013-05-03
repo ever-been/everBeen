@@ -1,4 +1,4 @@
-package cz.cuni.mff.d3s.been.task;
+package cz.cuni.mff.d3s.been.task.action;
 
 import java.util.Collection;
 
@@ -98,11 +98,7 @@ public class TaskContextCheckerAction implements TaskAction {
 	 *         context
 	 */
 	private SqlPredicate getPredicate(String contextId) {
-		String sql = String.format(
-				QUERY_FORMAT,
-				contextId,
-				TaskState.FINISHED,
-				TaskState.ABORTED);
+		String sql = String.format(QUERY_FORMAT, contextId, TaskState.FINISHED, TaskState.ABORTED);
 
 		return new SqlPredicate(sql);
 	}

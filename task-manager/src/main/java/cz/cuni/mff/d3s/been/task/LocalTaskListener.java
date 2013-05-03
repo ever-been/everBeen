@@ -14,6 +14,9 @@ import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
 import cz.cuni.mff.d3s.been.mq.IMessageSender;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
+import cz.cuni.mff.d3s.been.task.msg.NewTaskMessage;
+import cz.cuni.mff.d3s.been.task.msg.TaskChangedMessage;
+import cz.cuni.mff.d3s.been.task.msg.TaskMessage;
 
 /**
  * Listens for local key events of the Task Map.
@@ -63,9 +66,7 @@ final class LocalTaskListener extends TaskManagerService implements EntryListene
 		try {
 			sender.send(new NewTaskMessage(entry));
 		} catch (MessagingException e) {
-			String msg = String.format(
-					"Cannot send message to '%s'",
-					sender.getConnection());
+			String msg = String.format("Cannot send message to '%s'", sender.getConnection());
 			log.error(msg, e);
 		}
 	}
@@ -89,9 +90,7 @@ final class LocalTaskListener extends TaskManagerService implements EntryListene
 		try {
 			sender.send(new TaskChangedMessage(entry));
 		} catch (MessagingException e) {
-			String msg = String.format(
-					"Cannot send message to '%s'",
-					sender.getConnection());
+			String msg = String.format("Cannot send message to '%s'", sender.getConnection());
 			log.error(msg, e);
 		}
 	}

@@ -1,4 +1,4 @@
-package cz.cuni.mff.d3s.been.task;
+package cz.cuni.mff.d3s.been.task.action;
 
 import static cz.cuni.mff.d3s.been.core.task.TaskExclusivity.EXCLUSIVE;
 import static cz.cuni.mff.d3s.been.core.task.TaskExclusivity.NON_EXCLUSIVE;
@@ -14,6 +14,8 @@ import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskExclusivity;
+import cz.cuni.mff.d3s.been.task.NoRuntimeFoundException;
+import cz.cuni.mff.d3s.been.task.RuntimesComparable;
 
 /**
  * @author Martin Sixta
@@ -29,17 +31,14 @@ final class RandomRuntimeSelection implements IRuntimeSelection {
 	}
 
 	@Override
-	public
-			String
-			select(final TaskEntry taskEntry) throws NoRuntimeFoundException {
+	public String select(final TaskEntry taskEntry) throws NoRuntimeFoundException {
 
 		TaskExclusivity exclusivity = taskEntry.getTaskDescriptor().getExclusive();
 		String contextId = taskEntry.getTaskContextId();
 
 		Predicate<?, ?> predicate = new ExclusivityPredicate(exclusivity, contextId);
 
-		Collection<RuntimeInfo> runtimes = clusterCtx.getRuntimes().getRuntimeMap().values(
-				predicate);
+		Collection<RuntimeInfo> runtimes = clusterCtx.getRuntimes().getRuntimeMap().values(predicate);
 
 		if (runtimes.size() == 0) {
 			throw new NoRuntimeFoundException("Cannot find suitable Host Runtime");
@@ -64,9 +63,7 @@ final class RandomRuntimeSelection implements IRuntimeSelection {
 		private final TaskExclusivity taskExclusivity;
 		private final String contextId;
 
-		public ExclusivityPredicate(
-				TaskExclusivity taskExclusivity,
-				String contextId) {
+		public ExclusivityPredicate(TaskExclusivity taskExclusivity, String contextId) {
 			this.taskExclusivity = taskExclusivity;
 			this.contextId = contextId;
 		}
