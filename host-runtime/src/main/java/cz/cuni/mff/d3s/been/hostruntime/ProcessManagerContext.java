@@ -71,9 +71,6 @@ final class ProcessManagerContext {
 	 *           if a task cannot be accepted to run on this Host Runtime
 	 */
 	synchronized void tryAcceptTask(TaskHandle taskHandle) throws IllegalStateException {
-		if (taskHandle.getTaskDescriptor() == null) {
-			throw new IllegalStateException("No Task descriptor");
-		}
 
 		TaskExclusivity prevExclusivity = currentExclusivity;
 		String prevExclusiveId = currentExclusiveId;
@@ -109,6 +106,7 @@ final class ProcessManagerContext {
 	 *          process representing the task
 	 */
 	synchronized void addTask(String id, TaskProcess process) {
+		assert (acceptedTasks.contains(id));
 		runningTasks.put(id, process);
 	}
 
