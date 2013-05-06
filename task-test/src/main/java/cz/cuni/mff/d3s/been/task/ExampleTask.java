@@ -42,7 +42,7 @@ public class ExampleTask extends Task {
 		log.info("task is logging");
 		System.err.println("Output to stderr");
 		try {
-			Thread.sleep(30 * 1000);
+			Thread.sleep(3 * 1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace(); //To change body of catch statement use File | Settings | File Templates.
 		}
