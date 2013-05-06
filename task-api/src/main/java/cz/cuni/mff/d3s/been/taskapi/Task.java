@@ -99,9 +99,12 @@ public abstract class Task {
 	 * @param args
 	 */
 	public void doMain(String[] args) {
-		initialize();
-		run(args);
-		tearDown();
+		try {
+			initialize();
+			run(args);
+		} finally {
+			tearDown();
+		}
 	}
 
 	private void initialize() {
@@ -126,8 +129,14 @@ public abstract class Task {
 		}
 	}
 	private void tearDown() {
-		resSender.close();
-		resQueue.terminate();
+		if (resSender != null) {
+			resSender.close();
+		}
+
+		if (resQueue != null) {
+			resQueue.terminate();
+		}
+
 		Messages.terminate();
 	}
 

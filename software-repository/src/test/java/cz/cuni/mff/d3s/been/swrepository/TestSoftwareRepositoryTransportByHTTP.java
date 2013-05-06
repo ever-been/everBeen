@@ -1,11 +1,5 @@
 package cz.cuni.mff.d3s.been.swrepository;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -22,10 +16,7 @@ import java.util.Random;
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.artifact.Artifact;
 import org.codehaus.plexus.util.FileUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -47,7 +38,7 @@ import cz.cuni.mff.d3s.been.swrepository.httpserver.HttpServerException;
  * @author darklight
  * 
  */
-public class TestSoftwareRepositoryTransportByHTTP {
+public class TestSoftwareRepositoryTransportByHTTP extends Assert {
 
 	private class RunningServerStatement extends Statement {
 		private final Statement base;

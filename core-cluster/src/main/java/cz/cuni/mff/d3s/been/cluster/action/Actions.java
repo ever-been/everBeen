@@ -30,6 +30,10 @@ public class Actions {
 				return new LatchSetAction(request, ctx);
 			case LATCH_HAS_COUNT:
 				return new LatchHasCountAction(request, ctx);
+			case CONTEXT_SUBMIT:
+				return new ContextSubmitAction(request, ctx);
+			case CONTEXT_WAIT:
+				return new ContextWaitAction(request, ctx);
 			default:
 				String msg = String.format("No such action %s", request.getType());
 				log.warn(msg);

@@ -169,6 +169,7 @@
 				<module>task-api</module>
 				<module>task-test</module>
 				<module>been-api</module>
+				<module>benchmark-api</module>
 			</modules>
 		</profile>
 

@@ -67,7 +67,7 @@ public class Requestor {
 	 *          a request
 	 * @return reply for the request
 	 */
-	private Reply send(Request request) {
+	protected Reply send(Request request) {
 		request.fillInTaskAndContextId();
 		String json = request.toJson();
 
