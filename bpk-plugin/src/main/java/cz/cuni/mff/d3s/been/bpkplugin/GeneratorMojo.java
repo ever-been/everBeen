@@ -110,7 +110,7 @@ public class GeneratorMojo extends AbstractMojo {
 	 * Files specified here will be added as context task descriptor templates.
 	 */
 	@Parameter
-	File[] contextTaskDescriptors;
+	File[] taskContextDescriptors;
 
 	/**
 	 * List of dependencies of this module on other (data) BPKs. You should not
@@ -160,7 +160,7 @@ public class GeneratorMojo extends AbstractMojo {
 		configuration.packageJarFile = packageJarFile;
 		configuration.mainClass = mainClass;
 		configuration.taskDescriptors = taskDescriptors == null ? new File[] {} : taskDescriptors;
-		configuration.taskContextDescriptors = contextTaskDescriptors == null ? new File[] {} : contextTaskDescriptors;
+		configuration.taskContextDescriptors = taskContextDescriptors == null ? new File[] {} : taskContextDescriptors;
 
 		configuration.binary = binary;
 		configuration.artifacts = (artifacts == null ? Collections.<Artifact> emptyList() : artifacts);
