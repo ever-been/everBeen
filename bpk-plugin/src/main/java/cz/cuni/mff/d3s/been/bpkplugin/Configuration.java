@@ -28,7 +28,7 @@ public class Configuration {
 	public Collection<Artifact> artifacts;
 	public Collection<BpkIdentifier> bpkDependencies;
     public File[] taskDescriptors;
-    public File[] contextTaskDescriptors;
+    public File[] taskContextDescriptors;
 
     @Override
 	public String toString() {

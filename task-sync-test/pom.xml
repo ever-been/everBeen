@@ -58,9 +58,9 @@
 						<param>src/main/resources/ServerSyncTest.td.xml</param>
 					</taskDescriptors>
 
-					<contextTaskDescriptors>
+					<taskContextDescriptors>
 						<param>src/main/resources/SyncRun.tcd.xml</param>
-					</contextTaskDescriptors>
+					</taskContextDescriptors>
 
 				</configuration>
 			</plugin>

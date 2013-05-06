@@ -71,7 +71,7 @@ public class GeneratorMojoTest extends Assert {
         assertSame(mojo.version, cfg.version);
         assertSame(mojo.bpkDependencies, cfg.bpkDependencies);
         assertSame(mojo.taskDescriptors, cfg.taskDescriptors);
-        assertSame(mojo.contextTaskDescriptors, cfg.contextTaskDescriptors);
+        assertSame(mojo.contextTaskDescriptors, cfg.taskContextDescriptors);
 	}
 
 }

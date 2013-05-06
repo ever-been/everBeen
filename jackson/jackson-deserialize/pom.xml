@@ -67,6 +67,9 @@
 							<version>VERSION</version> </bpkIdentifier> -->
 					</bpkDependencies>
 
+					<taskDescriptors>
+						<param>src/main/resources/cz/cuni/mff/d3s/been/task/JacksonDeserializeTask.td.xml</param>
+					</taskDescriptors>
 
 				</configuration>
 			</plugin>

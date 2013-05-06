@@ -94,7 +94,7 @@ public abstract class GeneratorImpl implements Generator {
 	}
 
 	private List<ItemToArchive> getContextTaskDescriptorTemplates(Configuration configuration) {
-		return getDescriptorTemplates(configuration.contextTaskDescriptors, CONTEXT_TASK_DESCRIPTORS_DIR);
+		return getDescriptorTemplates(configuration.taskContextDescriptors, CONTEXT_TASK_DESCRIPTORS_DIR);
 	}
 
 	private List<ItemToArchive> getDescriptorTemplates(File[] descriptors, String dirNameInZip) {

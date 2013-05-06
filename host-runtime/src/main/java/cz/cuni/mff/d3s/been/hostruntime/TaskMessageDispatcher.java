@@ -55,11 +55,6 @@ public class TaskMessageDispatcher implements Service, Reapable {
 	 */
 	IMessageReceiver<String> receiver;
 
-	/**
-	 * Registered message listeners (key is messageType, value is listener itself)
-	 */
-	private Map<TaskMessageType, MessageListener> listeners = new HashMap<>();
-
 	public TaskMessageDispatcher(ClusterContext clusterContext) {
 
 		this.clusterContext = clusterContext;
@@ -116,74 +111,6 @@ public class TaskMessageDispatcher implements Service, Reapable {
 		IMessageSender<String> sender = taskMQ.createSender();
 		sender.send(STOP_MESSAGE);
 		sender.close();
-	}
-
-	/**
-	 * Processes given message. Uses applicable registered message listener to
-	 * process the message.
-	 * 
-	 * @param message
-	 *          to be processed
-	 */
-	void processMessage(String message) {
-		String messageType = getMessageType(message);
-		getMessageBody(message);
-		MessageListener listener = listeners.get(messageType);
-		if (listener != null) {
-			listener.processMessage(message);
-		} else {
-			// FIXME possibility to resent message into HC cluster 
-		}
-	}
-
-	/**
-	 * Returns message type of the given message.
-	 * 
-	 * @param message
-	 * @return message type
-	 */
-	private String getMessageType(String message) {
-		// TODO ...
-
-		return null;
-	}
-
-	/**
-	 * Returns message type of the given message.
-	 * 
-	 * @param message
-	 * @return message body
-	 */
-	private String getMessageBody(String message) {
-		// TODO ...
-
-		return null;
-	}
-
-	/**
-	 * Registers given message listener. If listener of the same type (type
-	 * property of listener) is already registered, it will be replaced.
-	 * 
-	 * @param listener
-	 *          to be registered
-	 * @throws NullPointerException
-	 *           if the listener itself is NULL or type of the listener is NULL
-	 */
-	public void addMessageListener(MessageListener listener) throws NullPointerException {
-		if (listener.getMessageType() == null) {
-			throw new NullPointerException("Message type on listener can't be NULL");
-		}
-		listeners.put(listener.getMessageType(), listener);
-	}
-
-	/**
-	 * Unregisters listener of given type.
-	 * 
-	 * @param listenerType
-	 *          type of the listener to be removed
-	 */
-	public void removeMessageListener(TaskMessageType listenerType) {
-		listeners.remove(listenerType);
 	}
 
 	/**

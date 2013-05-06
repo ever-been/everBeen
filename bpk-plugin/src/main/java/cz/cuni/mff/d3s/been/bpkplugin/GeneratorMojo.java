@@ -160,7 +160,7 @@ public class GeneratorMojo extends AbstractMojo {
 		configuration.packageJarFile = packageJarFile;
 		configuration.mainClass = mainClass;
 		configuration.taskDescriptors = taskDescriptors == null ? new File[] {} : taskDescriptors;
-		configuration.contextTaskDescriptors = contextTaskDescriptors == null ? new File[] {} : contextTaskDescriptors;
+		configuration.taskContextDescriptors = contextTaskDescriptors == null ? new File[] {} : contextTaskDescriptors;
 
 		configuration.binary = binary;
 		configuration.artifacts = (artifacts == null ? Collections.<Artifact> emptyList() : artifacts);

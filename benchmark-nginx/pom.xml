@@ -46,9 +46,9 @@
 				<configuration>
 					<mainClass>cz.cuni.mff.d3s.been.taskapi.TaskRunner</mainClass>
 
-					<contextTaskDescriptors>
+					<taskContextDescriptors>
 						<param>src/main/resources/cz/cuni/mff/d3s/been/nginx/Nginx.tcd.xml</param>
-					</contextTaskDescriptors>
+					</taskContextDescriptors>
 				</configuration>
 			</plugin>
 
