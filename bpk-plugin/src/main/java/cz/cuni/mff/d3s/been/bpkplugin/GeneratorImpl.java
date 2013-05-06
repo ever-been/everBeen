@@ -70,7 +70,7 @@ public abstract class GeneratorImpl implements Generator {
 		items.add(new StringToArchive(CONFIG_FILE, toXml(bpkCfg)));
 
 		items.addAll(getTaskDescriptorTemplates(configuration));
-		items.addAll(getContextTaskDescriptorTemplates(configuration));
+		items.addAll(getTaskContextDescriptorTemplates(configuration));
 
         logAddedFiles(items);
 
@@ -93,8 +93,8 @@ public abstract class GeneratorImpl implements Generator {
 		return getDescriptorTemplates(configuration.taskDescriptors, TASK_DESCRIPTORS_DIR);
 	}
 
-	private List<ItemToArchive> getContextTaskDescriptorTemplates(Configuration configuration) {
-		return getDescriptorTemplates(configuration.taskContextDescriptors, CONTEXT_TASK_DESCRIPTORS_DIR);
+	private List<ItemToArchive> getTaskContextDescriptorTemplates(Configuration configuration) {
+		return getDescriptorTemplates(configuration.taskContextDescriptors, TASK_CONTEXT_DESCRIPTORS_DIR);
 	}
 
 	private List<ItemToArchive> getDescriptorTemplates(File[] descriptors, String dirNameInZip) {
