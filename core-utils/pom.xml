@@ -17,7 +17,7 @@
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-mapper-asl</artifactId>
-			<version>1.9.9</version>
+			<version>${jackson-mapper-asl.version}</version>
 		</dependency>
 
 		<dependency>
@@ -29,13 +29,13 @@
 		<dependency>
 			<groupId>org.jeromq</groupId>
 			<artifactId>jeromq</artifactId>
-			<version>0.2.0</version>
+			<version>${jeromq.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.1</version>
+			<version>${commons-lang3.version}</version>
 		</dependency>
 
 
@@ -43,14 +43,14 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.10</version>
+			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
-			<version>1.9.5</version>
+			<version>${mockito.version}</version>
 		</dependency>
 	</dependencies>
 

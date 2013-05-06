@@ -11,17 +11,16 @@
 		<version>3.0.0</version>
 	</parent>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
-
 	<dependencies>
-		<!-- BEEN MODULES -->
+		<!-- BEEN DEPENDENCIES -->
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
 			<artifactId>bpk-conventions</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+
+
+		<!-- OTHER DEPENDENCIES -->
 
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>

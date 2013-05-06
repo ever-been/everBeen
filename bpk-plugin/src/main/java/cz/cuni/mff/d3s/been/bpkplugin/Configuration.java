@@ -3,7 +3,7 @@ package cz.cuni.mff.d3s.been.bpkplugin;
 import java.io.File;
 import java.util.Collection;
 
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.maven.artifact.Artifact;
 
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;

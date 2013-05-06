@@ -20,58 +20,52 @@
 		<dependency>
 			<groupId>org.jvnet.jaxb2_commons</groupId>
 			<artifactId>jaxb2-basics-runtime</artifactId>
-			<version>0.6.4</version>
+			<version>${jaxb2-basics-runtime.version}</version>
 		</dependency>
 	</dependencies>
 
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${maven-compiler-plugin.version}</version>
-				<configuration>
-					<source>${java-source.version}</source>
-					<target>${java-target.version}</target>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>jaxb2-maven-plugin</artifactId>
-				<version>${jaxb2-maven-plugin.version}</version>
-
-				<configuration>
-					<arguments>-Xequals -XhashCode -XtoString -Xfluent-api</arguments>
-				</configuration>
+				<groupId>org.jvnet.jaxb2.maven2</groupId>
+				<artifactId>maven-jaxb2-plugin</artifactId>
+				<version>${jvnetjaxb.version}</version>
 
 				<dependencies>
 					<dependency>
 						<groupId>org.jvnet.jaxb2_commons</groupId>
 						<artifactId>jaxb2-basics</artifactId>
-						<version>0.6.4</version>
+						<version>${jvnetbasics.version}</version>
 					</dependency>
+
 					<dependency>
 						<groupId>org.jvnet.jaxb2_commons</groupId>
 						<artifactId>jaxb2-fluent-api</artifactId>
-						<version>3.0</version>
+						<version>${jvnetfluent.version}</version>
 					</dependency>
 				</dependencies>
 
+				<configuration>
+					<schemaDirectory>${project.basedir}/src/main/resources/cz/cuni/mff/d3s/been/bpk</schemaDirectory>
+					<extension>true</extension>
+					<forceRegenerate>true</forceRegenerate>
+					<episode>true</episode>
+					<catalog>src/main/resources/cz/cuni/mff/d3s/been/bpk/bpk-config.catalog.xml</catalog>
+					<args>
+						<arg>-Xequals</arg>
+						<arg>-XhashCode</arg>
+						<arg>-XtoString</arg>
+						<arg>-Xfluent-api</arg>
+						<arg>-Xcopyable</arg>
+					</args>
+				</configuration>
+
 				<executions>
 					<execution>
-						<id>packageConfig-xjc</id>
+						<id>all-xjc</id>
 						<goals>
-							<goal>xjc</goal>
+							<goal>generate</goal>
 						</goals>
-						<configuration>
-							<staleFile>${project.build.directory}/jaxb2/.benchmarkXjcStaleFlag</staleFile>
-							<schemaDirectory>${project.basedir}/src/main/resources/cz/cuni/mff/d3s/been/bpk</schemaDirectory>
-							<clearOutputDir>true</clearOutputDir>
-							<schemaFiles>bpk-config.xsd</schemaFiles>
-							<packageName>cz.cuni.mff.d3s.been.bpk</packageName>
-							<extension>true</extension>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>
