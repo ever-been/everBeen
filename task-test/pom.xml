@@ -60,9 +60,7 @@
 					</taskDescriptors>
 				</configuration>
 			</plugin>
-
 		</plugins>
 	</build>
-
 
 </project>
