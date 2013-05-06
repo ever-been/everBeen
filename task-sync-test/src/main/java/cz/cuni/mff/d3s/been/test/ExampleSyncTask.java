@@ -99,7 +99,7 @@ public class ExampleSyncTask extends Task {
 
 			// print something
 			long end = System.nanoTime();
-			log.info("Test complected in {} ms", (end - start) / 1000000);
+			log.info("Test completed in {} ms", (end - start) / 1000000);
 
 		} finally {
 			// don't forget to close the connection

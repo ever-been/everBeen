@@ -1,7 +1,9 @@
 <?xml version="1.0"?>
-<taskContextDescriptor xmlns="http://been.d3s.mff.cuni.cz/taskmanager/tcd"
-                       xmlns:td="http://been.d3s.mff.cuni.cz/taskmanager/td"
+<taskContextDescriptor xmlns="http://been.d3s.mff.cuni.cz/task-context-descriptor"
+                       xmlns:td="http://been.d3s.mff.cuni.cz/task-descriptor"
                        name="nginx-context">
+
+	<contextDescription>Nginx Context</contextDescription>
 
 	<properties>
 		<property name="revision">4532</property>
@@ -49,7 +51,7 @@
 
 	<templates>
 		<template name="nginx-client">
-			<td:taskDescriptor xmlns="http://been.d3s.mff.cuni.cz/taskmanager/td"
+			<td:taskDescriptor xmlns="http://been.d3s.mff.cuni.cz/task-descriptor"
 			                   groupId="cz.cuni.mff.d3s.been" bpkId="benchmark-nginx"
 			                   version="3.0.0" name="nginx-client">
 				<td:properties>
