@@ -73,9 +73,12 @@
 		</xs:complexType>
 	</xs:element>
 
+	<xs:element name="contextDescription" type="xs:string" />
+
 	<xs:element name="taskContextDescriptor">
 		<xs:complexType>
 			<xs:sequence>
+				<xs:element ref="tcd:contextDescription" minOccurs="0" maxOccurs="1"/>
 				<xs:element ref="tcd:properties" minOccurs="0" maxOccurs="1"/>
 				<xs:element ref="tcd:task" minOccurs="0" maxOccurs="unbounded"/>
 				<xs:element ref="tcd:templates" minOccurs="0" maxOccurs="1"/>
