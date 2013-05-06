@@ -25,6 +25,20 @@
 		    <groupId>org.lazan</groupId>
 		    <artifactId>tapestry-cometd</artifactId>
 		    <version>0.9.16</version>
+		    <exclusions>
+			    <exclusion>
+				    <groupId>org.apache.tapestry</groupId>
+				    <artifactId>tapestry-core</artifactId>
+			    </exclusion>
+			    <exclusion>
+				    <groupId>javax.servlet</groupId>
+				    <artifactId>servlet-api</artifactId>
+			    </exclusion>
+			    <exclusion>
+				    <groupId>org.apache.tapestry</groupId>
+				    <artifactId>tapestry-javadoc</artifactId>
+			    </exclusion>
+		    </exclusions>
 	    </dependency>
 
         <!-- This adds automatic compression of JavaScript and CSS when in production mode. -->
