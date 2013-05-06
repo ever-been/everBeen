@@ -31,14 +31,6 @@
 			<version>${project.version}</version>
 		</dependency>
 
-		<!-- TESTING LIBRARIES -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${junit.version}</version>
-			<scope>test</scope>
-		</dependency>
-
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>

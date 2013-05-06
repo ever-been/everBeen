@@ -60,29 +60,6 @@
             <version>${tapestry5.version}</version>
         </dependency>
 
-
-        <!-- TESTING LIBRARIES -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>${mockito.version}</version>
-			<scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tapestry</groupId>
-            <artifactId>tapestry-test</artifactId>
-            <version>${tapestry5.version}</version>
-            <scope>test</scope>
-        </dependency>
-
         <!-- Provided by the servlet container, but sometimes referenced in the application
        code. -->
         <dependency>
