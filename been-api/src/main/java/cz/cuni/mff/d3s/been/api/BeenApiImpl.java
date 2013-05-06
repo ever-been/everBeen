@@ -6,12 +6,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 
-import com.hazelcast.core.EntryEvent;
-import com.hazelcast.core.EntryListener;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hazelcast.core.EntryEvent;
+import com.hazelcast.core.EntryListener;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.MultiMap;
 
@@ -218,5 +218,29 @@ public class BeenApiImpl implements BeenApi {
 	public Collection<DebugListItem> getDebugWaitingTasks() {
 		DebugAssistant debugAssistant = new DebugAssistant(clusterContext);
 		return debugAssistant.listWaitingProcesses();
+	}
+
+	@Override
+	public Collection<TaskDescriptor> getTaskDescriptors(BpkIdentifier bpkIdentifier) {
+		// TODO
+		throw new UnsupportedOperationException("Not yet implemented.");
+	}
+
+	@Override
+	public Collection<TaskDescriptor> getTaskDescriptors() {
+		// TODO
+		throw new UnsupportedOperationException("Not yet implemented.");
+	}
+
+	@Override
+	public Collection<TaskContextDescriptor> getTaskContextDescriptors(BpkIdentifier bpkIdentifier) {
+		// TODO
+		throw new UnsupportedOperationException("Not yet implemented.");
+	}
+
+	@Override
+	public Collection<TaskContextDescriptor> getTaskContextDescriptors() {
+		// TODO
+		throw new UnsupportedOperationException("Not yet implemented.");
 	}
 }
