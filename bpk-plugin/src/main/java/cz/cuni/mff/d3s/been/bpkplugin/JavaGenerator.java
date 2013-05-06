@@ -20,10 +20,8 @@ import cz.cuni.mff.d3s.been.bpk.*;
  */
 class JavaGenerator extends GeneratorImpl {
 
-	private Log log;
-
 	public JavaGenerator(Log log) {
-		this.log = log;
+        super(log);
 	}
 
 	@Override
@@ -79,8 +77,6 @@ class JavaGenerator extends GeneratorImpl {
 		// add other files specified in configuration
 		itemsToArchive.addAll(getOtherFilesToArchive(config));
 
-		logAddedFiles(itemsToArchive);
-
 		return itemsToArchive;
 	}
 
@@ -91,12 +87,6 @@ class JavaGenerator extends GeneratorImpl {
 			itemsToArchive.addAll(fileItem.getFilesToArchive());
 		}
 		return itemsToArchive;
-	}
-
-	private void logAddedFiles(List<ItemToArchive> itemsToArchive) {
-		for (ItemToArchive item : itemsToArchive) {
-			log.info("    WILL BE ADDED: '" + item.getPathInZip() + "'");
-		}
 	}
 
 	FileToArchive getFileToArchiveFromPackageJar(Configuration config) {

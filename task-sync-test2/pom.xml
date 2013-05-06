@@ -47,8 +47,9 @@
 					</execution>
 				</executions>
 				<configuration>
-
-
+					<taskDescriptors>
+						<param>src/main/resources/ExampleSyncTest2.td.xml</param>
+					</taskDescriptors>
 				</configuration>
 			</plugin>
 		</plugins>

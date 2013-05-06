@@ -1,18 +1,15 @@
 package cz.cuni.mff.d3s.been.bpkplugin;
 
+import static cz.cuni.mff.d3s.been.bpk.BpkNames.*;
+
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
-import cz.cuni.mff.d3s.been.bpk.BpkConfigUtils;
-import cz.cuni.mff.d3s.been.bpk.BpkConfiguration;
-import cz.cuni.mff.d3s.been.bpk.BpkConfigurationException;
-import cz.cuni.mff.d3s.been.bpk.BpkRuntime;
-import cz.cuni.mff.d3s.been.bpk.JavaRuntime;
-import cz.cuni.mff.d3s.been.bpk.MetaInf;
-import cz.cuni.mff.d3s.been.bpk.NativeRuntime;
-import cz.cuni.mff.d3s.been.bpk.ObjectFactory;
-import cz.cuni.mff.d3s.been.bpk.BpkNames;
+import cz.cuni.mff.d3s.been.bpk.*;
+import org.apache.maven.plugin.logging.Log;
 
 /**
  * 
@@ -24,7 +21,13 @@ import cz.cuni.mff.d3s.been.bpk.BpkNames;
 
 public abstract class GeneratorImpl implements Generator {
 
-	/**
+    protected final Log log;
+
+    public GeneratorImpl(Log log) {
+        this.log = log;
+    }
+
+    /**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -64,13 +67,44 @@ public abstract class GeneratorImpl implements Generator {
 
 		Collection<ItemToArchive> items = getItemsForArchivation(configuration);
 		// we have to add generated config.xml file
-		items.add(new StringToArchive(BpkNames.CONFIG_FILE, toXml(bpkCfg)));
+		items.add(new StringToArchive(CONFIG_FILE, toXml(bpkCfg)));
+
+		items.addAll(getTaskDescriptorTemplates(configuration));
+		items.addAll(getContextTaskDescriptorTemplates(configuration));
+
+        logAddedFiles(items);
 
 		try {
 			save(items, configuration);
 		} catch (IOException e) {
 			throw new GeneratorException("Exception occured while saving generated BPK to file", e);
 		}
+	}
+
+
+
+    private void logAddedFiles(Collection<ItemToArchive> items) {
+        for (ItemToArchive item : items) {
+            log.info("    WILL BE ADDED: '" + item.getPathInZip() + "'");
+        }
+    }
+
+	private List<ItemToArchive> getTaskDescriptorTemplates(Configuration configuration) {
+		return getDescriptorTemplates(configuration.taskDescriptors, TASK_DESCRIPTORS_DIR);
+	}
+
+	private List<ItemToArchive> getContextTaskDescriptorTemplates(Configuration configuration) {
+		return getDescriptorTemplates(configuration.contextTaskDescriptors, CONTEXT_TASK_DESCRIPTORS_DIR);
+	}
+
+	private List<ItemToArchive> getDescriptorTemplates(File[] descriptors, String dirNameInZip) {
+		List<ItemToArchive> tds = new ArrayList<>();
+		if (descriptors != null) {
+			for (File tdTemplate : descriptors) {
+				tds.add(new FileToArchive(dirNameInZip + File.separator + tdTemplate.getName(), tdTemplate));
+			}
+		}
+		return tds;
 	}
 
 	/**

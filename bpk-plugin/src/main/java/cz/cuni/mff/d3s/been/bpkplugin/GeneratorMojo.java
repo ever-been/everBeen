@@ -101,6 +101,18 @@ public class GeneratorMojo extends AbstractMojo {
 	Collection<FileItem> filesToArchive;
 
 	/**
+	 * Files specified here will be added as task descriptor templates.
+	 */
+	@Parameter
+	File[] taskDescriptors;
+
+	/**
+	 * Files specified here will be added as context task descriptor templates.
+	 */
+	@Parameter
+	File[] contextTaskDescriptors;
+
+	/**
 	 * List of dependencies of this module on other (data) BPKs. You should not
 	 * include code dependencies here, but use runtime instead.
 	 */
@@ -147,14 +159,13 @@ public class GeneratorMojo extends AbstractMojo {
 		configuration.finalName = finalName;
 		configuration.packageJarFile = packageJarFile;
 		configuration.mainClass = mainClass;
+		configuration.taskDescriptors = taskDescriptors == null ? new File[] {} : taskDescriptors;
+		configuration.contextTaskDescriptors = contextTaskDescriptors == null ? new File[] {} : contextTaskDescriptors;
 
 		configuration.binary = binary;
-		configuration.artifacts = (artifacts == null
-				? Collections.<Artifact> emptyList() : artifacts);
-		configuration.filesToArchive = filesToArchive == null
-				? Collections.<FileItem> emptyList() : filesToArchive;
-		configuration.bpkDependencies = bpkDependencies == null
-				? Collections.<BpkIdentifier> emptyList() : bpkDependencies;
+		configuration.artifacts = (artifacts == null ? Collections.<Artifact> emptyList() : artifacts);
+		configuration.filesToArchive = filesToArchive == null ? Collections.<FileItem> emptyList() : filesToArchive;
+		configuration.bpkDependencies = bpkDependencies == null ? Collections.<BpkIdentifier> emptyList() : bpkDependencies;
 
 		return configuration;
 	}

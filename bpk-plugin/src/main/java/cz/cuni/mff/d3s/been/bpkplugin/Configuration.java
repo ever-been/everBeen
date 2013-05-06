@@ -27,8 +27,10 @@ public class Configuration {
 	public Collection<FileItem> filesToArchive;
 	public Collection<Artifact> artifacts;
 	public Collection<BpkIdentifier> bpkDependencies;
+    public File[] taskDescriptors;
+    public File[] contextTaskDescriptors;
 
-	@Override
+    @Override
 	public String toString() {
 		return ReflectionToStringBuilder.toString(this);
 	}

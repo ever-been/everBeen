@@ -7,8 +7,14 @@ package cz.cuni.mff.d3s.been.bpk;
  */
 public class BpkNames {
 
-	/** Name of the directory with real content in packages. */
-	public static final String FILES_DIR = "files";
+    /** Name of the directory with real content in packages. */
+    public static final String FILES_DIR = "files";
+
+    /** Name of the directory with real content in packages. */
+    public static final String TASK_DESCRIPTORS_DIR = "tds";
+
+    /** Name of the directory with real content in packages. */
+    public static final String CONTEXT_TASK_DESCRIPTORS_DIR = "ctds";
 
 	/** Name of the directory with jar libraries */
 	public static final String LIB_DIR = "lib";

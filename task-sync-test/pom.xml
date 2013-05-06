@@ -53,6 +53,14 @@
 				</executions>
 				<configuration>
 
+					<taskDescriptors>
+						<param>src/main/resources/ClientSyncTest.td.xml</param>
+						<param>src/main/resources/ServerSyncTest.td.xml</param>
+					</taskDescriptors>
+
+					<contextTaskDescriptors>
+						<param>src/main/resources/SyncRun.tcd.xml</param>
+					</contextTaskDescriptors>
 
 				</configuration>
 			</plugin>

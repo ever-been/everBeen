@@ -68,6 +68,10 @@
 					</bpkDependencies>
 
 
+					<taskDescriptors>
+						<param>src/main/resources/cz/cuni/mff/d3s/been/task/ExampleTask.td.xml</param>
+					</taskDescriptors>
+
 				</configuration>
 			</plugin>
 		</plugins>
