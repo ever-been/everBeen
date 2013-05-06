@@ -180,6 +180,7 @@ public class BeenApiImpl implements BeenApi {
 	public String submitTask(TaskDescriptor taskDescriptor) {
 		TaskContextDescriptor contextDescriptor = new TaskContextDescriptor();
 		Task taskInTaskContext = new Task();
+		taskInTaskContext.setName(taskDescriptor.getName());
 		Descriptor descriptorInTaskContext = new Descriptor();
 		descriptorInTaskContext.setTaskDescriptor(taskDescriptor);
 		taskInTaskContext.setDescriptor(descriptorInTaskContext);
