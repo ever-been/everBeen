@@ -971,3 +971,11 @@ pre {
 .analysis-time-passed {
 	color: #c00000;
 }
+
+.overview-container {
+	text-align: center;
+}
+
+.overview-block {
+    display: inline-block; margin: 5px 5px; width: 40%; min-width: 600px; vertical-align: top;
+}
