@@ -14,7 +14,7 @@ public class ErrorAction implements Action {
 	}
 
 	@Override
-	public Reply goGetSome() {
+	public Reply handle() {
 		return Replies.createErrorReply(msg);
 	}
 }

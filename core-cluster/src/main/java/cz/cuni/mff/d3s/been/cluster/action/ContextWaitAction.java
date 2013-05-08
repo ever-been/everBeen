@@ -1,22 +1,22 @@
 package cz.cuni.mff.d3s.been.cluster.action;
 
-import com.hazelcast.core.EntryEvent;
-import com.hazelcast.core.EntryListener;
-import com.hazelcast.core.IMap;
-import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
-import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
-import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
-import cz.cuni.mff.d3s.been.core.task.TaskContextState;
-import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
-import cz.cuni.mff.d3s.been.mq.rep.Replies;
-import cz.cuni.mff.d3s.been.mq.rep.Reply;
-import cz.cuni.mff.d3s.been.mq.req.Request;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.hazelcast.core.EntryEvent;
+import com.hazelcast.core.EntryListener;
+import com.hazelcast.core.IMap;
+
+import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
+import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
+import cz.cuni.mff.d3s.been.core.task.TaskContextState;
+import cz.cuni.mff.d3s.been.mq.rep.Replies;
+import cz.cuni.mff.d3s.been.mq.rep.Reply;
+import cz.cuni.mff.d3s.been.mq.req.Request;
 
 /**
  * @author Kuba Brecka
@@ -37,7 +37,7 @@ public class ContextWaitAction implements Action {
 	class MapWaiter implements EntryListener<String, TaskContextEntry> {
 
 		@Override
-		public void entryAdded(EntryEvent<String, TaskContextEntry> event) { }
+		public void entryAdded(EntryEvent<String, TaskContextEntry> event) {}
 
 		@Override
 		public void entryRemoved(EntryEvent<String, TaskContextEntry> event) {
@@ -60,7 +60,7 @@ public class ContextWaitAction implements Action {
 	}
 
 	@Override
-	public Reply goGetSome() {
+	public Reply handle() {
 		String key = request.getValue();
 
 		Reply reply = null;

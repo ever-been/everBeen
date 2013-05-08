@@ -61,7 +61,7 @@ final class TaskStatusWaitAction implements Action {
 	}
 
 	@Override
-	public Reply goGetSome() {
+	public Reply handle() {
 		String taskId = request.getSelector();
 
 		if (taskId == null || taskId.isEmpty()) {

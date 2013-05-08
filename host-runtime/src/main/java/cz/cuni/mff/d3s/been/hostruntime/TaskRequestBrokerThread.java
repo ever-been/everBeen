@@ -149,7 +149,7 @@ public class TaskRequestBrokerThread extends Thread {
 			}
 
 			Action action = Actions.createAction(request, ctx);
-			return action.goGetSome();
+			return action.handle();
 
 		}
 

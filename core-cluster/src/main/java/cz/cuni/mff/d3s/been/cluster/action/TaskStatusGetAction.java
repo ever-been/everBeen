@@ -19,7 +19,7 @@ final class TaskStatusGetAction implements Action {
 	}
 
 	@Override
-	public Reply goGetSome() {
+	public Reply handle() {
 		String taskId = request.getSelector();
 
 		TaskEntry taskEntry = ctx.getTasks().getTask(taskId);

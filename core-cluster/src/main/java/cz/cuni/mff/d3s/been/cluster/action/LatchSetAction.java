@@ -20,7 +20,7 @@ final class LatchSetAction implements Action {
 	}
 
 	@Override
-	public Reply goGetSome() {
+	public Reply handle() {
 		String latchName = Actions.latchNameForRequest(request);
 
 		int count;
