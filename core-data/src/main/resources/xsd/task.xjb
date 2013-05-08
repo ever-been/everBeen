@@ -19,10 +19,21 @@
 			<bindings node="//xs:enumeration[@value='context-exclusive']">
 				<typesafeEnumMember name="CONTEXT_EXCLUSIVE"/>
 			</bindings>
-			<bindings node="//xs:enumeration[@value='context-exclusive']">
-				<typesafeEnumMember name="exclusive"/>
+			<bindings node="//xs:enumeration[@value='exclusive']">
+				<typesafeEnumMember name="EXCLUSIVE"/>
 			</bindings>
 		</bindings>
+
+		<bindings node="xs:simpleType[@name='TypeString']">
+			<typesafeEnumClass name="TaskType" />
+			<bindings node="//xs:enumeration[@value='task']">
+				<typesafeEnumMember name="TASK"/>
+			</bindings>
+			<bindings node="//xs:enumeration[@value='benchmark']">
+				<typesafeEnumMember name="BENCHMARK"/>
+			</bindings>
+		</bindings>
+
 		
 		<bindings node="xs:complexType[@name='Property']">
 			<class name="TaskProperty" />

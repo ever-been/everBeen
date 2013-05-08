@@ -4,6 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 
 import org.apache.commons.io.IOUtils;
@@ -223,25 +225,46 @@ public class BeenApiImpl implements BeenApi {
 
 	@Override
 	public Collection<TaskDescriptor> getTaskDescriptors(BpkIdentifier bpkIdentifier) {
-		// TODO
-		throw new UnsupportedOperationException("Not yet implemented.");
-	}
+		// TODO, mock
+		TaskDescriptor a = new TaskDescriptor();
+		a.setBpkId(bpkIdentifier.getBpkId());
+		a.setGroupId(bpkIdentifier.getGroupId());
+		a.setVersion(bpkIdentifier.getVersion());
+		a.setName("example-benchmark");
+		a.setJava(new Java());
+		a.getJava().setMainClass("cz.cuni.mff.d3s.been.task.ExampleBenchmark");
 
-	@Override
-	public Collection<TaskDescriptor> getTaskDescriptors() {
-		// TODO
-		throw new UnsupportedOperationException("Not yet implemented.");
+		TaskDescriptor b = new TaskDescriptor();
+		b.setBpkId(bpkIdentifier.getBpkId());
+		b.setGroupId(bpkIdentifier.getGroupId());
+		b.setVersion(bpkIdentifier.getVersion());
+		b.setName("example-single-task");
+		b.setJava(new Java());
+		b.getJava().setMainClass("cz.cuni.mff.d3s.been.task.ExampleTask");
+
+		return Arrays.asList(a, b);
 	}
 
 	@Override
 	public Collection<TaskContextDescriptor> getTaskContextDescriptors(BpkIdentifier bpkIdentifier) {
-		// TODO
-		throw new UnsupportedOperationException("Not yet implemented.");
+		// TODO, mock
+		TaskDescriptor b = new TaskDescriptor();
+		b.setBpkId(bpkIdentifier.getBpkId());
+		b.setGroupId(bpkIdentifier.getGroupId());
+		b.setVersion(bpkIdentifier.getVersion());
+		b.setName("example-single-task");
+		b.setJava(new Java());
+		b.getJava().setMainClass("cz.cuni.mff.d3s.been.task.ExampleTask");
+
+		TaskContextDescriptor tcd = new TaskContextDescriptor();
+		tcd.setName("example-context");
+		Task t = new Task();
+		t.setName("example-task");
+		t.setDescriptor(new Descriptor());
+		t.getDescriptor().setTaskDescriptor(b);
+		tcd.getTask().add(t);
+
+		return Arrays.asList(tcd);
 	}
 
-	@Override
-	public Collection<TaskContextDescriptor> getTaskContextDescriptors() {
-		// TODO
-		throw new UnsupportedOperationException("Not yet implemented.");
-	}
 }

@@ -1,7 +1,12 @@
 <?xml version="1.0"?>
 <taskDescriptor xmlns="http://been.d3s.mff.cuni.cz/task-descriptor"
                 groupId="cz.cuni.mff.d3s.been" bpkId="task-test" version="3.0.0"
-                name="example-benchmark">
+                name="example-benchmark" type="benchmark">
+	<properties>
+		<property name="from">10</property>
+		<property name="to">20</property>
+	</properties>
+
 	<java>
 		<mainClass>cz.cuni.mff.d3s.been.task.ExampleBenchmark</mainClass>
 	</java>

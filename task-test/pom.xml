@@ -13,7 +13,6 @@
 	</parent>
 
 	<dependencies>
-
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
 			<artifactId>task-api</artifactId>
@@ -57,7 +56,11 @@
 					<mainClass>TODO go away with this setting</mainClass>
 					<taskDescriptors>
 						<param>src/main/resources/cz/cuni/mff/d3s/been/task/ExampleTask.td.xml</param>
+						<param>src/main/resources/cz/cuni/mff/d3s/been/task/ExampleBenchmark.td.xml</param>
 					</taskDescriptors>
+					<taskContextDescriptors>
+						<param>src/main/resources/cz/cuni/mff/d3s/been/task/Example.tcd.xml</param>
+					</taskContextDescriptors>
 				</configuration>
 			</plugin>
 		</plugins>

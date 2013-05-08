@@ -977,5 +977,5 @@ pre {
 }
 
 .overview-block {
-    display: inline-block; margin: 5px 5px; width: 40%; min-width: 600px; vertical-align: top;
+    display: inline-block; margin: 5px 5px; width: 40%; min-width: 600px; vertical-align: top; text-align: left;
 }

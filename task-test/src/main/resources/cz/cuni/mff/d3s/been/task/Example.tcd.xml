@@ -6,14 +6,26 @@
 	<contextDescription>Example Context</contextDescription>
 	
 	<task>
-		<name>example-task</name>
+		<name>example-task-a</name>
 		<descriptor>
 			<td:taskDescriptor groupId="cz.cuni.mff.d3s.been" bpkId="task-test" version="3.0.0"
-			                   name="example">
+			                   name="example" type="task">
 				<td:java>
 					<td:mainClass>cz.cuni.mff.d3s.been.task.ExampleTask</td:mainClass>
 				</td:java>
            </td:taskDescriptor>
+		</descriptor>
+	</task>
+
+	<task>
+		<name>example-task-b</name>
+		<descriptor>
+			<td:taskDescriptor groupId="cz.cuni.mff.d3s.been" bpkId="task-test" version="3.0.0"
+			                   name="example" type="task">
+				<td:java>
+					<td:mainClass>cz.cuni.mff.d3s.been.task.ExampleTask</td:mainClass>
+				</td:java>
+			</td:taskDescriptor>
 		</descriptor>
 	</task>
 

@@ -2,6 +2,7 @@ package cz.cuni.mff.d3s.been.web.pages.task;
 
 import java.util.Collection;
 
+import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
 import org.apache.tapestry5.annotations.Property;
 
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
@@ -18,7 +19,15 @@ public class List extends Page {
 		return this.api.getApi().getTasks();
 	}
 
+	public Collection<TaskContextEntry> getContexts() {
+		return this.api.getApi().getTaskContexts();
+	}
+
 	@Property
 	private TaskEntry task;
+
+	@Property
+	private TaskContextEntry context;
+
 
 }

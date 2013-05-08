@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <taskDescriptor xmlns="http://been.d3s.mff.cuni.cz/task-descriptor"
 				groupId="cz.cuni.mff.d3s.been" bpkId="task-test" version="3.0.0"
-				name="example-single-task">
+				name="example-single-task" type="task">
 
 	<java>
 		<mainClass>cz.cuni.mff.d3s.been.task.ExampleTask</mainClass>

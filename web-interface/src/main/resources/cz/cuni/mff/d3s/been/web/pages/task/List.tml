@@ -3,20 +3,30 @@
 <html t:type="layout" section="section"
       xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd" xmlns:p="tapestry:parameter">
 
+<h2>Contexts</h2>
+
+<t:grid source="contexts" row="context" inPlace="true">
+	<p:idCell>
+		<t:pagelink page="context/detail" context="context.id">${context.id}</t:pagelink>
+	</p:idCell>
+</t:grid>
+
+<h2>Tasks</h2>
+
 <t:grid source="tasks" row="task" inPlace="true" include="id,runtimeId,taskContextId,state" add="name"
         reorder="id,name,state,runtimeId,taskContextId">
-    <p:idCell>
-        <t:pagelink page="task/detail" context="task.id">${task.id}</t:pagelink>
-    </p:idCell>
-    <p:taskContextIdCell>
-        <t:pagelink page="context/detail" context="task.taskContextId">${task.taskContextId}</t:pagelink>
-    </p:taskContextIdCell>
-    <p:runtimeIdCell>
-        <t:pagelink page="runtime/detail" context="task.runtimeId">${task.runtimeId}</t:pagelink>
-    </p:runtimeIdCell>
-    <p:nameCell>
-        ${task.taskDescriptor.name}
-    </p:nameCell>
+	<p:idCell>
+		<t:pagelink page="task/detail" context="task.id">${task.id}</t:pagelink>
+	</p:idCell>
+	<p:taskContextIdCell>
+		<t:pagelink page="context/detail" context="task.taskContextId">${task.taskContextId}</t:pagelink>
+	</p:taskContextIdCell>
+	<p:runtimeIdCell>
+		<t:pagelink page="runtime/detail" context="task.runtimeId">${task.runtimeId}</t:pagelink>
+	</p:runtimeIdCell>
+	<p:nameCell>
+		${task.taskDescriptor.name}
+	</p:nameCell>
 </t:grid>
 
 </html>

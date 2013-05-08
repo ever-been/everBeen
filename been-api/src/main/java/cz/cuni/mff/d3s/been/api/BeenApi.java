@@ -45,9 +45,7 @@ public interface BeenApi {
 	public void deleteBpk(BpkIdentifier bpkIdentifier);
 
     public Collection<TaskDescriptor> getTaskDescriptors(BpkIdentifier bpkIdentifier);
-    public Collection<TaskDescriptor> getTaskDescriptors();
     public Collection<TaskContextDescriptor> getTaskContextDescriptors(BpkIdentifier bpkIdentifier);
-    public Collection<TaskContextDescriptor> getTaskContextDescriptors();
 
 	public Collection<DebugListItem> getDebugWaitingTasks();
 
