@@ -1,7 +1,9 @@
 package cz.cuni.mff.d3s.been.web.pages;
 
+import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
+import cz.cuni.mff.d3s.been.core.task.TaskType;
 import cz.cuni.mff.d3s.been.web.pages.runtime.Detail;
 import cz.cuni.mff.d3s.been.web.services.BeenApiService;
 import org.apache.tapestry5.annotations.Property;
@@ -110,5 +112,13 @@ public abstract class Page {
 
 	public boolean taskWaiting(TaskEntry taskEntry) {
 		return taskEntry.getState() == TaskState.WAITING;
+	}
+
+	public boolean taskBenchmark(TaskEntry taskEntry) {
+		return taskEntry.getTaskDescriptor().getType() == TaskType.BENCHMARK;
+	}
+
+	public boolean taskDescriptorBenchmark(TaskDescriptor taskDescriptor) {
+		return taskDescriptor.getType() == TaskType.BENCHMARK;
 	}
 }

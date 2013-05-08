@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * User: donarus
@@ -44,8 +45,11 @@ public interface BeenApi {
 	public InputStream downloadBpk(BpkIdentifier bpkIdentifier);
 	public void deleteBpk(BpkIdentifier bpkIdentifier);
 
-    public Collection<TaskDescriptor> getTaskDescriptors(BpkIdentifier bpkIdentifier);
-    public Collection<TaskContextDescriptor> getTaskContextDescriptors(BpkIdentifier bpkIdentifier);
+    public Map<String, TaskDescriptor> getTaskDescriptors(BpkIdentifier bpkIdentifier);
+	public TaskDescriptor getTaskDescriptor(BpkIdentifier bpkIdentifier, String descriptorName);
+    public Map<String, TaskContextDescriptor> getTaskContextDescriptors(BpkIdentifier bpkIdentifier);
+	public TaskContextDescriptor getTaskContextDescriptor(BpkIdentifier bpkIdentifier, String descriptorName);
+
 
 	public Collection<DebugListItem> getDebugWaitingTasks();
 

@@ -111,9 +111,7 @@ public class Layout {
 
 		TASK_DETAIL(cz.cuni.mff.d3s.been.web.pages.task.Detail.class, "Tasks", null),
 
-		TASK_LOGS(Logs.class, "Tasks", "logs"),
-
-		TASK_SUBMIT(Submit.class, "Tasks", "submit"),
+		TASK_SUBMIT(Submit.class, "Tasks", "submit new task, context or benchmark"),
 
 		RUNTIME_LIST(cz.cuni.mff.d3s.been.web.pages.runtime.List.class, "Runtimes",
 				null),

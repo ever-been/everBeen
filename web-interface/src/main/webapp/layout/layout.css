@@ -24,7 +24,7 @@
  *  MA  02111-1307  USA
  */
 
-body, td, th, input, select {
+body, td, th, input, select, button {
 	font-family: Verdana, "Geneva CE", lucida, sans-serif;
 	font-size: 9pt;
 	line-height: 1.3em;
@@ -44,7 +44,7 @@ table {
 
 table td, table th {
 	padding: 0;
-	vertical-align: top;
+	vertical-align: middle;
 }
 
 table.list {

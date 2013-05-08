@@ -4,9 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.*;
 
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -224,13 +222,14 @@ public class BeenApiImpl implements BeenApi {
 	}
 
 	@Override
-	public Collection<TaskDescriptor> getTaskDescriptors(BpkIdentifier bpkIdentifier) {
+	public Map<String, TaskDescriptor> getTaskDescriptors(BpkIdentifier bpkIdentifier) {
 		// TODO, mock
 		TaskDescriptor a = new TaskDescriptor();
 		a.setBpkId(bpkIdentifier.getBpkId());
 		a.setGroupId(bpkIdentifier.getGroupId());
 		a.setVersion(bpkIdentifier.getVersion());
 		a.setName("example-benchmark");
+		a.setType(TaskType.BENCHMARK);
 		a.setJava(new Java());
 		a.getJava().setMainClass("cz.cuni.mff.d3s.been.task.ExampleBenchmark");
 
@@ -242,11 +241,28 @@ public class BeenApiImpl implements BeenApi {
 		b.setJava(new Java());
 		b.getJava().setMainClass("cz.cuni.mff.d3s.been.task.ExampleTask");
 
-		return Arrays.asList(a, b);
+		HashMap<String, TaskDescriptor> m = new HashMap<>();
+		m.put("ExampleBenchmark.td.xml", a);
+		m.put("ExampleTask.td.xml", b);
+		return m;
 	}
 
 	@Override
-	public Collection<TaskContextDescriptor> getTaskContextDescriptors(BpkIdentifier bpkIdentifier) {
+	public TaskDescriptor getTaskDescriptor(BpkIdentifier bpkIdentifier, String descriptorName) {
+		// TODO, mock
+		TaskDescriptor a = new TaskDescriptor();
+		a.setBpkId(bpkIdentifier.getBpkId());
+		a.setGroupId(bpkIdentifier.getGroupId());
+		a.setVersion(bpkIdentifier.getVersion());
+		a.setName("example-benchmark");
+		a.setType(TaskType.BENCHMARK);
+		a.setJava(new Java());
+		a.getJava().setMainClass("cz.cuni.mff.d3s.been.task.ExampleBenchmark");
+		return a;
+	}
+
+	@Override
+	public Map<String, TaskContextDescriptor> getTaskContextDescriptors(BpkIdentifier bpkIdentifier) {
 		// TODO, mock
 		TaskDescriptor b = new TaskDescriptor();
 		b.setBpkId(bpkIdentifier.getBpkId());
@@ -264,7 +280,15 @@ public class BeenApiImpl implements BeenApi {
 		t.getDescriptor().setTaskDescriptor(b);
 		tcd.getTask().add(t);
 
-		return Arrays.asList(tcd);
+		HashMap<String, TaskContextDescriptor> m = new HashMap<>();
+		m.put("ExampleContext.tcd.xml", tcd);
+
+		return m;
+	}
+
+	@Override
+	public TaskContextDescriptor getTaskContextDescriptor(BpkIdentifier bpkIdentifier, String descriptorName) {
+		return null; // TODO
 	}
 
 }

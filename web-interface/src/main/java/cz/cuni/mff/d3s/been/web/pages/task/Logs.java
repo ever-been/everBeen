@@ -11,7 +11,7 @@ import java.util.Collection;
 /**
  * @author Kuba Brecka
  */
-@Page.Navigation(section = Layout.Section.TASK_LOGS)
+@Page.Navigation(section = Layout.Section.TASK_DETAIL)
 public class Logs extends Page {
 
 	@Property
