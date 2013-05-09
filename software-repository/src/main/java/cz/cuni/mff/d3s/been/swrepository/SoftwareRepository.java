@@ -36,9 +36,14 @@ public class SoftwareRepository implements IClusterService {
 	 * Initialize the repository. HTTP server and data store must be set.
 	 */
 	public void init() {
-		httpServer.getResolver().register(
-				"/bpk*",
-				new BpkRequestHandler(softwareStore));
+        httpServer.getResolver().register(
+                "/bpk*",
+                new BpkRequestHandler(softwareStore));
+        // FIXME create new handler
+        // FIXME REFACTORING !!
+        httpServer.getResolver().register(
+                "/tdlist*",
+                new BpkRequestHandler(softwareStore));
 		httpServer.getResolver().register(
 				"/artifact*",
 				new ArtifactRequestHandler(softwareStore));

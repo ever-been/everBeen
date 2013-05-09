@@ -4,22 +4,31 @@
 package cz.cuni.mff.d3s.been.swrepository;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.FileSystems;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
+import javax.xml.bind.JAXBException;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
 
 import cz.cuni.mff.d3s.been.bpk.ArtifactIdentifier;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
+import cz.cuni.mff.d3s.been.bpk.BpkNames;
+import cz.cuni.mff.d3s.been.core.jaxb.BindingParser;
+import cz.cuni.mff.d3s.been.core.jaxb.ConvertorException;
+import cz.cuni.mff.d3s.been.core.jaxb.XSD;
+import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.datastore.SoftwareStore;
 import cz.cuni.mff.d3s.been.datastore.StorePersister;
 import cz.cuni.mff.d3s.been.datastore.StoreReader;
@@ -97,8 +106,7 @@ public final class FSBasedStore implements SoftwareStore {
 	}
 
 	@Override
-	public StorePersister getArtifactPersister(
-			ArtifactIdentifier artifactIdentifier) {
+	public StorePersister getArtifactPersister(ArtifactIdentifier artifactIdentifier) {
 		File item = getArtifactItem(artifactIdentifier);
 		if (item == null) {
 			return null;
@@ -126,9 +134,7 @@ public final class FSBasedStore implements SoftwareStore {
 	 * @return The file, may or may not exist
 	 */
 	public File getItemPath(File itemRoot, String... pathItems) {
-		Path itemPath = FileSystems.getDefault().getPath(
-				itemRoot.getPath(),
-				pathItems);
+		Path itemPath = FileSystems.getDefault().getPath(itemRoot.getPath(), pathItems);
 		return itemPath.toFile();
 	}
 
@@ -152,14 +158,9 @@ public final class FSBasedStore implements SoftwareStore {
 		pathItems.add(bpkIdentifier.getBpkId());
 		pathItems.add(bpkIdentifier.getVersion());
 
-		final File itemPath = getItemPath(
-				bpkFSRoot,
-				pathItems.toArray(new String[pathItems.size()]));
+		final File itemPath = getItemPath(bpkFSRoot, pathItems.toArray(new String[pathItems.size()]));
 
-		final String bpkFileName = String.format(
-				"%s-%s.bpk",
-				bpkIdentifier.getBpkId(),
-				bpkIdentifier.getVersion());
+		final String bpkFileName = String.format("%s-%s.bpk", bpkIdentifier.getBpkId(), bpkIdentifier.getVersion());
 
 		return new File(itemPath, bpkFileName);
 	}
@@ -177,8 +178,7 @@ public final class FSBasedStore implements SoftwareStore {
 			log.error("Null or incomplete Artifact identifier {}", artifactIdentifier);
 			return null;
 		};
-		final List<String> pathItems = new ArrayList<>(Arrays.asList(artifactIdentifier.getGroupId().split(
-				"\\.")));
+		final List<String> pathItems = new ArrayList<>(Arrays.asList(artifactIdentifier.getGroupId().split("\\.")));
 		pathItems.add(artifactIdentifier.getArtifactId());
 		pathItems.add(artifactIdentifier.getVersion());
 		final String[] newPathItems = new String[pathItems.size()];
@@ -202,7 +202,7 @@ public final class FSBasedStore implements SoftwareStore {
 
 		List<BpkIdentifier> result = new ArrayList<BpkIdentifier>();
 
-		for (File f : FileUtils.listFiles(bpkFSRoot, new String[]{"bpk"}, true)) {
+		for (File f : FileUtils.listFiles(bpkFSRoot, new String[] { "bpk" }, true)) {
 			String path = f.getPath();
 			Matcher m = pattern.matcher(path);
 			if (m.find()) {
@@ -216,5 +216,26 @@ public final class FSBasedStore implements SoftwareStore {
 		}
 
 		return result;
+	}
+
+	@Override
+	public Map<String, String> getTaskDescriptors(BpkIdentifier bpkIdentifier)
+        throws IOException, JAXBException, SAXException, ConvertorException {
+		File bpkFile = getBpkItem(bpkIdentifier);
+
+		Map<String, String> descriptors = new HashMap<>();
+
+		ZipFile zipFile = new ZipFile(bpkFile);
+		Enumeration zipEntries = zipFile.entries();
+		while (zipEntries.hasMoreElements()) {
+			ZipEntry element = (ZipEntry) zipEntries.nextElement();
+			String fileName = element.getName();
+			if (!element.isDirectory() && fileName.startsWith(BpkNames.TASK_DESCRIPTORS_DIR + "/")) {
+				InputStream inputStream = zipFile.getInputStream(element);
+                String xml = IOUtils.toString(inputStream);
+				descriptors.put(fileName, xml);
+			}
+		}
+		return descriptors;
 	}
 }

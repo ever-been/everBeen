@@ -3,9 +3,12 @@ package cz.cuni.mff.d3s.been.swrepoclient;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.xml.bind.JAXBException;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
@@ -21,17 +24,18 @@ import org.apache.maven.artifact.Artifact;
 import org.codehaus.jackson.type.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
 
 import cz.cuni.mff.d3s.been.bpk.ArtifactIdentifier;
 import cz.cuni.mff.d3s.been.bpk.Bpk;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
+import cz.cuni.mff.d3s.been.core.jaxb.BindingParser;
+import cz.cuni.mff.d3s.been.core.jaxb.ConvertorException;
+import cz.cuni.mff.d3s.been.core.jaxb.XSD;
+import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
 import cz.cuni.mff.d3s.been.core.utils.JSONUtils.JSONSerializerException;
-import cz.cuni.mff.d3s.been.datastore.ArtifactFromStore;
-import cz.cuni.mff.d3s.been.datastore.BpkFromStore;
-import cz.cuni.mff.d3s.been.datastore.SoftwareStore;
-import cz.cuni.mff.d3s.been.datastore.StorePersister;
-import cz.cuni.mff.d3s.been.datastore.StoreReader;
+import cz.cuni.mff.d3s.been.datastore.*;
 
 class HttpSwRepoClient implements SwRepoClient {
 	/** HTTP implementation specific log for the sw repo client */
@@ -71,9 +75,7 @@ class HttpSwRepoClient implements SwRepoClient {
 	}
 
 	@Override
-	public boolean putArtifact(
-			ArtifactIdentifier artifactIdentifier,
-			File artifactFile) {
+	public boolean putArtifact(ArtifactIdentifier artifactIdentifier, File artifactFile) {
 		if (artifactIdentifier == null || artifactFile == null) {
 			log.error(
 					"Refused put because of invalid artifact (was {}) or identifier (was {})",
@@ -83,9 +85,7 @@ class HttpSwRepoClient implements SwRepoClient {
 		}
 
 		if (!artifactFile.exists()) {
-			log.error(
-					"Uploaded artifact \"{}\" doesn't exist",
-					artifactFile.getAbsolutePath());
+			log.error("Uploaded artifact \"{}\" doesn't exist", artifactFile.getAbsolutePath());
 			return false;
 		}
 
@@ -101,9 +101,7 @@ class HttpSwRepoClient implements SwRepoClient {
 		}
 
 		try {
-			request.setHeader(
-					SwRepoClientFactory.ARTIFACT_IDENTIFIER_HEADER_NAME,
-					JSONUtils.serialize(artifactIdentifier));
+			request.setHeader(SwRepoClientFactory.ARTIFACT_IDENTIFIER_HEADER_NAME, JSONUtils.serialize(artifactIdentifier));
 		} catch (JSONSerializerException e) {
 			log.error(
 					"Failed to upload Artifact {} due to artifact identifier serialization error - {}",
@@ -150,9 +148,7 @@ class HttpSwRepoClient implements SwRepoClient {
 	public boolean putBpk(BpkIdentifier bpkMetaInfo, InputStream bpkInputStream) {
 
 		if (bpkMetaInfo == null || bpkInputStream == null) {
-			log.error(
-					"Failed to upload BPK {} - package object or its meta-info was null.",
-					bpkMetaInfo);
+			log.error("Failed to upload BPK {} - package object or its meta-info was null.", bpkMetaInfo);
 			return false;
 		}
 
@@ -169,13 +165,9 @@ class HttpSwRepoClient implements SwRepoClient {
 		}
 
 		try {
-			request.setHeader(
-					SwRepoClientFactory.BPK_IDENTIFIER_HEADER_NAME,
-					JSONUtils.serialize(bpkMetaInfo));
+			request.setHeader(SwRepoClientFactory.BPK_IDENTIFIER_HEADER_NAME, JSONUtils.serialize(bpkMetaInfo));
 		} catch (JSONSerializerException e) {
-			log.error(
-					"Failed to upload BPK {} to repository - Identifier serialization error.",
-					bpkMetaInfo.toString());
+			log.error("Failed to upload BPK {} to repository - Identifier serialization error.", bpkMetaInfo.toString());
 			return false;
 		}
 
@@ -190,16 +182,10 @@ class HttpSwRepoClient implements SwRepoClient {
 		try {
 			response = cli.execute(request);
 		} catch (ClientProtocolException e) {
-			log.error(
-					"Failed to upload BPK {} due to HTTP protocol error - {}",
-					bpkMetaInfo.toString(),
-					e.getMessage());
+			log.error("Failed to upload BPK {} due to HTTP protocol error - {}", bpkMetaInfo.toString(), e.getMessage());
 			return false;
 		} catch (IOException e) {
-			log.error(
-					"Failed to upload BPK {} due to transport I/O error - {}",
-					bpkMetaInfo.toString(),
-					e.getMessage());
+			log.error("Failed to upload BPK {} due to transport I/O error - {}", bpkMetaInfo.toString(), e.getMessage());
 			return false;
 		}
 
@@ -231,10 +217,7 @@ class HttpSwRepoClient implements SwRepoClient {
 		try {
 			return new InputStreamEntity(new FileInputStream(file), file.length());
 		} catch (IOException e) {
-			log.error(
-					"Failed to marshall file {} into a HTTP entity - {}",
-					file.getAbsolutePath(),
-					e.getMessage());
+			log.error("Failed to marshall file {} into a HTTP entity - {}", file.getAbsolutePath(), e.getMessage());
 			return null;
 		}
 	}
@@ -269,9 +252,7 @@ class HttpSwRepoClient implements SwRepoClient {
 			return null;
 		}
 		try {
-			request.addHeader(
-					SwRepoClientFactory.ARTIFACT_IDENTIFIER_HEADER_NAME,
-					JSONUtils.serialize(artifactIdentifier));
+			request.addHeader(SwRepoClientFactory.ARTIFACT_IDENTIFIER_HEADER_NAME, JSONUtils.serialize(artifactIdentifier));
 		} catch (JSONSerializerException e) {
 			log.error(
 					"Failed to retrieve Maven artifact {} - unable to serialize Artifact identifier into request header",
@@ -284,14 +265,10 @@ class HttpSwRepoClient implements SwRepoClient {
 		try {
 			response = httpCli.execute(request);
 		} catch (ClientProtocolException e) {
-			log.error(
-					"Failed to retrieve Artifact {} - unable to synthesize get request URI",
-					artifactIdentifier.toString());
+			log.error("Failed to retrieve Artifact {} - unable to synthesize get request URI", artifactIdentifier.toString());
 			return null;
 		} catch (IOException e) {
-			log.error(
-					"Failed to retrieve BKP {} - I/O error or connection re-set",
-					artifactIdentifier.toString());
+			log.error("Failed to retrieve BKP {} - I/O error or connection re-set", artifactIdentifier.toString());
 			return null;
 		}
 
@@ -317,10 +294,7 @@ class HttpSwRepoClient implements SwRepoClient {
 		try {
 			sp.dump(is);
 		} catch (IOException e) {
-			log.error(
-					"Failed to cache Artifact {} locally - {}",
-					artifactIdentifier.toString(),
-					e.getMessage());
+			log.error("Failed to cache Artifact {} locally - {}", artifactIdentifier.toString(), e.getMessage());
 			IOUtils.closeQuietly(is);
 			return null;
 		}
@@ -348,9 +322,7 @@ class HttpSwRepoClient implements SwRepoClient {
 			return null;
 		}
 		try {
-			request.addHeader(
-					SwRepoClientFactory.BPK_IDENTIFIER_HEADER_NAME,
-					JSONUtils.serialize(bpkIdentifier));
+			request.addHeader(SwRepoClientFactory.BPK_IDENTIFIER_HEADER_NAME, JSONUtils.serialize(bpkIdentifier));
 		} catch (JSONSerializerException e) {
 			log.error(String.format(
 					"Failed to retrieve BPK %s - unable to serialize BPK identifier into request header",
@@ -367,9 +339,9 @@ class HttpSwRepoClient implements SwRepoClient {
 					bpkIdentifier.toString()));
 			return null;
 		} catch (IOException e) {
-			log.error(String.format(
-					"Failed to retrieve BKP %s - I/O error or connection re-set",
-					bpkIdentifier.toString()), e);
+			log.error(
+					String.format("Failed to retrieve BKP %s - I/O error or connection re-set", bpkIdentifier.toString()),
+					e);
 			return null;
 		}
 
@@ -395,10 +367,7 @@ class HttpSwRepoClient implements SwRepoClient {
 		try {
 			sp.dump(is);
 		} catch (IOException e) {
-			log.error(
-					"Failed to cache BPK {} locally - {}",
-					bpkIdentifier.toString(),
-					e.getMessage());
+			log.error("Failed to cache BPK {} locally - {}", bpkIdentifier.toString(), e.getMessage());
 		}
 		IOUtils.closeQuietly(is);
 
@@ -414,9 +383,7 @@ class HttpSwRepoClient implements SwRepoClient {
 		try {
 			request = new HttpGet(createRepoUri() + "/bpklist");
 		} catch (URISyntaxException e) {
-			log.error(
-					"Failed to list BPKs - unable to synthesize get request URI ({})",
-					e.getMessage());
+			log.error("Failed to list BPKs - unable to synthesize get request URI ({})", e.getMessage());
 			return null;
 		}
 
@@ -464,5 +431,85 @@ class HttpSwRepoClient implements SwRepoClient {
 		}
 
 		return list;
+	}
+
+	/**
+	 * Return a list of all uploaded BPKs.
+	 */
+	@Override
+	public Map<String, TaskDescriptor> listTaskDescriptors(BpkIdentifier bpkIdentifier) {
+		HttpUriRequest request = null;
+		try {
+			request = new HttpGet(createRepoUri() + "/tdlist");
+		} catch (URISyntaxException e) {
+			log.error("Failed to list Task Descriptors - unable to synthesize get request URI ({})", e.getMessage());
+			return null;
+		}
+		try {
+			request.addHeader(SwRepoClientFactory.BPK_IDENTIFIER_HEADER_NAME, JSONUtils.serialize(bpkIdentifier));
+		} catch (JSONSerializerException e) {
+			log.error(String.format(
+					"Failed to retrieve Task Descriptors - unable to serialize BPK identifier into request header",
+					bpkIdentifier.toString()));
+		}
+
+		HttpClient httpCli = new DefaultHttpClient();
+		HttpResponse response;
+		try {
+			response = httpCli.execute(request);
+		} catch (ClientProtocolException e) {
+			log.error("Failed to list Task Descriptors - unable to execute HTTP request ({})", e.getMessage());
+			return null;
+		} catch (IOException e) {
+			log.error("Failed to list Task Descriptors - I/O error or connection re-set", e);
+			return null;
+		}
+
+		if (response.getStatusLine().getStatusCode() / 100 != 2) {
+			log.error(String.format(
+					"Failed to list Task Descriptors - server refusal: \"%s\"",
+					response.getStatusLine().getReasonPhrase()));
+			return null;
+		}
+
+		InputStream is = null;
+		try {
+			is = response.getEntity().getContent();
+		} catch (IOException e) {
+			log.error("Failed to list Task Descriptors - error opening SW repo response for reading", e);
+			return null;
+		}
+
+		String jsonString = null;
+		try {
+			jsonString = IOUtils.toString(is);
+		} catch (IOException e) {
+			log.error("Failed to list Task Descriptors - unable to read output from stream", e);
+			return null;
+		}
+
+		Map<String, String> map = null;
+		try {
+			TypeReference t = new TypeReference<Map<String, String>>() {};
+			map = JSONUtils.deserialize(jsonString, t);
+		} catch (JSONSerializerException e) {
+			e.printStackTrace();
+		}
+		Map<String, TaskDescriptor> descriptors = null;
+		if (map != null) {
+			descriptors = new HashMap<>();
+			for (Map.Entry<String, String> entry : map.entrySet()) {
+				BindingParser<TaskDescriptor> parser = null;
+				try {
+					parser = XSD.TASK_DESCRIPTOR.createParser(TaskDescriptor.class);
+					descriptors.put(entry.getKey(), parser.parse(new ByteArrayInputStream(entry.getValue().getBytes())));
+				} catch (SAXException | ConvertorException | JAXBException e) {
+					log.error(String.format("Failed to convert task descriptor %s", entry.getKey()), e);
+                    continue;
+				}
+			}
+		}
+
+		return descriptors;
 	}
 }

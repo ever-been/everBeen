@@ -29,6 +29,13 @@
 		</dependency>
 
 		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>core-data</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+
+		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-core</artifactId>
 			<version>${maven.version}</version>

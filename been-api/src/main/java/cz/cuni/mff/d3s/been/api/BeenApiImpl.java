@@ -223,7 +223,20 @@ public class BeenApiImpl implements BeenApi {
 
 	@Override
 	public Map<String, TaskDescriptor> getTaskDescriptors(BpkIdentifier bpkIdentifier) {
-		// TODO, mock
+
+
+        SWRepositoryInfo swInfo = clusterContext.getServices().getSWRepositoryInfo();
+        SwRepoClient client = new SwRepoClientFactory(SoftwareStoreFactory.getDataStore()).getClient(
+                swInfo.getHost(),
+                swInfo.getHttpServerPort());
+
+        return client.listTaskDescriptors(bpkIdentifier);
+
+
+
+
+
+		/*// TODO, mock
 		TaskDescriptor a = new TaskDescriptor();
 		a.setBpkId(bpkIdentifier.getBpkId());
 		a.setGroupId(bpkIdentifier.getGroupId());
@@ -244,7 +257,7 @@ public class BeenApiImpl implements BeenApi {
 		HashMap<String, TaskDescriptor> m = new HashMap<>();
 		m.put("ExampleBenchmark.td.xml", a);
 		m.put("ExampleTask.td.xml", b);
-		return m;
+		return m;*/
 	}
 
 	@Override
