@@ -114,6 +114,15 @@
 			<id>uklance-github</id>
 			<url>https://github.com/uklance/releases/raw/master</url>
 		</repository>
+
+		<repository>
+			<id>devlab722-repo</id>
+			<url>http://nexus.devlab722.net/nexus/content/repositories/releases
+			</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
 	</repositories>
 
 </project>
