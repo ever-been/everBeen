@@ -1,9 +1,6 @@
 package cz.cuni.mff.d3s.been.web.services;
 
 import cz.cuni.mff.d3s.been.api.BeenApi;
-import cz.cuni.mff.d3s.been.api.BeenApiImpl;
-
-import java.net.InetSocketAddress;
 
 /**
  * User: donarus
