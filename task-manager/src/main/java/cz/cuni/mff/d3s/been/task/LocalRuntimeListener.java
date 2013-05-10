@@ -18,7 +18,7 @@ import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.mq.IMessageSender;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
 import cz.cuni.mff.d3s.been.task.msg.AbortTaskMessage;
-import cz.cuni.mff.d3s.been.task.msg.TaskChangedMessage;
+import cz.cuni.mff.d3s.been.task.msg.Messages;
 import cz.cuni.mff.d3s.been.task.msg.TaskMessage;
 
 /**
@@ -119,7 +119,8 @@ final class LocalRuntimeListener extends TaskManagerService implements EntryList
 	private void scheduleWaitingTasks() {
 		for (TaskEntry entry : getWaitingTasks()) {
 			try {
-				sender.send(new TaskChangedMessage(entry));
+				TaskMessage msg = Messages.createTaskChangedMessage(entry);
+				sender.send(msg);
 			} catch (MessagingException e) {
 				String msg = String.format("Cannot send message to '%s'", sender.getConnection());
 				log.error(msg, e);

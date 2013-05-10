@@ -40,18 +40,44 @@ public class TaskContexts {
 		return getTaskContextsMap().values();
 	}
 
-	public TaskContextEntry putTaskContext(TaskContextEntry entry, long ttl,
-			TimeUnit timeUnit) {
+	public TaskContextEntry putTaskContext(TaskContextEntry entry, long ttl, TimeUnit timeUnit) {
 		return getTaskContextsMap().put(entry.getId(), entry, ttl, timeUnit);
 	}
 
-	public TaskContextEntry submit(TaskContextDescriptor descriptor) {
+	public void putContextEntry(TaskContextEntry entry) {
+		getTaskContextsMap().put(entry.getId(), entry);
+	}
 
-		TaskContextEntry taskContextEntry = new TaskContextEntry();
-		taskContextEntry.setTaskContextDescriptor(descriptor);
-		taskContextEntry.setId(UUID.randomUUID().toString());
+	/**
+	 * Submits a context to the cluster.
+	 * 
+	 * Submit does not create or schedule any tasks. Tasks will be created and
+	 * scheduled by the framework some time later.
+	 * 
+	 * @param descriptor
+	 *          descriptor of a context
+	 * 
+	 * @return id of the submitted context
+	 * 
+	 */
+	public String submit(TaskContextDescriptor descriptor) {
 
-		Collection<TaskEntry> entriesToSubmit = new ArrayList<>();
+		TaskContextEntry contextEntry = new TaskContextEntry();
+		contextEntry.setTaskContextDescriptor(descriptor);
+		contextEntry.setId(UUID.randomUUID().toString());
+		contextEntry.setContextState(TaskContextState.WAITING);
+
+		putContextEntry(contextEntry);
+		log.debug("Task context was submitted with ID {}", contextEntry.getId());
+
+		return contextEntry.getId();
+	}
+
+	private Collection<TaskEntry> getTaskEntries(TaskContextEntry taskContextEntry) {
+		TaskContextDescriptor descriptor = taskContextEntry.getTaskContextDescriptor();
+		String contextId = taskContextEntry.getId();
+
+		Collection<TaskEntry> entries = new ArrayList<>();
 
 		for (Task t : descriptor.getTask()) {
 
@@ -66,28 +92,37 @@ public class TaskContexts {
 			td.setName(t.getName());
 			setTaskProperties(descriptor, t, td);
 
-			TaskEntry taskEntry = TaskEntries.create(td, taskContextEntry.getId());
-			taskEntry.setTaskContextId(taskContextEntry.getId());
+			TaskEntry taskEntry = TaskEntries.create(td, contextId);
 
-			taskContextEntry.getContainedTask().add(taskEntry.getId());
-			entriesToSubmit.add(taskEntry);
+			entries.add(taskEntry);
 		}
 
-		taskContextEntry.setContextState(TaskContextState.RUNNING);
-		getTaskContextsMap().put(taskContextEntry.getId(), taskContextEntry);
+		return entries;
 
-		for (TaskEntry taskEntry : entriesToSubmit) {
-			clusterContext.getTasks().submit(taskEntry);
-			log.info("Task was submitted with ID {}", taskEntry.getId());
-		}
-
-		log.info("Task context was submitted with ID {}", taskContextEntry.getId());
-
-		return taskContextEntry;
 	}
 
-	private void setTaskProperties(TaskContextDescriptor descriptor, Task task,
-			TaskDescriptor td) {
+	public void runContext(String contextId) {
+		TaskContextEntry contextEntry = getTaskContext(contextId);
+		if (contextEntry == null) {
+			// TODO
+			return;
+		}
+
+		Collection<TaskEntry> entriesToSubmit = getTaskEntries(contextEntry);
+
+		// TODO consider transactions
+		for (TaskEntry taskEntry : entriesToSubmit) {
+			String taskId = clusterContext.getTasks().submit(taskEntry);
+			contextEntry.getContainedTask().add(taskId);
+			log.debug("Task was submitted with ID {}", taskId);
+		}
+
+		contextEntry.setContextState(TaskContextState.RUNNING);
+		putContextEntry(contextEntry);
+
+	}
+
+	private void setTaskProperties(TaskContextDescriptor descriptor, Task task, TaskDescriptor td) {
 		HashMap<String, String> properties = new HashMap<>();
 
 		if (descriptor.isSetProperties()) {
@@ -121,17 +156,14 @@ public class TaskContexts {
 		}
 	}
 
-	private TaskDescriptor cloneTemplateWithName(
-			TaskContextDescriptor descriptor, String templateName) {
+	private TaskDescriptor cloneTemplateWithName(TaskContextDescriptor descriptor, String templateName) {
 		for (Template t : descriptor.getTemplates().getTemplate()) {
 			if (t.getName().equals(templateName)) {
 				return (TaskDescriptor) t.getTaskDescriptor().clone();
 			}
 		}
 
-		throw new IllegalArgumentException(String.format(
-				"Cannot find template with name '%s'",
-				templateName));
+		throw new IllegalArgumentException(String.format("Cannot find template with name '%s'", templateName));
 	}
 
 	/**
@@ -142,9 +174,7 @@ public class TaskContexts {
 	 *          entry to clean up
 	 */
 	public void cleanupTaskContext(TaskContextEntry taskContextEntry) {
-		log.info(
-				"Destroying cluster instances for task context {}",
-				taskContextEntry.getId());
+		log.info("Destroying cluster instances for task context {}", taskContextEntry.getId());
 
 		// destroy the checkpoint map
 		clusterContext.getMap("checkpointmap_" + taskContextEntry.getId()).destroy();
@@ -161,23 +191,14 @@ public class TaskContexts {
 		int contextTtlSeconds = SystemProperties.getInteger("been.context.ttl", 300);
 		int taskTtlSeconds = SystemProperties.getInteger("been.task.ttl", 300);
 
-		log.info(
-				"Removing tasks contained in context {} after {} seconds",
-				taskContextEntry.getId(),
-				taskTtlSeconds);
+		log.info("Removing tasks contained in context {} after {} seconds", taskContextEntry.getId(), taskTtlSeconds);
 
 		for (String taskId : taskContextEntry.getContainedTask()) {
 			TaskEntry taskEntry = clusterContext.getTasks().getTask(taskId);
-			clusterContext.getTasks().putTask(
-					taskEntry,
-					taskTtlSeconds,
-					TimeUnit.SECONDS);
+			clusterContext.getTasks().putTask(taskEntry, taskTtlSeconds, TimeUnit.SECONDS);
 		}
 
-		log.info(
-				"Removing task context entry {} after {} seconds",
-				taskContextEntry.getId(),
-				contextTtlSeconds);
+		log.info("Removing task context entry {} after {} seconds", taskContextEntry.getId(), contextTtlSeconds);
 
 		putTaskContext(taskContextEntry, contextTtlSeconds, TimeUnit.SECONDS);
 	}

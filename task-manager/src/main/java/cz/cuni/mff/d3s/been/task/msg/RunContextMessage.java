@@ -6,9 +6,16 @@ import cz.cuni.mff.d3s.been.task.action.TaskAction;
 /**
  * @author Martin Sixta
  */
-public class PoisonMessage implements TaskMessage {
+final class RunContextMessage implements TaskMessage {
+	private final String contextId;
+
+	public RunContextMessage(String contextId) {
+
+		this.contextId = contextId;
+	}
+
 	@Override
 	public TaskAction createAction(ClusterContext ctx) {
-		throw new UnsupportedOperationException("Poison message does not execute actions!");
+		return null;
 	}
 }

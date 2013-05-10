@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
-<taskDescriptor xmlns="http://been.d3s.mff.cuni.cz/taskmanager/td"
+<taskDescriptor xmlns="http://been.d3s.mff.cuni.cz/task-descriptor"
 				groupId="cz.cuni.mff.d3s.been" bpkId="task-sync-test" version="3.0.0"
-				name="server">
+				name="server" type="task">
 
 	<properties>
 		<property name="been.task.sync.type">SERVER</property>

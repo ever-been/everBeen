@@ -4,7 +4,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -186,14 +188,8 @@ public class BeenApiImpl implements BeenApi {
 		taskInTaskContext.setDescriptor(descriptorInTaskContext);
 		contextDescriptor.getTask().add(taskInTaskContext);
 
-		TaskContextEntry taskContextEntry = clusterContext.getTaskContexts().submit(contextDescriptor);
+		return clusterContext.getTaskContexts().submit(contextDescriptor);
 
-		if (taskContextEntry.getContainedTask().size() == 0) {
-			throw new RuntimeException("Created task context does not contain a task.");
-		}
-
-		String taskId = taskContextEntry.getContainedTask().get(0);
-		return taskId;
 	}
 
 	@Override
@@ -204,9 +200,8 @@ public class BeenApiImpl implements BeenApi {
 
 	@Override
 	public String submitTaskContext(TaskContextDescriptor taskContextDescriptor) {
-		TaskContextEntry taskContextEntry = clusterContext.getTaskContexts().submit(taskContextDescriptor);
+		return clusterContext.getTaskContexts().submit(taskContextDescriptor);
 
-		return taskContextEntry.getId();
 	}
 
 	@Override
@@ -224,17 +219,12 @@ public class BeenApiImpl implements BeenApi {
 	@Override
 	public Map<String, TaskDescriptor> getTaskDescriptors(BpkIdentifier bpkIdentifier) {
 
+		SWRepositoryInfo swInfo = clusterContext.getServices().getSWRepositoryInfo();
+		SwRepoClient client = new SwRepoClientFactory(SoftwareStoreFactory.getDataStore()).getClient(
+				swInfo.getHost(),
+				swInfo.getHttpServerPort());
 
-        SWRepositoryInfo swInfo = clusterContext.getServices().getSWRepositoryInfo();
-        SwRepoClient client = new SwRepoClientFactory(SoftwareStoreFactory.getDataStore()).getClient(
-                swInfo.getHost(),
-                swInfo.getHttpServerPort());
-
-        return client.listTaskDescriptors(bpkIdentifier);
-
-
-
-
+		return client.listTaskDescriptors(bpkIdentifier);
 
 		/*// TODO, mock
 		TaskDescriptor a = new TaskDescriptor();

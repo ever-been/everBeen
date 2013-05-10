@@ -11,7 +11,6 @@ import cz.cuni.mff.d3s.been.core.jaxb.BindingParser;
 import cz.cuni.mff.d3s.been.core.jaxb.ConvertorException;
 import cz.cuni.mff.d3s.been.core.jaxb.XSD;
 import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
-import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
 import cz.cuni.mff.d3s.been.mq.rep.Replies;
 import cz.cuni.mff.d3s.been.mq.rep.Reply;
 import cz.cuni.mff.d3s.been.mq.req.Request;
@@ -39,9 +38,7 @@ public class ContextSubmitAction implements Action {
 			return Replies.createErrorReply("Cannot deserialize task context descriptor.");
 		}
 
-		TaskContextEntry taskContextEntry = ctx.getTaskContexts().submit(taskContextDescriptor);
-
-		String taskContextEntryId = taskContextEntry.getId();
+		String taskContextEntryId = ctx.getTaskContexts().submit(taskContextDescriptor);
 
 		return Replies.createOkReply(taskContextEntryId);
 	}

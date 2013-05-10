@@ -9,7 +9,7 @@ import cz.cuni.mff.d3s.been.task.action.TaskAction;
 /**
  * @author Martin Sixta
  */
-public final class NewTaskMessage extends AbstractEntryTaskMessage {
+final class NewTaskMessage extends AbstractEntryTaskMessage {
 
 	public NewTaskMessage(TaskEntry entry) {
 		super(entry);

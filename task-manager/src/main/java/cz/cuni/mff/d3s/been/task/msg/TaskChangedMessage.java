@@ -10,7 +10,7 @@ import cz.cuni.mff.d3s.been.task.action.TaskContextCheckerAction;
 /**
  * @author Martin Sixta
  */
-public final class TaskChangedMessage extends AbstractEntryTaskMessage {
+final class TaskChangedMessage extends AbstractEntryTaskMessage {
 
 	public TaskChangedMessage(TaskEntry entry) {
 		super(entry);

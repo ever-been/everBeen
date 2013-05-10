@@ -8,7 +8,7 @@ import cz.cuni.mff.d3s.been.task.action.TaskAction;
 /**
  * @author Martin Sixta
  */
-public class NewOwnerTaskMessage extends AbstractEntryTaskMessage {
+final class NewOwnerTaskMessage extends AbstractEntryTaskMessage {
 
 	public NewOwnerTaskMessage(TaskEntry entry) {
 		super(entry);
