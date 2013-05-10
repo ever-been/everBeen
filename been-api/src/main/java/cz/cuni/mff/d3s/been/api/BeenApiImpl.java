@@ -259,16 +259,7 @@ public class BeenApiImpl implements BeenApi {
 
 	@Override
 	public TaskDescriptor getTaskDescriptor(BpkIdentifier bpkIdentifier, String descriptorName) {
-		// TODO, mock
-		TaskDescriptor a = new TaskDescriptor();
-		a.setBpkId(bpkIdentifier.getBpkId());
-		a.setGroupId(bpkIdentifier.getGroupId());
-		a.setVersion(bpkIdentifier.getVersion());
-		a.setName("example-benchmark");
-		a.setType(TaskType.BENCHMARK);
-		a.setJava(new Java());
-		a.getJava().setMainClass("cz.cuni.mff.d3s.been.task.ExampleBenchmark");
-		return a;
+		return getTaskDescriptors(bpkIdentifier).get(descriptorName);
 	}
 
 	@Override
