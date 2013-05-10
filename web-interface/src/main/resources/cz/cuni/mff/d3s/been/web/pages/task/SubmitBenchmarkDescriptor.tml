@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+
+<html t:type="layout" section="section"
+      xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd" xmlns:p="tapestry:parameter">
+
+<h2>Submit New Benchmark</h2>
+
+<t:beandisplay object="taskDescriptor">
+</t:beandisplay>
+
+<form t:type="form" t:id="form">
+	<button type="submit">Submit</button>
+</form>
+
+</html>

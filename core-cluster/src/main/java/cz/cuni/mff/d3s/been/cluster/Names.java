@@ -58,4 +58,10 @@ public class Names {
 	 * the map with name {@link Names#SERVICES_MAP_NAME}
 	 */
 	public static final String SWREPOSITORY_SERVICES_MAP_KEY = "SWREPOSITORY";
+
+
+	/**
+	 * All benchmarks run in a special task context with this ID.
+	 */
+	public static final String BENCHMARKS_CONTEXT_ID = "00000000-0000-0000-0000-000000001234";
 }

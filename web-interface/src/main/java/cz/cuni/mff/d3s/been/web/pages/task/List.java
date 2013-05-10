@@ -2,6 +2,7 @@ package cz.cuni.mff.d3s.been.web.pages.task;
 
 import java.util.Collection;
 
+import cz.cuni.mff.d3s.been.core.benchmark.BenchmarkEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
 import org.apache.tapestry5.annotations.Property;
 
@@ -23,11 +24,18 @@ public class List extends Page {
 		return this.api.getApi().getTaskContexts();
 	}
 
+	public Collection<BenchmarkEntry> getBenchmarks() {
+		return this.api.getApi().getBenchmarks();
+	}
+
 	@Property
 	private TaskEntry task;
 
 	@Property
 	private TaskContextEntry context;
+
+	@Property
+	private BenchmarkEntry benchmark;
 
 
 }

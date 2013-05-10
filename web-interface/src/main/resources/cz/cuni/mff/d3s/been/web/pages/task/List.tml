@@ -3,6 +3,11 @@
 <html t:type="layout" section="section"
       xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd" xmlns:p="tapestry:parameter">
 
+<h2>Benchmarks</h2>
+
+<t:grid source="benchmarks" row="benchmark" inPlace="true">
+</t:grid>
+
 <h2>Contexts</h2>
 
 <t:grid source="contexts" row="context" inPlace="true">

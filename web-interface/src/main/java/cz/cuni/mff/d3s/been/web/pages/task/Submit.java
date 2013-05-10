@@ -3,6 +3,7 @@ package cz.cuni.mff.d3s.been.web.pages.task;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
+import cz.cuni.mff.d3s.been.core.task.TaskType;
 import cz.cuni.mff.d3s.been.web.components.Layout;
 import cz.cuni.mff.d3s.been.web.pages.DetailPage;
 import cz.cuni.mff.d3s.been.web.pages.Page;
@@ -47,7 +48,11 @@ public class Submit extends Page {
 			d.name = descriptorName;
 			d.isTaskDescriptor = true;
 			d.taskDescriptor = td;
-			d.submitLink = "/task/submittaskdescriptor/" + bpk.getGroupId() + "/" + bpk.getBpkId() + "/" + bpk.getVersion() + "/" + descriptorName;
+			if (td.getType() == TaskType.TASK) {
+				d.submitLink = "/task/submittaskdescriptor/" + bpk.getGroupId() + "/" + bpk.getBpkId() + "/" + bpk.getVersion() + "/" + descriptorName;
+			} else if (td.getType() == TaskType.BENCHMARK) {
+				d.submitLink = "/task/submitbenchmarkdescriptor/" + bpk.getGroupId() + "/" + bpk.getBpkId() + "/" + bpk.getVersion() + "/" + descriptorName;
+			}
 			result.add(d);
 		}
 

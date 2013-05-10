@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import cz.cuni.mff.d3s.been.core.benchmark.BenchmarkEntry;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,6 +68,16 @@ public class BeenApiImpl implements BeenApi {
 	@Override
 	public TaskContextEntry getTaskContext(String id) {
 		return clusterContext.getTaskContexts().getTaskContext(id);
+	}
+
+	@Override
+	public Collection<BenchmarkEntry> getBenchmarks() {
+		return clusterContext.getBenchmarks().getBenchmarksMap().values();
+	}
+
+	@Override
+	public BenchmarkEntry getBenchmark(String id) {
+		return clusterContext.getBenchmarks().get(id);
 	}
 
 	@Override
@@ -180,16 +191,7 @@ public class BeenApiImpl implements BeenApi {
 
 	@Override
 	public String submitTask(TaskDescriptor taskDescriptor) {
-		TaskContextDescriptor contextDescriptor = new TaskContextDescriptor();
-		Task taskInTaskContext = new Task();
-		taskInTaskContext.setName(taskDescriptor.getName());
-		Descriptor descriptorInTaskContext = new Descriptor();
-		descriptorInTaskContext.setTaskDescriptor(taskDescriptor);
-		taskInTaskContext.setDescriptor(descriptorInTaskContext);
-		contextDescriptor.getTask().add(taskInTaskContext);
-
-		return clusterContext.getTaskContexts().submit(contextDescriptor);
-
+		return clusterContext.getTaskContexts().submitTaskInNewContext(taskDescriptor);
 	}
 
 	@Override
@@ -208,6 +210,11 @@ public class BeenApiImpl implements BeenApi {
 	public void killTaskContext(String taskId) {
 		// TODO
 		throw new UnsupportedOperationException("Not yet implemented.");
+	}
+
+	@Override
+	public String submitBenchmark(TaskDescriptor benchmarkTaskDescriptor) {
+		return clusterContext.getBenchmarks().submit(benchmarkTaskDescriptor);
 	}
 
 	@Override

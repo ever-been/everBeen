@@ -64,6 +64,11 @@ public class TaskContextCheckerAction implements TaskAction {
 			return;
 		}
 
+		// benchmarks context should not be destroyed at all
+		if (contextEntry.isLingering()) {
+			return;
+		}
+
 		try {
 			contextsMap.lock(taskContextId); // LOCK BEGIN
 

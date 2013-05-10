@@ -76,7 +76,7 @@ public class ContextWaitAction implements Action {
 		boolean timeout = false;
 
 		// TODO states...
-		if (value == null || value.getContextState() == TaskContextState.RUNNING) {
+		if (value == null || value.getContextState() != TaskContextState.FINISHED) {
 			try {
 				if (request.getTimeout() <= 0) {
 					value = queue.take();

@@ -13,6 +13,8 @@ import cz.cuni.mff.d3s.been.cluster.Names;
 import cz.cuni.mff.d3s.been.core.SystemProperties;
 import cz.cuni.mff.d3s.been.core.task.*;
 
+import static cz.cuni.mff.d3s.been.cluster.Names.BENCHMARKS_CONTEXT_ID;
+
 /**
  * Created with IntelliJ IDEA. User: Kuba Date: 20.04.13 Time: 13:09 To change
  * this template use File | Settings | File Templates.
@@ -67,10 +69,47 @@ public class TaskContexts {
 		contextEntry.setId(UUID.randomUUID().toString());
 		contextEntry.setContextState(TaskContextState.WAITING);
 
+		Collection<TaskEntry> entriesToSubmit = getTaskEntries(contextEntry);
+		for (TaskEntry e : entriesToSubmit) {
+			if (e.getTaskDescriptor().getType() != TaskType.TASK) {
+				throw new IllegalArgumentException("Task context contains a TaskDescriptor with a type that is not task.");
+			}
+		}
+
 		putContextEntry(contextEntry);
 		log.debug("Task context was submitted with ID {}", contextEntry.getId());
 
 		return contextEntry.getId();
+	}
+
+	public String submitTaskInNewContext(TaskDescriptor taskDescriptor) {
+		if (taskDescriptor.getType() != TaskType.TASK) {
+			throw new IllegalArgumentException("TaskDescriptor's type is not task.");
+		}
+
+		TaskContextDescriptor contextDescriptor = new TaskContextDescriptor();
+		Task taskInTaskContext = new Task();
+		taskInTaskContext.setName(taskDescriptor.getName());
+		Descriptor descriptorInTaskContext = new Descriptor();
+		descriptorInTaskContext.setTaskDescriptor(taskDescriptor);
+		taskInTaskContext.setDescriptor(descriptorInTaskContext);
+		contextDescriptor.getTask().add(taskInTaskContext);
+
+		return submit(contextDescriptor);
+	}
+
+
+
+	public String submitBenchmarkTask(TaskDescriptor benchmarkTaskDescriptor) {
+		if (benchmarkTaskDescriptor.getType() != TaskType.BENCHMARK) {
+			throw new IllegalArgumentException("TaskDescriptor's type is not benchmark.");
+		}
+
+		TaskEntry taskEntry = TaskEntries.create(benchmarkTaskDescriptor, BENCHMARKS_CONTEXT_ID);
+		String taskId = clusterContext.getTasks().submit(taskEntry);
+		clusterContext.getBenchmarks().addBenchmarkToBenchmarksContext(taskEntry);
+
+		return taskEntry.getId();
 	}
 
 	private Collection<TaskEntry> getTaskEntries(TaskContextEntry taskContextEntry) {

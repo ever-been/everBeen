@@ -1,11 +1,15 @@
 package cz.cuni.mff.d3s.been.web.pages;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Iterables;
 import cz.cuni.mff.d3s.been.core.LogMessage;
 import cz.cuni.mff.d3s.been.core.ri.FilesystemSample;
 import cz.cuni.mff.d3s.been.core.ri.NetworkSample;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskExclusivity;
+import cz.cuni.mff.d3s.been.core.task.TaskState;
 import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
 import cz.cuni.mff.d3s.been.web.components.Layout;
 import cz.cuni.mff.d3s.been.web.services.LiveFeedService;
@@ -88,13 +92,29 @@ public class Overview extends Page {
 	}
 
 	public Block onTasksUpdated(final Collection<TaskEntry> message) {
-		Map<String, ArrayList<TaskEntry>> tasksByContexts = new HashMap<>();
-		for (TaskEntry taskEntry : message) {
+		ArrayList<TaskEntry> taskEntries = new ArrayList<>(message);
+		Collections.sort(taskEntries, new Comparator<TaskEntry>() {
+			@Override
+			public int compare(TaskEntry o1, TaskEntry o2) {
+				int order = o1.getTaskContextId().compareTo(o2.getTaskContextId());
+				if (order == 0) order = o1.getId().compareTo(o2.getId());
+				return order;
+			}
+		});
+
+		Map<String, ArrayList<TaskEntry>> tasksByContexts = new LinkedHashMap<>();
+
+		for (TaskEntry taskEntry : taskEntries) {
+			if (taskEntry.getState() == TaskState.FINISHED) {
+				continue;
+			}
+
 			String contextId = taskEntry.getTaskContextId();
 			if (! tasksByContexts.containsKey(contextId))
 				tasksByContexts.put(contextId, new ArrayList<TaskEntry>());
 			tasksByContexts.get(contextId).add(taskEntry);
 		}
+
 		this.contexts = new ArrayList<>(tasksByContexts.values());
 
 		return tasksBlock;

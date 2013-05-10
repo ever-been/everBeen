@@ -18,6 +18,10 @@
 	* Implement "fail-safe storage" (stored in benchmark entry in HC) to allow
       restart of Benchmark after node failure
 
+* Tasks & Contexts
+	* for "submitTask" and "submitBenchmark" check type of task descriptor and throw
+	  exception when wrong
+
 * Results & Storage
 	* Retrieving results from a user task
 	* Allow a special user task (evaluator) to return a "file" (ZIP, PNG, CSV, ...)
@@ -28,6 +32,8 @@
 	* Implement "SNAPSHOT" versioning (don't cache)
 	* Implement "empty cache" feature
 * Web Interface
+	* When Hazelcast gets disconnect, show an error to the user and on next page
+	  redirect to the login page again
 	* \*.\*
 
 * Win32 support
