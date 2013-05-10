@@ -66,6 +66,11 @@ public class BpkRequestHandler extends SkeletalRequestHandler {
 			return;
 		}
 
+		if (request.getRequestLine().getUri().equals("/tcdlist")) {
+			handleListTaskContextDescriptors(request, response);
+			return;
+		}
+
 		response.setStatusCode(400);
 		log.error("Unknown request");
 		return;
@@ -133,18 +138,18 @@ public class BpkRequestHandler extends SkeletalRequestHandler {
 		}
 
 
-        final Map<String, String> descriptors;
-        try {
-            descriptors = store.getTaskDescriptors(bpkIdentifier);
-        } catch (IOException | JAXBException | SAXException | ConvertorException e) {
-            replyBadRequest(
-                    request,
-                    response,
-                    String.format("Could not convert Task Descrpitors from XMLs in BPK file %s", bpkIdentifier.toString()));
-            return;
-        }
+		final Map<String, String> descriptors;
+		try {
+			descriptors = store.getTaskDescriptors(bpkIdentifier);
+		} catch (IOException | JAXBException | SAXException | ConvertorException e) {
+			replyBadRequest(
+					request,
+					response,
+					String.format("Could not convert Task Descriptors from XMLs in BPK file %s", bpkIdentifier.toString()));
+			return;
+		}
 
-        if (descriptors == null) {
+		if (descriptors == null) {
 			replyBadRequest(
 					request,
 					response,
@@ -152,21 +157,71 @@ public class BpkRequestHandler extends SkeletalRequestHandler {
 			return;
 		}
 
-        StringEntity entity = null;
-        try {
-            String jsonString = JSONUtils.serialize(descriptors);
-            entity = new StringEntity(jsonString);
-        } catch (UnsupportedEncodingException e) {
-            response.setStatusCode(400);
-            log.error("Cannot create string entity.", e);
-            return;
-        } catch (JSONSerializerException e) {
-            response.setStatusCode(400);
-            log.error("Cannot serialize TaskDescriptors map.", e);
-            return;
-        }
+		StringEntity entity = null;
+		try {
+			String jsonString = JSONUtils.serialize(descriptors);
+			entity = new StringEntity(jsonString);
+		} catch (UnsupportedEncodingException e) {
+			response.setStatusCode(400);
+			log.error("Cannot create string entity.", e);
+			return;
+		} catch (JSONSerializerException e) {
+			response.setStatusCode(400);
+			log.error("Cannot serialize TaskDescriptors map.", e);
+			return;
+		}
 
-        response.setEntity(entity);
+		response.setEntity(entity);
+	}
+
+
+	private void handleListTaskContextDescriptors(HttpRequest request, HttpResponse response) {
+		BpkIdentifier bpkIdentifier = null;
+		try {
+			bpkIdentifier = JSONUtils.<BpkIdentifier> deserialize(
+					request.getFirstHeader(SwRepoClientFactory.BPK_IDENTIFIER_HEADER_NAME).getValue(),
+					BpkIdentifier.class);
+		} catch (JSONSerializerException e) {
+			response.setStatusCode(400);
+			log.error("Could not read BPK identifier from request.");
+			return;
+		}
+
+
+		final Map<String, String> descriptors;
+		try {
+			descriptors = store.getTaskContextDescriptors(bpkIdentifier);
+		} catch (IOException | JAXBException | SAXException | ConvertorException e) {
+			replyBadRequest(
+					request,
+					response,
+					String.format("Could not convert Task Context Descriptors from XMLs in BPK file %s", bpkIdentifier.toString()));
+			return;
+		}
+
+		if (descriptors == null) {
+			replyBadRequest(
+					request,
+					response,
+					String.format("Could not retrieve descriptors reader for BPK identifier %s", bpkIdentifier.toString()));
+			return;
+		}
+
+		StringEntity entity = null;
+		try {
+			String jsonString = JSONUtils.serialize(descriptors);
+			entity = new StringEntity(jsonString);
+		} catch (UnsupportedEncodingException e) {
+			response.setStatusCode(400);
+			log.error("Cannot create string entity.", e);
+			return;
+		} catch (JSONSerializerException e) {
+			response.setStatusCode(400);
+			log.error("Cannot serialize TaskContextDescriptors map.", e);
+			return;
+		}
+
+		response.setEntity(entity);
 	}
 
 	@Override

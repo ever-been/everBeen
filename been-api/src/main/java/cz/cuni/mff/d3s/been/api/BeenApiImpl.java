@@ -225,36 +225,12 @@ public class BeenApiImpl implements BeenApi {
 
 	@Override
 	public Map<String, TaskDescriptor> getTaskDescriptors(BpkIdentifier bpkIdentifier) {
-
 		SWRepositoryInfo swInfo = clusterContext.getServices().getSWRepositoryInfo();
 		SwRepoClient client = new SwRepoClientFactory(SoftwareStoreFactory.getDataStore()).getClient(
 				swInfo.getHost(),
 				swInfo.getHttpServerPort());
 
 		return client.listTaskDescriptors(bpkIdentifier);
-
-		/*// TODO, mock
-		TaskDescriptor a = new TaskDescriptor();
-		a.setBpkId(bpkIdentifier.getBpkId());
-		a.setGroupId(bpkIdentifier.getGroupId());
-		a.setVersion(bpkIdentifier.getVersion());
-		a.setName("example-benchmark");
-		a.setType(TaskType.BENCHMARK);
-		a.setJava(new Java());
-		a.getJava().setMainClass("cz.cuni.mff.d3s.been.task.ExampleBenchmark");
-
-		TaskDescriptor b = new TaskDescriptor();
-		b.setBpkId(bpkIdentifier.getBpkId());
-		b.setGroupId(bpkIdentifier.getGroupId());
-		b.setVersion(bpkIdentifier.getVersion());
-		b.setName("example-single-task");
-		b.setJava(new Java());
-		b.getJava().setMainClass("cz.cuni.mff.d3s.been.task.ExampleTask");
-
-		HashMap<String, TaskDescriptor> m = new HashMap<>();
-		m.put("ExampleBenchmark.td.xml", a);
-		m.put("ExampleTask.td.xml", b);
-		return m;*/
 	}
 
 	@Override
@@ -264,32 +240,17 @@ public class BeenApiImpl implements BeenApi {
 
 	@Override
 	public Map<String, TaskContextDescriptor> getTaskContextDescriptors(BpkIdentifier bpkIdentifier) {
-		// TODO, mock
-		TaskDescriptor b = new TaskDescriptor();
-		b.setBpkId(bpkIdentifier.getBpkId());
-		b.setGroupId(bpkIdentifier.getGroupId());
-		b.setVersion(bpkIdentifier.getVersion());
-		b.setName("example-single-task");
-		b.setJava(new Java());
-		b.getJava().setMainClass("cz.cuni.mff.d3s.been.task.ExampleTask");
+		SWRepositoryInfo swInfo = clusterContext.getServices().getSWRepositoryInfo();
+		SwRepoClient client = new SwRepoClientFactory(SoftwareStoreFactory.getDataStore()).getClient(
+				swInfo.getHost(),
+				swInfo.getHttpServerPort());
 
-		TaskContextDescriptor tcd = new TaskContextDescriptor();
-		tcd.setName("example-context");
-		Task t = new Task();
-		t.setName("example-task");
-		t.setDescriptor(new Descriptor());
-		t.getDescriptor().setTaskDescriptor(b);
-		tcd.getTask().add(t);
-
-		HashMap<String, TaskContextDescriptor> m = new HashMap<>();
-		m.put("ExampleContext.tcd.xml", tcd);
-
-		return m;
+		return client.listTaskContextDescriptors(bpkIdentifier);
 	}
 
 	@Override
 	public TaskContextDescriptor getTaskContextDescriptor(BpkIdentifier bpkIdentifier, String descriptorName) {
-		return null; // TODO
+		return getTaskContextDescriptors(bpkIdentifier).get(descriptorName);
 	}
 
 }

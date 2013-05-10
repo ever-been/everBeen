@@ -6,6 +6,7 @@ import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.core.jaxb.BindingParser;
 import cz.cuni.mff.d3s.been.core.jaxb.ConvertorException;
 import cz.cuni.mff.d3s.been.core.jaxb.XSD;
+import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
 import cz.cuni.mff.d3s.been.core.utils.JSONUtils.JSONSerializerException;
@@ -46,20 +47,26 @@ class HttpSwRepoClient implements SwRepoClient {
 
 
 	/**
-	 * abstract part of uri to get/put bpk
+	 * abstract part of uri to get/put {@link Bpk}
 	 */
 	public static final String BPK_URI = "/bpk";
 
 	/**
-	 * abstract part of uri to get list of bpks
+	 * abstract part of uri to get list of {@link Bpk}
 	 */
-	public static final String BPKLIST_URI = "/bpklist";
+	public static final String BPK_LIST_URI = "/bpklist";
+
+
+	/**
+	 * abstract part of uri to get list of {@link TaskDescriptor}
+	 */
+	public static final String TASK_DESCRIPTOR_LIST_URI = "/tdlist";
 
 
 	/**
 	 * abstract part of uri to get list of task descriptors
 	 */
-	public static final String TDLIST_URI = "/tdlist";
+	public static final String TASK_CONTEXT_DESCRIPTOR_LIST_URI = "/tcdlist";
 
 	/**
 	 * Hostname where the software repository resides
@@ -135,23 +142,53 @@ class HttpSwRepoClient implements SwRepoClient {
 	}
 
 	/**
-	 * Return a list of all uploaded BPKs.
+	 * Return a list of all uploaded {@link Bpk}
 	 */
 	@Override
 	public Collection<BpkIdentifier> listBpks() {
-		return doGetObject(BPKLIST_URI, new TypeReference<List<BpkIdentifier>>() {
+		return doGetObject(BPK_LIST_URI, new TypeReference<List<BpkIdentifier>>() {
 		});
 	}
 
 	/**
-	 * Return a list of all uploaded BPKs.
+	 * Return a list of all uploaded {@link TaskContextDescriptor}.
+	 */
+	@Override
+	public Map<String, TaskContextDescriptor> listTaskContextDescriptors(BpkIdentifier bpkIdentifier) {
+		Header header = new Header(SwRepoClientFactory.BPK_IDENTIFIER_HEADER_NAME, bpkIdentifier);
+		// 1st argument = TD filename, 2nd argument = TD json
+
+		Map<String, String> jsonDescriptors = doGetObject(TASK_CONTEXT_DESCRIPTOR_LIST_URI, new TypeReference<Map<String, String>>() {
+		}, header);
+
+		Map<String, TaskContextDescriptor> convertedDescriptors = new HashMap<>();
+		if (jsonDescriptors != null) {
+			for (Map.Entry<String, String> entry : jsonDescriptors.entrySet()) {
+				BindingParser<TaskContextDescriptor> parser = null;
+				try {
+					parser = XSD.TASK_CONTEXT_DESCRIPTOR.createParser(TaskContextDescriptor.class);
+					convertedDescriptors
+							.put(entry.getKey(), parser.parse(new ByteArrayInputStream(entry.getValue().getBytes())));
+				} catch (SAXException | ConvertorException | JAXBException e) {
+					log.error(String.format("Failed to convert task context descriptor %s", entry.getKey()), e);
+					continue;
+				}
+			}
+		}
+
+		return convertedDescriptors;
+	}
+
+
+	/**
+	 * Return a list of all uploaded {@link TaskDescriptor}.
 	 */
 	@Override
 	public Map<String, TaskDescriptor> listTaskDescriptors(BpkIdentifier bpkIdentifier) {
 		Header header = new Header(SwRepoClientFactory.BPK_IDENTIFIER_HEADER_NAME, bpkIdentifier);
 		// 1st argument = TD filename, 2nd argument = TD json
 
-		Map<String, String> jsonDescriptors = doGetObject(TDLIST_URI, new TypeReference<Map<String, String>>() {
+		Map<String, String> jsonDescriptors = doGetObject(TASK_DESCRIPTOR_LIST_URI, new TypeReference<Map<String, String>>() {
 		}, header);
 
 		Map<String, TaskDescriptor> convertedDescriptors = new HashMap<>();
@@ -171,6 +208,7 @@ class HttpSwRepoClient implements SwRepoClient {
 
 		return convertedDescriptors;
 	}
+
 
 	// =====================================
 	// PRIVATE METHODS

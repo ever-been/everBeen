@@ -50,13 +50,26 @@ public interface BpkStore {
 	/**
 	 * Return a map of available TaskDescriptors in BPK identified by given
 	 * identifier.
-	 * 
 	 *
-     * @param bpkIdentifier
-     *          unique identifier for the stored BPK
-     *
-     * @return Map of TaskDescriptors where key is task descriptor file name and
+	 *
+	 * @param bpkIdentifier
+	 *          unique identifier for the stored BPK
+	 *
+	 * @return Map of TaskDescriptors where key is task descriptor file name and
 	 *         value is descriptor itself.
 	 */
 	Map<String, String> getTaskDescriptors(BpkIdentifier bpkIdentifier) throws IOException, JAXBException, SAXException, ConvertorException;
+
+	/**
+	 * Return a map of available TaskContextDescriptors in BPK identified by given
+	 * identifier.
+	 *
+	 *
+	 * @param bpkIdentifier
+	 *          unique identifier for the stored BPK
+	 *
+	 * @return Map of TaskDescriptors where key is task context descriptor file name and
+	 *         value is descriptor itself.
+	 */
+	Map<String, String> getTaskContextDescriptors(BpkIdentifier bpkIdentifier) throws IOException, JAXBException, SAXException, ConvertorException;
 }

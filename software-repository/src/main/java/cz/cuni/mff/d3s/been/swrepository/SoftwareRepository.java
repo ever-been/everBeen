@@ -41,9 +41,12 @@ public class SoftwareRepository implements IClusterService {
                 new BpkRequestHandler(softwareStore));
         // FIXME create new handler
         // FIXME REFACTORING !!
-        httpServer.getResolver().register(
-                "/tdlist*",
-                new BpkRequestHandler(softwareStore));
+		httpServer.getResolver().register(
+				"/tdlist*",
+				new BpkRequestHandler(softwareStore));
+		httpServer.getResolver().register(
+				"/tcdlist*",
+				new BpkRequestHandler(softwareStore));
 		httpServer.getResolver().register(
 				"/artifact*",
 				new ArtifactRequestHandler(softwareStore));

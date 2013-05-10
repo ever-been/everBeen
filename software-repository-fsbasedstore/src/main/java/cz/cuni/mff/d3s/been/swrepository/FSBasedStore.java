@@ -220,7 +220,7 @@ public final class FSBasedStore implements SoftwareStore {
 
 	@Override
 	public Map<String, String> getTaskDescriptors(BpkIdentifier bpkIdentifier)
-        throws IOException, JAXBException, SAXException, ConvertorException {
+			throws IOException, JAXBException, SAXException, ConvertorException {
 		File bpkFile = getBpkItem(bpkIdentifier);
 
 		Map<String, String> descriptors = new HashMap<>();
@@ -232,7 +232,28 @@ public final class FSBasedStore implements SoftwareStore {
 			String fileName = element.getName();
 			if (!element.isDirectory() && fileName.startsWith(BpkNames.TASK_DESCRIPTORS_DIR + "/")) {
 				InputStream inputStream = zipFile.getInputStream(element);
-                String xml = IOUtils.toString(inputStream);
+				String xml = IOUtils.toString(inputStream);
+				descriptors.put(fileName, xml);
+			}
+		}
+		return descriptors;
+	}
+
+	@Override
+	public Map<String, String> getTaskContextDescriptors(BpkIdentifier bpkIdentifier)
+			throws IOException, JAXBException, SAXException, ConvertorException {
+		File bpkFile = getBpkItem(bpkIdentifier);
+
+		Map<String, String> descriptors = new HashMap<>();
+
+		ZipFile zipFile = new ZipFile(bpkFile);
+		Enumeration zipEntries = zipFile.entries();
+		while (zipEntries.hasMoreElements()) {
+			ZipEntry element = (ZipEntry) zipEntries.nextElement();
+			String fileName = element.getName();
+			if (!element.isDirectory() && fileName.startsWith(BpkNames.TASK_CONTEXT_DESCRIPTORS_DIR + "/")) {
+				InputStream inputStream = zipFile.getInputStream(element);
+				String xml = IOUtils.toString(inputStream);
 				descriptors.put(fileName, xml);
 			}
 		}
