@@ -29,3 +29,6 @@
 	* Implement "empty cache" feature
 * Web Interface
 	* \*.\*
+
+* Win32 support
+* Native task API (task, benchmark)
