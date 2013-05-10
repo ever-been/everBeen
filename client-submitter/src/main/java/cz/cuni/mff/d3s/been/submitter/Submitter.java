@@ -3,7 +3,6 @@ package cz.cuni.mff.d3s.been.submitter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
@@ -16,21 +15,12 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 import org.xml.sax.SAXException;
 
-import com.hazelcast.core.HazelcastInstance;
-
 import cz.cuni.mff.d3s.been.cluster.Instance;
-import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.jaxb.BindingParser;
 import cz.cuni.mff.d3s.been.core.jaxb.ConvertorException;
 import cz.cuni.mff.d3s.been.core.jaxb.XSD;
-import cz.cuni.mff.d3s.been.core.sri.SWRepositoryInfo;
-import cz.cuni.mff.d3s.been.core.task.Descriptor;
-import cz.cuni.mff.d3s.been.core.task.Task;
 import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
-import cz.cuni.mff.d3s.been.datastore.SoftwareStoreFactory;
-import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
-import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
 
 /**
  * 

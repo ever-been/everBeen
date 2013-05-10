@@ -20,6 +20,7 @@ import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
  * 
  */
 public interface SwRepoClient {
+
 	/**
 	 * Retrieve a Maven artifact.
 	 * 
@@ -44,28 +45,15 @@ public interface SwRepoClient {
 	/**
 	 * Store a Maven artifact
 	 * 
-	 * @param artifactMetaInfo
+	 * @param artifactIdentifier
 	 *          Identifier for the stored artifact
-	 * @param artifactFile
-	 *          Artifact file to store
+	 * @param artifactInputStream
+	 *          Input stream with the Artifact data
 	 * 
 	 * @return <code>true</code> if the Artifact was successfully stored,
 	 *         <code>false</code> if not
 	 */
-	public boolean putArtifact(ArtifactIdentifier artifactMetaInfo, File artifactFile);
-
-	/**
-	 * Store a BEEN package
-	 * 
-	 * @param bpkIdentifier
-	 *          Identifier of the stored package
-	 * @param bpkFile
-	 *          File to put
-	 * 
-	 * @return <code>true</code> if the BPK was successfully stored,
-	 *         <code>false</code> if not
-	 */
-	public boolean putBpk(BpkIdentifier bpkIdentifier, File bpkFile);
+	public boolean putArtifact(ArtifactIdentifier artifactIdentifier, InputStream artifactInputStream);
 
 	/**
 	 * Store a BEEN package from the input stream.
@@ -94,4 +82,5 @@ public interface SwRepoClient {
 	 * @return collection of TaskDescriptor objects
 	 */
 	public Map<String, TaskDescriptor> listTaskDescriptors(BpkIdentifier bpkIdentifier);
+
 }

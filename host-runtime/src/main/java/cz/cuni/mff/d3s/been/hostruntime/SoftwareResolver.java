@@ -10,7 +10,6 @@ import cz.cuni.mff.d3s.been.bpk.Bpk;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.cluster.context.Services;
 import cz.cuni.mff.d3s.been.core.sri.SWRepositoryInfo;
-import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
 

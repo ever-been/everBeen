@@ -1,9 +1,6 @@
 package cz.cuni.mff.d3s.been.swrepository;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
@@ -194,7 +191,7 @@ public class TestSoftwareRepositoryTransportByHTTP extends Assert {
 
 	@Test
 	public void testUploadBpk() throws IOException {
-		assertTrue(client.putBpk(bpkId, randomContentFile));
+		assertTrue(client.putBpk(bpkId, new FileInputStream(randomContentFile)));
 		assertFilePresent(
 				SERVER_PERSISTENCE_ROOT_FOLDER,
 				String.format("%s-%s.bpk", bpkId.getBpkId(), bpkId.getVersion()),
@@ -207,25 +204,19 @@ public class TestSoftwareRepositoryTransportByHTTP extends Assert {
 
 	@Test
 	public void testUploadBpk_duplicateEntry() throws IOException {
-		assertTrue(client.putBpk(bpkId, randomContentFile));
-		assertTrue(client.putBpk(bpkId, randomContentFile)); // will be changed to assertFalse once the behavior has changed to the desired version
+		assertTrue(client.putBpk(bpkId, new FileInputStream(randomContentFile)));
+		assertTrue(client.putBpk(bpkId, new FileInputStream(randomContentFile))); // will be changed to assertFalse once the behavior has changed to the desired version
 	}
 
 	@Test
-	public void testUploadBpk_fileDoesntExist() {
-		randomContentFile.delete();
-		assertFalse(client.putBpk(bpkId, randomContentFile));
-	}
-
-	@Test
-	public void testUploadBpk_badIdentifier() {
+	public void testUploadBpk_badIdentifier()throws IOException {
 		bpkId.setBpkId(null);
-		assertFalse(client.putBpk(bpkId, randomContentFile));
+		assertFalse(client.putBpk(bpkId, new FileInputStream(randomContentFile)));
 	}
 
 	@Test
-	public void testUploadBpk_serverDown() {
-		assertFalse(client.putBpk(bpkId, randomContentFile));
+	public void testUploadBpk_serverDown()throws IOException {
+		assertFalse(client.putBpk(bpkId, new FileInputStream(randomContentFile)));
 	}
 
 	// test delete bpk that exists
@@ -406,7 +397,7 @@ public class TestSoftwareRepositoryTransportByHTTP extends Assert {
 
 	@Test
 	public void testUploadArtifact() throws IOException {
-		client.putArtifact(artifactId, randomContentFile);
+		client.putArtifact(artifactId, new FileInputStream(randomContentFile));
 		File serverItem = getFileFromPathAndName(
 				SERVER_PERSISTENCE_ROOT_FOLDER,
 				String.format(
@@ -425,20 +416,14 @@ public class TestSoftwareRepositoryTransportByHTTP extends Assert {
 	}
 
 	@Test
-	public void testUploadArtifact_noFile() {
-		randomContentFile.delete();
-		assertFalse(client.putArtifact(artifactId, randomContentFile));
+	public void testUploadArtifact_serverDown() throws Exception  {
+		assertFalse(client.putArtifact(artifactId, new FileInputStream(randomContentFile)));
 	}
 
 	@Test
-	public void testUploadArtifact_serverDown() {
-		assertFalse(client.putArtifact(artifactId, randomContentFile));
-	}
-
-	@Test
-	public void testUploadArtifact_duplicateEntry() {
-		assertTrue(client.putArtifact(artifactId, randomContentFile));
-		assertTrue(client.putArtifact(artifactId, randomContentFile)); // will be changed to assertFalse once the behavior has changed to the desired version
+	public void testUploadArtifact_duplicateEntry() throws Exception  {
+		assertTrue(client.putArtifact(artifactId, new FileInputStream(randomContentFile)));
+		assertTrue(client.putArtifact(artifactId, new FileInputStream(randomContentFile))); // will be changed to assertFalse once the behavior has changed to the desired version
 	}
 
 	/**
@@ -453,8 +438,12 @@ public class TestSoftwareRepositoryTransportByHTTP extends Assert {
 	 *          Name of the store this file lies in
 	 * @param referenceFile
 	 *          Reference content of the file we're expecting to find
-	 * @param pathItems
-	 *          The Names of the file's path items within the persistence folder
+	 * @param groupId
+	 *          groupId of tested file
+	 * @param itemId
+	 *          itemId of tested file
+	 * @param itemVersion
+	 *          itemVersion of tested file
 	 * 
 	 * @throws IOException
 	 *           On reference or actual file read error
@@ -488,8 +477,12 @@ public class TestSoftwareRepositoryTransportByHTTP extends Assert {
 	 *          Name of the file we're not expecting to find
 	 * @param storeName
 	 *          Name of the store this file lies in
-	 * @param pathItems
-	 *          Names of the file's path items within the persistence folder
+	 * @param groupId
+	 *          groupId of tested file
+	 * @param itemId
+	 *          itemId of tested file
+	 * @param itemVersion
+	 *          itemVersion of tested file
 	 */
 	public void assertFileAbsent(
 			File root,
