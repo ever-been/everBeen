@@ -54,6 +54,14 @@ final class ResultsDispatcher implements Runnable {
 
 	@Override
 	public void run() {
+		try {
+			innerRun();
+		} catch (Throwable e) {
+			log.error(e.getMessage(), e);
+		}
+	}
+
+	private void innerRun() {
 		while (!Thread.currentThread().isInterrupted()) {
 			try {
 				final EntityCarrier rc = resultReader.readValue(receiver.receive());

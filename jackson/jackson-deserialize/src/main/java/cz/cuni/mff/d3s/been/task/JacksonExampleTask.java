@@ -11,11 +11,11 @@ import cz.cuni.mff.d3s.been.taskapi.results.ResultPersister;
 /**
  * @author Martin Sixta
  */
-public class ExampleTask extends Task {
+public class JacksonExampleTask extends Task {
 	private static final Logger log = LoggerFactory.getLogger(Task.class);
 
 	public static void main(String[] args) {
-		new ExampleTask().doMain(args);
+		new JacksonExampleTask().doMain(args);
 	}
 
 	@Override
@@ -26,7 +26,7 @@ public class ExampleTask extends Task {
 		final ResultPersister rp = results.createResultPersister(eid);
 		System.out.println("Hello world!");
 		try {
-			rp.persist(new TestResult());
+			rp.persist(new JacksonTestResult());
 		} catch (DAOException e) {
 			log.error("OMG, Result persistence got mashed!", e);
 		}

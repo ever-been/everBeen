@@ -1,13 +1,15 @@
 package cz.cuni.mff.d3s.been.core.persistence;
 
 
+import java.io.Serializable;
+
 /**
  * A carrier object that helps with serialization fo
  * 
  * @author darklight
  * 
  */
-public final class EntityCarrier {
+public final class EntityCarrier implements Serializable {
 	/**
 	 * An identifier of the entity (determines storage location)
 	 */

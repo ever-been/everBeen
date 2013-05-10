@@ -9,6 +9,8 @@ import cz.cuni.mff.d3s.been.web.pages.DetailPage;
 import cz.cuni.mff.d3s.been.web.pages.Page;
 import org.apache.tapestry5.annotations.InjectPage;
 import org.apache.tapestry5.annotations.Property;
+import org.apache.tapestry5.ioc.annotations.Inject;
+import org.apache.tapestry5.services.URLEncoder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,6 +41,9 @@ public class Submit extends Page {
 	@Property
 	Descriptor descriptor;
 
+	@Inject
+	URLEncoder urlEncoder;
+
 	public Collection<Descriptor> descriptorsInBpk(BpkIdentifier bpk) {
 		Collection<Descriptor> result = new ArrayList<Descriptor>();
 		for (Map.Entry<String, TaskDescriptor> entry : this.api.getApi().getTaskDescriptors(bpk).entrySet()) {
@@ -48,10 +53,16 @@ public class Submit extends Page {
 			d.name = descriptorName;
 			d.isTaskDescriptor = true;
 			d.taskDescriptor = td;
+
+			String s = urlEncoder.encode(bpk.getGroupId()) + "/"
+					+ urlEncoder.encode(bpk.getBpkId()) + "/"
+					+ urlEncoder.encode(bpk.getVersion()) + "/"
+					+ urlEncoder.encode(descriptorName);
+
 			if (td.getType() == TaskType.TASK) {
-				d.submitLink = "/task/submittaskdescriptor/" + bpk.getGroupId() + "/" + bpk.getBpkId() + "/" + bpk.getVersion() + "/" + descriptorName;
+				d.submitLink = "/task/submittaskdescriptor/" + s;
 			} else if (td.getType() == TaskType.BENCHMARK) {
-				d.submitLink = "/task/submitbenchmarkdescriptor/" + bpk.getGroupId() + "/" + bpk.getBpkId() + "/" + bpk.getVersion() + "/" + descriptorName;
+				d.submitLink = "/task/submitbenchmarkdescriptor/" + s;
 			}
 			result.add(d);
 		}
@@ -63,7 +74,13 @@ public class Submit extends Page {
 			d.name = descriptorName;
 			d.isTaskDescriptor = false;
 			d.taskContextDescriptor = tcd;
-			d.submitLink = "/task/submittaskcontextdescriptor/" + bpk.getGroupId() + "/" + bpk.getBpkId() + "/" + bpk.getVersion() + "/" + descriptorName;
+
+			String s = urlEncoder.encode(bpk.getGroupId()) + "/"
+					+ urlEncoder.encode(bpk.getBpkId()) + "/"
+					+ urlEncoder.encode(bpk.getVersion()) + "/"
+					+ urlEncoder.encode(descriptorName);
+
+			d.submitLink = "/task/submittaskcontextdescriptor/" + s;
 			result.add(d);
 		}
 
