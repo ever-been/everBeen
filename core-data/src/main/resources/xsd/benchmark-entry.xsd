@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema
+		xmlns="http://been.d3s.mff.cuni.cz/benchmark-entry"
+		targetNamespace="http://been.d3s.mff.cuni.cz/benchmark-entry"
+		xmlns:benchmarkentry="http://been.d3s.mff.cuni.cz/benchmark-entry"
+		xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		>
+
+
+	<xs:element name="id" type="xs:string"/>
+	<xs:element name="generatorId" type="xs:string"/>
+
+
+	<xs:element name="benchmarkEntry">
+		<xs:complexType>
+			<xs:all>
+				<xs:element ref="benchmarkentry:id" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="benchmarkentry:generatorId" minOccurs="1" maxOccurs="1"/>
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+
+</xs:schema>

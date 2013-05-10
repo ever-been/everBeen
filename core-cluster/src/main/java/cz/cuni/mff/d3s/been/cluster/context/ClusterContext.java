@@ -24,6 +24,7 @@ public class ClusterContext {
 	private final TaskContexts taskContexts;
 	private final Topics topics;
 	private final Services services;
+	private final Benchmarks benchmarks;
 	private final HazelcastInstance hcInstance;
 
 	public ClusterContext(HazelcastInstance hcInstance) {
@@ -34,6 +35,7 @@ public class ClusterContext {
 		this.taskContexts = new TaskContexts(this);
 		this.topics = new Topics(this);
 		this.services = new Services(this);
+		this.benchmarks = new Benchmarks(this);
 	}
 
 	public ICountDownLatch getCountDownLatch(String name) {
@@ -57,6 +59,10 @@ public class ClusterContext {
 
 	public Topics getTopics() {
 		return topics;
+	}
+
+	public Benchmarks getBenchmarks() {
+		return benchmarks;
 	}
 
 	public Services getServices() {
@@ -207,8 +213,7 @@ public class ClusterContext {
 	 *          name of the instance
 	 * @return true if the instance exists, false otherwise
 	 */
-	public boolean containsInstance(Instance.InstanceType instanceType,
-			String name) {
+	public boolean containsInstance(Instance.InstanceType instanceType, String name) {
 
 		for (Instance instance : getInstances(instanceType)) {
 			boolean isName = instance.getId().toString().endsWith(":" + name);

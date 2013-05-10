@@ -101,4 +101,12 @@
 			</property>
 		</bindings>
 	</bindings>
+
+
+	<bindings schemaLocation="benchmark-entry.xsd">
+		<schemaBindings>
+			<package name="cz.cuni.mff.d3s.been.core.benchmark" />
+		</schemaBindings>
+
+	</bindings>
 </bindings>

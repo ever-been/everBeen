@@ -3,20 +3,18 @@
 <xs:schema
 		xmlns="http://been.d3s.mff.cuni.cz/entity"
 		targetNamespace="http://been.d3s.mff.cuni.cz/entity"
-		xmlns:taskentry="http://been.d3s.mff.cuni.cz/taskentry"
 		xmlns:xs="http://www.w3.org/2001/XMLSchema"
-		xmlns:td="http://been.d3s.mff.cuni.cz/task-descriptor"
 		xmlns:common="http://been.d3s.mff.cuni.cz/common"
 		>
 
 	<xs:import namespace="http://been.d3s.mff.cuni.cz/common"/>
 
-	<xs:complexType name="Entity" />
+	<xs:complexType name="Entity"/>
 
 	<xs:complexType name="EntityID">
 		<xs:all>
-			<xs:element name="kind" type="common:IDStringColumn" />
-			<xs:element name="group" type="common:IDStringColumn" />
+			<xs:element name="kind" type="common:IDStringColumn"/>
+			<xs:element name="group" type="common:IDStringColumn"/>
 		</xs:all>
 	</xs:complexType>
 </xs:schema>
