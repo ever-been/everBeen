@@ -40,6 +40,28 @@ class HttpSwRepoClient implements SwRepoClient {
 	private static final Logger log = LoggerFactory.getLogger(HttpSwRepoClient.class);
 
 	/**
+	 * abstract part of uri to get/put artifact
+	 */
+	public static final String ARTIFACT_URI = "/artifact";
+
+
+	/**
+	 * abstract part of uri to get/put bpk
+	 */
+	public static final String BPK_URI = "/bpk";
+
+	/**
+	 * abstract part of uri to get list of bpks
+	 */
+	public static final String BPKLIST_URI = "/bpklist";
+
+
+	/**
+	 * abstract part of uri to get list of task descriptors
+	 */
+	public static final String TDLIST_URI = "/tdlist";
+
+	/**
 	 * Hostname where the software repository resides
 	 */
 	private final String hostname;
@@ -54,6 +76,13 @@ class HttpSwRepoClient implements SwRepoClient {
 	 */
 	private final SoftwareStore softwareCache;
 
+	/**
+	 * Constructs new software repository client
+	 *
+	 * @param hostname      hostname on which the software repository is running
+	 * @param port          port on which the software repository is running
+	 * @param softwareCache initialized software cache
+	 */
 	HttpSwRepoClient(String hostname, Integer port, SoftwareStore softwareCache) {
 		this.hostname = hostname;
 		this.port = port;
@@ -71,7 +100,7 @@ class HttpSwRepoClient implements SwRepoClient {
 		}
 
 		Header header = new Header(SwRepoClientFactory.ARTIFACT_IDENTIFIER_HEADER_NAME, artifactIdentifier);
-		return doPutStream("/artifact", artifactInputStream, header);
+		return doPutStream(ARTIFACT_URI, artifactInputStream, header);
 	}
 
 	@Override
@@ -102,7 +131,7 @@ class HttpSwRepoClient implements SwRepoClient {
 		}
 
 		Header header = new Header(SwRepoClientFactory.BPK_IDENTIFIER_HEADER_NAME, bpkMetaInfo);
-		return doPutStream("/bpk", bpkInputStream, header);
+		return doPutStream(BPK_URI, bpkInputStream, header);
 	}
 
 	/**
@@ -110,7 +139,7 @@ class HttpSwRepoClient implements SwRepoClient {
 	 */
 	@Override
 	public Collection<BpkIdentifier> listBpks() {
-		return doGetObject("/bpklist", new TypeReference<List<BpkIdentifier>>() {
+		return doGetObject(BPKLIST_URI, new TypeReference<List<BpkIdentifier>>() {
 		});
 	}
 
@@ -122,7 +151,7 @@ class HttpSwRepoClient implements SwRepoClient {
 		Header header = new Header(SwRepoClientFactory.BPK_IDENTIFIER_HEADER_NAME, bpkIdentifier);
 		// 1st argument = TD filename, 2nd argument = TD json
 
-		Map<String, String> jsonDescriptors = doGetObject("/tdlist", new TypeReference<Map<String, String>>() {
+		Map<String, String> jsonDescriptors = doGetObject(TDLIST_URI, new TypeReference<Map<String, String>>() {
 		}, header);
 
 		Map<String, TaskDescriptor> convertedDescriptors = new HashMap<>();
@@ -167,7 +196,7 @@ class HttpSwRepoClient implements SwRepoClient {
 	private Artifact getArtifactByHTTP(ArtifactIdentifier artifactIdentifier) {
 		Header header = new Header(SwRepoClientFactory.ARTIFACT_IDENTIFIER_HEADER_NAME, artifactIdentifier);
 
-		InputStream is = doGetInputStream("/artifact", header);
+		InputStream is = doGetInputStream(ARTIFACT_URI, header);
 		if (is == null) {
 			return null;
 		}
@@ -196,7 +225,7 @@ class HttpSwRepoClient implements SwRepoClient {
 	private Bpk getBpkByHTTP(BpkIdentifier bpkIdentifier) {
 		Header header = new Header(SwRepoClientFactory.BPK_IDENTIFIER_HEADER_NAME, bpkIdentifier);
 
-		InputStream is = doGetInputStream("/bpk", header);
+		InputStream is = doGetInputStream(BPK_URI, header);
 		if (is == null) {
 			return null;
 		}
@@ -219,7 +248,16 @@ class HttpSwRepoClient implements SwRepoClient {
 		}
 	}
 
-
+	/**
+	 * Do GET request on software repository server and return deserialized object of given type..
+	 *
+	 * @param abstractUri abstract part of uri for get request
+	 * @param type        type reference of object which will be returned
+	 * @param headers     request headers
+	 * @param <T>         type of object which will be returned
+	 * @return deserialized object of expected type or null if object
+	 *         couldn't be deserialized from some reason
+	 */
 	private <T> T doGetObject(String abstractUri, TypeReference<T> type, Header... headers) {
 		try (InputStream is = doGetInputStream(abstractUri, headers)) {
 
@@ -242,6 +280,13 @@ class HttpSwRepoClient implements SwRepoClient {
 		}
 	}
 
+	/**
+	 * Do GET request on software repository server and return response input stream
+	 *
+	 * @param abstractUri abstract part of uri for get request
+	 * @param headers     request headers
+	 * @return input stream from http response
+	 */
 	private InputStream doGetInputStream(String abstractUri, Header... headers) {
 
 		String uri;
@@ -293,6 +338,14 @@ class HttpSwRepoClient implements SwRepoClient {
 
 	}
 
+	/**
+	 * Do PUT request with given objectstream as body message.
+	 *
+	 * @param abstractUri       abstract part of uri for get request
+	 * @param objectStreamToPut stream which will be added to body message
+	 * @param headers           request headers
+	 * @return true if PUT request returned status code OK [200-299], false otherwise
+	 */
 	private boolean doPutStream(String abstractUri, InputStream objectStreamToPut, Header... headers) {
 		if (objectStreamToPut == null) {
 			log.error("Failed to PUT item to software repository - object given to send was null");
@@ -346,6 +399,9 @@ class HttpSwRepoClient implements SwRepoClient {
 		}
 	}
 
+	/**
+	 * Internal representation of http header.
+	 */
 	private static final class Header {
 		public String key;
 		public Object value;
