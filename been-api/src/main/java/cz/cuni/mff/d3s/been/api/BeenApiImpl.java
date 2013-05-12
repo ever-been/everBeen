@@ -1,36 +1,37 @@
 package cz.cuni.mff.d3s.been.api;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import cz.cuni.mff.d3s.been.core.benchmark.BenchmarkEntry;
-import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.hazelcast.core.EntryEvent;
 import com.hazelcast.core.EntryListener;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.MultiMap;
-
 import cz.cuni.mff.d3s.been.bpk.*;
 import cz.cuni.mff.d3s.been.cluster.Instance;
 import cz.cuni.mff.d3s.been.cluster.Names;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.LogMessage;
+import cz.cuni.mff.d3s.been.core.benchmark.BenchmarkEntry;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.sri.SWRepositoryInfo;
-import cz.cuni.mff.d3s.been.core.task.*;
+import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
+import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
+import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
+import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.datastore.SoftwareStoreFactory;
 import cz.cuni.mff.d3s.been.debugassistant.DebugAssistant;
 import cz.cuni.mff.d3s.been.debugassistant.DebugListItem;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
+import cz.cuni.mff.d3s.been.swrepoclient.SwRepositoryClientException;
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * User: donarus Date: 4/27/13 Time: 11:50 AM
@@ -152,6 +153,7 @@ public class BeenApiImpl implements BeenApi {
 		BpkIdentifier bpkIdentifier = new BpkIdentifier();
 
 		ByteArrayOutputStream tempStream = new ByteArrayOutputStream();
+
 		try {
 			IOUtils.copy(bpkInputStream, tempStream);
 		} catch (IOException e) {
@@ -186,12 +188,6 @@ public class BeenApiImpl implements BeenApi {
 			log.error("Cannot get input stream from BPK.", e);
 			return null;
 		}
-	}
-
-	@Override
-	public void deleteBpk(BpkIdentifier bpkIdentifier) {
-		// TODO
-		throw new UnsupportedOperationException("Not yet implemented.");
 	}
 
 	@Override

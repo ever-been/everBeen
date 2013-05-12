@@ -11,10 +11,12 @@ import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
 import cz.cuni.mff.d3s.been.core.utils.JSONUtils.JSONSerializerException;
 import cz.cuni.mff.d3s.been.datastore.*;
+import cz.cuni.mff.d3s.been.swrepository.Versions;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -35,6 +37,7 @@ import java.util.*;
 
 import static cz.cuni.mff.d3s.been.swrepository.HeaderNames.*;
 import static cz.cuni.mff.d3s.been.swrepository.UrlPaths.*;
+import static cz.cuni.mff.d3s.been.swrepository.Versions.*;
 
 class HttpSwRepoClient implements SwRepoClient {
 
@@ -97,6 +100,10 @@ class HttpSwRepoClient implements SwRepoClient {
 
 	@Override
 	public Bpk getBpk(BpkIdentifier bpkIdentifier) {
+		if (bpkIdentifier.getVersion().endsWith(SNAPSHOT_SUFFIX)) {
+			return getBpkByHTTP(bpkIdentifier);
+		}
+
 		StoreReader bpkReader = softwareCache.getBpkReader(bpkIdentifier);
 		if (bpkReader != null) {
 			return new BpkFromStore(bpkReader, bpkIdentifier);
@@ -116,25 +123,20 @@ class HttpSwRepoClient implements SwRepoClient {
 		return doPutStream(BPK_URI, bpkInputStream, header);
 	}
 
-	/**
-	 * Return a list of all uploaded {@link Bpk}
-	 */
 	@Override
 	public Collection<BpkIdentifier> listBpks() {
 		return doGetObject(BPK_LIST_URI, new TypeReference<List<BpkIdentifier>>() {
 		});
 	}
 
-	/**
-	 * Return a list of all uploaded {@link TaskContextDescriptor}.
-	 */
 	@Override
 	public Map<String, TaskContextDescriptor> listTaskContextDescriptors(BpkIdentifier bpkIdentifier) {
 		Header header = new Header(BPK_IDENTIFIER_HEADER_NAME, bpkIdentifier);
 		// 1st argument = TD filename, 2nd argument = TD json
 
-		Map<String, String> jsonDescriptors = doGetObject(TASK_CONTEXT_DESCRIPTOR_LIST_URI, new TypeReference<Map<String, String>>() {
-		}, header);
+		Map<String, String> jsonDescriptors = doGetObject(TASK_CONTEXT_DESCRIPTOR_LIST_URI,
+				new TypeReference<Map<String, String>>() {
+				}, header);
 
 		Map<String, TaskContextDescriptor> convertedDescriptors = new HashMap<>();
 		if (jsonDescriptors != null) {
@@ -154,17 +156,14 @@ class HttpSwRepoClient implements SwRepoClient {
 		return convertedDescriptors;
 	}
 
-
-	/**
-	 * Return a list of all uploaded {@link TaskDescriptor}.
-	 */
 	@Override
 	public Map<String, TaskDescriptor> listTaskDescriptors(BpkIdentifier bpkIdentifier) {
 		Header header = new Header(BPK_IDENTIFIER_HEADER_NAME, bpkIdentifier);
 		// 1st argument = TD filename, 2nd argument = TD json
 
-		Map<String, String> jsonDescriptors = doGetObject(TASK_DESCRIPTOR_LIST_URI, new TypeReference<Map<String, String>>() {
-		}, header);
+		Map<String, String> jsonDescriptors = doGetObject(TASK_DESCRIPTOR_LIST_URI,
+				new TypeReference<Map<String, String>>() {
+				}, header);
 
 		Map<String, TaskDescriptor> convertedDescriptors = new HashMap<>();
 		if (jsonDescriptors != null) {
@@ -310,7 +309,7 @@ class HttpSwRepoClient implements SwRepoClient {
 			return null;
 		}
 
-		HttpUriRequest request = new HttpGet(uri);
+		HttpGet request = new HttpGet(uri);
 
 		try {
 			for (Header header : headers) {

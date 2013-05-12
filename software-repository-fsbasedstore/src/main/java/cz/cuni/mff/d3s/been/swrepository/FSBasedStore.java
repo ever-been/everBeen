@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package cz.cuni.mff.d3s.been.swrepository;
 
@@ -35,7 +35,7 @@ import cz.cuni.mff.d3s.been.datastore.StoreReader;
 
 /**
  * @author darklight
- * 
+ *
  */
 public final class FSBasedStore implements SoftwareStore {
 
@@ -60,7 +60,7 @@ public final class FSBasedStore implements SoftwareStore {
 
 	/**
 	 * Creates the data store over a pre-defined filesystem root.
-	 * 
+	 *
 	 * @param persistenceRootDir
 	 *          Root of the filesystem storage.
 	 */
@@ -97,6 +97,16 @@ public final class FSBasedStore implements SoftwareStore {
 	}
 
 	@Override
+	public boolean exists(BpkIdentifier bpkIdentifier) {
+		File item = getBpkItem(bpkIdentifier);
+		if (item == null || !item.exists()) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	@Override
 	public StoreReader getBpkReader(BpkIdentifier bpkIdentifier) {
 		File item = getBpkItem(bpkIdentifier);
 		if (item == null || !item.exists()) {
@@ -125,12 +135,9 @@ public final class FSBasedStore implements SoftwareStore {
 
 	/**
 	 * Generically synthesize a stored file's directory in the persistence tree.
-	 * 
-	 * @param itemRoot
-	 *          Root for the item's specific item type
-	 * @param pathItems
-	 *          Identifiers for the item
-	 * 
+	 *
+	 * @param itemRoot  Root for the item's specific item type
+	 * @param pathItems Identifiers for the item
 	 * @return The file, may or may not exist
 	 */
 	public File getItemPath(File itemRoot, String... pathItems) {
@@ -140,14 +147,13 @@ public final class FSBasedStore implements SoftwareStore {
 
 	/**
 	 * Get a BPK file's path in the persistence tree.
-	 * 
-	 * @param bpkIdentifier
-	 *          The BPK's identifier
-	 * 
+	 *
+	 * @param bpkIdentifier The BPK's identifier
 	 * @return The path to the BPK
 	 */
 	public File getBpkItem(BpkIdentifier bpkIdentifier) {
-		if (bpkIdentifier == null || bpkIdentifier.getGroupId() == null || bpkIdentifier.getBpkId() == null || bpkIdentifier.getVersion() == null) {
+		if (bpkIdentifier == null || bpkIdentifier.getGroupId() == null || bpkIdentifier
+				.getBpkId() == null || bpkIdentifier.getVersion() == null) {
 			log.error("Null or incomplete BPK identifier {}", bpkIdentifier);
 			return null;
 		}
@@ -167,17 +173,17 @@ public final class FSBasedStore implements SoftwareStore {
 
 	/**
 	 * Get an Artifact's path in the persistence tree
-	 * 
-	 * @param artifactIdentifier
-	 *          A fully qualified identifier of the Maven artifact
-	 * 
+	 *
+	 * @param artifactIdentifier A fully qualified identifier of the Maven artifact
 	 * @return The path to the Artifact file
 	 */
 	public File getArtifactItem(ArtifactIdentifier artifactIdentifier) {
-		if (artifactIdentifier == null || artifactIdentifier.getGroupId() == null || artifactIdentifier.getArtifactId() == null || artifactIdentifier.getVersion() == null) {
+		if (artifactIdentifier == null || artifactIdentifier.getGroupId() == null || artifactIdentifier
+				.getArtifactId() == null || artifactIdentifier.getVersion() == null) {
 			log.error("Null or incomplete Artifact identifier {}", artifactIdentifier);
 			return null;
-		};
+		}
+		;
 		final List<String> pathItems = new ArrayList<>(Arrays.asList(artifactIdentifier.getGroupId().split("\\.")));
 		pathItems.add(artifactIdentifier.getArtifactId());
 		pathItems.add(artifactIdentifier.getVersion());
@@ -186,10 +192,8 @@ public final class FSBasedStore implements SoftwareStore {
 
 		final File itemPath = getItemPath(artifactFSRoot, newPathItems);
 
-		final String artifactFileName = String.format(
-				"%s-%s.jar",
-				artifactIdentifier.getArtifactId(),
-				artifactIdentifier.getVersion());
+		final String artifactFileName = String
+				.format("%s-%s.jar", artifactIdentifier.getArtifactId(), artifactIdentifier.getVersion());
 
 		return new File(itemPath, artifactFileName);
 	}
@@ -197,12 +201,13 @@ public final class FSBasedStore implements SoftwareStore {
 	@Override
 	public List<BpkIdentifier> listBpks() {
 
-		String regexp = Pattern.quote(bpkFSRoot.getPath()) + File.separator + "([a-z0-9/]+)/([a-z0-9-]+)/([0-9.]+)/([a-z0-9-.]+)\\.bpk";
+		String regexp = Pattern.quote(bpkFSRoot
+				.getPath()) + File.separator + "([a-z0-9/]+)/([a-z0-9-]+)/([0-9.]+)/([a-z0-9-.]+)\\.bpk";
 		Pattern pattern = Pattern.compile(regexp);
 
 		List<BpkIdentifier> result = new ArrayList<BpkIdentifier>();
 
-		for (File f : FileUtils.listFiles(bpkFSRoot, new String[] { "bpk" }, true)) {
+		for (File f : FileUtils.listFiles(bpkFSRoot, new String[]{"bpk"}, true)) {
 			String path = f.getPath();
 			Matcher m = pattern.matcher(path);
 			if (m.find()) {
@@ -219,8 +224,8 @@ public final class FSBasedStore implements SoftwareStore {
 	}
 
 	@Override
-	public Map<String, String> getTaskDescriptors(BpkIdentifier bpkIdentifier)
-			throws IOException, JAXBException, SAXException, ConvertorException {
+	public Map<String, String> getTaskDescriptors(BpkIdentifier bpkIdentifier) throws IOException, JAXBException,
+			SAXException, ConvertorException {
 		File bpkFile = getBpkItem(bpkIdentifier);
 
 		Map<String, String> descriptors = new HashMap<>();
@@ -240,8 +245,8 @@ public final class FSBasedStore implements SoftwareStore {
 	}
 
 	@Override
-	public Map<String, String> getTaskContextDescriptors(BpkIdentifier bpkIdentifier)
-			throws IOException, JAXBException, SAXException, ConvertorException {
+	public Map<String, String> getTaskContextDescriptors(BpkIdentifier bpkIdentifier) throws IOException, JAXBException,
+			SAXException, ConvertorException {
 		File bpkFile = getBpkItem(bpkIdentifier);
 
 		Map<String, String> descriptors = new HashMap<>();

@@ -50,13 +50,11 @@ public interface BeenApi {
 	public Collection<BpkIdentifier> getBpks();
 	public void uploadBpk(InputStream bpkInputStream) throws BpkConfigurationException;
 	public InputStream downloadBpk(BpkIdentifier bpkIdentifier);
-	public void deleteBpk(BpkIdentifier bpkIdentifier);
 
 	public Map<String, TaskDescriptor> getTaskDescriptors(BpkIdentifier bpkIdentifier);
 	public TaskDescriptor getTaskDescriptor(BpkIdentifier bpkIdentifier, String descriptorName);
 	public Map<String, TaskContextDescriptor> getTaskContextDescriptors(BpkIdentifier bpkIdentifier);
 	public TaskContextDescriptor getTaskContextDescriptor(BpkIdentifier bpkIdentifier, String descriptorName);
-
 
 	public Collection<DebugListItem> getDebugWaitingTasks();
 

@@ -50,23 +50,6 @@ public class List extends Component {
 	@Property
 	Collection<BpkIdentifier> bpkIdentifiers;
 
-	Object onActionFromDelete(String groupId, String bpkId, String version) {
-		BpkIdentifier bpkIdentifier = constructBpkIdentifier(
-				groupId,
-				bpkId,
-				version);
-		try {
-			this.api.getApi().deleteBpk(bpkIdentifier);
-		} catch (Exception e) {
-			alertManager.alert(
-					Duration.SINGLE,
-					Severity.ERROR,
-					"Can't delete bpk package: " + e.getMessage());
-		}
-		reloadBpks();
-		return packagesZone;
-	}
-
 	Object onActionFromDownload(String groupId, String bpkId, String version) {
 		BpkIdentifier bpkIdentifier = constructBpkIdentifier(
 				groupId,

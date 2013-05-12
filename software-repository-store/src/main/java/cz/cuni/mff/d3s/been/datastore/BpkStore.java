@@ -14,27 +14,27 @@ import javax.xml.bind.JAXBException;
 
 /**
  * Repository for BPKs - BEEN software packages.
- * 
+ *
  * @author darklight
- * 
+ *
  */
 public interface BpkStore {
 	/**
 	 * Retrieve a BPK from the repository.
-	 * 
+	 *
 	 * @param bpkIdentifier
 	 *          Unique identifier for the retrieved BPK
-	 * 
+	 *
 	 * @return The BPK, or <code>null</code> if such a BPK doesn't exist
 	 */
 	StoreReader getBpkReader(BpkIdentifier bpkIdentifier);
 
 	/**
 	 * Get an output stream to which the corresponding BPK should be written.
-	 * 
+	 *
 	 * @param bpkIdentifier
 	 *          unique identifier for the stored BPK
-	 * 
+	 *
 	 * @return The persister stream for the requested BPK or <code>null</code> if
 	 *         it could not be retrieved
 	 */
@@ -42,7 +42,7 @@ public interface BpkStore {
 
 	/**
 	 * Return a list of available BPKs in the repository.
-	 * 
+	 *
 	 * @return List of BpkIdentifier objects
 	 */
 	List<BpkIdentifier> listBpks();
@@ -72,4 +72,12 @@ public interface BpkStore {
 	 *         value is descriptor itself.
 	 */
 	Map<String, String> getTaskContextDescriptors(BpkIdentifier bpkIdentifier) throws IOException, JAXBException, SAXException, ConvertorException;
+
+	/**
+	 * Checks if BPK with given identifier already is already stored in store.
+	 *
+	 * @param bpkIdentifier uniqued identifier for the searched BPK
+	 * @return true if is BPK already stored in store, false otherwise
+	 */
+	boolean exists(BpkIdentifier bpkIdentifier);
 }

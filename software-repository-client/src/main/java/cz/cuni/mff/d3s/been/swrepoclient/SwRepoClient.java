@@ -36,7 +36,6 @@ public interface SwRepoClient {
 	 *                    <p/>
 	 *                    The BPK, or <code>null</code> if it could not be retrieved
 	 */
-	// FIXME By my opinion this class should throws exception with corresponding description instead of returning NULL values... same in other methods
 	public Bpk getBpk(BpkIdentifier bpkMetaInfo);
 
 	/**
@@ -45,7 +44,7 @@ public interface SwRepoClient {
 	 * @param artifactIdentifier  Identifier for the stored artifact
 	 * @param artifactInputStream Input stream with the Artifact data
 	 * @return <code>true</code> if the Artifact was successfully stored,
-	 *         <code>false</code> if not
+	 *         <code>false</code> otherwise
 	 */
 	public boolean putArtifact(ArtifactIdentifier artifactIdentifier, InputStream artifactInputStream);
 
@@ -54,7 +53,8 @@ public interface SwRepoClient {
 	 *
 	 * @param bpkIdentifier  Identifier for the stored artifact
 	 * @param bpkInputStream Input stream with the BPK data
-	 * @return
+	 * @return <code>true</code> if the Bpk was successfully stored,
+	 *         <code>false</code> otherwise
 	 */
 	public boolean putBpk(BpkIdentifier bpkIdentifier, InputStream bpkInputStream);
 

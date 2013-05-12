@@ -17,7 +17,6 @@ public class UrlPaths {
 	 */
 	public static final String BPK_LIST_URI = "/bpklist";
 
-
 	/**
 	 * abstract part of uri to get list of TaskDescriptors
 	 */
@@ -28,4 +27,5 @@ public class UrlPaths {
 	 * abstract part of uri to get list of TaskContextDescriptors
 	 */
 	public static final String TASK_CONTEXT_DESCRIPTOR_LIST_URI = "/tcdlist";
+
 }
