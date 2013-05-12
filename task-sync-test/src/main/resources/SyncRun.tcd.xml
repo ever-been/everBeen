@@ -31,6 +31,13 @@
 		</descriptor>
 	</task>
 
+	<task runAfterTask="server">
+		<name>finalizer</name>
+		<descriptor>
+			<fromTemplate>finalizer</fromTemplate>
+		</descriptor>
+	</task>
+
 	<templates>
 		<template name="server">
 			<td:taskDescriptor groupId="cz.cuni.mff.d3s.been" bpkId="task-sync-test" version="3.0.0"
@@ -54,6 +61,21 @@
 			<td:taskDescriptor groupId="cz.cuni.mff.d3s.been" bpkId="task-sync-test" version="3.0.0" type="task">
 				<td:properties>
 					<td:property name="been.task.sync.type">CLIENT</td:property>
+				</td:properties>
+
+				<td:java>
+					<td:javaOptions>
+						<td:javaOption>-Xmx16m</td:javaOption>
+						<td:javaOption>-Xms4m</td:javaOption>
+					</td:javaOptions>
+				</td:java>
+			</td:taskDescriptor>
+		</template>
+
+		<template name="finalizer">
+			<td:taskDescriptor groupId="cz.cuni.mff.d3s.been" bpkId="task-sync-test" version="3.0.0" type="task">
+				<td:properties>
+					<td:property name="been.task.sync.type">FINALIZER</td:property>
 				</td:properties>
 
 				<td:java>

@@ -1,5 +1,7 @@
 package cz.cuni.mff.d3s.been.cluster.context;
 
+import static cz.cuni.mff.d3s.been.cluster.Names.BENCHMARKS_CONTEXT_ID;
+
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -12,8 +14,6 @@ import com.hazelcast.core.Instance;
 import cz.cuni.mff.d3s.been.cluster.Names;
 import cz.cuni.mff.d3s.been.core.SystemProperties;
 import cz.cuni.mff.d3s.been.core.task.*;
-
-import static cz.cuni.mff.d3s.been.cluster.Names.BENCHMARKS_CONTEXT_ID;
 
 /**
  * Created with IntelliJ IDEA. User: Kuba Date: 20.04.13 Time: 13:09 To change
@@ -70,17 +70,48 @@ public class TaskContexts {
 		contextEntry.setBenchmarkId(benchmarkId);
 		contextEntry.setContextState(TaskContextState.WAITING);
 
-		Collection<TaskEntry> entriesToSubmit = getTaskEntries(contextEntry);
-		for (TaskEntry e : entriesToSubmit) {
-			if (e.getTaskDescriptor().getType() != TaskType.TASK) {
-				throw new IllegalArgumentException("Task context contains a TaskDescriptor with a type that is not task.");
-			}
-		}
+		checkContextBeforeSubmit(contextEntry);
 
 		putContextEntry(contextEntry);
 		log.debug("Task context was submitted with ID {}", contextEntry.getId());
 
 		return contextEntry.getId();
+	}
+
+	private void checkContextBeforeSubmit(TaskContextEntry contextEntry) {
+		TaskContextDescriptor descriptor = contextEntry.getTaskContextDescriptor();
+
+		Collection<TaskEntry> entriesToSubmit = getTaskEntries(contextEntry);
+		Map<String, TaskEntry> entries = new HashMap<>();
+
+		for (TaskEntry e : entriesToSubmit) {
+			if (e.getTaskDescriptor().getType() != TaskType.TASK) {
+				throw new IllegalArgumentException("Task context contains a TaskDescriptor with a type that is not task.");
+			}
+
+			TaskDescriptor taskDescriptor = e.getTaskDescriptor();
+			entries.put(taskDescriptor.getName(), e);
+		}
+
+		for (Task task : descriptor.getTask()) {
+			if (task.isSetRunAfterTask()) {
+				String runAfter = task.getRunAfterTask();
+				String taskName = task.getName();
+
+				if (taskName.equals(runAfter)) {
+					String msg = String.format("Cannot wait for itself to finish: %s", taskName);
+					throw new IllegalArgumentException();
+				}
+
+				if (entries.get(runAfter) == null) {
+					String msg = String.format("No such task to wait for %s", runAfter);
+					throw new IllegalArgumentException(msg);
+				}
+			}
+		}
+
+		// TODO check for cycles
+
 	}
 
 	public String submitTaskInNewContext(TaskDescriptor taskDescriptor) {
@@ -98,8 +129,6 @@ public class TaskContexts {
 
 		return submit(contextDescriptor, null);
 	}
-
-
 
 	public String submitBenchmarkTask(TaskDescriptor benchmarkTaskDescriptor, String benchmarkId) {
 		if (benchmarkTaskDescriptor.getType() != TaskType.BENCHMARK) {
@@ -119,6 +148,7 @@ public class TaskContexts {
 		String contextId = taskContextEntry.getId();
 
 		Collection<TaskEntry> entries = new ArrayList<>();
+		Map<String, String> nameToId = new HashMap<>();
 
 		for (Task t : descriptor.getTask()) {
 
@@ -135,7 +165,19 @@ public class TaskContexts {
 
 			TaskEntry taskEntry = TaskEntries.create(td, contextId);
 
+			if (t.isSetRunAfterTask()) {
+				taskEntry.setTaskDependency(t.getRunAfterTask());
+			}
+			nameToId.put(t.getName(), taskEntry.getId());
 			entries.add(taskEntry);
+		}
+
+		// map names to ids
+		for (TaskEntry entry : entries) {
+			if (entry.isSetTaskDependency()) {
+				final String dependsOn = entry.getTaskDependency();
+				entry.setTaskDependency(nameToId.get(dependsOn));
+			}
 		}
 
 		return entries;

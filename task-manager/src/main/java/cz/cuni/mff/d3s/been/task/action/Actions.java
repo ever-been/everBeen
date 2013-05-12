@@ -6,7 +6,7 @@ package cz.cuni.mff.d3s.been.task.action;
 public class Actions {
 
 	/** Creates action which does nothing */
-	TaskAction createNullAction() {
+	public static TaskAction createNullAction() {
 		return new NullAction();
 	}
 }
