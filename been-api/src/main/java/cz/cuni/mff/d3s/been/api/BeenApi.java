@@ -24,6 +24,8 @@ import java.util.Map;
  */
 public interface BeenApi {
 
+	public void shutdown();
+
 	public Collection<TaskEntry> getTasks();
 	public TaskEntry getTask(String id);
 	public Collection<TaskContextEntry> getTaskContexts();

@@ -38,36 +38,44 @@ public class LiveFeedServiceImpl implements LiveFeedService {
 		@Override
 		public Object invoke() {
 
-			while (! api.isConnected()) {
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-				}
-			}
-
-			api.getApi().addLogListener(new BeenApi.LogListener() {
-				@Override
-				public void logAdded(LogMessage log) {
-					broadcast("/logs", log);
-				}
-			});
-
 			while (true) {
 
-				try {
-					Collection<RuntimeInfo> runtimeInfoCollection = api.getApi().getRuntimes();
-					broadcast("/runtimes", runtimeInfoCollection);
-
-					Collection<TaskEntry> taskEntries = api.getApi().getTasks();
-					broadcast("/tasks", taskEntries);
-				} catch (Exception e) {
-					e.printStackTrace();
+				while (! api.isConnected()) {
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+					}
 				}
 
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
+				api.getApi().addLogListener(new BeenApi.LogListener() {
+					@Override
+					public void logAdded(LogMessage log) {
+						broadcast("/logs", log);
+					}
+				});
+
+				while (true) {
+
+					try {
+						if (! api.isConnected()) {
+							break;
+						}
+
+						Collection<RuntimeInfo> runtimeInfoCollection = api.getApi().getRuntimes();
+						broadcast("/runtimes", runtimeInfoCollection);
+
+						Collection<TaskEntry> taskEntries = api.getApi().getTasks();
+						broadcast("/tasks", taskEntries);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+					}
 				}
+
 			}
 		}
 	}

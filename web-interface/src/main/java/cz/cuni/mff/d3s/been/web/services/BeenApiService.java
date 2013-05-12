@@ -16,4 +16,5 @@ public interface BeenApiService {
 
     public BeenApi getApi();
 
+	public void disconnect();
 }
