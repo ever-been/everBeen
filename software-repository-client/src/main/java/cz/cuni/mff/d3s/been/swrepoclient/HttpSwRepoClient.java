@@ -33,40 +33,15 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
 
+import static cz.cuni.mff.d3s.been.swrepository.HeaderNames.*;
+import static cz.cuni.mff.d3s.been.swrepository.UrlPaths.*;
+
 class HttpSwRepoClient implements SwRepoClient {
 
 	/**
 	 * HTTP implementation specific log for the sw repo client
 	 */
 	private static final Logger log = LoggerFactory.getLogger(HttpSwRepoClient.class);
-
-	/**
-	 * abstract part of uri to get/put artifact
-	 */
-	public static final String ARTIFACT_URI = "/artifact";
-
-
-	/**
-	 * abstract part of uri to get/put {@link Bpk}
-	 */
-	public static final String BPK_URI = "/bpk";
-
-	/**
-	 * abstract part of uri to get list of {@link Bpk}
-	 */
-	public static final String BPK_LIST_URI = "/bpklist";
-
-
-	/**
-	 * abstract part of uri to get list of {@link TaskDescriptor}
-	 */
-	public static final String TASK_DESCRIPTOR_LIST_URI = "/tdlist";
-
-
-	/**
-	 * abstract part of uri to get list of task descriptors
-	 */
-	public static final String TASK_CONTEXT_DESCRIPTOR_LIST_URI = "/tcdlist";
 
 	/**
 	 * Hostname where the software repository resides
@@ -106,7 +81,7 @@ class HttpSwRepoClient implements SwRepoClient {
 			return false;
 		}
 
-		Header header = new Header(SwRepoClientFactory.ARTIFACT_IDENTIFIER_HEADER_NAME, artifactIdentifier);
+		Header header = new Header(ARTIFACT_IDENTIFIER_HEADER_NAME, artifactIdentifier);
 		return doPutStream(ARTIFACT_URI, artifactInputStream, header);
 	}
 
@@ -137,7 +112,7 @@ class HttpSwRepoClient implements SwRepoClient {
 			return false;
 		}
 
-		Header header = new Header(SwRepoClientFactory.BPK_IDENTIFIER_HEADER_NAME, bpkMetaInfo);
+		Header header = new Header(BPK_IDENTIFIER_HEADER_NAME, bpkMetaInfo);
 		return doPutStream(BPK_URI, bpkInputStream, header);
 	}
 
@@ -155,7 +130,7 @@ class HttpSwRepoClient implements SwRepoClient {
 	 */
 	@Override
 	public Map<String, TaskContextDescriptor> listTaskContextDescriptors(BpkIdentifier bpkIdentifier) {
-		Header header = new Header(SwRepoClientFactory.BPK_IDENTIFIER_HEADER_NAME, bpkIdentifier);
+		Header header = new Header(BPK_IDENTIFIER_HEADER_NAME, bpkIdentifier);
 		// 1st argument = TD filename, 2nd argument = TD json
 
 		Map<String, String> jsonDescriptors = doGetObject(TASK_CONTEXT_DESCRIPTOR_LIST_URI, new TypeReference<Map<String, String>>() {
@@ -185,7 +160,7 @@ class HttpSwRepoClient implements SwRepoClient {
 	 */
 	@Override
 	public Map<String, TaskDescriptor> listTaskDescriptors(BpkIdentifier bpkIdentifier) {
-		Header header = new Header(SwRepoClientFactory.BPK_IDENTIFIER_HEADER_NAME, bpkIdentifier);
+		Header header = new Header(BPK_IDENTIFIER_HEADER_NAME, bpkIdentifier);
 		// 1st argument = TD filename, 2nd argument = TD json
 
 		Map<String, String> jsonDescriptors = doGetObject(TASK_DESCRIPTOR_LIST_URI, new TypeReference<Map<String, String>>() {
@@ -232,7 +207,7 @@ class HttpSwRepoClient implements SwRepoClient {
 	 * Ask the repository for a Maven artifact by HTTP
 	 */
 	private Artifact getArtifactByHTTP(ArtifactIdentifier artifactIdentifier) {
-		Header header = new Header(SwRepoClientFactory.ARTIFACT_IDENTIFIER_HEADER_NAME, artifactIdentifier);
+		Header header = new Header(ARTIFACT_IDENTIFIER_HEADER_NAME, artifactIdentifier);
 
 		InputStream is = doGetInputStream(ARTIFACT_URI, header);
 		if (is == null) {
@@ -261,7 +236,7 @@ class HttpSwRepoClient implements SwRepoClient {
 	 * Ask the repository for a BPK by HTTP
 	 */
 	private Bpk getBpkByHTTP(BpkIdentifier bpkIdentifier) {
-		Header header = new Header(SwRepoClientFactory.BPK_IDENTIFIER_HEADER_NAME, bpkIdentifier);
+		Header header = new Header(BPK_IDENTIFIER_HEADER_NAME, bpkIdentifier);
 
 		InputStream is = doGetInputStream(BPK_URI, header);
 		if (is == null) {

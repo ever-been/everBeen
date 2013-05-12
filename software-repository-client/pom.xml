@@ -33,6 +33,12 @@
 
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>software-repository</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
 			<artifactId>software-repository-fsbasedstore</artifactId>
 			<version>${project.version}</version>
 			<scope>runtime</scope>

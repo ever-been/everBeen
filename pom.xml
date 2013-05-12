@@ -160,6 +160,7 @@
 				<module>software-repository-store</module>
 				<module>software-repository-client</module>
 				<module>software-repository-server</module>
+				<module>software-repository</module>
 				<module>software-repository-fsbasedstore</module>
 				<module>results</module>
 				<module>persistence</module>
