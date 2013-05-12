@@ -25,14 +25,14 @@ public class Exception extends Page implements ExceptionReporter {
 
 		Throwable t = exception;
 		while (t != null) {
-			if (t instanceof RuntimeException &&
+			if (t instanceof RuntimeException && t.getMessage() != null &&
 					t.getMessage().equals("HazelcastClient is no longer active.")) {
 				log.error(t.getMessage(), t);
 				api.disconnect();
 				break;
 			}
 
-			if (t instanceof NoMemberAvailableException &&
+			if (t instanceof NoMemberAvailableException && t.getMessage() != null &&
 					t.getMessage().equals("No cluster member available to connect")) {
 				log.error(t.getMessage(), t);
 				api.disconnect();

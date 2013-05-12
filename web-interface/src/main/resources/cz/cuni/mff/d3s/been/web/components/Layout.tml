@@ -37,8 +37,13 @@
             <a href="${getLink(section)}">${section.subSectionName}</a> |
         </t:loop>
         &nbsp;
-
     </div>
+
+	<t:if test="isConnected()">
+		<div style="position: absolute; top: 20px; right: 20px;">
+			<button type="button" onclick="location.href='/disconnect'; return false;">Disconnect</button>
+		</div>
+	</t:if>
 </div>
 
 <div id="content">
