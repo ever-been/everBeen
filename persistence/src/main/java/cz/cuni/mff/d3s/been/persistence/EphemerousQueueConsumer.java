@@ -20,12 +20,13 @@ public class EphemerousQueueConsumer<T> extends QueueConsumer<T> {
 		log.debug("Thread starting.");
 		while (!Thread.currentThread().isInterrupted()) {
 			final T item = queue.poll();
-			if (item == null) {
-				// there is nothing to do, end execution (this thread is ephemerous) 
-				Thread.currentThread().interrupt();
-			}
 			log.debug("Taken item {} from the queue.", item);
-			persist(item);
+			if (item == null) {
+				// there is nothing to do, end execution (this thread is ephemerous)
+				Thread.currentThread().interrupt();
+			} else {
+				persist(item);
+			}
 		}
 		log.debug("Thread terminating.");
 	}
