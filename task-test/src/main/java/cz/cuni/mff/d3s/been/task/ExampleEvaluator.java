@@ -1,7 +1,6 @@
 package cz.cuni.mff.d3s.been.task;
 
 import cz.cuni.mff.d3s.been.taskapi.Evaluator;
-import javafx.geometry.Rectangle2DBuilder;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PiePlot3D;
@@ -15,8 +14,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
  * @author Kuba Brecka

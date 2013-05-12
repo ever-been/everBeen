@@ -1,8 +1,12 @@
 package cz.cuni.mff.d3s.been.swrepository;
 
-import java.io.IOException;
-import java.io.InputStream;
-
+import cz.cuni.mff.d3s.been.bpk.ArtifactIdentifier;
+import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
+import cz.cuni.mff.d3s.been.core.utils.JSONUtils.JSONSerializerException;
+import cz.cuni.mff.d3s.been.datastore.ArtifactStore;
+import cz.cuni.mff.d3s.been.datastore.StorePersister;
+import cz.cuni.mff.d3s.been.datastore.StoreReader;
+import cz.cuni.mff.d3s.been.swrepository.httpserver.SkeletalRequestHandler;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.entity.InputStreamEntity;
@@ -10,14 +14,10 @@ import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cz.cuni.mff.d3s.been.bpk.ArtifactIdentifier;
-import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
-import cz.cuni.mff.d3s.been.core.utils.JSONUtils.JSONSerializerException;
-import cz.cuni.mff.d3s.been.datastore.ArtifactStore;
-import cz.cuni.mff.d3s.been.datastore.StorePersister;
-import cz.cuni.mff.d3s.been.datastore.StoreReader;
-import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
-import cz.cuni.mff.d3s.been.swrepository.httpserver.SkeletalRequestHandler;
+import java.io.IOException;
+import java.io.InputStream;
+
+import static cz.cuni.mff.d3s.been.swrepository.HeaderNames.ARTIFACT_IDENTIFIER_HEADER_NAME;
 
 /**
  * A request handler that deals with artifact requests.
@@ -48,7 +48,7 @@ public class ArtifactRequestHandler extends SkeletalRequestHandler {
 		try {
 			artifactIdentifier = JSONUtils.<ArtifactIdentifier> deserialize(
 					request.getFirstHeader(
-							SwRepoClientFactory.ARTIFACT_IDENTIFIER_HEADER_NAME).getValue(),
+							ARTIFACT_IDENTIFIER_HEADER_NAME).getValue(),
 					ArtifactIdentifier.class);
 		} catch (JSONSerializerException e) {
 			response.setStatusCode(400);
@@ -91,8 +91,7 @@ public class ArtifactRequestHandler extends SkeletalRequestHandler {
 		BasicHttpEntityEnclosingRequest put = (BasicHttpEntityEnclosingRequest) request;
 		try {
 			artifactIdentifier = JSONUtils.deserialize(
-					request.getFirstHeader(
-							SwRepoClientFactory.ARTIFACT_IDENTIFIER_HEADER_NAME).getValue(),
+					request.getFirstHeader(ARTIFACT_IDENTIFIER_HEADER_NAME).getValue(),
 					ArtifactIdentifier.class);
 		} catch (JSONSerializerException e) {
 			final String errorMessage = String.format(

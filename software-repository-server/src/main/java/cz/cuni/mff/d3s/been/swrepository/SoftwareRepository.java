@@ -15,9 +15,8 @@ import cz.cuni.mff.d3s.been.swrepository.httpserver.HttpServer;
 /**
  * A cluster node that can store and provide BPKs and Maven artifacts through a
  * simple HTTP server.
- * 
+ *
  * @author darklight
- * 
  */
 public class SoftwareRepository implements IClusterService {
 
@@ -36,20 +35,11 @@ public class SoftwareRepository implements IClusterService {
 	 * Initialize the repository. HTTP server and data store must be set.
 	 */
 	public void init() {
-        httpServer.getResolver().register(
-                "/bpk*",
-                new BpkRequestHandler(softwareStore));
-        // FIXME create new handler
-        // FIXME REFACTORING !!
-		httpServer.getResolver().register(
-				"/tdlist*",
-				new BpkRequestHandler(softwareStore));
-		httpServer.getResolver().register(
-				"/tcdlist*",
-				new BpkRequestHandler(softwareStore));
-		httpServer.getResolver().register(
-				"/artifact*",
-				new ArtifactRequestHandler(softwareStore));
+		httpServer.getResolver().register(UrlPaths.BPK_LIST_URI, new BpkRequestHandler(softwareStore));
+		httpServer.getResolver().register(UrlPaths.BPK_URI, new BpkRequestHandler(softwareStore));
+		httpServer.getResolver().register(UrlPaths.TASK_DESCRIPTOR_LIST_URI, new BpkRequestHandler(softwareStore));
+		httpServer.getResolver().register(UrlPaths.TASK_CONTEXT_DESCRIPTOR_LIST_URI, new BpkRequestHandler(softwareStore));
+		httpServer.getResolver().register(UrlPaths.ARTIFACT_URI, new ArtifactRequestHandler(softwareStore));
 	}
 
 	@Override
@@ -70,6 +60,7 @@ public class SoftwareRepository implements IClusterService {
 		httpServer.start();
 		clusterCtx.registerService(Names.SWREPOSITORY_SERVICES_MAP_KEY, info);
 	}
+
 	@Override
 	public void stop() {
 		try {
@@ -95,9 +86,8 @@ public class SoftwareRepository implements IClusterService {
 
 	/**
 	 * Set the HTTP server
-	 * 
-	 * @param httpServer
-	 *          HTTP server to set
+	 *
+	 * @param httpServer HTTP server to set
 	 */
 	public void setHttpServer(HttpServer httpServer) {
 		this.httpServer = httpServer;
@@ -105,9 +95,8 @@ public class SoftwareRepository implements IClusterService {
 
 	/**
 	 * Set the persistence layer
-	 * 
-	 * @param softwareStore
-	 *          Data store to set
+	 *
+	 * @param softwareStore Data store to set
 	 */
 	public void setDataStore(SoftwareStore softwareStore) {
 		this.softwareStore = softwareStore;

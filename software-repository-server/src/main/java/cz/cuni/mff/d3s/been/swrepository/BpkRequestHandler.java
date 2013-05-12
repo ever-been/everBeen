@@ -1,13 +1,13 @@
 package cz.cuni.mff.d3s.been.swrepository;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.util.List;
-import java.util.Map;
-
+import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.core.jaxb.ConvertorException;
-import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
+import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
+import cz.cuni.mff.d3s.been.core.utils.JSONUtils.JSONSerializerException;
+import cz.cuni.mff.d3s.been.datastore.BpkStore;
+import cz.cuni.mff.d3s.been.datastore.StorePersister;
+import cz.cuni.mff.d3s.been.datastore.StoreReader;
+import cz.cuni.mff.d3s.been.swrepository.httpserver.SkeletalRequestHandler;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.entity.InputStreamEntity;
@@ -16,18 +16,16 @@ import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.apache.http.protocol.HttpRequestHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
-import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
-import cz.cuni.mff.d3s.been.core.utils.JSONUtils.JSONSerializerException;
-import cz.cuni.mff.d3s.been.datastore.BpkStore;
-import cz.cuni.mff.d3s.been.datastore.StorePersister;
-import cz.cuni.mff.d3s.been.datastore.StoreReader;
-import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
-import cz.cuni.mff.d3s.been.swrepository.httpserver.SkeletalRequestHandler;
 import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.util.List;
+import java.util.Map;
+
+import static cz.cuni.mff.d3s.been.swrepository.HeaderNames.BPK_IDENTIFIER_HEADER_NAME;
 
 /**
  * {@link HttpRequestHandler} for BPK requests.
@@ -99,7 +97,7 @@ public class BpkRequestHandler extends SkeletalRequestHandler {
 		BpkIdentifier bpkIdentifier = null;
 		try {
 			bpkIdentifier = JSONUtils.<BpkIdentifier> deserialize(
-					request.getFirstHeader(SwRepoClientFactory.BPK_IDENTIFIER_HEADER_NAME).getValue(),
+					request.getFirstHeader(BPK_IDENTIFIER_HEADER_NAME).getValue(),
 					BpkIdentifier.class);
 		} catch (JSONSerializerException e) {
 			response.setStatusCode(400);
@@ -129,7 +127,7 @@ public class BpkRequestHandler extends SkeletalRequestHandler {
 		BpkIdentifier bpkIdentifier = null;
 		try {
 			bpkIdentifier = JSONUtils.<BpkIdentifier> deserialize(
-					request.getFirstHeader(SwRepoClientFactory.BPK_IDENTIFIER_HEADER_NAME).getValue(),
+					request.getFirstHeader(BPK_IDENTIFIER_HEADER_NAME).getValue(),
 					BpkIdentifier.class);
 		} catch (JSONSerializerException e) {
 			response.setStatusCode(400);
@@ -179,7 +177,7 @@ public class BpkRequestHandler extends SkeletalRequestHandler {
 		BpkIdentifier bpkIdentifier = null;
 		try {
 			bpkIdentifier = JSONUtils.<BpkIdentifier> deserialize(
-					request.getFirstHeader(SwRepoClientFactory.BPK_IDENTIFIER_HEADER_NAME).getValue(),
+					request.getFirstHeader(BPK_IDENTIFIER_HEADER_NAME).getValue(),
 					BpkIdentifier.class);
 		} catch (JSONSerializerException e) {
 			response.setStatusCode(400);
@@ -239,7 +237,7 @@ public class BpkRequestHandler extends SkeletalRequestHandler {
 		BasicHttpEntityEnclosingRequest put = (BasicHttpEntityEnclosingRequest) request;
 		try {
 			bpkIdentifier = JSONUtils.deserialize(
-					request.getFirstHeader(SwRepoClientFactory.BPK_IDENTIFIER_HEADER_NAME).getValue(),
+					request.getFirstHeader(BPK_IDENTIFIER_HEADER_NAME).getValue(),
 					BpkIdentifier.class);
 		} catch (JSONSerializerException e) {
 			final String errorMessage = String.format("could not read BPK identifier from request %s.", request.toString());
