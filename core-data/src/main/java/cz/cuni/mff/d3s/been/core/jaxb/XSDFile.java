@@ -50,7 +50,9 @@ public enum XSDFile {
 
 	RUNTIME("runtime-info.xsd"),
 
-	HARDWARE_INFO("hardware-info.xsd");
+	HARDWARE_INFO("hardware-info.xsd"),
+
+	BENCHMARK_ENTRY("benchmark-entry.xsd");
 
 	/** A file instance pointing at the corresponding schema definition. */
 	final File FILE;

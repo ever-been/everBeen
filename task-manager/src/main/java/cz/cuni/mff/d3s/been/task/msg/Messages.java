@@ -21,4 +21,8 @@ public class Messages {
 	public static TaskMessage createNewTaskMessage(TaskEntry entry) {
 		return new NewTaskMessage(entry);
 	}
+
+	public static TaskMessage createScheduleTaskMessage(TaskEntry entry) {
+		return new ScheduleTaskMessage(entry);
+	}
 }

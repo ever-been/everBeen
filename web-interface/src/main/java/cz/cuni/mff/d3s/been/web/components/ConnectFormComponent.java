@@ -49,7 +49,7 @@ public class ConnectFormComponent extends Component {
         return connectingBlock;
     }
 
-    public static final class ConnectionProperties {
+    public static class ConnectionProperties {
         public String hostname = "localhost";
         public int port = 5701;
         public String groupName = "dev";

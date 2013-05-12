@@ -3,22 +3,27 @@
 * Write README.md (used on jenkins build page and github project main page)
 
 * Benchmark Manager
-    * Storage information (in which db should results be stored, etc.)
-	* Implement "fail-safe storage" (stored in benchmark entry in HC) to allow
-      restart of Benchmark after node failure
-    * Solve "error reporting" for Benchmarks, allow "resubmitting" of task contexts
+    * Solve "error reporting" (onContextFailed event) for Benchmarks
+    * If resubmitting a benchmark too often (more than x times in an hour), don't try
+      any more
+    * When resubmitting a benchmark, what should the behavior be? Should we wait for
+      running contexts to finish?
 * Results & Storage
+    * Storage information (in which db should results be stored, etc.)
+	* What should be persisted when you completely shutdown the cluster? Benchmark entries? Benchmark's storage?
+	  What else?
 	* Retrieving results from a user task
 	* Allow a special user task (evaluator) to return a "file" (ZIP, PNG, CSV, ...)
-* Dependencies
-	* "Run a task after another has finished"
+* Context Planning & Dependencies
+	* Load balancing - when we have 2 nodes, running "task test" benchmark puts
+	  all contexts and tasks on the first runtime
+	* Currently, we have "submit context, wait for it to finish" behavior. What other
+	  cases should we have? Context queues? Running up to X context simultaneously?
 * Software Repository
 	* Implement "SNAPSHOT" versioning (don't cache)
 	* Implement "empty cache" feature
 * Web Interface
 	* Edit properties when submitting (+ specify debug)
-	* When Hazelcast gets disconnect, show an error to the user and on next page
-	  redirect to the login page again
 	* \*.\*
 * `find . -type f | xargs grep TODO`
 

@@ -3,6 +3,8 @@ package cz.cuni.mff.d3s.been.benchmarkapi;
 import cz.cuni.mff.d3s.been.core.jaxb.BindingParser;
 import cz.cuni.mff.d3s.been.core.jaxb.ConvertorException;
 import cz.cuni.mff.d3s.been.core.jaxb.XSD;
+import cz.cuni.mff.d3s.been.core.task.Properties;
+import cz.cuni.mff.d3s.been.core.task.Property;
 import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
 import cz.cuni.mff.d3s.been.taskapi.Requestor;
 import cz.cuni.mff.d3s.been.taskapi.Task;
@@ -12,6 +14,7 @@ import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBException;
 import java.io.InputStream;
+import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -23,7 +26,20 @@ public abstract class Benchmark extends Task {
 
 	public abstract TaskContextDescriptor generateTaskContext() throws BenchmarkException;
 
+	private Map<String, String> storage;
 	private BenchmarkRequestor benchmarkRequestor;
+
+	protected String storageGet(String key) {
+		return storage.get(key);
+	}
+
+	protected String storageGet(String key, String defaultValue) {
+		return storage.get(key) != null ? storage.get(key) : defaultValue;
+	}
+
+	protected void storageSet(String key, String value) {
+		storage.put(key, value);
+	}
 
 	@Override
 	public void run(String[] args) {
@@ -36,8 +52,14 @@ public abstract class Benchmark extends Task {
 	}
 
 	private void processContexts() {
-		TaskContextDescriptor taskContextDescriptor = null;
+		try {
+			this.storage = benchmarkRequestor.storageRetrieve(this.getBenchmarkId());
+		} catch (TimeoutException e) {
+			throw new RuntimeException(e.getMessage(), e);
+		}
+
 		while (true) {
+			TaskContextDescriptor taskContextDescriptor = null;
 			try {
 				taskContextDescriptor = generateTaskContext();
 
@@ -45,21 +67,20 @@ public abstract class Benchmark extends Task {
 					return;
 				}
 			} catch (BenchmarkException e) {
-				log.error("Cannot generate task context.", e);
-				// TODO System.exit ?
-				return;
+				throw new RuntimeException("Cannot generate task context.", e);
 			}
 
 			try {
 				log.info("Submitting task context descriptor.");
 				String taskContextId = benchmarkRequestor.contextSubmit(taskContextDescriptor, this.getBenchmarkId());
-				log.info("Task context descriptor with ID {}, waiting for finished.", taskContextId);
+				log.info("Task context descriptor with ID {}.", taskContextId);
+
+				benchmarkRequestor.storagePersist(this.getBenchmarkId(), this.storage);
+
 				benchmarkRequestor.contextWait(taskContextId);
 				log.info("Task context finished.");
 			} catch (TimeoutException e) {
-				log.error("Requestor timed out.", e);
-				// TODO System.exit ?
-				return;
+				throw new RuntimeException(e.getMessage(), e);
 			}
 		}
 	}
@@ -76,5 +97,14 @@ public abstract class Benchmark extends Task {
 		}
 
 		return taskContextDescriptor;
+	}
+
+	public void setTaskContextProperty(TaskContextDescriptor descriptor, String key, String value) {
+		Property p = new Property();
+		p.setName(key);
+		p.setValue(value);
+		if (! descriptor.isSetProperties())
+			descriptor.setProperties(new Properties());
+		descriptor.getProperties().getProperty().add(p);
 	}
 }

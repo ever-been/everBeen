@@ -29,7 +29,7 @@ public class TaskContextCheckerAction implements TaskAction {
 	private final TaskEntry entry;
 
 	/** format of sql query predicate for finding all unfinished tasks */
-	private static final String QUERY_FORMAT = "taskContextId = '%s' AND (state != %s AND state !=  %s)";
+	private static final String QUERY_FORMAT = "taskContextId = '%s' AND (state == %s)";
 
 	/**
 	 * Creates new context checker action.
@@ -81,7 +81,7 @@ public class TaskContextCheckerAction implements TaskAction {
 
 			Collection<TaskEntry> values = tasksMap.values(getPredicate(taskContextId));
 
-			boolean isFinished = (values.size() == 0);
+			boolean isFinished = (values.size() == contextEntry.getContainedTask().size());
 
 			if (isFinished) {
 				contextEntry.setContextState(TaskContextState.FINISHED);
@@ -103,7 +103,7 @@ public class TaskContextCheckerAction implements TaskAction {
 	 *         context
 	 */
 	private SqlPredicate getPredicate(String contextId) {
-		String sql = String.format(QUERY_FORMAT, contextId, TaskState.FINISHED, TaskState.ABORTED);
+		String sql = String.format(QUERY_FORMAT, contextId, TaskState.FINISHED);
 
 		return new SqlPredicate(sql);
 	}

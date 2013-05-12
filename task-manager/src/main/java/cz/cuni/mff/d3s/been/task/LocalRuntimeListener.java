@@ -2,6 +2,7 @@ package cz.cuni.mff.d3s.been.task;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +31,7 @@ import cz.cuni.mff.d3s.been.task.msg.TaskMessage;
  */
 final class LocalRuntimeListener extends TaskManagerService implements EntryListener<String, RuntimeInfo> {
 
-	private static final String WAITING_TASKS_QUERY = "state = cz.cuni.mff.d3s.been.core.task.TaskState.WAITING";
+	private static final String WAITING_TASKS_QUERY = "state = WAITING";
 
 	/** logging */
 	private static final Logger log = LoggerFactory.getLogger(LocalRuntimeListener.class);
@@ -130,14 +131,24 @@ final class LocalRuntimeListener extends TaskManagerService implements EntryList
 	}
 
 	/**
-	 * Returns all waiting tasks
+	 * Returns all tasks waiting to be scheduled
 	 * 
 	 * @return all waiting tasks
 	 */
 	private Collection<TaskEntry> getWaitingTasks() {
 		try {
 
-			return tasksMap.values(new SqlPredicate(WAITING_TASKS_QUERY));
+			final Collection<TaskEntry> values = tasksMap.values(new SqlPredicate(WAITING_TASKS_QUERY));
+			Collection<TaskEntry> waitingTasks = new LinkedList<>();
+
+			for (TaskEntry entry : values) {
+				if (entry.getTaskDependency() == null) {
+					waitingTasks.add(entry);
+				}
+
+			}
+
+			return waitingTasks;
 
 		} catch (Exception e) {
 			log.error("Error while looking for waiting tasks", e);

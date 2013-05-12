@@ -52,6 +52,11 @@ public class BeenApiImpl implements BeenApi {
 	}
 
 	@Override
+	public void shutdown() {
+		Instance.shutdown();
+	}
+
+	@Override
 	public Collection<TaskEntry> getTasks() {
 		return clusterContext.getTasks().getTasks();
 	}

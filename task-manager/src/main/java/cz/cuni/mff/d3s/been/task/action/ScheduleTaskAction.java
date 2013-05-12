@@ -81,6 +81,8 @@ public final class ScheduleTaskAction implements TaskAction {
 
 		log.debug("Received new task to schedule {}", id);
 
+		// TODO check task dependencies
+
 		try {
 
 			// 1) Find suitable Host Runtime

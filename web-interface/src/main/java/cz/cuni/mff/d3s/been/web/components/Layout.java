@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cz.cuni.mff.d3s.been.web.pages.Overview;
+import cz.cuni.mff.d3s.been.web.services.BeenApiService;
 import org.apache.tapestry5.annotations.Cached;
 import org.apache.tapestry5.annotations.Import;
 import org.apache.tapestry5.annotations.Parameter;
@@ -29,6 +30,14 @@ public class Layout {
 
 	@Property
 	private Section section;
+
+	@Inject
+	@Property
+	protected BeenApiService api;
+
+	public boolean isConnected() {
+		return api.isConnected();
+	}
 
 	public String classNameForSection(Section mySection) {
 		if (activeSection != null && activeSection.sectionName.equals(mySection.sectionName)) {
