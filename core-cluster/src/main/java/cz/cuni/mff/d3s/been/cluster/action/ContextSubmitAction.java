@@ -29,16 +29,18 @@ public class ContextSubmitAction implements Action {
 
 	@Override
 	public Reply handle() {
+		String benchmarkId = request.getSelector();
+		String serializedDescriptor = request.getValue();
+
 		TaskContextDescriptor taskContextDescriptor;
 		try {
-			String serializedDescriptor = request.getValue();
 			BindingParser<TaskContextDescriptor> bindingComposer = XSD.TASK_CONTEXT_DESCRIPTOR.createParser(TaskContextDescriptor.class);
 			taskContextDescriptor = bindingComposer.parse(new ByteArrayInputStream(serializedDescriptor.getBytes()));
 		} catch (ConvertorException | JAXBException | SAXException e) {
 			return Replies.createErrorReply("Cannot deserialize task context descriptor.");
 		}
 
-		String taskContextEntryId = ctx.getTaskContexts().submit(taskContextDescriptor);
+		String taskContextEntryId = ctx.getTaskContexts().submit(taskContextDescriptor, benchmarkId);
 
 		return Replies.createOkReply(taskContextEntryId);
 	}

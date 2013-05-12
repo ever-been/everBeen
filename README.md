@@ -3,7 +3,6 @@
 * Write README.md (used on jenkins build page and github project main page)
 
 * Benchmark Manager
-    * Identify contexts running inside a benchmark
     * Storage information (in which db should results be stored, etc.)
 	* Implement "fail-safe storage" (stored in benchmark entry in HC) to allow
       restart of Benchmark after node failure

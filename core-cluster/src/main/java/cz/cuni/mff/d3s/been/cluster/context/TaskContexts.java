@@ -62,11 +62,12 @@ public class TaskContexts {
 	 * @return id of the submitted context
 	 * 
 	 */
-	public String submit(TaskContextDescriptor descriptor) {
+	public String submit(TaskContextDescriptor descriptor, String benchmarkId) {
 
 		TaskContextEntry contextEntry = new TaskContextEntry();
 		contextEntry.setTaskContextDescriptor(descriptor);
 		contextEntry.setId(UUID.randomUUID().toString());
+		contextEntry.setBenchmarkId(benchmarkId);
 		contextEntry.setContextState(TaskContextState.WAITING);
 
 		Collection<TaskEntry> entriesToSubmit = getTaskEntries(contextEntry);
@@ -95,17 +96,18 @@ public class TaskContexts {
 		taskInTaskContext.setDescriptor(descriptorInTaskContext);
 		contextDescriptor.getTask().add(taskInTaskContext);
 
-		return submit(contextDescriptor);
+		return submit(contextDescriptor, null);
 	}
 
 
 
-	public String submitBenchmarkTask(TaskDescriptor benchmarkTaskDescriptor) {
+	public String submitBenchmarkTask(TaskDescriptor benchmarkTaskDescriptor, String benchmarkId) {
 		if (benchmarkTaskDescriptor.getType() != TaskType.BENCHMARK) {
 			throw new IllegalArgumentException("TaskDescriptor's type is not benchmark.");
 		}
 
 		TaskEntry taskEntry = TaskEntries.create(benchmarkTaskDescriptor, BENCHMARKS_CONTEXT_ID);
+		taskEntry.setBenchmarkId(benchmarkId);
 		String taskId = clusterContext.getTasks().submit(taskEntry);
 		clusterContext.getBenchmarks().addBenchmarkToBenchmarksContext(taskEntry);
 
@@ -151,6 +153,7 @@ public class TaskContexts {
 
 		// TODO consider transactions
 		for (TaskEntry taskEntry : entriesToSubmit) {
+			taskEntry.setBenchmarkId(contextEntry.getBenchmarkId());
 			String taskId = clusterContext.getTasks().submit(taskEntry);
 			contextEntry.getContainedTask().add(taskId);
 			log.debug("Task was submitted with ID {}", taskId);

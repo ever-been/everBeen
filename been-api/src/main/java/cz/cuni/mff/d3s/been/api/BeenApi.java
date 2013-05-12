@@ -30,13 +30,14 @@ public interface BeenApi {
 	public TaskContextEntry getTaskContext(String id);
 	public Collection<BenchmarkEntry> getBenchmarks();
 	public BenchmarkEntry getBenchmark(String id);
+	public Collection<TaskContextEntry> getTaskContextsInBenchmark(String benchmarkId);
 
 	public String submitTask(TaskDescriptor taskDescriptor);
 	public void killTask(String taskId);
 	public String submitTaskContext(TaskContextDescriptor taskContextDescriptor);
+	public String submitTaskContext(TaskContextDescriptor taskContextDescriptor, String benchmarkId);
 	public void killTaskContext(String taskId);
 	public String submitBenchmark(TaskDescriptor benchmarkTaskDescriptor);
-	// ?? kill benchmark
 
 	public Collection<RuntimeInfo> getRuntimes();
 	public RuntimeInfo getRuntime(String id);
@@ -51,9 +52,9 @@ public interface BeenApi {
 	public InputStream downloadBpk(BpkIdentifier bpkIdentifier);
 	public void deleteBpk(BpkIdentifier bpkIdentifier);
 
-    public Map<String, TaskDescriptor> getTaskDescriptors(BpkIdentifier bpkIdentifier);
+	public Map<String, TaskDescriptor> getTaskDescriptors(BpkIdentifier bpkIdentifier);
 	public TaskDescriptor getTaskDescriptor(BpkIdentifier bpkIdentifier, String descriptorName);
-    public Map<String, TaskContextDescriptor> getTaskContextDescriptors(BpkIdentifier bpkIdentifier);
+	public Map<String, TaskContextDescriptor> getTaskContextDescriptors(BpkIdentifier bpkIdentifier);
 	public TaskContextDescriptor getTaskContextDescriptor(BpkIdentifier bpkIdentifier, String descriptorName);
 
 

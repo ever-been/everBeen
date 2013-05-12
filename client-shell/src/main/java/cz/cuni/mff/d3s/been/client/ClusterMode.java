@@ -6,6 +6,7 @@ import java.util.Map;
 import cz.cuni.mff.d3s.been.api.BeenApi;
 import cz.cuni.mff.d3s.been.api.BeenApiImpl;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
+import cz.cuni.mff.d3s.been.core.benchmark.BenchmarkEntry;
 import jline.console.ConsoleReader;
 
 import com.hazelcast.core.Instance;
@@ -31,7 +32,7 @@ class ClusterMode extends AbstractMode {
 	private final BeenApi api;
 
 	private enum Action {
-		HELP, TASKS, TASKCONTEXTS, RUNTIMES, BREAK, INSTANCES, BPKS, LOGS, DEBUG;
+		HELP, TASKS, TASKCONTEXTS, RUNTIMES, BENCHMARKS, BREAK, INSTANCES, BPKS, LOGS, DEBUG;
 	}
 
 	private static String[] getActionStrings() {
@@ -71,6 +72,9 @@ class ClusterMode extends AbstractMode {
 				break;
 			case TASKCONTEXTS:
 				handleTaskContexts(args);
+				break;
+			case BENCHMARKS:
+				handleBenchmarks(args);
 				break;
 			case RUNTIMES:
 				handleRuntimes(args);
@@ -181,10 +185,27 @@ class ClusterMode extends AbstractMode {
 			Collection<TaskContextEntry> entries = api.getTaskContexts();
 			for (TaskContextEntry entry : entries) {
 				out.println("Task Context ID: " + entry.getId());
-				out.println("Name: " + entry.getTaskContextDescriptor().getName());
+				if (entry.isSetTaskContextDescriptor()) {
+					out.println("Name: " + entry.getTaskContextDescriptor().getName());
+				}
 				out.println("Contained tasks: ");
 				for (String taskId : entry.getContainedTask()) {
 					out.println("  " + taskId);
+				}
+				out.println("-----------------------------------");
+			}
+		}
+	}
+
+	private void handleBenchmarks(String[] args) {
+		if (args.length == 1) {
+			Collection<BenchmarkEntry> entries = api.getBenchmarks();
+			for (BenchmarkEntry entry : entries) {
+				out.println("Benchmark ID: " + entry.getId());
+				out.println("Generator Task ID: " + entry.getGeneratorId());
+				out.println("Contained contexts: ");
+				for (TaskContextEntry tcEntry : api.getTaskContextsInBenchmark(entry.getId())) {
+					out.println("  " + tcEntry.getId());
 				}
 				out.println("-----------------------------------");
 			}

@@ -81,6 +81,11 @@ public class BeenApiImpl implements BeenApi {
 	}
 
 	@Override
+	public Collection<TaskContextEntry> getTaskContextsInBenchmark(String benchmarkId) {
+		return clusterContext.getBenchmarks().getTaskContextsInBenchmark(benchmarkId);
+	}
+
+	@Override
 	public Collection<RuntimeInfo> getRuntimes() {
 		return clusterContext.getRuntimes().getRuntimes();
 	}
@@ -202,8 +207,12 @@ public class BeenApiImpl implements BeenApi {
 
 	@Override
 	public String submitTaskContext(TaskContextDescriptor taskContextDescriptor) {
-		return clusterContext.getTaskContexts().submit(taskContextDescriptor);
+		return clusterContext.getTaskContexts().submit(taskContextDescriptor, null);
+	}
 
+	@Override
+	public String submitTaskContext(TaskContextDescriptor taskContextDescriptor, String benchmarkId) {
+		return clusterContext.getTaskContexts().submit(taskContextDescriptor, benchmarkId);
 	}
 
 	@Override

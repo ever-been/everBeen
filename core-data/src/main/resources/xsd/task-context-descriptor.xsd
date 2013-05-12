@@ -99,6 +99,7 @@
 				<xs:element ref="tcd:containedTask" minOccurs="0" maxOccurs="unbounded"/>
 			</xs:sequence>
 			<xs:attribute name="lingering" type="xs:boolean" default="false" />
+			<xs:attribute name="benchmarkId" type="xs:string" use="optional" default="" />
 		</xs:complexType>
 	</xs:element>
 

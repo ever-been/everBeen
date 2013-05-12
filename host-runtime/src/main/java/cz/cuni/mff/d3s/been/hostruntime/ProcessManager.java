@@ -413,8 +413,11 @@ final class ProcessManager implements Service, Reapable {
 		Map<String, String> properties = new HashMap<>(System.getenv());
 		properties.put(LOGGER, System.getProperty(LOGGER));
 		properties.put(REQUEST_PORT, System.getProperty(REQUEST_PORT));
+
 		properties.put(TASK_ID, taskEntry.getId());
 		properties.put(TASK_CONTEXT_ID, taskEntry.getTaskContextId());
+		properties.put(BENCHMARK_ID, taskEntry.getBenchmarkId());
+
 		properties.put(HR_COMM_PORT, Integer.toString(taskMessageDispatcher.getReceiverPort()));
 		properties.put(HR_RESULTS_PORT, Integer.toString(resultsDispatcher.getPort()));
 

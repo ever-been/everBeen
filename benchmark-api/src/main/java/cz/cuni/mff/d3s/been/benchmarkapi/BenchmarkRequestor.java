@@ -43,9 +43,9 @@ public class BenchmarkRequestor extends Requestor {
 	 * @throws RequestException
 	 * @throws TimeoutException
 	 */
-	public String contextSubmit(TaskContextDescriptor taskContextDescriptor) throws TimeoutException {
+	public String contextSubmit(TaskContextDescriptor taskContextDescriptor, String benchmarkId) throws TimeoutException {
 		Request request = null;
-		request = new Request(RequestType.CONTEXT_SUBMIT, "", taskContextToXml(taskContextDescriptor));
+		request = new Request(RequestType.CONTEXT_SUBMIT, benchmarkId, taskContextToXml(taskContextDescriptor));
 		Reply reply = send(request);
 
 		String value = reply.getValue();

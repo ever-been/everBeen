@@ -52,7 +52,7 @@ public abstract class Benchmark extends Task {
 
 			try {
 				log.info("Submitting task context descriptor.");
-				String taskContextId = benchmarkRequestor.contextSubmit(taskContextDescriptor);
+				String taskContextId = benchmarkRequestor.contextSubmit(taskContextDescriptor, this.getBenchmarkId());
 				log.info("Task context descriptor with ID {}, waiting for finished.", taskContextId);
 				benchmarkRequestor.contextWait(taskContextId);
 				log.info("Task context finished.");
