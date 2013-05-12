@@ -16,7 +16,7 @@
 	* Implement "SNAPSHOT" versioning (don't cache)
 	* Implement "empty cache" feature
 * Web Interface
-	* Editor properties when submitting (+ specify debug)
+	* Edit properties when submitting (+ specify debug)
 	* When Hazelcast gets disconnect, show an error to the user and on next page
 	  redirect to the login page again
 	* \*.\*

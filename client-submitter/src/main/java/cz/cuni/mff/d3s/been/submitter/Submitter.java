@@ -45,6 +45,9 @@ public class Submitter {
 	@Option(name = "-tcd", aliases = { "--task-context-descriptor" }, usage = "TaskContextDescriptor to submit")
 	private String tcdPath;
 
+	@Option(name = "-bd", aliases = { "--benchmark-descriptor" }, usage = "TaskDescriptor of benchmark to submit")
+	private String bdPath;
+
 	@Option(name = "-gn", aliases = { "--group-name" }, usage = "Group Name")
 	private String groupName = "dev";
 
@@ -94,6 +97,10 @@ public class Submitter {
 		api.submitTaskContext(taskContextDescriptor);
 	}
 
+	private void submitBenchmark(File bdFile) throws JAXBException, SAXException, ConvertorException {
+		api.submitBenchmark(createTaskDescriptor(bdFile));
+	}
+
 	private void doMain(String[] args) {
 
 		CmdLineParser parser = new CmdLineParser(this);
@@ -109,12 +116,14 @@ public class Submitter {
 				uploadBpk(bpkFile);
 			}
 
-			if (tcdPath == null) {
+			if (bdPath != null) {
+				submitBenchmark(new File(bdPath));
+			} else if (tcdPath != null) {
+				submitTaskContext(new File(tcdPath));
+			} else {
 				for (String tdPath : tdPaths) {
 					submitSingleTask(new File(tdPath));
 				}
-			} else {
-				submitTaskContext(new File(tcdPath));
 			}
 
 		} catch (CmdLineException e) {
