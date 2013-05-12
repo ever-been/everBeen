@@ -11,12 +11,30 @@
 	<xs:element name="id" type="xs:string"/>
 	<xs:element name="generatorId" type="xs:string"/>
 
+	<xs:element name="storageItem">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="key" type="xs:string" />
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="storage">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="benchmarkentry:storageItem" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
 
 	<xs:element name="benchmarkEntry">
 		<xs:complexType>
 			<xs:all>
 				<xs:element ref="benchmarkentry:id" minOccurs="1" maxOccurs="1"/>
 				<xs:element ref="benchmarkentry:generatorId" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="benchmarkentry:storage" minOccurs="1" maxOccurs="1" />
 			</xs:all>
 		</xs:complexType>
 	</xs:element>

@@ -5,6 +5,7 @@ import com.hazelcast.core.IMap;
 import com.hazelcast.query.SqlPredicate;
 import cz.cuni.mff.d3s.been.cluster.Names;
 import cz.cuni.mff.d3s.been.core.benchmark.BenchmarkEntry;
+import cz.cuni.mff.d3s.been.core.benchmark.Storage;
 import cz.cuni.mff.d3s.been.core.task.*;
 
 import java.util.Collection;
@@ -79,8 +80,23 @@ public class Benchmarks {
 		}
 
 		BenchmarkEntry benchmarkEntry = new BenchmarkEntry();
+		benchmarkEntry.setStorage(new Storage());
 		String benchmarkId = UUID.randomUUID().toString();
 		benchmarkEntry.setId(benchmarkId);
+		String taskId = clusterContext.getTaskContexts().submitBenchmarkTask(benchmarkTaskDescriptor, benchmarkId);
+		benchmarkEntry.setGeneratorId(taskId);
+
+		put(benchmarkEntry);
+
+		return benchmarkEntry.getId();
+	}
+
+	public String resubmit(BenchmarkEntry benchmarkEntry) {
+		String benchmarkId = benchmarkEntry.getId();
+		String generatorId = benchmarkEntry.getGeneratorId();
+		TaskEntry generatorEntry = clusterContext.getTasks().getTask(generatorId);
+		TaskDescriptor benchmarkTaskDescriptor = generatorEntry.getTaskDescriptor();
+
 		String taskId = clusterContext.getTaskContexts().submitBenchmarkTask(benchmarkTaskDescriptor, benchmarkId);
 		benchmarkEntry.setGeneratorId(taskId);
 

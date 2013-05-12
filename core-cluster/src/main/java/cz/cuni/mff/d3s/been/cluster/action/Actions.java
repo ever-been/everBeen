@@ -34,6 +34,10 @@ public class Actions {
 				return new ContextSubmitAction(request, ctx);
 			case CONTEXT_WAIT:
 				return new ContextWaitAction(request, ctx);
+			case STORAGE_PERSIST:
+				return new StoragePersistAction(request, ctx);
+			case STORAGE_RETRIEVE:
+				return new StorageRetrieveAction(request, ctx);
 			default:
 				String msg = String.format("No such action %s", request.getType());
 				log.warn(msg);

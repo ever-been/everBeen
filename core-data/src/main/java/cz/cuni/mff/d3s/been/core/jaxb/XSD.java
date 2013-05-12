@@ -59,7 +59,9 @@ public enum XSD {
 	TASK_CONTEXT_DESCRIPTOR(
 			"http://been.d3s.mff.cuni.cz/task-context-descriptor",
 			XSDFile.COMMON.FILE, XSDFile.TASK_DESCRIPTOR.FILE,
-			XSDFile.TASK_CONTEXT_DESCRIPTOR.FILE);
+			XSDFile.TASK_CONTEXT_DESCRIPTOR.FILE),
+
+	STORAGE("http://been.d3s.mff.cuni.cz/task-context-descriptor", XSDFile.BENCHMARK_ENTRY.FILE);
 
 	/**
 	 * A simple class that holds a list of XSD files and can initialize the XML

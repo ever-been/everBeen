@@ -9,15 +9,15 @@ import cz.cuni.mff.d3s.been.benchmarkapi.Benchmark;
  */
 public class ExampleBenchmark extends Benchmark {
 
-	int i = 0;
-
 	@Override
 	public TaskContextDescriptor generateTaskContext() throws BenchmarkException {
+		int currentRun = Integer.parseInt(this.storageGet("i", "0"));
+		if (currentRun >= 30) return null;
+		currentRun++;
+		this.storageSet("i", Integer.toString(currentRun));
+
 		TaskContextDescriptor taskContextDescriptor = getTaskContextFromResource("Example.tcd.xml");
-
-		if (i >= 10) return null;
-		i++;
-
+		setTaskContextProperty(taskContextDescriptor, "iteration", Integer.toString(currentRun));
 		return taskContextDescriptor;
 	}
 

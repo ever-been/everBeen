@@ -58,6 +58,7 @@ public class ExampleTask extends Task {
 	@Override
 	public void run(String[] args) {
 		log.info("ExampleTask just started.");
+		log.info("I am task from iteration {}", this.getProperty("iteration"));
 		performHeavyCalculations();
 		log.info("Performance testing finished.");
 		persistResult();
