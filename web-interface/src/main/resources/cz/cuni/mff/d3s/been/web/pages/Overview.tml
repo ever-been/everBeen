@@ -146,21 +146,20 @@
 	</div>
 
 	<div class="overview-block">
-		<h2>Logs</h2>
+		<span style="float: right; display: block; font-size: 12px;">
+			<label class="checkbox">
+				<input type="checkbox" id="logautoscroll" checked="checked" /> Auto-scroll
+			</label>
+		</span>
+		<h2>
+			Logs
+		</h2>
 		<t:cometd.PushTarget class="logsTarget" topic="/logs" event="logsUpdated"
 		                     style="border: 1px solid #ddd; overflow-y: scroll; height: 250px; padding: 10px;">
 			<p style="text-align: center;" id="logsLoading">
-				<i class="icon-spinner icon-spin"></i> Loading live feed of logs...
+				<i class="icon-info-sign"></i> There are no logs yet.
 			</p>
-			<table class="list" id="logsTable" style="white-space: nowrap; display: none;">
-				<thead>
-					<tr>
-						<th>Task ID</th>
-						<th>Name</th>
-						<th>Level</th>
-						<th>Message</th>
-					</tr>
-				</thead>
+			<table class="list" id="logsTable" style="margin: 0; white-space: nowrap; display: none; font-family: Courier; font-size: 11px; line-height: 3px; letter-spacing: -1px;">
 				<tbody>
 				</tbody>
 			</table>

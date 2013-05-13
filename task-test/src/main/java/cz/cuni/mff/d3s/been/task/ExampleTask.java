@@ -17,7 +17,7 @@ import cz.cuni.mff.d3s.been.taskapi.results.ResultPersister;
  */
 public class ExampleTask extends Task {
 
-	private static final Logger log = LoggerFactory.getLogger(Task.class);
+	private static final Logger log = LoggerFactory.getLogger(ExampleTask.class);
 
 	int count = 0;
 
