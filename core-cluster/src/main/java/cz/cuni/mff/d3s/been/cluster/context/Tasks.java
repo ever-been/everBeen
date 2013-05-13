@@ -11,6 +11,9 @@ import cz.cuni.mff.d3s.been.cluster.Names;
 import cz.cuni.mff.d3s.been.core.task.TaskEntries;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import sun.plugin.dom.exception.InvalidStateException;
 
 /**
  * 
@@ -20,6 +23,8 @@ import cz.cuni.mff.d3s.been.core.task.TaskState;
  * @author Martin Sixta
  */
 public class Tasks {
+
+	private static final Logger log = LoggerFactory.getLogger(Tasks.class);
 
 	private ClusterContext clusterCtx;
 
@@ -138,4 +143,21 @@ public class Tasks {
 		}
 	}
 
+	/**
+	 * Removes the task with the specified ID from Hazelcast map of tasks.
+	 * The task must be in a final state (finished, aborted).
+	 *
+	 * @param taskId ID of the task to remove
+	 */
+	public void remove(String taskId) {
+		TaskEntry taskEntry = getTask(taskId);
+
+		TaskState state = taskEntry.getState();
+		if (state == TaskState.ABORTED || state == TaskState.FINISHED) {
+			log.info("Removing task {} from map.", taskId);
+			getTasksMap().remove(taskId);
+		} else {
+			throw new IllegalStateException(String.format("Trying to remove task %s, but it's in state %s.", taskId, state));
+		}
+	}
 }

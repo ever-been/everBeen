@@ -5,6 +5,9 @@ import static cz.cuni.mff.d3s.been.cluster.Names.BENCHMARKS_CONTEXT_ID;
 import java.util.Collection;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.hazelcast.core.IMap;
 import com.hazelcast.query.SqlPredicate;
 
@@ -24,6 +27,9 @@ import cz.cuni.mff.d3s.been.core.task.*;
  * @author Martin Sixta
  */
 public class Benchmarks {
+
+	private static final Logger log = LoggerFactory.getLogger(Benchmarks.class);
+
 	/** Connection to the cluster */
 	private final ClusterContext clusterContext;
 
@@ -230,4 +236,26 @@ public class Benchmarks {
 		return benchmarkEntry.getId();
 	}
 
+	/**
+	 * Removes the benchmark entry with the specified ID from Hazelcast map of
+	 * benchmarks. The benchmark's generator must be in a final state (finished,
+	 * aborted) or already removed.
+	 * 
+	 * @param benchmarkId ID of the benchmark to remove
+	 */
+	public void remove(String benchmarkId) {
+		BenchmarkEntry benchmarkEntry = get(benchmarkId);
+		String generatorId = benchmarkEntry.getGeneratorId();
+		TaskEntry generatorEntry = clusterContext.getTasks().getTask(generatorId);
+
+		if (generatorEntry == null || generatorEntry.getState() == TaskState.FINISHED || generatorEntry.getState() == TaskState.ABORTED) {
+			log.info("Removing benchmark entry {} from map.", benchmarkId);
+			getBenchmarksMap().remove(benchmarkId);
+		} else {
+			throw new IllegalStateException(String.format(
+					"Trying to remove benchmark entry %s, but it's generator is in state %s.",
+					benchmarkEntry,
+					generatorEntry.getState()));
+		}
+	}
 }

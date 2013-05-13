@@ -223,6 +223,21 @@ public class BeenApiImpl implements BeenApi {
 	}
 
 	@Override
+	public void removeTaskEntry(String taskId) {
+		clusterContext.getTasks().remove(taskId);
+	}
+
+	@Override
+	public void removeTaskContextEntry(String taskContextId) {
+		clusterContext.getTaskContexts().remove(taskContextId);
+	}
+
+	@Override
+	public void removeBenchmarkEntry(String benchmarkId) {
+		clusterContext.getBenchmarks().remove(benchmarkId);
+	}
+
+	@Override
 	public String submitBenchmark(TaskDescriptor benchmarkTaskDescriptor) {
 		return clusterContext.getBenchmarks().submit(benchmarkTaskDescriptor);
 	}
