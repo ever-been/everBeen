@@ -1,8 +1,8 @@
 package cz.cuni.mff.d3s.been.task.action;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Random;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import com.hazelcast.query.Predicate;
 
@@ -19,12 +19,10 @@ import cz.cuni.mff.d3s.been.task.RuntimesComparable;
  * @author Martin Sixta
  */
 final class XPathRuntimeSelection implements IRuntimeSelection {
-	private final Random rnd;
 	private ClusterContext clusterCtx;
 
 	public XPathRuntimeSelection(ClusterContext clusterCtx) {
 		this.clusterCtx = clusterCtx;
-		rnd = new Random();
 	}
 
 	@Override
@@ -42,18 +40,15 @@ final class XPathRuntimeSelection implements IRuntimeSelection {
 		String contextId = taskEntry.getTaskContextId();
 		Predicate<?, ?> predicate = new XPathPredicate(contextId, xpath, exclusivity);
 
-		Collection<RuntimeInfo> runtimes = clusterCtx.getRuntimes().getRuntimeMap().values(predicate);
+		List<RuntimeInfo> runtimes = new ArrayList<>(clusterCtx.getRuntimes().getRuntimeMap().values(predicate));
 
 		if (runtimes.size() == 0) {
 			throw new NoRuntimeFoundException("Cannot find suitable Host Runtime");
 		}
 
-		// Stupid Java
-		RuntimeInfo[] ids = runtimes.toArray(new RuntimeInfo[runtimes.size()]);
-
-		Arrays.sort(ids, new RuntimesComparable());
-
-		return (ids[0].getId());
+		Collections.shuffle(runtimes);
+		Collections.sort(runtimes, new RuntimesComparable());
+		return (runtimes.get(0).getId());
 
 	}
 }
