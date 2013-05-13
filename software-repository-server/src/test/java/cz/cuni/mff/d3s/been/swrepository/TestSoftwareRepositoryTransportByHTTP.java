@@ -205,7 +205,7 @@ public class TestSoftwareRepositoryTransportByHTTP extends Assert {
 	@Test
 	public void testUploadBpk_duplicateEntry() throws IOException {
 		assertTrue(client.putBpk(bpkId, new FileInputStream(randomContentFile)));
-		assertTrue(client.putBpk(bpkId, new FileInputStream(randomContentFile))); // will be changed to assertFalse once the behavior has changed to the desired version
+		assertFalse(client.putBpk(bpkId, new FileInputStream(randomContentFile)));
 	}
 
 	@Test

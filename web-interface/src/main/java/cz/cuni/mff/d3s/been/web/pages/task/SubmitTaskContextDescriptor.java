@@ -1,0 +1,43 @@
+package cz.cuni.mff.d3s.been.web.pages.task;
+
+import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
+import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
+import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
+import cz.cuni.mff.d3s.been.web.pages.Overview;
+import cz.cuni.mff.d3s.been.web.pages.Page;
+import org.apache.tapestry5.annotations.Component;
+import org.apache.tapestry5.annotations.Persist;
+import org.apache.tapestry5.annotations.Property;
+import org.apache.tapestry5.corelib.components.Form;
+
+/**
+ * @author Kuba Brecka
+ */
+public class SubmitTaskContextDescriptor extends Page {
+
+	@Property
+	BpkIdentifier bpkIdentifier;
+
+	@Property
+	@Persist
+	TaskContextDescriptor taskContextDescriptor;
+
+	void onActivate(String groupId, String bpkId, String version, String descriptorName) {
+		bpkIdentifier = new BpkIdentifier();
+		bpkIdentifier.setGroupId(groupId);
+		bpkIdentifier.setBpkId(bpkId);
+		bpkIdentifier.setVersion(version);
+
+		this.taskContextDescriptor = this.api.getApi().getTaskContextDescriptor(bpkIdentifier, descriptorName);
+	}
+
+	@Component
+	private Form form;
+
+	Object onSuccess()
+	{
+		this.api.getApi().submitTaskContext(this.taskContextDescriptor);
+		return Overview.class;
+	}
+
+}
