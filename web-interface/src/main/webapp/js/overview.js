@@ -71,17 +71,40 @@ $(document).ready(function() {
 	draw();
 });
 
+var LOG_LEVEL_TRACE = 1;
+var LOG_LEVEL_DEBUG = 2;
+var LOG_LEVEL_INFO = 3;
+var LOG_LEVEL_WARN = 4;
+var LOG_LEVEL_ERROR = 5;
+
 var logs = [];
 function addLog(log) {
 	logs.push(log);
+
+	var d = Date.create(log.time).format("{H}:{mm}:{ss}.{fff}");
+	var classname = log.name;
+	classname = classname.substr(classname.lastIndexOf(".") + 1);
+	var t = "<a href='/task/detail/" + log.senderId + "'>" + log.senderId.substring(0, 8) + "</a>";
+
+	var lev = log.level;
+	if (log.level == LOG_LEVEL_TRACE) lev = "<i class='icon-caret-down'></i>";
+	else if (log.level == LOG_LEVEL_DEBUG) lev = "<i class='icon-caret-down'></i>";
+	else if (log.level == LOG_LEVEL_INFO) lev = "<i class='icon-info'></i>";
+	else if (log.level == LOG_LEVEL_WARN) lev = "<i class='icon-exclamation'></i>";
+	else if (log.level == LOG_LEVEL_ERROR) lev = "<i class='icon-bolt'></i>";
+	else lev = "<i class='icon-question'></i> " + log.level;
+
+	var color = "black";
+	if (log.level == LOG_LEVEL_WARN) color = "#c66";
+	else if (log.level == LOG_LEVEL_ERROR) color = "red";
+
+	var line = "<span style='color: " + color + "'>[" + d + "] " + t + " " + lev + " " + classname + " - " + log.message + "</span>";
+
 	$("#logsLoading").html("");
 	$("#logsTable").show();
 	$("#logsTable > tbody:last").append(
 		$("<tr>")
-			.append($("<td>").text(log.senderId.substring(0, 8)))
-			.append($("<td>").text(log.name))
-			.append($("<td>").text(log.level))
-			.append($("<td>").text(log.message))
+			.append($("<td>").html(line))
 	);
 	var p = $("#logsTable").parent();
 	p[0].scrollTop = p[0].scrollHeight;

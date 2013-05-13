@@ -152,15 +152,7 @@
 			<p style="text-align: center;" id="logsLoading">
 				<i class="icon-spinner icon-spin"></i> Loading live feed of logs...
 			</p>
-			<table class="list" id="logsTable" style="white-space: nowrap; display: none;">
-				<thead>
-					<tr>
-						<th>Task ID</th>
-						<th>Name</th>
-						<th>Level</th>
-						<th>Message</th>
-					</tr>
-				</thead>
+			<table class="list" id="logsTable" style="white-space: nowrap; display: none; font-family: Courier; font-size: 11px; line-height: 3px; letter-spacing: -1px;">
 				<tbody>
 				</tbody>
 			</table>
