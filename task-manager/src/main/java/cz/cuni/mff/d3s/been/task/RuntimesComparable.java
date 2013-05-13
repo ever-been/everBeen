@@ -17,6 +17,6 @@ public class RuntimesComparable implements Comparator<RuntimeInfo> {
 	public int compare(RuntimeInfo o1, RuntimeInfo o2) {
 		int tasks1 = o1.getTaskCount();
 		int tasks2 = o2.getTaskCount();
-		return (tasks1 > tasks2 ? -1 : (tasks1 == tasks2 ? 0 : 1));
+		return (tasks1 < tasks2 ? -1 : (tasks1 == tasks2 ? 0 : 1));
 	}
 }

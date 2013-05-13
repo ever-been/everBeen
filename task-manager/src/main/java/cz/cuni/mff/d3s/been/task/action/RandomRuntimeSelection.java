@@ -3,8 +3,9 @@ package cz.cuni.mff.d3s.been.task.action;
 import static cz.cuni.mff.d3s.been.core.task.TaskExclusivity.EXCLUSIVE;
 import static cz.cuni.mff.d3s.been.core.task.TaskExclusivity.NON_EXCLUSIVE;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 import com.hazelcast.core.MapEntry;
@@ -38,18 +39,15 @@ final class RandomRuntimeSelection implements IRuntimeSelection {
 
 		Predicate<?, ?> predicate = new ExclusivityPredicate(exclusivity, contextId);
 
-		Collection<RuntimeInfo> runtimes = clusterCtx.getRuntimes().getRuntimeMap().values(predicate);
+		List<RuntimeInfo> runtimes = new ArrayList<>(clusterCtx.getRuntimes().getRuntimeMap().values(predicate));
 
 		if (runtimes.size() == 0) {
 			throw new NoRuntimeFoundException("Cannot find suitable Host Runtime");
 		}
 
-		// Stupid Java
-		RuntimeInfo[] ids = runtimes.toArray(new RuntimeInfo[runtimes.size()]);
-
-		Arrays.sort(ids, new RuntimesComparable());
-
-		return (ids[0].getId());
+		Collections.shuffle(runtimes);
+		Collections.sort(runtimes, new RuntimesComparable());
+		return (runtimes.get(0).getId());
 
 	}
 

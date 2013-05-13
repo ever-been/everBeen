@@ -15,8 +15,6 @@
 	* Retrieving results from a user task
 	* Allow a special user task (evaluator) to return a "file" (ZIP, PNG, CSV, ...)
 * Context Planning & Dependencies
-	* Load balancing - when we have 2 nodes, running "task test" benchmark puts
-	  all contexts and tasks on the first runtime
 	* Currently, we have "submit context, wait for it to finish" behavior. What other
 	  cases should we have? Context queues? Running up to X context simultaneously?
 * Software Repository
