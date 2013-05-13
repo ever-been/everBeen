@@ -323,8 +323,8 @@ final class ProcessManager implements Service, Reapable {
 
 		} catch (Exception e) {
 			String msg = String.format("Task '%s' has been aborted due to underlying exception.", id);
-			taskHandle.setAborted(msg);
 			log.error(msg, e);
+			taskHandle.setAborted(msg);
 		} finally {
 			tasks.removeTask(taskHandle);
 		}

@@ -58,7 +58,7 @@ final class LocalRuntimeListener extends TaskManagerService implements EntryList
 
 	@Override
 	public synchronized void entryAdded(EntryEvent<String, RuntimeInfo> event) {
-		log.debug("Host Runtime added: {}", event.getKey());
+		log.info("Host Runtime added: {}", event.getKey());
 
 		scheduleWaitingTasks();
 
@@ -66,7 +66,7 @@ final class LocalRuntimeListener extends TaskManagerService implements EntryList
 
 	@Override
 	public synchronized void entryRemoved(EntryEvent<String, RuntimeInfo> event) {
-		log.debug("Host Runtime removed: {}", event.getKey());
+		log.info("Host Runtime removed: {}", event.getKey());
 
 	}
 
@@ -87,7 +87,7 @@ final class LocalRuntimeListener extends TaskManagerService implements EntryList
 
 	@Override
 	public synchronized void entryEvicted(EntryEvent<String, RuntimeInfo> event) {
-		log.debug("Host Runtime evicted: {}", event.getKey());
+		log.warn("Host Runtime evicted: {}", event.getKey());
 		Collection<TaskEntry> tasks = getTasksOnRuntime(event.getValue().getId());
 
 		for (TaskEntry entry : tasks) {
