@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.web.components;
 
+import cz.cuni.mff.d3s.been.web.pages.Overview;
 import org.apache.tapestry5.Block;
 import org.apache.tapestry5.EventConstants;
 import org.apache.tapestry5.alerts.Duration;
@@ -16,44 +17,32 @@ import org.apache.tapestry5.ioc.annotations.Inject;
  */
 public class ConnectFormComponent extends Component {
 
-    @Parameter(required = true)
-    private Class<?> successPage;
+	@Parameter(required = true)
+	private Class<?> successPage;
+
+	@Property
+	private ConnectionProperties connectionProperties;
+
+	@org.apache.tapestry5.annotations.Component
+	private BeenBeanEditForm connectForm;
 
 
-    @Persist
-    @Property
-    private ConnectionProperties connectionProperties;
+	Object onSubmitFromConnectForm() {
+		try {
+			api.connect(connectionProperties.hostname, connectionProperties.port, connectionProperties.groupName,
+					connectionProperties.groupPassword);
+		} catch (Exception e) {
+			connectForm.recordError("unable to connect: " + e.getMessage());
+			return this;
+		}
+		return Overview.class;
+	}
 
-    @org.apache.tapestry5.annotations.Component
-    private BeanEditForm connectForm;
-
-    @InjectComponent
-    private Zone connectFormZone;
-
-    @Inject
-    private Block connectingBlock;
-
-
-    @OnEvent(EventConstants.PROGRESSIVE_DISPLAY)
-    public Object returnBlock() throws InterruptedException {
-        try {
-            api.connect(connectionProperties.hostname, connectionProperties.port, connectionProperties.groupName, connectionProperties.groupPassword);
-        } catch (Exception e) {
-            alertManager.alert(Duration.TRANSIENT, Severity.WARN, e.getMessage());
-            return connectFormZone.getBody();
-        }
-        return successPage;
-    }
-
-    Object onSubmitFromConnectForm() {
-        return connectingBlock;
-    }
-
-    public static class ConnectionProperties {
-        public String hostname = "localhost";
-        public int port = 5701;
-        public String groupName = "dev";
-        public String groupPassword = "dev-pass";
-    }
+	public static class ConnectionProperties {
+		public String hostname = "localhost";
+		public int port = 5701;
+		public String groupName = "dev";
+		public String groupPassword = "dev-pass";
+	}
 
 }

@@ -32,12 +32,18 @@ public class SubmitTaskDescriptor extends Page {
 		this.taskDescriptor = this.api.getApi().getTaskDescriptor(bpkIdentifier, descriptorName);
 	}
 
+	Object onPasivate() {
+		return new Object[]{bpkIdentifier.getGroupId(), bpkIdentifier.getBpkId(), bpkIdentifier
+				.getVersion(), taskDescriptor.getName()};
+	}
+
 	@Component
 	private Form form;
 
-	Object onSuccess()
-	{
+	Object onSuccess() {
 		this.api.getApi().submitTask(taskDescriptor);
 		return Overview.class;
 	}
+
+
 }

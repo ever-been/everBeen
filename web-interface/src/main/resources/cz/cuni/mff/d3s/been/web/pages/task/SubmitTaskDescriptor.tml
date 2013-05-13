@@ -3,10 +3,35 @@
 <html t:type="layout" section="section"
       xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd" xmlns:p="tapestry:parameter">
 
-<h2>Lol</h2>
 
-<t:beandisplay object="taskDescriptor">
-</t:beandisplay>
+
+<div id="stylized" class="myform">
+	<form id="form" name="form" method="post" action="index.html">
+		<h1>Sign-up form</h1>
+		<p>This is the basic look of my form without table</p>
+
+		<label>Name
+			<span class="small">Add your name</span>
+		</label>
+		<input type="text" name="name" id="name" />
+
+		<label>Email
+			<span class="small">Add a valid address</span>
+		</label>
+		<input type="text" name="email" id="email" />
+
+		<label>Password
+			<span class="small">Min. size 6 chars</span>
+		</label>
+		<input type="text" name="password" id="password" />
+
+		<button type="submit">Sign-up</button>
+		<div class="spacer"></div>
+
+	</form>
+</div>
+
+
 
 <form t:type="form" t:id="form">
 	<button type="submit">Submit</button>

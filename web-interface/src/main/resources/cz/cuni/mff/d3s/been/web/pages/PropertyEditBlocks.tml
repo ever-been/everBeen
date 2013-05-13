@@ -1,0 +1,61 @@
+<div xml:space="default" xmlns:t="http://tapestry.apache.org/schema/tapestry_5_0_0.xsd">
+
+
+	<t:block id="text">
+			<t:label for="textField"  class="control-label" />
+			<div class="controls">
+				<input t:id="textField"/>
+			</div>
+	</t:block>
+
+	<t:block id="number">
+			<t:label for="numberField" class="control-label"/>
+			<div class="controls">
+				<input t:id="numberField"/>
+			</div>
+	</t:block>
+
+
+	<t:block id="enum">
+			<t:label for="select"  class="control-label" />
+			<div class="controls">
+				<input t:id="select"/>
+			</div>
+	</t:block>
+
+	<t:block id="boolean">
+			<t:label for="checkboxField" class="control-label"/>
+			<div class="controls">
+				<input t:id="checkboxField"/>
+			</div>
+	</t:block>
+
+	<t:block id="date">
+			<t:label for="dateField" class="control-label"/>
+			<div class="controls">
+				<input t:id="dateField"/>
+			</div>
+	</t:block>
+
+	<t:block id="calendar">
+			<t:label for="calendarField" class="control-label"/>
+			<div class="controls">
+				<input t:id="calendarField"/>
+			</div>
+	</t:block>
+
+	<t:block id="password">
+			<t:label for="passwordField" class="control-label"/>
+			<div class="controls">
+				<input t:id="passwordField"/>
+			</div>
+	</t:block>
+
+	<t:block id="longtext">
+			<t:label for="textarea" class="control-label"/>
+			<div class="controls">
+				<textarea t:id="textarea"/>
+			</div>
+	</t:block>
+
+</div>

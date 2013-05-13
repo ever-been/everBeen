@@ -2,12 +2,6 @@
              xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd"
              xmlns:p="tapestry:parameter">
 
-    <t:zone t:id="connectFormZone" id="connectFormZone">
-        <t:beanEditForm t:id="connectForm" id="connectForm" t:object="connectionProperties" t:zone="^" t:submitValue="connect"/>
-    </t:zone>
-
-    <t:block t:id="connectingBlock" id="connectingBlock">
-        <t:progressiveDisplay/>
-    </t:block>
+        <t:beenBeanEditForm t:id="connectForm" id="connectForm" t:object="connectionProperties" t:submitLabel="Connect" t:reorder="hostname,port,groupName,groupPassword"/>
 
 </t:container>
