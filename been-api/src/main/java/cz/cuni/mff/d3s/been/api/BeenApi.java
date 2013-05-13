@@ -35,11 +35,16 @@ public interface BeenApi {
 	public Collection<TaskContextEntry> getTaskContextsInBenchmark(String benchmarkId);
 
 	public String submitTask(TaskDescriptor taskDescriptor);
-	public void killTask(String taskId);
 	public String submitTaskContext(TaskContextDescriptor taskContextDescriptor);
 	public String submitTaskContext(TaskContextDescriptor taskContextDescriptor, String benchmarkId);
-	public void killTaskContext(String taskId);
 	public String submitBenchmark(TaskDescriptor benchmarkTaskDescriptor);
+
+	public void killTask(String taskId);
+	public void killTaskContext(String taskId);
+
+	public void removeTaskEntry(String taskId);
+	public void removeTaskContextEntry(String taskContextId);
+	public void removeBenchmarkEntry(String benchmarkId);
 
 	public Collection<RuntimeInfo> getRuntimes();
 	public RuntimeInfo getRuntime(String id);
