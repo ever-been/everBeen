@@ -32,7 +32,7 @@ public class SubmitTaskDescriptor extends Page {
 		this.taskDescriptor = this.api.getApi().getTaskDescriptor(bpkIdentifier, descriptorName);
 	}
 
-	Object onPasivate() {
+	Object onPassivate() {
 		return new Object[]{bpkIdentifier.getGroupId(), bpkIdentifier.getBpkId(), bpkIdentifier
 				.getVersion(), taskDescriptor.getName()};
 	}
