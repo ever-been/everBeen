@@ -3,6 +3,9 @@ package cz.cuni.mff.d3s.been.cluster.context;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.hazelcast.config.MapConfig;
 import com.hazelcast.core.IMap;
 import com.hazelcast.query.SqlPredicate;
@@ -11,9 +14,6 @@ import cz.cuni.mff.d3s.been.cluster.Names;
 import cz.cuni.mff.d3s.been.core.task.TaskEntries;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import sun.plugin.dom.exception.InvalidStateException;
 
 /**
  * 
@@ -144,10 +144,11 @@ public class Tasks {
 	}
 
 	/**
-	 * Removes the task with the specified ID from Hazelcast map of tasks.
-	 * The task must be in a final state (finished, aborted).
-	 *
-	 * @param taskId ID of the task to remove
+	 * Removes the task with the specified ID from Hazelcast map of tasks. The
+	 * task must be in a final state (finished, aborted).
+	 * 
+	 * @param taskId
+	 *          ID of the task to remove
 	 */
 	public void remove(String taskId) {
 		TaskEntry taskEntry = getTask(taskId);
