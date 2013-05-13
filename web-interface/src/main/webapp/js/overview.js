@@ -106,6 +106,9 @@ function addLog(log) {
 		$("<tr>")
 			.append($("<td>").html(line))
 	);
-	var p = $("#logsTable").parent();
-	p[0].scrollTop = p[0].scrollHeight;
+
+	if ($("#logautoscroll").is(":checked")) {
+		var p = $("#logsTable").parent();
+		p[0].scrollTop = p[0].scrollHeight;
+	}
 }
