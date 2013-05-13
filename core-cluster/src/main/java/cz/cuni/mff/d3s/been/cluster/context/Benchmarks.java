@@ -3,8 +3,11 @@ package cz.cuni.mff.d3s.been.cluster.context;
 import static cz.cuni.mff.d3s.been.cluster.Names.BENCHMARKS_CONTEXT_ID;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.UUID;
 
+import cz.cuni.mff.d3s.been.core.benchmark.ResubmitHistory;
+import cz.cuni.mff.d3s.been.core.benchmark.ResubmitHistoryItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -153,9 +156,8 @@ public class Benchmarks {
 	 */
 	public void removeBenchmarkFromBenchmarksContext(TaskEntry taskEntry) {
 		IMap<String, TaskContextEntry> taskContextsMap = taskContexts.getTaskContextsMap();
+		taskContextsMap.lock(BENCHMARKS_CONTEXT_ID);
 		try {
-			taskContextsMap.lock(BENCHMARKS_CONTEXT_ID);
-
 			TaskContextEntry taskContextEntry = taskContextsMap.get(BENCHMARKS_CONTEXT_ID);
 			if (taskContextEntry == null) {
 				// TODO 
@@ -192,6 +194,8 @@ public class Benchmarks {
 
 		BenchmarkEntry benchmarkEntry = new BenchmarkEntry();
 		benchmarkEntry.setStorage(new Storage());
+		benchmarkEntry.setAllowResubmit(true);
+		benchmarkEntry.setResubmitHistory(new ResubmitHistory());
 		String benchmarkId = UUID.randomUUID().toString();
 		benchmarkEntry.setId(benchmarkId);
 		String taskId = taskContexts.submitBenchmarkTask(benchmarkTaskDescriptor, benchmarkId);
@@ -224,12 +228,19 @@ public class Benchmarks {
 	 */
 	public String resubmit(BenchmarkEntry benchmarkEntry) {
 		String benchmarkId = benchmarkEntry.getId();
-		String generatorId = benchmarkEntry.getGeneratorId();
-		TaskEntry generatorEntry = clusterContext.getTasks().getTask(generatorId);
+		String oldGeneratorId = benchmarkEntry.getGeneratorId();
+		TaskEntry generatorEntry = clusterContext.getTasks().getTask(oldGeneratorId);
 		TaskDescriptor benchmarkTaskDescriptor = generatorEntry.getTaskDescriptor();
+		String oldRuntimeId = generatorEntry.getRuntimeId();
 
-		String taskId = taskContexts.submitBenchmarkTask(benchmarkTaskDescriptor, benchmarkId);
-		benchmarkEntry.setGeneratorId(taskId);
+		String newGeneratorId = taskContexts.submitBenchmarkTask(benchmarkTaskDescriptor, benchmarkId);
+		benchmarkEntry.setGeneratorId(newGeneratorId);
+
+		ResubmitHistoryItem i = new ResubmitHistoryItem();
+		i.setTimestamp(new Date().getTime());
+		i.setOldRuntimeId(oldRuntimeId);
+		i.setOldGeneratorId(oldGeneratorId);
+		benchmarkEntry.getResubmitHistory().getResubmitHistoryItem().add(i);
 
 		put(benchmarkEntry);
 
@@ -239,7 +250,9 @@ public class Benchmarks {
 	/**
 	 * Removes the benchmark entry with the specified ID from Hazelcast map of
 	 * benchmarks. The benchmark's generator must be in a final state (finished,
-	 * aborted) or already removed.
+	 * aborted) or already removed. Also removes all existing task contexts that
+	 * belong to this benchmark. Also removes all "old generators", which have
+	 * failed and were resubmitted.
 	 * 
 	 * @param benchmarkId ID of the benchmark to remove
 	 */
@@ -250,6 +263,31 @@ public class Benchmarks {
 
 		if (generatorEntry == null || generatorEntry.getState() == TaskState.FINISHED || generatorEntry.getState() == TaskState.ABORTED) {
 			log.info("Removing benchmark entry {} from map.", benchmarkId);
+
+			// remove all existing contexts from the benchmark
+			for (TaskContextEntry taskContextEntry : getTaskContextsInBenchmark(benchmarkId)) {
+				clusterContext.getTaskContexts().remove(taskContextEntry.getId());
+			}
+
+			// remove failed generators
+			for (ResubmitHistoryItem resubmitHistoryItem : benchmarkEntry.getResubmitHistory().getResubmitHistoryItem()) {
+				String oldGeneratorId = resubmitHistoryItem.getOldGeneratorId();
+				TaskEntry oldGeneratorEntry = clusterContext.getTasks().getTask(oldGeneratorId);
+				if (oldGeneratorEntry != null) {
+					clusterContext.getTasks().remove(oldGeneratorId);
+					removeBenchmarkFromBenchmarksContext(oldGeneratorEntry);
+				}
+			}
+
+			// remove current generator
+			clusterContext.getTasks().remove(generatorId);
+
+			// remove generator from the Been special context for generators
+			if (generatorEntry != null) {
+				removeBenchmarkFromBenchmarksContext(generatorEntry);
+			}
+
+			// remove the entry
 			getBenchmarksMap().remove(benchmarkId);
 		} else {
 			throw new IllegalStateException(String.format(

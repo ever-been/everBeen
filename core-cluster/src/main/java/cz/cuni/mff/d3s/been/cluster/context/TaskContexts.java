@@ -289,7 +289,8 @@ public class TaskContexts {
 
 	/**
 	 * Removes the task context with the specified ID from Hazelcast map of tasks contexts.
-	 * The task context must be in a final state (finished).
+	 * The task context must be in a final state (finished). Also removes all tasks contained
+	 * in the context.
 	 *
 	 * @param taskContextId ID of the task context to remove
 	 */
@@ -299,6 +300,11 @@ public class TaskContexts {
 		TaskContextState state = taskContextEntry.getContextState();
 		if (state == TaskContextState.FINISHED) {
 			log.info("Removing task context {} from map.", taskContextId);
+
+			for (String taskId : taskContextEntry.getContainedTask()) {
+				clusterContext.getTasks().remove(taskId);
+			}
+
 			getTaskContextsMap().remove(taskContextId);
 		} else {
 			throw new IllegalStateException(String.format("Trying to remove task context %s, but it's in state %s.", taskContextId, state));

@@ -4,6 +4,8 @@ import java.io.ByteArrayInputStream;
 
 import javax.xml.bind.JAXBException;
 
+import com.hazelcast.core.IMap;
+import cz.cuni.mff.d3s.been.core.benchmark.BenchmarkEntry;
 import org.xml.sax.SAXException;
 
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
@@ -41,6 +43,16 @@ public class ContextSubmitAction implements Action {
 		}
 
 		String taskContextEntryId = ctx.getTaskContexts().submit(taskContextDescriptor, benchmarkId);
+
+		IMap<String,BenchmarkEntry> benchmarksMap = ctx.getBenchmarks().getBenchmarksMap();
+		benchmarksMap.lock(benchmarkId);
+		try {
+			BenchmarkEntry entry = benchmarksMap.get(benchmarkId);
+			entry.setGeneratedContextCount(entry.getGeneratedContextCount() + 1);
+			benchmarksMap.put(benchmarkId, entry);
+		} finally {
+			benchmarksMap.unlock(benchmarkId);
+		}
 
 		return Replies.createOkReply(taskContextEntryId);
 	}

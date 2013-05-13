@@ -103,17 +103,21 @@ public class Layout {
 
 		CONNECT(cz.cuni.mff.d3s.been.web.pages.Connect.class, "Connect", null, true),
 
-		PACKAGE_LIST(cz.cuni.mff.d3s.been.web.pages.bpkpackage.List.class, "Packages", "list"),
+		PACKAGE_LIST(cz.cuni.mff.d3s.been.web.pages.bpkpackage.List.class, "Packages", "List"),
 
-		PACKAGE_UPLOAD(cz.cuni.mff.d3s.been.web.pages.bpkpackage.Upload.class, "Packages", "upload"),
+		PACKAGE_UPLOAD(cz.cuni.mff.d3s.been.web.pages.bpkpackage.Upload.class, "Packages", "Upload"),
 
 		ABOUT(cz.cuni.mff.d3s.been.web.pages.About.class, "About", null, true),
 
-		TASK_LIST(cz.cuni.mff.d3s.been.web.pages.task.List.class, "Benchmarks & Tasks", "list"),
+		TASK_LIST(cz.cuni.mff.d3s.been.web.pages.task.List.class, "Benchmarks & Tasks", "Benchmark tree"),
+
+		TASK_TASKS(cz.cuni.mff.d3s.been.web.pages.task.List.class, "Benchmarks & Tasks", "Tasks"),
+
+		TASK_CONTEXTS(cz.cuni.mff.d3s.been.web.pages.task.List.class, "Benchmarks & Tasks", "Task contexts"),
 
 		TASK_DETAIL(cz.cuni.mff.d3s.been.web.pages.task.Detail.class, "Benchmarks & Tasks", null),
 
-		TASK_SUBMIT(Submit.class, "Benchmarks & Tasks", "submit new task, context or benchmark"),
+		TASK_SUBMIT(Submit.class, "Benchmarks & Tasks", "Submit new item"),
 
 		RUNTIME_LIST(cz.cuni.mff.d3s.been.web.pages.runtime.List.class, "Runtimes", null),
 

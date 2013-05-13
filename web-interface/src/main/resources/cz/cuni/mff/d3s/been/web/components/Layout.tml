@@ -31,6 +31,11 @@
             </li>
         </t:loop>
 
+	    <t:if test="isConnected()">
+	        <li style="float: right;">
+		        <a href="/disconnect">Disconnect</a>
+			</li>
+	    </t:if>
     </ul>
     <div id="menu">
         <t:loop t:source="getAvailableSubSections(activeSection)" t:value="section">
@@ -38,12 +43,6 @@
         </t:loop>
         &nbsp;
     </div>
-
-	<t:if test="isConnected()">
-		<div style="position: absolute; top: 20px; right: 20px;">
-			<button type="button" onclick="location.href='/disconnect'; return false;">Disconnect</button>
-		</div>
-	</t:if>
 </div>
 
 <div id="content">

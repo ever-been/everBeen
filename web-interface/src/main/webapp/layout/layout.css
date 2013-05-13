@@ -58,6 +58,7 @@ table.list td, table.list th {
 
 table.list th {
 	text-align: left;
+	padding: .5em .9em .5em .25em;
 }
 
 table.list td.button-spacer {

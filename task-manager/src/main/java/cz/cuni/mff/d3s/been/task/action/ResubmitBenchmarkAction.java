@@ -29,6 +29,10 @@ public class ResubmitBenchmarkAction implements TaskAction {
 			String generatorId = benchmarkEntry.getGeneratorId();
 			TaskEntry generatorTask = ctx.getTasks().getTask(generatorId);
 
+			if (! benchmarkEntry.isAllowResubmit()) {
+				return;
+			}
+
 			// fail-safe check for race conditions
 			if (generatorTask.getState() != TaskState.ABORTED) {
 				return;

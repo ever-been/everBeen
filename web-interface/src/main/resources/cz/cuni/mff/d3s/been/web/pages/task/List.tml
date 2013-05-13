@@ -27,7 +27,7 @@
 	<t:loop source="benchmarks" value="benchmark">
 		<tr style="background-color: #eee;">
 			<td>
-				<i class="icon-suitcase"></i>&nbsp;<a href="/benchmark/detail/${benchmark.id}"><t:output format="idFormat" value="benchmark.id" /></a>
+				<i class="icon-rocket"></i>&nbsp;<a href="/benchmark/detail/${benchmark.id}"><t:output format="idFormat" value="benchmark.id" /></a>
 			</td>
 			<td>
 				${benchmarkName(benchmark.id)}
@@ -39,10 +39,10 @@
 				<t:outputRaw value="taskStateWithIcon(benchmarkState(benchmark.id))"/>
 			</td>
 			<td>
-				30
+				${benchmark.generatedContextCount}
 			</td>
 			<td>
-				0
+				${benchmark.resubmitHistory.resubmitHistoryItem.size()}
 			</td>
 			<td>
 				<t:if test="benchmarkInFinalState(benchmark.id)">
@@ -86,7 +86,7 @@
 								<table class="inner-task-list">
 									<t:loop source="tasksForContext(context.id)" value="task">
 										<tr>
-											<td><a href="/task/detail/${task.id}"><t:output format="idFormat" value="task.id" /></a></td>
+											<td><i class="icon-beaker"></i>&nbsp;<a href="/task/detail/${task.id}"><t:output format="idFormat" value="task.id" /></a></td>
 											<td>${task.taskDescriptor.name}</td>
 											<td>
 												<t:outputRaw value="taskStateWithIcon(task.state)"/>

@@ -24,7 +24,7 @@
 					<td>
 						<t:if test="descriptor.isTaskDescriptor">
 							<t:if test="taskDescriptorBenchmark(descriptor.taskDescriptor)">
-								<i class="icon-suitcase"></i>
+								<i class="icon-rocket"></i>
 								<p:else>
 									<i class="icon-beaker"></i>
 								</p:else>
