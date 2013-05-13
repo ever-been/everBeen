@@ -1,9 +1,6 @@
 package cz.cuni.mff.d3s.been.web.pages;
 
-import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
-import cz.cuni.mff.d3s.been.core.task.TaskEntry;
-import cz.cuni.mff.d3s.been.core.task.TaskState;
-import cz.cuni.mff.d3s.been.core.task.TaskType;
+import cz.cuni.mff.d3s.been.core.task.*;
 import cz.cuni.mff.d3s.been.web.pages.runtime.Detail;
 import cz.cuni.mff.d3s.been.web.services.BeenApiService;
 import org.apache.tapestry5.annotations.Property;
@@ -120,5 +117,33 @@ public abstract class Page {
 
 	public boolean taskDescriptorBenchmark(TaskDescriptor taskDescriptor) {
 		return taskDescriptor.getType() == TaskType.BENCHMARK;
+	}
+
+	public String taskStateWithIcon(TaskState state) {
+		String s;
+		if (state == TaskState.RUNNING)
+			s =  "<i class=\"icon-play\" style=\"color: green;\"></i>";
+		else if (state == TaskState.FINISHED)
+			s =  "<i class=\"icon-stop\" style=\"color: gray;\"></i>";
+		else if (state == TaskState.WAITING)
+			s = "<i class=\"icon-pause\" style=\"color: #eeaa00;\"></i>";
+		else
+			s = "<i class=\"icon-warning-sign\" style=\"color: red;\"></i>";
+
+		return s + " " + state;
+	}
+
+	public String contextStateWithIcon(TaskContextState state) {
+		String s;
+		if (state == TaskContextState.RUNNING)
+			s =  "<i class=\"icon-play\" style=\"color: green;\"></i>";
+		else if (state == TaskContextState.FINISHED)
+			s =  "<i class=\"icon-stop\" style=\"color: gray;\"></i>";
+		else if (state == TaskContextState.WAITING)
+			s = "<i class=\"icon-pause\" style=\"color: #eeaa00;\"></i>";
+		else
+			s = "<i class=\"icon-warning-sign\" style=\"color: red;\"></i>";
+
+		return s + " " + state;
 	}
 }

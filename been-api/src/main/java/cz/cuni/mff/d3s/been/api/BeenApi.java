@@ -33,6 +33,7 @@ public interface BeenApi {
 	public Collection<BenchmarkEntry> getBenchmarks();
 	public BenchmarkEntry getBenchmark(String id);
 	public Collection<TaskContextEntry> getTaskContextsInBenchmark(String benchmarkId);
+	public Collection<TaskEntry> getTasksInTaskContext(String taskContextId);
 
 	public String submitTask(TaskDescriptor taskDescriptor);
 	public String submitTaskContext(TaskContextDescriptor taskContextDescriptor);

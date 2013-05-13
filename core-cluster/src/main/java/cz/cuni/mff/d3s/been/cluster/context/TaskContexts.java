@@ -304,4 +304,16 @@ public class TaskContexts {
 			throw new IllegalStateException(String.format("Trying to remove task context %s, but it's in state %s.", taskContextId, state));
 		}
 	}
+
+	public Collection<TaskEntry> getTasksInTaskContext(String taskContextId) {
+		TaskContextEntry taskContextEntry = getTaskContext(taskContextId);
+
+		Collection<TaskEntry> result = new ArrayList<>();
+		for (String taskId : taskContextEntry.getContainedTask()) {
+			TaskEntry entry = clusterContext.getTasks().getTask(taskId);
+			result.add(entry);
+		}
+
+		return result;
+	}
 }

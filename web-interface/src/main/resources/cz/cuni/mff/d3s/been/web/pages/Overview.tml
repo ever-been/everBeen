@@ -95,24 +95,7 @@
 						<td><a href="/task/detail/${task.id}"><t:output format="idFormat" value="task.id" /></a></td>
 						<td>${task.taskDescriptor.name}</td>
 						<td>
-							<t:if test="taskRunning(task)">
-								<i class="icon-play" style="color: green;"></i>
-								<p:else>
-									<t:if test="taskFinished(task)">
-										<i class="icon-stop" style="color: gray;"></i>
-										<p:else>
-											<t:if test="taskWaiting(task)">
-												<i class="icon-pause" style="color: #eeaa00;"></i>
-												<p:else>
-													<i class="icon-warning-sign" style="color: red;"></i>
-												</p:else>
-											</t:if>
-										</p:else>
-									</t:if>
-								</p:else>
-							</t:if>
-
-							${task.state}
+							<t:outputRaw value="taskStateWithIcon(task.state)"/>
 						</td>
 					</tr>
 				</t:loop>

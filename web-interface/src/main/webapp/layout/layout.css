@@ -979,3 +979,8 @@ pre {
 .overview-block {
     display: inline-block; margin: 5px 5px; width: 48%; min-width: 600px; vertical-align: top; text-align: left;
 }
+
+table.inner-task-list td {
+	border: 0;
+    padding: 0 .25em;
+}

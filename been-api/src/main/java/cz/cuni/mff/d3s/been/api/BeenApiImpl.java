@@ -92,6 +92,11 @@ public class BeenApiImpl implements BeenApi {
 	}
 
 	@Override
+	public Collection<TaskEntry> getTasksInTaskContext(String taskContextId) {
+		return clusterContext.getTaskContexts().getTasksInTaskContext(taskContextId);
+	}
+
+	@Override
 	public Collection<RuntimeInfo> getRuntimes() {
 		return clusterContext.getRuntimes().getRuntimes();
 	}

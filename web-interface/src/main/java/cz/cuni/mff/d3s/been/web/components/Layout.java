@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import cz.cuni.mff.d3s.been.web.pages.Overview;
-import cz.cuni.mff.d3s.been.web.services.BeenApiService;
 import org.apache.tapestry5.annotations.Cached;
 import org.apache.tapestry5.annotations.Import;
 import org.apache.tapestry5.annotations.Parameter;
@@ -14,11 +12,12 @@ import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.services.PageRenderLinkSource;
 
+import cz.cuni.mff.d3s.been.web.pages.Overview;
 import cz.cuni.mff.d3s.been.web.pages.Page;
-import cz.cuni.mff.d3s.been.web.pages.task.Logs;
 import cz.cuni.mff.d3s.been.web.pages.task.Submit;
+import cz.cuni.mff.d3s.been.web.services.BeenApiService;
 
-@Import(library={"context:js/sugar-1.3.5.min.js"})
+@Import(library = { "context:js/sugar-1.3.5.min.js" })
 public class Layout {
 
 	@Inject
@@ -51,9 +50,7 @@ public class Layout {
 
 	public String getLink(Section mySection) {
 		if (!links.containsKey(mySection)) {
-			links.put(
-					mySection,
-					pageRenderLinkSource.createPageRenderLink(mySection.page).toString());//toAbsoluteURI().toString());
+			links.put(mySection, pageRenderLinkSource.createPageRenderLink(mySection.page).toString());//toAbsoluteURI().toString());
 		}
 		return links.get(mySection);
 	}
@@ -93,9 +90,7 @@ public class Layout {
 		for (Section subSection : Section.values()) {
 			if (subSection.subsectionName != null) {
 				if (!subsectionsBySectionName.containsKey(subSection.sectionName)) {
-					subsectionsBySectionName.put(
-							subSection.sectionName,
-							new ArrayList<Section>());
+					subsectionsBySectionName.put(subSection.sectionName, new ArrayList<Section>());
 				}
 				subsectionsBySectionName.get(subSection.sectionName).add(subSection);
 			}
@@ -108,33 +103,27 @@ public class Layout {
 
 		CONNECT(cz.cuni.mff.d3s.been.web.pages.Connect.class, "Connect", null, true),
 
-		PACKAGE_LIST(cz.cuni.mff.d3s.been.web.pages.bpkpackage.List.class,
-				"Packages", "list"),
+		PACKAGE_LIST(cz.cuni.mff.d3s.been.web.pages.bpkpackage.List.class, "Packages", "list"),
 
-		PACKAGE_UPLOAD(cz.cuni.mff.d3s.been.web.pages.bpkpackage.Upload.class,
-				"Packages", "upload"),
+		PACKAGE_UPLOAD(cz.cuni.mff.d3s.been.web.pages.bpkpackage.Upload.class, "Packages", "upload"),
 
 		ABOUT(cz.cuni.mff.d3s.been.web.pages.About.class, "About", null, true),
 
-		TASK_LIST(cz.cuni.mff.d3s.been.web.pages.task.List.class, "Tasks", "list"),
+		TASK_LIST(cz.cuni.mff.d3s.been.web.pages.task.List.class, "Benchmarks & Tasks", "list"),
 
-		TASK_DETAIL(cz.cuni.mff.d3s.been.web.pages.task.Detail.class, "Tasks", null),
+		TASK_DETAIL(cz.cuni.mff.d3s.been.web.pages.task.Detail.class, "Benchmarks & Tasks", null),
 
-		TASK_SUBMIT(Submit.class, "Tasks", "submit new task, context or benchmark"),
+		TASK_SUBMIT(Submit.class, "Benchmarks & Tasks", "submit new task, context or benchmark"),
 
-		RUNTIME_LIST(cz.cuni.mff.d3s.been.web.pages.runtime.List.class, "Runtimes",
-				null),
+		RUNTIME_LIST(cz.cuni.mff.d3s.been.web.pages.runtime.List.class, "Runtimes", null),
 
-		RUNTIME_DETAIL(cz.cuni.mff.d3s.been.web.pages.runtime.Detail.class,
-				"Runtimes", null),
+		RUNTIME_DETAIL(cz.cuni.mff.d3s.been.web.pages.runtime.Detail.class, "Runtimes", null),
 
 		LOGS(cz.cuni.mff.d3s.been.web.pages.Logs.class, "Logs", null, true),
 
-		CONTEXT_DETAIL(cz.cuni.mff.d3s.been.web.pages.context.Detail.class,
-				"Contexts", null, true),
+		CONTEXT_DETAIL(cz.cuni.mff.d3s.been.web.pages.context.Detail.class, "Contexts", null, true),
 
-		CONFIGURATION(cz.cuni.mff.d3s.been.web.pages.Configuration.class,
-				"Configuration", null, true);
+		CONFIGURATION(cz.cuni.mff.d3s.been.web.pages.Configuration.class, "Configuration", null, true);
 
 		public final Class<? extends Page> page;
 
@@ -144,21 +133,14 @@ public class Layout {
 
 		private final boolean hideInMenu;
 
-		Section(
-				Class<? extends Page> page,
-				String sectionName,
-				String subsectionName) {
+		Section(Class<? extends Page> page, String sectionName, String subsectionName) {
 			this.page = page;
 			this.sectionName = sectionName;
 			this.subsectionName = subsectionName;
 			this.hideInMenu = false;
 		}
 
-		Section(
-				Class<? extends Page> page,
-				String sectionName,
-				String subsectionName,
-				boolean hideInMenu) {
+		Section(Class<? extends Page> page, String sectionName, String subsectionName, boolean hideInMenu) {
 			this.page = page;
 			this.sectionName = sectionName;
 			this.subsectionName = subsectionName;
