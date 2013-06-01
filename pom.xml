@@ -36,7 +36,7 @@
 		<mongo.version>2.11.1</mongo.version>
 		<mockito.version>1.9.5</mockito.version>
 		<sigar.version>1.6.4</sigar.version>
-		<tapestry-cometd.version>0.9.16</tapestry-cometd.version>
+		<tapestry-cometd.version>0.9.17</tapestry-cometd.version>
 		<tapestry5-jquery.version>3.3.1</tapestry5-jquery.version>
 		<tapestry5.version>5.3.6</tapestry5.version>
 		<servlet-api.version>2.5</servlet-api.version>
