@@ -7,26 +7,34 @@ import cz.cuni.mff.d3s.been.core.ri.*;
  */
 public class Detector {
 
-	SigarDetector detector;
+	SigarDetector nativeDetector;
+	JavaDetector javaDetector;
 
 	public Detector() {
 		// detect HW
-		detector = new SigarDetector();
+		nativeDetector = new SigarDetector();
+		javaDetector = new JavaDetector();
 	}
 
     public void detectAll(RuntimeInfo runtimeInfo) {
-		// detect hardware
-        runtimeInfo.setHardware(detector.detectHardware());
+	    // detect Java
+	    runtimeInfo.setJava(javaDetector.detectJava());
 
-        // detect Java
-        JavaDetector java = new JavaDetector();
-        runtimeInfo.setJava(java.detectJava());
+	    if (! nativeDetector.isSigarAvailable()) {
+		    javaDetector.detectOperatingSystem(runtimeInfo);
+		    javaDetector.detectHardware(runtimeInfo);
+		    javaDetector.detectFilesystems(runtimeInfo);
+		    return;
+	    }
+
+	    // detect hardware
+	    runtimeInfo.setHardware(nativeDetector.detectHardware());
 
         // detect OS
-        runtimeInfo.setOperatingSystem(detector.detectOperatingSystem());
+        runtimeInfo.setOperatingSystem(nativeDetector.detectOperatingSystem());
 
 		// detect filesystems
-		for (Filesystem fs : detector.detectFilesystems()) {
+		for (Filesystem fs : nativeDetector.detectFilesystems()) {
 			runtimeInfo.getFilesystem().add(fs);
 		}
     }
@@ -34,7 +42,13 @@ public class Detector {
 	private MonitorSample lastSample;
 
 	public MonitorSample generateSample(boolean differential) {
-		MonitorSample newSample = detector.generateSample();
+		MonitorSample newSample;
+		if (nativeDetector.isSigarAvailable()) {
+			newSample = nativeDetector.generateSample();
+		} else {
+			newSample = javaDetector.generateSample();
+		}
+
 		MonitorSample sample = newSample;
 
 		if (differential)

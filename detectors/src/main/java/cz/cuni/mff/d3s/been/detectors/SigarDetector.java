@@ -77,6 +77,16 @@ public class SigarDetector {
 		}
 	}
 
+	public boolean isSigarAvailable() {
+		try {
+			loadSigar();
+		} catch (SigarException e) {
+			// do nothing
+		}
+
+		return !sigarUnavailable;
+	}
+
 	public Hardware detectHardware() {
 		try {
 			loadSigar();
