@@ -174,6 +174,7 @@ public class SigarDetector {
 
 	public MonitorSample generateSample() {
 		MonitorSample sample = new MonitorSample();
+		sample.setLoadAverage(new LoadAverage());
 
 		try {
 			loadSigar();
