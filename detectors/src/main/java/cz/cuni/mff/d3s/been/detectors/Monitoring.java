@@ -17,8 +17,7 @@ import org.slf4j.LoggerFactory;
 import cz.cuni.mff.d3s.been.core.ri.MonitorSample;
 
 /**
- * Created with IntelliJ IDEA. User: Kuba Date: 06.04.13 Time: 14:29 To change
- * this template use File | Settings | File Templates.
+ * @author Kuba Brecka
  */
 public class Monitoring {
 	private static final Logger log = LoggerFactory.getLogger(Monitoring.class);

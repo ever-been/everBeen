@@ -3,11 +3,7 @@ package cz.cuni.mff.d3s.been.detectors;
 import cz.cuni.mff.d3s.been.core.ri.*;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Kuba
- * Date: 25.02.13
- * Time: 16:26
- * To change this template use File | Settings | File Templates.
+ * @author Kuba Brecka
  */
 public class Detector {
 
