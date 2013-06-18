@@ -33,7 +33,7 @@ final class InprocMessageSender<T extends Serializable> implements IMessageSende
 	/**
 	 * ZMQ.Context to use for the connection.
 	 */
-	private final ZMQ.Context context;
+	private final ZMQContext context;
 
 	/**
 	 * ZMQ.Socket to communicate with.
@@ -54,7 +54,7 @@ final class InprocMessageSender<T extends Serializable> implements IMessageSende
 	 * @param queue
 	 *          name of the queue to connect to
 	 */
-	public InprocMessageSender(final ZMQ.Context context, final String queue) {
+	public InprocMessageSender(final ZMQContext context, final String queue) {
 		this.context = context;
 
 		CONNECTION_STRING = Messaging.createInprocConnection(queue);
@@ -132,8 +132,14 @@ final class InprocMessageSender<T extends Serializable> implements IMessageSende
 		}
 	}
 
+	@Override
 	public String getConnection() {
 		return CONNECTION_STRING;
+	}
+
+	@Override
+	public void setLinger(int linger) {
+		socket.setLinger(linger);
 	}
 
 }

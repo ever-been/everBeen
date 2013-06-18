@@ -21,10 +21,6 @@
 	<xs:complexType name="Result">
 		<xs:complexContent>
 			<xs:extension base="entity:Entity">
-				<xs:all>
-					<xs:element ref="taskentry:id" />
-					<xs:element ref="taskentry:taskContextId" />
-				</xs:all>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>

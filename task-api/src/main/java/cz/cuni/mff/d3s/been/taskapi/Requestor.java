@@ -5,12 +5,15 @@ import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.REQUEST_PORT;
 import java.util.concurrent.TimeoutException;
 
 import org.jeromq.ZMQ;
+import org.jeromq.ZMQ.Socket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.d3s.been.annotation.NotThreadSafe;
 import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
 import cz.cuni.mff.d3s.been.mq.Context;
+import cz.cuni.mff.d3s.been.mq.MessagingException;
+import cz.cuni.mff.d3s.been.mq.ZMQContext;
 import cz.cuni.mff.d3s.been.mq.rep.Replies;
 import cz.cuni.mff.d3s.been.mq.rep.Reply;
 import cz.cuni.mff.d3s.been.mq.rep.ReplyType;
@@ -43,19 +46,26 @@ public class Requestor {
 	/** Address of the Host Runtime request handler. */
 	private static String address = String.format("tcp://localhost:%s", System.getenv(REQUEST_PORT));
 
+	/** 0MQ context of this requestor */
+	private final ZMQContext zctx;
 	/** The socket used to communicate with a Host Runtime. */
-	private ZMQ.Socket socket;
+	private final ZMQ.Socket socket;
 
 	/**
 	 * Creates a new Requestor. Each thread must create its own Requestor, the
 	 * class is not thread safe. Also the object should be created in the thread
 	 * that wants to use it.
 	 */
-	public Requestor() {
-		ZMQ.Context ctx = Context.getReference();
-		this.socket = ctx.socket(ZMQ.REQ);
+	private Requestor(ZMQContext zctx, Socket socket) {
+		this.zctx = zctx;
+		this.socket = socket;
 		socket.setLinger(0);
 		socket.connect(address);
+	}
+
+	public static Requestor create() throws MessagingException {
+		final ZMQContext zctx = Context.getReference();
+		return new Requestor(zctx, zctx.socket(ZMQ.REQ));
 	}
 
 	/**
@@ -88,9 +98,9 @@ public class Requestor {
 	 * Must be called to release associated resources. Failing to do so will hand
 	 * the process on exit.
 	 */
-	public void close() {
+	public void close() throws MessagingException {
 		socket.close();
-		Context.releaseContext();
+		zctx.term();
 	}
 
 	/**

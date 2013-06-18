@@ -8,11 +8,11 @@ import org.jeromq.ZMQ;
  * @author Martin Sixta
  */
 public class TaskMessageSender implements IMessageSender<String> {
-	private final ZMQ.Context context;
+	private final ZMQContext context;
 	private final String connection;
 	private ZMQ.Socket socket;
 
-	public TaskMessageSender(ZMQ.Context context, String connection) {
+	public TaskMessageSender(ZMQContext context, String connection) {
 		this.context = context;
 		this.connection = connection;
 	}
@@ -70,5 +70,10 @@ public class TaskMessageSender implements IMessageSender<String> {
 		if (socket == null) {
 			throw new MessagingException(String.format("Not connected to %s!", connection));
 		}
+	}
+
+	@Override
+	public void setLinger(int linger) {
+		socket.setLinger(linger);
 	}
 }

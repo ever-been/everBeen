@@ -180,7 +180,9 @@ public class TaskProcessTest extends Assert {
 		String className = "Main";
 		compile(source, className);
 		TaskCommandLine commandLine = new TaskCommandLine("java");
-		commandLine.addArgument(className);
+        commandLine.addArgument("-Xms2m");
+        commandLine.addArgument("-Xmx4m");
+        commandLine.addArgument(className);
 		return commandLine;
 	}
 

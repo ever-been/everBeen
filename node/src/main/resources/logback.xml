@@ -13,7 +13,7 @@
 	<logger name="cz.cuni.mff.d3s.been.task.LocalKeyScanner" level="WARN"/>
 	<logger name="cz.cuni.mff.d3s.been.hostruntime.task.TaskHandle" level="DEBUG"/>
 
-	<root level="INFO">
+	<root level="DEBUG">
 		<appender-ref ref="STDOUT"/>
 	</root>
 

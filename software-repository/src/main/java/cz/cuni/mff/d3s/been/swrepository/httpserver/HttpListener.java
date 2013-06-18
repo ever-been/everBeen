@@ -1,9 +1,7 @@
 package cz.cuni.mff.d3s.been.swrepository.httpserver;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.*;
 
 import org.apache.http.HttpException;
 import org.apache.http.impl.DefaultHttpServerConnection;
@@ -20,31 +18,27 @@ class HttpListener extends Thread {
 
 	private final HttpService service;
 	private final HttpContext context;
-	private final int port;
-	private final InetAddress inetAddr;
+    private final SocketAddress sockAddr;
 	private final HttpParams params;
 	private ServerSocket serverSocket;
 
 	HttpListener(
 			HttpService service,
-			InetAddress inetAddr,
-			int port,
+			SocketAddress sockAddr,
 			HttpParams params) {
 		this.service = service;
+        this.sockAddr = sockAddr;
 		this.context = new BasicHttpContext();
-		this.port = port;
-		this.inetAddr = inetAddr;
 		this.params = params;
 	}
 
 	public void bind() throws HttpServerException {
 		try {
-			serverSocket = new ServerSocket(port, HttpServer.MAX_CONNECTIONS, inetAddr);
+			serverSocket = new ServerSocket();//(port, HttpServer.MAX_CONNECTIONS, inetAddr);
+            serverSocket.bind(sockAddr);
 		} catch (IOException e) {
 			throw new HttpServerException(String.format(
-					"Failed to bind HTTP listener thread on %s:%d.",
-					inetAddr.toString(),
-					port), e);
+					"Failed to bind HTTP listener thread on %s.", sockAddr.toString()), e);
 		}
 
 		log.info(String.format(

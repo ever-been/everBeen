@@ -14,7 +14,10 @@ public enum StatusCode {
 	EX_UNKNOWN(1),
 
 	/** Process was incorrectly invoked, i.e. with bad command line argumens. */
-	EX_USAGE(67);
+	EX_USAGE(67),
+
+	/** A component of this process has failed to run. */
+	EX_COMPONENT_FAILED(128);
 
 	/** The exit code */
 	private int code;
@@ -25,5 +28,9 @@ public enum StatusCode {
 
 	public int getCode() {
 		return code;
+	}
+
+	public void sysExit() {
+		System.exit(code);
 	}
 }

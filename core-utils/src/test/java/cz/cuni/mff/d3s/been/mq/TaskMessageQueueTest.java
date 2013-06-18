@@ -10,8 +10,7 @@ import org.junit.Test;
  * @author Martin Sixta
  */
 public class TaskMessageQueueTest extends BasicQueueTests {
-	
-	
+
 	/**
 	 * Simulates Task-to-HR message queue.
 	 */
@@ -39,16 +38,17 @@ public class TaskMessageQueueTest extends BasicQueueTests {
 		}
 
 		@Override
-		public void terminate() {
+		public void terminate() throws MessagingException {
 			hrTestQueue.terminate();
 			taskMessageQueue.terminate();
 		}
 	}
 
+	@Override
 	protected IMessageQueue<String> getQueue() throws MessagingException {
 		return new TestTaskQueue();
 	}
-	
+
 	@Test(expected = UnsupportedOperationException.class)
 	public void testname() throws Exception {
 		Messaging.createTaskQueue(1234).getReceiver();

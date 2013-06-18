@@ -26,6 +26,23 @@ public interface IMessageSender<T extends Serializable> {
 	public void send(final T object) throws MessagingException;
 
 	/**
+	 * Set a linger period for the sender (see ZMQ_LINGER). Accepts the following
+	 * values
+	 * <dl>
+	 * <dt>-1</dt>
+	 * <dd>Indefinitely. This is the default value</dd>
+	 * <dt>0</dt>
+	 * <dd>None. Sent messages will be discarded upon close</dd>
+	 * <dt>t>0</dt>
+	 * <dd>Linger time in milliseconds</dd>
+	 * </dl>
+	 * 
+	 * @param linger
+	 *          Time to linger (in millis)
+	 */
+	public void setLinger(int linger);
+
+	/**
 	 * Returns address (=queue) the sender is connected to.
 	 * 
 	 * @return address

@@ -66,6 +66,12 @@
 			<version>${project.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>socketworks</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
 		<!-- EXTERNAL -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>

@@ -1,19 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jaxb:bindings
-	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+<bindings
+	xmlns="http://java.sun.com/xml/ns/jaxb"
 	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	jaxb:extensionBindingPrefixes="xjc"
-	jaxb:version="2.0">
+	extensionBindingPrefixes="xjc"
+	version="2.0">
+		
+	<bindings schemaLocation="entity.xsd">
+		<schemaBindings>
+			<package name="cz.cuni.mff.d3s.been.core.persistence" />
+		</schemaBindings>
+
+		<bindings node="xs:complexType[@name='Entity']">
+			<bindings node="xs:all">
+				<bindings node="xs:element[@ref='taskentry:id']">
+					<property name="origin" />
+				</bindings>
+
+				<bindings node="xs:element[@ref='taskentry:taskContextId']">
+					<property name="originContext"/>
+				</bindings>
+			</bindings>
+		</bindings>
+	</bindings>
 	
-	<jaxb:globalBindings generateIsSetMethod="true">
-		<xjc:serializable />
-	</jaxb:globalBindings>
-	
-	<jaxb:bindings schemaLocation="entity.xsd">
-		<jaxb:schemaBindings>
-			<jaxb:package name="cz.cuni.mff.d3s.been.core.persistence" />
-		</jaxb:schemaBindings>
-	</jaxb:bindings>
-	
-</jaxb:bindings>
+</bindings>

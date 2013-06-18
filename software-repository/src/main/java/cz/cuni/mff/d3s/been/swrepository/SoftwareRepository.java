@@ -36,12 +36,8 @@ public class SoftwareRepository implements IClusterService {
 	 * Initialize the repository. HTTP server and data store must be set.
 	 */
 	public void init() {
-		httpServer.getResolver().register(
-				"/bpk*",
-				new BpkRequestHandler(softwareStore));
-		httpServer.getResolver().register(
-				"/artifact*",
-				new ArtifactRequestHandler(softwareStore));
+		httpServer.getResolver().register("/bpk*", new BpkRequestHandler(softwareStore));
+		httpServer.getResolver().register("/artifact*", new ArtifactRequestHandler(softwareStore));
 	}
 
 	@Override
@@ -68,9 +64,7 @@ public class SoftwareRepository implements IClusterService {
 			clusterCtx.unregisterService(Names.SWREPOSITORY_SERVICES_MAP_KEY);
 		} catch (IllegalStateException e) {
 			// unregistering over a Hazelcast instance that is no longer active
-			log.warn(
-					"Failed to unhook SoftwareRepository from the cluster. SoftwareRepository info is likely to linger.",
-					e);
+			log.warn("Failed to unhook SoftwareRepository from the cluster. SoftwareRepository info is likely to linger.", e);
 		}
 		httpServer.stop();
 	}

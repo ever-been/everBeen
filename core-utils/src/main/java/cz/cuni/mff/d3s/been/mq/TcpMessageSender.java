@@ -14,7 +14,7 @@ public class TcpMessageSender implements IMessageSender<String> {
 	/**
 	 * ZMQ.Context to use for the connection.
 	 */
-	private final ZMQ.Context context;
+	private final ZMQContext context;
 
 	/**
 	 * ZMQ.Socket to communicate with.
@@ -26,7 +26,7 @@ public class TcpMessageSender implements IMessageSender<String> {
 	 */
 	private final String connection;
 
-	public TcpMessageSender(ZMQ.Context context, String connection) {
+	public TcpMessageSender(ZMQContext context, String connection) {
 		this.context = context;
 		this.connection = connection;
 	}
@@ -49,15 +49,11 @@ public class TcpMessageSender implements IMessageSender<String> {
 					connected = socket.connect(connection);
 				}
 			} catch (IllegalArgumentException e) {
-				throw new MessagingException(String.format(
-						"Failed to connect to %s",
-						connection), e);
+				throw new MessagingException(String.format("Failed to connect to %s", connection), e);
 			}
 
 			if (!connected) {
-				throw new MessagingException(String.format(
-						"Cannot connect to %s",
-						connection));
+				throw new MessagingException(String.format("Cannot connect to %s", connection));
 			}
 		}
 	}
@@ -104,14 +100,17 @@ public class TcpMessageSender implements IMessageSender<String> {
 	 */
 	private void checkIsConnected() throws MessagingException {
 		if (socket == null) {
-			throw new MessagingException(String.format(
-					"Not connected to %s!",
-					connection));
+			throw new MessagingException(String.format("Not connected to %s!", connection));
 		}
 	}
 
 	@Override
 	public String getConnection() {
 		return connection;
+	}
+
+	@Override
+	public void setLinger(int linger) {
+		socket.setLinger(linger);
 	}
 }

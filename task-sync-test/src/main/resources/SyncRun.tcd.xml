@@ -5,7 +5,7 @@
 
 	<properties>
 		<property name="been.task.sync.count">2</property>
-		<property name="been.task.sync.runs">300000</property>
+		<property name="been.task.sync.runs">3000</property>
 	</properties>
 
 	<task>
@@ -41,7 +41,7 @@
 
                 <td:java>
                     <td:javaOptions>
-                        <td:javaOption>-Xmx16m</td:javaOption>
+                        <td:javaOption>-Xmx8m</td:javaOption>
                         <td:javaOption>-Xms4m</td:javaOption>
                     </td:javaOptions>
                 </td:java>
@@ -58,7 +58,7 @@
 
                 <td:java>
                     <td:javaOptions>
-                        <td:javaOption>-Xmx16m</td:javaOption>
+                        <td:javaOption>-Xmx8m</td:javaOption>
                         <td:javaOption>-Xms4m</td:javaOption>
                     </td:javaOptions>
                 </td:java>

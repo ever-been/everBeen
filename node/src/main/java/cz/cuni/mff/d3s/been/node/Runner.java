@@ -1,8 +1,15 @@
 package cz.cuni.mff.d3s.been.node;
 
+import static cz.cuni.mff.d3s.been.core.StatusCode.EX_COMPONENT_FAILED;
 import static cz.cuni.mff.d3s.been.core.StatusCode.EX_OK;
 import static cz.cuni.mff.d3s.been.core.StatusCode.EX_USAGE;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Properties;
+
+import org.apache.commons.io.IOUtils;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -11,11 +18,18 @@ import org.slf4j.LoggerFactory;
 
 import com.hazelcast.core.HazelcastInstance;
 
-import cz.cuni.mff.d3s.been.cluster.*;
+import cz.cuni.mff.d3s.been.cluster.ClusterReaper;
+import cz.cuni.mff.d3s.been.cluster.IClusterService;
+import cz.cuni.mff.d3s.been.cluster.Instance;
+import cz.cuni.mff.d3s.been.cluster.NodeType;
+import cz.cuni.mff.d3s.been.cluster.Reaper;
+import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.hostruntime.HostRuntimes;
-import cz.cuni.mff.d3s.been.resultsrepository.ResultsRepositories;
+import cz.cuni.mff.d3s.been.log.LogRepository;
 import cz.cuni.mff.d3s.been.resultsrepository.ResultsRepository;
+import cz.cuni.mff.d3s.been.storage.Storage;
+import cz.cuni.mff.d3s.been.storage.StorageBuilderFactory;
 import cz.cuni.mff.d3s.been.swrepository.SoftwareRepositories;
 import cz.cuni.mff.d3s.been.swrepository.SoftwareRepository;
 import cz.cuni.mff.d3s.been.task.Managers;
@@ -50,24 +64,26 @@ public class Runner {
 	// COMMAND LINE ARGUMENTS
 	// ------------------------------------------------------------------------
 
-	/**
-	 * Type of the node.
-	 */
 	@Option(name = "-t", aliases = { "--node-type" }, usage = "Type of the node. DEFAULT is DATA")
 	private NodeType nodeType = NodeType.DATA;
 
-	/**
-	 * Whether to run Host Runtime on this node.
-	 * 
-	 */
+	@Option(name = "-cf", aliases = { "--config-file" }, usage = "Path to BEEN config file.")
+	private String configFile = "../conf/been.properties";
+
 	@Option(name = "-r", aliases = { "--host-runtime" }, usage = "Whether to run Host runtime on this node")
 	private boolean runHostRuntime = false;
 
 	@Option(name = "-sw", aliases = { "--software-repository" }, usage = "Whether to run Software Repository on this node")
 	private boolean runSWRepository = false;
 
+	@Option(name = "-swp", aliases = { "--software-repository-port" }, usage = "Set the port for Software Repository")
+	private Integer swRepoPort = 8000;
+
 	@Option(name = "-rr", aliases = { "--results-repository" }, usage = "Whether to run Results Repository on this node. Requires a running persistence layer")
 	private boolean runResultsRepository = false;
+
+	@Option(name = "-lr", aliases = { "--log-repository" }, usage = "Whether to run Log Repository on this node. Requires a running persistence layer")
+	private boolean runLogRepository = false;
 
 	@Option(name = "-ehl", aliases = { "--enable-hazelcast-logging" }, usage = "Turns on Hazelcast logging")
 	private boolean enableHazelcastLogging = false;
@@ -92,6 +108,8 @@ public class Runner {
 			System.exit(EX_OK.getCode());
 		}
 
+		Properties properties = loadProperties();
+
 		configureLogging(enableHazelcastLogging);
 
 		// Join the cluster
@@ -101,26 +119,44 @@ public class Runner {
 
 		Reaper clusterReaper = new ClusterReaper(instance);
 
-		// Run Task Manager on DATA nodes
-		if (nodeType == NodeType.DATA) {
-			clusterReaper.pushTarget(startTaskManager(instance));
-		}
+		try {
+			// Run Task Manager on DATA nodes
+			if (nodeType == NodeType.DATA) {
+				clusterReaper.pushTarget(startTaskManager(instance));
+			}
 
-		if (runSWRepository) {
-			clusterReaper.pushTarget(startSWRepository(instance));
-		}
+			// standalone services
+			if (runSWRepository) {
+				clusterReaper.pushTarget(startSWRepository(instance));
+			}
 
-		if (runHostRuntime) {
-			clusterReaper.pushTarget(startHostRuntime(instance));
-		}
+			if (runHostRuntime) {
+				clusterReaper.pushTarget(startHostRuntime(instance));
+			}
 
-		if (runResultsRepository) {
-			clusterReaper.pushTarget(startResultsRepository(instance));
+			// Services that require a persistence layer
+			final Storage storage = StorageBuilderFactory.createBuilder(properties).build();
+
+			if (runResultsRepository) {
+				clusterReaper.pushTarget(startResultsRepository(instance, storage));
+			}
+
+			if (runLogRepository) {
+				clusterReaper.pushTarget(startLogRepository(instance, storage));
+			}
+		} catch (ServiceException se) {
+			log.error("Service bootstrap failed.", se);
+			clusterReaper.start();
+			try {
+				clusterReaper.join();
+			} catch (InterruptedException e) {
+				log.error("Failed to perform cleanup due to user interruption. Exiting dirty.");
+			}
+			EX_COMPONENT_FAILED.sysExit();
 		}
 
 		Runtime.getRuntime().addShutdownHook(clusterReaper);
 	}
-
 	private void printUsage() {
 		CmdLineParser parser = new CmdLineParser(this);
 		parser.printUsage(System.out);
@@ -156,64 +192,47 @@ public class Runner {
 
 	}
 
-	private IClusterService startTaskManager(final HazelcastInstance instance) {
-		log.info("Starting Task Manager.");
+	private IClusterService startTaskManager(final HazelcastInstance instance) throws ServiceException {
+		log.info("Starting Task Manager...");
 		IClusterService taskManager = Managers.getManager(instance);
-		try {
-			taskManager.start();
-			log.info("Task Manager successfully started.");
-		} catch (ServiceException e) {
-			log.error("Task Manager could not be started - {}", e.getMessage());
-			log.debug("Reasons for Task Manager not starting:", e);
-		}
+		taskManager.start();
+		log.info("Task Manager successfully started.");
 		return taskManager;
 	}
 
-	private IClusterService startHostRuntime(final HazelcastInstance instance) {
-		log.info("Starting Host Runtime");
-
+	private IClusterService startHostRuntime(final HazelcastInstance instance) throws ServiceException {
+		log.info("Starting Host Runtime..");
 		IClusterService hostRuntime = HostRuntimes.getRuntime(instance);
-		try {
-			hostRuntime.start();
-			log.info("Host Runtime Started");
-		} catch (ServiceException e) {
-			log.error("Host Runtime cannot be started", e.getMessage());
-			log.debug("Reasons for Host Runtime not starting:", e);
-		}
+		hostRuntime.start();
+		log.info("Host Runtime Started");
 		return hostRuntime;
 	}
 
-	private IClusterService startSWRepository(HazelcastInstance instance) {
+	private IClusterService startSWRepository(HazelcastInstance instance) throws ServiceException {
 		log.info("Starting Software repository");
 		ClusterContext ctx = new ClusterContext(instance);
-
-		String host = ctx.getInetSocketAddress().getHostName();
-		int port = 8000;
-		SoftwareRepository softwareRepository = SoftwareRepositories.createSWRepository(ctx, host, port);
+		SoftwareRepository softwareRepository = SoftwareRepositories.createSWRepository(ctx, swRepoPort);
 		softwareRepository.init();
 
-		try {
-			softwareRepository.start();
-			log.info("Software Repository successfully started.");
-		} catch (ServiceException e) {
-			log.error("Software Repository could not be started - {}", e.getMessage());
-			log.debug("Reasons for Software Repository not starting:", e);
-		}
+		softwareRepository.start();
+		log.info("Software Repository successfully started.");
 		return softwareRepository;
 	}
 
-	private IClusterService startResultsRepository(HazelcastInstance instance) {
+	private IClusterService startResultsRepository(HazelcastInstance instance, Storage storage) throws ServiceException {
 		log.info("Starting Results repository");
 		ClusterContext ctx = new ClusterContext(instance);
-		ResultsRepository resultsRepository = ResultsRepositories.createResultsRepository(ctx);
-		try {
-			resultsRepository.start();
-			log.info("Results Repository successfully started.");
-		} catch (ServiceException e) {
-			log.error("Results Repository could not be started - {}", e.getMessage());
-			log.debug("Reasons for Results Repository not starting:", e);
-		}
+		ResultsRepository resultsRepository = ResultsRepository.create(ctx, storage);
+		resultsRepository.start();
+		log.info("Results Repository successfully started.");
 		return resultsRepository;
+	}
+
+	private IClusterService startLogRepository(HazelcastInstance instance, Storage storage) throws ServiceException {
+		log.info("Starting Log Repository.");
+		ClusterContext ctx = new ClusterContext(instance);
+		LogRepository logRepository = LogRepository.create(ctx, storage);
+		return logRepository;
 	}
 
 	private HazelcastInstance getInstance(final NodeType nodeType) {
@@ -226,5 +245,38 @@ public class Runner {
 		} else {
 			System.setProperty("hazelcast.logging.type", "none");
 		}
+	}
+
+	private Properties loadProperties() {
+
+		final Properties properties = new Properties();
+
+		final File propertiesFile = new File(configFile);
+		if (!propertiesFile.exists()) {
+			log.warn(
+					"Could not find property file \"{}\". Will start with default configuration.",
+					propertiesFile.getAbsolutePath());
+			return properties;
+		}
+
+		FileReader propertyFileReader = null;
+		try {
+			propertyFileReader = new FileReader(propertiesFile);
+		} catch (IOException e) {
+			log.warn("Failed to open properties file \"{}\" for reading.", propertiesFile.getAbsolutePath());
+			return properties;
+		}
+
+		try {
+			properties.load(propertyFileReader);
+		} catch (IOException e) {
+			log.warn("Could not parse properties file \"{}\".", propertiesFile.getAbsolutePath());
+		} finally {
+			IOUtils.closeQuietly(propertyFileReader);
+		}
+
+		log.info("Properties loaded from file \"{}\".", propertiesFile.getAbsolutePath());
+
+		return properties;
 	}
 }

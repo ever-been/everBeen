@@ -3,15 +3,21 @@
 <xs:schema
 		xmlns="http://been.d3s.mff.cuni.cz/entity"
 		targetNamespace="http://been.d3s.mff.cuni.cz/entity"
-		xmlns:taskentry="http://been.d3s.mff.cuni.cz/taskentry"
 		xmlns:xs="http://www.w3.org/2001/XMLSchema"
-		xmlns:td="http://been.d3s.mff.cuni.cz/task-descriptor"
 		xmlns:common="http://been.d3s.mff.cuni.cz/common"
+		xmlns:taskentry="http://been.d3s.mff.cuni.cz/task-entry"
 		>
 
 	<xs:import namespace="http://been.d3s.mff.cuni.cz/common"/>
+	<xs:import namespace="http://been.d3s.mff.cuni.cz/task-entry"/>
 
-	<xs:complexType name="Entity" />
+	<xs:complexType name="Entity">
+		<xs:all>
+			<xs:element name="created" type="xs:dateTime" />
+			<xs:element ref="taskentry:id" />
+			<xs:element ref="taskentry:taskContextId" />
+		</xs:all>
+	</xs:complexType>
 
 	<xs:complexType name="EntityID">
 		<xs:all>

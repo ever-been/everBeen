@@ -11,6 +11,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
 import java.nio.file.FileSystems;
@@ -74,7 +75,7 @@ public class TestSoftwareRepositoryTransportByHTTP {
 			final int port = probeSocket.getLocalPort();
 			final InetAddress addr = probeSocket.getInetAddress();
 			probeSocket.close();
-			server = new HttpServer(addr, port);
+			server = new HttpServer(new InetSocketAddress(addr, port));
 			SoftwareStore dataStore = new FSBasedStore(SERVER_PERSISTENCE_ROOT_FOLDER);
 			server.getResolver().register("/bpk*", new BpkRequestHandler(dataStore));
 			server.getResolver().register(

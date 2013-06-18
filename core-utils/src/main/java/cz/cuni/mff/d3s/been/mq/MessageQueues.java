@@ -47,7 +47,8 @@ public class MessageQueues {
 	}
 
 	/**
-	 * Creates named inter-procedural message queue.
+	 * Creates named intra-procedural message queue (communication within the
+	 * bounds of one process).
 	 * 
 	 * @param queueName
 	 *          name of the qeueue
@@ -57,8 +58,10 @@ public class MessageQueues {
 	 * @throws MessagingException
 	 *           if the queue cannot be created
 	 */
-	public synchronized <T extends Serializable> IMessageQueue<T> createInprocQueue(
-			String queueName) throws MessagingException {
+	public synchronized
+			<T extends Serializable>
+			IMessageQueue<T>
+			createInprocQueue(String queueName) throws MessagingException {
 		if (queues.containsKey(queueName)) {
 			String errorMsg = String.format("Queue %s already exists", queueName);
 			throw new MessagingException(errorMsg);
@@ -83,8 +86,7 @@ public class MessageQueues {
 	 * @throws MessagingException
 	 *           if the queue cannot be created
 	 */
-	public synchronized IMessageQueue<String> createTcpQueue(String queueName,
-			String hostname) throws MessagingException {
+	public synchronized IMessageQueue<String> createTcpQueue(String queueName, String hostname) throws MessagingException {
 		if (queues.containsKey(queueName)) {
 			String errorMsg = String.format("Queue %s already exists", queueName);
 			throw new MessagingException(errorMsg);
@@ -108,8 +110,10 @@ public class MessageQueues {
 	 * @return sender
 	 * @throws MessagingException
 	 */
-	public synchronized <T extends Serializable> IMessageSender<T> createSender(
-			String queueName) throws MessagingException {
+	public synchronized
+			<T extends Serializable>
+			IMessageSender<T>
+			createSender(String queueName) throws MessagingException {
 		if (!queues.containsKey(queueName)) {
 			String errorMsg = String.format("Queue %s does not exist", queueName);
 			throw new MessagingException(errorMsg);
@@ -128,8 +132,10 @@ public class MessageQueues {
 	 * @return receiver
 	 * @throws MessagingException
 	 */
-	public synchronized <T extends Serializable> IMessageReceiver<T> getReceiver(
-			String queueName) throws MessagingException {
+	public synchronized
+			<T extends Serializable>
+			IMessageReceiver<T>
+			getReceiver(String queueName) throws MessagingException {
 		if (!queues.containsKey(queueName)) {
 			String errorMsg = String.format("Queue %s does not exist", queueName);
 			throw new MessagingException(errorMsg);

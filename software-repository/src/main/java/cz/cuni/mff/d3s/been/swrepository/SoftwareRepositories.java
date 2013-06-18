@@ -1,6 +1,8 @@
 package cz.cuni.mff.d3s.been.swrepository;
 
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.net.UnknownHostException;
 
 import org.slf4j.Logger;
@@ -22,36 +24,34 @@ public class SoftwareRepositories {
 
 	private static final Logger log = LoggerFactory.getLogger(SoftwareRepositories.class);
 
+    /**
+     * Create a new {@link SoftwareRepository}, pick a port at random.
+     *
+     * @param ctx Cluster context used to register the service
+     *
+     * @return {@link SoftwareRepository} ready to be started.
+     */
+    public static SoftwareRepository createSWRepository(ClusterContext ctx) {
+        return createSWRepository(ctx, 0);
+    }
+
 	/**
 	 * Creates a new {@link SoftwareRepository}.
 	 * 
 	 * @param ctx
 	 *          Cluster context used to register the service.
-	 * @param host
-	 *          Host on which to listen for requests
 	 * @param port
 	 *          Port on which to listen for requests
 	 * 
-	 * @return SoftwareRepository ready to be started.
+	 * @return {@link SoftwareRepository} ready to be started.
 	 */
-	public static SoftwareRepository createSWRepository(ClusterContext ctx,
-			String host, int port) {
+	public static SoftwareRepository createSWRepository(ClusterContext ctx, int port) {
 		SoftwareRepository swRepo = new SoftwareRepository(ctx);
 
 		SoftwareStore dataStore = SoftwareStoreFactory.getDataStore();
-
-		InetAddress myAddr = null;
-		try {
-			myAddr = InetAddress.getByName(host);
-		} catch (UnknownHostException e) {
-			String msg = String.format("Software Repository could not start: Failed to resolve local address %s. Cause was: %s", host, e.getMessage());
-
-			log.error(msg);
-			throw new IllegalArgumentException(msg);
-
-		}
-
-		HttpServer httpServer = new HttpServer(myAddr, port);
+        final InetSocketAddress clusterSockAddr = ctx.getLocalMember().getInetSocketAddress();
+        final InetSocketAddress mySockAddr = new InetSocketAddress(clusterSockAddr.getAddress(), port);
+		HttpServer httpServer = new HttpServer(mySockAddr);
 		swRepo.setDataStore(dataStore);
 		swRepo.setHttpServer(httpServer);
 

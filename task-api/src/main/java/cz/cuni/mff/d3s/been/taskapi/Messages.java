@@ -41,7 +41,7 @@ public final class Messages {
 
 	}
 
-	public static synchronized void terminate() {
+	public static synchronized void terminate() throws MessagingException {
 		if (defaultSender != null) {
 			defaultSender.close();
 		}

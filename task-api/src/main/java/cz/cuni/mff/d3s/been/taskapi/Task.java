@@ -125,10 +125,20 @@ public abstract class Task {
 			System.err.println("Cannot send 'i'm running' message");
 		}
 	}
+
 	private void tearDown() {
 		resSender.close();
-		resQueue.terminate();
-		Messages.terminate();
+		try {
+			resQueue.terminate();
+		} catch (MessagingException e) {
+			log.error("Failed to release results queue.");
+		}
+		try {
+			Messages.terminate();
+		} catch (MessagingException e) {
+			// TODO consider System.err instead, since this probably means that the log pipe is broken 
+			log.error("Failed to release Messaging");
+		}
 	}
 
 }

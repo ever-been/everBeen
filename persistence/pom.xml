@@ -29,13 +29,6 @@
 			<version>${project.version}</version>
 		</dependency>
 
-		<!-- OTHER BEEN DEPENDENCIES -->
-		<dependency>
-			<groupId>cz.cuni.mff.d3s.been</groupId>
-			<artifactId>storage</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
 		<!-- TESTING LIBRARIES -->
 		<dependency>
 			<groupId>junit</groupId>

@@ -40,6 +40,11 @@ public class Names {
 	 */
 	public static final String LOGS_MULTIMAP_NAME = "been.task.logs";
 
+    /**
+     * Queue storing task/BEEN logs
+     */
+    public static final String LOG_QUEUE_NAME = "BEEN_QUEUE_LOGS";
+
 	// TOPIC NAMES
 	/**
 	 * In the topic with this name should be published complete communication
