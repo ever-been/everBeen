@@ -60,6 +60,14 @@
             <version>${tapestry5.version}</version>
         </dependency>
 
+
+        <dependency>
+            <groupId>org.tynamo</groupId>
+            <artifactId>tapestry-conversations</artifactId>
+            <version>${tapestry-conversations.version}</version>
+        </dependency>
+
+
         <!-- Provided by the servlet container, but sometimes referenced in the application
        code. -->
         <dependency>
