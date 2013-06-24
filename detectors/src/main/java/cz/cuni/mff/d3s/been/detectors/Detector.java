@@ -70,7 +70,9 @@ public class Detector {
 		diff.setCpuUsage(newSample.getCpuUsage());
 
 		// network
-		for (int i = 0; i < newSample.getInterfaces().size(); i++) {
+		int networkCount = newSample.getInterfaces().size();
+		if (oldSample != null) networkCount = Math.min(networkCount, oldSample.getInterfaces().size());
+		for (int i = 0; i < networkCount; i++) {
 			NetworkSample n1 = newSample.getInterfaces().get(i);
 			NetworkSample diffSample = new NetworkSample();
 			diffSample.setName(n1.getName());
@@ -85,7 +87,9 @@ public class Detector {
 		}
 
 		// filesystems
-		for (int i = 0; i < newSample.getFilesystems().size(); i++) {
+		int fileSystemCount = newSample.getFilesystems().size();
+		if (oldSample != null) fileSystemCount = Math.min(fileSystemCount, oldSample.getFilesystems().size());
+		for (int i = 0; i < fileSystemCount; i++) {
 			FilesystemSample f1 = newSample.getFilesystems().get(i);
 			FilesystemSample diffSample = new FilesystemSample();
 			diffSample.setDeviceName(f1.getDeviceName());
