@@ -47,7 +47,7 @@
                 <div class="control-group">
                     <t:label for="exclusivity" class="control-label">Exclusivity</t:label>
                     <div class="controls">
-                        <t:select t:id="exclusivity" t:value="taskDescriptor.exclusive" t:model="availableExclusivities" t:encoder="taskExclusivityEncoder" />
+                        <t:select t:id="exclusivity" t:value="taskDescriptor.exclusive" t:model="availableExclusivities" t:encoder="taskExclusivityEncoder" t:blankOption="NEVER" />
                     </div>
                 </div>
 
@@ -183,7 +183,7 @@
                 <div class="control-group">
                     <t:label for="debugMode" class="control-label">Mode</t:label>
                     <div class="controls">
-                        <t:select t:id="debugMode" t:value="taskDescriptor.debug.mode" t:model="availableDebugModes" t:encoder="debugModeEncoder" />
+                        <t:select t:id="debugMode" t:value="taskDescriptor.debug.mode" t:model="availableDebugModes" t:encoder="debugModeEncoder" t:blankOption="NEVER" />
                     </div>
                 </div>
 

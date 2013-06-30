@@ -17,6 +17,7 @@ import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.annotations.SessionState;
 import org.apache.tapestry5.corelib.components.Form;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -190,8 +191,23 @@ public class SubmitTaskDescriptor extends Page {
             taskDescriptor.setLoadMonitoring(new ObjectFactory().createLoadMonitoring());
         }
 
+        if (!taskDescriptor.isSetExclusive()) {
+            taskDescriptor.setExclusive(TaskExclusivity.NON_EXCLUSIVE);
+        }
+
         if (!taskDescriptor.isSetDebug()) {
             taskDescriptor.setDebug(new ObjectFactory().createDebug());
+            taskDescriptor.getDebug().setMode(ModeEnum.NONE);
+
+            try {
+                taskDescriptor.getDebug().setHost(java.net.InetAddress.getLocalHost().getHostAddress());
+            } catch (UnknownHostException e) {
+                // ignored, because we are trying only to help
+                // person who is trying to launch this task
+                // descriptor.... This is used only as first hint
+                // in form for submitting task descriptor.
+            }
+            taskDescriptor.getDebug().setPort(9000);
         }
 
         args = new ArrayList<>();
