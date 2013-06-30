@@ -21,9 +21,6 @@ import static cz.cuni.mff.d3s.been.web.components.Layout.Section;
  */
 public abstract class Page {
 
-
-
-
 	@Inject
 	@Property
 	protected BeenApiService api;

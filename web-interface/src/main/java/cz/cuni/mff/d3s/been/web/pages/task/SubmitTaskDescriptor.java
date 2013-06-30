@@ -4,18 +4,21 @@ import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.core.task.ObjectFactory;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.web.components.Layout;
+import cz.cuni.mff.d3s.been.web.model.ConversationHolder;
+import cz.cuni.mff.d3s.been.web.pages.Index;
 import cz.cuni.mff.d3s.been.web.pages.Overview;
 import cz.cuni.mff.d3s.been.web.pages.Page;
 import cz.cuni.mff.d3s.been.web.utils.KeyValuePair;
-import org.apache.tapestry5.PersistenceConstants;
 import org.apache.tapestry5.ValueEncoder;
 import org.apache.tapestry5.annotations.Component;
-import org.apache.tapestry5.annotations.Persist;
 import org.apache.tapestry5.annotations.Property;
+import org.apache.tapestry5.annotations.SessionState;
 import org.apache.tapestry5.corelib.components.Form;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This component is used to edit task descriptor properties and submit
@@ -28,12 +31,59 @@ import java.util.List;
 @SuppressWarnings("unused")
 public class SubmitTaskDescriptor extends Page {
 
+    // -----------------------------
+    // KEYS USED IN CONVERSATION HOLDER
+    // -----------------------------
+
+    private static final String KEY_TASK_DESCRIPTOR = "task_descriptor";
+
+    private static final String KEY_ARGS = "args";
+
+    private static final String KEY_OPTS = "opts";
+
+
+    // -----------------------------
+    // CONVERSATION POLICY
+    // -----------------------------
+
+    @SessionState(create = true)
+    private ConversationHolder<Map<String, Object>> sessionHolder;
+
     /**
      * Task descriptor loaded in onActivate() method
      */
     @Property
-    @Persist
     TaskDescriptor taskDescriptor;
+
+    /**
+     * Argument list transformed from list of string on taskDescriptor
+     * to list of keyValuePairs. We have to assign temporary IDs (keys)
+     * to arguments (values) specified in task descriptor to tie them
+     * conclusively from JAVA to JAVASCRIPT and vice versa. (Arguments
+     * in task descriptor has no unique ID)
+     */
+    @Property
+    List<KeyValuePair> args;
+
+    /**
+     * Java option list transformed from list of string on taskDescriptor
+     * to list of keyValuePairs. We have to assign temporary IDs (keys)
+     * to options (values) specified in task descriptor to tie them
+     * conclusively from JAVA to JAVASCRIPT and vice versa. (Java Options
+     * in task descriptor has no unique ID)
+     */
+    @Property
+    List<KeyValuePair> opts;
+
+
+    // -----------------------------
+    // TAPESTRY TEMPLATE FIELDS
+    // -----------------------------
+
+    /**
+     * Identifier of current conversation
+     */
+    private String conversationId;
 
     /**
      * Injected form component for task submitting.
@@ -42,26 +92,16 @@ public class SubmitTaskDescriptor extends Page {
     @SuppressWarnings("unused")
     private Form submitTaskForm;
 
-    /**
-     * We have to assign temporary ID (key) to argument list (values) specified in task descriptor
-     * to tie them conclusively from JAVA to JAVASCRIPT and vice versa. (Arguments in task descriptor has no
-     * unique ID)
-     */
-    @Property
-    @Persist
-    List<KeyValuePair> args;
-
-    @Property
-    @Persist
-    List<KeyValuePair> opts;
 
     /**
-     * property holder for argument in template
+     * Used in loop over arguments
      */
     @Property
     private KeyValuePair arg;
 
-
+    /**
+     * Used in loop over java options
+     */
     @Property
     private KeyValuePair opt;
 
@@ -72,25 +112,43 @@ public class SubmitTaskDescriptor extends Page {
     @SuppressWarnings("unused")
     private int loopIndex;
 
-    /**
-     * group id of bpk with which this page has been initialized
-     */
-    private String groupId;
+    // -----------------------------
+    // ACTIVATION AND PASSIVATION
+    // -----------------------------
 
     /**
-     * bpk id with of bpk which this page has been initialized
+     * Is set to true if page has been already activated
      */
-    private String bpkId;
+    private boolean activated;
 
     /**
-     * version of bpk with which this page has been initialized
+     * Activate page with context of conversation with given identifier.
+     *
+     * @param conversationId
+     * @return null if page has been already activated or page has been correctly activated.
+     *         Redirect to {@link Index} page otherwise.
      */
-    private String version;
+    Object onActivate(String conversationId) {
+        // we have to check if page has been already activated, because we don't want
+        // to override context of already activated pages
+        if (activated) {
+            return null;
+        }
 
-    /**
-     * descriptor of bpk with which this page has been initialized
-     */
-    private String descriptorName;
+        if (!sessionHolder.contains(conversationId)) {
+            // FIXME .. inform user in proper way?
+            return Index.class;
+        } else {
+            taskDescriptor = (TaskDescriptor) sessionHolder.get(conversationId).get(KEY_TASK_DESCRIPTOR);
+            args = (List<KeyValuePair>) sessionHolder.get(conversationId).get(KEY_ARGS);
+            opts = (List<KeyValuePair>) sessionHolder.get(conversationId).get(KEY_OPTS);
+
+            this.conversationId = conversationId;
+
+            activated = true;
+            return null;
+        }
+    }
 
 
     /**
@@ -101,16 +159,10 @@ public class SubmitTaskDescriptor extends Page {
      * @param bpkId          bpk id of {@link BpkIdentifier} to which the underlying {@link TaskDescriptor} belows
      * @param version        version id of {@link BpkIdentifier} to which the underlying {@link TaskDescriptor} belows
      * @param descriptorName name of concrete {@link TaskDescriptor} for {@link BpkIdentifier} identified by previous parameters
-     * @return
+     * @return null (see tapestry page documentation about return values from onActivate and onPassivate methods)
      */
     @SuppressWarnings("unused")
     Object onActivate(String groupId, String bpkId, String version, String descriptorName) {
-        this.groupId = groupId;
-        this.bpkId = bpkId;
-        this.version = version;
-        this.descriptorName = descriptorName;
-
-
         // load correct task descriptor
         BpkIdentifier bpkIdentifier = new BpkIdentifier();
         bpkIdentifier.setGroupId(groupId);
@@ -144,24 +196,30 @@ public class SubmitTaskDescriptor extends Page {
             opts.add(new KeyValuePair(i, taskDescriptor.getJava().getJavaOptions().getJavaOption().get(i)));
         }
 
+        HashMap<String, Object> conversationArgs = new HashMap<String, Object>();
+        conversationArgs.put(KEY_OPTS, opts);
+        conversationArgs.put(KEY_ARGS, args);
+        conversationArgs.put(KEY_TASK_DESCRIPTOR, taskDescriptor);
+        this.conversationId = sessionHolder.set(conversationArgs);
+
+        activated = true;
         return null;
     }
 
     /**
-     *
-     * @return array of groupId, bpkId, version and descriptorName ... The same values which has been
-     * set in onActivate method. This array will be added to each request from client side (in all links, submits etc.,
-     * so this class will be activated with right parameters each time.
+     * @return conversationId as passivate parameter (used on next
+     * onActivate parameter). See tapestry documentation to get more
+     * information about expected return values from onActivate and
+     * onPassivate methods
      */
     Object onPassivate() {
-        return new String[]{
-                groupId,
-                bpkId,
-                version,
-                descriptorName
-        };
+        return conversationId;
     }
 
+
+    // -----------------------------
+    // FORM HANDLING
+    // -----------------------------
 
     /**
      * This handler is called when users click on form SUBMIT button.
@@ -187,13 +245,9 @@ public class SubmitTaskDescriptor extends Page {
         return Overview.class;
     }
 
-    // -----------------------------
-    // HANDLING ARGUMENTS
-    // -----------------------------
-
-
     /**
      * Creates new empty argument which will be added to indexed argument list.
+     *
      * @return
      */
     Object onAddRowFromArgumentList() {
@@ -203,27 +257,40 @@ public class SubmitTaskDescriptor extends Page {
     }
 
     /**
-     * Removes indexed argument from argument list ('remove' is not the really exact description. Instead of direct
-     * removing from list is argument with given index(kvp.key) set to null)
+     * Removes indexed argument from argument list ('remove' is not the really exact description.
+     * Instead of direct removing from list is option with given index(kvp.key) set to null)
+     *
      * @param kvp
      */
     void onRemoveRowFromArgumentList(KeyValuePair kvp) {
         args.set(kvp.key, null);
     }
 
-
+    /**
+     * Creates new empty java option which will be added to indexed java option list.
+     *
+     * @return
+     */
     Object onAddRowFromJavaOptList() {
         KeyValuePair opt = new KeyValuePair(opts.size(), "");
         opts.add(opt);
         return opt;
     }
 
+    /**
+     * Removes indexed java option from java option list ('remove' is not the really exact
+     * description. Instead of direct removing from list is argument with given index(kvp.key)
+     * set to null)
+     *
+     * @param kvp
+     */
     void onRemoveRowFromJavaOptList(KeyValuePair kvp) {
         opts.set(kvp.key, null);
     }
 
     /**
      * Encoder used to translate values between server(java) and Client (browser)
+     *
      * @return
      */
     public ValueEncoder<KeyValuePair> getKeyValuePairEncoder() {
