@@ -47,7 +47,8 @@
                 <div class="control-group">
                     <t:label for="exclusivity" class="control-label">Exclusivity</t:label>
                     <div class="controls">
-                        <t:select t:id="exclusivity" t:value="taskDescriptor.exclusive" t:model="availableExclusivities" t:encoder="taskExclusivityEncoder" t:blankOption="NEVER" />
+                        <t:select t:id="exclusivity" t:value="taskDescriptor.exclusive" t:model="availableExclusivities"
+                                  t:encoder="taskExclusivityEncoder" t:blankOption="NEVER"/>
                     </div>
                 </div>
 
@@ -57,7 +58,9 @@
 
                 <div class="control-group" t:type="loop" index="loopIndex"
                      source="taskDescriptor.properties.property">
-                    <t:label class="control-label" for="propValue">${taskDescriptor.properties.property.get(loopIndex).name}</t:label>
+                    <t:label class="control-label" for="propValue">
+                        ${taskDescriptor.properties.property.get(loopIndex).name}
+                    </t:label>
 
                     <div class="controls">
                         <input type="text" t:id="propValue" t:type="textfield"
@@ -97,7 +100,7 @@
                     <div class="controls">
 
                         <div class="input-append">
-                            <t:textfield class="span2" value="arg.value" t:id="argValue" />
+                            <t:textfield class="span2" value="arg.value" t:id="argValue"/>
                             <button t:type="removeRowLink" class="btn">
                                 <i class="icon-minus"></i>
                             </button>
@@ -137,11 +140,56 @@
                     <div class="controls">
 
                         <div class="input-append">
-                            <t:textfield class="span2" value="opt.value" t:id="optValue" />
+                            <t:textfield class="span2" value="opt.value" t:id="optValue"/>
                             <button t:type="removeRowLink" class="btn">
                                 <i class="icon-minus"></i>
                             </button>
                         </div>
+                    </div>
+                </div>
+            </div>
+            <div class="span6">
+                <h2>Failure policy</h2>
+                <div class="control-group">
+                    <label class="control-label">Timeout for single run (0 = disabled)</label>
+
+                    <div class="controls">
+                        <input type="text" value="${taskDescriptor.failurePolicy.timeoutRun}"/>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Max. number of restarts (0 = disabled)</label>
+
+                    <div class="controls">
+                        <input type="text" value="${taskDescriptor.failurePolicy.restartMax}"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="span6">
+                <h2>Debug options</h2>
+
+                <div class="control-group">
+                    <t:label for="debugMode" class="control-label">Mode</t:label>
+                    <div class="controls">
+                        <t:select t:id="debugMode" t:value="taskDescriptor.debug.mode" t:model="availableDebugModes"
+                                  t:encoder="debugModeEncoder" t:blankOption="NEVER"/>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <t:label for="debugHost" class="control-label">Host</t:label>
+                    <div class="controls">
+                        <t:textfield t:id="debugHost" t:value="taskDescriptor.debug.host"/>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <t:label for="debugPort" class="control-label">Port</t:label>
+                    <div class="controls">
+                        <t:textfield t:id="debugPort" t:value="taskDescriptor.debug.port"/>
                     </div>
                 </div>
             </div>
@@ -170,36 +218,6 @@
                 </div>
             </div>
             -->
-        </div>
-
-
-
-
-
-        <div class="row">
-            <div class="span6">
-                <h2>Debug options</h2>
-
-                <div class="control-group">
-                    <t:label for="debugMode" class="control-label">Mode</t:label>
-                    <div class="controls">
-                        <t:select t:id="debugMode" t:value="taskDescriptor.debug.mode" t:model="availableDebugModes" t:encoder="debugModeEncoder" t:blankOption="NEVER" />
-                    </div>
-                </div>
-
-                <div class="control-group">
-                    <t:label for="debugHost" class="control-label">Host</t:label>
-                    <div class="controls">
-                        <t:textfield t:id="debugHost" t:value="taskDescriptor.debug.host"/>
-                    </div>
-                </div>
-                <div class="control-group">
-                    <t:label for="debugPort" class="control-label">Port</t:label>
-                    <div class="controls">
-                        <t:textfield t:id="debugPort" t:value="taskDescriptor.debug.port"/>
-                    </div>
-                </div>
-            </div>
         </div>
     </t:form>
 </html>

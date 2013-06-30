@@ -195,6 +195,10 @@ public class SubmitTaskDescriptor extends Page {
             taskDescriptor.setExclusive(TaskExclusivity.NON_EXCLUSIVE);
         }
 
+        if (!taskDescriptor.isSetFailurePolicy()) {
+            taskDescriptor.setFailurePolicy(new ObjectFactory().createFailurePolicy());
+        }
+
         if (!taskDescriptor.isSetDebug()) {
             taskDescriptor.setDebug(new ObjectFactory().createDebug());
             taskDescriptor.getDebug().setMode(ModeEnum.NONE);
@@ -208,6 +212,7 @@ public class SubmitTaskDescriptor extends Page {
                 // in form for submitting task descriptor.
             }
             taskDescriptor.getDebug().setPort(9000);
+
         }
 
         args = new ArrayList<>();
