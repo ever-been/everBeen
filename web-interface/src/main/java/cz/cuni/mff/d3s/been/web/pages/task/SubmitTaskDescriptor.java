@@ -3,6 +3,7 @@ package cz.cuni.mff.d3s.been.web.pages.task;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.core.task.ObjectFactory;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
+import cz.cuni.mff.d3s.been.core.task.TaskExclusivity;
 import cz.cuni.mff.d3s.been.web.components.Layout;
 import cz.cuni.mff.d3s.been.web.model.ConversationHolder;
 import cz.cuni.mff.d3s.been.web.pages.Index;
@@ -184,6 +185,9 @@ public class SubmitTaskDescriptor extends Page {
             taskDescriptor.getJava().setJavaOptions(new ObjectFactory().createJavaOptions());
         }
 
+        if (!this.taskDescriptor.isSetLoadMonitoring()) {
+            taskDescriptor.setLoadMonitoring(new ObjectFactory().createLoadMonitoring());
+        }
 
         args = new ArrayList<>();
         for (int i = 0; i < taskDescriptor.getArguments().getArgument().size(); i++) {
@@ -208,9 +212,9 @@ public class SubmitTaskDescriptor extends Page {
 
     /**
      * @return conversationId as passivate parameter (used on next
-     * onActivate parameter). See tapestry documentation to get more
-     * information about expected return values from onActivate and
-     * onPassivate methods
+     *         onActivate parameter). See tapestry documentation to get more
+     *         information about expected return values from onActivate and
+     *         onPassivate methods
      */
     Object onPassivate() {
         return conversationId;
@@ -303,6 +307,38 @@ public class SubmitTaskDescriptor extends Page {
             @Override
             public KeyValuePair toValue(String value) {
                 return args.get(Integer.parseInt(value));
+            }
+        };
+    }
+
+    /**
+     * Collects possible values for TaskExclusivity select box
+     * @return
+     */
+    public TaskExclusivity[] getAvailableExclusivities() {
+        return new TaskExclusivity[]{TaskExclusivity.CONTEXT_EXCLUSIVE, TaskExclusivity.EXCLUSIVE, TaskExclusivity.NON_EXCLUSIVE};
+    }
+
+    /**
+     * Creates value encoder for Task Exclusivity entities.
+     * @return
+     */
+    public ValueEncoder<TaskExclusivity> getTaskExclusivityEncoder() {
+        return new ValueEncoder<TaskExclusivity>() {
+            @Override
+            public String toClient(TaskExclusivity value) {
+                if (value == null) {
+                    return null;
+                }
+                return value.toString();
+            }
+
+            @Override
+            public TaskExclusivity toValue(String clientValue) {
+                if (clientValue == null) {
+                    return null;
+                }
+                return TaskExclusivity.fromValue(clientValue);
             }
         };
     }

@@ -4,131 +4,172 @@
       xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd" xmlns:p="tapestry:parameter">
 
 
-<t:form class="form-horizontal" t:id="submitTaskForm">
+    <t:form class="form-horizontal" t:id="submitTaskForm">
 
-    <div class="row">
-        <div class="span6">
-            <h2>Basic task properties</h2>
+        <div class="row">
+            <div class="span6">
+                <h2>Basic task properties</h2>
 
-            <div class="control-group">
-                <t:label for="name" class="control-label">Name</t:label>
-                <div class="controls">
-                    <t:textfield t:id="name" t:value="taskDescriptor.name"/>
+                <div class="control-group">
+                    <t:label for="name" class="control-label">Name</t:label>
+                    <div class="controls">
+                        <t:textfield t:id="name" t:value="taskDescriptor.name"/>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Type</label>
+
+                    <div class="controls">
+                        <input type="text" value="${taskDescriptor.type}" disabled="" style="font-weight: bold"/>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Group ID</label>
+
+                    <div class="controls">
+                        <input type="text" value="${taskDescriptor.groupId}" disabled="" style="font-weight: bold"/>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Bpk ID</label>
+
+                    <div class="controls">
+                        <input type="text" value="${taskDescriptor.bpkId}" disabled="" style="font-weight: bold"/>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Version</label>
+
+                    <div class="controls">
+                        <input type="text" value="${taskDescriptor.version}" disabled="" style="font-weight: bold"/>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <t:label for="exclusivity" class="control-label">Exclusivity</t:label>
+                    <div class="controls">
+                        <t:select t:id="exclusivity" t:value="taskDescriptor.exclusive" t:model="availableExclusivities" t:encoder="taskExclusivityEncoder" />
+                    </div>
+                </div>
+
+            </div>
+            <div class="span6">
+                <h2>Environment properties</h2>
+
+                <div class="control-group" t:type="loop" index="loopIndex"
+                     source="taskDescriptor.properties.property">
+                    <t:label class="control-label" for="propValue">${taskDescriptor.properties.property.get(loopIndex).name}</t:label>
+
+                    <div class="controls">
+                        <input type="text" t:id="propValue" t:type="textfield"
+                               t:value="taskDescriptor.properties.property.get(loopIndex).value"/>
+                    </div>
                 </div>
             </div>
-            <div class="control-group">
-                <label class="control-label">Type</label>
 
-                <div class="controls">
-                    <input type="text" value="${taskDescriptor.type}" disabled="" style="font-weight: bold"/>
-                </div>
+            <div class="span1">
+                <button type="submit" class="btn btn-success">Submit</button>
+                <!--
+                <button type="submit" class="btn btn-warning">Save</button>
+                <button type="submit" class="btn btn-inverse">Reset</button>
+                -->
             </div>
-            <div class="control-group">
-                <label class="control-label">Group ID</label>
-
-                <div class="controls">
-                    <input type="text" value="${taskDescriptor.groupId}" disabled="" style="font-weight: bold"/>
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label">Bpk ID</label>
-
-                <div class="controls">
-                    <input type="text" value="${taskDescriptor.bpkId}" disabled="" style="font-weight: bold"/>
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label">Version</label>
-
-                <div class="controls">
-                    <input type="text" value="${taskDescriptor.version}" disabled="" style="font-weight: bold"/>
-                </div>
-            </div>
-
         </div>
-        <div class="span6">
-            <h2>Environment properties</h2>
-
-            <div class="control-group" t:type="loop" index="loopIndex"
-                 source="taskDescriptor.properties.property">
-                <label class="control-label">${taskDescriptor.properties.property.get(loopIndex).name}</label>
-
-                <div class="controls">
-                    <input type="text" t:id="propValue" t:type="textfield"
-                           t:value="taskDescriptor.properties.property.get(loopIndex).value"/>
-                </div>
-            </div>
-        </div>
-
-        <div class="span1">
-            <button type="submit" class="btn btn-success">Submit</button>
-            <button type="submit" class="btn btn-warning">Save</button>
-            <button type="submit" class="btn btn-inverse">Reset</button>
-        </div>
-    </div>
 
 
-    <div class="row">
-        <div class="span6">
-            <h2>Arguments</h2>
+        <div class="row">
+            <div class="span6">
+                <h2>Arguments</h2>
 
-            <div class="control-group" t:type="ajaxformloop" t:id="argumentList"
-                 source="args" value="arg" encoder="keyValuePairEncoder" >
-                <p:addRow>
-                    <div class="control-group">
-                        <div class="controls">
-                            <button t:type="addRowLink" class="btn"><i class="icon-plus"></i></button>
+                <div class="control-group" t:type="ajaxformloop" t:id="argumentList"
+                     source="args" value="arg" encoder="keyValuePairEncoder">
+                    <p:addRow>
+                        <div class="control-group">
+                            <div class="controls">
+                                <button t:type="addRowLink" class="btn">
+                                    <i class="icon-plus"></i>
+                                </button>
+                            </div>
+
                         </div>
+                    </p:addRow>
+                    <t:label for="argValue" class="control-label">Argument</t:label>
 
-                    </div>
-                </p:addRow>
-                <label class="control-label">Argument</label>
+                    <div class="controls">
 
-                <div class="controls">
-
-                    <div class="input-append">
-                        <t:textfield class="span2" value="arg.value"/>
-                        <button t:type="removeRowLink" class="btn"><i class="icon-minus"></i></button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="span6">
-            <h2>Other</h2>
-            <t:label for="longDescription" class="control-label">Description</t:label>
-
-            <div class="controls">
-                <t:textarea t:id="longDescription"
-                            t:value="taskDescriptor.longDescription"/>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="span6">
-            <h2>Java options</h2>
-
-            <div class="control-group" t:type="ajaxformloop" t:id="javaOptList"
-                 source="opts" value="opt" encoder="keyValuePairEncoder" >
-                <p:addRow>
-                    <div class="control-group">
-                        <div class="controls">
-                            <button t:type="addRowLink" class="btn"><i class="icon-plus"></i></button>
+                        <div class="input-append">
+                            <t:textfield class="span2" value="arg.value" t:id="argValue" />
+                            <button t:type="removeRowLink" class="btn">
+                                <i class="icon-minus"></i>
+                            </button>
                         </div>
-
-                    </div>
-                </p:addRow>
-                <label class="control-label">Option</label>
-
-                <div class="controls">
-
-                    <div class="input-append">
-                        <t:textfield class="span2" value="opt.value"/>
-                        <button t:type="removeRowLink" class="btn"><i class="icon-minus"></i></button>
                     </div>
                 </div>
             </div>
+            <div class="span6">
+                <h2>Other</h2>
+                <t:label for="longDescription" class="control-label">Description</t:label>
+
+                <div class="controls">
+                    <t:textarea t:id="longDescription"
+                                t:value="taskDescriptor.longDescription"/>
+                </div>
+            </div>
         </div>
-    </div>
-</t:form>
+
+        <div class="row">
+            <div class="span6">
+                <h2>Java options</h2>
+
+                <div class="control-group" t:type="ajaxformloop" t:id="javaOptList"
+                     source="opts" value="opt" encoder="keyValuePairEncoder">
+                    <p:addRow>
+                        <div class="control-group">
+                            <div class="controls">
+                                <button t:type="addRowLink" class="btn">
+                                    <i class="icon-plus"></i>
+                                </button>
+                            </div>
+
+                        </div>
+                    </p:addRow>
+                    <t:label for="optValue" class="control-label">Option</t:label>
+
+                    <div class="controls">
+
+                        <div class="input-append">
+                            <t:textfield class="span2" value="opt.value" t:id="optValue" />
+                            <button t:type="removeRowLink" class="btn">
+                                <i class="icon-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--
+            <div class="span6">
+                <h2>Monitoring</h2>
+                <div class="control-group">
+                    <label class="control-label">enabled</label>
+                    <div class="controls">
+                        <input id="detailedLoad" type="checkbox" value="${taskDescriptor.loadMonitoring.detailedLoad}"/>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Detail load monitoring interval</label>
+
+                    <div class="controls">
+                        <input type="text" value="${taskDescriptor.loadMonitoring.detailedLoadInterval}"/>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Load units</label>
+
+                    <div class="controls">
+                        <input type="text" value="${taskDescriptor.loadMonitoring.loadUnits}"/>
+                    </div>
+                </div>
+            </div>
+            -->
+        </div>
+    </t:form>
 </html>
