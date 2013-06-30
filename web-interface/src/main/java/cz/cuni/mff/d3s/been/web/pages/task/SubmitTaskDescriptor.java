@@ -316,7 +316,7 @@ public class SubmitTaskDescriptor extends Page {
      * @return
      */
     public TaskExclusivity[] getAvailableExclusivities() {
-        return new TaskExclusivity[]{TaskExclusivity.CONTEXT_EXCLUSIVE, TaskExclusivity.EXCLUSIVE, TaskExclusivity.NON_EXCLUSIVE};
+        return TaskExclusivity.values();
     }
 
     /**
@@ -330,7 +330,7 @@ public class SubmitTaskDescriptor extends Page {
                 if (value == null) {
                     return null;
                 }
-                return value.toString();
+                return value.value();
             }
 
             @Override
