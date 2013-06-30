@@ -3,15 +3,13 @@ package cz.cuni.mff.d3s.been.web.pages.task;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.core.task.ObjectFactory;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
-import cz.cuni.mff.d3s.been.core.task.TaskProperty;
 import cz.cuni.mff.d3s.been.web.components.Layout;
 import cz.cuni.mff.d3s.been.web.pages.Overview;
 import cz.cuni.mff.d3s.been.web.pages.Page;
 import cz.cuni.mff.d3s.been.web.utils.KeyValuePair;
-import org.apache.tapestry5.EventConstants;
+import org.apache.tapestry5.PersistenceConstants;
 import org.apache.tapestry5.ValueEncoder;
 import org.apache.tapestry5.annotations.Component;
-import org.apache.tapestry5.annotations.OnEvent;
 import org.apache.tapestry5.annotations.Persist;
 import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.corelib.components.Form;
@@ -34,7 +32,7 @@ public class SubmitTaskDescriptor extends Page {
      * Task descriptor loaded in onActivate() method
      */
     @Property
-    @Persist(DEFAULT_PERSIST_MODE)
+    @Persist
     TaskDescriptor taskDescriptor;
 
     /**
@@ -50,11 +48,11 @@ public class SubmitTaskDescriptor extends Page {
      * unique ID)
      */
     @Property
-    @Persist(DEFAULT_PERSIST_MODE)
+    @Persist
     List<KeyValuePair> args;
 
     @Property
-    @Persist(DEFAULT_PERSIST_MODE)
+    @Persist
     List<KeyValuePair> opts;
 
     /**
@@ -94,20 +92,6 @@ public class SubmitTaskDescriptor extends Page {
      */
     private String descriptorName;
 
-    /**
-     * initialization method
-     *
-     * @param groupId        group id of {@link BpkIdentifier} to which the underlying {@link TaskDescriptor} belows
-     * @param bpkId          bpk id of {@link BpkIdentifier} to which the underlying {@link TaskDescriptor} belows
-     * @param version        version id of {@link BpkIdentifier} to which the underlying {@link TaskDescriptor} belows
-     * @param descriptorName name of concrete {@link TaskDescriptor} for {@link BpkIdentifier} identified by previous parameters
-     * @return null if conversation has been already started, self if conversation has been started in this
-     *         method call (see tapestry documentation for more info about return values from onActivate method)
-     */
-    Object onActivate(String groupId, String bpkId, String version, String descriptorName) {
-        return onActivate(groupId, bpkId, version, descriptorName, conversationId);
-    }
-
 
     /**
      * Setup method. Loads task descriptor (corresponding to given parameters)
@@ -117,26 +101,14 @@ public class SubmitTaskDescriptor extends Page {
      * @param bpkId          bpk id of {@link BpkIdentifier} to which the underlying {@link TaskDescriptor} belows
      * @param version        version id of {@link BpkIdentifier} to which the underlying {@link TaskDescriptor} belows
      * @param descriptorName name of concrete {@link TaskDescriptor} for {@link BpkIdentifier} identified by previous parameters
-     * @param conversationId id of current conversation
-     * @return null if conversation with given has been already started, self if conversation has been started in this
-     *         method call (see tapestry documentation for more info about return values from onActivate method)
+     * @return
      */
     @SuppressWarnings("unused")
-    Object onActivate(String groupId, String bpkId, String version, String descriptorName, String conversationId) {
+    Object onActivate(String groupId, String bpkId, String version, String descriptorName) {
         this.groupId = groupId;
         this.bpkId = bpkId;
         this.version = version;
         this.descriptorName = descriptorName;
-
-        if (!conversationManager.isActiveConversation(conversationId)) {
-            return createConversation();
-        }
-
-        this.conversationId = conversationId;
-
-        if (taskDescriptor != null) {
-            return null;
-        }
 
 
         // load correct task descriptor
@@ -177,7 +149,7 @@ public class SubmitTaskDescriptor extends Page {
 
     /**
      *
-     * @return array of groupId, bpkId, version, descriptorName and conversationId ... The same values which has been
+     * @return array of groupId, bpkId, version and descriptorName ... The same values which has been
      * set in onActivate method. This array will be added to each request from client side (in all links, submits etc.,
      * so this class will be activated with right parameters each time.
      */
@@ -186,8 +158,7 @@ public class SubmitTaskDescriptor extends Page {
                 groupId,
                 bpkId,
                 version,
-                descriptorName,
-                conversationId
+                descriptorName
         };
     }
 

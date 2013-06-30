@@ -1,15 +1,11 @@
 package cz.cuni.mff.d3s.been.web.pages;
 
 import cz.cuni.mff.d3s.been.core.task.*;
-import cz.cuni.mff.d3s.been.web.pages.runtime.Detail;
 import cz.cuni.mff.d3s.been.web.services.BeenApiService;
-import org.apache.tapestry5.ComponentResources;
-import org.apache.tapestry5.annotations.Persist;
 import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.services.PageRenderLinkSource;
 import org.slf4j.Logger;
-import org.tynamo.conversations.services.ConversationManager;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -25,19 +21,8 @@ import static cz.cuni.mff.d3s.been.web.components.Layout.Section;
  */
 public abstract class Page {
 
-    protected static final String DEFAULT_PERSIST_MODE = "conversation";
 
-    /**
-     * Page timeout in seconds. (3600s = 1h)
-     */
-    private static final int PAGE_TIMEOUT = 3600;
 
-    @Inject
-    protected ConversationManager conversationManager;
-
-    // inject componentResources to get the page name
-    @Inject
-    protected ComponentResources componentResources;
 
 	@Inject
 	@Property
@@ -49,12 +34,7 @@ public abstract class Page {
 	@Inject
 	private PageRenderLinkSource pageRenderLinkSource;
 
-    protected String conversationId;
 
-    protected Object createConversation() {
-        conversationId = conversationManager.createConversation(componentResources.getPageName(), PAGE_TIMEOUT);
-        return this;
-    }
 
     public Section getSection() {
 

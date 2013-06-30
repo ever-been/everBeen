@@ -9,7 +9,6 @@ import org.apache.tapestry5.ioc.services.ParallelExecutor;
 import org.lazan.t5.cometd.services.PushManager;
 
 import java.util.Collection;
-import java.util.Date;
 
 /**
  * @author Kuba Brecka

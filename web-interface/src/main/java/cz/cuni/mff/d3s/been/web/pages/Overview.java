@@ -1,8 +1,5 @@
 package cz.cuni.mff.d3s.been.web.pages;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Iterables;
 import cz.cuni.mff.d3s.been.core.LogMessage;
 import cz.cuni.mff.d3s.been.core.ri.FilesystemSample;
 import cz.cuni.mff.d3s.been.core.ri.NetworkSample;
@@ -22,10 +19,6 @@ import org.apache.tapestry5.services.javascript.JavaScriptSupport;
 import org.got5.tapestry5.jquery.ImportJQueryUI;
 
 import javax.inject.Inject;
-import java.text.DecimalFormat;
-import java.text.FieldPosition;
-import java.text.Format;
-import java.text.ParsePosition;
 import java.util.*;
 
 /**
