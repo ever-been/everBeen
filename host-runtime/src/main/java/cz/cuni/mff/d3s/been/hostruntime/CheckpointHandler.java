@@ -4,10 +4,11 @@ import cz.cuni.mff.d3s.been.cluster.action.Action;
 import cz.cuni.mff.d3s.been.cluster.action.Actions;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
-import cz.cuni.mff.d3s.been.mq.rep.Replies;
-import cz.cuni.mff.d3s.been.mq.req.Request;
+import cz.cuni.mff.d3s.been.socketworks.twoway.Replies;
+import cz.cuni.mff.d3s.been.socketworks.twoway.Request;
 import cz.cuni.mff.d3s.been.socketworks.SocketHandlerException;
 import cz.cuni.mff.d3s.been.socketworks.twoway.ReadReplyHandler;
+import cz.cuni.mff.d3s.been.task.checkpoints.CheckpointRequest;
 
 public class CheckpointHandler implements ReadReplyHandler {
 
@@ -36,10 +37,10 @@ public class CheckpointHandler implements ReadReplyHandler {
 
 	@Override
 	public String handle(String message) throws SocketHandlerException, InterruptedException {
-		Request request = null;
+		CheckpointRequest request = null;
 
 		try {
-			request = Request.fromJson(message);
+			request = CheckpointRequest.fromJson(message);
 		} catch (JSONUtils.JSONSerializerException e) {
 			return Replies.createErrorReply("Cannot deserialize").toJson();
 		}

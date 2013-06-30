@@ -26,7 +26,7 @@
 		<mongo.version>2.10.1</mongo.version>
 		<args4j.version>2.0.16</args4j.version>
 		<stefanbirkner.version>1.3.0</stefanbirkner.version>
-		<jeromq.version>0.3.0-SNAPSHOT</jeromq.version>
+		<jeromq.version>0.2.0</jeromq.version>
 
 		<!-- PLUGIN VERSION CONTROL -->
 		<jaxb2-maven-plugin.version>1.5</jaxb2-maven-plugin.version>
@@ -75,19 +75,6 @@
 		</dependency>
 	</dependencies>
 
-	<repositories>	
-		<repository>
-			<id>sonatype-nexus-snapshots</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-			<releases>
-					<enabled>false</enabled>
-			</releases>
-			<snapshots>
-					<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-
 	<build>
 		<plugins>
 			<plugin>
@@ -130,7 +117,8 @@
 			<modules>
 				<module>xsd-export</module>
 				<module>xsd-catalog-resolver</module>
-				<module>socketworks</module>
+				<module>socketworks-clients</module>
+				<module>socketworks-servers</module>
 				<module>core-data</module>
 				<module>core-utils</module>
 				<module>core-protocol</module>
@@ -146,12 +134,14 @@
 				<module>software-repository-client</module>
 				<module>software-repository</module>
 				<module>software-repository-fsbasedstore</module>
+				<module>checkpoints</module>
 				<module>results</module>
 				<module>persistence</module>
 				<module>storage</module>
 				<module>log-repository</module>
 				<module>results-repository</module>
 				<module>mongo-storage</module>
+				<module>mongo-storage-standalone</module>
 				<module>task-api</module>
 				<module>task-test</module>
 				<module>been-api</module>

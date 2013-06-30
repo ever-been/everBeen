@@ -1,6 +1,8 @@
 package cz.cuni.mff.d3s.been.taskapi;
 
 import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.HR_COMM_PORT;
+import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.HR_HOSTNAME;
+
 import cz.cuni.mff.d3s.been.mq.IMessageQueue;
 import cz.cuni.mff.d3s.been.mq.IMessageSender;
 import cz.cuni.mff.d3s.been.mq.Messaging;
@@ -20,7 +22,6 @@ public final class Messages {
 
 	private static IMessageQueue<String> taskMessageQueue = null;
 	private static IMessageSender<String> defaultSender = null;
-	private static int hostRuntimePort;
 
 	/**
 	 * Creates independent sender. Such a sender can be used in a different thread
@@ -33,8 +34,9 @@ public final class Messages {
 	 */
 	public static synchronized IMessageSender<String> createHRSender() throws MessagingException {
 		if (taskMessageQueue == null) {
-			hostRuntimePort = Integer.valueOf(System.getenv(HR_COMM_PORT));
-			taskMessageQueue = Messaging.createTaskQueue(hostRuntimePort);
+            String hostRuntimeHostname = System.getenv(HR_HOSTNAME);
+			int hostRuntimePort = Integer.valueOf(System.getenv(HR_COMM_PORT));
+			taskMessageQueue = Messaging.createTaskQueue(hostRuntimeHostname,hostRuntimePort);
 		}
 
 		return taskMessageQueue.createSender();

@@ -156,7 +156,7 @@ ProcessManager implements Service {
 
 	/** Starts the {@link MessageDispatcher} */
 	private void startMessageDispatcher() throws ServiceException {
-		messageDispatcher.addRecieveHandler(TASK_LOG_0MQ_NAME, TaskLogHandler.create(clusterContext));
+		messageDispatcher.addReceiveHandler(TASK_LOG_0MQ_NAME, TaskLogHandler.create(clusterContext));
 		messageDispatcher.addRespondingHandler(TASK_CHECKPOINT_0MQ_NAME, CheckpointHandlerFactory.create(clusterContext));
 		messageDispatcher.start();
 	}
@@ -180,7 +180,6 @@ ProcessManager implements Service {
 		stopResultsDispatcher();
 		stopMessageDispatcher();
 		stopTaskActionThread();
-		stopTaskRequestBroker();
 
 		// Kill all remaining running clusterTasks
 		tasks.killRunningTasks();
@@ -218,10 +217,6 @@ ProcessManager implements Service {
 		log.debug("Task action thread stopped");
 	}
 
-	/** Stops the {@link TaskRequestBrokerThread} */
-	private void stopTaskRequestBroker() {
-		// TODO
-	}
 	/**
 	 * Handles RunTaskMessage.
 	 * 

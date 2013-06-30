@@ -24,7 +24,7 @@ public class TaskMessageQueueTest extends BasicQueueTests {
 		/** Creates simulated Task-to-HR message queue */
 		TestTaskQueue() throws MessagingException {
 			hrTestQueue = Messaging.createTcpQueue(HOSTNAME);
-			taskMessageQueue = Messaging.createTaskQueue(hrTestQueue.getReceiver().getPort());
+			taskMessageQueue = Messaging.createTaskQueue(HOSTNAME,hrTestQueue.getReceiver().getPort());
 		}
 
 		@Override
@@ -51,6 +51,6 @@ public class TaskMessageQueueTest extends BasicQueueTests {
 
 	@Test(expected = UnsupportedOperationException.class)
 	public void testname() throws Exception {
-		Messaging.createTaskQueue(1234).getReceiver();
+		Messaging.createTaskQueue(HOSTNAME,1234).getReceiver();
 	}
 }

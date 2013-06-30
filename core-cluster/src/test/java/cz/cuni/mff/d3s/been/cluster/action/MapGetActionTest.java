@@ -3,6 +3,10 @@ package cz.cuni.mff.d3s.been.cluster.action;
 import java.util.Arrays;
 import java.util.List;
 
+import cz.cuni.mff.d3s.been.socketworks.twoway.Reply;
+import cz.cuni.mff.d3s.been.socketworks.twoway.ReplyType;
+import cz.cuni.mff.d3s.been.task.checkpoints.CheckpointRequest;
+import cz.cuni.mff.d3s.been.task.checkpoints.CheckpointRequestType;
 import org.junit.*;
 
 import com.hazelcast.config.Config;
@@ -12,10 +16,7 @@ import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.impl.GroupProperties;
 
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
-import cz.cuni.mff.d3s.been.mq.rep.Reply;
-import cz.cuni.mff.d3s.been.mq.rep.ReplyType;
-import cz.cuni.mff.d3s.been.mq.req.Request;
-import cz.cuni.mff.d3s.been.mq.req.RequestType;
+import cz.cuni.mff.d3s.been.socketworks.twoway.Request;
 
 /**
  * @author Martin Sixta
@@ -63,7 +64,7 @@ public class MapGetActionTest extends Assert {
 
 	@Test
 	public void testNonExistingKey() {
-		Request request = new Request(RequestType.GET, "nonExistingKey");
+		CheckpointRequest request = new CheckpointRequest(CheckpointRequestType.GET, "nonExistingKey");
 		fillIds(request);
 		Action action = Actions.createAction(request, ctx);
 
@@ -76,7 +77,7 @@ public class MapGetActionTest extends Assert {
 	@Test
 	public void testExistingKey() {
 		ctx.getMap(MAP).put(KEY1, VALUE1);
-		Request request = new Request(RequestType.GET, KEY1);
+		CheckpointRequest request = new CheckpointRequest(CheckpointRequestType.GET, KEY1);
 		fillIds(request);
 		Action action = Actions.createAction(request, ctx);
 
@@ -88,7 +89,7 @@ public class MapGetActionTest extends Assert {
 
 	@Test
 	public void testMalformedSelectorNull() {
-		Request request = new Request(RequestType.GET, "");
+        CheckpointRequest request = new CheckpointRequest(CheckpointRequestType.GET, "");
 		fillIds(request);
 
 		Action action = Actions.createAction(request, ctx);
@@ -110,7 +111,7 @@ public class MapGetActionTest extends Assert {
 		return concat(MAP, key);
 	}
 
-	private void fillIds(Request request) {
+	private void fillIds(CheckpointRequest request) {
 		request.setTaskId(TASK_ID);
 		request.setTaskContextId(CONTEXT_ID);
 	}

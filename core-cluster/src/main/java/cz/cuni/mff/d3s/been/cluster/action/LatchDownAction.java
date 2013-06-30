@@ -5,18 +5,19 @@ import static com.hazelcast.core.Instance.InstanceType.COUNT_DOWN_LATCH;
 import com.hazelcast.core.ICountDownLatch;
 
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
-import cz.cuni.mff.d3s.been.mq.rep.Replies;
-import cz.cuni.mff.d3s.been.mq.rep.Reply;
-import cz.cuni.mff.d3s.been.mq.req.Request;
+import cz.cuni.mff.d3s.been.socketworks.twoway.Replies;
+import cz.cuni.mff.d3s.been.socketworks.twoway.Reply;
+import cz.cuni.mff.d3s.been.socketworks.twoway.Request;
+import cz.cuni.mff.d3s.been.task.checkpoints.CheckpointRequest;
 
 /**
  * @author Martin Sixta
  */
 final class LatchDownAction implements Action {
-	private final Request request;
+	private final CheckpointRequest request;
 	private final ClusterContext ctx;
 
-	public LatchDownAction(Request request, ClusterContext ctx) {
+	public LatchDownAction(CheckpointRequest request, ClusterContext ctx) {
 
 		this.request = request;
 		this.ctx = ctx;

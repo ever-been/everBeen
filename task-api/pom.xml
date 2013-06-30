@@ -32,6 +32,18 @@
 			<version>${project.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>socketworks-clients</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>checkpoints</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
 		<!-- EXTERNAL -->
 		<dependency>
 			<groupId>org.jeromq</groupId>

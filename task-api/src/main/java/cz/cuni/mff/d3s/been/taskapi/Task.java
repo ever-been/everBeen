@@ -108,7 +108,7 @@ public abstract class Task {
 		this.id = System.getenv(TaskPropertyNames.TASK_ID);
 		this.taskContextId = System.getenv(TaskPropertyNames.TASK_CONTEXT_ID);
 		final String resultPort = System.getenv(TaskPropertyNames.HR_RESULTS_PORT);
-		resQueue = Messaging.createTaskQueue(Integer.valueOf(resultPort));
+		resQueue = Messaging.createTaskQueue(hostname,Integer.valueOf(resultPort));
 		try {
 			resSender = resQueue.createSender();
 			((TaskFieldResultFacadeWrapper) results).setResultFacade(ResultFacadeFactory.createResultFacade(resSender));

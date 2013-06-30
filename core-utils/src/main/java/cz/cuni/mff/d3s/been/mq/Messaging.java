@@ -77,13 +77,16 @@ public final class Messaging {
 	 * Typically a task wants to create such a queue.
 	 * 
 	 * WARNING: the returned implementation does support receiving!
-	 * 
-	 * 
-	 * @param port
-	 *          port on which a Host Runtime listens for messages from tasks
+	 *
+     * @param hostname
+     *  hostname on which the Host Runtime is listening for task messages
+     *
+     * @param port
+     *          port on which a Host Runtime listens for messages from tasks
+     *
 	 * @return
 	 */
-	public static IMessageQueue<String> createTaskQueue(int port) {
-		return new TaskMessageQueue("localhost", port);
+	public static IMessageQueue<String> createTaskQueue(String hostname, int port) {
+		return new TaskMessageQueue(hostname, port);
 	}
 }

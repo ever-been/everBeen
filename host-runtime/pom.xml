@@ -68,7 +68,7 @@
 
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
-			<artifactId>socketworks</artifactId>
+			<artifactId>socketworks-servers</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
