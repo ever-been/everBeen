@@ -1,6 +1,7 @@
 package cz.cuni.mff.d3s.been.web.pages.task;
 
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
+import cz.cuni.mff.d3s.been.core.task.ModeEnum;
 import cz.cuni.mff.d3s.been.core.task.ObjectFactory;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskExclusivity;
@@ -185,8 +186,12 @@ public class SubmitTaskDescriptor extends Page {
             taskDescriptor.getJava().setJavaOptions(new ObjectFactory().createJavaOptions());
         }
 
-        if (!this.taskDescriptor.isSetLoadMonitoring()) {
+        if (!taskDescriptor.isSetLoadMonitoring()) {
             taskDescriptor.setLoadMonitoring(new ObjectFactory().createLoadMonitoring());
+        }
+
+        if (!taskDescriptor.isSetDebug()) {
+            taskDescriptor.setDebug(new ObjectFactory().createDebug());
         }
 
         args = new ArrayList<>();
@@ -339,6 +344,41 @@ public class SubmitTaskDescriptor extends Page {
                     return null;
                 }
                 return TaskExclusivity.fromValue(clientValue);
+            }
+        };
+    }
+
+
+
+    /**
+     * Collects possible values for ModeEnum select box (ModeEnum = enum for possible
+     * values for debug mode)
+     * @return
+     */
+    public ModeEnum[] getAvailableDebugModes() {
+        return ModeEnum.values();
+    }
+
+    /**
+     * Creates value encoder for ModeEnum (used for specifying debug mode) entities.
+     * @return
+     */
+    public ValueEncoder<ModeEnum> getDebugModeEncoder() {
+        return new ValueEncoder<ModeEnum>() {
+            @Override
+            public String toClient(ModeEnum value) {
+                if (value == null) {
+                    return null;
+                }
+                return value.value();
+            }
+
+            @Override
+            public ModeEnum toValue(String clientValue) {
+                if (clientValue == null) {
+                    return null;
+                }
+                return ModeEnum.fromValue(clientValue);
             }
         };
     }
