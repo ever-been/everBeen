@@ -1,22 +1,19 @@
 package cz.cuni.mff.d3s.been.hostruntime;
 
-import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.HR_COMM_PORT;
-import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.HR_HOSTNAME;
-import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.HR_RESULTS_PORT;
 import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.LOGGER;
-import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.REQUEST_PORT;
 import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.TASK_CONTEXT_ID;
 import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.TASK_ID;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import cz.cuni.mff.d3s.been.socketworks.NamedSockets;
 import org.apache.commons.exec.ExecuteStreamHandler;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.slf4j.Logger;
@@ -67,9 +64,6 @@ final class
 
 ProcessManager implements Service {
 
-	private static final String TASK_LOG_0MQ_NAME = "TaskLogs";
-	private static final String TASK_CHECKPOINT_0MQ_NAME = "TaskCheckpoints";
-
 	/**
 	 * Logger
 	 */
@@ -108,7 +102,7 @@ ProcessManager implements Service {
 	/**
 	 * Collect results from tasks and dispatch them
 	 */
-	private ResultsDispatcher resultsDispatcher;
+	//private ResultsDispatcher resultsDispatcher;
 
 	/** Context of the Host Runtime */
 	private ProcessManagerContext tasks;
@@ -145,7 +139,6 @@ ProcessManager implements Service {
 	public void start() throws ServiceException {
 		startTaskActionThread();
 		startMessageDispatcher();
-		startResultsDispatcher();
 	}
 
 	/** Starts the {@link TaskActionThread} */
@@ -156,20 +149,10 @@ ProcessManager implements Service {
 
 	/** Starts the {@link MessageDispatcher} */
 	private void startMessageDispatcher() throws ServiceException {
-		messageDispatcher.addReceiveHandler(TASK_LOG_0MQ_NAME, TaskLogHandler.create(clusterContext));
-		messageDispatcher.addRespondingHandler(TASK_CHECKPOINT_0MQ_NAME, CheckpointHandlerFactory.create(clusterContext));
+		messageDispatcher.addReceiveHandler(NamedSockets.TASK_LOG_0MQ.getName(), TaskLogHandler.create(clusterContext));
+        messageDispatcher.addReceiveHandler(NamedSockets.TASK_RESULT_0MQ.getName(), ResultHandler.create(clusterContext));
+		messageDispatcher.addRespondingHandler(NamedSockets.TASK_CHECKPOINT_0MQ.getName(), CheckpointHandlerFactory.create(clusterContext));
 		messageDispatcher.start();
-	}
-
-	/** Starts the {@link ResultsDispatcher} */
-	private void startResultsDispatcher() throws ServiceException {
-		resultsDispatcher = new ResultsDispatcher(clusterContext, "localhost");
-		try {
-			resultsDispatcher.init();
-		} catch (MessagingException e) {
-			throw new ServiceException("Failed to register result dispatcher", e);
-		}
-		executorService.submit(resultsDispatcher);
 	}
 
 	/**
@@ -393,17 +376,11 @@ ProcessManager implements Service {
 
 	private Map<String, String> createEnvironmentProperties(TaskEntry taskEntry) {
 
-		Map<String, String> properties = new HashMap<>(System.getenv());
+		Map<String, String> properties = new TreeMap<String,String>(System.getenv());
+        properties.putAll(messageDispatcher.getBindings());
 		properties.put(LOGGER, System.getProperty(LOGGER));
-		properties.put(REQUEST_PORT, System.getProperty(REQUEST_PORT));
 		properties.put(TASK_ID, taskEntry.getId());
 		properties.put(TASK_CONTEXT_ID, taskEntry.getTaskContextId());
-		properties.put(HR_COMM_PORT, Integer.toString(messageDispatcher.getPortForQueue(TASK_LOG_0MQ_NAME)));
-		properties.put(HR_RESULTS_PORT, Integer.toString(resultsDispatcher.getPort()));
-
-		// TODO check deprecation (doesn't look like this is used anymore)
-		// maybe it's relevant for task-side interface distinction though
-		properties.put(HR_HOSTNAME, clusterContext.getInetSocketAddress().getHostName());
 
 		// add properties specified in the TaskDescriptor
 		TaskDescriptor td = taskEntry.getTaskDescriptor();

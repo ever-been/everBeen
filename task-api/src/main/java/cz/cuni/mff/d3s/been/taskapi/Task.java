@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.taskapi;
 
+import cz.cuni.mff.d3s.been.socketworks.NamedSockets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +26,6 @@ public abstract class Task {
 	private IMessageQueue<String> resQueue;
 	private IMessageSender<String> resSender;
 	protected final ResultFacade results = new TaskFieldResultFacadeWrapper();
-	private final String hostname = System.getenv(TaskPropertyNames.HR_HOSTNAME);
 
 	/**
 	 * Returns ID of the running task.
@@ -43,15 +43,6 @@ public abstract class Task {
 	 */
 	public String getTaskContextId() {
 		return taskContextId;
-	}
-
-	/**
-	 * Returns host name of the Host Runtime under which the task is running.
-	 * 
-	 * @return host name of the associated Host Runtime
-	 */
-	public String getHostName() {
-		return hostname;
 	}
 
 	/**
@@ -107,8 +98,7 @@ public abstract class Task {
 	private void initialize() {
 		this.id = System.getenv(TaskPropertyNames.TASK_ID);
 		this.taskContextId = System.getenv(TaskPropertyNames.TASK_CONTEXT_ID);
-		final String resultPort = System.getenv(TaskPropertyNames.HR_RESULTS_PORT);
-		resQueue = Messaging.createTaskQueue(hostname,Integer.valueOf(resultPort));
+        resQueue = Messaging.createTaskQueue(NamedSockets.TASK_RESULT_0MQ.getConnection());
 		try {
 			resSender = resQueue.createSender();
 			((TaskFieldResultFacadeWrapper) results).setResultFacade(ResultFacadeFactory.createResultFacade(resSender));
@@ -122,7 +112,7 @@ public abstract class Task {
 			Messages.send(String.format("%s#%s", TaskMessageType.TASK_RUNNING, id));
 		} catch (MessagingException e) {
 			// message passing does not work, try it with stderr ...
-			System.err.println("Cannot send 'i'm running' message");
+			System.err.println("Cannot send \"i'm running' message\"");
 		}
 	}
 

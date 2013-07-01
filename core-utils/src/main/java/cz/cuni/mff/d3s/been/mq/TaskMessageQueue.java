@@ -12,8 +12,12 @@ package cz.cuni.mff.d3s.been.mq;
 final class TaskMessageQueue implements IMessageQueue<String> {
 
 	private ZMQContext context;
-	private String SINK_CONN;
-	private String SINK_CONN_FORMAT = "tcp://%s:%d";
+	private final String SINK_CONN;
+	private final String SINK_CONN_FORMAT = "tcp://%s:%d";
+
+    TaskMessageQueue(String url) {
+        SINK_CONN = url;
+    }
 
 	TaskMessageQueue(String host, int port) {
 		context = Context.getReference();

@@ -89,4 +89,11 @@ public final class Messaging {
 	public static IMessageQueue<String> createTaskQueue(String hostname, int port) {
 		return new TaskMessageQueue(hostname, port);
 	}
+
+    /**
+     * @see  #createTaskQueue(String, int)
+     */
+    public static IMessageQueue<String> createTaskQueue(String url) {
+        return new TcpMessageQueue(url);
+    }
 }

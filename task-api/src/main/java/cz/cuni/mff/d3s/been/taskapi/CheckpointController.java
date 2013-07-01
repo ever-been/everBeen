@@ -1,10 +1,13 @@
-package cz.cuni.mff.d3s.been.task.checkpoints;
+package cz.cuni.mff.d3s.been.taskapi;
 
 import java.util.concurrent.TimeoutException;
 
 import cz.cuni.mff.d3s.been.core.TaskPropertyNames;
+import cz.cuni.mff.d3s.been.socketworks.NamedSockets;
 import cz.cuni.mff.d3s.been.socketworks.twoway.RequestException;
 import cz.cuni.mff.d3s.been.socketworks.twoway.Requestor;
+import cz.cuni.mff.d3s.been.task.checkpoints.CheckpointRequest;
+import cz.cuni.mff.d3s.been.task.checkpoints.CheckpointRequestType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,8 +52,7 @@ public class CheckpointController {
     }
 
     public static CheckpointController create() throws MessagingException {
-        Integer port = Integer.valueOf(System.getenv(TaskPropertyNames.REQUEST_PORT));
-        return create(String.format("tcp://localhost:%d", port));
+        return create(NamedSockets.TASK_CHECKPOINT_0MQ.getConnection());
     }
 
     public static CheckpointController create(String connection) throws MessagingException {

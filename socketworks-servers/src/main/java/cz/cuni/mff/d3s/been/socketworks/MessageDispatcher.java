@@ -3,6 +3,7 @@ package cz.cuni.mff.d3s.been.socketworks;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.hazelcast.core.MapEntry;
 import cz.cuni.mff.d3s.been.socketworks.oneway.OneWayMessaging;
 import cz.cuni.mff.d3s.been.socketworks.twoway.TwoWayMessaging;
 import org.slf4j.Logger;
@@ -17,8 +18,8 @@ import cz.cuni.mff.d3s.been.socketworks.twoway.ReadReplyHandlerFactory;
 /**
  * A message dispatcher intended as high-level abstraction over inter-process
  * socket works.
- * 
- * Created with IntelliJ IDEA. User: darklight Date: 5/6/13 Time: 12:26 PM
+ *
+ * @author radek.macha@gmail.com
  */
 public class MessageDispatcher implements Service {
 	private static final Logger log = LoggerFactory.getLogger(MessageDispatcher.class);
@@ -89,6 +90,18 @@ public class MessageDispatcher implements Service {
 			throw new ServiceException(String.format("Unable to initialize receiver for queue \"%s\"", queueName), e);
 		}
 	}
+
+    /**
+     * Create a map of current bindings provided by this {@link MessageDispatcher}
+     * @return
+     */
+    public Map<String, String> getBindings() {
+        final Map<String,String> bindings = new TreeMap<String,String>();
+        for(Map.Entry<String, QueueGuard> binding: guards.entrySet()) {
+            bindings.put(binding.getKey(), binding.getValue().getConnection());
+        }
+        return bindings;
+    }
 
 	@Override
 	public void start() throws ServiceException {

@@ -10,11 +10,6 @@ package cz.cuni.mff.d3s.been.core;
 public class TaskPropertyNames {
 
 	/**
-	 * port used for checkpoint synchronization
-	 */
-	public static final String REQUEST_PORT = "been.task.hr.request.port";
-
-	/**
 	 * System property with Task ID
 	 */
 	public static final String TASK_ID = "been.task.id";
@@ -25,27 +20,9 @@ public class TaskPropertyNames {
 	public static final String TASK_CONTEXT_ID = "been.taskcontext.id";
 
 	/**
-	 * System property with Host Runtime Communication Port (aka sink). Through
-	 * this port is realized for example logging.
-	 */
-	public static final String HR_COMM_PORT = "been.task.mq.sink.port";
-
-	/**
 	 * System property with alias for absolute path to logger script for native
 	 * tasks.
 	 */
 	public static final String LOGGER = "logger";
-
-	/**
-	 * 
-	 * System property with Host Runtime Results Port
-	 * 
-	 */
-	public static final String HR_RESULTS_PORT = "been.task.mq.results.port";
-
-	/**
-	 * System property with value of Host Runtime host name.
-	 */
-	public static final String HR_HOSTNAME = "been.task.hr.hostname";
 
 }

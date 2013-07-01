@@ -55,11 +55,6 @@ public class Requestor {
 		socket.connect(address);
 	}
 
-	public static Requestor create() throws MessagingException {
-        Integer port = Integer.valueOf(System.getenv(TaskPropertyNames.REQUEST_PORT));
-        return create(Socketworks.Protocol.TCP.connection("localhost",port));
-	}
-
     public static Requestor create(String address) throws MessagingException {
         final ZMQContext zctx = Context.getReference();
         return new Requestor(address, zctx, zctx.socket(ZMQ.REQ));
