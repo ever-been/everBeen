@@ -109,12 +109,12 @@ final class InprocMessageSender<T extends Serializable> implements IMessageSende
 			boolean sent = socket.send(bytes);
 
 			if (!sent) {
-				String msg = String.format("Cannot send {} to {}", object, CONNECTION_STRING);
+				String msg = String.format("Cannot send %s to %s", object, CONNECTION_STRING);
 				log.error(msg);
 				throw new MessagingException(msg);
 			}
 		} catch (SerializationException e) {
-			String msg = String.format("Cannot send {} to {}", object, CONNECTION_STRING);
+			String msg = String.format("Cannot send %s to %s", object, CONNECTION_STRING);
 			log.error(msg, e);
 			throw new MessagingException(msg, e);
 		}
