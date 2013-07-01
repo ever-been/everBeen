@@ -49,11 +49,15 @@ public class TcpMessageSender implements IMessageSender<String> {
 					connected = socket.connect(connection);
 				}
 			} catch (IllegalArgumentException e) {
-				throw new MessagingException(String.format("Failed to connect to %s", connection), e);
+				throw new MessagingException(String.format(
+						"Failed to connect to %s",
+						connection), e);
 			}
 
 			if (!connected) {
-				throw new MessagingException(String.format("Cannot connect to %s", connection));
+				throw new MessagingException(String.format(
+						"Cannot connect to %s",
+						connection));
 			}
 		}
 	}
@@ -86,7 +90,7 @@ public class TcpMessageSender implements IMessageSender<String> {
 		boolean sent = socket.send(object);
 
 		if (!sent) {
-			String msg = String.format("Cannot send {} to {}", object, connection);
+			String msg = String.format("Cannot send %s to %s", object, connection);
 			throw new MessagingException(msg);
 		}
 
@@ -100,7 +104,9 @@ public class TcpMessageSender implements IMessageSender<String> {
 	 */
 	private void checkIsConnected() throws MessagingException {
 		if (socket == null) {
-			throw new MessagingException(String.format("Not connected to %s!", connection));
+			throw new MessagingException(String.format(
+					"Not connected to %s!",
+					connection));
 		}
 	}
 

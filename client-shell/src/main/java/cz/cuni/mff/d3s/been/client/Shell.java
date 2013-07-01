@@ -1,8 +1,9 @@
 package cz.cuni.mff.d3s.been.client;
 
+import java.io.FileInputStream;
 import java.io.PrintWriter;
+import java.util.Properties;
 
-import com.hazelcast.core.HazelcastInstance;
 import jline.console.ConsoleReader;
 
 import org.kohsuke.args4j.CmdLineException;
@@ -10,30 +11,20 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 import cz.cuni.mff.d3s.been.cluster.Instance;
+import cz.cuni.mff.d3s.been.cluster.NodeType;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 
 /**
  * @author Martin Sixta
  */
 public class Shell {
-	@Option(name = "-h", aliases = { "--host" }, usage = "Hostname of a cluster member to connect to")
-	private String host = "localhost";
-
-	@Option(name = "-p", aliases = { "--port" }, usage = "Port of the host")
-	private int port = 5701;
-
-	@Option(name = "-ehl", aliases = { "--enable-hazelcast-logging" }, usage = "Turns on Hazelcast logging.")
-	private boolean debug = false;
-
-	@Option(name = "-gn", aliases = { "--group-name" }, usage = "Group Name")
-	private String groupName = "dev";
-
-	@Option(name = "-gp", aliases = { "--group-password" }, usage = "Group Password")
-	private String groupPassword = "dev-pass";
+	@Option(name = "-cf", aliases = { "--config-file" }, usage = "Path to BEEN config file.")
+	private String configFile = "client.properties";
 
 	private ClusterContext clusterContext;
 
 	public static void main(String[] args) {
+		System.out.println(System.getProperty("user.dir"));
 		new Shell().doMain(args);
 	}
 
@@ -82,16 +73,14 @@ public class Shell {
 			// parse the arguments.
 			parser.parseArgument(args);
 
+			Properties properties = new Properties();
+
+			properties.load(new FileInputStream(configFile));
+
 			// connect to the cluster
 
-			if (debug) {
-				System.setProperty("hazelcast.logging.type", "slf4j");
-			} else {
-				System.setProperty("hazelcast.logging.type", "none");
-			}
-
-			HazelcastInstance instance = Instance.newNativeInstance(host, port, groupName, groupPassword);
-			clusterContext = new ClusterContext(instance);
+			Instance.init(NodeType.NATIVE, properties);
+			clusterContext = new ClusterContext(Instance.getInstance());
 
 		} catch (CmdLineException e) {
 
