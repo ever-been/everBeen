@@ -109,18 +109,12 @@ final class InprocMessageSender<T extends Serializable> implements IMessageSende
 			boolean sent = socket.send(bytes);
 
 			if (!sent) {
-				String msg = String.format(
-						"Cannot send %s to %s",
-						object,
-						CONNECTION_STRING);
+				String msg = String.format("Cannot send %s to %s", object, CONNECTION_STRING);
 				log.error(msg);
 				throw new MessagingException(msg);
 			}
 		} catch (SerializationException e) {
-			String msg = String.format(
-					"Cannot send %s to %s",
-					object,
-					CONNECTION_STRING);
+			String msg = String.format("Cannot send %s to %s", object, CONNECTION_STRING);
 			log.error(msg, e);
 			throw new MessagingException(msg, e);
 		}
@@ -134,9 +128,7 @@ final class InprocMessageSender<T extends Serializable> implements IMessageSende
 	 */
 	private void checkIsConnected() throws MessagingException {
 		if (socket == null) {
-			throw new MessagingException(String.format(
-					"Not connected to %s!",
-					CONNECTION_STRING));
+			throw new MessagingException(String.format("Not connected to %s!", CONNECTION_STRING));
 		}
 	}
 
