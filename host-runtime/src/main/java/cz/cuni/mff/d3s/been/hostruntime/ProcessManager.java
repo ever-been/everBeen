@@ -90,11 +90,6 @@ ProcessManager implements Service {
 	private Tasks clusterTasks;
 
 	/**
-	 * Threading service
-	 */
-	private ExecutorService executorService;
-
-	/**
 	 * Thread dispatching task action messages.
 	 */
 	TaskActionThread taskActionThread;
@@ -126,7 +121,6 @@ ProcessManager implements Service {
 		this.hostInfo = hostInfo;
 		this.softwareResolver = new SoftwareResolver(clusterContext.getServicesUtils(), swRepoClientFactory);
 		this.clusterTasks = clusterContext.getTasksUtils();
-		this.executorService = Executors.newFixedThreadPool(1);
 
 		this.tasks = new ProcessManagerContext(clusterContext, hostInfo);
 		this.messageDispatcher = MessageDispatcher.create("localhost");
@@ -160,25 +154,12 @@ ProcessManager implements Service {
 	 */
 	@Override
 	public void stop() {
-		stopResultsDispatcher();
 		stopMessageDispatcher();
 		stopTaskActionThread();
 
 		// Kill all remaining running clusterTasks
 		tasks.killRunningTasks();
 
-	}
-
-	/** Stops the {@link ResultsDispatcher} */
-	private void stopResultsDispatcher() {
-		log.debug("Stopping result dispatcher...");
-		executorService.shutdown();
-		try {
-			executorService.awaitTermination(1, TimeUnit.SECONDS);
-		} catch (InterruptedException e) {
-			log.warn("Results dispatcher interrupted during shutdown sequence. Socket leaks are likely.", e);
-		}
-		log.debug("Result dispatcher stopped.");
 	}
 
 	/** Stops the {@link MessageDispatcher} */
