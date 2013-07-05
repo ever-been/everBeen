@@ -2,9 +2,7 @@ package cz.cuni.mff.d3s.been.socketworks.twoway;
 
 import java.util.List;
 
-import org.jeromq.ZMQ;
 import org.jeromq.ZMQ.Poller;
-import org.jeromq.ZMQ.Socket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,15 +27,13 @@ final class PollPipeline extends Thread {
 
 	private static final int NOFLAGS = 0;
 
-	private final ZMQ.Poller poller;
 	private final List<PollPartaker> partakers;
 	private final ZMQContext ctx;
 	private final FrameForwardMapper forwards;
 	private volatile boolean keepRunning = true;
 
-	private PollPipeline(ZMQContext context, Poller poller, List<PollPartaker> partakers, FrameForwardMapper forwards) {
+	private PollPipeline(ZMQContext context, List<PollPartaker> partakers, FrameForwardMapper forwards) {
 		this.ctx = context;
-		this.poller = poller;
 		this.partakers = partakers;
 		this.forwards = forwards;
 	}
@@ -47,7 +43,7 @@ final class PollPipeline extends Thread {
 	 * 
 	 * @param partakers
 	 *          Participants of the polling
-     *
+	 * 
 	 * @return The poll pipeline
 	 * 
 	 * @throws MessagingException
@@ -57,13 +53,8 @@ final class PollPipeline extends Thread {
 			PollPipeline
 			create(List<PollPartaker> partakers, FrameForwardMapper forwards) throws MessagingException {
 		ZMQContext ctx = Context.getReference();
-		Poller poller = null;
-		try {
-			poller = ctx.poller(partakers.size());
-		} catch (MessagingException e) {
-			ctx.term();
-		}
-		return new PollPipeline(ctx, poller, partakers, forwards);
+
+		return new PollPipeline(ctx, partakers, forwards);
 	}
 
 	public void doStop() {
@@ -72,17 +63,26 @@ final class PollPipeline extends Thread {
 
 	@Override
 	public void run() {
-        final StringBuilder sb = new StringBuilder();
-        boolean first = true;
-        for (PollPartaker partaker: partakers) {
-            if (!first) {
-                sb.append(", ");
-            }
-            first = false;
-            sb.append(partaker.getClass().getSimpleName());
-        }
-        setName(String.format("%s(%s)", getClass().getSimpleName(),sb.toString()));
+		final StringBuilder sb = new StringBuilder();
+		boolean first = true;
+		for (PollPartaker partaker : partakers) {
+			if (!first) {
+				sb.append(", ");
+			}
+			first = false;
+			sb.append(partaker.getClass().getSimpleName());
+		}
+		setName(String.format("%s(%s)", getClass().getSimpleName(), sb.toString()));
 		super.run();
+
+		Poller poller = null;
+
+		try {
+			poller = ctx.poller(partakers.size());
+		} catch (MessagingException e) {
+			log.error("Cannot create ZMQ poller", e);
+			return;
+		}
 
 		for (PollPartaker partaker : partakers) {
 			poller.register(partaker.getSocket(), partaker.getPollType());
@@ -97,9 +97,9 @@ final class PollPipeline extends Thread {
 
 			// Poll found something, select the partaker and have him handle his thing.
 			for (int i = 0; i < partakers.size(); ++i) {
-                log.debug("Got something");
+				log.debug("Got something");
 				if (poller.pollin(i)) {
-                    log.debug("It belongs to {}", partakers.get(i));
+					log.debug("It belongs to {}", partakers.get(i));
 					// Make sure to crunch the entire multi-frame message.
 					final Frames frames = Frames.create();
 					do {
