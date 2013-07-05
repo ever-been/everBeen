@@ -1,27 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bindings
-	xmlns="http://java.sun.com/xml/ns/jaxb"
-	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
-	xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	extensionBindingPrefixes="xjc"
-	version="2.0">
-		
+		xmlns="http://java.sun.com/xml/ns/jaxb"
+		xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		extensionBindingPrefixes="xjc"
+		version="2.0">
+
 	<bindings schemaLocation="entity.xsd">
 		<schemaBindings>
-			<package name="cz.cuni.mff.d3s.been.core.persistence" />
+			<package name="cz.cuni.mff.d3s.been.core.persistence"/>
 		</schemaBindings>
 
 		<bindings node="xs:complexType[@name='Entity']">
+
+
 			<bindings node="xs:all">
 				<bindings node="xs:element[@ref='taskentry:id']">
-					<property name="origin" />
+					<property name="origin" generateIsSetMethod="false"/>
 				</bindings>
 
 				<bindings node="xs:element[@ref='taskentry:taskContextId']">
-					<property name="originContext"/>
+					<property name="originContext" generateIsSetMethod="false"/>
+				</bindings>
+
+				<bindings node="xs:element[@name='created']">
+					<property generateIsSetMethod="false"/>
 				</bindings>
 			</bindings>
 		</bindings>
 	</bindings>
-	
+
 </bindings>
