@@ -10,9 +10,7 @@ public interface Action {
 	 * 
 	 * Handles the request, can block.
 	 * 
-	 * TODO figure out better name or one that actually is funny
-	 * 
 	 * @return reply to the request
 	 */
-	public Reply goGetSome();
+	public Reply handle();
 }

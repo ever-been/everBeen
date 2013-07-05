@@ -30,7 +30,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.4</version>
+				<version>${maven-jar-plugin.version}</version>
 				<configuration>
 					<archive>
 						<manifest>
@@ -53,6 +53,14 @@
 				</executions>
 				<configuration>
 
+					<taskDescriptors>
+						<param>src/main/resources/ClientSyncTest.td.xml</param>
+						<param>src/main/resources/ServerSyncTest.td.xml</param>
+					</taskDescriptors>
+
+					<taskContextDescriptors>
+						<param>src/main/resources/SyncRun.tcd.xml</param>
+					</taskContextDescriptors>
 
 				</configuration>
 			</plugin>

@@ -3,20 +3,119 @@
 <html t:type="layout" section="section"
       xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd" xmlns:p="tapestry:parameter">
 
-<t:grid source="tasks" row="task" inPlace="true" include="id,runtimeId,taskContextId,state" add="name"
-        reorder="id,name,state,runtimeId,taskContextId">
-    <p:idCell>
-        <t:pagelink page="task/detail" context="task.id">${task.id}</t:pagelink>
-    </p:idCell>
-    <p:taskContextIdCell>
-        <t:pagelink page="context/detail" context="task.taskContextId">${task.taskContextId}</t:pagelink>
-    </p:taskContextIdCell>
-    <p:runtimeIdCell>
-        <t:pagelink page="runtime/detail" context="task.runtimeId">${task.runtimeId}</t:pagelink>
-    </p:runtimeIdCell>
-    <p:nameCell>
-        ${task.taskDescriptor.name}
-    </p:nameCell>
-</t:grid>
+<h2>Benchmark &amp; Task Tree</h2>
+
+<div style="float: right; text-align: right;">
+	<button class="btn btn-primary" onclick="location.href='/task/submit'; return false;">Submit new item</button>
+	<br /><br />
+	<button class="btn btn-warning" onclick="if (window.confirm('Are you sure?')) location.href='/benchmark/remove/all-finished'; return false;">Remove finished benchmarks</button>
+</div>
+
+<table class="list">
+	<thead>
+	<tr>
+		<th>Benchmark ID</th>
+		<th>Name</th>
+		<th>Generator task</th>
+		<th>State</th>
+		<th>Generated</th>
+		<th>Resubmits</th>
+		<th></th>
+	</tr>
+	</thead>
+
+	<t:loop source="benchmarks" value="benchmark">
+		<tr style="background-color: #eee;">
+			<td>
+				<i class="icon-rocket"></i>&nbsp;<a href="/benchmark/detail/${benchmark.id}"><t:output format="idFormat" value="benchmark.id" /></a>
+			</td>
+			<td>
+				${benchmarkName(benchmark.id)}
+			</td>
+			<td>
+				<i class="icon-beaker"></i>&nbsp;<a href="/task/detail/${benchmark.generatorId}"><t:output format="idFormat" value="benchmark.generatorId" /></a>
+			</td>
+			<td>
+				<t:outputRaw value="taskStateWithIcon(benchmarkState(benchmark.id))"/>
+			</td>
+			<td>
+				${benchmark.generatedContextCount}
+			</td>
+			<td>
+				${benchmark.resubmitHistory.resubmitHistoryItem.size()}
+			</td>
+			<td>
+				<t:if test="benchmarkInFinalState(benchmark.id)">
+					<button class="btn btn-mini btn-warning" onclick="if (window.confirm('Are you sure?')) location.href='/benchmark/remove/${benchmark.id}'; return false;">Remove</button>
+					<p:else>
+						<button class="btn btn-mini btn-danger">Kill</button>
+					</p:else>
+				</t:if>
+
+			</td>
+		</tr>
+
+		<tr>
+			<td></td>
+			<td colspan="6">
+				<table>
+					<tr>
+						<th>Context ID</th>
+						<th>Name</th>
+						<th>State</th>
+						<th>Tasks</th>
+						<th></th>
+					</tr>
+					<t:loop source="contextsForBenchmark(benchmark.id)" value="context">
+						<tr>
+							<td>
+								<i class="icon-book"></i>&nbsp;<a href="/context/detail/${context.id}"><t:output format="idFormat" value="context.id" /></a>
+							</td>
+							<td>
+								${context.taskContextDescriptor.name}
+							</td>
+							<td>
+								<t:outputRaw value="contextStateWithIcon(context.contextState)"/>
+							</td>
+							<td>
+								<b>${context.containedTask.size()}</b>
+								&nbsp;
+								<a class="btn btn-mini tasktogglebutton" style="vertical-align: baseline;" href="#"><i class="icon-plus"></i></a>
+							</td>
+							<td style="display: none;">
+								<table class="inner-task-list">
+									<t:loop source="tasksForContext(context.id)" value="task">
+										<tr>
+											<td><i class="icon-beaker"></i>&nbsp;<a href="/task/detail/${task.id}"><t:output format="idFormat" value="task.id" /></a></td>
+											<td>${task.taskDescriptor.name}</td>
+											<td>
+												<t:outputRaw value="taskStateWithIcon(task.state)"/>
+											</td>
+										</tr>
+									</t:loop>
+								</table>
+							</td>
+						</tr>
+						<p:empty>
+							<tr>
+								<td colspan="4">
+									<i class="icon-info-sign"></i> There are no task contexts in this benchmark.
+								</td>
+							</tr>
+						</p:empty>
+					</t:loop>
+				</table>
+			</td>
+		</tr>
+		<p:empty>
+			<tr>
+				<td colspan="7">
+					<i class="icon-info-sign"></i> There are no benchmarks.
+				</td>
+			</tr>
+		</p:empty>
+	</t:loop>
+
+</table>
 
 </html>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bindings
+	xmlns="http://java.sun.com/xml/ns/jaxb"
+	version="2.0"
+	>
+	
+	<bindings schemaLocation="bpk-config.xsd">
+		<schemaBindings>
+			<package name="cz.cuni.mff.d3s.been.bpk" />
+		</schemaBindings>
+	</bindings>
+	
+</bindings>

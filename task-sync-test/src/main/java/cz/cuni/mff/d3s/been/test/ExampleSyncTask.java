@@ -15,7 +15,7 @@ public class ExampleSyncTask extends Task {
 	private Requestor requestor;
 
 	enum TaskType {
-		SERVER, CLIENT
+		SERVER, CLIENT, FINALIZER
 	}
 
 	// what am i?
@@ -48,10 +48,16 @@ public class ExampleSyncTask extends Task {
 		TaskType type = TaskType.valueOf(System.getenv(TYPE_KEY));
 
 		try {
-			if (type == TaskType.SERVER) {
-				runServer();
-			} else {
-				runClient();
+			switch (type) {
+				case SERVER:
+					runServer();
+					break;
+				case CLIENT:
+					runClient();
+					break;
+				case FINALIZER:
+					System.out.println("FINALIZER");
+					break;
 			}
 		} catch (Exception e) {
 			log.error("Error while running test: ", e);
@@ -99,7 +105,7 @@ public class ExampleSyncTask extends Task {
 
 			// print something
 			long end = System.nanoTime();
-			log.info("Test complected in {} ms", (end - start) / 1000000);
+			log.info("Test completed in {} ms", (end - start) / 1000000);
 
 		} finally {
 			// don't forget to close the connection

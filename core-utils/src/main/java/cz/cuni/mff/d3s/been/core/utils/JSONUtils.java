@@ -19,25 +19,21 @@ public class JSONUtils {
 
 	public static <T> T deserialize(String json, Class<T> to) throws JSONSerializerException {
 		ObjectMapper mapper = new ObjectMapper();
-		T deserialized;
 		try {
-			deserialized = mapper.readValue(json, to);
+			return mapper.readValue(json, to);
 		} catch (IOException e) {
 			throw new JSONSerializerException(
 					"Unable to deserialize JSON to JAVA object", e);
 		}
-		return deserialized;
 	}
 
-	public static <T> T deserialize(String json, TypeReference typeReference) throws JSONSerializerException {
+	public static <T> T deserialize(String json, TypeReference<T> type) throws JSONSerializerException {
 		ObjectMapper mapper = new ObjectMapper();
-		T deserialized;
 		try {
-			deserialized = mapper.readValue(json, typeReference);
+			return mapper.readValue(json, type);
 		} catch (IOException e) {
 			throw new JSONSerializerException("Unable to deserialize JSON to JAVA object", e);
 		}
-		return deserialized;
 	}
 
 	@SuppressWarnings("serial")
@@ -45,10 +41,6 @@ public class JSONUtils {
 
 		private JSONSerializerException(String message, Throwable cause) {
 			super(message, cause);
-		}
-
-		private JSONSerializerException(String message) {
-			super(message);
 		}
 
 	}

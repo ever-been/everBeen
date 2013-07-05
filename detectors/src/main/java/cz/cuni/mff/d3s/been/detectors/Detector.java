@@ -3,34 +3,38 @@ package cz.cuni.mff.d3s.been.detectors;
 import cz.cuni.mff.d3s.been.core.ri.*;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Kuba
- * Date: 25.02.13
- * Time: 16:26
- * To change this template use File | Settings | File Templates.
+ * @author Kuba Brecka
  */
 public class Detector {
 
-	SigarDetector detector;
+	SigarDetector nativeDetector;
+	JavaDetector javaDetector;
 
 	public Detector() {
 		// detect HW
-		detector = new SigarDetector();
+		nativeDetector = new SigarDetector();
+		javaDetector = new JavaDetector();
 	}
 
     public void detectAll(RuntimeInfo runtimeInfo) {
-		// detect hardware
-        runtimeInfo.setHardware(detector.detectHardware());
+	    // detect Java
+	    runtimeInfo.setJava(javaDetector.detectJava());
 
-        // detect Java
-        JavaDetector java = new JavaDetector();
-        runtimeInfo.setJava(java.detectJava());
+	    if (! nativeDetector.isSigarAvailable()) {
+		    javaDetector.detectOperatingSystem(runtimeInfo);
+		    javaDetector.detectHardware(runtimeInfo);
+		    javaDetector.detectFilesystems(runtimeInfo);
+		    return;
+	    }
+
+	    // detect hardware
+	    runtimeInfo.setHardware(nativeDetector.detectHardware());
 
         // detect OS
-        runtimeInfo.setOperatingSystem(detector.detectOperatingSystem());
+        runtimeInfo.setOperatingSystem(nativeDetector.detectOperatingSystem());
 
 		// detect filesystems
-		for (Filesystem fs : detector.detectFilesystems()) {
+		for (Filesystem fs : nativeDetector.detectFilesystems()) {
 			runtimeInfo.getFilesystem().add(fs);
 		}
     }
@@ -38,7 +42,13 @@ public class Detector {
 	private MonitorSample lastSample;
 
 	public MonitorSample generateSample(boolean differential) {
-		MonitorSample newSample = detector.generateSample();
+		MonitorSample newSample;
+		if (nativeDetector.isSigarAvailable()) {
+			newSample = nativeDetector.generateSample();
+		} else {
+			newSample = javaDetector.generateSample();
+		}
+
 		MonitorSample sample = newSample;
 
 		if (differential)
@@ -57,9 +67,12 @@ public class Detector {
 		diff.setTimestamp(newSample.getTimestamp());
 		diff.setFreeMemory(newSample.getFreeMemory());
 		diff.setProcessCount(newSample.getProcessCount());
+		diff.setCpuUsage(newSample.getCpuUsage());
 
 		// network
-		for (int i = 0; i < newSample.getInterfaces().size(); i++) {
+		int networkCount = newSample.getInterfaces().size();
+		if (oldSample != null) networkCount = Math.min(networkCount, oldSample.getInterfaces().size());
+		for (int i = 0; i < networkCount; i++) {
 			NetworkSample n1 = newSample.getInterfaces().get(i);
 			NetworkSample diffSample = new NetworkSample();
 			diffSample.setName(n1.getName());
@@ -74,7 +87,9 @@ public class Detector {
 		}
 
 		// filesystems
-		for (int i = 0; i < newSample.getFilesystems().size(); i++) {
+		int fileSystemCount = newSample.getFilesystems().size();
+		if (oldSample != null) fileSystemCount = Math.min(fileSystemCount, oldSample.getFilesystems().size());
+		for (int i = 0; i < fileSystemCount; i++) {
 			FilesystemSample f1 = newSample.getFilesystems().get(i);
 			FilesystemSample diffSample = new FilesystemSample();
 			diffSample.setDeviceName(f1.getDeviceName());

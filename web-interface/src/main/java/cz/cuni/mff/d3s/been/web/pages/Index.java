@@ -1,11 +1,15 @@
 package cz.cuni.mff.d3s.been.web.pages;
 
-import cz.cuni.mff.d3s.been.web.components.Layout;
+import org.apache.tapestry5.EventContext;
+import org.apache.tapestry5.services.HttpError;
 
 /**
- * User: donarus Date: 4/22/13 Time: 12:25 PM
+ * @author Kuba Brecka
  */
-@Page.Navigation(section = Layout.Section.OVERVIEW)
 public class Index extends Page {
+	Object onActivate(EventContext context) {
+		if (context.getCount() == 0) return Overview.class;
 
+		return new HttpError(404, "Resource not found.");
+	}
 }

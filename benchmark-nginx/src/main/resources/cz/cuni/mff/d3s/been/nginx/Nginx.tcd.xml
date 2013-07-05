@@ -1,7 +1,9 @@
 <?xml version="1.0"?>
-<taskContextDescriptor xmlns="http://been.d3s.mff.cuni.cz/taskmanager/tcd"
-                       xmlns:td="http://been.d3s.mff.cuni.cz/taskmanager/td"
+<taskContextDescriptor xmlns="http://been.d3s.mff.cuni.cz/task-context-descriptor"
+                       xmlns:td="http://been.d3s.mff.cuni.cz/task-descriptor"
                        name="nginx-context">
+
+	<contextDescription>Nginx Context</contextDescription>
 
 	<properties>
 		<property name="revision">4532</property>
@@ -18,7 +20,7 @@
 		<descriptor>
 			<td:taskDescriptor
 					groupId="cz.cuni.mff.d3s.been" bpkId="benchmark-nginx"
-					version="3.0.0" name="nginx-server">
+					version="3.0.0" name="nginx-server" type="task">
 				<td:java>
 					<td:useTaskRunner>true</td:useTaskRunner>
 					<td:mainClass>cz.cuni.mff.d3s.been.nginx.NginxServerTask</td:mainClass>
@@ -49,9 +51,9 @@
 
 	<templates>
 		<template name="nginx-client">
-			<td:taskDescriptor xmlns="http://been.d3s.mff.cuni.cz/taskmanager/td"
+			<td:taskDescriptor xmlns="http://been.d3s.mff.cuni.cz/task-descriptor"
 			                   groupId="cz.cuni.mff.d3s.been" bpkId="benchmark-nginx"
-			                   version="3.0.0" name="nginx-client">
+			                   version="3.0.0" name="nginx-client" type="task">
 				<td:properties>
 					<td:property name="numberOfRuns">10</td:property>
 					<td:property name="numberOfConnections">1000</td:property>

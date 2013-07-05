@@ -16,8 +16,7 @@ import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
 
 /**
- * Created with IntelliJ IDEA. User: Kuba Date: 24.02.13 Time: 13:49 To change
- * this template use File | Settings | File Templates.
+ * @author Kuba Brecka
  */
 public class DetectorRunner {
 	public static void main(String[] args) {

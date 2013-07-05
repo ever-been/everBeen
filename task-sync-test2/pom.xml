@@ -25,7 +25,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.4</version>
+				<version>${maven-jar-plugin.version}</version>
 				<configuration>
 					<archive>
 						<manifest>
@@ -47,8 +47,9 @@
 					</execution>
 				</executions>
 				<configuration>
-
-
+					<taskDescriptors>
+						<param>src/main/resources/ExampleSyncTest2.td.xml</param>
+					</taskDescriptors>
 				</configuration>
 			</plugin>
 		</plugins>

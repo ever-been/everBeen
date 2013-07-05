@@ -20,10 +20,10 @@ final class TaskStatusGetAction implements Action {
 	}
 
 	@Override
-	public Reply goGetSome() {
+	public Reply handle() {
 		String taskId = request.getSelector();
 
-		TaskEntry taskEntry = ctx.getTasksUtils().getTask(taskId);
+		TaskEntry taskEntry = ctx.getTasks().getTask(taskId);
 
 		if (taskEntry == null) {
 			return Replies.createErrorReply("No such task '%s'", taskId);

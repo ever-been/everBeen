@@ -13,12 +13,24 @@
 	</parent>
 
 	<dependencies>
-
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
 			<artifactId>task-api</artifactId>
 			<version>3.0.0</version>
 		</dependency>
+
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>benchmark-api</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>jfree</groupId>
+			<artifactId>jfreechart</artifactId>
+			<version>1.0.13</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -26,7 +38,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.4</version>
+				<version>${maven-jar-plugin.version}</version>
 				<configuration>
 					<archive>
 						<manifest>
@@ -48,30 +60,17 @@
 					</execution>
 				</executions>
 				<configuration>
-					<!-- default is java -->
-					<runtime>java</runtime>
-
-					<!-- main jar file, only if you want to overide the jar maven creates 
-						.. -->
-					<packageJarFile></packageJarFile>
-
-					<filesToArchive>
-						<!-- additional files to include -->
-					</filesToArchive>
-
-					<!-- maven dependencies are handled automatically -->
-
-					<!-- dependencies on other BPKs -->
-					<bpkDependencies>
-						<!-- <bpkIdentifier> <groupId>GROUP_ID</groupId> <bpkId>BPK_ID</bpkId> 
-							<version>VERSION</version> </bpkIdentifier> -->
-					</bpkDependencies>
-
-
+					<mainClass>TODO go away with this setting</mainClass>
+					<taskDescriptors>
+						<param>src/main/resources/cz/cuni/mff/d3s/been/task/ExampleTask.td.xml</param>
+						<param>src/main/resources/cz/cuni/mff/d3s/been/task/ExampleBenchmark.td.xml</param>
+					</taskDescriptors>
+					<taskContextDescriptors>
+						<param>src/main/resources/cz/cuni/mff/d3s/been/task/Example.tcd.xml</param>
+					</taskContextDescriptors>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
-
 
 </project>

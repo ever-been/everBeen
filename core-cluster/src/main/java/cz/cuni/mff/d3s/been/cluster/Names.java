@@ -31,6 +31,11 @@ public class Names {
 	public static final String TASK_CONTEXTS_MAP_NAME = "BEEN_MAP_TASK_CONTEXTS";
 
 	/**
+	 * Map storing current benchmark entries.
+	 */
+	public static final String BENCHMARKS_MAP_NAME = "BEEN_MAP_BENCHMARKS";
+
+	/**
 	 * This queue holds results awaiting to be stored persistently.
 	 */
 	public static final String RESULT_QUEUE_NAME = "BEEN_QUEUE_RESULTS";
@@ -58,4 +63,10 @@ public class Names {
 	 * the map with name {@link Names#SERVICES_MAP_NAME}
 	 */
 	public static final String SWREPOSITORY_SERVICES_MAP_KEY = "SWREPOSITORY";
+
+
+	/**
+	 * All benchmarks run in a special task context with this ID.
+	 */
+	public static final String BENCHMARKS_CONTEXT_ID = "00000000-0000-0000-0000-000000001234";
 }

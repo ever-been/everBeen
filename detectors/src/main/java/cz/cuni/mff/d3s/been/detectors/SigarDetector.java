@@ -18,15 +18,19 @@ import cz.cuni.mff.d3s.been.core.ri.*;
 import cz.cuni.mff.d3s.been.core.ri.Cpu;
 
 /**
- * Created with IntelliJ IDEA. User: Kuba Date: 24.02.13 Time: 13:46 To change
- * this template use File | Settings | File Templates.
+ * @author Kuba Brecka
  */
 public class SigarDetector {
+
+	private boolean sigarUnavailable = false;
 
 	private Sigar sigar;
 
 	private void loadSigar() throws SigarException {
 		if (sigar != null)
+			return;
+
+		if (sigarUnavailable)
 			return;
 
 		try {
@@ -37,6 +41,11 @@ public class SigarDetector {
 			archLoader.setLibName(libName);
 			libName = archLoader.getLibraryName();
 			InputStream libStream = this.getClass().getResourceAsStream(libName);
+
+			if (libStream == null) {
+				sigarUnavailable = true;
+				return;
+			}
 
 			final Path dirPath = Files.createTempDirectory("been_native_lib");
 			final Path filePath = dirPath.resolve(libName);
@@ -66,6 +75,16 @@ public class SigarDetector {
 		} catch (IOException | ArchNotSupportedException e) {
 			// cannot load sigar native lib, continue
 		}
+	}
+
+	public boolean isSigarAvailable() {
+		try {
+			loadSigar();
+		} catch (SigarException e) {
+			// do nothing
+		}
+
+		return !sigarUnavailable;
 	}
 
 	public Hardware detectHardware() {
@@ -120,6 +139,8 @@ public class SigarDetector {
 		try {
 			loadSigar();
 
+			if (sigar == null) return os;
+
 			org.hyperic.sigar.OperatingSystem sys = org.hyperic.sigar.OperatingSystem.getInstance();
 			os.setName(sys.getName());
 			os.setVersion(sys.getVersion());
@@ -140,6 +161,8 @@ public class SigarDetector {
 
 		try {
 			loadSigar();
+			if (sigar == null)
+				return fslist;
 
 			for (FileSystem fs : sigar.getFileSystemList()) {
 				FileSystemUsage usage = sigar.getFileSystemUsage(fs.getDirName());
@@ -161,12 +184,13 @@ public class SigarDetector {
 
 	public MonitorSample generateSample() {
 		MonitorSample sample = new MonitorSample();
+		sample.setLoadAverage(new LoadAverage());
 
 		try {
 			loadSigar();
 
 			if (sigar == null)
-				return null;
+				return sample;
 
 			// load average
 			double[] avg = sigar.getLoadAverage();
@@ -175,6 +199,10 @@ public class SigarDetector {
 			la.setLoad5(avg[1]);
 			la.setLoad15(avg[2]);
 			sample.setLoadAverage(la);
+
+			// CPU usage
+			CpuPerc cpuPerc = sigar.getCpuPerc();
+			sample.setCpuUsage(cpuPerc.getCombined());
 
 			// memory
 			Mem mem = sigar.getMem();

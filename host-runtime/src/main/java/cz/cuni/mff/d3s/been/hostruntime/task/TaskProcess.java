@@ -147,7 +147,7 @@ public class TaskProcess implements AutoCloseable {
 			throw new TaskException("Execution of task process failed", e);
 		} catch (Throwable t) {
 			// should not happen, but one never knows :)
-			throw new TaskException("Execution of task process failed from unknown reason", t);
+			throw new TaskException("Execution of task process failed for unknown reason", t);
 		}
 	}
 

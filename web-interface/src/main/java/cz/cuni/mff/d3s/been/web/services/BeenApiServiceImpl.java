@@ -33,4 +33,13 @@ public class BeenApiServiceImpl implements BeenApiService {
 
 		return api;
 	}
+
+	@Override
+	public void disconnect() {
+		if (isConnected()) {
+			api.shutdown();
+		}
+		api = null;
+	}
+
 }

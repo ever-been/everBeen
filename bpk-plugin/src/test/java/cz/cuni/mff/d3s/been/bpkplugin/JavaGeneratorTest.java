@@ -101,8 +101,10 @@ public class JavaGeneratorTest extends Assert {
 		when(artifact.getGroupId()).thenReturn("artifact1groupId");
 		when(artifact.getVersion()).thenReturn("artifact1version");
 		cfg.artifacts = Arrays.asList(artifact);
-		cfg.filesToArchive = new ArrayList<>();
-		cfg.bpkDependencies = new ArrayList<>();
+        cfg.filesToArchive = new ArrayList<>();
+        cfg.bpkDependencies = new ArrayList<>();
+        cfg.taskDescriptors = new File[] {};
+        cfg.taskContextDescriptors = new File[] {};
 		cfg.bpkId = "bpkId";
 		cfg.groupId = "groupId";
 		cfg.version = "version";

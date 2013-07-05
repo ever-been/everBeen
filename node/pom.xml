@@ -49,7 +49,7 @@
 
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
-			<artifactId>software-repository</artifactId>
+			<artifactId>software-repository-server</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 
@@ -91,6 +91,7 @@
 			<scope>runtime</scope>
 			<version>${logback.version}</version>
 		</dependency>
+
 	</dependencies>
 
 

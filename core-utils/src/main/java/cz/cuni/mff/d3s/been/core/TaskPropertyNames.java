@@ -19,6 +19,12 @@ public class TaskPropertyNames {
 	 */
 	public static final String TASK_CONTEXT_ID = "been.taskcontext.id";
 
+
+    /**
+     * System property with Benchmark ID
+     */
+    public static final String BENCHMARK_ID = "been.benchmark.id";
+    
 	/**
 	 * System property with alias for absolute path to logger script for native
 	 * tasks.

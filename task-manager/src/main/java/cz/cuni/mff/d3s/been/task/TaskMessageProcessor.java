@@ -10,6 +10,9 @@ import cz.cuni.mff.d3s.been.mq.IMessageReceiver;
 import cz.cuni.mff.d3s.been.mq.IMessageSender;
 import cz.cuni.mff.d3s.been.mq.MessageQueues;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
+import cz.cuni.mff.d3s.been.task.action.TaskAction;
+import cz.cuni.mff.d3s.been.task.action.TaskActionException;
+import cz.cuni.mff.d3s.been.task.msg.TaskMessage;
 
 /**
  * @author Martin Sixta
@@ -86,4 +89,15 @@ final class TaskMessageProcessor extends Thread {
 			}
 		}
 	}
+
+	/**
+	 * Message used to terminate task message processing.
+	 */
+	private static final class PoisonMessage implements TaskMessage {
+		@Override
+		public TaskAction createAction(ClusterContext ctx) {
+			throw new UnsupportedOperationException("Poison message does not execute actions!");
+		}
+	}
+
 }

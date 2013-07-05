@@ -13,7 +13,8 @@ import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.mq.IMessageSender;
-import cz.cuni.mff.d3s.been.mq.MessageQueues;
+import cz.cuni.mff.d3s.been.task.msg.Messages;
+import cz.cuni.mff.d3s.been.task.msg.TaskMessage;
 
 /**
  * 
@@ -43,7 +44,6 @@ final class LocalKeyScanner extends TaskManagerService {
 	private final LocalKeyScannerRunnable runnable;
 
 	private final String nodeId;
-	private final MessageQueues messageQueues = MessageQueues.getInstance();
 
 	public LocalKeyScanner(ClusterContext clusterCtx) {
 		this.clusterCtx = clusterCtx;
@@ -56,7 +56,7 @@ final class LocalKeyScanner extends TaskManagerService {
 		@Override
 		public void run() {
 
-			IMap<String, TaskEntry> map = clusterCtx.getTasksUtils().getTasksMap();
+			IMap<String, TaskEntry> map = clusterCtx.getTasks().getTasksMap();
 
 			for (String taskId : map.localKeySet()) {
 				TaskEntry entry = map.get(taskId);
@@ -82,7 +82,8 @@ final class LocalKeyScanner extends TaskManagerService {
 
 		if (!TMUtils.isOwner(entry, nodeId)) {
 			log.debug("Will take over the task {}", entry.getId());
-			sender.send(new NewOwnerTaskMessage(entry));
+			TaskMessage msg = Messages.createNewTaskOwnerMessage(entry);
+			sender.send(msg);
 		}
 	}
 

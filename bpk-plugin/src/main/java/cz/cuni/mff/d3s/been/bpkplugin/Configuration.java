@@ -3,7 +3,7 @@ package cz.cuni.mff.d3s.been.bpkplugin;
 import java.io.File;
 import java.util.Collection;
 
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.maven.artifact.Artifact;
 
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
@@ -27,8 +27,10 @@ public class Configuration {
 	public Collection<FileItem> filesToArchive;
 	public Collection<Artifact> artifacts;
 	public Collection<BpkIdentifier> bpkDependencies;
+    public File[] taskDescriptors;
+    public File[] taskContextDescriptors;
 
-	@Override
+    @Override
 	public String toString() {
 		return ReflectionToStringBuilder.toString(this);
 	}

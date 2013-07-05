@@ -68,7 +68,7 @@ public class MapGetActionTest extends Assert {
 		fillIds(request);
 		Action action = Actions.createAction(request, ctx);
 
-		Reply reply = action.goGetSome();
+		Reply reply = action.handle();
 
 		assertSame(ReplyType.OK, reply.getReplyType());
 		assertSame(null, reply.getValue());
@@ -81,7 +81,7 @@ public class MapGetActionTest extends Assert {
 		fillIds(request);
 		Action action = Actions.createAction(request, ctx);
 
-		Reply reply = action.goGetSome();
+		Reply reply = action.handle();
 
 		assertSame(ReplyType.OK, reply.getReplyType());
 		assertEquals(VALUE1, reply.getValue());
@@ -94,7 +94,7 @@ public class MapGetActionTest extends Assert {
 
 		Action action = Actions.createAction(request, ctx);
 
-		Reply reply = action.goGetSome();
+		Reply reply = action.handle();
 
 		assertSame(ReplyType.ERROR, reply.getReplyType());
 	}

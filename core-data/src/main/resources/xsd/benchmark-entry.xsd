@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema
+		xmlns="http://been.d3s.mff.cuni.cz/benchmark-entry"
+		targetNamespace="http://been.d3s.mff.cuni.cz/benchmark-entry"
+		xmlns:benchmarkentry="http://been.d3s.mff.cuni.cz/benchmark-entry"
+		xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		>
+
+
+	<xs:element name="id" type="xs:string"/>
+	<xs:element name="generatorId" type="xs:string"/>
+
+	<xs:element name="storageItem">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="key" type="xs:string" />
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="storage">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="benchmarkentry:storageItem" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="generatedContextCount" type="xs:int" />
+	<xs:element name="allowResubmit" type="xs:boolean" />
+	<xs:element name="timestamp" type="xs:long" />
+	<xs:element name="oldRuntimeId" type="xs:string" />
+	<xs:element name="oldGeneratorId" type="xs:string" />
+
+
+	<xs:element name="resubmitHistoryItem">
+		<xs:complexType>
+			<xs:all>
+				<xs:element ref="benchmarkentry:timestamp" minOccurs="1" maxOccurs="1" />
+				<xs:element ref="benchmarkentry:oldRuntimeId" minOccurs="1" maxOccurs="1" />
+				<xs:element ref="benchmarkentry:oldGeneratorId" minOccurs="1" maxOccurs="1" />
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="resubmitHistory">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="benchmarkentry:resubmitHistoryItem" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="benchmarkEntry">
+		<xs:complexType>
+			<xs:all>
+				<xs:element ref="benchmarkentry:id" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="benchmarkentry:generatorId" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="benchmarkentry:storage" minOccurs="1" maxOccurs="1" />
+				<xs:element ref="benchmarkentry:generatedContextCount" minOccurs="1" maxOccurs="1" />
+				<xs:element ref="benchmarkentry:allowResubmit" minOccurs="1" maxOccurs="1" />
+				<xs:element ref="benchmarkentry:resubmitHistory" minOccurs="1" maxOccurs="1" />
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+
+</xs:schema>

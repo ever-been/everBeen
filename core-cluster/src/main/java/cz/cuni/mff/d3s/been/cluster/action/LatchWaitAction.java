@@ -25,7 +25,7 @@ final class LatchWaitAction implements Action {
 	}
 
 	@Override
-	public Reply goGetSome() {
+	public Reply handle() {
 		String latchName = Actions.latchNameForRequest(request);
 
 		if (!ctx.containsInstance(COUNT_DOWN_LATCH, latchName)) {
@@ -59,8 +59,7 @@ final class LatchWaitAction implements Action {
 				return Replies.createErrorReply("TIMEOUT");
 			}
 
-		} catch (InstanceDestroyedException | MemberLeftException
-				| InterruptedException e) {
+		} catch (InstanceDestroyedException | MemberLeftException | InterruptedException e) {
 			return Replies.createErrorReply(e.getMessage());
 		}
 

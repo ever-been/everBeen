@@ -52,8 +52,8 @@ public class TaskHandle {
 		this.entry = entry;
 		this.ctx = ctx;
 		this.id = entry.getId();
-		this.map = ctx.getTasksUtils().getTasksMap();
-		this.tasks = ctx.getTasksUtils();
+		this.map = ctx.getTasks().getTasksMap();
+		this.tasks = ctx.getTasks();
 	}
 
 	/**

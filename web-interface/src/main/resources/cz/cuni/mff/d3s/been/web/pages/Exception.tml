@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+
+<html t:type="layout" section="section" xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd">
+
+<h2>An unexpected exception has occurred</h2>
+<p>${message}</p>
+
+<div style="padding: 20px;">
+	<t:exceptiondisplay exception="exception"/>
+</div>
+
+</html>

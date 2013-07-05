@@ -6,6 +6,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
@@ -34,7 +35,7 @@ public class ReadReplyGuardTest {
     }
 
     @After
-    public void tearDown() throws MessagingException{
+    public void tearDown() throws MessagingException {
         requestor.close();
         guard.terminate();
     }

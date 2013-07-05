@@ -26,7 +26,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.4</version>
+				<version>${maven-jar-plugin.version}</version>
 				<configuration>
 					<archive>
 						<manifest>
@@ -66,6 +66,13 @@
 						<!-- <bpkIdentifier> <groupId>GROUP_ID</groupId> <bpkId>BPK_ID</bpkId> 
 							<version>VERSION</version> </bpkIdentifier> -->
 					</bpkDependencies>
+
+					<taskDescriptors>
+						<param>src/main/resources/cz/cuni/mff/d3s/been/jackson/serialize/ARRAY_NO_CACHE.td.xml</param>
+						<param>src/main/resources/cz/cuni/mff/d3s/been/jackson/serialize/ARRAY_OM_CACHE.td.xml</param>
+						<param>src/main/resources/cz/cuni/mff/d3s/been/jackson/serialize/SMALL_POJO_NO_CACHE.td.xml</param>
+						<param>src/main/resources/cz/cuni/mff/d3s/been/jackson/serialize/SMALL_POJO_OM_CACHE.td.xml</param>
+					</taskDescriptors>
 
 
 				</configuration>

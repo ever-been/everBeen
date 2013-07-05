@@ -10,12 +10,19 @@
 		>
 
 	<xs:import namespace="http://been.d3s.mff.cuni.cz/common"/>
-	
+
 	<xs:simpleType name="ExclusiveString">
 		<xs:restriction base="xs:string">
-			<xs:enumeration value="non-exclusive" />
-			<xs:enumeration value="context-exclusive" />
-			<xs:enumeration value="exclusive" />
+			<xs:enumeration value="non-exclusive"/>
+			<xs:enumeration value="context-exclusive"/>
+			<xs:enumeration value="exclusive"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="TypeString">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="task"/>
+			<xs:enumeration value="benchmark"/>
 		</xs:restriction>
 	</xs:simpleType>
 
@@ -26,6 +33,7 @@
 		<xs:attribute name="name" type="common:IDStringRelaxed" use="optional" default="_NO_NAME_"/>
 		<xs:attribute name="description" type="xs:string" use="optional" default=""/>
 		<xs:attribute name="exclusive" type="td:ExclusiveString" use="optional" default="non-exclusive"/>
+		<xs:attribute name="type" type="td:TypeString" use="required"/>
 	</xs:attributeGroup>
 
 	<xs:element name="argument" type="xs:string"/>
@@ -75,7 +83,7 @@
 		</xs:simpleContent>
 	</xs:complexType>
 
-	<xs:element name="property" type="td:Property" />
+	<xs:element name="property" type="td:Property"/>
 	<xs:element name="properties">
 		<xs:complexType>
 			<xs:sequence>
@@ -85,25 +93,21 @@
 	</xs:element>
 
 	<xs:element name="asTask" type="common:IDStringRelaxed"/>
-	<xs:element name="name" type="common:IDStringRelaxed" />
+	<xs:element name="name" type="common:IDStringRelaxed"/>
 	<xs:element name="xpath" type="xs:string"/>
 
 
 	<xs:complexType name="HostRuntimes">
-		<xs:sequence>    <!-- Temporary hack. <asTask> and <rsl> are exclusive. -->
-			<xs:element ref="td:asTask" minOccurs="0" maxOccurs="1"/>
+		<xs:sequence>
 			<xs:element ref="td:xpath" minOccurs="0" maxOccurs="1"/>
+			<!--
+			<xs:element ref="td:asTask" minOccurs="0" maxOccurs="1"/>
 			<xs:element ref="td:name" minOccurs="0" maxOccurs="unbounded"/>
+			-->
 		</xs:sequence>
 	</xs:complexType>
 
 	<xs:element name="hostRuntimes" type="td:HostRuntimes"/>
-
-	<xs:attributeGroup name="dependencyCheckPointAttrGroup">
-		<xs:attribute name="taskId" type="common:IDStringRelaxed" use="required"/>
-		<xs:attribute name="type" type="common:IDStringFree" use="required"/>
-		<xs:attribute name="value" type="xs:string" use="optional"/>
-	</xs:attributeGroup>
 
 	<xs:attributeGroup name="failurePolicyAttrGroup">
 		<xs:attribute name="restartMax" type="common:nonnegativeInt" use="optional" default="0"/>
@@ -156,7 +160,7 @@
 	<xs:element name="taskDescriptor">
 		<xs:complexType>
 			<xs:all>
-				<xs:element ref="td:description" minOccurs="0" maxOccurs="1" />
+				<xs:element ref="td:description" minOccurs="0" maxOccurs="1"/>
 				<xs:element ref="td:arguments" minOccurs="0" maxOccurs="1"/>
 				<xs:element ref="td:java" minOccurs="0" maxOccurs="1"/>
 				<xs:element ref="td:properties" minOccurs="0" maxOccurs="1"/>

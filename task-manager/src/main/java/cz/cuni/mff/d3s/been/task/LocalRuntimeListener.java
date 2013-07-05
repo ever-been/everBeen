@@ -2,6 +2,7 @@ package cz.cuni.mff.d3s.been.task;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,9 @@ import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.mq.IMessageSender;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
+import cz.cuni.mff.d3s.been.task.msg.AbortTaskMessage;
+import cz.cuni.mff.d3s.been.task.msg.Messages;
+import cz.cuni.mff.d3s.been.task.msg.TaskMessage;
 
 /**
  * Listens on local changes of Host Runtimes.
@@ -27,7 +31,7 @@ import cz.cuni.mff.d3s.been.mq.MessagingException;
  */
 final class LocalRuntimeListener extends TaskManagerService implements EntryListener<String, RuntimeInfo> {
 
-	private static final String WAITING_TASKS_QUERY = "state = cz.cuni.mff.d3s.been.core.task.TaskState.WAITING";
+	private static final String WAITING_TASKS_QUERY = "state = WAITING";
 
 	/** logging */
 	private static final Logger log = LoggerFactory.getLogger(LocalRuntimeListener.class);
@@ -47,24 +51,22 @@ final class LocalRuntimeListener extends TaskManagerService implements EntryList
 	public LocalRuntimeListener(ClusterContext clusterCtx) {
 
 		this.clusterCtx = clusterCtx;
-		this.runtimesMap = clusterCtx.getRuntimesUtils().getRuntimeMap();
-		this.tasksMap = clusterCtx.getTasksUtils().getTasksMap();
+		this.runtimesMap = clusterCtx.getRuntimes().getRuntimeMap();
+		this.tasksMap = clusterCtx.getTasks().getTasksMap();
 
 	}
 
 	@Override
 	public synchronized void entryAdded(EntryEvent<String, RuntimeInfo> event) {
-		log.debug("Host Runtime added: {}", event.getKey());
+		log.info("Host Runtime added: {}", event.getKey());
 
 		scheduleWaitingTasks();
-
-		log.debug("DONE");
 
 	}
 
 	@Override
 	public synchronized void entryRemoved(EntryEvent<String, RuntimeInfo> event) {
-		log.debug("Host Runtime removed: {}", event.getKey());
+		log.info("Host Runtime removed: {}", event.getKey());
 
 	}
 
@@ -85,7 +87,18 @@ final class LocalRuntimeListener extends TaskManagerService implements EntryList
 
 	@Override
 	public synchronized void entryEvicted(EntryEvent<String, RuntimeInfo> event) {
-		log.debug("Host Runtime evicted: {}", event.getKey());
+		log.warn("Host Runtime evicted: {}", event.getKey());
+		Collection<TaskEntry> tasks = getTasksOnRuntime(event.getValue().getId());
+
+		for (TaskEntry entry : tasks) {
+			try {
+				sender.send(new AbortTaskMessage(entry, "Host Runtime Failed"));
+			} catch (MessagingException e) {
+				String msg = String.format("Cannot send message to '%s'", sender.getConnection());
+				log.error(msg, e);
+			}
+
+		}
 	}
 
 	@Override
@@ -107,7 +120,8 @@ final class LocalRuntimeListener extends TaskManagerService implements EntryList
 	private void scheduleWaitingTasks() {
 		for (TaskEntry entry : getWaitingTasks()) {
 			try {
-				sender.send(new TaskChangedMessage(entry));
+				TaskMessage msg = Messages.createTaskChangedMessage(entry);
+				sender.send(msg);
 			} catch (MessagingException e) {
 				String msg = String.format("Cannot send message to '%s'", sender.getConnection());
 				log.error(msg, e);
@@ -117,17 +131,46 @@ final class LocalRuntimeListener extends TaskManagerService implements EntryList
 	}
 
 	/**
-	 * Returns all waiting tasks
+	 * Returns all tasks waiting to be scheduled
 	 * 
 	 * @return all waiting tasks
 	 */
 	private Collection<TaskEntry> getWaitingTasks() {
 		try {
 
-			return tasksMap.values(new SqlPredicate(WAITING_TASKS_QUERY));
+			final Collection<TaskEntry> values = tasksMap.values(new SqlPredicate(WAITING_TASKS_QUERY));
+			Collection<TaskEntry> waitingTasks = new LinkedList<>();
+
+			for (TaskEntry entry : values) {
+				if (entry.getTaskDependency() == null) {
+					waitingTasks.add(entry);
+				}
+
+			}
+
+			return waitingTasks;
 
 		} catch (Exception e) {
 			log.error("Error while looking for waiting tasks", e);
+		}
+
+		return Collections.emptyList();
+
+	}
+
+	private static final String TASKS_ON_RUNTIME_FMT = "runtimeId = '%s'";
+
+	/**
+	 * Returns all waiting tasks
+	 * 
+	 * @return all waiting tasks
+	 */
+	private Collection<TaskEntry> getTasksOnRuntime(String runtimeId) {
+		try {
+			String query = String.format(TASKS_ON_RUNTIME_FMT, runtimeId);
+			return tasksMap.values(new SqlPredicate(query));
+		} catch (Exception e) {
+			log.error("Error while looking tasks on a runtime", e);
 		}
 
 		return Collections.emptyList();

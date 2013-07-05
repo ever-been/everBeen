@@ -61,7 +61,7 @@ final class TaskStatusWaitAction implements Action {
 	}
 
 	@Override
-	public Reply goGetSome() {
+	public Reply handle() {
 		String taskId = request.getSelector();
 
 		if (taskId == null || taskId.isEmpty()) {
@@ -72,7 +72,7 @@ final class TaskStatusWaitAction implements Action {
 
 		final TaskWaiter waiter = new TaskWaiter();
 
-		IMap<String, TaskEntry> map = ctx.getTasksUtils().getTasksMap();
+		IMap<String, TaskEntry> map = ctx.getTasks().getTasksMap();
 
 		map.addEntryListener(waiter, taskId, true);
 

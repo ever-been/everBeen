@@ -1,10 +1,8 @@
 package cz.cuni.mff.d3s.been.cluster.context;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import static cz.cuni.mff.d3s.been.cluster.Names.BENCHMARKS_CONTEXT_ID;
+
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -15,17 +13,7 @@ import com.hazelcast.core.Instance;
 
 import cz.cuni.mff.d3s.been.cluster.Names;
 import cz.cuni.mff.d3s.been.core.SystemProperties;
-import cz.cuni.mff.d3s.been.core.task.Property;
-import cz.cuni.mff.d3s.been.core.task.Task;
-import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
-import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
-import cz.cuni.mff.d3s.been.core.task.TaskContextState;
-import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
-import cz.cuni.mff.d3s.been.core.task.TaskEntries;
-import cz.cuni.mff.d3s.been.core.task.TaskEntry;
-import cz.cuni.mff.d3s.been.core.task.TaskProperties;
-import cz.cuni.mff.d3s.been.core.task.TaskProperty;
-import cz.cuni.mff.d3s.been.core.task.Template;
+import cz.cuni.mff.d3s.been.core.task.*;
 
 /**
  * Created with IntelliJ IDEA. User: Kuba Date: 20.04.13 Time: 13:09 To change
@@ -54,18 +42,113 @@ public class TaskContexts {
 		return getTaskContextsMap().values();
 	}
 
-	public TaskContextEntry putTaskContext(TaskContextEntry entry, long ttl,
-			TimeUnit timeUnit) {
+	public TaskContextEntry putTaskContext(TaskContextEntry entry, long ttl, TimeUnit timeUnit) {
 		return getTaskContextsMap().put(entry.getId(), entry, ttl, timeUnit);
 	}
 
-	public TaskContextEntry submit(TaskContextDescriptor descriptor) {
+	public void putContextEntry(TaskContextEntry entry) {
+		getTaskContextsMap().put(entry.getId(), entry);
+	}
 
-		TaskContextEntry taskContextEntry = new TaskContextEntry();
-		taskContextEntry.setTaskContextDescriptor(descriptor);
-		taskContextEntry.setId(UUID.randomUUID().toString());
+	/**
+	 * Submits a context to the cluster.
+	 * 
+	 * Submit does not create or schedule any tasks. Tasks will be created and
+	 * scheduled by the framework some time later.
+	 * 
+	 * @param descriptor
+	 *          descriptor of a context
+	 * 
+	 * @return id of the submitted context
+	 * 
+	 */
+	public String submit(TaskContextDescriptor descriptor, String benchmarkId) {
 
-		Collection<TaskEntry> entriesToSubmit = new ArrayList<>();
+		TaskContextEntry contextEntry = new TaskContextEntry();
+		contextEntry.setTaskContextDescriptor(descriptor);
+		contextEntry.setId(UUID.randomUUID().toString());
+		contextEntry.setBenchmarkId(benchmarkId);
+		contextEntry.setContextState(TaskContextState.WAITING);
+
+		checkContextBeforeSubmit(contextEntry);
+
+		putContextEntry(contextEntry);
+		log.debug("Task context was submitted with ID {}", contextEntry.getId());
+
+		return contextEntry.getId();
+	}
+
+	private void checkContextBeforeSubmit(TaskContextEntry contextEntry) {
+		TaskContextDescriptor descriptor = contextEntry.getTaskContextDescriptor();
+
+		Collection<TaskEntry> entriesToSubmit = getTaskEntries(contextEntry);
+		Map<String, TaskEntry> entries = new HashMap<>();
+
+		for (TaskEntry e : entriesToSubmit) {
+			if (e.getTaskDescriptor().getType() != TaskType.TASK) {
+				throw new IllegalArgumentException("Task context contains a TaskDescriptor with a type that is not task.");
+			}
+
+			TaskDescriptor taskDescriptor = e.getTaskDescriptor();
+			entries.put(taskDescriptor.getName(), e);
+		}
+
+		for (Task task : descriptor.getTask()) {
+			if (task.isSetRunAfterTask()) {
+				String runAfter = task.getRunAfterTask();
+				String taskName = task.getName();
+
+				if (taskName.equals(runAfter)) {
+					String msg = String.format("Cannot wait for itself to finish: %s", taskName);
+					throw new IllegalArgumentException();
+				}
+
+				if (entries.get(runAfter) == null) {
+					String msg = String.format("No such task to wait for %s", runAfter);
+					throw new IllegalArgumentException(msg);
+				}
+			}
+		}
+
+		// TODO check for cycles
+
+	}
+
+	public String submitTaskInNewContext(TaskDescriptor taskDescriptor) {
+		if (taskDescriptor.getType() != TaskType.TASK) {
+			throw new IllegalArgumentException("TaskDescriptor's type is not task.");
+		}
+
+		TaskContextDescriptor contextDescriptor = new TaskContextDescriptor();
+		Task taskInTaskContext = new Task();
+		taskInTaskContext.setName(taskDescriptor.getName());
+		Descriptor descriptorInTaskContext = new Descriptor();
+		descriptorInTaskContext.setTaskDescriptor(taskDescriptor);
+		taskInTaskContext.setDescriptor(descriptorInTaskContext);
+		contextDescriptor.getTask().add(taskInTaskContext);
+
+		return submit(contextDescriptor, null);
+	}
+
+	public String submitBenchmarkTask(TaskDescriptor benchmarkTaskDescriptor, String benchmarkId) {
+		if (benchmarkTaskDescriptor.getType() != TaskType.BENCHMARK) {
+			throw new IllegalArgumentException("TaskDescriptor's type is not benchmark.");
+		}
+
+		TaskEntry taskEntry = TaskEntries.create(benchmarkTaskDescriptor, BENCHMARKS_CONTEXT_ID);
+		taskEntry.setBenchmarkId(benchmarkId);
+		String taskId = clusterContext.getTasks().submit(taskEntry);
+		clusterContext.getBenchmarks().addBenchmarkToBenchmarksContext(taskEntry);
+
+		return taskEntry.getId();
+	}
+
+	private Collection<TaskEntry> getTaskEntries(TaskContextEntry taskContextEntry) {
+		TaskContextDescriptor descriptor = taskContextEntry.getTaskContextDescriptor();
+		String contextId = taskContextEntry.getId();
+
+		Collection<TaskEntry> entries = new ArrayList<>();
+		Map<String, String> nameToId = new HashMap<>();
 
 		for (Task t : descriptor.getTask()) {
 
@@ -80,28 +163,50 @@ public class TaskContexts {
 			td.setName(t.getName());
 			setTaskProperties(descriptor, t, td);
 
-			TaskEntry taskEntry = TaskEntries.create(td, taskContextEntry.getId());
-			taskEntry.setTaskContextId(taskContextEntry.getId());
+			TaskEntry taskEntry = TaskEntries.create(td, contextId);
 
-			taskContextEntry.getContainedTask().add(taskEntry.getId());
-			entriesToSubmit.add(taskEntry);
+			if (t.isSetRunAfterTask()) {
+				taskEntry.setTaskDependency(t.getRunAfterTask());
+			}
+			nameToId.put(t.getName(), taskEntry.getId());
+			entries.add(taskEntry);
 		}
 
-		taskContextEntry.setContextState(TaskContextState.RUNNING);
-		getTaskContextsMap().put(taskContextEntry.getId(), taskContextEntry);
-
-		for (TaskEntry taskEntry : entriesToSubmit) {
-			clusterContext.getTasksUtils().submit(taskEntry);
-			log.info("Task was submitted with ID {}", taskEntry.getId());
+		// map names to ids
+		for (TaskEntry entry : entries) {
+			if (entry.isSetTaskDependency()) {
+				final String dependsOn = entry.getTaskDependency();
+				entry.setTaskDependency(nameToId.get(dependsOn));
+			}
 		}
 
-		log.info("Task context was submitted with ID {}", taskContextEntry.getId());
+		return entries;
 
-		return taskContextEntry;
 	}
 
-	private void setTaskProperties(TaskContextDescriptor descriptor, Task task,
-			TaskDescriptor td) {
+	public void runContext(String contextId) {
+		TaskContextEntry contextEntry = getTaskContext(contextId);
+		if (contextEntry == null) {
+			// TODO
+			return;
+		}
+
+		Collection<TaskEntry> entriesToSubmit = getTaskEntries(contextEntry);
+
+		// TODO consider transactions
+		for (TaskEntry taskEntry : entriesToSubmit) {
+			taskEntry.setBenchmarkId(contextEntry.getBenchmarkId());
+			String taskId = clusterContext.getTasks().submit(taskEntry);
+			contextEntry.getContainedTask().add(taskId);
+			log.debug("Task was submitted with ID {}", taskId);
+		}
+
+		contextEntry.setContextState(TaskContextState.RUNNING);
+		putContextEntry(contextEntry);
+
+	}
+
+	private void setTaskProperties(TaskContextDescriptor descriptor, Task task, TaskDescriptor td) {
 		HashMap<String, String> properties = new HashMap<>();
 
 		if (descriptor.isSetProperties()) {
@@ -135,17 +240,14 @@ public class TaskContexts {
 		}
 	}
 
-	private TaskDescriptor cloneTemplateWithName(
-			TaskContextDescriptor descriptor, String templateName) {
+	private TaskDescriptor cloneTemplateWithName(TaskContextDescriptor descriptor, String templateName) {
 		for (Template t : descriptor.getTemplates().getTemplate()) {
 			if (t.getName().equals(templateName)) {
 				return (TaskDescriptor) t.getTaskDescriptor().clone();
 			}
 		}
 
-		throw new IllegalArgumentException(String.format(
-				"Cannot find template with name '%s'",
-				templateName));
+		throw new IllegalArgumentException(String.format("Cannot find template with name '%s'", templateName));
 	}
 
 	/**
@@ -153,11 +255,10 @@ public class TaskContexts {
 	 * given TaskContextEntry.
 	 * 
 	 * @param taskContextEntry
+	 *          entry to clean up
 	 */
 	public void cleanupTaskContext(TaskContextEntry taskContextEntry) {
-		log.info(
-				"Destroying cluster instances for task context {}",
-				taskContextEntry.getId());
+		log.info("Destroying cluster instances for task context {}", taskContextEntry.getId());
 
 		// destroy the checkpoint map
 		clusterContext.getMap("checkpointmap_" + taskContextEntry.getId()).destroy();
@@ -174,24 +275,51 @@ public class TaskContexts {
 		int contextTtlSeconds = SystemProperties.getInteger("been.context.ttl", 300);
 		int taskTtlSeconds = SystemProperties.getInteger("been.task.ttl", 300);
 
-		log.info(
-				"Removing tasks contained in context {} after {} seconds",
-				taskContextEntry.getId(),
-				taskTtlSeconds);
+		log.info("Removing tasks contained in context {} after {} seconds", taskContextEntry.getId(), taskTtlSeconds);
 
 		for (String taskId : taskContextEntry.getContainedTask()) {
-			TaskEntry taskEntry = clusterContext.getTasksUtils().getTask(taskId);
-			clusterContext.getTasksUtils().putTask(
-					taskEntry,
-					taskTtlSeconds,
-					TimeUnit.SECONDS);
+			TaskEntry taskEntry = clusterContext.getTasks().getTask(taskId);
+			clusterContext.getTasks().putTask(taskEntry, taskTtlSeconds, TimeUnit.SECONDS);
 		}
 
-		log.info(
-				"Removing task context entry {} after {} seconds",
-				taskContextEntry.getId(),
-				contextTtlSeconds);
+		log.info("Removing task context entry {} after {} seconds", taskContextEntry.getId(), contextTtlSeconds);
 
 		putTaskContext(taskContextEntry, contextTtlSeconds, TimeUnit.SECONDS);
+	}
+
+	/**
+	 * Removes the task context with the specified ID from Hazelcast map of tasks contexts.
+	 * The task context must be in a final state (finished). Also removes all tasks contained
+	 * in the context.
+	 *
+	 * @param taskContextId ID of the task context to remove
+	 */
+	public void remove(String taskContextId) {
+		TaskContextEntry taskContextEntry = getTaskContext(taskContextId);
+
+		TaskContextState state = taskContextEntry.getContextState();
+		if (state == TaskContextState.FINISHED) {
+			log.info("Removing task context {} from map.", taskContextId);
+
+			for (String taskId : taskContextEntry.getContainedTask()) {
+				clusterContext.getTasks().remove(taskId);
+			}
+
+			getTaskContextsMap().remove(taskContextId);
+		} else {
+			throw new IllegalStateException(String.format("Trying to remove task context %s, but it's in state %s.", taskContextId, state));
+		}
+	}
+
+	public Collection<TaskEntry> getTasksInTaskContext(String taskContextId) {
+		TaskContextEntry taskContextEntry = getTaskContext(taskContextId);
+
+		Collection<TaskEntry> result = new ArrayList<>();
+		for (String taskId : taskContextEntry.getContainedTask()) {
+			TaskEntry entry = clusterContext.getTasks().getTask(taskId);
+			result.add(entry);
+		}
+
+		return result;
 	}
 }

@@ -3,7 +3,6 @@ package cz.cuni.mff.d3s.been.submitter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
@@ -16,21 +15,12 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 import org.xml.sax.SAXException;
 
-import com.hazelcast.core.HazelcastInstance;
-
 import cz.cuni.mff.d3s.been.cluster.Instance;
-import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.jaxb.BindingParser;
 import cz.cuni.mff.d3s.been.core.jaxb.ConvertorException;
 import cz.cuni.mff.d3s.been.core.jaxb.XSD;
-import cz.cuni.mff.d3s.been.core.sri.SWRepositoryInfo;
-import cz.cuni.mff.d3s.been.core.task.Descriptor;
-import cz.cuni.mff.d3s.been.core.task.Task;
 import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
-import cz.cuni.mff.d3s.been.datastore.SoftwareStoreFactory;
-import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
-import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
 
 /**
  * 
@@ -54,6 +44,9 @@ public class Submitter {
 
 	@Option(name = "-tcd", aliases = { "--task-context-descriptor" }, usage = "TaskContextDescriptor to submit")
 	private String tcdPath;
+
+	@Option(name = "-bd", aliases = { "--benchmark-descriptor" }, usage = "TaskDescriptor of benchmark to submit")
+	private String bdPath;
 
 	@Option(name = "-gn", aliases = { "--group-name" }, usage = "Group Name")
 	private String groupName = "dev";
@@ -104,6 +97,10 @@ public class Submitter {
 		api.submitTaskContext(taskContextDescriptor);
 	}
 
+	private void submitBenchmark(File bdFile) throws JAXBException, SAXException, ConvertorException {
+		api.submitBenchmark(createTaskDescriptor(bdFile));
+	}
+
 	private void doMain(String[] args) {
 
 		CmdLineParser parser = new CmdLineParser(this);
@@ -119,12 +116,14 @@ public class Submitter {
 				uploadBpk(bpkFile);
 			}
 
-			if (tcdPath == null) {
+			if (bdPath != null) {
+				submitBenchmark(new File(bdPath));
+			} else if (tcdPath != null) {
+				submitTaskContext(new File(tcdPath));
+			} else {
 				for (String tdPath : tdPaths) {
 					submitSingleTask(new File(tdPath));
 				}
-			} else {
-				submitTaskContext(new File(tcdPath));
 			}
 
 		} catch (CmdLineException e) {

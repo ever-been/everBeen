@@ -1,11 +1,21 @@
 <t:container xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd"
-      xmlns:p="tapestry:parameter">
+			 xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd"
+			 xmlns:p="tapestry:parameter">
 
-    <t:grid source="bpkIdentifiers" row="bpkIdentifier" inPlace="true">
-        <!--<p:idCell>
-            <t:pagelink page="context" context="context.id">$...{...context.id...}...</t:pagelink>
-        </p:idCell>-->
-    </t:grid>
+
+	<t:progressiveDisplay/>
+	<t:block id="packagesBlock">
+		<t:zone t:id="packagesZone" id="packagesZone">
+			<p>${message}</p>
+			<t:grid source="bpkIdentifiers" row="bpkIdentifier" inPlace="true" add="download">
+				<p:downloadCell>
+					<t:actionLink t:id="download"
+								  t:context="[bpkIdentifier.groupId, bpkIdentifier.bpkId, bpkIdentifier.version]">
+						download
+					</t:actionLink>
+				</p:downloadCell>
+			</t:grid>
+		</t:zone>
+	</t:block>
 
 </t:container>

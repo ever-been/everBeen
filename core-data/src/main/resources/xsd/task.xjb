@@ -19,10 +19,21 @@
 			<bindings node="//xs:enumeration[@value='context-exclusive']">
 				<typesafeEnumMember name="CONTEXT_EXCLUSIVE"/>
 			</bindings>
-			<bindings node="//xs:enumeration[@value='context-exclusive']">
-				<typesafeEnumMember name="exclusive"/>
+			<bindings node="//xs:enumeration[@value='exclusive']">
+				<typesafeEnumMember name="EXCLUSIVE"/>
 			</bindings>
 		</bindings>
+
+		<bindings node="xs:simpleType[@name='TypeString']">
+			<typesafeEnumClass name="TaskType" />
+			<bindings node="//xs:enumeration[@value='task']">
+				<typesafeEnumMember name="TASK"/>
+			</bindings>
+			<bindings node="//xs:enumeration[@value='benchmark']">
+				<typesafeEnumMember name="BENCHMARK"/>
+			</bindings>
+		</bindings>
+
 		
 		<bindings node="xs:complexType[@name='Property']">
 			<class name="TaskProperty" />
@@ -53,7 +64,7 @@
 		<bindings node="xs:element[@name='id']">
 			<factoryMethod name="contextId" />
 		</bindings>
-		
+
 		<bindings node="xs:element[@name='contextState']">
 			<property name="contextState">
 					<baseType>
@@ -89,5 +100,13 @@
 				<javadoc>List of log entries.</javadoc>
 			</property>
 		</bindings>
+	</bindings>
+
+
+	<bindings schemaLocation="benchmark-entry.xsd">
+		<schemaBindings>
+			<package name="cz.cuni.mff.d3s.been.core.benchmark" />
+		</schemaBindings>
+
 	</bindings>
 </bindings>

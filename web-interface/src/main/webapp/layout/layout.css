@@ -24,9 +24,10 @@
  *  MA  02111-1307  USA
  */
 
-body, td, th, input, select {
+body, input, select, button {
 	font-family: Verdana, "Geneva CE", lucida, sans-serif;
 	font-size: 9pt;
+	line-height: 1.3em;
 }
 
 body {
@@ -43,7 +44,7 @@ table {
 
 table td, table th {
 	padding: 0;
-	vertical-align: top;
+	vertical-align: middle;
 }
 
 table.list {
@@ -57,6 +58,7 @@ table.list td, table.list th {
 
 table.list th {
 	text-align: left;
+	padding: .5em .9em .5em .25em;
 }
 
 table.list td.button-spacer {
@@ -214,6 +216,7 @@ h2 {
 	margin: 0 0 0.5em 0;
 	border-bottom: 2px solid #C2CAC3;
 	font-size: 11pt;
+	line-height: 1.3em;
 }
 
 h3 {
@@ -238,6 +241,10 @@ input.type-button, input.type-submit, button {
 	padding: .1em .5em;
 	background-color: #C2CAC3;
 	*/
+}
+
+.btn-group>.btn {
+	font-size: 12px;
 }
 
 hr {
@@ -964,4 +971,17 @@ pre {
 
 .analysis-time-passed {
 	color: #c00000;
+}
+
+.overview-container {
+	text-align: center;
+}
+
+.overview-block {
+    display: inline-block; margin: 5px 5px; width: 48%; min-width: 600px; vertical-align: top; text-align: left;
+}
+
+table.inner-task-list td {
+	border: 0;
+    padding: 0 .25em;
 }

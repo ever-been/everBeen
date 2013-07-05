@@ -21,10 +21,8 @@ import cz.cuni.mff.d3s.been.bpk.ObjectFactory;
  */
 class NativeGenerator extends GeneratorImpl {
 
-	private Log log;
-
 	public NativeGenerator(Log log) {
-		this.log = log;
+		super(log);
 	}
 
 	@Override
@@ -57,8 +55,6 @@ class NativeGenerator extends GeneratorImpl {
 		// add other files specified in configuration
 		itemsToArchive.addAll(getOtherFilesToArchive(config));
 
-		logAddedFiles(itemsToArchive);
-
 		return itemsToArchive;
 	}
 
@@ -74,12 +70,6 @@ class NativeGenerator extends GeneratorImpl {
 			itemsToArchive.addAll(fileItem.getFilesToArchive());
 		}
 		return itemsToArchive;
-	}
-
-	private void logAddedFiles(List<ItemToArchive> itemsToArchive) {
-		for (ItemToArchive item : itemsToArchive) {
-			log.info("    WILL BE ADDED: '" + item.getPathInZip() + "'");
-		}
 	}
 
 	@Override

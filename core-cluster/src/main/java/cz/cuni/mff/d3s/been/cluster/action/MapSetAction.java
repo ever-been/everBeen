@@ -18,7 +18,7 @@ final class MapSetAction implements Action {
 	}
 
 	@Override
-	public Reply goGetSome() {
+	public Reply handle() {
 		String map = Actions.checkpointMapNameForRequest(request);
 		String key = request.getSelector();
 

@@ -19,6 +19,14 @@ public class LingeringConsumer<T> extends Consumer<T> {
 
 	@Override
 	public void run() {
+		try {
+			innerRun();
+		} catch (Throwable e) {
+			log.error(e.getMessage(), e);
+		}
+	}
+
+	private void innerRun() {
 		log.debug("Thread starting.");
 		while (!Thread.currentThread().isInterrupted()) {
 			try {
@@ -29,7 +37,7 @@ public class LingeringConsumer<T> extends Consumer<T> {
 					// This throw is not entirely correct, as internally, Hazelcast
 					// only uses a big timeout for take(). However, the timeout being
 					// Long.MAX_VALUE, this implementation is unlikely to return null in any
-					// other circumstances than during interruption. 
+					// other circumstances than during interruption.
 					throw new InterruptedException("Queue take yielded null item.");
 				}
 				log.debug("Taken item {} from queue", item);

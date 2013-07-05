@@ -8,22 +8,22 @@
 		xmlns:td="http://been.d3s.mff.cuni.cz/task-descriptor"
 		xmlns:common="http://been.d3s.mff.cuni.cz/common"
 		>
-		
+
 
 	<xs:import namespace="http://been.d3s.mff.cuni.cz/common"/>
 	<xs:import namespace="http://been.d3s.mff.cuni.cz/task-descriptor"/>
 
 	<xs:element name="id" type="xs:string"/>
-	<xs:element name="taskContextId" type="xs:string" default=""/>
+	<xs:element name="taskContextId" type="xs:string"/>
 	<xs:element name="ownerId" type="xs:string"/>
-	<xs:element name="runtimeId" type="xs:string" />
+	<xs:element name="runtimeId" type="xs:string"/>
 	<xs:element name="state" type="xs:string"/>
 
 	<xs:element name="stateChangeEntry">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element ref="taskentry:state" minOccurs="1" maxOccurs="1" />
-				<xs:element name="reason" type="xs:string" minOccurs="1" maxOccurs="1" />
+				<xs:element ref="taskentry:state" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="reason" type="xs:string" minOccurs="1" maxOccurs="1"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -31,32 +31,35 @@
 	<xs:element name="stateChangeLog">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element ref="taskentry:stateChangeEntry" minOccurs="0" maxOccurs="unbounded" />
+				<xs:element ref="taskentry:stateChangeEntry" minOccurs="0" maxOccurs="unbounded"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
 
+	<xs:element name="taskDependency" type="xs:string"/>
 
 	<xs:element name="taskEntry">
 		<xs:complexType>
 			<xs:all>
-				<xs:element ref="taskentry:id" minOccurs="1" maxOccurs="1" />
-				<xs:element ref="taskentry:ownerId" minOccurs="0" maxOccurs="1" />
-				<xs:element ref="taskentry:runtimeId" minOccurs="0" maxOccurs="1" />
-				<xs:element ref="taskentry:taskContextId" minOccurs="1" maxOccurs="1" />
-				<xs:element ref="taskentry:state" minOccurs="1" maxOccurs="1" />
-				<xs:element name="exitCode" type="common:nonnegativeInt" default="0" minOccurs="0" maxOccurs="1" />
-				<xs:element ref="td:taskDescriptor" minOccurs="1" maxOccurs="1" />
-				<xs:element ref="taskentry:stateChangeLog"  minOccurs="0" maxOccurs="1" />
-				<xs:element name="workingDirectory" type="xs:string" minOccurs="0" maxOccurs="1" />
+				<xs:element ref="taskentry:id" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="taskentry:ownerId" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="taskentry:runtimeId" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="taskentry:taskContextId" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="taskentry:state" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="exitCode" type="common:nonnegativeInt" default="0" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="td:taskDescriptor" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="taskentry:stateChangeLog" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="workingDirectory" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="taskentry:taskDependency" minOccurs="0" maxOccurs="1"/>
 				<xs:element name="args" minOccurs="0" maxOccurs="1">
 					<xs:complexType>
 						<xs:sequence>
-							<xs:element name="arg" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+							<xs:element name="arg" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
 			</xs:all>
+			<xs:attribute name="benchmarkId" type="xs:string" use="optional" default=""/>
 		</xs:complexType>
 	</xs:element>
 

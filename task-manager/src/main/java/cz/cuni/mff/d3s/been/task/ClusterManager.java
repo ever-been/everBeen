@@ -13,10 +13,7 @@ import cz.cuni.mff.d3s.been.mq.MessageQueues;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
 
 /**
- * 
- * TODO: race conditions 1) key ownership changes before registering the
- * membershipListener * need to rescan local keys 2) client disconnect before
- * registering the clientListener * scan connected host runtimes ?
+ * Manages local cluster resources.
  * 
  * @author Martin Sixta
  */
@@ -25,6 +22,7 @@ final class ClusterManager implements IClusterService {
 
 	private final LocalRuntimeListener localRuntimeListener;
 	private final LocalTaskListener localTaskListener;
+	private final LocalContextListener localContextListener;
 	private final MembershipListener membershipListener;
 	private final ClientListener clientListener;
 	private final ClusterContext clusterCtx;
@@ -37,6 +35,7 @@ final class ClusterManager implements IClusterService {
 
 		localRuntimeListener = new LocalRuntimeListener(clusterCtx);
 		localTaskListener = new LocalTaskListener(clusterCtx);
+		localContextListener = new LocalContextListener(clusterCtx);
 		membershipListener = new MembershipListener(clusterCtx);
 		clientListener = new ClientListener(clusterCtx);
 
@@ -59,6 +58,7 @@ final class ClusterManager implements IClusterService {
 		taskMessageProcessor.start();
 		localRuntimeListener.start();
 		localTaskListener.start();
+		localContextListener.start();
 		membershipListener.start();
 		clientListener.start();
 		keyScanner.start();
@@ -70,6 +70,7 @@ final class ClusterManager implements IClusterService {
 		keyScanner.stop();
 		clientListener.stop();
 		localRuntimeListener.stop();
+		localContextListener.stop();
 		localTaskListener.stop();
 		membershipListener.stop();
 		taskMessageProcessor.poison();

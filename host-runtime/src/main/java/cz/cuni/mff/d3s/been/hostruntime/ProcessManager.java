@@ -3,15 +3,13 @@ package cz.cuni.mff.d3s.been.hostruntime;
 import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.LOGGER;
 import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.TASK_CONTEXT_ID;
 import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.TASK_ID;
+import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.BENCHMARK_ID;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import cz.cuni.mff.d3s.been.socketworks.NamedSockets;
 import org.apache.commons.exec.ExecuteStreamHandler;
@@ -60,9 +58,7 @@ import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
  * @author Martin Sixta
  * @author Tadeáš Palusga
  */
-final class
-
-ProcessManager implements Service {
+final class ProcessManager implements Service {
 
 	/**
 	 * Logger
@@ -94,11 +90,6 @@ ProcessManager implements Service {
 	 */
 	TaskActionThread taskActionThread;
 
-	/**
-	 * Collect results from tasks and dispatch them
-	 */
-	//private ResultsDispatcher resultsDispatcher;
-
 	/** Context of the Host Runtime */
 	private ProcessManagerContext tasks;
 
@@ -116,11 +107,14 @@ ProcessManager implements Service {
 	 * @param hostInfo
 	 *          Information about the current Host Runtime
 	 */
-	ProcessManager(ClusterContext clusterContext, SwRepoClientFactory swRepoClientFactory, RuntimeInfo hostInfo) {
+	ProcessManager(
+			ClusterContext clusterContext,
+			SwRepoClientFactory swRepoClientFactory,
+			RuntimeInfo hostInfo) {
 		this.clusterContext = clusterContext;
 		this.hostInfo = hostInfo;
-		this.softwareResolver = new SoftwareResolver(clusterContext.getServicesUtils(), swRepoClientFactory);
-		this.clusterTasks = clusterContext.getTasksUtils();
+		this.softwareResolver = new SoftwareResolver(clusterContext.getServices(), swRepoClientFactory);
+		this.clusterTasks = clusterContext.getTasks();
 
 		this.tasks = new ProcessManagerContext(clusterContext, hostInfo);
 		this.messageDispatcher = MessageDispatcher.create("localhost");
@@ -183,7 +177,7 @@ ProcessManager implements Service {
 
 	/**
 	 * Handles RunTaskMessage.
-	 * 
+	 * <p/>
 	 * Tries to run a task.
 	 * 
 	 * @param message
@@ -200,7 +194,7 @@ ProcessManager implements Service {
 
 	/**
 	 * Handles KillTaskMessage.
-	 * 
+	 * <p/>
 	 * Tries to kill a task.
 	 * 
 	 * @param message
@@ -255,8 +249,8 @@ ProcessManager implements Service {
 
 		} catch (Exception e) {
 			String msg = String.format("Task '%s' has been aborted due to underlying exception.", id);
-			taskHandle.setAborted(msg);
 			log.error(msg, e);
+			taskHandle.setAborted(msg);
 		} finally {
 			tasks.removeTask(taskHandle);
 		}
@@ -264,7 +258,7 @@ ProcessManager implements Service {
 
 	/**
 	 * Creates a new task processes.
-	 * 
+	 * <p/>
 	 * TODO: Refactoring might be useful. Fortunately the mess is concentrated
 	 * only in this function
 	 * 
@@ -272,7 +266,7 @@ ProcessManager implements Service {
 	 *          entry associated with the new process
 	 * @param taskDirectory
 	 *          root directory of the task
-	 * 
+     *          
 	 * @return task process representation
 	 * 
 	 * @throws IOException
@@ -362,6 +356,7 @@ ProcessManager implements Service {
 		properties.put(LOGGER, System.getProperty(LOGGER));
 		properties.put(TASK_ID, taskEntry.getId());
 		properties.put(TASK_CONTEXT_ID, taskEntry.getTaskContextId());
+		properties.put(BENCHMARK_ID, taskEntry.getBenchmarkId());
 
 		// add properties specified in the TaskDescriptor
 		TaskDescriptor td = taskEntry.getTaskDescriptor();
@@ -466,7 +461,9 @@ ProcessManager implements Service {
 		}
 	}
 
-	/** Poison message for the task action thread */
+	/**
+	 * Poison message for the task action thread
+	 */
 	private static class PoisonMessage extends BaseMessage {
 		public PoisonMessage(String senderId, String receiverId) {
 			super(senderId, receiverId);

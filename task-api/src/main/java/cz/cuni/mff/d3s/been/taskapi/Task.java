@@ -23,6 +23,7 @@ public abstract class Task {
 
 	private String id;
 	private String taskContextId;
+	private String benchmarkId;
 	private IMessageQueue<String> resQueue;
 	private IMessageSender<String> resSender;
 	protected final ResultFacade results = new TaskFieldResultFacadeWrapper();
@@ -44,13 +45,22 @@ public abstract class Task {
 	public String getTaskContextId() {
 		return taskContextId;
 	}
+    
+	/**
+	 * Returns benchmark ID of the running task.
+	 *
+	 * @return benchmark ID of the running task
+	 */
+	public String getBenchmarkId() {
+		return benchmarkId;
+	}
 
 	/**
 	 * Returns system property associated with the running task.
-	 * 
+	 *
 	 * @param propertyName
 	 *          name of the property
-	 * 
+	 *
 	 * @return value associated with the name
 	 */
 	public String getProperty(String propertyName) {
@@ -59,10 +69,10 @@ public abstract class Task {
 
 	/**
 	 * Returns system property associated with the running task or default value
-	 * 
+	 *
 	 * @param propertyName
 	 *          name of the property
-	 * 
+	 *
 	 * @return value associated with the name or the default value when the
 	 *         property is not set
 	 */
@@ -77,28 +87,33 @@ public abstract class Task {
 
 	/**
 	 * The method subclasses override to implement task's functionality.
-	 * 
+	 *
 	 * To execute a task {@link #doMain(String[])} will be called.
 	 */
 	public abstract void run(String[] args);
 
 	/**
-	 * 
+	 *
 	 * The method which sets up task's environment and calls
 	 * {@link #run(String[])}.
-	 * 
+	 *
 	 * @param args
 	 */
 	public void doMain(String[] args) {
-		initialize();
-		run(args);
-		tearDown();
+		try {
+			initialize();
+			run(args);
+		} finally {
+			tearDown();
+		}
 	}
-
 	private void initialize() {
 		this.id = System.getenv(TaskPropertyNames.TASK_ID);
 		this.taskContextId = System.getenv(TaskPropertyNames.TASK_CONTEXT_ID);
         resQueue = Messaging.createTaskQueue(NamedSockets.TASK_RESULT_0MQ.getConnection());
+		this.benchmarkId = System.getenv(TaskPropertyNames.BENCHMARK_ID);
+
+		resQueue = Messaging.createTaskQueue(NamedSockets.TASK_RESULT_0MQ.getConnection());
 		try {
 			resSender = resQueue.createSender();
 			((TaskFieldResultFacadeWrapper) results).setResultFacade(ResultFacadeFactory.createResultFacade(resSender));
@@ -117,12 +132,16 @@ public abstract class Task {
 	}
 
 	private void tearDown() {
-		resSender.close();
+		if (resSender != null) {
+            resSender.close();
+        }
+        if (resQueue != null) {
 		try {
 			resQueue.terminate();
 		} catch (MessagingException e) {
 			log.error("Failed to release results queue.");
 		}
+        }
 		try {
 			Messages.terminate();
 		} catch (MessagingException e) {
@@ -130,5 +149,4 @@ public abstract class Task {
 			log.error("Failed to release Messaging");
 		}
 	}
-
 }

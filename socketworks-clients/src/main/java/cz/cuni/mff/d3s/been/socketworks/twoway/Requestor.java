@@ -1,16 +1,17 @@
 package cz.cuni.mff.d3s.been.socketworks.twoway;
 
 import cz.cuni.mff.d3s.been.annotation.NotThreadSafe;
-import cz.cuni.mff.d3s.been.core.TaskPropertyNames;
 import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
 import cz.cuni.mff.d3s.been.mq.Context;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
 import cz.cuni.mff.d3s.been.mq.ZMQContext;
-import cz.cuni.mff.d3s.been.socketworks.Socketworks;
 import org.jeromq.ZMQ;
 import org.jeromq.ZMQ.Socket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.Closeable;
+import java.io.IOException;
 
 /**
  * Sends requests of tasks to its Host Runtime.
@@ -35,8 +36,6 @@ public class Requestor {
 	/** logging */
 	private static final Logger log = LoggerFactory.getLogger(Requestor.class);
 
-	/** Address of the Host Runtime request handler. */
-	private final String address;
 	/** 0MQ context of this requestor */
 	private final ZMQContext zctx;
 	/** The socket used to communicate with a Host Runtime. */
@@ -48,7 +47,6 @@ public class Requestor {
 	 * that wants to use it.
 	 */
 	private Requestor(String address, ZMQContext zctx, Socket socket) {
-        this.address = address;
 		this.zctx = zctx;
 		this.socket = socket;
 		socket.setLinger(0);
@@ -93,6 +91,6 @@ public class Requestor {
 	 */
 	public void close() throws MessagingException {
 		socket.close();
-		zctx.term();
+        zctx.term();
 	}
 }

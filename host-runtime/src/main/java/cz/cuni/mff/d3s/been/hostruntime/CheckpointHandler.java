@@ -46,7 +46,7 @@ public class CheckpointHandler implements ReadReplyHandler {
 		}
 
 		Action action = Actions.createAction(request, ctx);
-		return action.goGetSome().toJson();
+        return action.handle().toJson();
 	}
 
 	@Override
