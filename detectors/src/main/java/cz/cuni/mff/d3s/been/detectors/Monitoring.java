@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
 
+import cz.cuni.mff.d3s.been.mq.MessagingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,7 +84,11 @@ public class Monitoring {
 					out.close();
 				} catch (IOException e) {
 					log.error("Cannot start monitoring", e);
-				}
+				} finally {
+                    for (MonitoringListener listener: listeners) {
+                        listener.close();
+                    }
+                }
 			}
 		};
 

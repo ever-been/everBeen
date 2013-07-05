@@ -16,8 +16,7 @@ public class ClusterReaper extends Reaper {
 	 * Create a shutdown hook that correctly shuts down first the
 	 * {@link IClusterService}s, then the {@link HazelcastInstance}.
 	 * 
-	 * @param service
-	 * @param inst
+	 * @param instance Hazelcast instance to reap
 	 */
 	public ClusterReaper(HazelcastInstance instance) {
 		this.instance = instance;

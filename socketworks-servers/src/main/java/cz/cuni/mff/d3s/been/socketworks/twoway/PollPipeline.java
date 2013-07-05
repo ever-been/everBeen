@@ -72,6 +72,16 @@ final class PollPipeline extends Thread {
 
 	@Override
 	public void run() {
+        final StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        for (PollPartaker partaker: partakers) {
+            if (!first) {
+                sb.append(", ");
+            }
+            first = false;
+            sb.append(partaker.getClass().getSimpleName());
+        }
+        setName(String.format("%s(%s)", getClass().getSimpleName(),sb.toString()));
 		super.run();
 
 		for (PollPartaker partaker : partakers) {

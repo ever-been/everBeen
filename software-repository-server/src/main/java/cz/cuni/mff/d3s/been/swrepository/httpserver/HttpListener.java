@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 
 class HttpListener extends Thread {
 
+    private static final int SOCKET_TIMEOUT = 300;
+
 	private static final Logger log = LoggerFactory.getLogger(HttpListener.class);
 
 	private final HttpService service;
@@ -49,6 +51,8 @@ class HttpListener extends Thread {
 
 	@Override
 	public void run() {
+        setName(getClass().getSimpleName());
+
 		super.run();
 
 		Socket socket;

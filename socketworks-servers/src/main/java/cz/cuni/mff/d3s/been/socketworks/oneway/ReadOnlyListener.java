@@ -29,6 +29,7 @@ final class ReadOnlyListener extends Thread {
 
 	@Override
 	public void run() {
+        setName(String.format("%s(%s)", getClass().getSimpleName(), handler.getClass().getSimpleName()));
 		while (true) {
 			try {
 				final String message = receiver.receive();
