@@ -3,6 +3,11 @@
 				groupId="cz.cuni.mff.d3s.been" bpkId="task-test" version="3.0.0"
 				name="example-single-task" type="task">
 
+	<arguments>
+		<argument>-Xms4m</argument>
+		<argument>-Xmx8m</argument>
+	</arguments>
+
 	<java>
 		<mainClass>cz.cuni.mff.d3s.been.task.ExampleTask</mainClass>
 	</java>

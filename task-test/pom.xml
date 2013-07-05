@@ -5,6 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>task-test</artifactId>
+	<version>3.0.0-SNAPSHOT</version>
 
 	<parent>
 		<groupId>cz.cuni.mff.d3s.been</groupId>

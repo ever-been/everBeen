@@ -110,8 +110,7 @@ public abstract class Task {
 	private void initialize() {
 		this.id = System.getenv(TaskPropertyNames.TASK_ID);
 		this.taskContextId = System.getenv(TaskPropertyNames.TASK_CONTEXT_ID);
-        resQueue = Messaging.createTaskQueue(NamedSockets.TASK_RESULT_0MQ.getConnection());
-		this.benchmarkId = System.getenv(TaskPropertyNames.BENCHMARK_ID);
+        this.benchmarkId = System.getenv(TaskPropertyNames.BENCHMARK_ID);
 
 		resQueue = Messaging.createTaskQueue(NamedSockets.TASK_RESULT_0MQ.getConnection());
 		try {
@@ -127,7 +126,7 @@ public abstract class Task {
 			Messages.send(String.format("%s#%s", TaskMessageType.TASK_RUNNING, id));
 		} catch (MessagingException e) {
 			// message passing does not work, try it with stderr ...
-			System.err.println("Cannot send \"i'm running' message\"");
+			System.err.println("Cannot send \"i'm running\" message");
 		}
 	}
 
