@@ -1,9 +1,21 @@
 package cz.cuni.mff.d3s.been.api;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.hazelcast.core.EntryEvent;
 import com.hazelcast.core.EntryListener;
 import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.MultiMap;
+
 import cz.cuni.mff.d3s.been.bpk.*;
 import cz.cuni.mff.d3s.been.cluster.Instance;
 import cz.cuni.mff.d3s.been.cluster.Names;
@@ -21,17 +33,6 @@ import cz.cuni.mff.d3s.been.debugassistant.DebugAssistant;
 import cz.cuni.mff.d3s.been.debugassistant.DebugListItem;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
-import cz.cuni.mff.d3s.been.swrepoclient.SwRepositoryClientException;
-import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.Map;
 
 /**
  * User: donarus Date: 4/27/13 Time: 11:50 AM
@@ -108,29 +109,32 @@ public class BeenApiImpl implements BeenApi {
 
 	@Override
 	public Collection<String> getLogSets() {
-		MultiMap<String, LogMessage> logs = clusterContext.getInstance().getMultiMap(Names.LOGS_MULTIMAP_NAME);
-		return logs.keySet();
+		// TODO logs must be fetched from Results Repository
+		log.warn("Logs must be fetched from Results Repository!");
+		return Collections.EMPTY_LIST;
 	}
 
 	@Override
 	public void addLogListener(final LogListener listener) {
-		// TODO, refactor
-		EntryListener<String, LogMessage> entryListener = new EntryListener<String, LogMessage>() {
-
+		EntryListener<String, String> logsListener = new EntryListener<String, String>() {
 			@Override
-			public void entryAdded(EntryEvent<String, LogMessage> event) {
+			public void entryAdded(EntryEvent<String, String> event) {
 				listener.logAdded(event.getValue());
 			}
 
 			@Override
-			public void entryRemoved(EntryEvent<String, LogMessage> event) {}
+			public void entryRemoved(EntryEvent<String, String> event) {}
+
 			@Override
-			public void entryUpdated(EntryEvent<String, LogMessage> event) {}
+			public void entryUpdated(EntryEvent<String, String> event) {
+				listener.logAdded(event.getValue());
+			}
+
 			@Override
-			public void entryEvicted(EntryEvent<String, LogMessage> event) {}
+			public void entryEvicted(EntryEvent<String, String> event) {}
 		};
-		MultiMap<String, LogMessage> logs = clusterContext.getInstance().getMultiMap(Names.LOGS_MULTIMAP_NAME);
-		logs.addEntryListener(entryListener, true);
+
+		clusterContext.<String, String> getMap(Names.LOGS_TASK_MAP_NAME).addEntryListener(logsListener, true);
 	}
 
 	@Override
@@ -140,8 +144,9 @@ public class BeenApiImpl implements BeenApi {
 
 	@Override
 	public Collection<LogMessage> getLogs(String setId) {
-		MultiMap<String, LogMessage> logs = clusterContext.getInstance().getMultiMap(Names.LOGS_MULTIMAP_NAME);
-		return logs.get(setId);
+		// TODO logs must be fetched from Results Repository
+		log.warn("Logs must be fetched from Results Repository!");
+		return Collections.EMPTY_LIST;
 	}
 
 	@Override

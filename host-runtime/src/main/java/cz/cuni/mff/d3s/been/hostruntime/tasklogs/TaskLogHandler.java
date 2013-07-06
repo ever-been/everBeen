@@ -1,17 +1,24 @@
 package cz.cuni.mff.d3s.been.hostruntime.tasklogs;
 
+import static cz.cuni.mff.d3s.been.cluster.Names.*;
+
+import java.util.concurrent.TimeUnit;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hazelcast.core.IMap;
 import com.hazelcast.core.IQueue;
 
-import cz.cuni.mff.d3s.been.cluster.Names;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.LogMessage;
 import cz.cuni.mff.d3s.been.core.TaskMessageType;
 import cz.cuni.mff.d3s.been.core.persistence.EntityCarrier;
 import cz.cuni.mff.d3s.been.core.persistence.EntityID;
 import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
+import cz.cuni.mff.d3s.been.core.utils.JsonException;
+import cz.cuni.mff.d3s.been.core.utils.JsonKeyHandler;
+import cz.cuni.mff.d3s.been.core.utils.JsonStreamer;
 import cz.cuni.mff.d3s.been.debugassistant.DebugAssistant;
 import cz.cuni.mff.d3s.been.socketworks.oneway.ReadOnlyHandler;
 
@@ -30,9 +37,37 @@ public class TaskLogHandler implements ReadOnlyHandler {
 	private final ClusterContext ctx;
 	private final IQueue<EntityCarrier> logQueue;
 
+	private final IMap<String, String> taskLogs;
+	private final IMap<String, String> contextLogs;
+	private final IMap<String, String> benchmarkLogs;
+
+	private final JsonStreamer jsonStreamer;
+
 	private TaskLogHandler(ClusterContext ctx) {
 		this.ctx = ctx;
-		this.logQueue = ctx.getQueue(Names.LOG_QUEUE_NAME);
+		this.logQueue = ctx.getQueue(LOG_QUEUE_NAME);
+
+		taskLogs = ctx.getMap(LOGS_TASK_MAP_NAME);
+		contextLogs = ctx.getMap(LOGS_CONTEXT_MAP_NAME);
+		benchmarkLogs = ctx.getMap(LOGS_BENCHMARK_MAP_NAME);
+
+		jsonStreamer = new JsonStreamer();
+
+		jsonStreamer.addHandler("senderId", new JsonKeyHandler() {
+			@Override
+			public void handle(String key, String value, String json) {
+				// value is the new key
+				taskLogs.put(value, json, 60, TimeUnit.SECONDS);
+			}
+		});
+
+		jsonStreamer.addHandler("contextId", new JsonKeyHandler() {
+			@Override
+			public void handle(String key, String value, String json) {
+				// value is the new key
+				contextLogs.put(value, json, 60, TimeUnit.SECONDS);
+			}
+		});
 	}
 
 	/**
@@ -81,7 +116,10 @@ public class TaskLogHandler implements ReadOnlyHandler {
 
 	private void handleLogMessage(String message) {
 		try {
+
 			logQueue.put(fabricateEntityTransport(message));
+
+			publishLog(message);
 
 			if (log.isDebugEnabled()) {
 				printDebuggingMessage(message);
@@ -90,6 +128,16 @@ public class TaskLogHandler implements ReadOnlyHandler {
 		} catch (InterruptedException e) {
 			log.error("Interrupted when trying to submit log message {} to cluster", message);
 		}
+	}
+
+	private void publishLog(String message) {
+		try {
+			jsonStreamer.process(message);
+		} catch (JsonException e) {
+			String msg = String.format("Cannot parse log message '%s", message);
+			log.error(msg, e);
+		}
+
 	}
 
 	/**
