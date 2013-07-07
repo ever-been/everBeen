@@ -1,5 +1,37 @@
 package cz.cuni.mff.d3s.been.swrepoclient;
 
+import static cz.cuni.mff.d3s.been.swrepository.HeaderNames.ARTIFACT_IDENTIFIER_HEADER_NAME;
+import static cz.cuni.mff.d3s.been.swrepository.HeaderNames.BPK_IDENTIFIER_HEADER_NAME;
+import static cz.cuni.mff.d3s.been.swrepository.UrlPaths.*;
+import static cz.cuni.mff.d3s.been.swrepository.Versions.SNAPSHOT_SUFFIX;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.xml.bind.JAXBException;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.maven.artifact.Artifact;
+import org.codehaus.jackson.type.TypeReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
+
 import cz.cuni.mff.d3s.been.bpk.ArtifactIdentifier;
 import cz.cuni.mff.d3s.been.bpk.Bpk;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
@@ -11,33 +43,6 @@ import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
 import cz.cuni.mff.d3s.been.core.utils.JSONUtils.JSONSerializerException;
 import cz.cuni.mff.d3s.been.datastore.*;
-import cz.cuni.mff.d3s.been.swrepository.Versions;
-import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.entity.InputStreamEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.maven.artifact.Artifact;
-import org.codehaus.jackson.type.TypeReference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.xml.sax.SAXException;
-
-import javax.xml.bind.JAXBException;
-import java.io.*;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.*;
-
-import static cz.cuni.mff.d3s.been.swrepository.HeaderNames.*;
-import static cz.cuni.mff.d3s.been.swrepository.UrlPaths.*;
-import static cz.cuni.mff.d3s.been.swrepository.Versions.*;
 
 class HttpSwRepoClient implements SwRepoClient {
 
@@ -63,10 +68,13 @@ class HttpSwRepoClient implements SwRepoClient {
 
 	/**
 	 * Constructs new software repository client
-	 *
-	 * @param hostname      hostname on which the software repository is running
-	 * @param port          port on which the software repository is running
-	 * @param softwareCache initialized software cache
+	 * 
+	 * @param hostname
+	 *          hostname on which the software repository is running
+	 * @param port
+	 *          port on which the software repository is running
+	 * @param softwareCache
+	 *          initialized software cache
 	 */
 	HttpSwRepoClient(String hostname, Integer port, SoftwareStore softwareCache) {
 		this.hostname = hostname;
@@ -125,8 +133,7 @@ class HttpSwRepoClient implements SwRepoClient {
 
 	@Override
 	public Collection<BpkIdentifier> listBpks() {
-		return doGetObject(BPK_LIST_URI, new TypeReference<List<BpkIdentifier>>() {
-		});
+		return doGetObject(BPK_LIST_URI, new TypeReference<List<BpkIdentifier>>() {});
 	}
 
 	@Override
@@ -134,9 +141,10 @@ class HttpSwRepoClient implements SwRepoClient {
 		Header header = new Header(BPK_IDENTIFIER_HEADER_NAME, bpkIdentifier);
 		// 1st argument = TD filename, 2nd argument = TD json
 
-		Map<String, String> jsonDescriptors = doGetObject(TASK_CONTEXT_DESCRIPTOR_LIST_URI,
-				new TypeReference<Map<String, String>>() {
-				}, header);
+		Map<String, String> jsonDescriptors = doGetObject(
+				TASK_CONTEXT_DESCRIPTOR_LIST_URI,
+				new TypeReference<Map<String, String>>() {},
+				header);
 
 		Map<String, TaskContextDescriptor> convertedDescriptors = new HashMap<>();
 		if (jsonDescriptors != null) {
@@ -144,11 +152,9 @@ class HttpSwRepoClient implements SwRepoClient {
 				BindingParser<TaskContextDescriptor> parser = null;
 				try {
 					parser = XSD.TASK_CONTEXT_DESCRIPTOR.createParser(TaskContextDescriptor.class);
-					convertedDescriptors
-							.put(entry.getKey(), parser.parse(new ByteArrayInputStream(entry.getValue().getBytes())));
+					convertedDescriptors.put(entry.getKey(), parser.parse(new ByteArrayInputStream(entry.getValue().getBytes())));
 				} catch (SAXException | ConvertorException | JAXBException e) {
 					log.error(String.format("Failed to convert task context descriptor %s", entry.getKey()), e);
-					continue;
 				}
 			}
 		}
@@ -161,9 +167,10 @@ class HttpSwRepoClient implements SwRepoClient {
 		Header header = new Header(BPK_IDENTIFIER_HEADER_NAME, bpkIdentifier);
 		// 1st argument = TD filename, 2nd argument = TD json
 
-		Map<String, String> jsonDescriptors = doGetObject(TASK_DESCRIPTOR_LIST_URI,
-				new TypeReference<Map<String, String>>() {
-				}, header);
+		Map<String, String> jsonDescriptors = doGetObject(
+				TASK_DESCRIPTOR_LIST_URI,
+				new TypeReference<Map<String, String>>() {},
+				header);
 
 		Map<String, TaskDescriptor> convertedDescriptors = new HashMap<>();
 		if (jsonDescriptors != null) {
@@ -171,11 +178,9 @@ class HttpSwRepoClient implements SwRepoClient {
 				BindingParser<TaskDescriptor> parser = null;
 				try {
 					parser = XSD.TASK_DESCRIPTOR.createParser(TaskDescriptor.class);
-					convertedDescriptors
-							.put(entry.getKey(), parser.parse(new ByteArrayInputStream(entry.getValue().getBytes())));
+					convertedDescriptors.put(entry.getKey(), parser.parse(new ByteArrayInputStream(entry.getValue().getBytes())));
 				} catch (SAXException | ConvertorException | JAXBException e) {
 					log.error(String.format("Failed to convert task descriptor %s", entry.getKey()), e);
-					continue;
 				}
 			}
 		}
@@ -183,16 +188,16 @@ class HttpSwRepoClient implements SwRepoClient {
 		return convertedDescriptors;
 	}
 
-
 	// =====================================
 	// PRIVATE METHODS
 	// =====================================
 
 	/**
 	 * Synthesize the URI of the software repository from internals
-	 *
+	 * 
 	 * @return the URI of the repository
-	 * @throws URISyntaxException When some of the internals are malformed
+	 * @throws URISyntaxException
+	 *           When some of the internals are malformed
 	 */
 	private URI createRepoUri() throws URISyntaxException {
 		URIBuilder uriBuilder = new URIBuilder();
@@ -261,14 +266,19 @@ class HttpSwRepoClient implements SwRepoClient {
 	}
 
 	/**
-	 * Do GET request on software repository server and return deserialized object of given type..
-	 *
-	 * @param abstractUri abstract part of uri for get request
-	 * @param type        type reference of object which will be returned
-	 * @param headers     request headers
-	 * @param <T>         type of object which will be returned
-	 * @return deserialized object of expected type or null if object
-	 *         couldn't be deserialized from some reason
+	 * Do GET request on software repository server and return deserialized object
+	 * of given type..
+	 * 
+	 * @param abstractUri
+	 *          abstract part of uri for get request
+	 * @param type
+	 *          type reference of object which will be returned
+	 * @param headers
+	 *          request headers
+	 * @param <T>
+	 *          type of object which will be returned
+	 * @return deserialized object of expected type or null if object couldn't be
+	 *         deserialized from some reason
 	 */
 	private <T> T doGetObject(String abstractUri, TypeReference<T> type, Header... headers) {
 		try (InputStream is = doGetInputStream(abstractUri, headers)) {
@@ -293,10 +303,13 @@ class HttpSwRepoClient implements SwRepoClient {
 	}
 
 	/**
-	 * Do GET request on software repository server and return response input stream
-	 *
-	 * @param abstractUri abstract part of uri for get request
-	 * @param headers     request headers
+	 * Do GET request on software repository server and return response input
+	 * stream
+	 * 
+	 * @param abstractUri
+	 *          abstract part of uri for get request
+	 * @param headers
+	 *          request headers
 	 * @return input stream from http response
 	 */
 	private InputStream doGetInputStream(String abstractUri, Header... headers) {
@@ -336,7 +349,8 @@ class HttpSwRepoClient implements SwRepoClient {
 		}
 
 		if (response.getStatusLine().getStatusCode() / 100 != 2) {
-			log.error("Failed to GET item from software repository - server refusal: '%s'",
+			log.error(
+					"Failed to GET item from software repository - server refusal: '{}'",
 					response.getStatusLine().getReasonPhrase());
 			return null;
 		}
@@ -352,11 +366,15 @@ class HttpSwRepoClient implements SwRepoClient {
 
 	/**
 	 * Do PUT request with given objectstream as body message.
-	 *
-	 * @param abstractUri       abstract part of uri for get request
-	 * @param objectStreamToPut stream which will be added to body message
-	 * @param headers           request headers
-	 * @return true if PUT request returned status code OK [200-299], false otherwise
+	 * 
+	 * @param abstractUri
+	 *          abstract part of uri for get request
+	 * @param objectStreamToPut
+	 *          stream which will be added to body message
+	 * @param headers
+	 *          request headers
+	 * @return true if PUT request returned status code OK [200-299], false
+	 *         otherwise
 	 */
 	private boolean doPutStream(String abstractUri, InputStream objectStreamToPut, Header... headers) {
 		if (objectStreamToPut == null) {
@@ -372,7 +390,6 @@ class HttpSwRepoClient implements SwRepoClient {
 			return false;
 		}
 
-
 		HttpPut request = new HttpPut(uri);
 
 		try {
@@ -380,9 +397,7 @@ class HttpSwRepoClient implements SwRepoClient {
 				request.addHeader(header.key, JSONUtils.serialize(header.value));
 			}
 		} catch (JSONSerializerException e) {
-			log.error(
-					"Failed to PUT item to software repository - cannot serialize request header object to json string",
-					e);
+			log.error("Failed to PUT item to software repository - cannot serialize request header object to json string", e);
 			return false;
 		}
 
@@ -403,7 +418,8 @@ class HttpSwRepoClient implements SwRepoClient {
 		}
 
 		if ((response.getStatusLine().getStatusCode() / 100) != 2) {
-			log.error("Failed to PUT item to software repository - server error: '%s'",
+			log.error(
+					"Failed to PUT item to software repository - server error: '{}'",
 					response.getStatusLine().getReasonPhrase());
 			return false;
 		} else {

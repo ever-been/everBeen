@@ -1,5 +1,9 @@
 package cz.cuni.mff.d3s.been.api;
 
+import java.io.InputStream;
+import java.util.Collection;
+import java.util.Map;
+
 import cz.cuni.mff.d3s.been.bpk.BpkConfigurationException;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.core.LogMessage;
@@ -11,16 +15,8 @@ import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.debugassistant.DebugListItem;
 
-import java.io.File;
-import java.io.InputStream;
-import java.net.InetSocketAddress;
-import java.util.Collection;
-import java.util.Map;
-
 /**
- * User: donarus
- * Date: 4/27/13
- * Time: 11:40 AM
+ * User: donarus Date: 4/27/13 Time: 11:40 AM
  */
 public interface BeenApi {
 
@@ -67,6 +63,6 @@ public interface BeenApi {
 	public Collection<DebugListItem> getDebugWaitingTasks();
 
 	interface LogListener {
-		public void logAdded(LogMessage log);
+		public void logAdded(String jsonLog);
 	}
 }

@@ -37,6 +37,9 @@ final class InstanceConfigHelper {
 	/** Name of the hazelcast property to control binding of local interfaces */
 	static final String PROPERTY_HAZELCAST_SOCKET_BIND_ANY = "hazelcast.socket.bind.any";
 
+	/** How will Hazelcast log its messages */
+	private static final String PROPERTY_HAZELCAST_LOGGING_TYPE = "hazelcast.logging.type";
+
 	/** Type of the Hazelcast join method. */
 	private static enum JOIN_TYPE {
 		MULTICAST, TCP
@@ -54,8 +57,7 @@ final class InstanceConfigHelper {
 	private Properties defaults;
 
 	/** Creates the helper class */
-	private InstanceConfigHelper(Properties userProperties)
-			throws ServiceException {
+	private InstanceConfigHelper(Properties userProperties) throws ServiceException {
 
 		// Create and load default network properties
 		defaults = new Properties();
@@ -79,9 +81,7 @@ final class InstanceConfigHelper {
 	 * @throws ServiceException
 	 *           if configuration cannot be created
 	 */
-	static
-			ClientConfig
-			createClientConfig(Properties userProperties) throws ServiceException {
+	static ClientConfig createClientConfig(Properties userProperties) throws ServiceException {
 		return new InstanceConfigHelper(userProperties).createClientConfig();
 	}
 
@@ -94,9 +94,7 @@ final class InstanceConfigHelper {
 	 * @throws ServiceException
 	 *           if configuration cannot be created
 	 */
-	static
-			Config
-			createMemberConfig(Properties userProperties) throws ServiceException {
+	static Config createMemberConfig(Properties userProperties) throws ServiceException {
 		return new InstanceConfigHelper(userProperties).createMemberConfig();
 	}
 
@@ -115,8 +113,19 @@ final class InstanceConfigHelper {
 
 		ClientConfig clientConfig = new ClientConfig();
 
-		clientConfig.setConnectionTimeout(timeout).setGroupConfig(groupConfig).addInetSocketAddress(
-				socketAddresses);
+		clientConfig.setConnectionTimeout(timeout).setGroupConfig(groupConfig).addInetSocketAddress(socketAddresses);
+
+		// Enable/Disable hazelcast logging
+		String loggingMode = "none";
+		boolean enableHazelcastLogging = getBoolean(PROPERTY_CLUSTER_LOGGING);
+
+		if (enableHazelcastLogging) {
+			loggingMode = "slf4j";
+		}
+
+		// There is no way to set property on the ClientConfig as far as I know (v2.5)
+		// So you system properties
+		System.setProperty(PROPERTY_HAZELCAST_LOGGING_TYPE, loggingMode);
 
 		return clientConfig;
 	}
@@ -137,9 +146,7 @@ final class InstanceConfigHelper {
 			// create default config
 			config = new UrlXmlConfig(url);
 		} catch (IOException e) {
-			String msg = String.format(
-					"Cannot read Hazelcast's default configuration %s",
-					CONFIG_RESOURCE);
+			String msg = String.format("Cannot read Hazelcast's default configuration %s", CONFIG_RESOURCE);
 			throw new ServiceException(msg, e);
 		}
 
@@ -169,13 +176,9 @@ final class InstanceConfigHelper {
 
 		mainConfig.setNetworkConfig(networkConfig).setGroupConfig(groupConfig);
 
-		mainConfig.setProperty(
-				PROPERTY_HAZELCAST_PREFER_IPV4_STACK,
-				getString(PROPERTY_CLUSTER_PREFER_IPV4));
+		mainConfig.setProperty(PROPERTY_HAZELCAST_PREFER_IPV4_STACK, getString(PROPERTY_CLUSTER_PREFER_IPV4));
 
-		mainConfig.setProperty(
-				PROPERTY_HAZELCAST_SOCKET_BIND_ANY,
-				getString(PROPERTY_CLUSTER_SOCKET_BIND_ANY));
+		mainConfig.setProperty(PROPERTY_HAZELCAST_SOCKET_BIND_ANY, getString(PROPERTY_CLUSTER_SOCKET_BIND_ANY));
 
 	}
 
@@ -318,12 +321,16 @@ final class InstanceConfigHelper {
 		try {
 			return Integer.parseInt(stringValue);
 		} catch (NumberFormatException e) {
-			String msg = String.format(
-					"Cannot convert '%s' to integer value for property '%s'",
-					stringValue,
-					key);
+			String msg = String.format("Cannot convert '%s' to integer value for property '%s'", stringValue, key);
 			throw new ServiceException(msg, e);
 		}
+	}
+
+	private boolean getBoolean(String key) {
+		String stringValue = properties.getProperty(key);
+
+		return Boolean.valueOf(stringValue);
+
 	}
 
 }

@@ -19,12 +19,11 @@ import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
  */
 public class Shell {
 	@Option(name = "-cf", aliases = { "--config-file" }, usage = "Path to BEEN config file.")
-	private String configFile = "client.properties";
+	private String configFile;
 
 	private ClusterContext clusterContext;
 
 	public static void main(String[] args) {
-		System.out.println(System.getProperty("user.dir"));
 		new Shell().doMain(args);
 	}
 
@@ -75,7 +74,9 @@ public class Shell {
 
 			Properties properties = new Properties();
 
-			properties.load(new FileInputStream(configFile));
+			if (configFile != null) {
+				properties.load(new FileInputStream(configFile));
+			}
 
 			// connect to the cluster
 

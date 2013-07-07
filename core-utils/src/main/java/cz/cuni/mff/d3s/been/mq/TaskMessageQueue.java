@@ -15,9 +15,10 @@ final class TaskMessageQueue implements IMessageQueue<String> {
 	private final String SINK_CONN;
 	private final String SINK_CONN_FORMAT = "tcp://%s:%d";
 
-    TaskMessageQueue(String url) {
-        SINK_CONN = url;
-    }
+	TaskMessageQueue(String url) {
+		SINK_CONN = url;
+		context = Context.getReference();
+	}
 
 	TaskMessageQueue(String host, int port) {
 		context = Context.getReference();

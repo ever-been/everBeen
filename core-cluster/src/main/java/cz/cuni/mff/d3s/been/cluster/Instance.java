@@ -55,6 +55,7 @@ public final class Instance {
 	public static final String PROPERTY_CLUSTER_MULTICAST_PORT = "been.cluster.multicast.port";
 	public static final String PROPERTY_CLUSTER_MULTICAST_GROUP = "been.cluster.multicast.group";
 	public static final String PROPERTY_CLUSTER_TCP_MEMBERS = "been.cluster.tcp.members";
+	public static final String PROPERTY_CLUSTER_LOGGING = "been.cluster.logging";
 
 	//public static final String PROPERTY_CLUSTER_TCP_INTERFACES = "been.cluster.tcp.interfaces";
 
@@ -119,17 +120,15 @@ public final class Instance {
 
 	}
 
-	public static synchronized HazelcastInstance newNativeInstance(String host,
-			int port, String groupName, String groupPassword) {
+	public static synchronized HazelcastInstance newNativeInstance(String host, int port, String groupName,
+			String groupPassword) {
 		if (isConnected()) {
 			throw new RuntimeException("Already connected");
 		}
 
 		Properties userProperties = new Properties();
 
-		userProperties.setProperty(
-				PROPERTY_CLIENT_MEMBERS,
-				String.format("%s:%d", host, port));
+		userProperties.setProperty(PROPERTY_CLIENT_MEMBERS, String.format("%s:%d", host, port));
 		userProperties.setProperty(PROPERTY_CLUSTER_GROUP, groupName);
 		userProperties.setProperty(PROPERTY_CLUSTER_PASSWORD, groupPassword);
 
@@ -166,8 +165,7 @@ public final class Instance {
 		nodeType = null;
 	}
 
-	private static HazelcastInstance createNativeInstance(
-			Properties userProperties) throws ServiceException {
+	private static HazelcastInstance createNativeInstance(Properties userProperties) throws ServiceException {
 
 		ClientConfig clientConfig = InstanceConfigHelper.createClientConfig(userProperties);
 
@@ -175,18 +173,14 @@ public final class Instance {
 
 	}
 
-	private static
-			HazelcastInstance
-			newDataInstance(Properties userProperties) throws ServiceException {
+	private static HazelcastInstance newDataInstance(Properties userProperties) throws ServiceException {
 
 		Config config = InstanceConfigHelper.createMemberConfig(userProperties);
 
 		return Hazelcast.newHazelcastInstance(config);
 	}
 
-	private static
-			HazelcastInstance
-			join(NodeType type, Properties userProperties) throws ServiceException {
+	private static HazelcastInstance join(NodeType type, Properties userProperties) throws ServiceException {
 		switch (type) {
 			case DATA:
 				return newDataInstance(userProperties);

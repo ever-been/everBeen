@@ -1,10 +1,13 @@
 package cz.cuni.mff.d3s.been.test;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import org.jeromq.ZMQ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cz.cuni.mff.d3s.been.taskapi.Requestor;
+import cz.cuni.mff.d3s.been.taskapi.CheckpointController;
 import cz.cuni.mff.d3s.been.taskapi.Task;
 
 /**
@@ -12,7 +15,7 @@ import cz.cuni.mff.d3s.been.taskapi.Task;
  */
 public class ExampleSyncTask extends Task {
 
-	private Requestor requestor;
+	private CheckpointController requestor;
 
 	enum TaskType {
 		SERVER, CLIENT, FINALIZER
@@ -44,10 +47,12 @@ public class ExampleSyncTask extends Task {
 
 	@Override
 	public void run(String[] args) {
-		requestor = new Requestor();
+
 		TaskType type = TaskType.valueOf(System.getenv(TYPE_KEY));
 
 		try {
+			requestor = CheckpointController.create();
+
 			switch (type) {
 				case SERVER:
 					runServer();
@@ -59,11 +64,11 @@ public class ExampleSyncTask extends Task {
 					System.out.println("FINALIZER");
 					break;
 			}
+
+			requestor.close();
 		} catch (Exception e) {
 			log.error("Error while running test: ", e);
 		}
-
-		requestor.close();
 
 		log.info("END-OF-TIME-AS-WE-KNOW-IT");
 
@@ -119,9 +124,9 @@ public class ExampleSyncTask extends Task {
 	/**
 	 * Server code
 	 */
-	private void runServer() {
+	private void runServer() throws UnknownHostException {
 		// prepare the server
-		String host = getHostName();
+		String host = InetAddress.getLocalHost().getHostName();
 		if (host == null) {
 			host = "localhost";
 		}

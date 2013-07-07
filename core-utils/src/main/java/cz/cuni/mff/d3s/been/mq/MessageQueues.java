@@ -31,10 +31,16 @@ public class MessageQueues {
 	private final Map<String, IMessageQueue> queues;
 
 	/**
+	 *
+	 */
+	private final Map<String, IMessageSender> defaultSenders;
+
+	/**
 	 * Private constructor, it's a singleton.
 	 */
 	private MessageQueues() {
 		this.queues = new HashMap<>();
+		this.defaultSenders = new HashMap<>();
 	}
 
 	/**
@@ -80,8 +86,6 @@ public class MessageQueues {
 	 * 
 	 * @param queueName
 	 *          name of the qeueue
-	 * @param <T>
-	 *          type of messages
 	 * @return tcp message queue
 	 * @throws MessagingException
 	 *           if the queue cannot be created
@@ -156,9 +160,45 @@ public class MessageQueues {
 			throw new MessagingException(errorMsg);
 		}
 
+		final IMessageSender sender = defaultSenders.get(queueName);
+
+		if (sender != null) {
+			sender.close();
+			defaultSenders.remove(queueName);
+		}
+
 		queues.get(queueName).terminate();
 		queues.remove(queueName);
 
+	}
+
+	/**
+	 * Sends an object to a named queue.
+	 * 
+	 * WARNING: This method is not very fast since it is synchronized, use with
+	 * care.
+	 * 
+	 * @param queueName
+	 *          name of a queue
+	 * @param serializable
+	 *          object to send
+	 * @throws MessagingException
+	 */
+	public synchronized void send(String queueName, Serializable serializable) throws MessagingException {
+		if (!queues.containsKey(queueName)) {
+			if (!queues.containsKey(queueName)) {
+				String errorMsg = String.format("Queue %s does not exist", queueName);
+				throw new MessagingException(errorMsg);
+			}
+		}
+
+		if (!defaultSenders.containsKey(queueName)) {
+			defaultSenders.put(queueName, createSender(queueName));
+		}
+
+		final IMessageSender sender = defaultSenders.get(queueName);
+
+		sender.send(serializable);
 	}
 
 }

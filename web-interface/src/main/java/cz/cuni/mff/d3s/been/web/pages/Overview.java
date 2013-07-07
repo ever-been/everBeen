@@ -1,15 +1,9 @@
 package cz.cuni.mff.d3s.been.web.pages;
 
-import cz.cuni.mff.d3s.been.core.LogMessage;
-import cz.cuni.mff.d3s.been.core.ri.FilesystemSample;
-import cz.cuni.mff.d3s.been.core.ri.NetworkSample;
-import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
-import cz.cuni.mff.d3s.been.core.task.TaskEntry;
-import cz.cuni.mff.d3s.been.core.task.TaskExclusivity;
-import cz.cuni.mff.d3s.been.core.task.TaskState;
-import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
-import cz.cuni.mff.d3s.been.web.components.Layout;
-import cz.cuni.mff.d3s.been.web.services.LiveFeedService;
+import java.util.*;
+
+import javax.inject.Inject;
+
 import org.apache.tapestry5.Block;
 import org.apache.tapestry5.annotations.Import;
 import org.apache.tapestry5.annotations.Property;
@@ -18,15 +12,21 @@ import org.apache.tapestry5.services.ajax.JavaScriptCallback;
 import org.apache.tapestry5.services.javascript.JavaScriptSupport;
 import org.got5.tapestry5.jquery.ImportJQueryUI;
 
-import javax.inject.Inject;
-import java.util.*;
+import cz.cuni.mff.d3s.been.core.ri.FilesystemSample;
+import cz.cuni.mff.d3s.been.core.ri.NetworkSample;
+import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
+import cz.cuni.mff.d3s.been.core.task.TaskEntry;
+import cz.cuni.mff.d3s.been.core.task.TaskExclusivity;
+import cz.cuni.mff.d3s.been.core.task.TaskState;
+import cz.cuni.mff.d3s.been.web.components.Layout;
+import cz.cuni.mff.d3s.been.web.services.LiveFeedService;
 
 /**
  * User: donarus Date: 4/22/13 Time: 12:25 PM
  */
 @Page.Navigation(section = Layout.Section.OVERVIEW)
 @ImportJQueryUI
-@Import(library={"context:js/jquery.flot.min.js", "context:js/overview.js"})
+@Import(library = { "context:js/jquery.flot.min.js", "context:js/overview.js" })
 public class Overview extends Page {
 
 	@Inject
@@ -90,7 +90,8 @@ public class Overview extends Page {
 			@Override
 			public int compare(TaskEntry o1, TaskEntry o2) {
 				int order = o1.getTaskContextId().compareTo(o2.getTaskContextId());
-				if (order == 0) order = o1.getId().compareTo(o2.getId());
+				if (order == 0)
+					order = o1.getId().compareTo(o2.getId());
 				return order;
 			}
 		});
@@ -103,7 +104,7 @@ public class Overview extends Page {
 			}
 
 			String contextId = taskEntry.getTaskContextId();
-			if (! tasksByContexts.containsKey(contextId))
+			if (!tasksByContexts.containsKey(contextId))
 				tasksByContexts.put(contextId, new ArrayList<TaskEntry>());
 			tasksByContexts.get(contextId).add(taskEntry);
 		}
@@ -113,14 +114,10 @@ public class Overview extends Page {
 		return tasksBlock;
 	}
 
-	public void onLogsUpdated(final LogMessage log) {
+	public void onLogsUpdated(final String log) {
 		ajaxResponseRenderer.addCallback(new JavaScriptCallback() {
 			public void run(JavaScriptSupport jss) {
-				try {
-					jss.addScript("addLog(%s)", JSONUtils.serialize(log));
-				} catch (JSONUtils.JSONSerializerException e) {
-					e.printStackTrace();
-				}
+				jss.addScript("addLog(%s)", log);
 			}
 		});
 	}

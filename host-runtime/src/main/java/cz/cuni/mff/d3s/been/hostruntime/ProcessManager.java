@@ -108,10 +108,7 @@ final class ProcessManager implements Service {
 	 * @param hostInfo
 	 *          Information about the current Host Runtime
 	 */
-	ProcessManager(
-			ClusterContext clusterContext,
-			SwRepoClientFactory swRepoClientFactory,
-			RuntimeInfo hostInfo) {
+	ProcessManager(ClusterContext clusterContext, SwRepoClientFactory swRepoClientFactory, RuntimeInfo hostInfo) {
 		this.clusterContext = clusterContext;
 		this.hostInfo = hostInfo;
 		this.softwareResolver = new SoftwareResolver(clusterContext.getServices(), swRepoClientFactory);
@@ -139,8 +136,10 @@ final class ProcessManager implements Service {
 	/** Starts the {@link MessageDispatcher} */
 	private void startMessageDispatcher() throws ServiceException {
 		messageDispatcher.addReceiveHandler(NamedSockets.TASK_LOG_0MQ.getName(), TaskLogHandler.create(clusterContext));
-        messageDispatcher.addReceiveHandler(NamedSockets.TASK_RESULT_0MQ.getName(), ResultHandler.create(clusterContext));
-		messageDispatcher.addRespondingHandler(NamedSockets.TASK_CHECKPOINT_0MQ.getName(), CheckpointHandlerFactory.create(clusterContext));
+		messageDispatcher.addReceiveHandler(NamedSockets.TASK_RESULT_0MQ.getName(), ResultHandler.create(clusterContext));
+		messageDispatcher.addRespondingHandler(
+				NamedSockets.TASK_CHECKPOINT_0MQ.getName(),
+				CheckpointHandlerFactory.create(clusterContext));
 		messageDispatcher.start();
 	}
 
@@ -335,16 +334,8 @@ final class ProcessManager implements Service {
 	}
 
 	private ExecuteStreamHandler createStreamHandler(TaskEntry entry) {
-		ClusterStreamHandler stdOutHandler = new ClusterStreamHandler(
-				clusterContext,
-				entry.getId(),
-				entry.getTaskContextId(),
-				"stdout");
-		ClusterStreamHandler stdErrHandler = new ClusterStreamHandler(
-				clusterContext,
-				entry.getId(),
-				entry.getTaskContextId(),
-				"stderr");
+		ClusterStreamHandler stdOutHandler = new ClusterStreamHandler(entry.getId(), entry.getTaskContextId(), "stdout");
+		ClusterStreamHandler stdErrHandler = new ClusterStreamHandler(entry.getId(), entry.getTaskContextId(), "stderr");
 
 		return new PumpStreamHandler(stdOutHandler, stdErrHandler);
 
@@ -352,8 +343,8 @@ final class ProcessManager implements Service {
 
 	private Map<String, String> createEnvironmentProperties(TaskEntry taskEntry) {
 
-		Map<String, String> properties = new TreeMap<String,String>(System.getenv());
-        properties.putAll(messageDispatcher.getBindings());
+		Map<String, String> properties = new TreeMap<String, String>(System.getenv());
+		properties.putAll(messageDispatcher.getBindings());
 		properties.put(LOGGER, System.getProperty(LOGGER));
 		properties.put(TASK_ID, taskEntry.getId());
 		properties.put(TASK_CONTEXT_ID, taskEntry.getTaskContextId());
