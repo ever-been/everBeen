@@ -1,23 +1,19 @@
 package cz.cuni.mff.d3s.been.web.pages.task;
 
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
-import cz.cuni.mff.d3s.been.core.task.ModeEnum;
-import cz.cuni.mff.d3s.been.core.task.ObjectFactory;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
-import cz.cuni.mff.d3s.been.core.task.TaskExclusivity;
 import cz.cuni.mff.d3s.been.web.components.Layout;
 import cz.cuni.mff.d3s.been.web.model.ConversationHolder;
+import cz.cuni.mff.d3s.been.web.model.KeyValuePair;
+import cz.cuni.mff.d3s.been.web.model.TaskDescriptorInitializer;
 import cz.cuni.mff.d3s.been.web.pages.Index;
 import cz.cuni.mff.d3s.been.web.pages.Overview;
 import cz.cuni.mff.d3s.been.web.pages.Page;
-import cz.cuni.mff.d3s.been.web.utils.KeyValuePair;
-import org.apache.tapestry5.ValueEncoder;
 import org.apache.tapestry5.annotations.Component;
 import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.annotations.SessionState;
 import org.apache.tapestry5.corelib.components.Form;
 
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,7 +46,7 @@ public class SubmitTaskDescriptor extends Page {
     // -----------------------------
 
     @SessionState(create = true)
-    private ConversationHolder<Map<String, Object>> sessionHolder;
+    private ConversationHolder<Map<String, Object>> conversationHolder;
 
     /**
      * Task descriptor loaded in onActivate() method
@@ -96,25 +92,6 @@ public class SubmitTaskDescriptor extends Page {
     private Form submitTaskForm;
 
 
-    /**
-     * Used in loop over arguments
-     */
-    @Property
-    private KeyValuePair arg;
-
-    /**
-     * Used in loop over java options
-     */
-    @Property
-    private KeyValuePair opt;
-
-    /**
-     * loop index used in loops in template
-     */
-    @Property
-    @SuppressWarnings("unused")
-    private int loopIndex;
-
     // -----------------------------
     // ACTIVATION AND PASSIVATION
     // -----------------------------
@@ -138,13 +115,13 @@ public class SubmitTaskDescriptor extends Page {
             return null;
         }
 
-        if (!sessionHolder.contains(conversationId)) {
+        if (!conversationHolder.contains(conversationId)) {
             // FIXME .. inform user in proper way?
             return Index.class;
         } else {
-            taskDescriptor = (TaskDescriptor) sessionHolder.get(conversationId).get(KEY_TASK_DESCRIPTOR);
-            args = (List<KeyValuePair>) sessionHolder.get(conversationId).get(KEY_ARGS);
-            opts = (List<KeyValuePair>) sessionHolder.get(conversationId).get(KEY_OPTS);
+            taskDescriptor = (TaskDescriptor) conversationHolder.get(conversationId).get(KEY_TASK_DESCRIPTOR);
+            args = (List<KeyValuePair>) conversationHolder.get(conversationId).get(KEY_ARGS);
+            opts = (List<KeyValuePair>) conversationHolder.get(conversationId).get(KEY_OPTS);
 
             this.conversationId = conversationId;
 
@@ -173,64 +150,17 @@ public class SubmitTaskDescriptor extends Page {
         bpkIdentifier.setVersion(version);
         this.taskDescriptor = this.api.getApi().getTaskDescriptor(bpkIdentifier, descriptorName);
 
-        // initialize fields on loaded task descriptor if not initialized
-        if (!taskDescriptor.isSetArguments()) {
-            taskDescriptor.setArguments(new ObjectFactory().createArguments());
-        }
-
-        if (!taskDescriptor.isSetProperties()) {
-            taskDescriptor.setProperties(new ObjectFactory().createTaskProperties());
-        }
-
-        if (!taskDescriptor.isSetJava()) {
-            taskDescriptor.setJava(new ObjectFactory().createJava());
-            taskDescriptor.getJava().setJavaOptions(new ObjectFactory().createJavaOptions());
-        }
-
-        if (!taskDescriptor.isSetLoadMonitoring()) {
-            taskDescriptor.setLoadMonitoring(new ObjectFactory().createLoadMonitoring());
-        }
-
-        if (!taskDescriptor.isSetExclusive()) {
-            taskDescriptor.setExclusive(TaskExclusivity.NON_EXCLUSIVE);
-        }
-
-        if (!taskDescriptor.isSetFailurePolicy()) {
-            taskDescriptor.setFailurePolicy(new ObjectFactory().createFailurePolicy());
-        }
-
-        if (!taskDescriptor.isSetDebug()) {
-            taskDescriptor.setDebug(new ObjectFactory().createDebug());
-            taskDescriptor.getDebug().setMode(ModeEnum.NONE);
-
-            try {
-                taskDescriptor.getDebug().setHost(java.net.InetAddress.getLocalHost().getHostAddress());
-            } catch (UnknownHostException e) {
-                // ignored, because we are trying only to help
-                // person who is trying to launch this task
-                // descriptor.... This is used only as first hint
-                // in form for submitting task descriptor.
-            }
-            taskDescriptor.getDebug().setPort(9000);
-
-        }
 
         args = new ArrayList<>();
-        for (int i = 0; i < taskDescriptor.getArguments().getArgument().size(); i++) {
-            args.add(new KeyValuePair(i, taskDescriptor.getArguments().getArgument().get(i)));
-        }
-
-
         opts = new ArrayList<>();
-        for (int i = 0; i < taskDescriptor.getJava().getJavaOptions().getJavaOption().size(); i++) {
-            opts.add(new KeyValuePair(i, taskDescriptor.getJava().getJavaOptions().getJavaOption().get(i)));
-        }
+
+        TaskDescriptorInitializer.initialize(taskDescriptor, args, opts);
 
         HashMap<String, Object> conversationArgs = new HashMap<String, Object>();
         conversationArgs.put(KEY_OPTS, opts);
         conversationArgs.put(KEY_ARGS, args);
         conversationArgs.put(KEY_TASK_DESCRIPTOR, taskDescriptor);
-        this.conversationId = sessionHolder.set(conversationArgs);
+        this.conversationId = conversationHolder.set(conversationArgs);
 
         activated = true;
         return null;
@@ -258,10 +188,11 @@ public class SubmitTaskDescriptor extends Page {
      * @return redirect to {@link Overview} page
      */
     @SuppressWarnings("unused")
-    Object onSuccessFromSubmitTaskForm() {
+    Object onSubmitFromSubmitTaskForm() {
         this.api.getApi().submitTask(taskDescriptor);
         args.remove(null);
         taskDescriptor.getArguments().getArgument().clear();
+        taskDescriptor.getJava().getJavaOptions().getJavaOption().clear();
         for (KeyValuePair arg : args) {
             if (arg.value != null) {
                 taskDescriptor.getArguments().getArgument().add(arg.value);
@@ -275,133 +206,5 @@ public class SubmitTaskDescriptor extends Page {
         return Overview.class;
     }
 
-    /**
-     * Creates new empty argument which will be added to indexed argument list.
-     *
-     * @return
-     */
-    Object onAddRowFromArgumentList() {
-        KeyValuePair newArg = new KeyValuePair(args.size(), "");
-        args.add(newArg);
-        return newArg;
-    }
-
-    /**
-     * Removes indexed argument from argument list ('remove' is not the really exact description.
-     * Instead of direct removing from list is option with given index(kvp.key) set to null)
-     *
-     * @param kvp
-     */
-    void onRemoveRowFromArgumentList(KeyValuePair kvp) {
-        args.set(kvp.key, null);
-    }
-
-    /**
-     * Creates new empty java option which will be added to indexed java option list.
-     *
-     * @return
-     */
-    Object onAddRowFromJavaOptList() {
-        KeyValuePair opt = new KeyValuePair(opts.size(), "");
-        opts.add(opt);
-        return opt;
-    }
-
-    /**
-     * Removes indexed java option from java option list ('remove' is not the really exact
-     * description. Instead of direct removing from list is argument with given index(kvp.key)
-     * set to null)
-     *
-     * @param kvp
-     */
-    void onRemoveRowFromJavaOptList(KeyValuePair kvp) {
-        opts.set(kvp.key, null);
-    }
-
-    /**
-     * Encoder used to translate values between server(java) and Client (browser)
-     *
-     * @return
-     */
-    public ValueEncoder<KeyValuePair> getKeyValuePairEncoder() {
-        return new ValueEncoder<KeyValuePair>() {
-            @Override
-            public String toClient(KeyValuePair value) {
-                return String.valueOf(value.key);
-            }
-
-            @Override
-            public KeyValuePair toValue(String value) {
-                return args.get(Integer.parseInt(value));
-            }
-        };
-    }
-
-    /**
-     * Collects possible values for TaskExclusivity select box
-     * @return
-     */
-    public TaskExclusivity[] getAvailableExclusivities() {
-        return TaskExclusivity.values();
-    }
-
-    /**
-     * Creates value encoder for Task Exclusivity entities.
-     * @return
-     */
-    public ValueEncoder<TaskExclusivity> getTaskExclusivityEncoder() {
-        return new ValueEncoder<TaskExclusivity>() {
-            @Override
-            public String toClient(TaskExclusivity value) {
-                if (value == null) {
-                    return null;
-                }
-                return value.value();
-            }
-
-            @Override
-            public TaskExclusivity toValue(String clientValue) {
-                if (clientValue == null) {
-                    return null;
-                }
-                return TaskExclusivity.fromValue(clientValue);
-            }
-        };
-    }
-
-
-
-    /**
-     * Collects possible values for ModeEnum select box (ModeEnum = enum for possible
-     * values for debug mode)
-     * @return
-     */
-    public ModeEnum[] getAvailableDebugModes() {
-        return ModeEnum.values();
-    }
-
-    /**
-     * Creates value encoder for ModeEnum (used for specifying debug mode) entities.
-     * @return
-     */
-    public ValueEncoder<ModeEnum> getDebugModeEncoder() {
-        return new ValueEncoder<ModeEnum>() {
-            @Override
-            public String toClient(ModeEnum value) {
-                if (value == null) {
-                    return null;
-                }
-                return value.value();
-            }
-
-            @Override
-            public ModeEnum toValue(String clientValue) {
-                if (clientValue == null) {
-                    return null;
-                }
-                return ModeEnum.fromValue(clientValue);
-            }
-        };
-    }
 
 }

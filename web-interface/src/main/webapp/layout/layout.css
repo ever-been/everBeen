@@ -985,3 +985,29 @@ table.inner-task-list td {
 	border: 0;
     padding: 0 .25em;
 }
+
+
+
+
+
+
+
+/*** JQUERY BUG 2500 FIX ***/
+/*** https://github.com/twitter/bootstrap/issues/2500 ***/
+.input-prepend input,
+.input-prepend textarea,
+.input-prepend .uneditable-input,
+.input-append input,
+.input-append textarea,
+.input-append .uneditable-input {
+    font-size: 14px !important;
+}
+.input-append input:focus,
+.input-prepend input:focus,
+.input-append select:focus,
+.input-prepend select:focus,
+.input-append .uneditable-input:focus,
+.input-prepend .uneditable-input:focus {
+    z-index: 9999 !important;
+}
+/*** JQUERY BUG 2500 FIX END */
