@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <taskDescriptor xmlns="http://been.d3s.mff.cuni.cz/task-descriptor"
-                groupId="cz.cuni.mff.d3s.been" bpkId="task-test" version="3.0.0"
+                groupId="cz.cuni.mff.d3s.been" bpkId="task-test" version="3.0.0-SNAPSHOT"
                 name="example-evaluator" type="task">
 
 	<java>

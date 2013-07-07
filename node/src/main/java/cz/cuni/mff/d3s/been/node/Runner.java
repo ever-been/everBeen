@@ -127,11 +127,11 @@ public class Runner {
 
 			// standalone services
 			if (runSWRepository) {
-				clusterReaper.pushTarget(startSWRepository(instance));
+				clusterReaper.pushTarget(startSWRepository(instance, properties));
 			}
 
 			if (runHostRuntime) {
-				clusterReaper.pushTarget(startHostRuntime(instance));
+				clusterReaper.pushTarget(startHostRuntime(instance, properties));
 			}
 
 			// Services that require a persistence layer
@@ -204,9 +204,9 @@ public class Runner {
 
 	private
 			IClusterService
-			startHostRuntime(final HazelcastInstance instance) throws ServiceException {
+			startHostRuntime(final HazelcastInstance instance, Properties properties) throws ServiceException {
 		log.info("Starting Host Runtime..");
-		IClusterService hostRuntime = HostRuntimes.getRuntime(instance);
+		IClusterService hostRuntime = HostRuntimes.getRuntime(instance, properties);
 		hostRuntime.start();
 		log.info("Host Runtime Started");
 		return hostRuntime;
@@ -214,12 +214,12 @@ public class Runner {
 
 	private
 			IClusterService
-			startSWRepository(HazelcastInstance instance) throws ServiceException {
+			startSWRepository(HazelcastInstance instance, Properties properties) throws ServiceException {
 		log.info("Starting Software repository");
 		ClusterContext ctx = new ClusterContext(instance);
 		SoftwareRepository softwareRepository = SoftwareRepositories.createSWRepository(
 				ctx,
-				swRepoPort);
+				properties);
 		softwareRepository.init();
 
 		softwareRepository.start();

@@ -16,12 +16,11 @@ import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
-import cz.cuni.mff.d3s.been.datastore.SoftwareStoreFactory;
+import cz.cuni.mff.d3s.been.datastore.SoftwareStoreBuilderFactory;
 import cz.cuni.mff.d3s.been.debugassistant.DebugAssistant;
 import cz.cuni.mff.d3s.been.debugassistant.DebugListItem;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
-import cz.cuni.mff.d3s.been.swrepoclient.SwRepositoryClientException;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -147,7 +146,7 @@ public class BeenApiImpl implements BeenApi {
 	@Override
 	public Collection<BpkIdentifier> getBpks() {
 		SWRepositoryInfo swInfo = clusterContext.getServices().getSWRepositoryInfo();
-		SwRepoClient client = new SwRepoClientFactory(SoftwareStoreFactory.getDataStore()).getClient(
+		SwRepoClient client = new SwRepoClientFactory(SoftwareStoreBuilderFactory.getSoftwareStoreBuilder().buildCache()).getClient(
 				swInfo.getHost(),
 				swInfo.getHttpServerPort());
 		return client.listBpks();
@@ -156,7 +155,7 @@ public class BeenApiImpl implements BeenApi {
 	@Override
 	public void uploadBpk(InputStream bpkInputStream) throws BpkConfigurationException {
 		SWRepositoryInfo swInfo = clusterContext.getServices().getSWRepositoryInfo();
-		SwRepoClient client = new SwRepoClientFactory(SoftwareStoreFactory.getDataStore()).getClient(
+		SwRepoClient client = new SwRepoClientFactory(SoftwareStoreBuilderFactory.getSoftwareStoreBuilder().buildCache()).getClient(
 				swInfo.getHost(),
 				swInfo.getHttpServerPort());
 
@@ -187,7 +186,7 @@ public class BeenApiImpl implements BeenApi {
 	@Override
 	public InputStream downloadBpk(BpkIdentifier bpkIdentifier) {
 		SWRepositoryInfo swInfo = clusterContext.getServices().getSWRepositoryInfo();
-		SwRepoClient client = new SwRepoClientFactory(SoftwareStoreFactory.getDataStore()).getClient(
+		SwRepoClient client = new SwRepoClientFactory(SoftwareStoreBuilderFactory.getSoftwareStoreBuilder().buildCache()).getClient(
 				swInfo.getHost(),
 				swInfo.getHttpServerPort());
 
@@ -256,7 +255,7 @@ public class BeenApiImpl implements BeenApi {
 	@Override
 	public Map<String, TaskDescriptor> getTaskDescriptors(BpkIdentifier bpkIdentifier) {
 		SWRepositoryInfo swInfo = clusterContext.getServices().getSWRepositoryInfo();
-		SwRepoClient client = new SwRepoClientFactory(SoftwareStoreFactory.getDataStore()).getClient(
+		SwRepoClient client = new SwRepoClientFactory(SoftwareStoreBuilderFactory.getSoftwareStoreBuilder().buildCache()).getClient(
 				swInfo.getHost(),
 				swInfo.getHttpServerPort());
 
@@ -271,7 +270,7 @@ public class BeenApiImpl implements BeenApi {
 	@Override
 	public Map<String, TaskContextDescriptor> getTaskContextDescriptors(BpkIdentifier bpkIdentifier) {
 		SWRepositoryInfo swInfo = clusterContext.getServices().getSWRepositoryInfo();
-		SwRepoClient client = new SwRepoClientFactory(SoftwareStoreFactory.getDataStore()).getClient(
+		SwRepoClient client = new SwRepoClientFactory(SoftwareStoreBuilderFactory.getSoftwareStoreBuilder().buildCache()).getClient(
 				swInfo.getHost(),
 				swInfo.getHttpServerPort());
 

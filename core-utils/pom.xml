@@ -32,6 +32,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-compress</artifactId>
+			<version>${commons-compress.version}</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.jeromq</groupId>
 			<artifactId>jeromq</artifactId>
 			<version>${jeromq.version}</version>

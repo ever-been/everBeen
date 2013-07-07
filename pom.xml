@@ -181,6 +181,9 @@
 			<id>buildBpkPlugin</id>
 
 			<modules>
+				<module>xsd-export</module>
+				<module>core-data</module>
+				<module>core-utils</module>
 				<module>bpk-conventions</module>
 				<module>bpk-plugin</module>
 			</modules>

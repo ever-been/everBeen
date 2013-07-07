@@ -107,10 +107,13 @@ public abstract class Task {
 			tearDown();
 		}
 	}
+
 	private void initialize() {
 		this.id = System.getenv(TaskPropertyNames.TASK_ID);
 		this.taskContextId = System.getenv(TaskPropertyNames.TASK_CONTEXT_ID);
         this.benchmarkId = System.getenv(TaskPropertyNames.BENCHMARK_ID);
+
+        System.out.println(String.format("result queue url: %s", NamedSockets.TASK_RESULT_0MQ.getConnection()));
 
 		resQueue = Messaging.createTaskQueue(NamedSockets.TASK_RESULT_0MQ.getConnection());
 		try {

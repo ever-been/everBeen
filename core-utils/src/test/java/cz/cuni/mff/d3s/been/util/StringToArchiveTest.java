@@ -1,5 +1,6 @@
-package cz.cuni.mff.d3s.been.bpkplugin;
+package cz.cuni.mff.d3s.been.util;
 
+import cz.cuni.mff.d3s.been.util.StringToArchive;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;

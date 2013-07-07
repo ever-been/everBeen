@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import cz.cuni.mff.d3s.been.util.FileToArchive;
+import cz.cuni.mff.d3s.been.util.ItemToArchive;
 import org.apache.maven.plugin.logging.Log;
 
 import cz.cuni.mff.d3s.been.bpk.BpkDependencies;

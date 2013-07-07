@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import cz.cuni.mff.d3s.been.socketworks.NamedSockets;
+import cz.cuni.mff.d3s.been.util.ZipUtil;
 import org.apache.commons.exec.ExecuteStreamHandler;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.slf4j.Logger;
@@ -281,7 +282,7 @@ final class ProcessManager implements Service {
 
 		Bpk bpk = getBpk(taskDescriptor);
 
-		ZipFileUtil.unzipToDir(bpk.getInputStream(), taskDirectory);
+		ZipUtil.unzipToDir(bpk.getInputStream(), taskDirectory);
 
 		// obtain bpk configuration
 		Path taskWrkDir = taskDirectory.toPath();

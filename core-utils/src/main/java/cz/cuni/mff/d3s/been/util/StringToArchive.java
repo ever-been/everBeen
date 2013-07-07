@@ -1,4 +1,6 @@
-package cz.cuni.mff.d3s.been.bpkplugin;
+package cz.cuni.mff.d3s.been.util;
+
+import cz.cuni.mff.d3s.been.util.ItemToArchive;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -10,7 +12,7 @@ import java.io.InputStream;
  * @author Tadeas Palusga
  * 
  */
-class StringToArchive implements ItemToArchive {
+public class StringToArchive implements ItemToArchive {
 
 	/**
 	 * string which should be added to BPK archive as content of file with path
@@ -35,7 +37,12 @@ class StringToArchive implements ItemToArchive {
 		this.string = string;
 	}
 
-	@Override
+    @Override
+    public boolean isDirectory() {
+        return string == null || string.isEmpty();
+    }
+
+    @Override
 	public InputStream getInputStream() throws IOException {
 		return new ByteArrayInputStream(string.getBytes());
 	}
@@ -45,4 +52,8 @@ class StringToArchive implements ItemToArchive {
 		return pathInZip;
 	}
 
+    @Override
+    public long getSize() {
+        return string.getBytes().length;
+    }
 }

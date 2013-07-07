@@ -1,4 +1,6 @@
-package cz.cuni.mff.d3s.been.bpkplugin;
+package cz.cuni.mff.d3s.been.util;
+
+import cz.cuni.mff.d3s.been.util.ItemToArchive;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,7 +13,7 @@ import java.io.InputStream;
  * @author Tadeas Palusga
  * 
  */
-final class FileToArchive implements ItemToArchive {
+public final class FileToArchive implements ItemToArchive {
 
 	/**
 	 * file on disk which should be added to BPK archive
@@ -34,7 +36,12 @@ final class FileToArchive implements ItemToArchive {
 		this.file = file;
 	}
 
-	@Override
+    @Override
+    public boolean isDirectory() {
+        return !file.exists() || file.isDirectory();
+    }
+
+    @Override
 	public InputStream getInputStream() throws IOException {
 		return new FileInputStream(file);
 	}
@@ -44,4 +51,8 @@ final class FileToArchive implements ItemToArchive {
 		return pathInZip;
 	}
 
+    @Override
+    public long getSize() {
+        return file.length();
+    }
 }

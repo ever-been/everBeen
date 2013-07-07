@@ -16,8 +16,10 @@
 target
 **/target
 **/bin
-.persistence
-**/.persistence
+.swrepository
+**/.swrepository
+.swcache
+**/.swcache
 .HostRuntime
 **/.HostRuntime
 **/.pydevproject
