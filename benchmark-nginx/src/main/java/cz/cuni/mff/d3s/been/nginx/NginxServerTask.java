@@ -7,12 +7,13 @@ import java.nio.file.Files;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cz.cuni.mff.d3s.been.taskapi.Requestor;
+import cz.cuni.mff.d3s.been.mq.MessagingException;
+import cz.cuni.mff.d3s.been.taskapi.CheckpointController;
 import cz.cuni.mff.d3s.been.taskapi.Task;
 
 /**
- * Created with IntelliJ IDEA. User: Kuba Date: 07.04.13 Time: 18:43 To change
- * this template use File | Settings | File Templates.
+ * 
+ * @author Kuba Břečka
  */
 public class NginxServerTask extends Task {
 
@@ -24,8 +25,7 @@ public class NginxServerTask extends Task {
 		String svnPath = this.getProperty("svnPath");
 		int currentRevision = Integer.parseInt(this.getProperty("revision"));
 
-		MyUtils.exec(".", "svn", new String[] { "checkout", "-r",
-				Integer.toString(currentRevision), svnPath, "nginx" });
+		MyUtils.exec(".", "svn", new String[] { "checkout", "-r", Integer.toString(currentRevision), svnPath, "nginx" });
 	}
 
 	private void buildSources() {
@@ -67,8 +67,7 @@ public class NginxServerTask extends Task {
 	}
 
 	private void shutdownServer() {
-		MyUtils.exec("./nginx", "objs/nginx", new String[] { "-p", ".", "-s",
-				"stop" });
+		MyUtils.exec("./nginx", "objs/nginx", new String[] { "-p", ".", "-s", "stop" });
 		try {
 			runnerThread.join();
 		} catch (InterruptedException e) {
@@ -78,8 +77,8 @@ public class NginxServerTask extends Task {
 
 	@Override
 	public void run(String[] args) {
-		Requestor requestor = new Requestor();
-		try {
+		try (CheckpointController requestor = CheckpointController.create()) {
+
 			log.info("Nginx Server Task started.");
 
 			downloadSources();
@@ -112,8 +111,8 @@ public class NginxServerTask extends Task {
 			shutdownServer();
 
 			log.info("ShutdownServer finished successfully.");
-		} finally {
-			requestor.close();
+		} catch (MessagingException e) {
+			e.printStackTrace();
 		}
 	}
 }

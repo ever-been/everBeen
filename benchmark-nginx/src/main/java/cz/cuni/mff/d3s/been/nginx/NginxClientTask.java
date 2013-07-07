@@ -7,8 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.d3s.been.core.persistence.EntityID;
+import cz.cuni.mff.d3s.been.mq.MessagingException;
 import cz.cuni.mff.d3s.been.persistence.DAOException;
-import cz.cuni.mff.d3s.been.taskapi.Requestor;
+import cz.cuni.mff.d3s.been.taskapi.CheckpointController;
 import cz.cuni.mff.d3s.been.taskapi.Task;
 import cz.cuni.mff.d3s.been.taskapi.results.ResultPersister;
 
@@ -21,10 +22,7 @@ public class NginxClientTask extends Task {
 	private static final Logger log = LoggerFactory.getLogger(NginxClientTask.class);
 
 	private void downloadClientScript() {
-		MyUtils.exec(
-				".",
-				"wget",
-				new String[] { "http://httperf.googlecode.com/files/httperf-0.9.0.tar.gz" });
+		MyUtils.exec(".", "wget", new String[] { "http://httperf.googlecode.com/files/httperf-0.9.0.tar.gz" });
 		MyUtils.exec(".", "tar", new String[] { "xzvf", "httperf-0.9.0.tar.gz" });
 		MyUtils.exec("./httperf-0.9.0", "./configure", new String[] {});
 		MyUtils.exec("./httperf-0.9.0", "make", new String[] {});
@@ -35,15 +33,10 @@ public class NginxClientTask extends Task {
 		String hostname = splitted[0];
 		int port = Integer.parseInt(splitted[1]);
 
-		String output = MyUtils.exec(
-				"./httperf-0.9.0",
-				"src/httperf",
-				new String[] { "--client=0/1", "--server=" + hostname,
-						"--port=" + port, "--uri=/",
-						"--send-buffer=" + this.getProperty("sendBuffer"),
-						"--recv-buffer=" + this.getProperty("recvBuffer"),
-						"--num-conns=" + this.getProperty("numberOfConnections"),
-						"--num-calls=" + this.getProperty("requestsPerConnection") });
+		String output = MyUtils.exec("./httperf-0.9.0", "src/httperf", new String[] { "--client=0/1",
+				"--server=" + hostname, "--port=" + port, "--uri=/", "--send-buffer=" + this.getProperty("sendBuffer"),
+				"--recv-buffer=" + this.getProperty("recvBuffer"), "--num-conns=" + this.getProperty("numberOfConnections"),
+				"--num-calls=" + this.getProperty("requestsPerConnection") });
 
 		HttperfResult result = parseOutput(output);
 
@@ -68,8 +61,7 @@ public class NginxClientTask extends Task {
 		HttperfResult result = new HttperfResult(this);
 
 		Matcher m = Pattern.compile(
-				"Total: connections ([0-9]+) requests ([0-9]+) replies ([0-9]+) test-duration ([0-9.]+) s").matcher(
-				output);
+				"Total: connections ([0-9]+) requests ([0-9]+) replies ([0-9]+) test-duration ([0-9.]+) s").matcher(output);
 		if (!m.find())
 			throw new RuntimeException("Cannot parse result.");
 		result.connections = Integer.parseInt(m.group(1));
@@ -93,8 +85,7 @@ public class NginxClientTask extends Task {
 		result.connectionTimeMedian = Double.parseDouble(m.group(4));
 		result.connectionTimeStdDev = Double.parseDouble(m.group(5));
 
-		m = Pattern.compile("Connection time \\[ms\\]: connect ([0-9.]+)").matcher(
-				output);
+		m = Pattern.compile("Connection time \\[ms\\]: connect ([0-9.]+)").matcher(output);
 		if (!m.find())
 			throw new RuntimeException("Cannot parse result.");
 		result.connectionTimeConnect = Double.parseDouble(m.group(1));
@@ -109,15 +100,13 @@ public class NginxClientTask extends Task {
 			throw new RuntimeException("Cannot parse result.");
 		result.requestSize = (int) Double.parseDouble(m.group(1));
 
-		m = Pattern.compile(
-				"Reply size \\[B\\]: header ([0-9.]+) content ([0-9.]+) footer ([0-9.]+) \\(total ([0-9.]+)\\)").matcher(
+		m = Pattern.compile("Reply size \\[B\\]: header ([0-9.]+) content ([0-9.]+) footer ([0-9.]+) \\(total ([0-9.]+)\\)").matcher(
 				output);
 		if (!m.find())
 			throw new RuntimeException("Cannot parse result.");
 		result.replySizeTotal = (int) Double.parseDouble(m.group(4));
 
-		m = Pattern.compile(
-				"Reply status: 1xx=([0-9]+) 2xx=([0-9]+) 3xx=([0-9]+) 4xx=([0-9]+) 5xx=([0-9]+)").matcher(
+		m = Pattern.compile("Reply status: 1xx=([0-9]+) 2xx=([0-9]+) 3xx=([0-9]+) 4xx=([0-9]+) 5xx=([0-9]+)").matcher(
 				output);
 		if (!m.find())
 			throw new RuntimeException("Cannot parse result.");
@@ -148,8 +137,8 @@ public class NginxClientTask extends Task {
 
 	@Override
 	public void run(String[] args) {
-		Requestor requestor = new Requestor();
-		try {
+		try (CheckpointController requestor = CheckpointController.create()) {
+
 			log.info("Nginx Client Task started.");
 
 			downloadClientScript();
@@ -172,8 +161,8 @@ public class NginxClientTask extends Task {
 			log.info("Client finished benchmarking.");
 
 			requestor.latchCountDown("shutdown-latch");
-		} finally {
-			requestor.close();
+		} catch (MessagingException e) {
+			e.printStackTrace();
 		}
 	}
 }
