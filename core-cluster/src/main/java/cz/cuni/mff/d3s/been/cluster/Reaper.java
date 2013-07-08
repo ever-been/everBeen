@@ -30,6 +30,7 @@ public abstract class Reaper extends Thread {
 
 	@Override
 	public final void run() {
+        setName(getClass().getSimpleName());
 		super.run();
 		try {
 			log.debug("Reaper is on the move.");

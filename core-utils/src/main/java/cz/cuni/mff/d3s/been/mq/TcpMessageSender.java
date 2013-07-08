@@ -14,7 +14,7 @@ public class TcpMessageSender implements IMessageSender<String> {
 	/**
 	 * ZMQ.Context to use for the connection.
 	 */
-	private final ZMQ.Context context;
+	private final ZMQContext context;
 
 	/**
 	 * ZMQ.Socket to communicate with.
@@ -26,7 +26,7 @@ public class TcpMessageSender implements IMessageSender<String> {
 	 */
 	private final String connection;
 
-	public TcpMessageSender(ZMQ.Context context, String connection) {
+	public TcpMessageSender(ZMQContext context, String connection) {
 		this.context = context;
 		this.connection = connection;
 	}
@@ -90,7 +90,7 @@ public class TcpMessageSender implements IMessageSender<String> {
 		boolean sent = socket.send(object);
 
 		if (!sent) {
-			String msg = String.format("Cannot send {} to {}", object, connection);
+			String msg = String.format("Cannot send %s to %s", object, connection);
 			throw new MessagingException(msg);
 		}
 
@@ -113,5 +113,10 @@ public class TcpMessageSender implements IMessageSender<String> {
 	@Override
 	public String getConnection() {
 		return connection;
+	}
+
+	@Override
+	public void setLinger(int linger) {
+		socket.setLinger(linger);
 	}
 }

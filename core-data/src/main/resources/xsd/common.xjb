@@ -7,6 +7,10 @@
 	version="2.0"
 	>
 	
+	<globalBindings generateIsSetMethod="true">
+		<xjc:serializable />
+	</globalBindings>
+	
 	<bindings schemaLocation="common.xsd">
 		<schemaBindings>
 			<package name="cz.cuni.mff.d3s.been.core.common" />

@@ -16,6 +16,7 @@ import java.util.zip.ZipFile;
 
 import javax.xml.bind.JAXBException;
 
+import cz.cuni.mff.d3s.been.core.PropertyReader;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -25,10 +26,7 @@ import org.xml.sax.SAXException;
 import cz.cuni.mff.d3s.been.bpk.ArtifactIdentifier;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.bpk.BpkNames;
-import cz.cuni.mff.d3s.been.core.jaxb.BindingParser;
 import cz.cuni.mff.d3s.been.core.jaxb.ConvertorException;
-import cz.cuni.mff.d3s.been.core.jaxb.XSD;
-import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.datastore.SoftwareStore;
 import cz.cuni.mff.d3s.been.datastore.StorePersister;
 import cz.cuni.mff.d3s.been.datastore.StoreReader;
@@ -37,38 +35,45 @@ import cz.cuni.mff.d3s.been.datastore.StoreReader;
  * @author darklight
  *
  */
-public final class FSBasedStore implements SoftwareStore {
+final class FSBasedStore implements SoftwareStore {
 
 	private static final Logger log = LoggerFactory.getLogger(FSBasedStore.class);
 
-	private static final String FS_ROOT_NAME = ".persistence";
+	private static final String DEFAULT_CACHE_FS_ROOT_NAME = ".swcache";
+    private static final String DEFAULT_SERVER_FS_ROOT_NAME = ".swrepository";
 	private static final String ARTIFACTS_ROOT_NAME = "artifacts";
-	private static final String BPKS_ROOT_NAME = "bpks";
+    private static final String BPKS_ROOT_NAME = "bpks";
+    private static final Long DEFAULT_CACHE_MBYTES = 1024l;
 
 	private final File fsRoot;
 	private final File artifactFSRoot;
 	private final File bpkFSRoot;
 
+
 	/**
 	 * Create the data store.
 	 */
-	public FSBasedStore() {
-		fsRoot = new File(FS_ROOT_NAME);
+	private FSBasedStore(String fsRootName) {
+		fsRoot = new File(fsRootName);
 		artifactFSRoot = new File(fsRoot, ARTIFACTS_ROOT_NAME);
 		bpkFSRoot = new File(fsRoot, BPKS_ROOT_NAME);
 	}
 
-	/**
-	 * Creates the data store over a pre-defined filesystem root.
-	 *
-	 * @param persistenceRootDir
-	 *          Root of the filesystem storage.
-	 */
-	public FSBasedStore(File persistenceRootDir) {
-		fsRoot = persistenceRootDir;
-		artifactFSRoot = new File(fsRoot, ARTIFACTS_ROOT_NAME);
-		bpkFSRoot = new File(fsRoot, BPKS_ROOT_NAME);
-	}
+    static FSBasedStore createCache(Properties properties) {
+        final PropertyReader propReader = PropertyReader.on(properties);
+
+        final String rootDir = propReader.getString("hostruntime.swcache.folder", DEFAULT_CACHE_FS_ROOT_NAME);
+        final Long cacheSizeString = propReader.getLong("hostruntime.swcache.maxSize", DEFAULT_CACHE_MBYTES);
+
+        // TODO infer a cache size control mechanism
+        return new FSBasedStore(rootDir);
+    }
+
+    static FSBasedStore createServer(Properties properties) {
+        final String rootDir = properties.getProperty("swrepository.persistence.folder", DEFAULT_SERVER_FS_ROOT_NAME);
+
+        return new FSBasedStore(rootDir);
+    }
 
 	/**
 	 * Initialize the FS store in the app's run directory.

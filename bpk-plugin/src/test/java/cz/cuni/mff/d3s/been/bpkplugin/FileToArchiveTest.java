@@ -2,6 +2,7 @@ package cz.cuni.mff.d3s.been.bpkplugin;
 
 import java.io.File;
 
+import cz.cuni.mff.d3s.been.util.FileToArchive;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;

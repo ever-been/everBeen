@@ -1,6 +1,6 @@
 package cz.cuni.mff.d3s.been.mq;
 
-import static cz.cuni.mff.d3s.been.mq.TestParams.HOSTNAME;
+import java.util.UUID;
 
 import org.junit.Test;
 
@@ -9,15 +9,15 @@ import org.junit.Test;
  */
 public class TcpMessageQueueTest extends BasicQueueTests {
 
-	protected IMessageQueue<String> getQueue() {
-		return Messaging.createTcpQueue(HOSTNAME);
+	@Override
+	protected IMessageQueue<String> getQueue() throws MessagingException {
+		return MessageQueues.getInstance().createTcpQueue(UUID.randomUUID().toString(), "localhost");
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testBadHostname() throws MessagingException {
 		IMessageQueue<String> queue = new TcpMessageQueue("!@#$%^^&");
 		IMessageReceiver<String> receiver = queue.getReceiver();
-
 	}
 
 }

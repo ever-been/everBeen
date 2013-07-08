@@ -6,6 +6,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import cz.cuni.mff.d3s.been.core.PropertyReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +14,6 @@ import com.hazelcast.core.IMap;
 
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.cluster.context.Tasks;
-import cz.cuni.mff.d3s.been.core.SystemProperties;
 import cz.cuni.mff.d3s.been.core.protocol.Context;
 import cz.cuni.mff.d3s.been.core.protocol.messages.RunTaskMessage;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
@@ -215,6 +215,6 @@ public final class ScheduleTaskAction implements TaskAction {
 	}
 
 	private int getLockTimeout() {
-		return SystemProperties.getInteger(TM_LOCK_TIMEOUT, DEFAULT_LOCK_TIMEOUT);
+		return PropertyReader.system().getInteger(TM_LOCK_TIMEOUT, DEFAULT_LOCK_TIMEOUT);
 	}
 }

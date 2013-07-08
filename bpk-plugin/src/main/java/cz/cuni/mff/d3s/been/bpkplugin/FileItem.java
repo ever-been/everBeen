@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import cz.cuni.mff.d3s.been.util.FileToArchive;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.maven.plugins.annotations.Parameter;
 
@@ -77,8 +78,6 @@ public final class FileItem {
 	/**
 	 * Check parameters of item. Log error into maven log, if some parameter is
 	 * incorrect. (When ERROR is logge into maven log, build failed)
-	 * 
-	 * @param log
 	 */
 	private void checkParameters() {
 		/*

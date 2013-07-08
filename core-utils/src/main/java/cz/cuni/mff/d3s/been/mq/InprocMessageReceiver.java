@@ -33,7 +33,7 @@ final class InprocMessageReceiver<T extends Serializable> implements IMessageRec
 	/**
 	 * ZMQ.Context to use for the connection.
 	 */
-	private final ZMQ.Context context;
+	private final ZMQContext context;
 
 	/**
 	 * Name of the queue.
@@ -65,7 +65,7 @@ final class InprocMessageReceiver<T extends Serializable> implements IMessageRec
 	 * @param queue
 	 */
 
-	public InprocMessageReceiver(final ZMQ.Context context, final String queue) {
+	public InprocMessageReceiver(final ZMQContext context, final String queue) {
 		this.context = context;
 		this.queue = queue;
 		INPROC_CONN = Messaging.createInprocConnection(queue);
@@ -88,6 +88,7 @@ final class InprocMessageReceiver<T extends Serializable> implements IMessageRec
 
 	}
 
+	@Override
 	public T receive() throws MessagingException {
 		if (!isConnected()) {
 			throw new MessagingException("Receive on unbind socket.");
@@ -97,8 +98,7 @@ final class InprocMessageReceiver<T extends Serializable> implements IMessageRec
 			byte[] bytes = socket.recv();
 			Object object = SerializationUtils.deserialize(bytes);
 			return (T) object;
-		} catch (ClassCastException | SerializationException
-				| IllegalArgumentException e) {
+		} catch (ClassCastException | SerializationException | IllegalArgumentException e) {
 			throw new MessagingException("Cannot cast to a proper type.", e);
 		}
 	}
@@ -108,6 +108,7 @@ final class InprocMessageReceiver<T extends Serializable> implements IMessageRec
 	 * 
 	 * @return true if the sender is connected to its queue, false otherwise
 	 */
+	@Override
 	public boolean isConnected() {
 		return socket != null;
 	}

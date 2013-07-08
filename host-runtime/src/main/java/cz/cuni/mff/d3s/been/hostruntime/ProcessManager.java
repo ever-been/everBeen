@@ -1,24 +1,30 @@
 package cz.cuni.mff.d3s.been.hostruntime;
 
-import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.*;
+import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.LOGGER;
+import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.TASK_CONTEXT_ID;
+import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.TASK_ID;
+import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.BENCHMARK_ID;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.TreeMap;
 
+import cz.cuni.mff.d3s.been.socketworks.NamedSockets;
+import cz.cuni.mff.d3s.been.util.ZipUtil;
 import org.apache.commons.exec.ExecuteStreamHandler;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cz.cuni.mff.d3s.been.bpk.*;
-import cz.cuni.mff.d3s.been.cluster.Reapable;
-import cz.cuni.mff.d3s.been.cluster.Reaper;
+import cz.cuni.mff.d3s.been.bpk.Bpk;
+import cz.cuni.mff.d3s.been.bpk.BpkConfigUtils;
+import cz.cuni.mff.d3s.been.bpk.BpkConfiguration;
+import cz.cuni.mff.d3s.been.bpk.BpkConfigurationException;
+import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
+import cz.cuni.mff.d3s.been.bpk.BpkNames;
+import cz.cuni.mff.d3s.been.bpk.BpkRuntime;
 import cz.cuni.mff.d3s.been.cluster.Service;
 import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
@@ -30,11 +36,19 @@ import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskProperty;
-import cz.cuni.mff.d3s.been.hostruntime.task.*;
+import cz.cuni.mff.d3s.been.hostruntime.task.ClusterStreamHandler;
+import cz.cuni.mff.d3s.been.hostruntime.task.CmdLineBuilder;
+import cz.cuni.mff.d3s.been.hostruntime.task.CmdLineBuilderFactory;
+import cz.cuni.mff.d3s.been.hostruntime.task.DependencyDownloader;
+import cz.cuni.mff.d3s.been.hostruntime.task.DependencyDownloaderFactory;
+import cz.cuni.mff.d3s.been.hostruntime.task.TaskHandle;
+import cz.cuni.mff.d3s.been.hostruntime.task.TaskProcess;
+import cz.cuni.mff.d3s.been.hostruntime.tasklogs.TaskLogHandler;
 import cz.cuni.mff.d3s.been.mq.IMessageReceiver;
 import cz.cuni.mff.d3s.been.mq.IMessageSender;
 import cz.cuni.mff.d3s.been.mq.MessageQueues;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
+import cz.cuni.mff.d3s.been.socketworks.MessageDispatcher;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
 
 /**
@@ -45,7 +59,7 @@ import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
  * @author Martin Sixta
  * @author Tadeáš Palusga
  */
-final class ProcessManager implements Service, Reapable {
+final class ProcessManager implements Service {
 
 	/**
 	 * Logger
@@ -73,34 +87,14 @@ final class ProcessManager implements Service, Reapable {
 	private Tasks clusterTasks;
 
 	/**
-	 * Threading service
-	 */
-	private ExecutorService executorService;
-
-	/**
-	 * Listens and takes care of task messages.
-	 */
-	private TaskMessageDispatcher taskMessageDispatcher;
-
-	/**
 	 * Thread dispatching task action messages.
 	 */
 	TaskActionThread taskActionThread;
 
-	/**
-	 * Collect results from tasks and dispatch them
-	 */
-	private ResultsDispatcher resultsDispatcher;
-
-	/**
-	 * Thread handling request from tasks.
-	 */
-	private TaskRequestBrokerThread requestBrokerThread;
-
-	/**
-	 * Context of the Host Runtime
-	 */
+	/** Context of the Host Runtime */
 	private ProcessManagerContext tasks;
+
+	private final MessageDispatcher messageDispatcher;
 
 	/**
 	 * Creates new instance.
@@ -119,9 +113,9 @@ final class ProcessManager implements Service, Reapable {
 		this.hostInfo = hostInfo;
 		this.softwareResolver = new SoftwareResolver(clusterContext.getServices(), swRepoClientFactory);
 		this.clusterTasks = clusterContext.getTasks();
-		this.executorService = Executors.newFixedThreadPool(1);
 
 		this.tasks = new ProcessManagerContext(clusterContext, hostInfo);
+		this.messageDispatcher = MessageDispatcher.create("localhost");
 	}
 
 	/**
@@ -129,53 +123,24 @@ final class ProcessManager implements Service, Reapable {
 	 */
 	@Override
 	public void start() throws ServiceException {
-		startTaskRequestBroker();
 		startTaskActionThread();
-		startTaskMessageDispatcher();
-		startResultsDispatcher();
+		startMessageDispatcher();
 	}
 
-	/**
-	 * Starts the {@link TaskRequestBrokerThread}
-	 */
-	private void startTaskRequestBroker() {
-		requestBrokerThread = new TaskRequestBrokerThread(clusterContext);
-		requestBrokerThread.start();
-
-		int port = requestBrokerThread.getPort();
-
-		// register the property so it can be passed to tasks
-		System.setProperty(REQUEST_PORT, Integer.toString(port));
-	}
-
-	/**
-	 * Starts the {@link TaskActionThread}
-	 */
+	/** Starts the {@link TaskActionThread} */
 	private void startTaskActionThread() throws ServiceException {
 		taskActionThread = new TaskActionThread();
-
 		taskActionThread.start();
 	}
 
-	/**
-	 * Starts the {@link TaskMessageDispatcher}
-	 */
-	private void startTaskMessageDispatcher() throws ServiceException {
-		taskMessageDispatcher = new TaskMessageDispatcher(clusterContext);
-		taskMessageDispatcher.start();
-	}
-
-	/**
-	 * Starts the {@link ResultsDispatcher}
-	 */
-	private void startResultsDispatcher() throws ServiceException {
-		resultsDispatcher = new ResultsDispatcher(clusterContext, "localhost");
-		try {
-			resultsDispatcher.init();
-		} catch (MessagingException e) {
-			throw new ServiceException("Failed to register result dispatcher", e);
-		}
-		executorService.submit(resultsDispatcher);
+	/** Starts the {@link MessageDispatcher} */
+	private void startMessageDispatcher() throws ServiceException {
+		messageDispatcher.addReceiveHandler(NamedSockets.TASK_LOG_0MQ.getName(), TaskLogHandler.create(clusterContext));
+		messageDispatcher.addReceiveHandler(NamedSockets.TASK_RESULT_0MQ.getName(), ResultHandler.create(clusterContext));
+		messageDispatcher.addRespondingHandler(
+				NamedSockets.TASK_CHECKPOINT_0MQ.getName(),
+				CheckpointHandlerFactory.create(clusterContext));
+		messageDispatcher.start();
 	}
 
 	/**
@@ -183,54 +148,22 @@ final class ProcessManager implements Service, Reapable {
 	 */
 	@Override
 	public void stop() {
-		stopResultsDispatcher();
-		stopTaskMessageDispatcher();
+		stopMessageDispatcher();
 		stopTaskActionThread();
-		stopTaskRequestBroker();
 
 		// Kill all remaining running clusterTasks
 		tasks.killRunningTasks();
 
 	}
 
-	@Override
-	public Reaper createReaper() {
-		final Reaper reaper = new Reaper() {
-			@Override
-			protected void reap() throws InterruptedException {
-				ProcessManager.this.stop();
-			}
-		};
-		reaper.pushTarget(taskMessageDispatcher);
-		return reaper;
+	/** Stops the {@link MessageDispatcher} */
+	private void stopMessageDispatcher() {
+		log.debug("Stopping message dispatcher...");
+		messageDispatcher.stop();
+		log.debug("Message dispatcher stopped.");
 	}
 
-	/**
-	 * Stops the {@link ResultsDispatcher}
-	 */
-	private void stopResultsDispatcher() {
-		log.debug("Stopping result dispatcher...");
-		executorService.shutdown();
-		try {
-			executorService.awaitTermination(1, TimeUnit.SECONDS);
-		} catch (InterruptedException e) {
-			log.warn("Results dispatcher interrupted during shutdown sequence. Socket leaks are likely.", e);
-		}
-		log.debug("Result dispatcher stopped.");
-	}
-
-	/**
-	 * Stops the {@link TaskMessageDispatcher}
-	 */
-	private void stopTaskMessageDispatcher() {
-		log.debug("Stopping task message dispatcher...");
-		taskMessageDispatcher.stop();
-		log.debug("Task message dispatcher stopped.");
-	}
-
-	/**
-	 * Stops the {@link TaskActionThread}
-	 */
+	/** Stops the {@link TaskActionThread} */
 	private void stopTaskActionThread() {
 		log.debug("Stopping task action thread");
 		try {
@@ -240,13 +173,6 @@ final class ProcessManager implements Service, Reapable {
 			e.printStackTrace();
 		}
 		log.debug("Task action thread stopped");
-	}
-
-	/**
-	 * Stops the {@link TaskRequestBrokerThread}
-	 */
-	private void stopTaskRequestBroker() {
-		// TODO
 	}
 
 	/**
@@ -340,7 +266,9 @@ final class ProcessManager implements Service, Reapable {
 	 *          entry associated with the new process
 	 * @param taskDirectory
 	 *          root directory of the task
+     *          
 	 * @return task process representation
+	 * 
 	 * @throws IOException
 	 * @throws BpkConfigurationException
 	 * @throws TaskException
@@ -353,7 +281,7 @@ final class ProcessManager implements Service, Reapable {
 
 		Bpk bpk = getBpk(taskDescriptor);
 
-		ZipFileUtil.unzipToDir(bpk.getInputStream(), taskDirectory);
+		ZipUtil.unzipToDir(bpk.getInputStream(), taskDirectory);
 
 		// obtain bpk configuration
 		Path taskWrkDir = taskDirectory.toPath();
@@ -373,7 +301,12 @@ final class ProcessManager implements Service, Reapable {
 		// create environment properties
 		Map<String, String> environment = createEnvironmentProperties(taskEntry);
 
-		TaskProcess taskProcess = new TaskProcess(cmdLineBuilder, taskWrkDir, environment, streamHandler, dependencyDownloader);
+		TaskProcess taskProcess = new TaskProcess(
+				cmdLineBuilder,
+				taskWrkDir,
+				environment,
+				streamHandler,
+				dependencyDownloader);
 
 		long timeout = determineTimeout(taskDescriptor);
 
@@ -401,8 +334,8 @@ final class ProcessManager implements Service, Reapable {
 	}
 
 	private ExecuteStreamHandler createStreamHandler(TaskEntry entry) {
-		ClusterStreamHandler stdOutHandler = new ClusterStreamHandler(clusterContext, entry.getId(), entry.getTaskContextId(), "stdout");
-		ClusterStreamHandler stdErrHandler = new ClusterStreamHandler(clusterContext, entry.getId(), entry.getTaskContextId(), "stderr");
+		ClusterStreamHandler stdOutHandler = new ClusterStreamHandler(entry.getId(), entry.getTaskContextId(), "stdout");
+		ClusterStreamHandler stdErrHandler = new ClusterStreamHandler(entry.getId(), entry.getTaskContextId(), "stderr");
 
 		return new PumpStreamHandler(stdOutHandler, stdErrHandler);
 
@@ -410,18 +343,12 @@ final class ProcessManager implements Service, Reapable {
 
 	private Map<String, String> createEnvironmentProperties(TaskEntry taskEntry) {
 
-		Map<String, String> properties = new HashMap<>(System.getenv());
+		Map<String, String> properties = new TreeMap<String, String>(System.getenv());
+		properties.putAll(messageDispatcher.getBindings());
 		properties.put(LOGGER, System.getProperty(LOGGER));
-		properties.put(REQUEST_PORT, System.getProperty(REQUEST_PORT));
-
 		properties.put(TASK_ID, taskEntry.getId());
 		properties.put(TASK_CONTEXT_ID, taskEntry.getTaskContextId());
 		properties.put(BENCHMARK_ID, taskEntry.getBenchmarkId());
-
-		properties.put(HR_COMM_PORT, Integer.toString(taskMessageDispatcher.getReceiverPort()));
-		properties.put(HR_RESULTS_PORT, Integer.toString(resultsDispatcher.getPort()));
-
-		properties.put(HR_HOSTNAME, clusterContext.getInetSocketAddress().getHostName());
 
 		// add properties specified in the TaskDescriptor
 		TaskDescriptor td = taskEntry.getTaskDescriptor();
@@ -444,7 +371,6 @@ final class ProcessManager implements Service, Reapable {
 	private TaskEntry loadTask(String taskId) {
 		return clusterTasks.getTask(taskId);
 	}
-
 	/**
 	 * Thread listening for task action messages. Dispatches messages to its
 	 * handlers.

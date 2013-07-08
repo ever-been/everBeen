@@ -107,14 +107,12 @@ public abstract class BasicQueueTests extends Assert {
 		assertEquals(1, receiverThread.getReceivedMessages().size());
 		for (String s : receiverThread.getReceivedMessages()) {
 			assertEquals(message, s);
-
 		}
 
 		sender.close();
 		queue.terminate();
 
 	}
-
 	/**
 	 * Tests simple push-pull on a queue with receiver and sender running in
 	 * different thread.
@@ -141,7 +139,6 @@ public abstract class BasicQueueTests extends Assert {
 		assertEquals(count, receiverThread.getReceivedMessages().size());
 		for (String s : receiverThread.getReceivedMessages()) {
 			assertEquals(message, s);
-
 		}
 
 		sender.close();
@@ -173,7 +170,6 @@ public abstract class BasicQueueTests extends Assert {
 		assertEquals(count * 2, receiverThread.getReceivedMessages().size());
 		for (String s : receiverThread.getReceivedMessages()) {
 			assertEquals(message, s);
-
 		}
 
 		sender1.close();
@@ -182,4 +178,21 @@ public abstract class BasicQueueTests extends Assert {
 
 	}
 
+	@Test
+	public void testTerminateWithInterruptedListener() throws MessagingException {
+		final int count = 1;
+		IMessageQueue<String> queue = getQueue();
+		IMessageReceiver<String> receiver = queue.getReceiver();
+		ReceiverThread<String> receiverThread = new ReceiverThread<>(receiver, count);
+		receiverThread.interrupt();
+		queue.terminate();
+	}
+
+	@Test
+	public void testTerminateWithClosedReceiver() throws MessagingException {
+		IMessageQueue<String> queue = getQueue();
+		IMessageReceiver<String> receiver = queue.getReceiver();
+		receiver.close();
+		queue.terminate();
+	}
 }

@@ -18,19 +18,12 @@
 			<artifactId>xsd-export</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-	   <!-- necessary ugly hack :) needed for using CatalogResolver class -->
+		<!-- necessary ugly hack :) needed for using CatalogResolver class -->
 		<dependency>
 			<groupId>com.sun.org.apache.xml.internal</groupId>
 			<artifactId>resolver</artifactId>
 			<version>20050927</version>
 		</dependency>
 
-
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>${logback.version}</version>
-			<scope>runtime</scope>
-		</dependency>
 	</dependencies>
 </project>

@@ -2,7 +2,8 @@ package cz.cuni.mff.d3s.been.task;
 
 import java.util.concurrent.TimeUnit;
 
-import cz.cuni.mff.d3s.been.taskapi.Requestor;
+import cz.cuni.mff.d3s.been.mq.MessagingException;
+import cz.cuni.mff.d3s.been.taskapi.CheckpointController;
 import cz.cuni.mff.d3s.been.taskapi.Task;
 
 /**
@@ -32,15 +33,12 @@ public class ExampleSyncTask2 extends Task {
 		Thread setter = new Thread() {
 			@Override
 			public void run() {
-				Requestor requestor = new Requestor();
-				try {
+				try (CheckpointController requestor = CheckpointController.create()) {
 					Thread.sleep(TimeUnit.SECONDS.toMillis(WAIT_SECONDS));
 					requestor.checkPointSet(SYNC_CHECKPOINT, "FTW");
-				} catch (InterruptedException e) {
+				} catch (InterruptedException | MessagingException e) {
 					e.printStackTrace();
 
-				} finally {
-					requestor.close();
 				}
 			}
 		};
@@ -48,11 +46,11 @@ public class ExampleSyncTask2 extends Task {
 		Thread waiter = new Thread() {
 			@Override
 			public void run() {
-				Requestor requestor = new Requestor();
-				try {
+
+				try (CheckpointController requestor = CheckpointController.create()) {
 					requestor.checkPointWait(SYNC_CHECKPOINT);
-				} finally {
-					requestor.close();
+				} catch (MessagingException e) {
+					e.printStackTrace();
 				}
 
 			}

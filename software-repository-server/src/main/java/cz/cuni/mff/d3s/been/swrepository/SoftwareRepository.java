@@ -15,8 +15,9 @@ import cz.cuni.mff.d3s.been.swrepository.httpserver.HttpServer;
 /**
  * A cluster node that can store and provide BPKs and Maven artifacts through a
  * simple HTTP server.
- *
+ * 
  * @author darklight
+ * 
  */
 public class SoftwareRepository implements IClusterService {
 

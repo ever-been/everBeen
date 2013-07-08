@@ -1,10 +1,10 @@
 package cz.cuni.mff.d3s.been.taskapi;
 
-import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.HR_COMM_PORT;
 import cz.cuni.mff.d3s.been.mq.IMessageQueue;
 import cz.cuni.mff.d3s.been.mq.IMessageSender;
 import cz.cuni.mff.d3s.been.mq.Messaging;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
+import cz.cuni.mff.d3s.been.socketworks.NamedSockets;
 
 /**
  * Set of functions for a task to easily send messages to it's Host Runtime.
@@ -20,28 +20,25 @@ public final class Messages {
 
 	private static IMessageQueue<String> taskMessageQueue = null;
 	private static IMessageSender<String> defaultSender = null;
-	private static int hostRuntimePort;
 
 	/**
 	 * Creates independent sender. Such a sender can be used in a different thread
 	 * for a task with such needs.
-	 * 
-	 * 
-	 * 
-	 * @return
-	 * @throws MessagingException
+	 *
+	 * @return The sender
+     *
+	 * @throws MessagingException When the sender cannot be created (queue reference broken)
 	 */
 	public static synchronized IMessageSender<String> createHRSender() throws MessagingException {
 		if (taskMessageQueue == null) {
-			hostRuntimePort = Integer.valueOf(System.getenv(HR_COMM_PORT));
-			taskMessageQueue = Messaging.createTaskQueue(hostRuntimePort);
+			taskMessageQueue = Messaging.createTaskQueue(NamedSockets.TASK_LOG_0MQ.getConnection());
 		}
 
 		return taskMessageQueue.createSender();
 
 	}
 
-	public static synchronized void terminate() {
+	public static synchronized void terminate() throws MessagingException {
 		if (defaultSender != null) {
 			defaultSender.close();
 		}
@@ -58,8 +55,9 @@ public final class Messages {
 	 * The method is synchronized, if you send a lot messages consider creating a
 	 * sender with {@link #createHRSender()}.
 	 * 
-	 * @param msg
-	 * @throws MessagingException
+	 * @param msg Message to send
+     *
+	 * @throws MessagingException On transport error when sending
 	 */
 	public static synchronized void send(String msg) throws MessagingException {
 		if (defaultSender == null) {

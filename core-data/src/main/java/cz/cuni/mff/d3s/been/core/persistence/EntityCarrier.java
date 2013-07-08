@@ -1,15 +1,22 @@
 package cz.cuni.mff.d3s.been.core.persistence;
 
-
 import java.io.Serializable;
 
 /**
- * A carrier object that helps with serialization fo
+ * A carrier object that wraps serialized entries along with a persistence
+ * identifier, so that they get saved to the right place, once they hit a
+ * persistence layer.
  * 
  * @author darklight
  * 
  */
 public final class EntityCarrier implements Serializable {
+
+	/**
+	 * Serailization ID
+	 */
+	private static final long serialVersionUID = -5032423444972164608L;
+
 	/**
 	 * An identifier of the entity (determines storage location)
 	 */

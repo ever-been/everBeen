@@ -1,7 +1,5 @@
 package cz.cuni.mff.d3s.been.mq;
 
-import org.jeromq.ZMQ;
-
 /**
  * TCP-based message queue
  * 
@@ -12,7 +10,7 @@ public class TcpMessageQueue implements IMessageQueue<String> {
 	/**
 	 * The context used to create sockets.
 	 */
-	private final ZMQ.Context context;
+	private final ZMQContext context;
 
 	/**
 	 * The singleton receiver.
@@ -46,8 +44,8 @@ public class TcpMessageQueue implements IMessageQueue<String> {
 	}
 
 	@Override
-	public void terminate() {
+	public void terminate() throws MessagingException {
 		receiver.close();
-		Context.releaseContext();
+		context.term();
 	}
 }
