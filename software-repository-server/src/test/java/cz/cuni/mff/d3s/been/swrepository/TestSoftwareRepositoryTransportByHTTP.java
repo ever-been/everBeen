@@ -2,12 +2,14 @@ package cz.cuni.mff.d3s.been.swrepository;
 
 import java.io.*;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Random;
 
 import org.apache.commons.io.IOUtils;
@@ -62,8 +64,8 @@ public class TestSoftwareRepositoryTransportByHTTP extends Assert {
 			final int port = probeSocket.getLocalPort();
 			final InetAddress addr = probeSocket.getInetAddress();
 			probeSocket.close();
-			server = new HttpServer(addr, port);
-			SoftwareStore dataStore = new FSBasedStore(SERVER_PERSISTENCE_ROOT_FOLDER);
+			server = new HttpServer(new InetSocketAddress(addr, port));
+			SoftwareStore dataStore = FSBasedStore.createServer(new Properties());
 			server.getResolver().register("/bpk*", new BpkRequestHandler(dataStore));
 			server.getResolver().register(
 					"/artifact*",
@@ -106,14 +108,16 @@ public class TestSoftwareRepositoryTransportByHTTP extends Assert {
 	}
 
 	/** Root folder of SWRepo's persistence. */
-	private static final File SERVER_PERSISTENCE_ROOT_FOLDER = new File(".server-persistence");
+	private static final File SERVER_PERSISTENCE_ROOT_FOLDER = new File(".swrepository");
 	/** Root folder of the client's persistence. */
-	private static final File CLIENT_PERSISTENCE_ROOT_FOLDER = new File(".client-persistence");
+	private static final File CLIENT_PERSISTENCE_ROOT_FOLDER = new File(".swcache");
+    /** Software package store */
 	private final SoftwareStore dataStore;
+    /** Software repository client factory */
 	private final SwRepoClientFactory clientFactory;
 
 	public TestSoftwareRepositoryTransportByHTTP() {
-		dataStore = new FSBasedStore(CLIENT_PERSISTENCE_ROOT_FOLDER);
+		dataStore = FSBasedStore.createCache(new Properties());
 		clientFactory = new SwRepoClientFactory(dataStore);
 	}
 

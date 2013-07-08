@@ -7,14 +7,14 @@ import java.util.List;
 
 import javax.xml.bind.JAXBException;
 
-import cz.cuni.mff.d3s.been.api.BeenApi;
-import cz.cuni.mff.d3s.been.api.BeenApiImpl;
-import cz.cuni.mff.d3s.been.bpk.*;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 import org.xml.sax.SAXException;
 
+import cz.cuni.mff.d3s.been.api.BeenApi;
+import cz.cuni.mff.d3s.been.api.BeenApiImpl;
+import cz.cuni.mff.d3s.been.bpk.BpkConfigurationException;
 import cz.cuni.mff.d3s.been.cluster.Instance;
 import cz.cuni.mff.d3s.been.core.jaxb.BindingParser;
 import cz.cuni.mff.d3s.been.core.jaxb.ConvertorException;
@@ -111,16 +111,18 @@ public class Submitter {
 
 			initializeCluster();
 
-			// upload BPK
-			for (String bpkFile : bpkFiles) {
-				uploadBpk(bpkFile);
+			if (bpkFiles != null) {
+				// upload BPK
+				for (String bpkFile : bpkFiles) {
+					uploadBpk(bpkFile);
+				}
 			}
 
 			if (bdPath != null) {
 				submitBenchmark(new File(bdPath));
 			} else if (tcdPath != null) {
 				submitTaskContext(new File(tcdPath));
-			} else {
+			} else if (tdPaths != null) {
 				for (String tdPath : tdPaths) {
 					submitSingleTask(new File(tdPath));
 				}

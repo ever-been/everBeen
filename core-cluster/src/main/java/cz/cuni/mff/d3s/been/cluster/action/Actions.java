@@ -1,10 +1,11 @@
 package cz.cuni.mff.d3s.been.cluster.action;
 
+import cz.cuni.mff.d3s.been.task.checkpoints.CheckpointRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
-import cz.cuni.mff.d3s.been.mq.req.Request;
+import cz.cuni.mff.d3s.been.socketworks.twoway.Request;
 
 /**
  * @author Martin Sixta
@@ -12,7 +13,7 @@ import cz.cuni.mff.d3s.been.mq.req.Request;
 public class Actions {
 	private static final Logger log = LoggerFactory.getLogger(Actions.class);
 
-	public static Action createAction(Request request, ClusterContext ctx) {
+	public static Action createAction(CheckpointRequest request, ClusterContext ctx) {
 
 		switch (request.getType()) {
 
@@ -45,11 +46,11 @@ public class Actions {
 		}
 	}
 
-	public static String latchNameForRequest(Request request) {
+	public static String latchNameForRequest(CheckpointRequest request) {
 		return "latch_" + request.getTaskContextId() + "_" + request.getSelector();
 	}
 
-	public static String checkpointMapNameForRequest(Request request) {
+	public static String checkpointMapNameForRequest(CheckpointRequest request) {
 		return "checkpointmap_" + request.getTaskContextId();
 	}
 }

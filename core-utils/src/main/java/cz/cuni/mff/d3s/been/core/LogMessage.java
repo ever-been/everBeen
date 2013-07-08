@@ -1,5 +1,7 @@
 package cz.cuni.mff.d3s.been.core;
 
+import cz.cuni.mff.d3s.been.core.persistence.Entity;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serializable;
@@ -10,7 +12,7 @@ import java.io.StringWriter;
  * 
  * @author Martin Sixta
  */
-public class LogMessage implements Serializable {
+public class LogMessage extends Entity {
 
 	/** Name of the logger */
 	private String name;

@@ -1,37 +1,99 @@
 package cz.cuni.mff.d3s.been.cluster;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.URL;
+import java.util.Properties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hazelcast.client.ClientConfig;
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.config.Config;
-import com.hazelcast.config.UrlXmlConfig;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
+import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 
 /**
  * Singleton for the HazelcastInstance object.
  * <p/>
- * The class is responsible for joining the cluster with appropriate NodeType.
- * The NodeType must be set before attempt to obtain a HazelcastInstance.
+ * The class is responsible for joining the cluster with appropriate
+ * {@link NodeType} and user-defined properties.
  * <p/>
  * 
- * TODO: WARNING: this class is not thread-safe! The hazelcastInstance should be
- * created by calling getInstance() in the main thread!
+ * 
  * 
  * @author Martin Sixta
  */
+
 public final class Instance {
-	private static HazelcastInstance hazelcastInstance;
+
+	/** Logging */
+	private static final Logger log = LoggerFactory.getLogger(Instance.class);
+
+	/** The singleton Hazelcast instance */
+	private static HazelcastInstance hazelcastInstance = null;
+
+	/** Type of the instance */
 	private static NodeType nodeType = null;
 
-	private static int SECOND = 1000;
-	private static int NATIVE_CLIENT_TIMEOUT = 120 * SECOND;
+	/**
+	 * Timeout of the native client connection.
+	 * 
+	 * Hazelcast tends to disconnect/reconnect clients too often with default
+	 * settings.
+	 */
+	public static final String PROPERTY_CLIENT_TIMEOUT = "been.cluster.client.timeout";
+	public static final String PROPERTY_CLIENT_MEMBERS = "been.cluster.client.members";
 
-	public static NodeType getNodeType() {
+	public static final String PROPERTY_CLUSTER_GROUP = "been.cluster.group";
+	public static final String PROPERTY_CLUSTER_PASSWORD = "been.cluster.password";
+
+	public static final String PROPERTY_CLUSTER_SOCKET_BIND_ANY = "been.cluster.socket.bind.any";
+
+	public static final String PROPERTY_CLUSTER_PREFER_IPV4 = "been.cluster.preferIPv4Stack";
+	public static final String PROPERTY_CLUSTER_PORT = "been.cluster.port";
+	public static final String PROPERTY_CLUSTER_INTERFACES = "been.cluster.interfaces";
+	public static final String PROPERTY_CLUSTER_MULTICAST_PORT = "been.cluster.multicast.port";
+	public static final String PROPERTY_CLUSTER_MULTICAST_GROUP = "been.cluster.multicast.group";
+	public static final String PROPERTY_CLUSTER_TCP_MEMBERS = "been.cluster.tcp.members";
+	public static final String PROPERTY_CLUSTER_LOGGING = "been.cluster.logging";
+
+	//public static final String PROPERTY_CLUSTER_TCP_INTERFACES = "been.cluster.tcp.interfaces";
+
+	public static final String PROPERTY_CLUSTER_JOIN = "been.cluster.join";
+
+	/**
+	 * Path to the default Hazelcast configuration resource.
+	 */
+
+	/**
+	 * Returns type of the node.
+	 * 
+	 * @return type of the node
+	 * 
+	 * @throws IllegalStateException
+	 *           when node is not connected
+	 */
+	public static NodeType getNodeType() throws IllegalStateException {
+		if (!isConnected()) {
+			throw new IllegalStateException("The node is not connected!");
+		}
+
 		return nodeType;
+	}
+
+	/**
+	 * Returns BEEN's Hazelcast instance
+	 * 
+	 * @return BEEN's Hazelcast instance
+	 * @throws IllegalStateException
+	 *           when node is not connected
+	 */
+	public static HazelcastInstance getInstance() throws IllegalStateException {
+		if (!isConnected()) {
+			throw new IllegalStateException("The node is not connected!");
+		}
+
+		return hazelcastInstance;
 	}
 
 	/**
@@ -42,61 +104,60 @@ public final class Instance {
 	 * call getInstance().
 	 * 
 	 * @param type
-	 * @return
+	 *          type of the node to be initialized
+	 * @param userProperties
+	 *          configuration, can be null
 	 */
-	public static HazelcastInstance newInstance(NodeType type) {
-		if (nodeType != null) {
-			throw new IllegalArgumentException("Only one hazelcastInstance allowed!");
+	public static synchronized
+			void
+			init(NodeType type, Properties userProperties) throws IllegalStateException, ServiceException {
+		if (isConnected()) {
+			throw new IllegalStateException("The node is already connected!");
 		}
 
+		hazelcastInstance = join(type, userProperties);
 		nodeType = type;
 
-		return getInstance();
 	}
 
-	public static HazelcastInstance newNativeInstance(
-			String host,
-			int port,
-			String groupName,
+	public static synchronized HazelcastInstance newNativeInstance(String host, int port, String groupName,
 			String groupPassword) {
-		InetSocketAddress socketAddress = new InetSocketAddress(host, port);
-
-		ClientConfig clientConfig = new ClientConfig();
-		clientConfig.setConnectionTimeout(NATIVE_CLIENT_TIMEOUT);
-		clientConfig.getGroupConfig().setName(groupName).setPassword(groupPassword);
-		clientConfig.addInetSocketAddress(socketAddress);
-
-		HazelcastClient hazelcastClient = HazelcastClient.newHazelcastClient(clientConfig);
-
-		registerInstance(hazelcastClient, NodeType.NATIVE);
-
-		return hazelcastClient;
-	}
-
-	public static void registerInstance(HazelcastInstance instance, NodeType type) {
-		if (nodeType != null) {
-			throw new IllegalArgumentException("Only one instance allowed!");
-		}
-		nodeType = type;
-		hazelcastInstance = instance;
-	}
-
-	public static HazelcastInstance getInstance() {
-		if (nodeType == null) {
-			throw new IllegalStateException("Must call Instance.setNodeType first!");
+		if (isConnected()) {
+			throw new RuntimeException("Already connected");
 		}
 
-		if (hazelcastInstance == null) {
-			join();
-		}
+		Properties userProperties = new Properties();
 
-		assert (hazelcastInstance != null);
-		return hazelcastInstance;
+		userProperties.setProperty(PROPERTY_CLIENT_MEMBERS, String.format("%s:%d", host, port));
+		userProperties.setProperty(PROPERTY_CLUSTER_GROUP, groupName);
+		userProperties.setProperty(PROPERTY_CLUSTER_PASSWORD, groupPassword);
+
+		try {
+			Instance.init(NodeType.NATIVE, userProperties);
+
+			return getInstance();
+		} catch (ServiceException e) {
+			throw new RuntimeException("Cannot initialize client connection");
+		}
 	}
 
-	public static void shutdown() {
-		if (hazelcastInstance == null)
+	public synchronized ClusterContext createContext() throws ServiceException {
+		if (!isConnected()) {
+			throw new ServiceException("Not connected to the cluster!");
+		}
+
+		return new ClusterContext(getInstance());
+	}
+
+	/**
+	 * Shut downs connection to the Hazelcast cluster.
+	 * 
+	 */
+	public static synchronized void shutdown() {
+		if (!isConnected()) {
+			log.warn("Connection to the cluster already closed");
 			return;
+		}
 
 		getInstance().getLifecycleService().shutdown();
 
@@ -104,32 +165,36 @@ public final class Instance {
 		nodeType = null;
 	}
 
-	private static void join() {
-		switch (nodeType) {
+	private static HazelcastInstance createNativeInstance(Properties userProperties) throws ServiceException {
+
+		ClientConfig clientConfig = InstanceConfigHelper.createClientConfig(userProperties);
+
+		return HazelcastClient.newHazelcastClient(clientConfig);
+
+	}
+
+	private static HazelcastInstance newDataInstance(Properties userProperties) throws ServiceException {
+
+		Config config = InstanceConfigHelper.createMemberConfig(userProperties);
+
+		return Hazelcast.newHazelcastInstance(config);
+	}
+
+	private static HazelcastInstance join(NodeType type, Properties userProperties) throws ServiceException {
+		switch (type) {
 			case DATA:
-				join_data();
-				break;
+				return newDataInstance(userProperties);
 			case LITE:
 				throw new UnsupportedOperationException("LITE node not implemented!");
 			case NATIVE:
-				throw new UnsupportedOperationException("NATIVE mode not implemeted!");
+				return createNativeInstance(userProperties);
 			default:
-				throw new UnsupportedOperationException(nodeType.toString()
-						+ " unknown mode!");
+				throw new UnsupportedOperationException(nodeType.toString() + " unknown mode!");
 		}
 	}
 
-	private static void join_data() {
-		URL url = Instance.class.getResource("/hazelcast.xml");
-
-		Config config;
-		try {
-			config = new UrlXmlConfig(url);
-		} catch (IOException e) {
-			e.printStackTrace();
-			config = null;
-		}
-
-		hazelcastInstance = Hazelcast.newHazelcastInstance(config);
+	private static boolean isConnected() {
+		return (nodeType != null && hazelcastInstance != null);
 	}
+
 }

@@ -41,9 +41,24 @@ public class Names {
 	public static final String RESULT_QUEUE_NAME = "BEEN_QUEUE_RESULTS";
 
 	/**
-	 * MultiMap storing logs, stdout and stderr of tasks.
+	 * Map with last log for a task.
 	 */
-	public static final String LOGS_MULTIMAP_NAME = "been.task.logs";
+	public static final String LOGS_TASK_MAP_NAME = "been.task.logs.task";
+
+	/**
+	 * Map with last log for a context.
+	 */
+	public static final String LOGS_CONTEXT_MAP_NAME = "been.task.logs.context";
+
+	/**
+	 * Map with last log for a benchmark.
+	 */
+	public static final String LOGS_BENCHMARK_MAP_NAME = "been.task.logs.benchmark";
+
+	/**
+	 * Queue storing task/BEEN logs
+	 */
+	public static final String LOG_QUEUE_NAME = "BEEN_QUEUE_LOGS";
 
 	// TOPIC NAMES
 	/**
@@ -58,7 +73,6 @@ public class Names {
 	 * the map with name {@link Names#SERVICES_MAP_NAME}
 	 */
 	public static final String SWREPOSITORY_SERVICES_MAP_KEY = "SWREPOSITORY";
-
 
 	/**
 	 * All benchmarks run in a special task context with this ID.

@@ -14,15 +14,29 @@
 
 	<dependencies>
 		<!-- BEEN -->
+
+
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
-			<artifactId>core-utils</artifactId>
+			<artifactId>persistence</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
 			<artifactId>results</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>socketworks-clients</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>checkpoints</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 

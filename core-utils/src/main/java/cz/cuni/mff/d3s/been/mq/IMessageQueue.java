@@ -41,6 +41,9 @@ public interface IMessageQueue<T extends Serializable> {
 
 	/**
 	 * Terminates the message queue.
+	 * 
+	 * @throws MessagingException
+	 *           On attempt to terminate a dangling queue
 	 */
-	public void terminate();
+	public void terminate() throws MessagingException;
 }

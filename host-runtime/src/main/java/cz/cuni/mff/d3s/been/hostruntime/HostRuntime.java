@@ -137,17 +137,7 @@ class HostRuntime implements IClusterService {
 		Path monitoringLogPath = FileSystems.getDefault().getPath(hostRuntimeInfo.getWorkingDirectory(), "monitoring.log");
 
 		try {
-			final IMessageSender<BaseMessage> sender = MessageQueues.getInstance().createSender(ACTION_QUEUE_NAME);
-			Monitoring.addListener(new MonitoringListener() {
-				@Override
-				public void sampleGenerated(MonitorSample sample) {
-					try {
-						sender.send(new MonitoringSampleMessage(sample));
-					} catch (MessagingException e) {
-						throw new RuntimeException("Cannot send message.", e);
-					}
-				}
-			});
+			Monitoring.addListener(ResendMonitoringListener.create(MessageQueues.getInstance().createSender(ACTION_QUEUE_NAME)));
 		} catch (MessagingException e) {
 			throw new RuntimeException("Cannot send message.", e);
 		}

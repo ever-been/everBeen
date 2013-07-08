@@ -5,6 +5,7 @@ import static cz.cuni.mff.d3s.been.cluster.Names.BENCHMARKS_CONTEXT_ID;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+import cz.cuni.mff.d3s.been.core.PropertyReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,7 +13,6 @@ import com.hazelcast.core.IMap;
 import com.hazelcast.core.Instance;
 
 import cz.cuni.mff.d3s.been.cluster.Names;
-import cz.cuni.mff.d3s.been.core.SystemProperties;
 import cz.cuni.mff.d3s.been.core.task.*;
 
 /**
@@ -272,8 +272,8 @@ public class TaskContexts {
 			}
 		}
 
-		int contextTtlSeconds = SystemProperties.getInteger("been.context.ttl", 300);
-		int taskTtlSeconds = SystemProperties.getInteger("been.task.ttl", 300);
+		int contextTtlSeconds = PropertyReader.system().getInteger("been.context.ttl", 300);
+		int taskTtlSeconds = PropertyReader.system().getInteger("been.task.ttl", 300);
 
 		log.info("Removing tasks contained in context {} after {} seconds", taskContextEntry.getId(), taskTtlSeconds);
 

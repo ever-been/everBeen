@@ -4,6 +4,9 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import cz.cuni.mff.d3s.been.socketworks.twoway.Replies;
+import cz.cuni.mff.d3s.been.socketworks.twoway.Reply;
+import cz.cuni.mff.d3s.been.task.checkpoints.CheckpointRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,20 +15,17 @@ import com.hazelcast.core.EntryListener;
 import com.hazelcast.core.IMap;
 
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
-import cz.cuni.mff.d3s.been.mq.rep.Replies;
-import cz.cuni.mff.d3s.been.mq.rep.Reply;
-import cz.cuni.mff.d3s.been.mq.req.Request;
 
 /**
  * @author Martin Sixta
  */
 final class MapWaitAction implements Action {
 	private static final Logger log = LoggerFactory.getLogger(MapWaitAction.class);
-	private final Request request;
+	private final CheckpointRequest request;
 	private final ClusterContext ctx;
 	BlockingQueue<String> queue = new LinkedBlockingQueue<>();
 
-	public MapWaitAction(Request request, ClusterContext ctx) {
+	public MapWaitAction(CheckpointRequest request, ClusterContext ctx) {
 		this.request = request;
 		this.ctx = ctx;
 	}

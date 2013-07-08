@@ -2,8 +2,6 @@ package cz.cuni.mff.d3s.been.mq;
 
 import java.io.Serializable;
 
-import org.jeromq.ZMQ;
-
 import cz.cuni.mff.d3s.been.annotation.NotThreadSafe;
 
 /**
@@ -17,7 +15,7 @@ final class InprocMessageQueue<T extends Serializable> implements IMessageQueue<
 	/**
 	 * The context used to create sockets.
 	 */
-	private final ZMQ.Context context;
+	private final ZMQContext context;
 
 	/**
 	 * The singleton receiver.
@@ -52,8 +50,9 @@ final class InprocMessageQueue<T extends Serializable> implements IMessageQueue<
 	}
 
 	@Override
-	public void terminate() {
+	public void terminate() throws MessagingException {
 		receiver.close();
-		Context.releaseContext();
+		context.term();
 	}
+
 }

@@ -1,6 +1,6 @@
 package cz.cuni.mff.d3s.been.persistence;
 
-import cz.cuni.mff.d3s.been.results.DAOException;
+import cz.cuni.mff.d3s.been.persistence.DAOException;
 
 /**
  * An action that specifies what should be done with an item once it's decided

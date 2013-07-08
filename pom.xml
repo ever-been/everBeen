@@ -42,8 +42,6 @@
 		<tapestry5.version>5.3.6</tapestry5.version>
 		<servlet-api.version>2.5</servlet-api.version>
 
-
-
 		<!-- PLUGIN VERSION CONTROL -->
 		<jaxb2-maven-plugin.version>1.5</jaxb2-maven-plugin.version>
 		<jetty-maven-plugin.version>8.1.7.v20120910</jetty-maven-plugin.version>
@@ -59,7 +57,6 @@
 		<maven-site-plugin.version>3.2</maven-site-plugin.version>
 		<maven-resources-plugin.version>2.6</maven-resources-plugin.version>
 		<versions-maven-plugin.version>2.0</versions-maven-plugin.version>
-
 
 
 		<!-- SOURCE LEVEL CONTROL -->
@@ -147,6 +144,8 @@
 			<modules>
 				<module>xsd-export</module>
 				<module>xsd-catalog-resolver</module>
+				<module>socketworks-clients</module>
+				<module>socketworks-servers</module>
 				<module>core-data</module>
 				<module>core-utils</module>
 				<module>core-protocol</module>
@@ -163,11 +162,14 @@
 				<module>software-repository-server</module>
 				<module>software-repository</module>
 				<module>software-repository-fsbasedstore</module>
+				<module>checkpoints</module>
 				<module>results</module>
 				<module>persistence</module>
 				<module>storage</module>
+				<module>log-repository</module>
 				<module>results-repository</module>
-				<module>results-repository-mongo-storage</module>
+				<module>mongo-storage</module>
+				<module>mongo-storage-standalone</module>
 				<module>task-api</module>
 				<module>task-test</module>
 				<module>been-api</module>
@@ -179,6 +181,9 @@
 			<id>buildBpkPlugin</id>
 
 			<modules>
+				<module>xsd-export</module>
+				<module>core-data</module>
+				<module>core-utils</module>
 				<module>bpk-conventions</module>
 				<module>bpk-plugin</module>
 			</modules>

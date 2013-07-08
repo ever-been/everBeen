@@ -64,7 +64,9 @@ final class ResultsDispatcher implements Runnable {
 	private void innerRun() {
 		while (!Thread.currentThread().isInterrupted()) {
 			try {
-				final EntityCarrier rc = resultReader.readValue(receiver.receive());
+				final String message = receiver.receive();
+				log.info("Unmarshalling result: {}", message);
+				final EntityCarrier rc = resultReader.readValue(message);
 				if (resultQueue.add(rc)) {
 					log.debug("Queued result {}", rc.toString());
 				} else {
@@ -77,6 +79,10 @@ final class ResultsDispatcher implements Runnable {
 				log.error("Cannot deserialize result carrier:", e);
 			}
 		}
-		resultsMessages.terminate();
+		try {
+			resultsMessages.terminate();
+		} catch (MessagingException e) {
+			log.warn("Attempt to gracefully terminate message queues failed. Socket leaks imminent.", e);
+		}
 	}
 }

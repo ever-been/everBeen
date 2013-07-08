@@ -6,11 +6,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.tools.DiagnosticCollector;
-import javax.tools.JavaCompiler;
-import javax.tools.JavaFileObject;
-import javax.tools.StandardJavaFileManager;
-import javax.tools.ToolProvider;
+import javax.tools.*;
 
 import org.apache.commons.exec.ExecuteStreamHandler;
 import org.apache.commons.exec.PumpStreamHandler;
@@ -73,9 +69,7 @@ public class TaskProcessTest extends Assert {
 	}
 
 	@Test(expected = TaskException.class)
-	public
-			void
-			testExceptionIsThrownWhenProcessEndsWithErrorExitCode() throws Exception {
+	public void testExceptionIsThrownWhenProcessEndsWithErrorExitCode() throws Exception {
 		setUpCmdLineBuilder(sourceWithBadExitCode);
 		Map<String, String> environment = new HashMap<>();
 		ExecuteStreamHandler streamhandler = new PumpStreamHandler();
@@ -85,11 +79,8 @@ public class TaskProcessTest extends Assert {
 	}
 
 	@Test(expected = TaskException.class)
-	public
-			void
-			testExceptionIsThrownWhenInvalidCommandLineProvided() throws Exception {
-		Mockito.when(cmdLineBuilder.build()).thenReturn(
-				new TaskCommandLine("q w e r t y"));
+	public void testExceptionIsThrownWhenInvalidCommandLineProvided() throws Exception {
+		Mockito.when(cmdLineBuilder.build()).thenReturn(new TaskCommandLine("q w e r t y"));
 		Map<String, String> environment = new HashMap<>();
 		ExecuteStreamHandler streamhandler = new PumpStreamHandler();
 		final TaskProcess process = new TaskProcess(cmdLineBuilder, wrkDirPath, environment, streamhandler, dependencyDownloader);
@@ -129,7 +120,7 @@ public class TaskProcessTest extends Assert {
 		process.start();
 	}
 
-	@Test(timeout = 5000)
+	@Test(timeout = 10000)
 	public void testProcessIsCorrectlyKilled() throws Exception {
 		setUpCmdLineBuilderWithExecTime(sourceWithTimeoutAsFirstArg, 100000);
 		Map<String, String> environment = new HashMap<>();
@@ -164,9 +155,7 @@ public class TaskProcessTest extends Assert {
 		Mockito.when(cmdLineBuilder.build()).thenReturn(cmd);
 	}
 
-	private
-			void
-			setUpCmdLineBuilderWithExecTime(String source, int execTime) throws Exception {
+	private void setUpCmdLineBuilderWithExecTime(String source, int execTime) throws Exception {
 		TaskCommandLine cmd = cmdLineWithExecutionTime(source, execTime);
 		Mockito.when(cmdLineBuilder.build()).thenReturn(cmd);
 	}
@@ -180,6 +169,8 @@ public class TaskProcessTest extends Assert {
 		String className = "Main";
 		compile(source, className);
 		TaskCommandLine commandLine = new TaskCommandLine("java");
+		commandLine.addArgument("-Xms2m");
+		commandLine.addArgument("-Xmx4m");
 		commandLine.addArgument(className);
 		return commandLine;
 	}
@@ -189,8 +180,7 @@ public class TaskProcessTest extends Assert {
 	 * I used this ugly hack because all tests should be runnable on all operating
 	 * systems and java is ideal candidate.
 	 */
-	private TaskCommandLine cmdLineWithExecutionTime(String source,
-			int execSeconds) throws Exception {
+	private TaskCommandLine cmdLineWithExecutionTime(String source, int execSeconds) throws Exception {
 		TaskCommandLine commandLine = cmdLine(source);
 		commandLine.addArgument("" + execSeconds * 1000);
 		return commandLine;
@@ -210,21 +200,10 @@ public class TaskProcessTest extends Assert {
 
 		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 		DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
-		StandardJavaFileManager fileManager = compiler.getStandardFileManager(
-				diagnostics,
-				null,
-				null);
+		StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null);
 		Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromStrings(Arrays.asList(javaFile.getAbsolutePath()));
-		JavaCompiler.CompilationTask task = compiler.getTask(
-				null,
-				fileManager,
-				diagnostics,
-				null,
-				null,
-				compilationUnits);
-		assertTrue(
-				"class " + source + " not compiled - check syntax in test definition",
-				task.call());
+		JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, diagnostics, null, null, compilationUnits);
+		assertTrue("class " + source + " not compiled - check syntax in test definition", task.call());
 		fileManager.close();
 	}
 }

@@ -1,14 +1,14 @@
 package cz.cuni.mff.d3s.been.web.services;
 
-import cz.cuni.mff.d3s.been.api.BeenApi;
-import cz.cuni.mff.d3s.been.core.LogMessage;
-import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
-import cz.cuni.mff.d3s.been.core.task.TaskEntry;
+import java.util.Collection;
+
 import org.apache.tapestry5.ioc.Invokable;
 import org.apache.tapestry5.ioc.services.ParallelExecutor;
 import org.lazan.t5.cometd.services.PushManager;
 
-import java.util.Collection;
+import cz.cuni.mff.d3s.been.api.BeenApi;
+import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
+import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 
 /**
  * @author Kuba Brecka
@@ -27,7 +27,6 @@ public class LiveFeedServiceImpl implements LiveFeedService {
 		executor.invoke(new LogFeedWorker());
 	}
 
-
 	private class LogFeedWorker implements Invokable<Object> {
 
 		private synchronized void broadcast(String topic, Object object) {
@@ -39,16 +38,15 @@ public class LiveFeedServiceImpl implements LiveFeedService {
 
 			while (true) {
 
-				while (! api.isConnected()) {
+				while (!api.isConnected()) {
 					try {
 						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-					}
+					} catch (InterruptedException e) {}
 				}
 
 				api.getApi().addLogListener(new BeenApi.LogListener() {
 					@Override
-					public void logAdded(LogMessage log) {
+					public void logAdded(String log) {
 						broadcast("/logs", log);
 					}
 				});
@@ -56,7 +54,7 @@ public class LiveFeedServiceImpl implements LiveFeedService {
 				while (true) {
 
 					try {
-						if (! api.isConnected()) {
+						if (!api.isConnected()) {
 							break;
 						}
 
@@ -71,8 +69,7 @@ public class LiveFeedServiceImpl implements LiveFeedService {
 
 					try {
 						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-					}
+					} catch (InterruptedException e) {}
 				}
 
 			}

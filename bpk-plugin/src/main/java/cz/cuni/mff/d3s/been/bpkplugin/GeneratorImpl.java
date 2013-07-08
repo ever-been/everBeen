@@ -9,6 +9,10 @@ import java.util.Collection;
 import java.util.List;
 
 import cz.cuni.mff.d3s.been.bpk.*;
+import cz.cuni.mff.d3s.been.util.FileToArchive;
+import cz.cuni.mff.d3s.been.util.ItemToArchive;
+import cz.cuni.mff.d3s.been.util.StringToArchive;
+import cz.cuni.mff.d3s.been.util.ZipUtil;
 import org.apache.maven.plugin.logging.Log;
 
 /**
@@ -52,13 +56,13 @@ public abstract class GeneratorImpl implements Generator {
 	/**
 	 * This is the main executing method of the generator. Generates
 	 * {@link BpkConfiguration} from given {@link Configuration}, collects all
-	 * items ({@link ItemToArchive}) which should be added to result BPK and saves
+	 * items ({@link cz.cuni.mff.d3s.been.util.ItemToArchive}) which should be added to result BPK and saves
 	 * it all to the file. Selection of file where the result BPK will be saved is
 	 * based on informations in given {@link Configuration}
 	 * 
 	 * @param configuration
 	 *          configuration from which the {@link BpkConfiguration} and list of
-	 *          {@link ItemToArchive} is generated
+	 *          {@link cz.cuni.mff.d3s.been.util.ItemToArchive} is generated
 	 * @throws GeneratorException
 	 *           when some exception occures while generating BPK
 	 */
@@ -160,13 +164,21 @@ public abstract class GeneratorImpl implements Generator {
 	 * 
 	 * @param cfg
 	 *          configuration from which the name of the file will be generated
+     *
 	 * @return prepared file
+     *
+     * @throws IOException When targeted file exist and can not be rewritten, or a fresh target file cannot be created
 	 */
-	private File createEmptyBpkFile(Configuration cfg) {
+	private File createEmptyBpkFile(Configuration cfg) throws IOException {
 		if (!cfg.buildDirectory.exists()) {
 			cfg.buildDirectory.mkdirs();
 		}
-		return new File(cfg.buildDirectory, cfg.finalName + ".bpk");
+        final File file = new File(cfg.buildDirectory, cfg.finalName + ".bpk");
+        if (file.exists()) {
+            file.delete();
+        }
+        file.createNewFile();
+		return file;
 	}
 
 	/**

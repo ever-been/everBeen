@@ -8,7 +8,7 @@
 	<task>
 		<name>example-task-a</name>
 		<descriptor>
-			<td:taskDescriptor groupId="cz.cuni.mff.d3s.been" bpkId="task-test" version="3.0.0"
+			<td:taskDescriptor groupId="cz.cuni.mff.d3s.been" bpkId="task-test" version="3.0.0-SNAPSHOT"
 			                   name="example" type="task">
 				<td:java>
 					<td:mainClass>cz.cuni.mff.d3s.been.task.ExampleTask</td:mainClass>
@@ -20,7 +20,7 @@
 	<task>
 		<name>example-task-b</name>
 		<descriptor>
-			<td:taskDescriptor groupId="cz.cuni.mff.d3s.been" bpkId="task-test" version="3.0.0"
+			<td:taskDescriptor groupId="cz.cuni.mff.d3s.been" bpkId="task-test" version="3.0.0-SNAPSHOT"
 			                   name="example" type="task">
 				<td:java>
 					<td:mainClass>cz.cuni.mff.d3s.been.task.ExampleTask</td:mainClass>

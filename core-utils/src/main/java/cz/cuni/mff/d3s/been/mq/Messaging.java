@@ -51,8 +51,7 @@ public final class Messaging {
 	 *          type of messages to send/receive (i.e. base class)
 	 * @return named, inter-process message queue
 	 */
-	public static <T extends Serializable> IMessageQueue<T> createInprocQueue(
-			String queue) {
+	public static <T extends Serializable> IMessageQueue<T> createInprocQueue(String queue) {
 		return new InprocMessageQueue<>(queue);
 	}
 
@@ -78,12 +77,22 @@ public final class Messaging {
 	 * 
 	 * WARNING: the returned implementation does support receiving!
 	 * 
+	 * @param hostname
+	 *          hostname on which the Host Runtime is listening for task messages
 	 * 
 	 * @param port
 	 *          port on which a Host Runtime listens for messages from tasks
+	 * 
 	 * @return
 	 */
-	public static IMessageQueue<String> createTaskQueue(int port) {
-		return new TaskMessageQueue("localhost", port);
+	public static IMessageQueue<String> createTaskQueue(String hostname, int port) {
+		return new TaskMessageQueue(hostname, port);
+	}
+
+	/**
+	 * @see #createTaskQueue(String, int)
+	 */
+	public static IMessageQueue<String> createTaskQueue(String url) {
+		return new TaskMessageQueue(url);
 	}
 }

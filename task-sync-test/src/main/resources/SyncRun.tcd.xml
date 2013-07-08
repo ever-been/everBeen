@@ -5,7 +5,7 @@
 
 	<properties>
 		<property name="been.task.sync.count">2</property>
-		<property name="been.task.sync.runs">4000</property>
+		<property name="been.task.sync.runs">300000</property>
 	</properties>
 
 	<task>

@@ -3,13 +3,12 @@ package cz.cuni.mff.d3s.been.cluster.action;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.benchmark.BenchmarkEntry;
 import cz.cuni.mff.d3s.been.core.benchmark.Storage;
-import cz.cuni.mff.d3s.been.core.benchmark.StorageItem;
 import cz.cuni.mff.d3s.been.core.jaxb.BindingParser;
 import cz.cuni.mff.d3s.been.core.jaxb.ConvertorException;
 import cz.cuni.mff.d3s.been.core.jaxb.XSD;
-import cz.cuni.mff.d3s.been.mq.rep.Replies;
-import cz.cuni.mff.d3s.been.mq.rep.Reply;
-import cz.cuni.mff.d3s.been.mq.req.Request;
+import cz.cuni.mff.d3s.been.socketworks.twoway.Replies;
+import cz.cuni.mff.d3s.been.socketworks.twoway.Reply;
+import cz.cuni.mff.d3s.been.socketworks.twoway.Request;
 import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBException;

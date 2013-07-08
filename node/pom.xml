@@ -11,6 +11,10 @@
 		<version>3.0.0</version>
 	</parent>
 
+	<properties>
+		<distDirName>dist</distDirName>
+	</properties>
+
 	<dependencies>
 		<!-- BEEN DEPENDENCIES -->
 		<dependency>
@@ -57,7 +61,13 @@
 
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
-			<artifactId>results-repository-mongo-storage</artifactId>
+			<artifactId>log-repository</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>mongo-storage</artifactId>
 			<version>${project.parent.version}</version>
 			<scope>runtime</scope>
 		</dependency>
@@ -89,10 +99,46 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>${maven-resources-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>copy-been-properties</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.basedir}/target/${distDirName}/conf</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/main/resources</directory>
+									<includes>
+										<include>been.properties</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin.version}</version>
+				<configuration>
+					<source>${java-source.version}</source>
+					<target>${java-target.version}</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>${maven-assembly-plugin.version}</version>
 				<configuration>
-					<finalName>node-runnable</finalName>
+					<finalName>${distDirName}/bin/node-runnable</finalName>
 					<archive>
 						<manifest>
 							<mainClass>cz.cuni.mff.d3s.been.node.Runner</mainClass>

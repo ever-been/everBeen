@@ -1,6 +1,8 @@
 package cz.cuni.mff.d3s.been.swrepository.httpserver;
 
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 
 import org.apache.http.impl.DefaultConnectionReuseStrategy;
 import org.apache.http.impl.DefaultHttpResponseFactory;
@@ -25,8 +27,7 @@ public class HttpServer {
 	private static final Logger log = LoggerFactory.getLogger(HttpServer.class);
 	static final int MAX_CONNECTIONS = 50;
 
-	private final int port;
-	private final InetAddress inetAddr;
+	private final InetSocketAddress sockAddr;
 	private final HttpRequestHandlerRegistry handlerResolver;
 	private final HttpParams params;
 
@@ -35,12 +36,11 @@ public class HttpServer {
 	/**
 	 * Create an HTTP server on a host/port
 	 * 
-	 * @param port
-	 *          Port on which the server listens
+	 * @param sockAddr
+	 *          Socket on which the server listens
 	 */
-	public HttpServer(InetAddress inetAddr, int port) {
-		this.inetAddr = inetAddr;
-		this.port = port;
+	public HttpServer(InetSocketAddress sockAddr) {
+        this.sockAddr = sockAddr;
 		this.handlerResolver = new HttpRequestHandlerRegistry();
 		this.params = new BasicHttpParams();
 	}
@@ -51,7 +51,7 @@ public class HttpServer {
 	 * @return The port no
 	 */
 	public int getPort() {
-		return port;
+		return sockAddr.getPort();
 	}
 
 	/**
@@ -60,7 +60,7 @@ public class HttpServer {
 	 * @return The registered {@link InetAddress}
 	 */
 	public InetAddress getHost() {
-		return inetAddr;
+		return sockAddr.getAddress();
 	}
 
 	/**
@@ -74,10 +74,10 @@ public class HttpServer {
 		HttpService httpService = new HttpService(httpProc, new DefaultConnectionReuseStrategy(), new DefaultHttpResponseFactory(), handlerResolver, params);
 
 		log.debug(String.format(
-				"Running listener thread on port %d with params %s",
-				port,
+				"Running listener thread on socket %s with params %s",
+				sockAddr.toString(),
 				params.toString()));
-		listenerThread = new HttpListener(httpService, inetAddr, port, params);
+		listenerThread = new HttpListener(httpService, sockAddr, params);
 		listenerThread.bind();
 		listenerThread.start();
 	}

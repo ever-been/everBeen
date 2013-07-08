@@ -1,6 +1,7 @@
 package cz.cuni.mff.d3s.been.mq;
 
 import org.jeromq.ZMQ;
+import org.jeromq.ZMQException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +19,7 @@ public class TcpMessageReceiver implements IMessageReceiver<String> {
 	/**
 	 * ZMQ.Context to use for the connection.
 	 */
-	private final ZMQ.Context context;
+	private final ZMQContext context;
 
 	/**
 	 * ZMQ.Socket to communicate with.
@@ -35,7 +36,7 @@ public class TcpMessageReceiver implements IMessageReceiver<String> {
 	 */
 	private int port;
 
-	TcpMessageReceiver(final ZMQ.Context context, String host) {
+	TcpMessageReceiver(final ZMQContext context, String host) {
 		this.context = context;
 		this.connection = Messaging.createTcpConnection(host);
 	}
@@ -51,7 +52,7 @@ public class TcpMessageReceiver implements IMessageReceiver<String> {
 	}
 
 	@Override
-	public void close() {
+	public synchronized void close() {
 		if (isConnected()) {
 			socket.close();
 			socket = null;
@@ -81,16 +82,17 @@ public class TcpMessageReceiver implements IMessageReceiver<String> {
 			throw new MessagingException("Receive on unbound socket.");
 		}
 
-		byte[] bytes = socket.recv();
-		return new String(bytes);
+		try {
+			byte[] bytes = socket.recv();
+			return new String(bytes);
+		} catch (ZMQException e) {
+			throw new MessagingException("Receive failed", e);
+		}
 
 	}
 
 	public TcpMessageSender createSender() {
-		return new TcpMessageSender(context, String.format(
-				"%s:%d",
-				connection,
-				port));
+		return new TcpMessageSender(context, String.format("%s:%d", connection, port));
 	}
 
 }

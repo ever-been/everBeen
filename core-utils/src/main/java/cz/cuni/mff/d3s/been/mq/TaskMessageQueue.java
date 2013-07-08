@@ -1,7 +1,5 @@
 package cz.cuni.mff.d3s.been.mq;
 
-import org.jeromq.ZMQ;
-
 /**
  * 
  * Message queue for a task to communicate with it's Host Runtime.
@@ -13,9 +11,14 @@ import org.jeromq.ZMQ;
  */
 final class TaskMessageQueue implements IMessageQueue<String> {
 
-	private ZMQ.Context context;
-	private String SINK_CONN;
-	private String SINK_CONN_FORMAT = "tcp://%s:%d";
+	private ZMQContext context;
+	private final String SINK_CONN;
+	private final String SINK_CONN_FORMAT = "tcp://%s:%d";
+
+	TaskMessageQueue(String url) {
+		SINK_CONN = url;
+		context = Context.getReference();
+	}
 
 	TaskMessageQueue(String host, int port) {
 		context = Context.getReference();
@@ -36,8 +39,8 @@ final class TaskMessageQueue implements IMessageQueue<String> {
 	}
 
 	@Override
-	public void terminate() {
-		Context.releaseContext();
+	public void terminate() throws MessagingException {
+		context.term();
 	}
 
 }

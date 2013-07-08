@@ -6,13 +6,14 @@ import cz.cuni.mff.d3s.been.core.jaxb.XSD;
 import cz.cuni.mff.d3s.been.core.task.Properties;
 import cz.cuni.mff.d3s.been.core.task.Property;
 import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
-import cz.cuni.mff.d3s.been.taskapi.Requestor;
+import cz.cuni.mff.d3s.been.mq.MessagingException;
 import cz.cuni.mff.d3s.been.taskapi.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
@@ -43,11 +44,19 @@ public abstract class Benchmark extends Task {
 
 	@Override
 	public void run(String[] args) {
-		benchmarkRequestor = new BenchmarkRequestor();
+        try {
+		    benchmarkRequestor = BenchmarkRequestor.create();
+        } catch (MessagingException e) {
+            log.error("Could not initialize checkpoint requestor", e);
+        }
 		try {
 			processContexts();
 		} finally {
-			benchmarkRequestor.close();
+            try {
+			    benchmarkRequestor.close();
+            } catch (MessagingException e) {
+                log.error("Could not close checkpoint requestor", e);
+            }
 		}
 	}
 
