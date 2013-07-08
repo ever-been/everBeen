@@ -242,6 +242,8 @@ public class Runner {
 		log.info("Starting Log Repository.");
 		ClusterContext ctx = new ClusterContext(instance);
 		LogRepository logRepository = LogRepository.create(ctx, storage);
+        logRepository.start();
+        log.info("Log Repository successfully started!");
 		return logRepository;
 	}
 

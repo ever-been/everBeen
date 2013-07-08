@@ -125,7 +125,7 @@ public final class ZipUtil {
                         fos = new FileOutputStream(f);
 
                         if (entrySize == -1) {
-                            log.warn("Size of entry {} is unknown", entry);
+                            log.debug("Size of entry {} is unknown", entry);
                         }
                         IOUtils.copy(zipStream,fos);
 
