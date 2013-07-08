@@ -31,7 +31,7 @@ import cz.cuni.mff.d3s.been.socketworks.oneway.ReadOnlyHandler;
 public class TaskLogHandler implements ReadOnlyHandler {
 
 	private static final Logger log = LoggerFactory.getLogger(TaskLogHandler.class);
-	private static final EntityID LOG_ENTITY_ID = new EntityID().withKind("BEEN.log").withGroup("task");
+	private static final EntityID LOG_ENTITY_ID = new EntityID().withKind("log").withGroup("task");
 	private static final String PREFIX_SEPARATOR = "#";
 
 	private final ClusterContext ctx;
