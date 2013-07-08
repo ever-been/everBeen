@@ -32,7 +32,7 @@ import java.util.Map;
  *                 // conversation does not exists - inform user in proper way
  *             } else {
  *                 this.conversationId = conversationId;
- *                 this.obj = holder.get(conversationId);
+ *                 this.obj = (MyObject) holder.get(conversationId);
  *             }
  *
  *             return null;

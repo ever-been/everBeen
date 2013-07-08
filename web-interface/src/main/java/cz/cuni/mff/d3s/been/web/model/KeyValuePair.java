@@ -1,7 +1,5 @@
-package cz.cuni.mff.d3s.been.web.utils;
+package cz.cuni.mff.d3s.been.web.model;
 
-
-import org.apache.tapestry5.ValueEncoder;
 
 public final class KeyValuePair {
 
