@@ -1,12 +1,10 @@
 package cz.cuni.mff.d3s.been.swrepository;
 
-import cz.cuni.mff.d3s.been.bpk.ArtifactIdentifier;
-import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
-import cz.cuni.mff.d3s.been.core.utils.JSONUtils.JSONSerializerException;
-import cz.cuni.mff.d3s.been.datastore.ArtifactStore;
-import cz.cuni.mff.d3s.been.datastore.StorePersister;
-import cz.cuni.mff.d3s.been.datastore.StoreReader;
-import cz.cuni.mff.d3s.been.swrepository.httpserver.SkeletalRequestHandler;
+import static cz.cuni.mff.d3s.been.swrepository.HeaderNames.ARTIFACT_IDENTIFIER_HEADER_NAME;
+
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.entity.InputStreamEntity;
@@ -14,10 +12,13 @@ import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import static cz.cuni.mff.d3s.been.swrepository.HeaderNames.ARTIFACT_IDENTIFIER_HEADER_NAME;
+import cz.cuni.mff.d3s.been.bpk.ArtifactIdentifier;
+import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
+import cz.cuni.mff.d3s.been.core.utils.JsonException;
+import cz.cuni.mff.d3s.been.datastore.ArtifactStore;
+import cz.cuni.mff.d3s.been.datastore.StorePersister;
+import cz.cuni.mff.d3s.been.datastore.StoreReader;
+import cz.cuni.mff.d3s.been.swrepository.httpserver.SkeletalRequestHandler;
 
 /**
  * A request handler that deals with artifact requests.
@@ -47,10 +48,9 @@ public class ArtifactRequestHandler extends SkeletalRequestHandler {
 		ArtifactIdentifier artifactIdentifier = null;
 		try {
 			artifactIdentifier = JSONUtils.<ArtifactIdentifier> deserialize(
-					request.getFirstHeader(
-							ARTIFACT_IDENTIFIER_HEADER_NAME).getValue(),
+					request.getFirstHeader(ARTIFACT_IDENTIFIER_HEADER_NAME).getValue(),
 					ArtifactIdentifier.class);
-		} catch (JSONSerializerException e) {
+		} catch (JsonException e) {
 			response.setStatusCode(400);
 			log.error("Could not read artifact identifier from request.");
 			return;
@@ -58,9 +58,10 @@ public class ArtifactRequestHandler extends SkeletalRequestHandler {
 
 		final StoreReader artifactReader = store.getArtifactReader(artifactIdentifier);
 		if (artifactReader == null) {
-			replyBadRequest(request, response, String.format(
-					"Could not retrieve reader for artifact identifier %s",
-					artifactIdentifier.toString()));
+			replyBadRequest(
+					request,
+					response,
+					String.format("Could not retrieve reader for artifact identifier %s", artifactIdentifier.toString()));
 			return;
 		}
 
@@ -68,10 +69,7 @@ public class ArtifactRequestHandler extends SkeletalRequestHandler {
 		try {
 			bpkEntity = new InputStreamEntity(artifactReader.getContentStream(), artifactReader.getContentLength());
 		} catch (IOException e) {
-			log.error(
-					"Failed to open artifact reader {} - {}",
-					artifactReader.toString(),
-					e.getMessage());
+			log.error("Failed to open artifact reader {} - {}", artifactReader.toString(), e.getMessage());
 		}
 		response.setEntity(bpkEntity);
 	}
@@ -93,7 +91,7 @@ public class ArtifactRequestHandler extends SkeletalRequestHandler {
 			artifactIdentifier = JSONUtils.deserialize(
 					request.getFirstHeader(ARTIFACT_IDENTIFIER_HEADER_NAME).getValue(),
 					ArtifactIdentifier.class);
-		} catch (JSONSerializerException e) {
+		} catch (JsonException e) {
 			final String errorMessage = String.format(
 					"could not read artifact identifier from request %s.",
 					request.toString());
@@ -115,10 +113,7 @@ public class ArtifactRequestHandler extends SkeletalRequestHandler {
 			final InputStream requestFile = put.getEntity().getContent();
 			artifactPersister.dump(requestFile);
 		} catch (IOException e) {
-			log.error(
-					"Could not persist artifact {} due to I/O error - {}.",
-					artifactIdentifier.toString(),
-					e.getMessage());
+			log.error("Could not persist artifact {} due to I/O error - {}.", artifactIdentifier.toString(), e.getMessage());
 		}
 	}
 }

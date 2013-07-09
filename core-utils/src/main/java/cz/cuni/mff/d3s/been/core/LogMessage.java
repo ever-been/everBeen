@@ -1,11 +1,10 @@
 package cz.cuni.mff.d3s.been.core;
 
-import cz.cuni.mff.d3s.been.core.persistence.Entity;
-
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.Serializable;
 import java.io.StringWriter;
+
+import cz.cuni.mff.d3s.been.core.persistence.Entity;
 
 /**
  * Message used to log events on tasks. Java Task API.
@@ -26,12 +25,6 @@ public class LogMessage extends Entity {
 	/** Error trace in String form */
 	private String errorTrace;
 
-	/** ID of the logging Task */
-	private String senderId;
-
-	/** ID of the context the task is associated with */
-	private String contextId;
-
 	/** Name of the thread which logged the message. */
 	private String threadName;
 
@@ -45,16 +38,15 @@ public class LogMessage extends Entity {
 		// make JSON deserializer happy
 	}
 
-	public LogMessage(String name, int level, String message, Throwable t, String senderId, String contextId) {
+	public LogMessage(String name, int level, String message) {
 		this.level = level;
 		this.message = message;
-		this.senderId = senderId;
 		this.name = name;
-		this.contextId = contextId;
+	}
 
+	public LogMessage withThroable(Throwable t) {
 		if (t != null) {
-			try (StringWriter sw = new StringWriter();
-					PrintWriter pw = new PrintWriter(sw)) {
+			try (StringWriter sw = new StringWriter(); PrintWriter pw = new PrintWriter(sw)) {
 				t.printStackTrace(pw);
 				errorTrace = sw.toString();
 			} catch (IOException e) {
@@ -63,9 +55,17 @@ public class LogMessage extends Entity {
 
 		}
 
-		this.time = System.currentTimeMillis();
-		this.threadName = Thread.currentThread().getName();
+		return this;
+	}
 
+	public LogMessage withTimestamp() {
+		setCreated(System.currentTimeMillis());
+		return this;
+	}
+
+	public LogMessage withThreadName() {
+		setThreadName(Thread.currentThread().getName());
+		return this;
 	}
 
 	public String getName() {
@@ -100,22 +100,6 @@ public class LogMessage extends Entity {
 		this.errorTrace = errorTrace;
 	}
 
-	public String getSenderId() {
-		return senderId;
-	}
-
-	public void setSenderId(String senderId) {
-		this.senderId = senderId;
-	}
-
-	public String getContextId() {
-		return contextId;
-	}
-
-	public void setContextId(String contextId) {
-		this.contextId = contextId;
-	}
-
 	public String getThreadName() {
 		return threadName;
 	}
@@ -124,11 +108,4 @@ public class LogMessage extends Entity {
 		this.threadName = threadName;
 	}
 
-	public long getTime() {
-		return time;
-	}
-
-	public void setTime(long time) {
-		this.time = time;
-	}
 }

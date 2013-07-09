@@ -7,6 +7,7 @@ import org.apache.commons.exec.LogOutputStream;
 import cz.cuni.mff.d3s.been.core.LogMessage;
 import cz.cuni.mff.d3s.been.core.TaskMessageType;
 import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
+import cz.cuni.mff.d3s.been.core.utils.JsonException;
 import cz.cuni.mff.d3s.been.mq.MessageQueues;
 
 /**
@@ -25,13 +26,15 @@ import cz.cuni.mff.d3s.been.mq.MessageQueues;
 public class ClusterStreamHandler extends LogOutputStream {
 	private final String taskId;
 	private final String contextId;
+	private final String benchmarkId;
 	private final String name;
 
 	private final MessageQueues messageQueues;
 
-	public ClusterStreamHandler(String taskId, String contextId, String name) {
+	public ClusterStreamHandler(String taskId, String contextId, String benchmarkId, String name) {
 		this.taskId = taskId;
 		this.contextId = contextId;
+		this.benchmarkId = benchmarkId;
 		this.name = name;
 		this.messageQueues = MessageQueues.getInstance();
 
@@ -52,9 +55,9 @@ public class ClusterStreamHandler extends LogOutputStream {
 		}
 	}
 
-	private String createJsonLogMessage(String line, int level) throws JSONUtils.JSONSerializerException {
-		LogMessage logMsg = new LogMessage(name, level, line, null, taskId, contextId);
-		logMsg.setThreadName(null);
+	private String createJsonLogMessage(String line, int level) throws JsonException {
+		LogMessage logMsg = new LogMessage(name, level, line).withTimestamp();
+		logMsg.withTaskId(taskId).withContextId(contextId).withBenchmarkId(benchmarkId);
 
 		return JSONUtils.serialize(logMsg);
 	}

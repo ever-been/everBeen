@@ -14,6 +14,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import cz.cuni.mff.d3s.been.core.ri.MonitorSample;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
+import cz.cuni.mff.d3s.been.core.utils.JsonException;
 
 /**
  * @author Kuba Brecka
@@ -50,7 +51,7 @@ public class DetectorRunner {
 			try {
 				String s = JSONUtils.serialize(sample);
 				System.out.println(s);
-			} catch (JSONUtils.JSONSerializerException e) {
+			} catch (JsonException e) {
 				e.printStackTrace();
 			}
 

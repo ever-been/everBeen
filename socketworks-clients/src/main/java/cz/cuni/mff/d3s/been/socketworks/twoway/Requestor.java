@@ -1,17 +1,15 @@
 package cz.cuni.mff.d3s.been.socketworks.twoway;
 
-import cz.cuni.mff.d3s.been.annotation.NotThreadSafe;
-import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
-import cz.cuni.mff.d3s.been.mq.Context;
-import cz.cuni.mff.d3s.been.mq.MessagingException;
-import cz.cuni.mff.d3s.been.mq.ZMQContext;
 import org.jeromq.ZMQ;
 import org.jeromq.ZMQ.Socket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Closeable;
-import java.io.IOException;
+import cz.cuni.mff.d3s.been.annotation.NotThreadSafe;
+import cz.cuni.mff.d3s.been.core.utils.JsonException;
+import cz.cuni.mff.d3s.been.mq.Context;
+import cz.cuni.mff.d3s.been.mq.MessagingException;
+import cz.cuni.mff.d3s.been.mq.ZMQContext;
 
 /**
  * Sends requests of tasks to its Host Runtime.
@@ -53,16 +51,16 @@ public class Requestor {
 		socket.connect(address);
 	}
 
-    public static Requestor create(String address) throws MessagingException {
-        final ZMQContext zctx = Context.getReference();
-        return new Requestor(address, zctx, zctx.socket(ZMQ.REQ));
-    }
+	public static Requestor create(String address) throws MessagingException {
+		final ZMQContext zctx = Context.getReference();
+		return new Requestor(address, zctx, zctx.socket(ZMQ.REQ));
+	}
 
 	/**
 	 * Sends an arbitrary request, waits for reply.
-	 *
+	 * 
 	 * The call will block until the request is handled by the Host Runtime.
-	 *
+	 * 
 	 * @param request
 	 *          a request
 	 * @return reply for the request
@@ -71,26 +69,26 @@ public class Requestor {
 		String json = request.toJson();
 
 		socket.send(json);
-        log.debug("Sent {}", json);
+		log.debug("Sent {}", json);
 
 		final String replyString = socket.recvStr();
-        log.debug("Received {}", replyString);
+		log.debug("Received {}", replyString);
 
 		try {
 			return Reply.fromJson(replyString);
-		} catch (JSONUtils.JSONSerializerException e) {
+		} catch (JsonException e) {
 			return Replies.createErrorReply("Cannot deserialize '%s'", json);
 		}
 	}
 
 	/**
 	 * Closes the requestor. No further request will be handled by the object.
-	 *
+	 * 
 	 * Must be called to release associated resources. Failing to do so will hand
 	 * the process on exit.
 	 */
 	public void close() throws MessagingException {
 		socket.close();
-        zctx.term();
+		zctx.term();
 	}
 }

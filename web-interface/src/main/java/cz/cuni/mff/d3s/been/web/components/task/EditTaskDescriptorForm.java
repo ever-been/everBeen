@@ -9,60 +9,53 @@ import org.apache.tapestry5.ValueEncoder;
 import org.apache.tapestry5.annotations.Cached;
 import org.apache.tapestry5.annotations.Parameter;
 import org.apache.tapestry5.annotations.Property;
+import org.apache.tapestry5.annotations.SetupRender;
 
 import java.util.List;
 
 
+/**
+ * This component is used for editing TaskDescriptor properties and must be used only and only inside
+ * an existing form.
+ * <br/>
+ * This component cane be used in two different ways:<br/><br/>
+ * <b>1. way</b>
+ * <pre>
+ *     &lt;t:task.editTaskDescriptorForm t:args="args" t:javaOpts="javaOpts"
+ *         t:taskDescriptor="taskDescriptor"/&gt;
+ * </pre>
+ * <b>taskDescriptor</b> : {@link TaskDescriptor} for which are the form fields generated<br/>
+ * <b>args</b> : {@link List} of {@link KeyValuePair}s with arguments specified in task descriptor.
+ * We can't use List of Strings because we have to distinguish between arguments (some
+ * arguments can be equal each other)<br/>
+ * <b>javaOpts</b> : {@link List} of {@link KeyValuePair}s with java options specified in task descriptor.
+ * We can't use List of string because we have to distinguish between arguments (some
+ * arguments can be equal each other)
+ * <br/>
+ * <br/>
+ * <b>2. way</b>
+ * <pre>
+ *     &lt;t:task.editTaskDescriptorForm t:index="index" t:tasksArgs="tasksArgs"
+ *         t:tasksJavaOpts="tasksJavaOpts" t:tasksDescriptors="tasksDescriptors"/&gt;
+ * </pre>
+ * <b>tasksDescriptors</b> : {@link List} of {@link TaskDescriptor}s in which the correct one
+ * is situated at position given in argument 'index'<br/>
+ * <p/>
+ * <b>tasksArgs</b> : {@link List} of {@link List}s of {@link KeyValuePair}s in which the correct one
+ * is situated at position given in argument 'index'<br/>
+ * <p/>
+ * <b>tasksJavaOpts</b> : {@link List} of {@link List}s of {@link KeyValuePair}s in which the correct one
+ * is situated at position given in argument 'index'<br/>
+ * <p/>
+ * <b>index</b> : this index defines at which position are correct items for editing<br/>
+ * <br/><br/><br/>
+ * It is not allowed to combine parameters from incompatible ways.<br/>
+ */
 public class EditTaskDescriptorForm extends Component {
 
-
-    /* alternative args */
-    @Parameter(name = "index")
-    volatile Integer _index;
-
-    @Parameter(name = "tasksArgs")
-    List<List<KeyValuePair>> _tasksArgs;
-
-    @Parameter(name = "tasksJavaOpts")
-    List<List<KeyValuePair>> _tasksJavaOpts;
-
-    @Parameter(name = "tasksDescriptors")
-    List<TaskDescriptor> _tasksDescriptors;
-
-    void setupRender() throws Exception {
-        if (this._tasksArgs != null || this._tasksJavaOpts != null || this._tasksDescriptors != null || this._index != null) {
-            if (_args != null || _opts != null || _taskDescriptor != null) {
-                // UGLY MEGA GIGA HYPER EXTRA PHOEY FIXME exception handling
-                throw new Exception("You can't define both alternative args (index, tasksArgs, " +
-                        "tasksJavaOpts, tasksDescriptors) and primary args (taskDescriptor, args, javaOpts)");
-            } else {
-                if (this._tasksArgs == null || this._tasksJavaOpts == null || this._tasksDescriptors == null || this._index == null) {
-                    throw new Exception("You must specify all alternative args (index, tasksArgs, " +
-                            "tasksJavaOpts, tasksDescriptors) if you want to use them");
-                    // UGLY MEGA GIGA HYPER EXTRA PHOEY FIXME exception handling
-
-                }
-            }
-        }
-    }
-
-    @Cached
-    public List<KeyValuePair> getArgs() {
-        return _args != null ? _args : _tasksArgs.get(_index);
-    }
-
-
-    @Cached
-    public List<KeyValuePair> getOpts() {
-        return _opts != null ? _opts : _tasksJavaOpts.get(_index);
-    }
-
-
-    @Cached
-    public TaskDescriptor getTaskDescriptor() {
-        return _taskDescriptor != null ? _taskDescriptor : _tasksDescriptors.get(_index);
-    }
-
+    //
+    //  1'ST WAY PARAMETERS
+    //
 
     /**
      * Task descriptor loaded in onActivate() method
@@ -90,6 +83,93 @@ public class EditTaskDescriptorForm extends Component {
     @Parameter(name = "javaOpts")
     List<KeyValuePair> _opts;
 
+
+    //
+    // 2'ND WAY PARAMETERS
+    //
+    /**
+     * Specify position of correct items to idet in lists given as this component's parameters.
+     * It is expected that items exists in all lists at given position.
+     */
+    @Parameter(name = "index")
+    volatile Integer _index;
+
+    /**
+     * List of lists of task arguments (represented by KeyValuePairs) where selection of the correct list is based on 'index' parameter
+     */
+    @Parameter(name = "tasksArgs")
+    List<List<KeyValuePair>> _tasksArgs;
+
+    /**
+     * List of lists of task java opts (represented by KeyValuePairs) where selection of the  correct list is based on 'index' parameter
+     */
+    @Parameter(name = "tasksJavaOpts")
+    List<List<KeyValuePair>> _tasksJavaOpts;
+
+
+    /**
+     * List of task descriptors where selection of the correct one is based on 'index' parameter
+     */
+    @Parameter(name = "tasksDescriptors")
+    List<TaskDescriptor> _tasksDescriptors;
+
+    //
+    // COMPONENT INITIALIZATION
+    //
+
+    /**
+     * Checks if component has been instantiated with valid combination of parameters.
+     * @throws Exception if component has been instantiated with invalid combination of parameters
+     */
+    @SetupRender
+    void setupRender() throws Exception {
+        if (this._tasksArgs != null || this._tasksJavaOpts != null || this._tasksDescriptors != null || this._index != null) {
+            if (_args != null || _opts != null || _taskDescriptor != null) {
+                // UGLY MEGA GIGA HYPER EXTRA PHOEY FIXME exception handling
+                throw new Exception("You can't define both alternative args (index, tasksArgs, " +
+                        "tasksJavaOpts, tasksDescriptors) and primary args (taskDescriptor, args, javaOpts)");
+            } else {
+                if (this._tasksArgs == null || this._tasksJavaOpts == null || this._tasksDescriptors == null || this._index == null) {
+                    throw new Exception("You must specify all alternative args (index, tasksArgs, " +
+                            "tasksJavaOpts, tasksDescriptors) if you want to use them");
+                    // UGLY MEGA GIGA HYPER EXTRA PHOEY FIXME exception handling
+
+                }
+            }
+        }
+    }
+
+
+    //
+    // TEMPLATE PROPERTY GETTERS
+    //
+
+    /**
+     * @return correct list of KeyValuePairs representing task descriptor arguments to be edited
+     */
+    public List<KeyValuePair> getArgs() {
+        return _args != null ? _args : _tasksArgs.get(_index);
+    }
+
+    /**
+     * @return correct list of KeyValuePairs representing task descriptor java options to be edited
+     */
+    public List<KeyValuePair> getOpts() {
+        return _opts != null ? _opts : _tasksJavaOpts.get(_index);
+    }
+
+    /**
+     * @return correct task descriptor to be edited
+     */
+    public TaskDescriptor getTaskDescriptor() {
+        return _taskDescriptor != null ? _taskDescriptor : _tasksDescriptors.get(_index);
+    }
+
+
+    //
+    // TEMPLATE HELPER PROPERTIES
+    //
+
     /**
      * Used in loop over arguments
      */
@@ -103,7 +183,7 @@ public class EditTaskDescriptorForm extends Component {
     private KeyValuePair opt;
 
     /**
-     * loop index used in loops in template
+     * loop index used in different loops in template
      */
     @Property
     @SuppressWarnings("unused")
