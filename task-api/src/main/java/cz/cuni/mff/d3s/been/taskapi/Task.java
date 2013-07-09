@@ -6,12 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.d3s.been.core.TaskMessageType;
 import cz.cuni.mff.d3s.been.core.TaskPropertyNames;
-import cz.cuni.mff.d3s.been.mq.IMessageQueue;
-import cz.cuni.mff.d3s.been.mq.IMessageSender;
-import cz.cuni.mff.d3s.been.mq.Messaging;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
-import cz.cuni.mff.d3s.been.taskapi.results.ResultFacade;
-import cz.cuni.mff.d3s.been.taskapi.results.ResultFacadeFactory;
 
 /**
  * 
@@ -24,9 +19,7 @@ public abstract class Task {
 	private String id;
 	private String taskContextId;
 	private String benchmarkId;
-	private IMessageQueue<String> resQueue;
-	private IMessageSender<String> resSender;
-	protected final ResultFacade results = new TaskFieldResultFacadeWrapper();
+	protected final ResultFacade results = ResultFacadeFactory.getResultFacade();
 
 	/**
 	 * Returns ID of the running task.
@@ -115,16 +108,6 @@ public abstract class Task {
 
         System.out.println(String.format("result queue url: %s", NamedSockets.TASK_RESULT_0MQ.getConnection()));
 
-		resQueue = Messaging.createTaskQueue(NamedSockets.TASK_RESULT_0MQ.getConnection());
-		try {
-			resSender = resQueue.createSender();
-			((TaskFieldResultFacadeWrapper) results).setResultFacade(ResultFacadeFactory.createResultFacade(resSender));
-		} catch (MessagingException e) {
-			log.error("Failed to create Task environment due to messaging system initialization error - {}", e.getMessage());
-			log.debug("Reasons for Task setup failing:", e);
-			// TODO exit with code
-		}
-
 		try {
 			Messages.send(String.format("%s#%s", TaskMessageType.TASK_RUNNING, id));
 		} catch (MessagingException e) {
@@ -134,16 +117,12 @@ public abstract class Task {
 	}
 
 	private void tearDown() {
-		if (resSender != null) {
-            resSender.close();
-        }
-        if (resQueue != null) {
 		try {
-			resQueue.terminate();
+			ResultFacadeFactory.quit();
 		} catch (MessagingException e) {
-			log.error("Failed to release results queue.");
+			log.error("Failed to release results facade.");
 		}
-        }
+
 		try {
 			Messages.terminate();
 		} catch (MessagingException e) {
