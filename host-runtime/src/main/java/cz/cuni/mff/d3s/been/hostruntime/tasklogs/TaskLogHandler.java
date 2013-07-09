@@ -57,7 +57,6 @@ public class TaskLogHandler implements ReadOnlyHandler {
 			@Override
 			public void handle(String key, String value, String json) {
 				// value is the new key
-				System.out.println(json);
 				taskLogs.put(value, json, 60, TimeUnit.SECONDS);
 			}
 		});
