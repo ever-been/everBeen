@@ -1,6 +1,5 @@
 package cz.cuni.mff.d3s.been.taskapi;
 
-import cz.cuni.mff.d3s.been.socketworks.NamedSockets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,6 +9,7 @@ import cz.cuni.mff.d3s.been.mq.IMessageQueue;
 import cz.cuni.mff.d3s.been.mq.IMessageSender;
 import cz.cuni.mff.d3s.been.mq.Messaging;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
+import cz.cuni.mff.d3s.been.socketworks.NamedSockets;
 import cz.cuni.mff.d3s.been.taskapi.results.ResultFacade;
 import cz.cuni.mff.d3s.been.taskapi.results.ResultFacadeFactory;
 
@@ -45,10 +45,10 @@ public abstract class Task {
 	public String getTaskContextId() {
 		return taskContextId;
 	}
-    
+
 	/**
 	 * Returns benchmark ID of the running task.
-	 *
+	 * 
 	 * @return benchmark ID of the running task
 	 */
 	public String getBenchmarkId() {
@@ -57,10 +57,10 @@ public abstract class Task {
 
 	/**
 	 * Returns system property associated with the running task.
-	 *
+	 * 
 	 * @param propertyName
 	 *          name of the property
-	 *
+	 * 
 	 * @return value associated with the name
 	 */
 	public String getProperty(String propertyName) {
@@ -69,10 +69,10 @@ public abstract class Task {
 
 	/**
 	 * Returns system property associated with the running task or default value
-	 *
+	 * 
 	 * @param propertyName
 	 *          name of the property
-	 *
+	 * 
 	 * @return value associated with the name or the default value when the
 	 *         property is not set
 	 */
@@ -87,16 +87,16 @@ public abstract class Task {
 
 	/**
 	 * The method subclasses override to implement task's functionality.
-	 *
+	 * 
 	 * To execute a task {@link #doMain(String[])} will be called.
 	 */
 	public abstract void run(String[] args);
 
 	/**
-	 *
+	 * 
 	 * The method which sets up task's environment and calls
 	 * {@link #run(String[])}.
-	 *
+	 * 
 	 * @param args
 	 */
 	public void doMain(String[] args) {
@@ -110,10 +110,10 @@ public abstract class Task {
 
 	private void initialize() {
 		this.id = System.getenv(TaskPropertyNames.TASK_ID);
-		this.taskContextId = System.getenv(TaskPropertyNames.TASK_CONTEXT_ID);
-        this.benchmarkId = System.getenv(TaskPropertyNames.BENCHMARK_ID);
+		this.taskContextId = System.getenv(TaskPropertyNames.CONTEXT_ID);
+		this.benchmarkId = System.getenv(TaskPropertyNames.BENCHMARK_ID);
 
-        System.out.println(String.format("result queue url: %s", NamedSockets.TASK_RESULT_0MQ.getConnection()));
+		System.out.println(String.format("result queue url: %s", NamedSockets.TASK_RESULT_0MQ.getConnection()));
 
 		resQueue = Messaging.createTaskQueue(NamedSockets.TASK_RESULT_0MQ.getConnection());
 		try {
@@ -135,15 +135,15 @@ public abstract class Task {
 
 	private void tearDown() {
 		if (resSender != null) {
-            resSender.close();
-        }
-        if (resQueue != null) {
-		try {
-			resQueue.terminate();
-		} catch (MessagingException e) {
-			log.error("Failed to release results queue.");
+			resSender.close();
 		}
-        }
+		if (resQueue != null) {
+			try {
+				resQueue.terminate();
+			} catch (MessagingException e) {
+				log.error("Failed to release results queue.");
+			}
+		}
 		try {
 			Messages.terminate();
 		} catch (MessagingException e) {

@@ -84,7 +84,7 @@ function addLog(log) {
 	var d = Date.create(log.time).format("{H}:{mm}:{ss}.{fff}");
 	var classname = log.name;
 	classname = classname.substr(classname.lastIndexOf(".") + 1);
-	var t = "<a href='/task/detail/" + log.senderId + "'>" + log.senderId.substring(0, 8) + "</a>";
+	var t = "<a href='/task/detail/" + log.taskId + "'>" + log.taskId.substring(0, 8) + "</a>";
 
 	var lev = log.level;
 	if (log.level == LOG_LEVEL_TRACE) lev = "<i class='icon-caret-down'></i>";

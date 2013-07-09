@@ -3,24 +3,22 @@ package cz.cuni.mff.d3s.been.client;
 import java.util.Collection;
 import java.util.Map;
 
-import cz.cuni.mff.d3s.been.api.BeenApi;
-import cz.cuni.mff.d3s.been.api.BeenApiImpl;
-import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
-import cz.cuni.mff.d3s.been.core.benchmark.BenchmarkEntry;
 import jline.console.ConsoleReader;
 
 import com.hazelcast.core.Instance;
-import com.hazelcast.core.MultiMap;
 
-import cz.cuni.mff.d3s.been.cluster.Names;
+import cz.cuni.mff.d3s.been.api.BeenApi;
+import cz.cuni.mff.d3s.been.api.BeenApiImpl;
+import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.LogMessage;
+import cz.cuni.mff.d3s.been.core.benchmark.BenchmarkEntry;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskEntries;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
-import cz.cuni.mff.d3s.been.debugassistant.DebugAssistant;
+import cz.cuni.mff.d3s.been.core.utils.JsonException;
 import cz.cuni.mff.d3s.been.debugassistant.DebugListItem;
 
 /**
@@ -110,7 +108,12 @@ class ClusterMode extends AbstractMode {
 
 	private void handleDebug(String[] args) {
 		for (DebugListItem item : api.getDebugWaitingTasks()) {
-			out.printf("id: %s, host: %s, port: %s, suspended: %s\n", item.getTaskId(), item.getHostName(), item.getDebugPort(), item.isSuspended());
+			out.printf(
+					"id: %s, host: %s, port: %s, suspended: %s\n",
+					item.getTaskId(),
+					item.getHostName(),
+					item.getDebugPort(),
+					item.isSuspended());
 		}
 	}
 
@@ -121,7 +124,7 @@ class ClusterMode extends AbstractMode {
 			for (LogMessage msg : api.getLogs(id)) {
 				try {
 					out.printf("\t%s\n", JSONUtils.serialize(msg));
-				} catch (JSONUtils.JSONSerializerException e) {
+				} catch (JsonException e) {
 					out.println("\tERROR: Cannot deserialize the message!");
 				}
 			}
