@@ -87,16 +87,24 @@ public class SubmitTaskContextDescriptor extends Page {
     @SuppressWarnings("unused")
     private Integer loopIndex;
 
+    /**
+     * List of lists of task arguments (represented by KeyValuePairs) for task descriptor templates specified in task context descriptor
+     */
     @Property
     @SuppressWarnings("unused")
     private List<List<KeyValuePair>> tasksArgs;
 
-
+    /**
+     * List of lists of task java options (represented by KeyValuePairs) for task descriptor templates specified in task context descriptor
+     */
     @Property
     @SuppressWarnings("unused")
     private List<List<KeyValuePair>> tasksJavaOpts;
 
 
+    /**
+     * List of task descriptor templates specified in task context descriptor.
+     */
     @Property
     @SuppressWarnings("unused")
     private List<TaskDescriptor> tasksDescriptors;

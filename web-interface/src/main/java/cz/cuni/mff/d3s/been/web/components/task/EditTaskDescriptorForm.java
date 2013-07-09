@@ -6,7 +6,6 @@ import cz.cuni.mff.d3s.been.core.task.TaskExclusivity;
 import cz.cuni.mff.d3s.been.web.components.Component;
 import cz.cuni.mff.d3s.been.web.model.KeyValuePair;
 import org.apache.tapestry5.ValueEncoder;
-import org.apache.tapestry5.annotations.Cached;
 import org.apache.tapestry5.annotations.Parameter;
 import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.annotations.SetupRender;
@@ -50,12 +49,14 @@ import java.util.List;
  * <b>index</b> : this index defines at which position are correct items for editing<br/>
  * <br/><br/><br/>
  * It is not allowed to combine parameters from incompatible ways.<br/>
+ *
+ * @author Tadeas Palusga
  */
 public class EditTaskDescriptorForm extends Component {
 
-    //
+    // -----------------------------
     //  1'ST WAY PARAMETERS
-    //
+    // -----------------------------
 
     /**
      * Task descriptor loaded in onActivate() method
@@ -84,9 +85,10 @@ public class EditTaskDescriptorForm extends Component {
     List<KeyValuePair> _opts;
 
 
-    //
+    // -----------------------------
     // 2'ND WAY PARAMETERS
-    //
+    // -----------------------------
+
     /**
      * Specify position of correct items to idet in lists given as this component's parameters.
      * It is expected that items exists in all lists at given position.
@@ -113,12 +115,14 @@ public class EditTaskDescriptorForm extends Component {
     @Parameter(name = "tasksDescriptors")
     List<TaskDescriptor> _tasksDescriptors;
 
-    //
+
+    // -----------------------------
     // COMPONENT INITIALIZATION
-    //
+    // -----------------------------
 
     /**
      * Checks if component has been instantiated with valid combination of parameters.
+     *
      * @throws Exception if component has been instantiated with invalid combination of parameters
      */
     @SetupRender
@@ -140,9 +144,9 @@ public class EditTaskDescriptorForm extends Component {
     }
 
 
-    //
+    // -----------------------------
     // TEMPLATE PROPERTY GETTERS
-    //
+    // -----------------------------
 
     /**
      * @return correct list of KeyValuePairs representing task descriptor arguments to be edited
@@ -166,9 +170,9 @@ public class EditTaskDescriptorForm extends Component {
     }
 
 
-    //
+    // -----------------------------
     // TEMPLATE HELPER PROPERTIES
-    //
+    // -----------------------------
 
     /**
      * Used in loop over arguments
@@ -189,6 +193,11 @@ public class EditTaskDescriptorForm extends Component {
     @SuppressWarnings("unused")
     private int loopIndex;
 
+
+    // -----------------------------
+    // DYNAMIC AJAX ADD/REMOVE ACTIONS
+    // -----------------------------
+
     /**
      * Creates new empty argument which will be added to indexed argument list.
      *
@@ -205,7 +214,7 @@ public class EditTaskDescriptorForm extends Component {
      * Removes indexed argument from argument list ('remove' is not the really exact description.
      * Instead of direct removing from list is option with given index(kvp.key) set to null)
      *
-     * @param kvp
+     * @param kvp item to be removed
      */
     void onRemoveRowFromArgumentList(KeyValuePair kvp) {
         getArgs().set(kvp.key, new KeyValuePair(getArgs().size(), null));
@@ -227,16 +236,45 @@ public class EditTaskDescriptorForm extends Component {
      * description. Instead of direct removing from list is argument with given index(kvp.key)
      * set to null)
      *
-     * @param kvp
+     * @param kvp item to be removed
      */
     void onRemoveRowFromJavaOptList(KeyValuePair kvp) {
         getOpts().set(kvp.key, new KeyValuePair(getOpts().size(), null));
     }
 
+
+    // -----------------------------
+    // VALUES FOR FORM LIST SELECTS
+    // -----------------------------
+
+    /**
+     * Collects possible values for TaskExclusivity select box
+     *
+     * @return
+     */
+    public TaskExclusivity[] getAvailableExclusivities() {
+        return TaskExclusivity.values();
+    }
+
+
+    /**
+     * Collects possible values for ModeEnum select box (ModeEnum = enum for possible
+     * values for debug mode)
+     *
+     * @return
+     */
+    public ModeEnum[] getAvailableDebugModes() {
+        return ModeEnum.values();
+    }
+
+    // -----------------------------
+    // JAVA2HTML/JS AND HTML/JS2JAVA TRANSLATION METHODS
+    // -----------------------------
+
     /**
      * Encoder used to translate values between server(java) and Client (browser)
      *
-     * @return
+     * @return encoder for arguments
      */
     public ValueEncoder<KeyValuePair> getArgsKeyValuePairEncoder() {
         return new ValueEncoder<KeyValuePair>() {
@@ -255,7 +293,7 @@ public class EditTaskDescriptorForm extends Component {
     /**
      * Encoder used to translate values between server(java) and Client (browser)
      *
-     * @return
+     * @return encoder for java options
      */
     public ValueEncoder<KeyValuePair> getJavaOptsKeyValuePairEncoder() {
         return new ValueEncoder<KeyValuePair>() {
@@ -272,18 +310,9 @@ public class EditTaskDescriptorForm extends Component {
     }
 
     /**
-     * Collects possible values for TaskExclusivity select box
-     *
-     * @return
-     */
-    public TaskExclusivity[] getAvailableExclusivities() {
-        return TaskExclusivity.values();
-    }
-
-    /**
      * Creates value encoder for Task Exclusivity entities.
      *
-     * @return
+     * @return encoder for task exclusivities
      */
     public ValueEncoder<TaskExclusivity> getTaskExclusivityEncoder() {
         return new ValueEncoder<TaskExclusivity>() {
@@ -303,17 +332,6 @@ public class EditTaskDescriptorForm extends Component {
                 return TaskExclusivity.fromValue(clientValue);
             }
         };
-    }
-
-
-    /**
-     * Collects possible values for ModeEnum select box (ModeEnum = enum for possible
-     * values for debug mode)
-     *
-     * @return
-     */
-    public ModeEnum[] getAvailableDebugModes() {
-        return ModeEnum.values();
     }
 
     /**
@@ -340,6 +358,5 @@ public class EditTaskDescriptorForm extends Component {
             }
         };
     }
-
 
 }
