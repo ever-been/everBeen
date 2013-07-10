@@ -10,8 +10,8 @@ import cz.cuni.mff.d3s.been.core.persistence.EntityID;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
 import cz.cuni.mff.d3s.been.persistence.DAOException;
 import cz.cuni.mff.d3s.been.taskapi.CheckpointController;
+import cz.cuni.mff.d3s.been.taskapi.ResultPersister;
 import cz.cuni.mff.d3s.been.taskapi.Task;
-import cz.cuni.mff.d3s.been.taskapi.results.ResultPersister;
 
 /**
  * Created with IntelliJ IDEA. User: Kuba Date: 14.04.13 Time: 18:39 To change
@@ -48,8 +48,7 @@ public class NginxClientTask extends Task {
 		eid.setKind("results");
 		eid.setGroup("nginx-results");
 
-		final ResultPersister rp = results.createResultPersister(eid);
-		try {
+		try (final ResultPersister rp = results.createResultPersister(eid)) {
 			rp.persist(result);
 			log.info("Result stored.");
 		} catch (DAOException e) {

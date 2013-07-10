@@ -14,7 +14,7 @@
 	<logger name="cz.cuni.mff.d3s.been.hostruntime.task.TaskHandle" level="DEBUG"/>
 
 	<!-- if set to DEBUG prints log messages from tasks on hostruntimes -->
-	<logger name="cz.cuni.mff.d3s.been.hostruntime.tasklogs.TaskLogHandler" level="DEBUG"/>
+	<logger name="cz.cuni.mff.d3s.been.hostruntime.tasklogs.TaskLogHandler" level="INFO"/>
 
 	<root level="INFO">
 		<appender-ref ref="STDOUT"/>
