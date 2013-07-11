@@ -41,7 +41,7 @@ import cz.cuni.mff.d3s.been.core.jaxb.XSD;
 import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
-import cz.cuni.mff.d3s.been.core.utils.JSONUtils.JSONSerializerException;
+import cz.cuni.mff.d3s.been.core.utils.JsonException;
 import cz.cuni.mff.d3s.been.datastore.*;
 
 class HttpSwRepoClient implements SwRepoClient {
@@ -294,7 +294,7 @@ class HttpSwRepoClient implements SwRepoClient {
 					"Failed to GET item from software repository - I/O exception occurs when reading response input stream to string",
 					e);
 			return null;
-		} catch (JSONSerializerException e) {
+		} catch (JsonException e) {
 			log.error(
 					"Failed to GET item from software repository - cannot deserialize return value from json string to object",
 					e);
@@ -328,7 +328,7 @@ class HttpSwRepoClient implements SwRepoClient {
 			for (Header header : headers) {
 				request.addHeader(header.key, JSONUtils.serialize(header.value));
 			}
-		} catch (JSONSerializerException e) {
+		} catch (JsonException e) {
 			log.error(
 					"Failed to GET item from software repository - cannot serialize request header object to json string",
 					e);
@@ -396,7 +396,7 @@ class HttpSwRepoClient implements SwRepoClient {
 			for (Header header : headers) {
 				request.addHeader(header.key, JSONUtils.serialize(header.value));
 			}
-		} catch (JSONSerializerException e) {
+		} catch (JsonException e) {
 			log.error("Failed to PUT item to software repository - cannot serialize request header object to json string", e);
 			return false;
 		}

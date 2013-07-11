@@ -1,9 +1,6 @@
 package cz.cuni.mff.d3s.been.hostruntime;
 
-import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.LOGGER;
-import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.TASK_CONTEXT_ID;
-import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.TASK_ID;
-import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.BENCHMARK_ID;
+import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,20 +8,12 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.TreeMap;
 
-import cz.cuni.mff.d3s.been.socketworks.NamedSockets;
-import cz.cuni.mff.d3s.been.util.ZipUtil;
 import org.apache.commons.exec.ExecuteStreamHandler;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cz.cuni.mff.d3s.been.bpk.Bpk;
-import cz.cuni.mff.d3s.been.bpk.BpkConfigUtils;
-import cz.cuni.mff.d3s.been.bpk.BpkConfiguration;
-import cz.cuni.mff.d3s.been.bpk.BpkConfigurationException;
-import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
-import cz.cuni.mff.d3s.been.bpk.BpkNames;
-import cz.cuni.mff.d3s.been.bpk.BpkRuntime;
+import cz.cuni.mff.d3s.been.bpk.*;
 import cz.cuni.mff.d3s.been.cluster.Service;
 import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
@@ -36,20 +25,16 @@ import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskProperty;
-import cz.cuni.mff.d3s.been.hostruntime.task.ClusterStreamHandler;
-import cz.cuni.mff.d3s.been.hostruntime.task.CmdLineBuilder;
-import cz.cuni.mff.d3s.been.hostruntime.task.CmdLineBuilderFactory;
-import cz.cuni.mff.d3s.been.hostruntime.task.DependencyDownloader;
-import cz.cuni.mff.d3s.been.hostruntime.task.DependencyDownloaderFactory;
-import cz.cuni.mff.d3s.been.hostruntime.task.TaskHandle;
-import cz.cuni.mff.d3s.been.hostruntime.task.TaskProcess;
+import cz.cuni.mff.d3s.been.hostruntime.task.*;
 import cz.cuni.mff.d3s.been.hostruntime.tasklogs.TaskLogHandler;
 import cz.cuni.mff.d3s.been.mq.IMessageReceiver;
 import cz.cuni.mff.d3s.been.mq.IMessageSender;
 import cz.cuni.mff.d3s.been.mq.MessageQueues;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
 import cz.cuni.mff.d3s.been.socketworks.MessageDispatcher;
+import cz.cuni.mff.d3s.been.socketworks.NamedSockets;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
+import cz.cuni.mff.d3s.been.util.ZipUtil;
 
 /**
  * Manages all Host Runtime task processes.
@@ -266,7 +251,7 @@ final class ProcessManager implements Service {
 	 *          entry associated with the new process
 	 * @param taskDirectory
 	 *          root directory of the task
-     *          
+	 * 
 	 * @return task process representation
 	 * 
 	 * @throws IOException
@@ -301,12 +286,7 @@ final class ProcessManager implements Service {
 		// create environment properties
 		Map<String, String> environment = createEnvironmentProperties(taskEntry);
 
-		TaskProcess taskProcess = new TaskProcess(
-				cmdLineBuilder,
-				taskWrkDir,
-				environment,
-				streamHandler,
-				dependencyDownloader);
+		TaskProcess taskProcess = new TaskProcess(cmdLineBuilder, taskWrkDir, environment, streamHandler, dependencyDownloader);
 
 		long timeout = determineTimeout(taskDescriptor);
 
@@ -334,8 +314,13 @@ final class ProcessManager implements Service {
 	}
 
 	private ExecuteStreamHandler createStreamHandler(TaskEntry entry) {
-		ClusterStreamHandler stdOutHandler = new ClusterStreamHandler(entry.getId(), entry.getTaskContextId(), "stdout");
-		ClusterStreamHandler stdErrHandler = new ClusterStreamHandler(entry.getId(), entry.getTaskContextId(), "stderr");
+		// let the compiler optimize this out
+		String taskId = entry.getId();
+		String contextId = entry.getTaskContextId();
+		String benchmarkId = entry.getBenchmarkId();
+
+		ClusterStreamHandler stdOutHandler = new ClusterStreamHandler(taskId, contextId, benchmarkId, "stdout");
+		ClusterStreamHandler stdErrHandler = new ClusterStreamHandler(taskId, contextId, benchmarkId, "stderr");
 
 		return new PumpStreamHandler(stdOutHandler, stdErrHandler);
 
@@ -345,9 +330,11 @@ final class ProcessManager implements Service {
 
 		Map<String, String> properties = new TreeMap<String, String>(System.getenv());
 		properties.putAll(messageDispatcher.getBindings());
+
+		// Task specific properties
 		properties.put(LOGGER, System.getProperty(LOGGER));
 		properties.put(TASK_ID, taskEntry.getId());
-		properties.put(TASK_CONTEXT_ID, taskEntry.getTaskContextId());
+		properties.put(CONTEXT_ID, taskEntry.getTaskContextId());
 		properties.put(BENCHMARK_ID, taskEntry.getBenchmarkId());
 
 		// add properties specified in the TaskDescriptor

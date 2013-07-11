@@ -7,8 +7,8 @@ import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.d3s.been.core.persistence.EntityID;
 import cz.cuni.mff.d3s.been.persistence.DAOException;
+import cz.cuni.mff.d3s.been.taskapi.ResultPersister;
 import cz.cuni.mff.d3s.been.taskapi.Task;
-import cz.cuni.mff.d3s.been.taskapi.results.ResultPersister;
 
 /**
  * @author darklight
@@ -32,18 +32,14 @@ public class JacksonSerializeTask extends Task {
 		eid.setKind("result");
 		eid.setGroup("jackson-serialize");
 
-		final ResultPersister rp = results.createResultPersister(eid);
-
 		final SerializationUnit su = cachePolicy.getSerializationUnit();
 		final DataGenerator dg = dataType.getDataGenerator();
 
 		for (int i = 0; i < repetitions; ++i) {
-			try {
+			try (final ResultPersister rp = results.createResultPersister(eid)) {
 				rp.persist(new TimeResult(su.doMeasure(dg.generate())));
 			} catch (DAOException e) {
-				log.info(
-						"Benchmark was done but BEEN failed to serialize my result.",
-						e);
+				log.info("Benchmark was done but BEEN failed to serialize my result.", e);
 			} catch (IOException e) {
 				log.error("ObjectMapper failed to serialize generated object", e);
 			}

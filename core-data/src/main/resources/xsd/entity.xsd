@@ -5,17 +5,16 @@
 		targetNamespace="http://been.d3s.mff.cuni.cz/entity"
 		xmlns:xs="http://www.w3.org/2001/XMLSchema"
 		xmlns:common="http://been.d3s.mff.cuni.cz/common"
-		xmlns:taskentry="http://been.d3s.mff.cuni.cz/task-entry"
 		>
 
 	<xs:import namespace="http://been.d3s.mff.cuni.cz/common"/>
-	<xs:import namespace="http://been.d3s.mff.cuni.cz/task-entry"/>
 
 	<xs:complexType name="Entity">
 		<xs:all>
-			<xs:element name="created" type="xs:dateTime" />
-			<xs:element ref="taskentry:id" />
-			<xs:element ref="taskentry:taskContextId" />
+			<xs:element name="created" type="common:positiveLong"/>
+			<xs:element name="taskId" type="xs:string"/>
+			<xs:element name="contextId" type="xs:string"/>
+			<xs:element name="benchmarkId" type="xs:string"/>
 		</xs:all>
 	</xs:complexType>
 

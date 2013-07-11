@@ -14,12 +14,16 @@
 
 
 			<bindings node="xs:all">
-				<bindings node="xs:element[@ref='taskentry:id']">
-					<property name="origin" generateIsSetMethod="false"/>
+				<bindings node="xs:element[@name='taskId']">
+					<property generateIsSetMethod="false"/>
 				</bindings>
 
-				<bindings node="xs:element[@ref='taskentry:taskContextId']">
-					<property name="originContext" generateIsSetMethod="false"/>
+				<bindings node="xs:element[@name='contextId']">
+					<property generateIsSetMethod="false"/>
+				</bindings>
+
+				<bindings node="xs:element[@name='benchmarkId']">
+					<property generateIsSetMethod="false"/>
 				</bindings>
 
 				<bindings node="xs:element[@name='created']">

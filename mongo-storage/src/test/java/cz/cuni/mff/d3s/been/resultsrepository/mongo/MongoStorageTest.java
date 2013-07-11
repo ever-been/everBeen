@@ -14,7 +14,7 @@ import org.junit.runners.model.Statement;
 import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.core.persistence.EntityID;
 import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
-import cz.cuni.mff.d3s.been.core.utils.JSONUtils.JSONSerializerException;
+import cz.cuni.mff.d3s.been.core.utils.JsonException;
 import cz.cuni.mff.d3s.been.persistence.DAOException;
 import cz.cuni.mff.d3s.been.storage.Storage;
 import cz.cuni.mff.d3s.been.storage.StorageBuilder;
@@ -92,7 +92,7 @@ public final class MongoStorageTest extends Assert {
 
 	@Test
 	@Ignore
-	public void testSubmitAndRetrieveItem() throws JSONSerializerException, DAOException {
+	public void testSubmitAndRetrieveItem() throws JsonException, DAOException {
 		storage.store(dummyId, JSONUtils.serialize(new DummyResult()));
 	}
 

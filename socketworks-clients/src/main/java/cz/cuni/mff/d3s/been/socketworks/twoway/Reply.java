@@ -1,6 +1,7 @@
 package cz.cuni.mff.d3s.been.socketworks.twoway;
 
 import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
+import cz.cuni.mff.d3s.been.core.utils.JsonException;
 
 /**
  * A generic reply to a socket {@link Request}
@@ -25,13 +26,13 @@ public final class Reply {
 	public String toJson() {
 		try {
 			return JSONUtils.serialize(this);
-		} catch (JSONUtils.JSONSerializerException e) {
+		} catch (JsonException e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
 
-	public static Reply fromJson(String json) throws JSONUtils.JSONSerializerException {
+	public static Reply fromJson(String json) throws JsonException {
 		return JSONUtils.deserialize(json, Reply.class);
 	}
 

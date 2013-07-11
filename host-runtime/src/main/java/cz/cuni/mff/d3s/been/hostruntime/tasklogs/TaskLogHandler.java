@@ -53,7 +53,7 @@ public class TaskLogHandler implements ReadOnlyHandler {
 
 		jsonStreamer = new JsonStreamer();
 
-		jsonStreamer.addHandler("senderId", new JsonKeyHandler() {
+		jsonStreamer.addHandler("taskId", new JsonKeyHandler() {
 			@Override
 			public void handle(String key, String value, String json) {
 				// value is the new key
@@ -149,8 +149,8 @@ public class TaskLogHandler implements ReadOnlyHandler {
 	private void printDebuggingMessage(String message) {
 		try {
 			LogMessage logMessage = JSONUtils.deserialize(message, LogMessage.class);
-			log.debug("Task {} logs {}", logMessage.getSenderId(), logMessage.getMessage());
-		} catch (JSONUtils.JSONSerializerException e) {
+			log.debug("Task {} logs {}", logMessage.getTaskId(), logMessage.getMessage());
+		} catch (JsonException e) {
 			String errorMessage = String.format("Cannot parse log message: %s", message);
 			log.warn(errorMessage, e);
 		}
