@@ -3,7 +3,6 @@ package cz.cuni.mff.d3s.been.cluster.context;
 import com.hazelcast.core.IMap;
 
 import cz.cuni.mff.d3s.been.cluster.Names;
-import cz.cuni.mff.d3s.been.core.protocol.pojo.BaseNodeInfo.SoftwareRepositoryNodeInfo;
 import cz.cuni.mff.d3s.been.core.sri.SWRepositoryInfo;
 
 /**
@@ -23,9 +22,8 @@ public class Services {
 	}
 
 	/**
-	 * @return {@link SWRepositoryInfo} of registered
-	 *         {@link SoftwareRepositoryNodeInfo} Repository or null if Software
-	 *         repository has not been registered yes.
+	 * @return {@link SWRepositoryInfo} of registered Repository or null if
+	 *         Software repository has not been registered yes.
 	 */
 	public SWRepositoryInfo getSWRepositoryInfo() {
 		Object swRepObject = getServicesMap().get(Names.SWREPOSITORY_SERVICES_MAP_KEY);
@@ -33,7 +31,11 @@ public class Services {
 			return (SWRepositoryInfo) swRepObject;
 		} catch (ClassCastException e) {
 			e.printStackTrace();
-			throw new RuntimeException(String.format("Object in servicesMap under the key '%s' is instance of type '%s' but it should be '%s'", Names.SWREPOSITORY_SERVICES_MAP_KEY, swRepObject.getClass().getName(), SWRepositoryInfo.class.getName()), e);
+			throw new RuntimeException(String.format(
+					"Object in servicesMap under the key '%s' is instance of type '%s' but it should be '%s'",
+					Names.SWREPOSITORY_SERVICES_MAP_KEY,
+					swRepObject.getClass().getName(),
+					SWRepositoryInfo.class.getName()), e);
 		}
 	}
 
