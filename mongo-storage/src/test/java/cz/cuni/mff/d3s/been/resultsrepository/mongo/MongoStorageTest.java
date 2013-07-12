@@ -117,7 +117,8 @@ public final class MongoStorageTest extends Assert {
 	}
 
 	@Test
-	public void testRetrieveEmptyResults() {
+	public void testRetrieveEmptyResults() throws JsonException, DAOException {
+		storage.store(dummyId, JSONUtils.serialize(new DummyEntity()));
 		assertEquals(0,storage.retrieveByTaskId(dummyId, "2").size());
 		assertEquals(0,storage.retrieveByTaskContextId(dummyId, "2").size());
 		assertEquals(0,storage.retrieveByBenchmarkId(dummyId, "2").size());
