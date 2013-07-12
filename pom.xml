@@ -204,7 +204,8 @@
 			<id>buildWebInterface</id>
 
 			<modules>
-				<module>web-interface</module>
+                <module>web-interface</module>
+                <module>web-interface-standalone</module>
 			</modules>
 		</profile>
 
