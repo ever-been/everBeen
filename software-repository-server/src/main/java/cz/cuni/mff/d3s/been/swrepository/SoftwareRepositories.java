@@ -42,6 +42,7 @@ public class SoftwareRepositories {
         final InetSocketAddress mySockAddr = new InetSocketAddress(clusterSockAddr.getAddress(), propReader.getInteger("swrepository.port", DEFAULT_SWREPO_PORT));
 		HttpServer httpServer = new HttpServer(mySockAddr);
 
+		dataStore.init();
 		swRepo.setDataStore(dataStore);
 		swRepo.setHttpServer(httpServer);
 
