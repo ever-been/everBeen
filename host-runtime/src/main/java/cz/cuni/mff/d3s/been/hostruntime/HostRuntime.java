@@ -111,8 +111,8 @@ class HostRuntime implements IClusterService {
 	 */
 	@Override
 	public void start() throws ServiceException {
+		log.info("Starting Host Runtime...");
 		try {
-
 			// creates necessary files and directories
 			prepareFiles(hostRuntimeInfo.getWorkingDirectory());
 
@@ -131,6 +131,7 @@ class HostRuntime implements IClusterService {
 		} catch (Exception e) {
 			throw new ServiceException("Cannot start Host Runtime", e);
 		}
+		log.info("Host Runtime started.");
 	}
 
 	private void startMonitoring() {

@@ -36,10 +36,9 @@ public class Names {
 	public static final String BENCHMARKS_MAP_NAME = "BEEN_MAP_BENCHMARKS";
 
 	/**
-	 * This queue holds results awaiting to be stored persistently.
+	 * Name of the queue of persist requests
 	 */
-	public static final String RESULT_QUEUE_NAME = "BEEN_QUEUE_RESULTS";
-
+	public static final String PERSISTENCE_QUEUE_NAME = "BEEN_PERSISTENCE";
 	/**
 	 * Map with last log for a task.
 	 */
@@ -54,11 +53,6 @@ public class Names {
 	 * Map with last log for a benchmark.
 	 */
 	public static final String LOGS_BENCHMARK_MAP_NAME = "been.task.logs.benchmark";
-
-	/**
-	 * Queue storing task/BEEN logs
-	 */
-	public static final String LOG_QUEUE_NAME = "BEEN_QUEUE_LOGS";
 
 	// TOPIC NAMES
 	/**

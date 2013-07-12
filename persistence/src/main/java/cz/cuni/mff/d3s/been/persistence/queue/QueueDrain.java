@@ -16,7 +16,7 @@ import cz.cuni.mff.d3s.been.persistence.Take;
  * 
  * @author darklight
  */
-public abstract class QueueDrain<T> implements Service {
+abstract class QueueDrain<T> implements Service {
 
 	private final String queueName;
 	private final ClusterContext ctx;

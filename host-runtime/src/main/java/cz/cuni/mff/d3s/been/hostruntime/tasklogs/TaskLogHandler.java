@@ -45,7 +45,7 @@ public class TaskLogHandler implements ReadOnlyHandler {
 
 	private TaskLogHandler(ClusterContext ctx) {
 		this.ctx = ctx;
-		this.logQueue = ctx.getQueue(LOG_QUEUE_NAME);
+		this.logQueue = ctx.getQueue(PERSISTENCE_QUEUE_NAME);
 
 		taskLogs = ctx.getMap(LOGS_TASK_MAP_NAME);
 		contextLogs = ctx.getMap(LOGS_CONTEXT_MAP_NAME);
