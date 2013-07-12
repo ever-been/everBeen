@@ -145,7 +145,6 @@
 							<mainClass>cz.cuni.mff.d3s.been.web.Starter</mainClass>
 						</manifest>
 					</archive>
-					<packagingExcludes>WEB-INF/lib/jetty-*.jar,WEB-INF/lib/*EmbeddedJetty*.jar</packagingExcludes>
 					<overlays>
 						<overlay>
 							<groupId>cz.cuni.mff.d3s.been</groupId>
