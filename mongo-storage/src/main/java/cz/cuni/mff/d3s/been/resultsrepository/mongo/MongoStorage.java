@@ -108,7 +108,7 @@ public final class MongoStorage implements Storage {
 	@Override
 	public Collection<EntityCarrier> retrieveByTaskContextId(EntityID entityId, String taskContextId) {
 		final DBObject filter = new BasicDBObject();
-		filter.put("taskContextId", taskContextId);
+		filter.put("contextId", taskContextId);
 		return get(entityId, filter);
 	}
 

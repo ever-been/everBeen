@@ -26,24 +26,15 @@ public final class MongoStorageTest extends Assert {
 	public class DummyEntity extends Entity {
 		/** A testing string */
 		private String something = "strange";
-		private String taskId = "1";
-		private String taskContextId = "1";
-		private String benchmarkId = "1";
+
+		DummyEntity() {
+			this.taskId = "1";
+			this.contextId = "1";
+			this.benchmarkId = "1";
+		}
 
 		public String getSomething() {
 			return something;
-		}
-
-		public String getTaskId() {
-			return taskId;
-		}
-
-		public String getTaskContextId() {
-			return taskContextId;
-		}
-
-		public String getBenchmarkId() {
-			return benchmarkId;
 		}
 	}
 
