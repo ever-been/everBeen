@@ -65,5 +65,11 @@
 			<version>${mongo.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>mongo-storage-standalone</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 </project>

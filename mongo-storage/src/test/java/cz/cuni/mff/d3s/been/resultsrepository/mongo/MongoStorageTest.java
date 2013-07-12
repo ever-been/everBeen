@@ -1,8 +1,10 @@
 package cz.cuni.mff.d3s.been.resultsrepository.mongo;
 
 import java.util.Iterator;
+import java.util.Properties;
 import java.util.ServiceLoader;
 
+import cz.cuni.mff.d3s.been.core.persistence.Entity;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -21,26 +23,33 @@ import cz.cuni.mff.d3s.been.storage.StorageBuilder;
 
 public final class MongoStorageTest extends Assert {
 
-	/**
-	 * A test implementation of {@link Result}.
-	 * 
-	 * @author darklight
-	 */
-	public class DummyResult {
+	public class DummyEntity extends Entity {
 		/** A testing string */
 		private String something = "strange";
+		private String taskId = "1";
+		private String taskContextId = "1";
+		private String benchmarkId = "1";
 
 		public String getSomething() {
 			return something;
 		}
 
-		public void setSomething(String something) {
-			this.something = something;
+		public String getTaskId() {
+			return taskId;
+		}
+
+		public String getTaskContextId() {
+			return taskContextId;
+		}
+
+		public String getBenchmarkId() {
+			return benchmarkId;
 		}
 	}
 
 	class StorageUsingStatement extends Statement {
 		private final Statement base;
+		private final MongoServerStandalone mongo = new MongoServerStandalone();
 
 		StorageUsingStatement(Statement base) {
 			this.base = base;
@@ -48,9 +57,11 @@ public final class MongoStorageTest extends Assert {
 
 		@Override
 		public void evaluate() throws Throwable {
+			mongo.start();
 			connectStorage();
 			base.evaluate();
 			disconnectStorage();
+			mongo.stop();
 		}
 	}
 
@@ -71,7 +82,9 @@ public final class MongoStorageTest extends Assert {
 	}
 
 	private void connectStorage() throws ServiceException {
-		storage = new MongoStorageBuilder().build();
+		final Properties props = new Properties();
+		props.setProperty("mongodb.hostname", "localhost:12345");
+		storage = new MongoStorageBuilder().withProperties(props).build();
 		storage.start();
 	}
 
@@ -91,9 +104,30 @@ public final class MongoStorageTest extends Assert {
 	}
 
 	@Test
-	@Ignore
-	public void testSubmitAndRetrieveItem() throws JsonException, DAOException {
-		storage.store(dummyId, JSONUtils.serialize(new DummyResult()));
+	public void testSubmitAndRetrieveItems() throws JsonException, DAOException {
+		storage.store(dummyId, JSONUtils.serialize(new DummyEntity()));
+		assertEquals(1,storage.retrieveByTaskId(dummyId, "1").size());
+		assertEquals(1,storage.retrieveByTaskContextId(dummyId, "1").size());
+		assertEquals(1, storage.retrieveByBenchmarkId(dummyId, "1").size());
+
+		storage.store(dummyId, JSONUtils.serialize(new DummyEntity()));
+		assertEquals(2,storage.retrieveByTaskId(dummyId, "1").size());
+		assertEquals(2,storage.retrieveByTaskContextId(dummyId, "1").size());
+		assertEquals(2,storage.retrieveByBenchmarkId(dummyId, "1").size());
+	}
+
+	@Test
+	public void testRetrieveEmptyResults() {
+		assertEquals(0,storage.retrieveByTaskId(dummyId, "2").size());
+		assertEquals(0,storage.retrieveByTaskContextId(dummyId, "2").size());
+		assertEquals(0,storage.retrieveByBenchmarkId(dummyId, "2").size());
+	}
+
+	@Test
+	public void testRetrieveFromInexistentCollection() {
+		assertEquals(0, storage.retrieveByTaskId(dummyId, "no matter").size());
+		assertEquals(0, storage.retrieveByTaskContextId(dummyId, "no matter").size());
+		assertEquals(0, storage.retrieveByBenchmarkId(dummyId, "no matter").size());
 	}
 
 }

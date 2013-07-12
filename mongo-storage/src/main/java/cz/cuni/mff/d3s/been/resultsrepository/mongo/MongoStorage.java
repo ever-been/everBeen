@@ -1,15 +1,9 @@
 package cz.cuni.mff.d3s.been.resultsrepository.mongo;
 
 import java.net.UnknownHostException;
-import java.util.List;
+import java.util.*;
 
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.DBObject;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientOptions;
-import com.mongodb.ServerAddress;
-import com.mongodb.WriteResult;
+import com.mongodb.*;
 import com.mongodb.util.JSON;
 
 import cz.cuni.mff.d3s.been.core.persistence.EntityCarrier;
@@ -104,7 +98,40 @@ public final class MongoStorage implements Storage {
 		return StoragePersistAction.createForStore(this);
 	}
 
+	@Override
+	public Collection<EntityCarrier> retrieveByTaskId(EntityID entityID, String taskId) {
+		final DBObject filter = new BasicDBObject();
+		filter.put("taskId", taskId);
+		return get(entityID, filter);
+	}
+
+	@Override
+	public Collection<EntityCarrier> retrieveByTaskContextId(EntityID entityId, String taskContextId) {
+		final DBObject filter = new BasicDBObject();
+		filter.put("taskContextId", taskContextId);
+		return get(entityId, filter);
+	}
+
+	@Override
+	public Collection<EntityCarrier> retrieveByBenchmarkId(EntityID entityId, String benchmarkId) {
+		final BasicDBObject filter = new BasicDBObject();
+		filter.put("benchmarkId", benchmarkId);
+		return get(entityId, filter);
+	}
+
 	private final DBCollection mapEntity(EntityID eid) {
 		return db.getCollection(eid.getKind()).getCollection(eid.getGroup());
+	}
+
+	private final Collection<EntityCarrier> get(EntityID entityId, DBObject filter) {
+		final DBCursor cursor = mapEntity(entityId).find(filter);
+		List<EntityCarrier> result = new ArrayList<EntityCarrier>(cursor.count());
+		while (cursor.hasNext()) {
+			final EntityCarrier ec = new EntityCarrier();
+			ec.setEntityId(entityId);
+			ec.setEntityJSON(cursor.next().toString());
+			result.add(ec);
+		}
+		return result;
 	}
 }

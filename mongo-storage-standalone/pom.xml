@@ -61,14 +61,6 @@
 			<version>${project.version}</version>
 		</dependency>
 
-		<dependency>
-			<groupId>cz.cuni.mff.d3s.been</groupId>
-			<artifactId>mongo-storage</artifactId>
-			<version>${project.version}</version>
-			<scope>test</scope>
-		</dependency>
-
-
 		<!-- PERSISTENCE -->
 		<dependency>
 			<groupId>org.mongodb</groupId>
