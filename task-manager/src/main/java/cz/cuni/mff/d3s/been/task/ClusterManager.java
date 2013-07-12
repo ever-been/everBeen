@@ -45,7 +45,7 @@ final class ClusterManager implements IClusterService {
 
 	@Override
 	public void start() throws ServiceException {
-
+		log.info("Starting Task Manager...");
 		keyScanner = new LocalKeyScanner(clusterCtx);
 		try {
 			messageQueues.createInprocQueue(ACTION_QUEUE_NAME);
@@ -62,11 +62,12 @@ final class ClusterManager implements IClusterService {
 		membershipListener.start();
 		clientListener.start();
 		keyScanner.start();
-
+		log.info("Task Manager started.");
 	}
 
 	@Override
 	public void stop() {
+		log.info("Stopping Task Manager...");
 		keyScanner.stop();
 		clientListener.stop();
 		localRuntimeListener.stop();

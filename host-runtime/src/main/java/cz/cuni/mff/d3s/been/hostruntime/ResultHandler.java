@@ -13,6 +13,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
+import static cz.cuni.mff.d3s.been.cluster.Names.PERSISTENCE_QUEUE_NAME;
+
 /**
  * {@link HostRuntime}'s logic of handling
  */
@@ -37,7 +39,7 @@ public class ResultHandler implements ReadOnlyHandler {
      * @return A ready handler
      */
     public static ReadOnlyHandler create(ClusterContext ctx) {
-        final IQueue<EntityCarrier> resultQueue = ctx.getQueue(Names.RESULT_QUEUE_NAME);
+        final IQueue<EntityCarrier> resultQueue = ctx.getQueue(PERSISTENCE_QUEUE_NAME);
         return new ResultHandler(resultQueue);
     }
 

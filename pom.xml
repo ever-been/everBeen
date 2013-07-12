@@ -166,8 +166,7 @@
 				<module>results</module>
 				<module>persistence</module>
 				<module>storage</module>
-				<module>log-repository</module>
-				<module>results-repository</module>
+				<module>repository</module>
 				<module>mongo-storage</module>
 				<module>mongo-storage-standalone</module>
 				<module>task-api</module>

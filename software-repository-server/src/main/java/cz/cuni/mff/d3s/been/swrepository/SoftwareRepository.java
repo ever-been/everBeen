@@ -46,6 +46,7 @@ public class SoftwareRepository implements IClusterService {
 
 	@Override
 	public void start() throws ServiceException {
+		log.info("Starting Software Repository...");
 		if (httpServer == null) {
 			log.error("Cannot start Software Repository - HTTP server is null.");
 			return;
@@ -61,10 +62,12 @@ public class SoftwareRepository implements IClusterService {
 
 		httpServer.start();
 		clusterCtx.registerService(Names.SWREPOSITORY_SERVICES_MAP_KEY, info);
+		log.info("Software Repository started.");
 	}
 
 	@Override
 	public void stop() {
+		log.info("Stopping Software repository...");
 		try {
 			clusterCtx.unregisterService(Names.SWREPOSITORY_SERVICES_MAP_KEY);
 		} catch (IllegalStateException e) {
@@ -74,6 +77,7 @@ public class SoftwareRepository implements IClusterService {
 					e);
 		}
 		httpServer.stop();
+		log.info("Software repository stopped.");
 	}
 
 	@Override
