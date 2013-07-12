@@ -17,30 +17,30 @@ public class Digester<T> implements Service, Reapable {
 	private static final Logger log = LoggerFactory.getLogger(Digester.class);
 
 	private final ExecutorService pool;
-	private final PersistAction<T> persistAction;
+	private final SuccessAction<T> successAction;
     private final FailAction<T> failAction;
     private final Take<T> take;
     private final Poll<T> poll;
 
-	Digester(Take<T> take, Poll<T> poll, PersistAction<T> persistAction, FailAction<T> failAction) {
+	Digester(Take<T> take, Poll<T> poll, SuccessAction<T> successAction, FailAction<T> failAction) {
         this.take = take;
         this.poll = poll;
-		this.persistAction = persistAction;
+		this.successAction = successAction;
         this.failAction = failAction;
 		pool = Executors.newCachedThreadPool();
 	}
 
-	public static <T> Digester<T> create(Take<T> take, Poll<T> poll, PersistAction<T> persistAction, FailAction failAction) {
-		return new Digester<T>(take, poll, persistAction, failAction);
+	public static <T> Digester<T> create(Take<T> take, Poll<T> poll, SuccessAction<T> successAction, FailAction failAction) {
+		return new Digester<T>(take, poll, successAction, failAction);
 	}
 
 	public void addNewWorkingThread() {
-		pool.execute(new EphemerousConsumer<T>(poll, persistAction, failAction));
+		pool.execute(new EphemerousConsumer<T>(poll, successAction, failAction));
 	}
 
 	@Override
 	public void start() {
-		pool.execute(new LingeringConsumer<T>(take, persistAction, failAction));
+		pool.execute(new LingeringConsumer<T>(take, successAction, failAction));
 	}
 
 	@Override

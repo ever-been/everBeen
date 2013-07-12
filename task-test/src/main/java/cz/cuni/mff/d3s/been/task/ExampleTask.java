@@ -52,7 +52,7 @@ public class ExampleTask extends Task {
 			rp.persist(r);
 			//rp.close(); <- notice this forgotten close: it works anyway
 		} catch (DAOException e) {
-			log.error("Cannot persist result.", e);
+			log.error("Cannot perform result.", e);
 		}
 	}
 

@@ -38,7 +38,15 @@ public class Names {
 	/**
 	 * Name of the queue of persist requests
 	 */
-	public static final String PERSISTENCE_QUEUE_NAME = "BEEN_PERSISTENCE";
+	public static final String PERSISTENCE_QUEUE_NAME = "BEEN_PERSISTENCE_ENTRIES";
+
+	/**
+	 * Name of the queue of queries to persistence layers
+	 */
+	public static final String PERSISTENCE_QUERY_QUEUE_NAME = "BEEN_PERSISTENCE_QUERIES";
+
+	public static final String PERSISTENCE_QUERY_ANSWERS_MAP_NAME = "BEEN_PERSISTENCE_ANSWERS";
+
 	/**
 	 * Map with last log for a task.
 	 */

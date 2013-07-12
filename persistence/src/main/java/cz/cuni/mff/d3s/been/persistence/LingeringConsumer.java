@@ -3,8 +3,6 @@ package cz.cuni.mff.d3s.been.persistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hazelcast.core.IQueue;
-
 public class LingeringConsumer<T> extends Consumer<T> {
 
 	private static final Logger log = LoggerFactory.getLogger(LingeringConsumer.class);
@@ -12,8 +10,8 @@ public class LingeringConsumer<T> extends Consumer<T> {
     protected final Take<T> take;
 
 	LingeringConsumer(
-            Take<T> take, PersistAction<T> persistAction, FailAction<T> failAction) {
-		super(persistAction,failAction);
+            Take<T> take, SuccessAction<T> successAction, FailAction<T> failAction) {
+		super(successAction,failAction);
         this.take = take;
 	}
 

@@ -34,19 +34,4 @@ public final class PersistentQueueDrain extends QueueDrain<EntityCarrier> {
 	public static PersistentQueueDrain create(ClusterContext ctx, String queueName, Storage storage) {
 		return new PersistentQueueDrain(ctx, queueName, storage);
 	}
-
-	@Override
-	public void start() throws ServiceException {
-		if (storage == null) {
-			throw new ServiceException("Repository persistence layer is unavailable.");
-		}
-		storage.start();
-		super.start();
-	}
-
-	@Override
-	public void stop() {
-		super.stop();    //To change body of overridden methods use File | Settings | File Templates.
-		storage.stop();
-	}
 }

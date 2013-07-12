@@ -11,8 +11,8 @@ public class EphemerousConsumer<T> extends Consumer<T> {
 
 	public EphemerousConsumer(
             Poll<T> poll,
-            PersistAction<T> persistAction, FailAction<T> failAction) {
-		super(persistAction, failAction);
+            SuccessAction<T> successAction, FailAction<T> failAction) {
+		super(successAction, failAction);
         this.poll = poll;
 	}
 

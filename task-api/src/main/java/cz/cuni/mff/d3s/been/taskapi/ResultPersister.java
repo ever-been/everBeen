@@ -11,7 +11,7 @@ public interface ResultPersister extends AutoCloseable {
 	/**
 	 * Persist a result
 	 *
-	 * @param result Result to persist
+	 * @param result Result to perform
 	 *
 	 * @throws DAOException When the result cannot be persisted
 	 */

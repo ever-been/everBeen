@@ -6,8 +6,8 @@ import cz.cuni.mff.d3s.been.cluster.Reaper;
 import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.persistence.queue.PersistentQueueDrain;
+import cz.cuni.mff.d3s.been.persistence.queue.QueryQueueDrain;
 import cz.cuni.mff.d3s.been.storage.Storage;
-import cz.cuni.mff.d3s.been.storage.StorageBuilderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +20,8 @@ public final class Repository implements IClusterService {
 
 	private final ClusterContext ctx;
 	private final Storage storage;
-	private PersistentQueueDrain drain;
+	private PersistentQueueDrain entityDrain;
+	private QueryQueueDrain queryDrain;
 
 	private Repository(ClusterContext ctx, Storage storage) {
 		this.ctx = ctx;
@@ -45,16 +46,19 @@ public final class Repository implements IClusterService {
 		if (storage == null) {
 			throw new ServiceException("Cannot start a repository over a null Storage");
 		}
-		this.drain = PersistentQueueDrain.create(ctx, Names.PERSISTENCE_QUEUE_NAME, storage);
+		entityDrain = PersistentQueueDrain.create(ctx, Names.PERSISTENCE_QUEUE_NAME, storage);
+		queryDrain = QueryQueueDrain.create(ctx, storage);
 		storage.start();
-		drain.start();
+		entityDrain.start();
+		queryDrain.start();
 		log.info("Repository started.");
 	}
 
 	@Override
 	public void stop() {
 		log.info("Stopping Repository...");
-		drain.stop();
+		entityDrain.stop();
+		queryDrain.stop();
 		storage.stop();
 		log.info("Repository stopped.");
 	}

@@ -4,8 +4,9 @@ import cz.cuni.mff.d3s.been.cluster.Service;
 import cz.cuni.mff.d3s.been.core.persistence.Entity;
 import cz.cuni.mff.d3s.been.core.persistence.EntityCarrier;
 import cz.cuni.mff.d3s.been.core.persistence.EntityID;
+import cz.cuni.mff.d3s.been.core.persistence.Query;
 import cz.cuni.mff.d3s.been.persistence.DAOException;
-import cz.cuni.mff.d3s.been.persistence.PersistAction;
+import cz.cuni.mff.d3s.been.persistence.SuccessAction;
 
 import java.util.Collection;
 
@@ -18,11 +19,11 @@ import java.util.Collection;
 public interface Storage extends Service {
 
 	/**
-	 * @return Create a {@link PersistAction} which denotes what is to be done
+	 * @return Create a {@link cz.cuni.mff.d3s.been.persistence.SuccessAction} which denotes what is to be done
 	 *         with an {@link EntityCarrier} when it is decided that it should be
 	 *         stored.
 	 */
-	PersistAction<EntityCarrier> createPersistAction();
+	SuccessAction<EntityCarrier> createPersistAction();
 
 	/**
 	 * Store a serialized {@link Entity} to a container determined by the
@@ -40,33 +41,11 @@ public interface Storage extends Service {
 	void store(EntityID entityId, String JSON) throws DAOException;
 
 	/**
-	 * Retrieve all entities with given entity ID associated with a given task instance.
+	 * Query the persistence, returning JSON representations of matching objects.
 	 *
-	 * @param entityID Entities to retrieve
-	 * @param taskId ID of the taks associated with these entities
+	 * @param query Query to execute
 	 *
-	 * @return All entities of given type (entityId) associated with given task
+	 * @return The result of the query (a collection of matching objects in JSON)
 	 */
-	Collection<EntityCarrier> retrieveByTaskId(EntityID entityID, String taskId);
-
-	/**
-	 * Retrieve all entities with given entity ID associated with a given task context instance
-	 *
-	 * @param entityId Entities to retrieve
-	 * @param taskContextId ID of the task context associated with these entities
-	 *
-	 * @return All entities of given type (entityId) associated with given task context
-	 */
-	Collection<EntityCarrier> retrieveByTaskContextId(EntityID entityId, String taskContextId);
-
-	/**
-	 * Retrieve all entities with given entity ID associated with a given benchmark
-	 *
-	 * @param entityId Entities to retrieve
-	 * @param benchmarkId ID of the benchmark associated with these entities
-	 *
-	 * @return All entities of given type (entityId) associated with given benchmark
-	 */
-	Collection<EntityCarrier> retrieveByBenchmarkId(EntityID entityId, String benchmarkId);
-
+	Collection<String> query(Query query);
 }

@@ -10,6 +10,6 @@ import cz.cuni.mff.d3s.been.persistence.DAOException;
  * 
  * @param <T>
  */
-public interface PersistAction<T> {
-	void persist(T what) throws DAOException;
+public interface SuccessAction<T> {
+	void perform(T what) throws DAOException;
 }

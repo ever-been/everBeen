@@ -5,6 +5,7 @@ import java.util.Properties;
 import java.util.ServiceLoader;
 
 import cz.cuni.mff.d3s.been.core.persistence.Entity;
+import cz.cuni.mff.d3s.been.core.persistence.Query;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -97,29 +98,21 @@ public final class MongoStorageTest extends Assert {
 	@Test
 	public void testSubmitAndRetrieveItems() throws JsonException, DAOException {
 		storage.store(dummyId, JSONUtils.serialize(new DummyEntity()));
-		assertEquals(1,storage.retrieveByTaskId(dummyId, "1").size());
-		assertEquals(1,storage.retrieveByTaskContextId(dummyId, "1").size());
-		assertEquals(1, storage.retrieveByBenchmarkId(dummyId, "1").size());
+		assertEquals(1, storage.query(Query.on(dummyId).with("something", "strange")).size());
 
 		storage.store(dummyId, JSONUtils.serialize(new DummyEntity()));
-		assertEquals(2,storage.retrieveByTaskId(dummyId, "1").size());
-		assertEquals(2,storage.retrieveByTaskContextId(dummyId, "1").size());
-		assertEquals(2,storage.retrieveByBenchmarkId(dummyId, "1").size());
+		assertEquals(2, storage.query(Query.on(dummyId).with("something", "strange")).size());
 	}
 
 	@Test
 	public void testRetrieveEmptyResults() throws JsonException, DAOException {
 		storage.store(dummyId, JSONUtils.serialize(new DummyEntity()));
-		assertEquals(0,storage.retrieveByTaskId(dummyId, "2").size());
-		assertEquals(0,storage.retrieveByTaskContextId(dummyId, "2").size());
-		assertEquals(0,storage.retrieveByBenchmarkId(dummyId, "2").size());
+		assertEquals(0, storage.query(Query.on(dummyId).with("something", "funny")).size());
 	}
 
 	@Test
 	public void testRetrieveFromInexistentCollection() {
-		assertEquals(0, storage.retrieveByTaskId(dummyId, "no matter").size());
-		assertEquals(0, storage.retrieveByTaskContextId(dummyId, "no matter").size());
-		assertEquals(0, storage.retrieveByBenchmarkId(dummyId, "no matter").size());
+		assertEquals(0, storage.query(Query.on(dummyId).with("something", "strange")).size());
 	}
 
 }

@@ -8,8 +8,9 @@ import com.mongodb.util.JSON;
 
 import cz.cuni.mff.d3s.been.core.persistence.EntityCarrier;
 import cz.cuni.mff.d3s.been.core.persistence.EntityID;
+import cz.cuni.mff.d3s.been.core.persistence.Query;
 import cz.cuni.mff.d3s.been.persistence.DAOException;
-import cz.cuni.mff.d3s.been.persistence.PersistAction;
+import cz.cuni.mff.d3s.been.persistence.SuccessAction;
 import cz.cuni.mff.d3s.been.storage.Storage;
 import cz.cuni.mff.d3s.been.storage.StorageException;
 import cz.cuni.mff.d3s.been.storage.StoragePersistAction;
@@ -94,43 +95,26 @@ public final class MongoStorage implements Storage {
 	}
 
 	@Override
-	public PersistAction<EntityCarrier> createPersistAction() {
+	public SuccessAction<EntityCarrier> createPersistAction() {
 		return StoragePersistAction.createForStore(this);
 	}
 
 	@Override
-	public Collection<EntityCarrier> retrieveByTaskId(EntityID entityID, String taskId) {
+	public Collection<String> query(Query query) {
 		final DBObject filter = new BasicDBObject();
-		filter.put("taskId", taskId);
-		return get(entityID, filter);
-	}
-
-	@Override
-	public Collection<EntityCarrier> retrieveByTaskContextId(EntityID entityId, String taskContextId) {
-		final DBObject filter = new BasicDBObject();
-		filter.put("contextId", taskContextId);
-		return get(entityId, filter);
-	}
-
-	@Override
-	public Collection<EntityCarrier> retrieveByBenchmarkId(EntityID entityId, String benchmarkId) {
-		final BasicDBObject filter = new BasicDBObject();
-		filter.put("benchmarkId", benchmarkId);
-		return get(entityId, filter);
+		filter.putAll(query.getKV());
+		return get(query.getEntityID(), filter);
 	}
 
 	private final DBCollection mapEntity(EntityID eid) {
 		return db.getCollection(eid.getKind()).getCollection(eid.getGroup());
 	}
 
-	private final Collection<EntityCarrier> get(EntityID entityId, DBObject filter) {
+	private final Collection<String> get(EntityID entityId, DBObject filter) {
 		final DBCursor cursor = mapEntity(entityId).find(filter);
-		List<EntityCarrier> result = new ArrayList<EntityCarrier>(cursor.count());
+		List<String> result = new ArrayList<String>(cursor.count());
 		while (cursor.hasNext()) {
-			final EntityCarrier ec = new EntityCarrier();
-			ec.setEntityId(entityId);
-			ec.setEntityJSON(cursor.next().toString());
-			result.add(ec);
+			result.add(cursor.next().toString());
 		}
 		return result;
 	}

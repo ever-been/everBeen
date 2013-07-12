@@ -3,27 +3,25 @@ package cz.cuni.mff.d3s.been.persistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cz.cuni.mff.d3s.been.persistence.DAOException;
-
 abstract class Consumer<T> implements Runnable {
 
 	private static final Logger log = LoggerFactory.getLogger(Consumer.class);
 
 	/** Result persistence layer */
-	protected final PersistAction<T> persistAction;
+	protected final SuccessAction<T> successAction;
     protected final FailAction<T> failAction;
 
-	Consumer(PersistAction<T> persistAction, FailAction<T> failAction) {
-		this.persistAction = persistAction;
+	Consumer(SuccessAction<T> successAction, FailAction<T> failAction) {
+		this.successAction = successAction;
         this.failAction = failAction;
 	}
 
 	protected void persist(T what) {
 		try {
-			persistAction.persist(what);
+			successAction.perform(what);
 		} catch (DAOException e) {
 			log.error(
-					"Cannot persist {} - {}",
+					"Cannot perform {} - {}",
 					what.toString(),
 					e.getMessage());
 			requeue(what);

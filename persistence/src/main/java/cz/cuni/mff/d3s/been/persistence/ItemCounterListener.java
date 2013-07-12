@@ -20,7 +20,7 @@ public class ItemCounterListener<T> implements ItemListener<T> {
 
 	/** The pool of digester threads */
 	private final Digester<T> digester;
-	/** Counter of available jobs (results to persist) */
+	/** Counter of available jobs (results to perform) */
 	private int jobCount = 0;
 	/** State of the job counter from the last time a load balance was performed */
 	private int lastJobCount = 0;
