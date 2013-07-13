@@ -68,9 +68,10 @@ public class Request {
 	}
 
 	public void setTimeout(long timeout) {
-		if (timeout < 0) {
-			timeout = 0;
+		if (timeout <= 0) {
+			this.timeout = 0;
+		} else {
+			this.timeout = timeout;
 		}
-		this.timeout = timeout;
 	}
 }

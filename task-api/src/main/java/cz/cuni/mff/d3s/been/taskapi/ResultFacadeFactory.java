@@ -16,7 +16,7 @@ final class ResultFacadeFactory {
 	/** Get a shared instance of {@link ResultFacade} */
 	static synchronized ResultFacade getResultFacade() {
 		if (resultFacade == null) {
-			resultQueue = Messaging.createTaskQueue(NamedSockets.TASK_RESULT_0MQ.getConnection());
+			resultQueue = Messaging.createTaskQueue(NamedSockets.TASK_RESULT_PERSIST_0MQ.getConnection());
 			resultFacade = JSONResultFacade.create(resultQueue);
 		}
 		return  resultFacade;

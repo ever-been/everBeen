@@ -4,6 +4,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
+import cz.cuni.mff.d3s.been.core.persistence.Query;
+import cz.cuni.mff.d3s.been.core.persistence.QueryBuilder;
+import cz.cuni.mff.d3s.been.taskapi.ResultFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +46,7 @@ public class ExampleTask extends Task {
 	private void persistResult() {
 		final EntityID eid = new EntityID();
 		eid.setKind("result");
-		eid.setGroup("example-md5-results");
+		eid.setGroup("example-md5");
 
 		try {
 			final ResultPersister rp = results.createResultPersister(eid);
@@ -52,7 +55,19 @@ public class ExampleTask extends Task {
 			rp.persist(r);
 			//rp.close(); <- notice this forgotten close: it works anyway
 		} catch (DAOException e) {
-			log.error("Cannot perform result.", e);
+			log.error("Cannot persist result.", e);
+		}
+	}
+
+	private void pickupResult() {
+		final EntityID eid = new EntityID();
+		eid.setKind("result");
+		eid.setGroup("example-md5");
+
+		try {
+			log.info("Picked up result {}", results.retrieveResults(new QueryBuilder().on(eid).build(), ExampleResult[].class).toString());
+		} catch (DAOException e) {
+			log.error("Cannot retrieve result.", e);
 		}
 	}
 
@@ -64,6 +79,8 @@ public class ExampleTask extends Task {
 		log.info("Performance testing finished.");
 		persistResult();
 		log.info("Result stored.");
+		pickupResult();
+		log.info("Result retrieved");
 
 		try {
 			Thread.sleep(3 * 1000);

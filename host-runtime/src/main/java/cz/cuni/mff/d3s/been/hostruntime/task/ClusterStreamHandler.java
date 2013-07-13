@@ -14,7 +14,7 @@ import cz.cuni.mff.d3s.been.mq.MessageQueues;
  * 
  * Processes output from a task line by line.
  * 
- * A line is converted to a {@link LogMessage} and send to a queue for
+ * A line is converted to a {@link LogMessage} and request to a queue for
  * processing.
  * 
  * // TODO This implementation is suboptimal since it uses

@@ -15,6 +15,7 @@ import cz.cuni.mff.d3s.been.socketworks.twoway.Request;
 import cz.cuni.mff.d3s.been.socketworks.twoway.Requestor;
 import cz.cuni.mff.d3s.been.task.checkpoints.CheckpointRequest;
 import cz.cuni.mff.d3s.been.task.checkpoints.CheckpointRequestType;
+import cz.cuni.mff.d3s.been.taskapi.CheckpointController;
 import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBException;
@@ -29,26 +30,26 @@ import java.util.concurrent.TimeoutException;
  */
 public class BenchmarkRequestor {
 
-    private final Requestor requestor;
+    private final CheckpointController checkpointController;
 
-    private BenchmarkRequestor(Requestor requestor) {
-        this.requestor = requestor;
+    private BenchmarkRequestor(CheckpointController checkpointController) {
+        this.checkpointController = checkpointController;
     }
 
     /**
-     * Create a benchmark checkpoint requestor instance
+     * Create a benchmark checkpoint checkpointController instance
      *
      * @return A new instance
      *
-     * @throws MessagingException When the requestor cannot be created
+     * @throws MessagingException When the checkpointController cannot be created
      */
     public static BenchmarkRequestor create() throws MessagingException{
-        final Requestor requestor = Requestor.create(NamedSockets.TASK_CHECKPOINT_0MQ.getConnection());
-        return new BenchmarkRequestor(requestor);
+		final CheckpointController checkpointController = CheckpointController.create(NamedSockets.TASK_CHECKPOINT_0MQ.getConnection());
+        return new BenchmarkRequestor(checkpointController);
     }
 
     public void close() throws MessagingException {
-        requestor.close();
+        checkpointController.close();
     }
 
     public static String taskContextToXml(TaskContextDescriptor entry) throws IllegalArgumentException {
@@ -123,9 +124,8 @@ public class BenchmarkRequestor {
 	 * @throws TimeoutException
 	 */
 	public String contextSubmit(TaskContextDescriptor taskContextDescriptor, String benchmarkId) throws TimeoutException {
-		Request request = null;
-		request = new CheckpointRequest(CheckpointRequestType.CONTEXT_SUBMIT, benchmarkId, taskContextToXml(taskContextDescriptor));
-		Reply reply = requestor.send(request);
+		final CheckpointRequest request = new CheckpointRequest(CheckpointRequestType.CONTEXT_SUBMIT, benchmarkId, taskContextToXml(taskContextDescriptor));
+		final Reply reply = checkpointController.request(request);
 
 		String value = reply.getValue();
 		assertValidReply(reply, value);
@@ -134,24 +134,24 @@ public class BenchmarkRequestor {
 	}
 
 	public void contextWait(String taskContextEntryId) throws TimeoutException {
-		Request request = new CheckpointRequest(CheckpointRequestType.CONTEXT_WAIT, "", taskContextEntryId);
-		Reply reply = requestor.send(request);
+		CheckpointRequest request = new CheckpointRequest(CheckpointRequestType.CONTEXT_WAIT, "", taskContextEntryId);
+		Reply reply = checkpointController.request(request);
 
 		String value = reply.getValue();
 		assertValidReply(reply, value);
 	}
 
 	public void storagePersist(String benchmarkId, Map<String, String> storage) throws TimeoutException {
-		Request request = new CheckpointRequest(CheckpointRequestType.STORAGE_PERSIST, benchmarkId, storageToXml(storage));
-		Reply reply = requestor.send(request);
+		CheckpointRequest request = new CheckpointRequest(CheckpointRequestType.STORAGE_PERSIST, benchmarkId, storageToXml(storage));
+		Reply reply = checkpointController.request(request);
 
 		String value = reply.getValue();
 		assertValidReply(reply, value);
 	}
 
 	public Map<String, String> storageRetrieve(String benchmarkId) throws TimeoutException {
-		Request request = new CheckpointRequest(CheckpointRequestType.STORAGE_RETRIEVE, benchmarkId, "");
-		Reply reply = requestor.send(request);
+		CheckpointRequest request = new CheckpointRequest(CheckpointRequestType.STORAGE_RETRIEVE, benchmarkId, "");
+		Reply reply = checkpointController.request(request);
 
 		String value = reply.getValue();
 		assertValidReply(reply, value);

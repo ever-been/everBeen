@@ -4,7 +4,7 @@ package cz.cuni.mff.d3s.been.socketworks;
  * Sockets provided by the
  */
 public enum NamedSockets {
-	TASK_LOG_0MQ("TaskLogs"), TASK_CHECKPOINT_0MQ("TaskCheckpoints"), TASK_RESULT_0MQ("TaskResults");
+	TASK_LOG_0MQ("TaskLogs"), TASK_CHECKPOINT_0MQ("TaskCheckpoints"), TASK_RESULT_PERSIST_0MQ("TaskResults"), TASK_RESULT_QUERY_0MQ("TaskResultQueries");
 
 	private final String envVarName;
 

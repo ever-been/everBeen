@@ -6,6 +6,7 @@ import java.util.ServiceLoader;
 
 import cz.cuni.mff.d3s.been.core.persistence.Entity;
 import cz.cuni.mff.d3s.been.core.persistence.Query;
+import cz.cuni.mff.d3s.been.core.persistence.QueryBuilder;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -98,21 +99,21 @@ public final class MongoStorageTest extends Assert {
 	@Test
 	public void testSubmitAndRetrieveItems() throws JsonException, DAOException {
 		storage.store(dummyId, JSONUtils.serialize(new DummyEntity()));
-		assertEquals(1, storage.query(Query.on(dummyId).with("something", "strange")).size());
+		assertEquals(1, storage.query(new QueryBuilder().on(dummyId).with("something", "strange").build()).size());
 
 		storage.store(dummyId, JSONUtils.serialize(new DummyEntity()));
-		assertEquals(2, storage.query(Query.on(dummyId).with("something", "strange")).size());
+		assertEquals(2, storage.query(new QueryBuilder().on(dummyId).with("something", "strange").build()).size());
 	}
 
 	@Test
 	public void testRetrieveEmptyResults() throws JsonException, DAOException {
 		storage.store(dummyId, JSONUtils.serialize(new DummyEntity()));
-		assertEquals(0, storage.query(Query.on(dummyId).with("something", "funny")).size());
+		assertEquals(0, storage.query(new QueryBuilder().on(dummyId).with("something", "funny").build()).size());
 	}
 
 	@Test
 	public void testRetrieveFromInexistentCollection() {
-		assertEquals(0, storage.query(Query.on(dummyId).with("something", "strange")).size());
+		assertEquals(0, storage.query(new QueryBuilder().on(dummyId).with("something", "strange").build()).size());
 	}
 
 }

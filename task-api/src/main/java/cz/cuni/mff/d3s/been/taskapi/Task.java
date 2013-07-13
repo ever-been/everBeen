@@ -7,8 +7,6 @@ import cz.cuni.mff.d3s.been.core.TaskMessageType;
 import cz.cuni.mff.d3s.been.core.TaskPropertyNames;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
 import cz.cuni.mff.d3s.been.socketworks.NamedSockets;
-import cz.cuni.mff.d3s.been.taskapi.ResultFacade;
-import cz.cuni.mff.d3s.been.taskapi.ResultFacadeFactory;
 
 /**
  * 
@@ -108,7 +106,7 @@ public abstract class Task {
 		this.taskContextId = System.getenv(TaskPropertyNames.CONTEXT_ID);
 		this.benchmarkId = System.getenv(TaskPropertyNames.BENCHMARK_ID);
 
-		System.out.println(String.format("result queue url: %s", NamedSockets.TASK_RESULT_0MQ.getConnection()));
+		System.out.println(String.format("result queue url: %s", NamedSockets.TASK_RESULT_PERSIST_0MQ.getConnection()));
 
 		try {
 			Messages.send(String.format("%s#%s", TaskMessageType.TASK_RUNNING, id));

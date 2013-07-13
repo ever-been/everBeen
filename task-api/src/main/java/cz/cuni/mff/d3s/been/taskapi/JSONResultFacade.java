@@ -1,11 +1,17 @@
 package cz.cuni.mff.d3s.been.taskapi;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.*;
 
+import cz.cuni.mff.d3s.been.core.persistence.Query;
 import cz.cuni.mff.d3s.been.mq.IMessageQueue;
+import cz.cuni.mff.d3s.been.socketworks.NamedSockets;
+import cz.cuni.mff.d3s.been.socketworks.twoway.Request;
+import cz.cuni.mff.d3s.been.socketworks.twoway.Requestor;
+import org.codehaus.jackson.map.MappingIterator;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.ObjectReader;
+import org.codehaus.jackson.map.ObjectWriter;
 import org.codehaus.jackson.map.SerializationConfig.Feature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,23 +22,28 @@ import cz.cuni.mff.d3s.been.mq.IMessageSender;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
 import cz.cuni.mff.d3s.been.persistence.DAOException;
 import cz.cuni.mff.d3s.been.results.Result;
-import cz.cuni.mff.d3s.been.results.ResultFilter;
 
 final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 
 	private static final Logger log = LoggerFactory.getLogger(JSONResultFacade.class);
 
 	private final ObjectMapper om;
+	private final ObjectWriter queryWriter;
 	private final IMessageQueue<String> queue;
 	private final Collection<ResultPersister> allocatedPersisters;
 
 	private JSONResultFacade(IMessageQueue<String> queue) {
 		this.queue = queue;
 		this.om = new ObjectMapper();
+		this.queryWriter = om.writerWithType(Query.class);
 		this.allocatedPersisters = new HashSet<ResultPersister>();
-		om.setSerializationConfig(om.getSerializationConfig().without(
+		om.setSerializationConfig(
+				om.getSerializationConfig().without(
 				Feature.FAIL_ON_EMPTY_BEANS).withVisibilityChecker(
-				new ResultFieldVisibilityChecker<>()));
+				new ResultFieldVisibilityChecker()));
+		om.setDeserializationConfig(
+				om.getDeserializationConfig().withVisibilityChecker(
+				new ResultFieldVisibilityChecker()));
 	}
 
     /** Create a new result serialization facade */
@@ -62,8 +73,37 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 	}
 
 	@Override
-	public Collection<Result> retrieveResults(ResultFilter filter) {
-		throw new UnsupportedOperationException("Result querying is not supported yet.");
+	public <T extends Result> Collection<T> retrieveResults(Query query, Class<T[]> resultArrayClass) throws DAOException {
+		Requestor requestor = null;
+		String queryString = null;
+		String replyString = null;
+
+		try {
+			queryString = queryWriter.writeValueAsString(query);
+		} catch (IOException e) {
+			throw new DAOException("Failed to serialize query", e);
+		}
+
+		log.debug("Attempting to connect to persistence querying socket on {}", NamedSockets.TASK_RESULT_QUERY_0MQ.getConnection());
+		try {
+			requestor = Requestor.create(NamedSockets.TASK_RESULT_QUERY_0MQ.getConnection());
+		} catch (MessagingException e) {
+			throw new DAOException("Failed to create result query request", e);
+		}
+
+		log.debug("Querying persistence with {}", queryString);
+		replyString = requestor.request(queryString);
+		if (replyString == null) {
+			throw new DAOException(String.format("Unknown failure when processing request %s", queryString));
+		}
+		log.debug("Persistence replied {}", replyString);
+
+		final ObjectReader resultReader = om.reader(resultArrayClass);
+		try {
+			return Arrays.<T>asList((T[])resultReader.readValue(replyString));
+		} catch (IOException e) {
+			throw new DAOException(String.format("Failed to deserialize results matching query %s", queryString), e);
+		}
 	}
 
 	@Override
@@ -97,7 +137,7 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 		try {
 			final String serializedRC = om.writeValueAsString(rc);
 			log.info(
-					"About to send this serialized result carrier to Host Runtime: >>{}<<",
+					"About to request this serialized result carrier to Host Runtime: >>{}<<",
 					serializedRC);
 			final IMessageSender<String> sender = queue.createSender();
 			sender.send(serializedRC);
@@ -105,7 +145,7 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 		} catch (IOException e) {
 			throw new DAOException("Unable to serialize result carrier to JSON", e);
 		} catch (MessagingException e) {
-			throw new DAOException("Unable to send serialized result carrier to Host Runtime");
+			throw new DAOException("Unable to request serialized result carrier to Host Runtime");
 		}
 	}
 

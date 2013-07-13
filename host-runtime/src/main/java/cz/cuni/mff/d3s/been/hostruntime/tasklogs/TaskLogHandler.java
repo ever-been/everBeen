@@ -149,7 +149,7 @@ public class TaskLogHandler implements ReadOnlyHandler {
 	private void printDebuggingMessage(String message) {
 		try {
 			LogMessage logMessage = JSONUtils.deserialize(message, LogMessage.class);
-			log.debug("Task {} logs {}", logMessage.getTaskId(), logMessage.getMessage());
+			log.debug("Task {} logs {}{}", logMessage.getTaskId(), logMessage.getMessage(), logMessage.getErrorTrace() == null ? "" : "\n" + logMessage.getErrorTrace());
 		} catch (JsonException e) {
 			String errorMessage = String.format("Cannot parse log message: %s", message);
 			log.warn(errorMessage, e);

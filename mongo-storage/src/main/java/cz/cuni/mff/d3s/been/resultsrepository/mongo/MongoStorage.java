@@ -14,6 +14,8 @@ import cz.cuni.mff.d3s.been.persistence.SuccessAction;
 import cz.cuni.mff.d3s.been.storage.Storage;
 import cz.cuni.mff.d3s.been.storage.StorageException;
 import cz.cuni.mff.d3s.been.storage.StoragePersistAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A mongoDB adapter for BEEN result persistence layer.
@@ -22,6 +24,9 @@ import cz.cuni.mff.d3s.been.storage.StoragePersistAction;
  * 
  */
 public final class MongoStorage implements Storage {
+	private static final Logger log = LoggerFactory.getLogger(MongoStorage.class);
+
+	private static final DBObject PROJECT_IGNORE_MONGO_ID = new BasicDBObject();
 
 	private final boolean authenticate;
 	private final String username;
@@ -29,6 +34,10 @@ public final class MongoStorage implements Storage {
 	private final String dbname;
 	private final MongoClient client;
 	private DB db;
+
+	static {
+		PROJECT_IGNORE_MONGO_ID.put("_id", 0);
+	}
 
 	private MongoStorage(MongoClient client, String dbname) {
 		this.client = client;
@@ -102,7 +111,7 @@ public final class MongoStorage implements Storage {
 	@Override
 	public Collection<String> query(Query query) {
 		final DBObject filter = new BasicDBObject();
-		filter.putAll(query.getKV());
+		filter.putAll(query.getSelectors());
 		return get(query.getEntityID(), filter);
 	}
 
@@ -111,11 +120,13 @@ public final class MongoStorage implements Storage {
 	}
 
 	private final Collection<String> get(EntityID entityId, DBObject filter) {
-		final DBCursor cursor = mapEntity(entityId).find(filter);
+		log.debug("Querying {} with filter {} and projection {}", entityId.toString(), filter.toString(), PROJECT_IGNORE_MONGO_ID.toString());
+		final DBCursor cursor = mapEntity(entityId).find(filter, PROJECT_IGNORE_MONGO_ID);
 		List<String> result = new ArrayList<String>(cursor.count());
 		while (cursor.hasNext()) {
 			result.add(cursor.next().toString());
 		}
+		log.debug("Query result: {}", result.toString());
 		return result;
 	}
 }

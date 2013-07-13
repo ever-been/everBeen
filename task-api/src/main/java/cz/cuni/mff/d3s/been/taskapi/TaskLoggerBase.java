@@ -19,7 +19,7 @@ public abstract class TaskLoggerBase extends MarkerIgnoringBase {
 	private static final int LOG_LEVEL_WARN = 4;
 	private static final int LOG_LEVEL_ERROR = 5;
 
-	protected int currentLogLevel = LOG_LEVEL_INFO;
+	protected int currentLogLevel = LOG_LEVEL_DEBUG;
 
 	/** Are {@code trace} messages currently enabled? */
 	public boolean isTraceEnabled() {

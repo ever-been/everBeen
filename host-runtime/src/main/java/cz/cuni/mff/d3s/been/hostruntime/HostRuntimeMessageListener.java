@@ -78,7 +78,7 @@ final class HostRuntimeMessageListener implements MessageListener<BaseMessage>, 
 			try {
 				sender.send(messageObject);
 			} catch (MessagingException e) {
-				log.error("Cannot send message to task action queue", e);
+				log.error("Cannot request message to task action queue", e);
 			}
 		}
 	}

@@ -12,9 +12,9 @@ import cz.cuni.mff.d3s.been.task.checkpoints.CheckpointRequest;
 public class CheckpointHandler implements ReadReplyHandler {
 
 	private final ClusterContext ctx;
-	private final CheckpointHandlerRecycler recycler;
+	private final HandlerRecycler recycler;
 
-	private CheckpointHandler(ClusterContext ctx, CheckpointHandlerRecycler recycler) {
+	private CheckpointHandler(ClusterContext ctx, HandlerRecycler recycler) {
 		this.ctx = ctx;
 		this.recycler = recycler;
 	}
@@ -30,7 +30,7 @@ public class CheckpointHandler implements ReadReplyHandler {
 	 * 
 	 * @return The {@link CheckpointHandler}
 	 */
-	static final CheckpointHandler create(ClusterContext ctx, CheckpointHandlerRecycler recycler) {
+	static final CheckpointHandler create(ClusterContext ctx, HandlerRecycler recycler) {
 		return new CheckpointHandler(ctx, recycler);
 	}
 

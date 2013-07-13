@@ -121,10 +121,13 @@ final class ProcessManager implements Service {
 	/** Starts the {@link MessageDispatcher} */
 	private void startMessageDispatcher() throws ServiceException {
 		messageDispatcher.addReceiveHandler(NamedSockets.TASK_LOG_0MQ.getName(), TaskLogHandler.create(clusterContext));
-		messageDispatcher.addReceiveHandler(NamedSockets.TASK_RESULT_0MQ.getName(), ResultHandler.create(clusterContext));
+		messageDispatcher.addReceiveHandler(NamedSockets.TASK_RESULT_PERSIST_0MQ.getName(), ResultHandler.create(clusterContext));
 		messageDispatcher.addRespondingHandler(
 				NamedSockets.TASK_CHECKPOINT_0MQ.getName(),
 				CheckpointHandlerFactory.create(clusterContext));
+		messageDispatcher.addRespondingHandler(
+				NamedSockets.TASK_RESULT_QUERY_0MQ.getName(),
+				PersistenceQueryHandlerFactory.create(clusterContext));
 		messageDispatcher.start();
 	}
 

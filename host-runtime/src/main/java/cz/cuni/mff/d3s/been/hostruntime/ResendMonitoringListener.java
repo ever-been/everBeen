@@ -27,7 +27,7 @@ public class ResendMonitoringListener implements MonitoringListener {
         try {
             sender.send(new MonitoringSampleMessage(sample));
         } catch (MessagingException e) {
-            throw new RuntimeException("Cannot send message.", e);
+            throw new RuntimeException("Cannot request message.", e);
         }
     }
 

@@ -57,28 +57,18 @@ public class Requestor {
 	}
 
 	/**
-	 * Sends an arbitrary request, waits for reply.
+	 * Sends an arbitrary request, waits for reply. The call will block until the request is handled by the Host Runtime.
 	 * 
-	 * The call will block until the request is handled by the Host Runtime.
-	 * 
-	 * @param request
-	 *          a request
-	 * @return reply for the request
+	 * @param request The request
+	 *
+	 * @return Reply for the request
 	 */
-	public Reply send(Request request) {
-		String json = request.toJson();
-
-		socket.send(json);
-		log.debug("Sent {}", json);
-
+	public String request(String request) {
+		socket.send(request);
+		log.debug("Sent {}", request);
 		final String replyString = socket.recvStr();
 		log.debug("Received {}", replyString);
-
-		try {
-			return Reply.fromJson(replyString);
-		} catch (JsonException e) {
-			return Replies.createErrorReply("Cannot deserialize '%s'", json);
-		}
+		return replyString;
 	}
 
 	/**

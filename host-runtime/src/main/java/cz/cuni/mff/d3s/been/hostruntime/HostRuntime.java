@@ -140,7 +140,7 @@ class HostRuntime implements IClusterService {
 		try {
 			Monitoring.addListener(ResendMonitoringListener.create(MessageQueues.getInstance().createSender(ACTION_QUEUE_NAME)));
 		} catch (MessagingException e) {
-			throw new RuntimeException("Cannot send message.", e);
+			throw new RuntimeException("Cannot request message.", e);
 		}
 
 		Monitoring.startMonitoring(monitoringLogPath);

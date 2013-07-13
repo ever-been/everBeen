@@ -1,12 +1,12 @@
 package cz.cuni.mff.d3s.been.socketworks.twoway;
 
+import cz.cuni.mff.d3s.been.core.utils.JsonException;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
 import cz.cuni.mff.d3s.been.socketworks.SocketHandlerException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
@@ -20,8 +20,8 @@ public class ReadReplyGuardTest {
     private ReadReplyHandlerFactory handlerFactory;
     private ReadReplyGuard guard;
     private Requestor requestor;
-    private Request request;
-    private Reply reply;
+    private String request;
+    private String reply;
 
     @Before
     public void setUp() throws MessagingException {
@@ -30,8 +30,8 @@ public class ReadReplyGuardTest {
         guard = ReadReplyGuard.create("localhost", handlerFactory);
         guard.listen();
         requestor = Requestor.create(guard.getConnection());
-        request = new Request();
-        reply = new Reply();
+        request = "request";
+        reply = "reply";
     }
 
     @After
@@ -46,15 +46,15 @@ public class ReadReplyGuardTest {
     }
 
     @Test(timeout = 2000)
-    public void testRequestReply() throws InterruptedException {
-        final Reply reply = requestor.send(request);
+    public void testRequestReply() throws InterruptedException, JsonException {
+        final String reply = requestor.request(request);
         assertEquals(this.reply, reply);
     }
 
     //@Test
     public void testConcurrentRequests() throws InterruptedException {
-        requestor.send(request);
-        requestor.send(request);
+        requestor.request(request);
+        requestor.request(request);
     }
 
 
@@ -71,7 +71,7 @@ public class ReadReplyGuardTest {
     class TestHandler implements ReadReplyHandler {
         @Override
         public String handle(String message) throws SocketHandlerException, InterruptedException {
-            return reply.toJson();
+            return reply;
         }
 
         @Override
