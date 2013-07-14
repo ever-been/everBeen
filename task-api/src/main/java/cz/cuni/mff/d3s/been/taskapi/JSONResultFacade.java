@@ -92,7 +92,15 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 		}
 
 		log.debug("Querying persistence with {}", queryString);
-		replyString = requestor.request(queryString);
+		try {
+			replyString = requestor.request(queryString);
+		} finally {
+			try {
+				requestor.close();
+			} catch (MessagingException e) {
+				log.error("Result querying connection left hanging. Task will not finish.", e);
+			}
+		}
 		if (replyString == null) {
 			throw new DAOException(String.format("Unknown failure when processing request %s", queryString));
 		}

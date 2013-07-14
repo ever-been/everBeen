@@ -8,6 +8,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
+import cz.cuni.mff.d3s.been.core.persistence.Query;
+import cz.cuni.mff.d3s.been.core.persistence.QueryBuilder;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -290,4 +292,13 @@ public class BeenApiImpl implements BeenApi {
 		return getTaskContextDescriptors(bpkIdentifier).get(descriptorName);
 	}
 
+	@Override
+	public Collection<String> getPersistentObjects(Query q) {
+		try {
+			return clusterContext.getPersistence().query(q);
+		} catch (InterruptedException e) {
+			log.error("Interrupted when trying to execute persistence query '{}'", q.toString());
+			return null;
+		}
+	}
 }

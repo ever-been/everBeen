@@ -25,6 +25,7 @@ public class ClusterContext {
 	private final Topics topics;
 	private final Services services;
 	private final Benchmarks benchmarks;
+	private final Persistence persistence;
 	private final HazelcastInstance hcInstance;
 
 	public ClusterContext(HazelcastInstance hcInstance) {
@@ -36,6 +37,7 @@ public class ClusterContext {
 		this.topics = new Topics(this);
 		this.services = new Services(this);
 		this.benchmarks = new Benchmarks(this);
+		this.persistence = new Persistence(this);
 	}
 
 	public ICountDownLatch getCountDownLatch(String name) {
@@ -67,6 +69,10 @@ public class ClusterContext {
 
 	public Services getServices() {
 		return services;
+	}
+
+	public Persistence getPersistence() {
+		return persistence;
 	}
 
 	public HazelcastInstance getInstance() {

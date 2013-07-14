@@ -29,18 +29,14 @@ public class PersistenceQueryHandler implements ReadReplyHandler {
 
 	private static final Logger log = LoggerFactory.getLogger(PersistenceQueryHandler.class);
 
+	private final ClusterContext ctx;
 	private final HandlerRecycler recycler;
-	private final IMap<String, Collection<String>> answerMap;
-	private final IQueue<Query> queryQueue;
-	private final BlockingQueue<String> answerReadyNotifier;
 	private final ObjectReader queryReader;
 
 	PersistenceQueryHandler(ClusterContext ctx, ObjectMapper om, HandlerRecycler recycler) {
-		this.answerMap = ctx.getMap(Names.PERSISTENCE_QUERY_ANSWERS_MAP_NAME);
-		this.queryQueue = ctx.getQueue(Names.PERSISTENCE_QUERY_QUEUE_NAME);
+		this.ctx = ctx;
 		this.queryReader = om.reader(Query.class);
 		this.recycler = recycler;
-		this.answerReadyNotifier = new LinkedBlockingQueue<String>();
 	}
 
 	public String handle(String message) throws SocketHandlerException, InterruptedException {
@@ -51,13 +47,7 @@ public class PersistenceQueryHandler implements ReadReplyHandler {
 		} catch (IOException e) {
 			throw new SocketHandlerException(String.format("Failed to deserialize query '%s'", message), e);
 		}
-		answerMap.addEntryListener(new MapHook(answerReadyNotifier), q.getId(), false);
-		queryQueue.add(q);
-		final String queryId = answerReadyNotifier.take();
-		if (!q.getId().equals(queryId)) {
-			throw new SocketHandlerException(String.format("Query ID '%s' does not match the ID from notifier ('%s')", q.getId(), queryId));
-		}
-		final String answer = answerMap.remove(queryId).toString();
+		final String answer = ctx.getPersistence().query(q).toString(); // will produce [JSON, JSON, ..., JSON] which is valid JSON
 		log.debug("Replying {}", answer);
 		return answer;
 	}
@@ -66,34 +56,6 @@ public class PersistenceQueryHandler implements ReadReplyHandler {
 	public void markAsRecyclable() {
 		if (recycler != null) {
 			recycler.recycle(this);
-		}
-	}
-
-	private class MapHook implements EntryListener<String, Collection<String>> {
-		/**
-		 * Queue that notifies the waiting thread that its value is in the map
-		 */
-		private final BlockingQueue<String> notifier;
-
-		MapHook(BlockingQueue<String> notifier) {
-			this.notifier = notifier;
-		}
-
-		@Override
-		public void entryAdded(EntryEvent<String, Collection<String>> event) {
-			notifier.add(event.getKey());
-		}
-
-		@Override
-		public void entryUpdated(EntryEvent<String, Collection<String>> event) {
-		}
-
-		@Override
-		public void entryEvicted(EntryEvent<String, Collection<String>> event) {
-		}
-
-		@Override
-		public void entryRemoved(EntryEvent<String, Collection<String>> event) {
 		}
 	}
 }
