@@ -36,7 +36,7 @@ public class HttperfResult extends Result {
 		metaInformation.timestamp = new Date();
 		metaInformation.hostname = MyUtils.getHostname();
 		metaInformation.taskId = task.getId();
-		metaInformation.taskContextId = task.getTaskContextId();
+		metaInformation.taskContextId = task.getContextId();
 
 		parameters = new Parameters();
 		parameters.revision = Integer.parseInt(task.getProperty("revision"));
