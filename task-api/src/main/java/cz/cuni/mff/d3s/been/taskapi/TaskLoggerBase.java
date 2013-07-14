@@ -5,13 +5,10 @@ import org.slf4j.helpers.MarkerIgnoringBase;
 import org.slf4j.helpers.MessageFormatter;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Kuba
- * Date: 11.03.13
- * Time: 12:29
- * To change this template use File | Settings | File Templates.
+ * 
+ * @author Kuba Brecka
  */
-public abstract class TaskLoggerBase extends MarkerIgnoringBase {
+abstract class TaskLoggerBase extends MarkerIgnoringBase {
 
 	private static final int LOG_LEVEL_TRACE = 1;
 	private static final int LOG_LEVEL_DEBUG = 2;
@@ -27,8 +24,8 @@ public abstract class TaskLoggerBase extends MarkerIgnoringBase {
 	}
 
 	/**
-	 * A simple implementation which logs messages of level TRACE according
-	 * to the format outlined above.
+	 * A simple implementation which logs messages of level TRACE according to the
+	 * format outlined above.
 	 */
 	public void trace(String msg) {
 		log(LOG_LEVEL_TRACE, msg, null);
@@ -69,8 +66,8 @@ public abstract class TaskLoggerBase extends MarkerIgnoringBase {
 	}
 
 	/**
-	 * A simple implementation which logs messages of level DEBUG according
-	 * to the format outlined above.
+	 * A simple implementation which logs messages of level DEBUG according to the
+	 * format outlined above.
 	 */
 	public void debug(String msg) {
 		log(LOG_LEVEL_DEBUG, msg, null);
@@ -111,8 +108,8 @@ public abstract class TaskLoggerBase extends MarkerIgnoringBase {
 	}
 
 	/**
-	 * A simple implementation which logs messages of level INFO according
-	 * to the format outlined above.
+	 * A simple implementation which logs messages of level INFO according to the
+	 * format outlined above.
 	 */
 	public void info(String msg) {
 		log(LOG_LEVEL_INFO, msg, null);
@@ -237,8 +234,7 @@ public abstract class TaskLoggerBase extends MarkerIgnoringBase {
 		return (logLevel >= currentLogLevel);
 	}
 
-	private void formatAndLog(int level, String format, Object arg1,
-							  Object arg2) {
+	private void formatAndLog(int level, String format, Object arg1, Object arg2) {
 		if (!isLevelEnabled(level)) {
 			return;
 		}

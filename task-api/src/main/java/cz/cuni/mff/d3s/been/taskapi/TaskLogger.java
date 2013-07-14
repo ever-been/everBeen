@@ -14,7 +14,7 @@ import cz.cuni.mff.d3s.been.core.utils.JsonException;
  * @author Kuba Brecka
  * @author Martin Sixta
  */
-public class TaskLogger extends TaskLoggerBase {
+class TaskLogger extends TaskLoggerBase {
 
 	private static final String taskId;
 	private static final String contextId;

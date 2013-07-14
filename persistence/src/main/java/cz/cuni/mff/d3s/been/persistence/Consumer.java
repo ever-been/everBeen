@@ -9,33 +9,29 @@ abstract class Consumer<T> implements Runnable {
 
 	/** Result persistence layer */
 	protected final SuccessAction<T> successAction;
-    protected final FailAction<T> failAction;
+	protected final FailAction<T> failAction;
 
 	Consumer(SuccessAction<T> successAction, FailAction<T> failAction) {
 		this.successAction = successAction;
-        this.failAction = failAction;
+		this.failAction = failAction;
 	}
 
-	protected void persist(T what) {
+	protected void act(T what) {
 		try {
 			successAction.perform(what);
 		} catch (DAOException e) {
-			log.error(
-					"Cannot perform {} - {}",
-					what.toString(),
-					e.getMessage());
-			requeue(what);
+			log.error("Cannot perform {} - {}", what.toString(), e.getMessage());
+			actOnFailure(what);
 		}
 	}
 
-	protected void requeue(T what) {
+	protected void actOnFailure(T what) {
 		while (true) {
 			try {
 				failAction.perform(what);
 				break;
 			} catch (InterruptedException e) {
-				log.warn("Worker thread interrupted when attempting to requeue {}. Will be reattempting that indefinitely to prevent data loss.");
-				continue;
+				log.warn("Worker thread interrupted when attempting to take fail action. Will be reattempting that indefinitely to prevent data loss.");
 			}
 		}
 	}

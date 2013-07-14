@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import cz.cuni.mff.d3s.been.core.TaskMessageType;
 import cz.cuni.mff.d3s.been.core.TaskPropertyNames;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
-import cz.cuni.mff.d3s.been.socketworks.NamedSockets;
 
 /**
  * 
@@ -17,7 +16,7 @@ public abstract class Task {
 	private static final Logger log = LoggerFactory.getLogger(Task.class);
 
 	private String id;
-	private String taskContextId;
+	private String contextId;
 	private String benchmarkId;
 	protected final ResultFacade results = ResultFacadeFactory.getResultFacade();
 
@@ -35,8 +34,8 @@ public abstract class Task {
 	 * 
 	 * @return context ID associated with the running task
 	 */
-	public String getTaskContextId() {
-		return taskContextId;
+	public String getContextId() {
+		return contextId;
 	}
 
 	/**
@@ -103,10 +102,8 @@ public abstract class Task {
 
 	private void initialize() {
 		this.id = System.getenv(TaskPropertyNames.TASK_ID);
-		this.taskContextId = System.getenv(TaskPropertyNames.CONTEXT_ID);
+		this.contextId = System.getenv(TaskPropertyNames.CONTEXT_ID);
 		this.benchmarkId = System.getenv(TaskPropertyNames.BENCHMARK_ID);
-
-		System.out.println(String.format("result queue url: %s", NamedSockets.TASK_RESULT_PERSIST_0MQ.getConnection()));
 
 		try {
 			Messages.send(String.format("%s#%s", TaskMessageType.TASK_RUNNING, id));
