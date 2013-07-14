@@ -81,7 +81,7 @@ public final class MongoStorage implements Storage {
 
 	@Override
 	public void start() throws StorageException {
-		db = client.getDB("BEEN");
+		db = client.getDB(dbname);
 		if (authenticate && !db.authenticate(username, password.toCharArray())) {
 			throw new StorageException("Failed to authenticate against BEEN database");
 		}

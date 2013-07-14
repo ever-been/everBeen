@@ -85,9 +85,9 @@ final class ReplyingWorker implements Runnable {
 			if (!wi.hasNext()) {
 				log.error("No content in supplied message ({})", work.toString());
 			}
+			String handlerResponse = "";
 			try {
-				response.add(handleFrame(wi.next()).getBytes());
-				replySink.receiveFromBuddy(response);
+				handlerResponse = handleFrame(wi.next());
 			} catch (MessagingException e) {
 				log.error("Transport logic error on message {}", work.toString(), e);
 			} catch (SocketHandlerException e) {
@@ -97,6 +97,12 @@ final class ReplyingWorker implements Runnable {
 			} catch (Throwable t) {
 				log.error("Unknown error on message {}", work.toString(), t);
 			} finally {
+				response.add(handlerResponse.getBytes());
+				try {
+					replySink.receiveFromBuddy(response);
+				} catch (MessagingException e) {
+					log.error("Failed to send reply, thread pair will block", e);
+				}
 				if (wi.hasNext()) {
 					log.warn("Trailing content (from frame 3 onward) truncated for message {}", work.toString());
 				}

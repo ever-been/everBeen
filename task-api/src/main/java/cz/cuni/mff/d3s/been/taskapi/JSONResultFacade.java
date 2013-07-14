@@ -73,7 +73,7 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 	}
 
 	@Override
-	public <T extends Result> Collection<T> retrieveResults(Query query, Class<T[]> resultArrayClass) throws DAOException {
+	public <T extends Result> Collection<T> retrieveResults(Query query) throws DAOException {
 		Requestor requestor = null;
 		String queryString = null;
 		String replyString = null;
@@ -106,9 +106,8 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 		}
 		log.debug("Persistence replied {}", replyString);
 
-		final ObjectReader resultReader = om.reader(resultArrayClass);
 		try {
-			return Arrays.<T>asList((T[])resultReader.readValue(replyString));
+			return om.readValue(replyString, Collection.class);
 		} catch (IOException e) {
 			throw new DAOException(String.format("Failed to deserialize results matching query %s", queryString), e);
 		}

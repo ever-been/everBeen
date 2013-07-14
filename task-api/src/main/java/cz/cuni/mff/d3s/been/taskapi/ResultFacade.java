@@ -35,13 +35,12 @@ public interface ResultFacade {
 	/**
 	 * Retrieve results based on the id of targeted entity and a selector (query).
 	 *
-	 * @param query Provided selection criteriae
-	 * @param resultArrayClass Expected class of the array of selected results (not one result)
+	 * @param query Provided selection criteria
 	 * @param <T> Type of the result
 	 *
 	 * @return Return a collection of results corresponding (at the given query time) to matching results present in the persistence layer
 	 */
-	<T extends Result> Collection<T> retrieveResults(Query query, Class<T[]> resultArrayClass) throws DAOException;
+	<T extends Result> Collection<T> retrieveResults(Query query) throws DAOException;
 
 	/*
 	Collection<String> listGroupsOfKind(String kind);

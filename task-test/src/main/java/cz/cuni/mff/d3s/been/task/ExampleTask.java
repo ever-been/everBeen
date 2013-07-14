@@ -65,7 +65,7 @@ public class ExampleTask extends Task {
 		eid.setGroup("example-md5");
 
 		try {
-			log.info("Picked up result {}", results.retrieveResults(new QueryBuilder().on(eid).build(), ExampleResult[].class).toString());
+			log.info("Picked up result {}", results.retrieveResults(new QueryBuilder().on(eid).build()).toString());
 		} catch (DAOException e) {
 			log.error("Cannot retrieve result.", e);
 		}

@@ -7,6 +7,7 @@ import com.hazelcast.core.IQueue;
 import cz.cuni.mff.d3s.been.cluster.Names;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.persistence.Query;
+import cz.cuni.mff.d3s.been.core.utils.JsonException;
 import cz.cuni.mff.d3s.been.socketworks.SocketHandlerException;
 import cz.cuni.mff.d3s.been.socketworks.twoway.ReadReplyHandler;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -31,10 +32,12 @@ public class PersistenceQueryHandler implements ReadReplyHandler {
 
 	private final ClusterContext ctx;
 	private final HandlerRecycler recycler;
+	private final ObjectMapper om;
 	private final ObjectReader queryReader;
 
 	PersistenceQueryHandler(ClusterContext ctx, ObjectMapper om, HandlerRecycler recycler) {
 		this.ctx = ctx;
+		this.om = om;
 		this.queryReader = om.reader(Query.class);
 		this.recycler = recycler;
 	}
@@ -47,9 +50,13 @@ public class PersistenceQueryHandler implements ReadReplyHandler {
 		} catch (IOException e) {
 			throw new SocketHandlerException(String.format("Failed to deserialize query '%s'", message), e);
 		}
-		final String answer = ctx.getPersistence().query(q).toString(); // will produce [JSON, JSON, ..., JSON] which is valid JSON
-		log.debug("Replying {}", answer);
-		return answer;
+		try {
+			final String answer = om.writeValueAsString(ctx.getPersistence().query(q)); // will produce [JSON, JSON, ..., JSON] which is valid JSON
+			log.debug("Replying {}", answer);
+			return answer;
+		} catch (IOException e) {
+			throw new SocketHandlerException("Failed to serialize query results", e);
+		}
 	}
 
 	@Override
