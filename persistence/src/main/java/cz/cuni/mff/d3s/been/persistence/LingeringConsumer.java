@@ -38,7 +38,7 @@ public class LingeringConsumer<T> extends Consumer<T> {
 					throw new InterruptedException("Queue take yielded null item.");
 				}
 				log.debug("Taken item {} from queue", item);
-				persist(item);
+				act(item);
 			} catch (InterruptedException e) {
 				// the take has been interrupted - a signal that this repository is being terminated
 				log.warn("Queue take interrupted..");

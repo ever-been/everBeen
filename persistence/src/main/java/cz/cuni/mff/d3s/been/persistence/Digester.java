@@ -18,19 +18,20 @@ public class Digester<T> implements Service, Reapable {
 
 	private final ExecutorService pool;
 	private final SuccessAction<T> successAction;
-    private final FailAction<T> failAction;
-    private final Take<T> take;
-    private final Poll<T> poll;
+	private final FailAction<T> failAction;
+	private final Take<T> take;
+	private final Poll<T> poll;
 
 	Digester(Take<T> take, Poll<T> poll, SuccessAction<T> successAction, FailAction<T> failAction) {
-        this.take = take;
-        this.poll = poll;
+		this.take = take;
+		this.poll = poll;
 		this.successAction = successAction;
-        this.failAction = failAction;
+		this.failAction = failAction;
 		pool = Executors.newCachedThreadPool();
 	}
 
-	public static <T> Digester<T> create(Take<T> take, Poll<T> poll, SuccessAction<T> successAction, FailAction failAction) {
+	public static <T> Digester<T> create(Take<T> take, Poll<T> poll, SuccessAction<T> successAction,
+			FailAction<T> failAction) {
 		return new Digester<T>(take, poll, successAction, failAction);
 	}
 

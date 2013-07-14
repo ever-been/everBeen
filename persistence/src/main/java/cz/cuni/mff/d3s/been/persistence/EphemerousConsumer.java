@@ -7,13 +7,11 @@ public class EphemerousConsumer<T> extends Consumer<T> {
 
 	private static final Logger log = LoggerFactory.getLogger(EphemerousConsumer.class);
 
-    protected final Poll<T> poll;
+	protected final Poll<T> poll;
 
-	public EphemerousConsumer(
-            Poll<T> poll,
-            SuccessAction<T> successAction, FailAction<T> failAction) {
+	public EphemerousConsumer(Poll<T> poll, SuccessAction<T> successAction, FailAction<T> failAction) {
 		super(successAction, failAction);
-        this.poll = poll;
+		this.poll = poll;
 	}
 
 	@Override
@@ -25,8 +23,8 @@ public class EphemerousConsumer<T> extends Consumer<T> {
 				// there is nothing to do, end execution (this thread is ephemerous) 
 				Thread.currentThread().interrupt();
 			} else {
-                log.debug("Taken item {} from the queue.", item);
-				persist(item);
+				log.debug("Taken item {} from the queue.", item);
+				act(item);
 			}
 		}
 		log.debug("Thread terminating.");
