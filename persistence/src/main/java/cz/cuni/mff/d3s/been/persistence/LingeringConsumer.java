@@ -7,12 +7,11 @@ public class LingeringConsumer<T> extends Consumer<T> {
 
 	private static final Logger log = LoggerFactory.getLogger(LingeringConsumer.class);
 
-    protected final Take<T> take;
+	protected final Take<T> take;
 
-	LingeringConsumer(
-            Take<T> take, SuccessAction<T> successAction, FailAction<T> failAction) {
-		super(successAction,failAction);
-        this.take = take;
+	LingeringConsumer(Take<T> take, SuccessAction<T> successAction, FailAction<T> failAction) {
+		super(successAction, failAction);
+		this.take = take;
 	}
 
 	@Override
@@ -42,7 +41,7 @@ public class LingeringConsumer<T> extends Consumer<T> {
 				persist(item);
 			} catch (InterruptedException e) {
 				// the take has been interrupted - a signal that this repository is being terminated
-				log.debug("Queue take interrupted..");
+				log.warn("Queue take interrupted..");
 				Thread.currentThread().interrupt();
 			}
 		}
