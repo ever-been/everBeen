@@ -1,7 +1,6 @@
 package cz.cuni.mff.d3s.been.taskapi;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 import cz.cuni.mff.d3s.been.core.persistence.Query;
@@ -82,7 +81,7 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 	}
 
 	@Override
-	public <T extends Result> Collection<T> retrieveResults(Query query) throws DAOException {
+	public <T extends Result> Collection<T> retrieveResults(Query query, Class<T> resultClass) throws DAOException {
 		Requestor requestor = null;
 		String queryString = null;
 		String replyString = null;
@@ -116,7 +115,12 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 		log.debug("Persistence replied {}", replyString);
 
 		try {
-			return om.readValue(replyString, Collection.class);
+			final Collection<String> coll = om.readValue(replyString, Collection.class);
+			final ArrayList<T> res = new ArrayList<T>(coll.size());
+			for(String elm: coll) {
+				res.add(om.readValue(elm, resultClass));
+			}
+			return res;
 		} catch (IOException e) {
 			throw new DAOException(String.format("Failed to deserialize results matching query %s", queryString), e);
 		}
