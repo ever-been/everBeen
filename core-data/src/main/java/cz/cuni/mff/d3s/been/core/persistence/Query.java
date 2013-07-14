@@ -12,13 +12,13 @@ import java.util.UUID;
 public class Query implements Serializable {
 	private final String id;
 	private EntityID entityID;
-	private Map<String, Serializable> selectors;
+	private Map<String, String> selectors;
 
 	private Query() {
 		this.id = UUID.randomUUID().toString();
 	}
 
-	Query(EntityID entityID, Map<String, Serializable> selectors) {
+	Query(EntityID entityID, Map<String, String> selectors) {
 		this.id = UUID.randomUUID().toString();
 		this.entityID = entityID;
 		this.selectors = Collections.unmodifiableMap(selectors);
@@ -43,7 +43,7 @@ public class Query implements Serializable {
 	 *
 	 * @return A map of expected value associations
 	 */
-	public Map<String, Serializable> getSelectors() {
+	public Map<String, String> getSelectors() {
 		return selectors;
 	}
 }

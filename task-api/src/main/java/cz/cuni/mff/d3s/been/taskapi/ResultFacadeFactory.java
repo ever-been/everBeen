@@ -13,7 +13,11 @@ final class ResultFacadeFactory {
 
 	private ResultFacadeFactory() {}
 
-	/** Get a shared instance of {@link ResultFacade} */
+	/**
+	 * Get a shared instance of {@link ResultFacade} for this task.
+	 *
+	 * @return The facade shared instance
+	 */
 	static synchronized ResultFacade getResultFacade() {
 		if (resultFacade == null) {
 			resultQueue = Messaging.createTaskQueue(NamedSockets.TASK_RESULT_PERSIST_0MQ.getConnection());
@@ -28,5 +32,32 @@ final class ResultFacadeFactory {
 			resultFacade = null;
 			resultQueue.terminate();
 		}
+	}
+
+	/**
+	 * Set task id to the facade's shared instance
+	 *
+	 * @param id Task id to set
+	 */
+	static void setTaskId(String id) {
+		resultFacade.taskId = id;
+	}
+
+	/**
+	 * Set the context id to the facade's shared instance
+	 *
+	 * @param id Context id to set
+	 */
+	static void setContextId(String id) {
+		resultFacade.contextId = id;
+	}
+
+	/**
+	 * Set the benchmark id to the facade's shared instance
+	 *
+	 * @param id Benchmark id to set
+	 */
+	static void setBenchmarkId(String id) {
+		resultFacade.benchmarkId = id;
 	}
 }

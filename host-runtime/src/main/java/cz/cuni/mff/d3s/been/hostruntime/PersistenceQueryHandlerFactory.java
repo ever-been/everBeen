@@ -14,11 +14,13 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class PersistenceQueryHandlerFactory implements ReadReplyHandlerFactory, HandlerRecycler {
 
 	private final ClusterContext clusterContext;
-	private final BlockingQueue<ReadReplyHandler> idleHandlers = new LinkedBlockingQueue<>();
-	private final ObjectMapper om = new ObjectMapper();
+	private final BlockingQueue<ReadReplyHandler> idleHandlers;
+	private final ObjectMapper om;
 
 	PersistenceQueryHandlerFactory(ClusterContext clusterContext) {
 		this.clusterContext = clusterContext;
+		this.idleHandlers = new LinkedBlockingQueue<>();
+		this.om = new ObjectMapper();
 	}
 
 	/**

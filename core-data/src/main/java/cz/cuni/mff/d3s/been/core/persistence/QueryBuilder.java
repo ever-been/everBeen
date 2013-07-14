@@ -12,7 +12,7 @@ import java.util.Map;
 public class QueryBuilder {
 	private String id;
 	private EntityID entityID;
-	private Map<String, Serializable> selectors = new HashMap<String, Serializable>();
+	private Map<String, String> selectors = new HashMap<String, String>();
 
 	public QueryBuilder on(EntityID entityID) {
 		this.entityID = entityID;
@@ -27,7 +27,7 @@ public class QueryBuilder {
 	 *
 	 * @return The same query, with added criteria
 	 */
-	public QueryBuilder with(String attribute, Serializable value) {
+	public QueryBuilder with(String attribute, String value) {
 		selectors.put(attribute, value);
 		return this;
 	}

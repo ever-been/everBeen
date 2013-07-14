@@ -2,6 +2,7 @@ package cz.cuni.mff.d3s.been.task;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Collection;
 import java.util.Date;
 
 import cz.cuni.mff.d3s.been.core.persistence.Query;
@@ -50,12 +51,14 @@ public class ExampleTask extends Task {
 
 		try {
 			final ResultPersister rp = results.createResultPersister(eid);
-			ExampleResult r = new ExampleResult();
+			ExampleResult r = results.createResult(ExampleResult.class);
 			r.count = count;
 			rp.persist(r);
 			//rp.close(); <- notice this forgotten close: it works anyway
 		} catch (DAOException e) {
 			log.error("Cannot persist result.", e);
+		} catch (IllegalAccessException | InstantiationException e) {
+			log.error("Cannot create result instance", e);
 		}
 	}
 
@@ -65,7 +68,8 @@ public class ExampleTask extends Task {
 		eid.setGroup("example-md5");
 
 		try {
-			log.info("Picked up result {}", results.retrieveResults(new QueryBuilder().on(eid).build()).toString());
+			final Collection<ExampleResult> myResults = results.retrieveResults(new QueryBuilder().on(eid).with("taskId", getId()).build());
+			log.info("Picked up result {}", myResults);
 		} catch (DAOException e) {
 			log.error("Cannot retrieve result.", e);
 		}
@@ -79,6 +83,10 @@ public class ExampleTask extends Task {
 		log.info("Performance testing finished.");
 		persistResult();
 		log.info("Result stored.");
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e){
+		}
 		pickupResult();
 		log.info("Result retrieved");
 

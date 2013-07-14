@@ -1,16 +1,14 @@
 package cz.cuni.mff.d3s.been.taskapi;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 import cz.cuni.mff.d3s.been.core.persistence.Query;
 import cz.cuni.mff.d3s.been.mq.IMessageQueue;
 import cz.cuni.mff.d3s.been.socketworks.NamedSockets;
-import cz.cuni.mff.d3s.been.socketworks.twoway.Request;
 import cz.cuni.mff.d3s.been.socketworks.twoway.Requestor;
-import org.codehaus.jackson.map.MappingIterator;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ObjectReader;
 import org.codehaus.jackson.map.ObjectWriter;
 import org.codehaus.jackson.map.SerializationConfig.Feature;
 import org.slf4j.Logger;
@@ -31,6 +29,7 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 	private final ObjectWriter queryWriter;
 	private final IMessageQueue<String> queue;
 	private final Collection<ResultPersister> allocatedPersisters;
+	String taskId, contextId, benchmarkId;
 
 	private JSONResultFacade(IMessageQueue<String> queue) {
 		this.queue = queue;
@@ -40,16 +39,26 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 		om.setSerializationConfig(
 				om.getSerializationConfig().without(
 				Feature.FAIL_ON_EMPTY_BEANS).withVisibilityChecker(
-				new ResultFieldVisibilityChecker()));
+				new FieldVisibilityChecker()));
 		om.setDeserializationConfig(
 				om.getDeserializationConfig().withVisibilityChecker(
-				new ResultFieldVisibilityChecker()));
+				new FieldVisibilityChecker()));
 	}
 
     /** Create a new result serialization facade */
     static JSONResultFacade create(IMessageQueue<String> queue) {
         return new JSONResultFacade(queue);
     }
+
+	@Override
+	public <T extends Result> T createResult(Class<T> resultClass) throws IllegalAccessException, InstantiationException {
+		final T inst = resultClass.newInstance();
+		inst.setTaskId(taskId);
+		inst.setContextId(contextId);
+		inst.setBenchmarkId(benchmarkId);
+		inst.setCreated(System.currentTimeMillis());
+		return inst;
+	}
 
 	@Override
 	public void persistResult(Result result, EntityID entityId) throws DAOException {

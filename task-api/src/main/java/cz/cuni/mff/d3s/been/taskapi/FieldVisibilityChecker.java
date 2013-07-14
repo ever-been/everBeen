@@ -12,11 +12,11 @@ import org.codehaus.jackson.map.introspect.AnnotatedMember;
 import org.codehaus.jackson.map.introspect.AnnotatedMethod;
 import org.codehaus.jackson.map.introspect.VisibilityChecker;
 
-final class ResultFieldVisibilityChecker<T extends VisibilityChecker<T>> implements VisibilityChecker<T> {
+final class FieldVisibilityChecker<T extends VisibilityChecker<T>> implements VisibilityChecker<T> {
 
 	T self;
 
-	public ResultFieldVisibilityChecker() {
+	public FieldVisibilityChecker() {
 		assignSelf();
 	}
 

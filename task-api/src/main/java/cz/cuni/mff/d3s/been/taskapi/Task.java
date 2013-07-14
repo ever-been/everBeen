@@ -104,6 +104,9 @@ public abstract class Task {
 		this.id = System.getenv(TaskPropertyNames.TASK_ID);
 		this.contextId = System.getenv(TaskPropertyNames.CONTEXT_ID);
 		this.benchmarkId = System.getenv(TaskPropertyNames.BENCHMARK_ID);
+		ResultFacadeFactory.setTaskId(id);
+		ResultFacadeFactory.setContextId(contextId);
+		ResultFacadeFactory.setBenchmarkId(benchmarkId);
 
 		try {
 			Messages.send(String.format("%s#%s", TaskMessageType.TASK_RUNNING, id));
