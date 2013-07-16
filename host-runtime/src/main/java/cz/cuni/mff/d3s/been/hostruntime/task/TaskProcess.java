@@ -164,10 +164,6 @@ public class TaskProcess implements AutoCloseable {
 		if (!this.killed) {
 			watchdog.destroyProcess();
 		}
-
-		if (wrkDir.toFile().exists()) {
-			FileUtils.deleteDirectory(wrkDir.toFile());
-		}
 	}
 
 	public boolean isDebugListeningMode() {
