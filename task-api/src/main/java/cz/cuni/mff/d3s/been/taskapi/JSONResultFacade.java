@@ -1,12 +1,10 @@
 package cz.cuni.mff.d3s.been.taskapi;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 
-import cz.cuni.mff.d3s.been.core.persistence.Query;
-import cz.cuni.mff.d3s.been.mq.IMessageQueue;
-import cz.cuni.mff.d3s.been.socketworks.NamedSockets;
-import cz.cuni.mff.d3s.been.socketworks.twoway.Requestor;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
 import org.codehaus.jackson.map.SerializationConfig.Feature;
@@ -15,10 +13,14 @@ import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.d3s.been.core.persistence.EntityCarrier;
 import cz.cuni.mff.d3s.been.core.persistence.EntityID;
+import cz.cuni.mff.d3s.been.core.persistence.Query;
+import cz.cuni.mff.d3s.been.mq.IMessageQueue;
 import cz.cuni.mff.d3s.been.mq.IMessageSender;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
 import cz.cuni.mff.d3s.been.persistence.DAOException;
 import cz.cuni.mff.d3s.been.results.Result;
+import cz.cuni.mff.d3s.been.socketworks.NamedSockets;
+import cz.cuni.mff.d3s.been.socketworks.twoway.Requestor;
 
 final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 
@@ -35,19 +37,15 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 		this.om = new ObjectMapper();
 		this.queryWriter = om.writerWithType(Query.class);
 		this.allocatedPersisters = new HashSet<ResultPersister>();
-		om.setSerializationConfig(
-				om.getSerializationConfig().without(
-				Feature.FAIL_ON_EMPTY_BEANS).withVisibilityChecker(
+		om.setSerializationConfig(om.getSerializationConfig().without(Feature.FAIL_ON_EMPTY_BEANS).withVisibilityChecker(
 				new FieldVisibilityChecker()));
-		om.setDeserializationConfig(
-				om.getDeserializationConfig().withVisibilityChecker(
-				new FieldVisibilityChecker()));
+		om.setDeserializationConfig(om.getDeserializationConfig().withVisibilityChecker(new FieldVisibilityChecker()));
 	}
 
-    /** Create a new result serialization facade */
-    static JSONResultFacade create(IMessageQueue<String> queue) {
-        return new JSONResultFacade(queue);
-    }
+	/** Create a new result serialization facade */
+	static JSONResultFacade create(IMessageQueue<String> queue) {
+		return new JSONResultFacade(queue);
+	}
 
 	@Override
 	public <T extends Result> T createResult(Class<T> resultClass) throws IllegalAccessException, InstantiationException {
@@ -69,14 +67,12 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 		try {
 			serializedResult = om.writeValueAsString(result);
 		} catch (IOException e) {
-			throw new DAOException(String.format(
-					"Unable to serialize Result %s to JSON.",
-					result.toString()), e);
+			throw new DAOException(String.format("Unable to serialize Result %s to JSON.", result.toString()), e);
 		}
 		ec = new EntityCarrier();
 		ec.setEntityId(entityId);
 		ec.setEntityJSON(serializedResult);
-		log.info("Facade serialized a result into >>{}<<", serializedResult);
+		log.debug("Facade serialized a result into >>{}<<", serializedResult);
 		sendRC(ec);
 	}
 
@@ -92,7 +88,9 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 			throw new DAOException("Failed to serialize query", e);
 		}
 
-		log.debug("Attempting to connect to persistence querying socket on {}", NamedSockets.TASK_RESULT_QUERY_0MQ.getConnection());
+		log.debug(
+				"Attempting to connect to persistence querying socket on {}",
+				NamedSockets.TASK_RESULT_QUERY_0MQ.getConnection());
 		try {
 			requestor = Requestor.create(NamedSockets.TASK_RESULT_QUERY_0MQ.getConnection());
 		} catch (MessagingException e) {
@@ -117,7 +115,7 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 		try {
 			final Collection<String> coll = om.readValue(replyString, Collection.class);
 			final ArrayList<T> res = new ArrayList<T>(coll.size());
-			for(String elm: coll) {
+			for (String elm : coll) {
 				res.add(om.readValue(elm, resultClass));
 			}
 			return res;
@@ -147,7 +145,7 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 
 	/** Clean up any dangling persisters */
 	void purge() {
-		for(ResultPersister persister: allocatedPersisters) {
+		for (ResultPersister persister : allocatedPersisters) {
 			log.warn("Persister {} was not closed, purging automatically", persister.toString());
 			persister.close();
 		}
@@ -156,9 +154,7 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 	private void sendRC(EntityCarrier rc) throws DAOException {
 		try {
 			final String serializedRC = om.writeValueAsString(rc);
-			log.info(
-					"About to request this serialized result carrier to Host Runtime: >>{}<<",
-					serializedRC);
+			log.debug("About to request this serialized result carrier to Host Runtime: >>{}<<", serializedRC);
 			final IMessageSender<String> sender = queue.createSender();
 			sender.send(serializedRC);
 			sender.close();
@@ -185,8 +181,10 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 		 * 
 		 * @param entityId
 		 *          Persistent entity to bind to (determines target collection)
-		 * @param sender Sender to use for result trafficking
-		 * @param unhookCatalog Catalog to use for uregistering once this persister is closed
+		 * @param sender
+		 *          Sender to use for result trafficking
+		 * @param unhookCatalog
+		 *          Catalog to use for uregistering once this persister is closed
 		 */
 		JSONResultPersister(EntityID entityId, IMessageSender<String> sender, ResultPersisterCatalog unhookCatalog) {
 			this.entityId = entityId;
@@ -200,11 +198,9 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 			try {
 				serializedResult = om.writeValueAsString(result);
 			} catch (IOException e) {
-				throw new DAOException(String.format(
-						"Unable to serialize Result %s to json",
-						result.toString()), e);
+				throw new DAOException(String.format("Unable to serialize Result %s to json", result.toString()), e);
 			}
-			log.info("Persister serialized a result into >>{}<<", serializedResult);
+			log.debug("Persister serialized a result into >>{}<<", serializedResult);
 			final EntityCarrier rc = new EntityCarrier();
 			rc.setEntityId(entityId);
 			rc.setEntityJSON(serializedResult);
