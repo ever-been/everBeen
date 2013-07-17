@@ -2,10 +2,14 @@ package cz.cuni.mff.d3s.been.hostruntime;
 
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.persistence.Query;
+import cz.cuni.mff.d3s.been.persistence.QuerySerializer;
 import cz.cuni.mff.d3s.been.socketworks.SocketHandlerException;
 import cz.cuni.mff.d3s.been.socketworks.twoway.ReadReplyHandler;
+import cz.cuni.mff.d3s.been.util.JsonException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectReader;
+import org.codehaus.jackson.map.type.TypeFactory;
+import org.codehaus.jackson.type.JavaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,14 +25,14 @@ public class PersistenceQueryHandler implements ReadReplyHandler {
 	private static final Logger log = LoggerFactory.getLogger(PersistenceQueryHandler.class);
 
 	private final ClusterContext ctx;
-	private final HandlerRecycler recycler;
 	private final ObjectMapper om;
-	private final ObjectReader queryReader;
+	private final QuerySerializer querySerializer;
+	private final HandlerRecycler recycler;
 
 	PersistenceQueryHandler(ClusterContext ctx, ObjectMapper om, HandlerRecycler recycler) {
 		this.ctx = ctx;
 		this.om = om;
-		this.queryReader = om.reader(Query.class);
+		this.querySerializer = new QuerySerializer();
 		this.recycler = recycler;
 	}
 
@@ -36,8 +40,8 @@ public class PersistenceQueryHandler implements ReadReplyHandler {
 		log.debug("Got {}", message);
 		Query q = null;
 		try {
-			q = queryReader.readValue(message);
-		} catch (IOException e) {
+			q = querySerializer.deserializeQuery(message);
+		} catch (JsonException e) {
 			throw new SocketHandlerException(String.format("Failed to deserialize query '%s'", message), e);
 		}
 		try {

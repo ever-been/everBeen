@@ -1,6 +1,9 @@
 package cz.cuni.mff.d3s.been.persistence;
 
 import cz.cuni.mff.d3s.been.core.persistence.EntityID;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.annotate.JsonSubTypes;
+import org.codehaus.jackson.annotate.JsonTypeInfo;
 
 import java.util.Set;
 

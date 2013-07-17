@@ -6,6 +6,8 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import cz.cuni.mff.d3s.been.persistence.Query;
+import cz.cuni.mff.d3s.been.persistence.QuerySerializer;
+import cz.cuni.mff.d3s.been.util.JsonException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
 import org.codehaus.jackson.map.SerializationConfig.Feature;
@@ -27,7 +29,7 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 	private static final Logger log = LoggerFactory.getLogger(JSONResultFacade.class);
 
 	private final ObjectMapper om;
-	private final ObjectWriter queryWriter;
+	private final QuerySerializer querySerializer;
 	private final IMessageQueue<String> queue;
 	private final Collection<ResultPersister> allocatedPersisters;
 	String taskId, contextId, benchmarkId;
@@ -35,11 +37,13 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 	private JSONResultFacade(IMessageQueue<String> queue) {
 		this.queue = queue;
 		this.om = new ObjectMapper();
-		this.queryWriter = om.writerWithType(Query.class);
+		this.querySerializer = new QuerySerializer();
 		this.allocatedPersisters = new HashSet<ResultPersister>();
+
 		om.setSerializationConfig(om.getSerializationConfig().without(Feature.FAIL_ON_EMPTY_BEANS).withVisibilityChecker(
 				new FieldVisibilityChecker()));
 		om.setDeserializationConfig(om.getDeserializationConfig().withVisibilityChecker(new FieldVisibilityChecker()));
+		om.enableDefaultTyping(ObjectMapper.DefaultTyping.OBJECT_AND_NON_CONCRETE);
 	}
 
 	/** Create a new result serialization facade */
@@ -83,8 +87,8 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 		String replyString = null;
 
 		try {
-			queryString = queryWriter.writeValueAsString(fetchQuery);
-		} catch (IOException e) {
+			queryString = querySerializer.serializeQuery(fetchQuery);
+		} catch (JsonException e) {
 			throw new DAOException("Failed to serialize query", e);
 		}
 

@@ -1,29 +1,56 @@
 package cz.cuni.mff.d3s.been.persistence;
 
 import cz.cuni.mff.d3s.been.core.persistence.EntityID;
-import cz.cuni.mff.d3s.been.persistence.Query;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.annotate.JsonSubTypes;
+import org.codehaus.jackson.annotate.JsonTypeInfo;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * An abstract base for a {@link Query}
  *
  * @author darklight
  */
-public abstract class SkeletalQuery implements Query {
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
+@JsonSubTypes({
+		@JsonSubTypes.Type(value = FetchQuery.class),
+		@JsonSubTypes.Type(value = DeleteQuery.class)
+})
+@JsonIgnoreProperties({"type", "selectorNames"})
+abstract class SkeletalQuery implements Query {
 
-	private final String id;
-	private final EntityID entityID;
-	private final Map<String, String> selectors;
+	private String id;
+	private EntityID entityID;
+	private Map<String, String> selectors;
+
+	SkeletalQuery() {
+		this.id = null;
+		this.entityID = null;
+		this.selectors = null;
+	}
 
 	SkeletalQuery(EntityID entityID, Map<String, String> selectors) {
-		super();
 		this.id = UUID.randomUUID().toString();
 		this.entityID = entityID;
 		this.selectors = Collections.unmodifiableMap(selectors);
+	}
+
+	public Map<String, String> getSelectors() {
+		return selectors;
+	}
+
+	void setId(String id) {
+		this.id = id;
+	}
+
+	void setEntityID(EntityID entityID) {
+		this.entityID = entityID;
+	}
+
+	void setSelectors(Map<String, String> selectors) {
+		this.selectors = selectors;
 	}
 
 	@Override
