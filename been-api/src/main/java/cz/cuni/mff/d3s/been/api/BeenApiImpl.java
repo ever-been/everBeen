@@ -8,8 +8,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
-import cz.cuni.mff.d3s.been.core.persistence.Query;
-import cz.cuni.mff.d3s.been.core.persistence.QueryBuilder;
+import cz.cuni.mff.d3s.been.persistence.DAOException;
+import cz.cuni.mff.d3s.been.persistence.Query;
+import cz.cuni.mff.d3s.been.persistence.QueryAnswer;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,9 +35,7 @@ import cz.cuni.mff.d3s.been.debugassistant.DebugAssistant;
 import cz.cuni.mff.d3s.been.debugassistant.DebugListItem;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
-import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 /**
  * User: donarus Date: 4/27/13 Time: 11:50 AM
@@ -293,12 +292,13 @@ public class BeenApiImpl implements BeenApi {
 	}
 
 	@Override
-	public Collection<String> getPersistentObjects(Query q) {
+	public QueryAnswer queryPersistence(Query query) {
 		try {
-			return clusterContext.getPersistence().query(q);
+			return clusterContext.getPersistence().query(query);
 		} catch (InterruptedException e) {
-			log.error("Interrupted when trying to execute persistence query '{}'", q.toString());
+			log.error("Interrupted when trying to execute persistence query '{}'", query.toString(), e);
 			return null;
 		}
 	}
+
 }

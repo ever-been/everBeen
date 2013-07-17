@@ -1,8 +1,8 @@
 package cz.cuni.mff.d3s.been.task.checkpoints;
 
 import cz.cuni.mff.d3s.been.core.TaskPropertyNames;
-import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
-import cz.cuni.mff.d3s.been.core.utils.JsonException;
+import cz.cuni.mff.d3s.been.util.JSONUtils;
+import cz.cuni.mff.d3s.been.util.JsonException;
 import cz.cuni.mff.d3s.been.socketworks.twoway.Request;
 
 /**
@@ -43,7 +43,7 @@ public final class CheckpointRequest extends Request {
 	}
 
 	public static CheckpointRequest fromJson(String json) throws JsonException {
-		return JSONUtils.deserialize(json, CheckpointRequest.class);
+		return JSONUtils.newInstance().deserialize(json, CheckpointRequest.class);
 	}
 
 	public CheckpointRequestType getType() {

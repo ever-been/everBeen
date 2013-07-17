@@ -1,5 +1,8 @@
 package cz.cuni.mff.d3s.been.core.utils;
 
+import cz.cuni.mff.d3s.been.util.JsonException;
+import cz.cuni.mff.d3s.been.util.JsonKeyHandler;
+import cz.cuni.mff.d3s.been.util.JsonStreamer;
 import org.junit.Assert;
 import org.junit.Test;
 

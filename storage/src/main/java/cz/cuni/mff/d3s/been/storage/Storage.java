@@ -4,8 +4,9 @@ import cz.cuni.mff.d3s.been.cluster.Service;
 import cz.cuni.mff.d3s.been.core.persistence.Entity;
 import cz.cuni.mff.d3s.been.core.persistence.EntityCarrier;
 import cz.cuni.mff.d3s.been.core.persistence.EntityID;
-import cz.cuni.mff.d3s.been.core.persistence.Query;
 import cz.cuni.mff.d3s.been.persistence.DAOException;
+import cz.cuni.mff.d3s.been.persistence.Query;
+import cz.cuni.mff.d3s.been.persistence.QueryAnswer;
 import cz.cuni.mff.d3s.been.persistence.SuccessAction;
 
 import java.util.Collection;
@@ -45,7 +46,7 @@ public interface Storage extends Service {
 	 *
 	 * @param query Query to execute
 	 *
-	 * @return The result of the query (a collection of matching objects in JSON)
+	 * @return The result of the query (a {@link QueryAnswer})
 	 */
-	Collection<String> query(Query query);
+	QueryAnswer query(Query query);
 }

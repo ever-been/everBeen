@@ -5,9 +5,9 @@ import com.hazelcast.core.EntryListener;
 import com.hazelcast.core.IMap;
 import com.hazelcast.core.IQueue;
 import cz.cuni.mff.d3s.been.cluster.Names;
-import cz.cuni.mff.d3s.been.core.persistence.Query;
+import cz.cuni.mff.d3s.been.persistence.Query;
+import cz.cuni.mff.d3s.been.persistence.QueryAnswer;
 
-import java.util.Collection;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -20,7 +20,7 @@ public class Persistence {
 
 	private final ClusterContext ctx;
 	private final IQueue<Query> queryQueue;
-	private final IMap<String, Collection<String>> queryAnswerMap;
+	private final IMap<String, QueryAnswer> queryAnswerMap;
 
 	Persistence(ClusterContext ctx) {
 		this.ctx = ctx;
@@ -33,11 +33,11 @@ public class Persistence {
 	 *
 	 * @param query Query to execute
 	 *
-	 * @return A collection of matching results (currently present in the persistence layer)
+	 * @return A {@link QueryAnswer} object representing the {@link Query}'s outcome
 	 *
-	 * @throws InterruptedException When the wait for the result collection is interrupted
+	 * @throws InterruptedException When the wait for the query outcome is interrupted
 	 */
-	public final Collection<String> query(Query query) throws InterruptedException {
+	public final QueryAnswer query(Query query) throws InterruptedException {
 		final BlockingQueue<String> answerReadyNotifier = new LinkedBlockingQueue<String>();
 		queryAnswerMap.addEntryListener(new MapEntryReadyHook(answerReadyNotifier), query.getId(), false);
 		queryQueue.add(query);
@@ -45,7 +45,7 @@ public class Persistence {
 		return queryAnswerMap.remove(queryId);
 	}
 
-	private class MapEntryReadyHook implements EntryListener<String, Collection<String>> {
+	private class MapEntryReadyHook implements EntryListener<String, QueryAnswer> {
 		/**
 		 * Queue that notifies the waiting thread that its value is in the map
 		 */
@@ -56,20 +56,20 @@ public class Persistence {
 		}
 
 		@Override
-		public void entryAdded(EntryEvent<String, Collection<String>> event) {
+		public void entryAdded(EntryEvent<String, QueryAnswer> event) {
 			notifier.add(event.getKey());
 		}
 
 		@Override
-		public void entryUpdated(EntryEvent<String, Collection<String>> event) {
+		public void entryUpdated(EntryEvent<String, QueryAnswer> event) {
 		}
 
 		@Override
-		public void entryEvicted(EntryEvent<String, Collection<String>> event) {
+		public void entryEvicted(EntryEvent<String, QueryAnswer> event) {
 		}
 
 		@Override
-		public void entryRemoved(EntryEvent<String, Collection<String>> event) {
+		public void entryRemoved(EntryEvent<String, QueryAnswer> event) {
 		}
 	}
 }

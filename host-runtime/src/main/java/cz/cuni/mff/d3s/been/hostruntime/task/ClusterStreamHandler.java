@@ -6,8 +6,8 @@ import org.apache.commons.exec.LogOutputStream;
 
 import cz.cuni.mff.d3s.been.core.LogMessage;
 import cz.cuni.mff.d3s.been.core.TaskMessageType;
-import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
-import cz.cuni.mff.d3s.been.core.utils.JsonException;
+import cz.cuni.mff.d3s.been.util.JSONUtils;
+import cz.cuni.mff.d3s.been.util.JsonException;
 import cz.cuni.mff.d3s.been.mq.MessageQueues;
 
 /**
@@ -30,6 +30,7 @@ public class ClusterStreamHandler extends LogOutputStream {
 	private final String name;
 
 	private final MessageQueues messageQueues;
+	private final JSONUtils jsonUtils;
 
 	public ClusterStreamHandler(String taskId, String contextId, String benchmarkId, String name) {
 		this.taskId = taskId;
@@ -37,7 +38,7 @@ public class ClusterStreamHandler extends LogOutputStream {
 		this.benchmarkId = benchmarkId;
 		this.name = name;
 		this.messageQueues = MessageQueues.getInstance();
-
+		this.jsonUtils = JSONUtils.newInstance();
 	}
 
 	@Override
@@ -59,7 +60,7 @@ public class ClusterStreamHandler extends LogOutputStream {
 		LogMessage logMsg = new LogMessage(name, level, line).withTimestamp();
 		logMsg.withTaskId(taskId).withContextId(contextId).withBenchmarkId(benchmarkId);
 
-		return JSONUtils.serialize(logMsg);
+		return jsonUtils.serialize(logMsg);
 	}
 
 	private String createTypedMessage(String json) {

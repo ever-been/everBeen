@@ -1,8 +1,5 @@
-package cz.cuni.mff.d3s.been.persistence.queue;
+package cz.cuni.mff.d3s.been.repository;
 
-import cz.cuni.mff.d3s.been.cluster.Reapable;
-import cz.cuni.mff.d3s.been.cluster.Reaper;
-import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.persistence.EntityCarrier;
 import cz.cuni.mff.d3s.been.storage.Storage;

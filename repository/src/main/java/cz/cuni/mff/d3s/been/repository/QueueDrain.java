@@ -1,11 +1,10 @@
-package cz.cuni.mff.d3s.been.persistence.queue;
+package cz.cuni.mff.d3s.been.repository;
 
 import com.hazelcast.core.IQueue;
 
 import cz.cuni.mff.d3s.been.cluster.Service;
 import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
-import cz.cuni.mff.d3s.been.persistence.*;
 import cz.cuni.mff.d3s.been.persistence.SuccessAction;
 
 /**

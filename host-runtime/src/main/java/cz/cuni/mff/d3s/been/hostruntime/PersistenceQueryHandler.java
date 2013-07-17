@@ -1,12 +1,7 @@
 package cz.cuni.mff.d3s.been.hostruntime;
 
-import com.hazelcast.core.EntryEvent;
-import com.hazelcast.core.EntryListener;
-import com.hazelcast.core.IMap;
-import com.hazelcast.core.IQueue;
-import cz.cuni.mff.d3s.been.cluster.Names;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
-import cz.cuni.mff.d3s.been.core.persistence.Query;
+import cz.cuni.mff.d3s.been.persistence.Query;
 import cz.cuni.mff.d3s.been.socketworks.SocketHandlerException;
 import cz.cuni.mff.d3s.been.socketworks.twoway.ReadReplyHandler;
 import org.codehaus.jackson.map.ObjectMapper;

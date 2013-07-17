@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.d3s.been.annotation.NotThreadSafe;
-import cz.cuni.mff.d3s.been.core.utils.JsonException;
 import cz.cuni.mff.d3s.been.mq.Context;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
 import cz.cuni.mff.d3s.been.mq.ZMQContext;

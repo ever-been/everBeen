@@ -1,9 +1,10 @@
-package cz.cuni.mff.d3s.been.persistence;
+package cz.cuni.mff.d3s.been.repository;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import cz.cuni.mff.d3s.been.persistence.SuccessAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

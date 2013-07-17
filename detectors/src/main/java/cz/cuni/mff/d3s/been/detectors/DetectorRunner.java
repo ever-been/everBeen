@@ -13,8 +13,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import cz.cuni.mff.d3s.been.core.ri.MonitorSample;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
-import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
-import cz.cuni.mff.d3s.been.core.utils.JsonException;
+import cz.cuni.mff.d3s.been.util.JSONUtils;
+import cz.cuni.mff.d3s.been.util.JsonException;
 
 /**
  * @author Kuba Brecka
@@ -49,7 +49,7 @@ public class DetectorRunner {
 			MonitorSample sample = detector.generateSample(true);
 
 			try {
-				String s = JSONUtils.serialize(sample);
+				String s = JSONUtils.newInstance().serialize(sample);
 				System.out.println(s);
 			} catch (JsonException e) {
 				e.printStackTrace();

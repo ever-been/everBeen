@@ -1,12 +1,10 @@
-package cz.cuni.mff.d3s.been.persistence;
+package cz.cuni.mff.d3s.been.repository;
 
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
 import cz.cuni.mff.d3s.been.cluster.Names;
 import cz.cuni.mff.d3s.been.cluster.Reaper;
 import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
-import cz.cuni.mff.d3s.been.persistence.queue.PersistentQueueDrain;
-import cz.cuni.mff.d3s.been.persistence.queue.QueryQueueDrain;
 import cz.cuni.mff.d3s.been.storage.Storage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

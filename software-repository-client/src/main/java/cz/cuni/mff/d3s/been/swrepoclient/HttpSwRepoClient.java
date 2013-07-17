@@ -40,8 +40,8 @@ import cz.cuni.mff.d3s.been.core.jaxb.ConvertorException;
 import cz.cuni.mff.d3s.been.core.jaxb.XSD;
 import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
-import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
-import cz.cuni.mff.d3s.been.core.utils.JsonException;
+import cz.cuni.mff.d3s.been.util.JSONUtils;
+import cz.cuni.mff.d3s.been.util.JsonException;
 import cz.cuni.mff.d3s.been.datastore.*;
 
 class HttpSwRepoClient implements SwRepoClient {
@@ -62,9 +62,14 @@ class HttpSwRepoClient implements SwRepoClient {
 	private final Integer port;
 
 	/**
-	 * Data store to use for caching.
+	 * Data store to use for caching
 	 */
 	private final SoftwareStore softwareCache;
+
+	/**
+	 * JSON utilities for serialization
+	 */
+	private final JSONUtils jsonUtils;
 
 	/**
 	 * Constructs new software repository client
@@ -80,6 +85,7 @@ class HttpSwRepoClient implements SwRepoClient {
 		this.hostname = hostname;
 		this.port = port;
 		this.softwareCache = softwareCache;
+		this.jsonUtils = JSONUtils.newInstance();
 	}
 
 	// --------------------------------------
@@ -288,7 +294,7 @@ class HttpSwRepoClient implements SwRepoClient {
 			}
 
 			String jsonString = IOUtils.toString(is);
-			return JSONUtils.deserialize(jsonString, type);
+			return jsonUtils.deserialize(jsonString, type);
 		} catch (IOException e) {
 			log.error(
 					"Failed to GET item from software repository - I/O exception occurs when reading response input stream to string",
@@ -326,7 +332,7 @@ class HttpSwRepoClient implements SwRepoClient {
 
 		try {
 			for (Header header : headers) {
-				request.addHeader(header.key, JSONUtils.serialize(header.value));
+				request.addHeader(header.key, jsonUtils.serialize(header.value));
 			}
 		} catch (JsonException e) {
 			log.error(
@@ -394,7 +400,7 @@ class HttpSwRepoClient implements SwRepoClient {
 
 		try {
 			for (Header header : headers) {
-				request.addHeader(header.key, JSONUtils.serialize(header.value));
+				request.addHeader(header.key, jsonUtils.serialize(header.value));
 			}
 		} catch (JsonException e) {
 			log.error("Failed to PUT item to software repository - cannot serialize request header object to json string", e);

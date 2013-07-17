@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
+import cz.cuni.mff.d3s.been.persistence.Query;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
 import org.codehaus.jackson.map.SerializationConfig.Feature;
@@ -13,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.d3s.been.core.persistence.EntityCarrier;
 import cz.cuni.mff.d3s.been.core.persistence.EntityID;
-import cz.cuni.mff.d3s.been.core.persistence.Query;
 import cz.cuni.mff.d3s.been.mq.IMessageQueue;
 import cz.cuni.mff.d3s.been.mq.IMessageSender;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
@@ -77,13 +77,13 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 	}
 
 	@Override
-	public <T extends Result> Collection<T> retrieveResults(Query query, Class<T> resultClass) throws DAOException {
+	public <T extends Result> Collection<T> query(Query fetchQuery, Class<T> resultClass) throws DAOException {
 		Requestor requestor = null;
 		String queryString = null;
 		String replyString = null;
 
 		try {
-			queryString = queryWriter.writeValueAsString(query);
+			queryString = queryWriter.writeValueAsString(fetchQuery);
 		} catch (IOException e) {
 			throw new DAOException("Failed to serialize query", e);
 		}

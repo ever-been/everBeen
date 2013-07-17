@@ -5,9 +5,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.Date;
 
-import cz.cuni.mff.d3s.been.core.persistence.Query;
-import cz.cuni.mff.d3s.been.core.persistence.QueryBuilder;
-import cz.cuni.mff.d3s.been.taskapi.ResultFacade;
+import cz.cuni.mff.d3s.been.persistence.QueryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,7 +66,7 @@ public class ExampleTask extends Task {
 		eid.setGroup("example-md5");
 
 		try {
-			final Collection<ExampleResult> myResults = results.retrieveResults(new QueryBuilder().on(eid).with("taskId", getId()).build(), ExampleResult.class);
+			final Collection<ExampleResult> myResults = results.query(new QueryBuilder().on(eid).with("taskId", getId()).fetch(), ExampleResult.class);
 			log.info("Picked up result {}", myResults);
 		} catch (DAOException e) {
 			log.error("Cannot retrieve result.", e);

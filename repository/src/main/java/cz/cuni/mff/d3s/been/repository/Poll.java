@@ -1,4 +1,4 @@
-package cz.cuni.mff.d3s.been.persistence;
+package cz.cuni.mff.d3s.been.repository;
 
 /**
  * A generic poll action.

@@ -1,7 +1,7 @@
 package cz.cuni.mff.d3s.been.socketworks.twoway;
 
-import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
-import cz.cuni.mff.d3s.been.core.utils.JsonException;
+import cz.cuni.mff.d3s.been.util.JSONUtils;
+import cz.cuni.mff.d3s.been.util.JsonException;
 
 /**
  * 
@@ -36,7 +36,7 @@ public class Request {
 
 	public String toJson() {
 		try {
-			return JSONUtils.serialize(this);
+			return JSONUtils.newInstance().serialize(this);
 		} catch (JsonException e) {
 			e.printStackTrace();
 			return null;
@@ -44,7 +44,7 @@ public class Request {
 	}
 
 	public static Request fromJson(String json) throws JsonException {
-		return JSONUtils.deserialize(json, Request.class);
+		return JSONUtils.newInstance().deserialize(json, Request.class);
 	}
 
 	public String getSelector() {
