@@ -1,18 +1,18 @@
 package cz.cuni.mff.d3s.been.web;
 
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.bio.SocketConnector;
+import org.eclipse.jetty.server.nio.SelectChannelConnector;
+import org.eclipse.jetty.webapp.WebAppContext;
 
-
-import org.mortbay.jetty.Connector;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.bio.SocketConnector;
-import org.mortbay.jetty.webapp.WebAppContext;
 import java.security.ProtectionDomain;
 import java.net.URL;
 
 public class Starter {
     public static void main(String[] args) {
         Server server = new Server();
-        SocketConnector connector = new SocketConnector();
+        SelectChannelConnector connector = new SelectChannelConnector();
 
         // Set some timeout options to make debugging easier.
         connector.setMaxIdleTime(1000 * 60 * 60);
@@ -28,7 +28,7 @@ public class Starter {
         URL location = protectionDomain.getCodeSource().getLocation();
         context.setWar(location.toExternalForm());
 
-        server.addHandler(context);
+        server.setHandler(context);
         try {
             server.start();
             System.in.read();

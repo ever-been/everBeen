@@ -15,7 +15,8 @@
 	<xs:import namespace="http://been.d3s.mff.cuni.cz/monitor" />
 	
 	<xs:element name="id" type="xs:string" />
-	<xs:element name="workingDirectory" type="xs:string" />
+    <xs:element name="workingDirectory" type="xs:string" />
+    <xs:element name="tasksWorkingDirectory" type="xs:string" />
 	<xs:element name="port" type="xs:int" />
 	<xs:element name="host" type="xs:string" />
 	<xs:element name="exclusivity" type="xs:string" />
@@ -62,7 +63,8 @@
 				<xs:element ref="runtimeinfo:id" minOccurs="1" maxOccurs="1" />
 				<xs:element ref="runtimeinfo:port" minOccurs="1" maxOccurs="1" />
 				<xs:element ref="runtimeinfo:host" minOccurs="1" maxOccurs="1" />
-				<xs:element ref="runtimeinfo:workingDirectory" minOccurs="1" maxOccurs="1" />
+                <xs:element ref="runtimeinfo:workingDirectory" minOccurs="1" maxOccurs="1" />
+                <xs:element ref="runtimeinfo:tasksWorkingDirectory" minOccurs="1" maxOccurs="1" />
 				<xs:element ref="runtimeinfo:exclusivity" minOccurs="1" maxOccurs="1" />
 				<xs:element ref="runtimeinfo:exclusiveId" minOccurs="1" maxOccurs="1" />
 				<xs:element ref="runtimeinfo:taskCount" minOccurs="1" maxOccurs="1" />

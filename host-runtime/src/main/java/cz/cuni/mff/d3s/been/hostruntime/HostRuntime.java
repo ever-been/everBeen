@@ -114,7 +114,7 @@ class HostRuntime implements IClusterService {
 		log.info("Starting Host Runtime...");
 		try {
 			// creates necessary files and directories
-			prepareFiles(hostRuntimeInfo.getWorkingDirectory());
+			prepareFiles(hostRuntimeInfo.getWorkingDirectory(), hostRuntimeInfo.getTasksWorkingDirectory());
 
 			startProcessManager();
 
@@ -146,9 +146,13 @@ class HostRuntime implements IClusterService {
 		Monitoring.startMonitoring(monitoringLogPath);
 	}
 
-	private void prepareFiles(String workingDirName) throws IOException {
+	private void prepareFiles(String workingDirName, String tasksWorkingDirName) throws IOException {
 		Path workingDir = Paths.get(workingDirName).toAbsolutePath();
 		Files.createDirectories(workingDir);
+
+
+        Path tasksWorkingDir = Paths.get(tasksWorkingDirName).toAbsolutePath();
+        Files.createDirectories(tasksWorkingDir);
 
 		extractLogger(workingDir);
 

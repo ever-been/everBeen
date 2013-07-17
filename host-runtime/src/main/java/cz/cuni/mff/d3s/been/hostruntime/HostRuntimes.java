@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.hostruntime;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
@@ -20,8 +21,6 @@ import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
 // FIXME Martin Sixta .. why it is named HostRuntimes (name is misleading)
 public class HostRuntimes {
 
-	private static final String HR_DEFAULT_WRKDIR_NAME = ".HostRuntime";
-
 	private static HostRuntime hostRuntime = null;
 
 	/**
@@ -38,8 +37,11 @@ public class HostRuntimes {
 		if (hostRuntime == null) {
 			ClusterContext clusterContext = new ClusterContext(hazelcastInstance);
 			SwRepoClientFactory swRepoClientFactory = new SwRepoClientFactory(SoftwareStoreBuilderFactory.getSoftwareStoreBuilder().withProperties(properties).buildCache());
+            WorkingDirectoryResolver workingDirectoryResolver = new WorkingDirectoryResolver(properties);
+            File workingDirectory = workingDirectoryResolver.getHostRuntimeWorkingDirectory();
+            File tasksWorkingDIrectory = workingDirectoryResolver.getTasksWorkingDirectory();
 
-			RuntimeInfo info = newRuntimeInfo(clusterContext);
+			RuntimeInfo info = newRuntimeInfo(clusterContext, workingDirectory, tasksWorkingDIrectory);
 			hostRuntime = new HostRuntime(clusterContext, swRepoClientFactory, info);
 		}
 		return hostRuntime;
@@ -48,16 +50,18 @@ public class HostRuntimes {
 	/**
 	 * Creates new {@link RuntimeInfo} and initializes all possible values.
 	 * 
-	 * @param clusterContext
-	 * 
-	 * @return initialized RuntimeInfo
+	 *
+     * @param clusterContext
+     *
+     * @param workingDirectory
+     * @param tasksWorkingDirectory
+     * @return initialized RuntimeInfo
 	 */
-	public static RuntimeInfo newRuntimeInfo(ClusterContext clusterContext) {
+	public static RuntimeInfo newRuntimeInfo(ClusterContext clusterContext, File workingDirectory, File tasksWorkingDirectory) {
 		RuntimeInfo ri = new RuntimeInfo();
 
-		// get absolute path to ".HostRuntime" directory
-		Path p = Paths.get(HR_DEFAULT_WRKDIR_NAME).toAbsolutePath();
-		ri.setWorkingDirectory(p.toString());
+		ri.setWorkingDirectory(workingDirectory.getAbsolutePath());
+        ri.setTasksWorkingDirectory(tasksWorkingDirectory.getAbsolutePath());
 
 		String nodeId = UUID.randomUUID().toString();
 		ri.setId(nodeId);
