@@ -89,7 +89,7 @@ public class ZipUtilTest extends Assert {
 
 		for (Entry<String, String> entry : expected.entrySet()) {
 			if (!actual.containsKey(entry.getKey())) {
-				fail("actual map does not contains key '%s'" + entry.getKey());
+				fail(String.format("actual map does not contains key '%s'", entry.getKey()));
 			}
 			if (!actual.get(entry.getKey()).equals(entry.getValue())) {
 				fail("value differs for key '" + entry.getKey() + "' Expected '" + entry.getValue() + "', actual '" + actual.get(entry.getKey()) + "'");
