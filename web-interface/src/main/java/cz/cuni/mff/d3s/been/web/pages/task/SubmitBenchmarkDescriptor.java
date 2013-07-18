@@ -14,31 +14,11 @@ import org.apache.tapestry5.corelib.components.Form;
  * @author Kuba Brecka
  */
 @Page.Navigation(section = Layout.Section.TASK_SUBMIT)
-public class SubmitBenchmarkDescriptor extends Page {
+public class SubmitBenchmarkDescriptor extends SubmitTaskDescriptor {
 
-	@Property
-	BpkIdentifier bpkIdentifier;
-
-	@Property
-	@Persist
-	TaskDescriptor taskDescriptor;
-
-	void onActivate(String groupId, String bpkId, String version, String descriptorName) {
-		bpkIdentifier = new BpkIdentifier();
-		bpkIdentifier.setGroupId(groupId);
-		bpkIdentifier.setBpkId(bpkId);
-		bpkIdentifier.setVersion(version);
-
-		this.taskDescriptor = this.api.getApi().getTaskDescriptor(bpkIdentifier, descriptorName);
-	}
-
-	@Component
-	private Form form;
-
-	Object onSuccess()
-	{
+	@Override
+	protected void submitTaskDescriptor(TaskDescriptor taskDescriptor) {
 		this.api.getApi().submitBenchmark(taskDescriptor);
-		return Overview.class;
 	}
 
 }

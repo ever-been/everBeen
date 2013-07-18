@@ -181,6 +181,16 @@ public class SubmitTaskDescriptor extends Page {
     // FORM HANDLING
     // -----------------------------
 
+	/**
+	 * To be overloaded from SubmitBenchmarkDescriptor.
+	 *
+	 * @param taskDescriptor task descriptor to submit
+	 */
+	protected void submitTaskDescriptor(TaskDescriptor taskDescriptor)
+	{
+		this.api.getApi().submitTask(taskDescriptor);
+	}
+
     /**
      * This handler is called when users click on form SUBMIT button.
      * Submits task to BEEN cluster using {@link cz.cuni.mff.d3s.been.api.BeenApi}
@@ -189,7 +199,8 @@ public class SubmitTaskDescriptor extends Page {
      */
     @SuppressWarnings("unused")
     Object onSubmitFromSubmitTaskForm() {
-        this.api.getApi().submitTask(taskDescriptor);
+	    submitTaskDescriptor(taskDescriptor);
+
         args.remove(null);
         taskDescriptor.getArguments().getArgument().clear();
         taskDescriptor.getJava().getJavaOptions().getJavaOption().clear();

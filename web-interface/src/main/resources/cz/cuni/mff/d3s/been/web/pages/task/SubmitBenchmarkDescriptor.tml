@@ -3,13 +3,12 @@
 <html t:type="layout" section="section"
       xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd" xmlns:p="tapestry:parameter">
 
-<h2>Submit New Benchmark</h2>
+<h2>Submit Benchmark</h2>
 
-<t:beandisplay object="taskDescriptor">
-</t:beandisplay>
+<t:form t:id="submitTaskForm" class="form-horizontal">
+	<t:task.editTaskDescriptorForm t:args="args" t:javaOpts="opts" t:taskDescriptor="taskDescriptor"/>
 
-<form t:type="form" t:id="form">
-	<button type="submit">Submit</button>
-</form>
+	<button type="submit" class="btn btn-success">Submit</button>
+</t:form>
 
 </html>
