@@ -24,6 +24,7 @@
 			<xs:sequence>
 				<xs:element ref="taskentry:state" minOccurs="1" maxOccurs="1"/>
 				<xs:element name="reason" type="xs:string" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="timestamp" type="xs:long" minOccurs="1" maxOccurs="1"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>

@@ -110,7 +110,7 @@ public class Layout {
 
         TASK_TREE(cz.cuni.mff.d3s.been.web.pages.task.Tree.class, "Benchmarks & Tasks", "Benchmark tree"),
 
-        TASK_TASKS(cz.cuni.mff.d3s.been.web.pages.task.Tree.class, "Benchmarks & Tasks", "Tasks"),
+        TASK_TASKS(cz.cuni.mff.d3s.been.web.pages.task.List.class, "Benchmarks & Tasks", "Tasks"),
 
         TASK_CONTEXTS(cz.cuni.mff.d3s.been.web.pages.task.Tree.class, "Benchmarks & Tasks", "Task contexts"),
 
