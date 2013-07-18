@@ -16,10 +16,10 @@ import org.got5.tapestry5.jquery.ImportJQueryUI;
 /**
  * User: donarus Date: 4/22/13 Time: 1:38 PM
  */
-@Page.Navigation(section = Layout.Section.TASK_LIST)
+@Page.Navigation(section = Layout.Section.TASK_TREE)
 @ImportJQueryUI
 @Import(library={"context:js/task-list.js"})
-public class List extends Page {
+public class Tree extends Page {
 
 	@Property
 	private TaskEntry task;
