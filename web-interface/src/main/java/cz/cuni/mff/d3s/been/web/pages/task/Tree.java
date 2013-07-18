@@ -1,6 +1,6 @@
 package cz.cuni.mff.d3s.been.web.pages.task;
 
-import java.util.Collection;
+import java.util.*;
 
 import cz.cuni.mff.d3s.been.core.benchmark.BenchmarkEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
@@ -62,4 +62,69 @@ public class Tree extends Page {
 		return state == TaskState.ABORTED || state == TaskState.FINISHED;
 	}
 
+	@Property
+	private ArrayList<TaskEntry> orphanedContext;
+
+	@Property
+	private int taskIndex;
+
+	public ArrayList<ArrayList<TaskEntry>> getOrphanedContexts() {
+		Collection<TaskEntry> allTasks = this.api.getApi().getTasks();
+		Collection<String> tasksInTree = getTaskIdsFromTree();
+		Collection<String> generatorTasks = getGeneratorTaskIds();
+
+		ArrayList<TaskEntry> taskEntries = new ArrayList<>(allTasks);
+		Collections.sort(taskEntries, new Comparator<TaskEntry>() {
+			@Override
+			public int compare(TaskEntry o1, TaskEntry o2) {
+				int order = o1.getTaskContextId().compareTo(o2.getTaskContextId());
+				if (order == 0)
+					order = o1.getId().compareTo(o2.getId());
+				return order;
+			}
+		});
+
+		Map<String, ArrayList<TaskEntry>> tasksByContexts = new LinkedHashMap<>();
+
+		for (TaskEntry taskEntry : taskEntries) {
+			if (tasksInTree.contains(taskEntry.getId())) {
+				continue;
+			}
+
+			if (generatorTasks.contains(taskEntry.getId())) {
+				continue;
+			}
+
+			String contextId = taskEntry.getTaskContextId();
+			if (!tasksByContexts.containsKey(contextId))
+				tasksByContexts.put(contextId, new ArrayList<TaskEntry>());
+			tasksByContexts.get(contextId).add(taskEntry);
+		}
+
+		return new ArrayList<>(tasksByContexts.values());
+	}
+
+	private Collection<String> getGeneratorTaskIds() {
+		ArrayList<String> result = new ArrayList<>();
+		for (BenchmarkEntry benchmarkEntry : this.getBenchmarks()) {
+			result.add(benchmarkEntry.getGeneratorId());
+		}
+		return result;
+	}
+
+	private Collection<String> getTaskIdsFromTree() {
+		ArrayList<String> result = new ArrayList<>();
+		for (BenchmarkEntry benchmarkEntry : getBenchmarks()) {
+			for (TaskContextEntry taskContextEntry : contextsForBenchmark(benchmarkEntry.getId())) {
+				for (TaskEntry taskEntry : tasksForContext(taskContextEntry.getId())) {
+					result.add(taskEntry.getId());
+				}
+			}
+		}
+		return result;
+	}
+
+	public boolean isFirstInContext() {
+		return taskIndex == 0;
+	}
 }
