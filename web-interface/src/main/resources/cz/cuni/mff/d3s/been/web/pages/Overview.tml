@@ -86,7 +86,7 @@
 						</td>
 						<td>
 							<t:if test="taskBenchmark(task)">
-								<i class="icon-book"></i>
+								<i class="icon-rocket"></i>
 								<p:else>
 									<i class="icon-beaker"></i>
 								</p:else>

@@ -23,15 +23,11 @@
 		<t:loop source="context" value="task" index="taskIndex">
 			<tr class="data">
 				<td>
+					<i class="icon-book"></i>&nbsp;
 					<a href="/context/detail/${task.taskContextId}"><t:output format="idFormat" value="task.taskContextId" /></a>
 				</td>
 				<td>
-					<t:if test="taskBenchmark(task)">
-						<i class="icon-book"></i>
-						<p:else>
-							<i class="icon-beaker"></i>
-						</p:else>
-					</t:if>&nbsp;
+					<i class="icon-beaker"></i>&nbsp;
 					<a href="/task/detail/${task.id}"><t:output format="idFormat" value="task.id" /></a>
 				</td>
 				<td>${task.taskDescriptor.type}</td>
@@ -45,6 +41,7 @@
 				</td>
 				<td>
 					<t:if test="task.benchmarkId">
+						<i class="icon-rocket"></i>&nbsp;
 						<a href="/benchmark/detail/${task.benchmarkId}"><t:output format="idFormat" value="task.benchmarkId" /></a>
 					</t:if>
 				</td>
