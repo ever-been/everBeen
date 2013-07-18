@@ -8,6 +8,7 @@
 	<properties>
 		<property name="revision">4532</property>
 		<property name="numberOfClients">2</property>
+		<property name="fakeRun">true</property>
 	</properties>
 
 	<task>
@@ -20,7 +21,7 @@
 		<descriptor>
 			<td:taskDescriptor
 					groupId="cz.cuni.mff.d3s.been" bpkId="benchmark-nginx"
-					version="3.0.0" name="nginx-server" type="task">
+					version="3.0.0-SNAPSHOT" name="nginx-server" type="task">
 				<td:java>
 					<td:useTaskRunner>true</td:useTaskRunner>
 					<td:mainClass>cz.cuni.mff.d3s.been.nginx.NginxServerTask</td:mainClass>
@@ -53,7 +54,7 @@
 		<template name="nginx-client">
 			<td:taskDescriptor xmlns="http://been.d3s.mff.cuni.cz/task-descriptor"
 			                   groupId="cz.cuni.mff.d3s.been" bpkId="benchmark-nginx"
-			                   version="3.0.0" name="nginx-client" type="task">
+			                   version="3.0.0-SNAPSHOT" name="nginx-client" type="task">
 				<td:properties>
 					<td:property name="numberOfRuns">10</td:property>
 					<td:property name="numberOfConnections">1000</td:property>
