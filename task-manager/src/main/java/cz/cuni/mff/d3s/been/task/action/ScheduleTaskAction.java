@@ -40,9 +40,6 @@ public final class ScheduleTaskAction implements TaskAction {
 	/** default lock timeout value */
 	private static final int DEFAULT_LOCK_TIMEOUT = 60;
 
-	/** shortcut for Host Runtime topic name */
-	private static final String RUNTIME_TOPIC = Context.GLOBAL_TOPIC.getName();
-
 	/** logging */
 	private static Logger log = LoggerFactory.getLogger(ScheduleTaskAction.class);
 
@@ -113,7 +110,7 @@ public final class ScheduleTaskAction implements TaskAction {
 			map.unlock(id);
 
 			// 5) Send a message to the runtime
-			ctx.getTopics().publish(RUNTIME_TOPIC, newRunTaskMessage());
+			ctx.getTopics().publishInGlobalTopic(newRunTaskMessage());
 
 			log.info("Task {} scheduled on {}", id, receiverId);
 

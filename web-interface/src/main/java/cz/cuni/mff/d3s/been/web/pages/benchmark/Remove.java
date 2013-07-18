@@ -27,4 +27,5 @@ public class Remove extends Page {
 
 		return List.class;
 	}
+
 }

@@ -166,6 +166,13 @@ public class NginxClientTask extends Task {
 
 			log.info("Client finished benchmarking.");
 
+			if (fakeRun) {
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e) {
+				}
+			}
+
 			requestor.latchCountDown("shutdown-latch");
 		} catch (MessagingException e) {
 			e.printStackTrace();

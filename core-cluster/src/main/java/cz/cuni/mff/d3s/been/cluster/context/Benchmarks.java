@@ -8,6 +8,8 @@ import java.util.UUID;
 
 import cz.cuni.mff.d3s.been.core.benchmark.ResubmitHistory;
 import cz.cuni.mff.d3s.been.core.benchmark.ResubmitHistoryItem;
+import cz.cuni.mff.d3s.been.core.protocol.Context;
+import cz.cuni.mff.d3s.been.core.protocol.messages.KillTaskMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -295,5 +297,41 @@ public class Benchmarks {
 					benchmarkEntry,
 					generatorEntry.getState()));
 		}
+	}
+
+	/**
+	 * Issues a "kill task" message for the benchmark generator. This message will
+	 * be delivered to the appropriate host runtime, which will try to kill the generator
+	 * of the benchmark. Running contexts and tasks of the benchmark are *not* affected.
+	 *
+	 * @param benchmarkId ID of the benchmark to kill
+	 */
+	public void kill(String benchmarkId) {
+		IMap<String, BenchmarkEntry> benchmarksMap = getBenchmarksMap();
+		try {
+			benchmarksMap.lock(benchmarkId);
+
+			BenchmarkEntry benchmarkEntry = get(benchmarkId);
+			String generatorId = benchmarkEntry.getGeneratorId();
+			TaskEntry generatorEntry = clusterContext.getTasks().getTask(generatorId);
+
+			if (generatorEntry == null) {
+				throw new IllegalStateException(String.format("The generator of benchmark %s does not exist.", benchmarkId));
+			}
+
+			if (generatorEntry.getState() == TaskState.FINISHED || generatorEntry.getState() == TaskState.ABORTED) {
+				throw new IllegalStateException(String.format(
+						"Trying to kill benchmark %s, but it's generator is in state %s.",
+						benchmarkId, generatorEntry.getState()));
+			}
+
+			benchmarkEntry.setAllowResubmit(false);
+			put(benchmarkEntry);
+
+			clusterContext.getTasks().kill(generatorId);
+		} finally {
+			benchmarksMap.unlock(benchmarkId);
+		}
+
 	}
 }

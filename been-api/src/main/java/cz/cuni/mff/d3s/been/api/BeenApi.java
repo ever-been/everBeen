@@ -38,7 +38,8 @@ public interface BeenApi {
 	public String submitBenchmark(TaskDescriptor benchmarkTaskDescriptor);
 
 	public void killTask(String taskId);
-	public void killTaskContext(String taskId);
+	public void killTaskContext(String taskContextId);
+	public void killBenchmark(String benchmarkId);
 
 	public void removeTaskEntry(String taskId);
 	public void removeTaskContextEntry(String taskContextId);
