@@ -21,7 +21,11 @@ public class NginxServerTask extends Task {
 
 	private File workingDirectory = new File(".");
 
+	private boolean fakeRun;
+
 	private void downloadSources() {
+		if (fakeRun) return;
+
 		String svnPath = this.getProperty("svnPath");
 		int currentRevision = Integer.parseInt(this.getProperty("revision"));
 
@@ -29,6 +33,8 @@ public class NginxServerTask extends Task {
 	}
 
 	private void buildSources() {
+		if (fakeRun) return;
+
 		File sourcesDir = new File(workingDirectory, "nginx");
 
 		MyUtils.exec("./nginx", "auto/configure", new String[] {});
@@ -40,6 +46,8 @@ public class NginxServerTask extends Task {
 	Thread runnerThread;
 
 	private void runServer() {
+		if (fakeRun) return;
+
 		// create logs dir
 		try {
 			final File sourcesDir = new File(workingDirectory, "nginx");
@@ -67,6 +75,8 @@ public class NginxServerTask extends Task {
 	}
 
 	private void shutdownServer() {
+		if (fakeRun) return;
+
 		MyUtils.exec("./nginx", "objs/nginx", new String[] { "-p", ".", "-s", "stop" });
 		try {
 			runnerThread.join();
@@ -78,6 +88,7 @@ public class NginxServerTask extends Task {
 	@Override
 	public void run(String[] args) {
 		try (CheckpointController requestor = CheckpointController.create()) {
+			fakeRun = Boolean.parseBoolean(this.getProperty("fakeRun"));
 
 			log.info("Nginx Server Task started.");
 
