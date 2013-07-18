@@ -115,7 +115,53 @@
 			</tr>
 		</p:empty>
 	</t:loop>
+</table>
 
+<h2 style="clear: both; padding: 40px 0 0 0;">Orphaned tasks</h2>
+
+<table class="list">
+	<thead>
+	<tr>
+		<th>Context ID</th>
+		<th></th>
+		<th>Task ID</th>
+		<th>Name</th>
+		<th>State</th>
+	</tr>
+	</thead>
+
+	<t:loop source="orphanedContexts" value="orphanedContext">
+		<t:loop source="orphanedContext" value="task" index="taskIndex">
+			<tr>
+				<td>
+					<t:if test="isFirstInContext()">
+						<a href="/context/detail/${task.taskContextId}"><t:output format="idFormat" value="task.taskContextId" /></a>
+					</t:if>
+				</td>
+				<td>
+					<t:if test="taskBenchmark(task)">
+						<i class="icon-book"></i>
+						<p:else>
+							<i class="icon-beaker"></i>
+						</p:else>
+					</t:if>
+				</td>
+				<td><a href="/task/detail/${task.id}"><t:output format="idFormat" value="task.id" /></a></td>
+				<td>${task.taskDescriptor.name}</td>
+				<td>
+					<t:outputRaw value="taskStateWithIcon(task.state)"/>
+				</td>
+			</tr>
+		</t:loop>
+
+		<p:empty>
+			<tr>
+				<td colspan="5">
+					<i class="icon-info-sign"></i> There are no orphaned tasks.
+				</td>
+			</tr>
+		</p:empty>
+	</t:loop>
 </table>
 
 </html>
