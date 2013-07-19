@@ -8,9 +8,7 @@ import com.mongodb.util.JSON;
 
 import cz.cuni.mff.d3s.been.core.persistence.EntityCarrier;
 import cz.cuni.mff.d3s.been.core.persistence.EntityID;
-import cz.cuni.mff.d3s.been.core.persistence.Query;
-import cz.cuni.mff.d3s.been.persistence.DAOException;
-import cz.cuni.mff.d3s.been.persistence.SuccessAction;
+import cz.cuni.mff.d3s.been.persistence.*;
 import cz.cuni.mff.d3s.been.storage.Storage;
 import cz.cuni.mff.d3s.been.storage.StorageException;
 import cz.cuni.mff.d3s.been.storage.StoragePersistAction;
@@ -109,17 +107,39 @@ public final class MongoStorage implements Storage {
 	}
 
 	@Override
-	public Collection<String> query(Query query) {
+	public QueryAnswer query(Query query) {
 		final DBObject filter = new BasicDBObject();
-		filter.putAll(query.getSelectors());
-		return get(query.getEntityID(), filter);
+		for (String selectorName: query.getSelectorNames()) {
+			filter.put(selectorName, query.getSelector(selectorName));
+		}
+		switch (query.getType()) {
+			case FETCH:
+				try {
+					return QueryAnswerFactory.fetched(fetch(query.getEntityID(), filter));
+				} catch (DAOException e) {
+					return QueryAnswerFactory.unknownError();
+				}
+			case DELETE:
+				try {
+					if (query.getEntityID() != null) {
+						delete(query.getEntityID(), filter);
+					} else {
+						delete(filter);
+					}
+					return QueryAnswerFactory.deleted();
+				} catch (DAOException e) {
+					return QueryAnswerFactory.unknownError();
+				}
+			default:
+				return QueryAnswerFactory.badQuery();
+		}
 	}
 
-	private final DBCollection mapEntity(EntityID eid) {
+	private final DBCollection mapEntity(EntityID eid) throws DAOException {
 		return db.getCollection(eid.getKind()).getCollection(eid.getGroup());
 	}
 
-	private final Collection<String> get(EntityID entityId, DBObject filter) {
+	private final Collection<String> fetch(EntityID entityId, DBObject filter) throws DAOException {
 		log.debug("Querying {} with filter {} and projection {}", entityId.toString(), filter.toString(), PROJECT_IGNORE_MONGO_ID.toString());
 		final DBCursor cursor = mapEntity(entityId).find(filter, PROJECT_IGNORE_MONGO_ID);
 		List<String> result = new ArrayList<String>(cursor.count());
@@ -128,5 +148,15 @@ public final class MongoStorage implements Storage {
 		}
 		log.debug("Query result: {}", result.toString());
 		return result;
+	}
+
+	private final void delete(DBObject filter) {
+		for (String collName: db.getCollectionNames()) {
+			db.getCollection(collName).remove(filter);
+		}
+	}
+
+	private final void delete(EntityID entityID, DBObject filter) throws DAOException {
+		mapEntity(entityID).remove(filter);
 	}
 }

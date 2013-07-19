@@ -1,4 +1,4 @@
-package cz.cuni.mff.d3s.been.core.utils;
+package cz.cuni.mff.d3s.been.util;
 
 import static org.codehaus.jackson.JsonToken.*;
 

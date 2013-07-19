@@ -13,8 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.d3s.been.bpk.ArtifactIdentifier;
-import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
-import cz.cuni.mff.d3s.been.core.utils.JsonException;
+import cz.cuni.mff.d3s.been.util.JSONUtils;
+import cz.cuni.mff.d3s.been.util.JsonException;
 import cz.cuni.mff.d3s.been.datastore.ArtifactStore;
 import cz.cuni.mff.d3s.been.datastore.StorePersister;
 import cz.cuni.mff.d3s.been.datastore.StoreReader;
@@ -32,6 +32,7 @@ public class ArtifactRequestHandler extends SkeletalRequestHandler {
 
 	/** Persistence layer used to retrieve artifacts */
 	private final ArtifactStore store;
+	private final JSONUtils jsonUtils;
 
 	/**
 	 * Create the handler.
@@ -41,13 +42,14 @@ public class ArtifactRequestHandler extends SkeletalRequestHandler {
 	 */
 	public ArtifactRequestHandler(ArtifactStore store) {
 		this.store = store;
+		this.jsonUtils = JSONUtils.newInstance();
 	}
 
 	@Override
 	public void handleGet(HttpRequest request, HttpResponse response) {
 		ArtifactIdentifier artifactIdentifier = null;
 		try {
-			artifactIdentifier = JSONUtils.<ArtifactIdentifier> deserialize(
+			artifactIdentifier = jsonUtils.<ArtifactIdentifier> deserialize(
 					request.getFirstHeader(ARTIFACT_IDENTIFIER_HEADER_NAME).getValue(),
 					ArtifactIdentifier.class);
 		} catch (JsonException e) {
@@ -88,7 +90,7 @@ public class ArtifactRequestHandler extends SkeletalRequestHandler {
 
 		BasicHttpEntityEnclosingRequest put = (BasicHttpEntityEnclosingRequest) request;
 		try {
-			artifactIdentifier = JSONUtils.deserialize(
+			artifactIdentifier = jsonUtils.deserialize(
 					request.getFirstHeader(ARTIFACT_IDENTIFIER_HEADER_NAME).getValue(),
 					ArtifactIdentifier.class);
 		} catch (JsonException e) {

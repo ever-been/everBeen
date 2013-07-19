@@ -5,9 +5,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.Date;
 
-import cz.cuni.mff.d3s.been.core.persistence.Query;
-import cz.cuni.mff.d3s.been.core.persistence.QueryBuilder;
-import cz.cuni.mff.d3s.been.taskapi.ResultFacade;
+import cz.cuni.mff.d3s.been.persistence.QueryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,18 +60,34 @@ public class ExampleTask extends Task {
 		}
 	}
 
-	private void pickupResult() {
+	private int pickupResult() {
 		final EntityID eid = new EntityID();
 		eid.setKind("result");
 		eid.setGroup("example-md5");
 
 		try {
-			final Collection<ExampleResult> myResults = results.retrieveResults(new QueryBuilder().on(eid).with("taskId", getId()).build(), ExampleResult.class);
+			final Collection<ExampleResult> myResults = results.query(new QueryBuilder().on(eid).with("taskId", getId()).fetch(), ExampleResult.class);
 			log.info("Picked up result {}", myResults);
+			return myResults.size();
 		} catch (DAOException e) {
 			log.error("Cannot retrieve result.", e);
+			return -1;
 		}
 	}
+
+	// proof of concept deletion using commented out delete method
+	/*
+	private void deleteResult() {
+		final EntityID eid = new EntityID();
+		eid.setKind("result");
+		eid.setGroup("example-md5");
+
+		try {
+			results.delete(new QueryBuilder().on(eid).with("taskId", getId()).delete());
+		} catch (DAOException e) {
+			log.error("Delete failed");
+		}
+	}*/
 
 	@Override
 	public void run(String[] args) {
@@ -84,11 +98,24 @@ public class ExampleTask extends Task {
 		persistResult();
 		log.info("Result stored.");
 		try {
-			Thread.sleep(5000);
+			Thread.sleep(3000);
 		} catch (InterruptedException e){
 		}
-		pickupResult();
+		final int resCount1 = pickupResult();
 		log.info("Result retrieved");
+
+		/*
+		deleteResult();
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+		}
+
+		final int resCount2 = pickupResult();
+
+		if (resCount1 <= resCount2) {
+			throw new AssertionError("Nothing was deleted"); // assert that something was actually deleted
+		}*/
 
 		try {
 			Thread.sleep(3 * 1000);

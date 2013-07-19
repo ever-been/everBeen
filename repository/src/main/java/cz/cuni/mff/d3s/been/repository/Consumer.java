@@ -1,5 +1,7 @@
-package cz.cuni.mff.d3s.been.persistence;
+package cz.cuni.mff.d3s.been.repository;
 
+import cz.cuni.mff.d3s.been.persistence.DAOException;
+import cz.cuni.mff.d3s.been.persistence.SuccessAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

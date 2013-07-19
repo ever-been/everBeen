@@ -2,9 +2,9 @@ package cz.cuni.mff.d3s.been.taskapi;
 
 import static cz.cuni.mff.d3s.been.core.TaskMessageType.LOG_MESSAGE;
 import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.*;
-import static cz.cuni.mff.d3s.been.core.utils.JSONUtils.serialize;
 import cz.cuni.mff.d3s.been.core.LogMessage;
-import cz.cuni.mff.d3s.been.core.utils.JsonException;
+import cz.cuni.mff.d3s.been.util.JSONUtils;
+import cz.cuni.mff.d3s.been.util.JsonException;
 
 /**
  * Logger implementation for a BEEN Task.
@@ -21,6 +21,7 @@ class TaskLogger extends TaskLoggerBase {
 	private static final String benchmarkId;
 
 	private String name;
+	private final JSONUtils jsonUtils = JSONUtils.newInstance();
 
 	static {
 		taskId = System.getenv(TASK_ID);
@@ -72,7 +73,7 @@ class TaskLogger extends TaskLoggerBase {
 		LogMessage logMsg = new LogMessage(name, level, message).withThreadName().withTimestamp().withThroable(t);
 		logMsg.withTaskId(taskId).withContextId(contextId).withBenchmarkId(benchmarkId);
 
-		return serialize(logMsg);
+		return jsonUtils.serialize(logMsg);
 
 	}
 }

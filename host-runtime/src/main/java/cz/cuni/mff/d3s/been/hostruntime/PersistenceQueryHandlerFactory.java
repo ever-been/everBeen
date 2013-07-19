@@ -19,8 +19,10 @@ public class PersistenceQueryHandlerFactory implements ReadReplyHandlerFactory, 
 
 	PersistenceQueryHandlerFactory(ClusterContext clusterContext) {
 		this.clusterContext = clusterContext;
-		this.idleHandlers = new LinkedBlockingQueue<>();
+		this.idleHandlers = new LinkedBlockingQueue<ReadReplyHandler>();
 		this.om = new ObjectMapper();
+
+		om.enableDefaultTyping(ObjectMapper.DefaultTyping.OBJECT_AND_NON_CONCRETE);
 	}
 
 	/**

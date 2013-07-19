@@ -15,10 +15,10 @@ import cz.cuni.mff.d3s.been.core.LogMessage;
 import cz.cuni.mff.d3s.been.core.TaskMessageType;
 import cz.cuni.mff.d3s.been.core.persistence.EntityCarrier;
 import cz.cuni.mff.d3s.been.core.persistence.EntityID;
-import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
-import cz.cuni.mff.d3s.been.core.utils.JsonException;
-import cz.cuni.mff.d3s.been.core.utils.JsonKeyHandler;
-import cz.cuni.mff.d3s.been.core.utils.JsonStreamer;
+import cz.cuni.mff.d3s.been.util.JSONUtils;
+import cz.cuni.mff.d3s.been.util.JsonException;
+import cz.cuni.mff.d3s.been.util.JsonKeyHandler;
+import cz.cuni.mff.d3s.been.util.JsonStreamer;
 import cz.cuni.mff.d3s.been.debugassistant.DebugAssistant;
 import cz.cuni.mff.d3s.been.socketworks.oneway.ReadOnlyHandler;
 
@@ -42,6 +42,7 @@ public class TaskLogHandler implements ReadOnlyHandler {
 	private final IMap<String, String> benchmarkLogs;
 
 	private final JsonStreamer jsonStreamer;
+	private final JSONUtils jsonUtils;
 
 	private TaskLogHandler(ClusterContext ctx) {
 		this.ctx = ctx;
@@ -52,6 +53,7 @@ public class TaskLogHandler implements ReadOnlyHandler {
 		benchmarkLogs = ctx.getMap(LOGS_BENCHMARK_MAP_NAME);
 
 		jsonStreamer = new JsonStreamer();
+		jsonUtils = JSONUtils.newInstance();
 
 		jsonStreamer.addHandler("taskId", new JsonKeyHandler() {
 			@Override
@@ -148,7 +150,7 @@ public class TaskLogHandler implements ReadOnlyHandler {
 	 */
 	private void printDebuggingMessage(String message) {
 		try {
-			LogMessage logMessage = JSONUtils.deserialize(message, LogMessage.class);
+			LogMessage logMessage = jsonUtils.deserialize(message, LogMessage.class);
 			log.debug("Task {} logs {}{}", logMessage.getTaskId(), logMessage.getMessage(), logMessage.getErrorTrace() == null ? "" : "\n" + logMessage.getErrorTrace());
 		} catch (JsonException e) {
 			String errorMessage = String.format("Cannot parse log message: %s", message);

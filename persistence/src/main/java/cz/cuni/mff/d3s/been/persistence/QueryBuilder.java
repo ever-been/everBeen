@@ -1,11 +1,12 @@
-package cz.cuni.mff.d3s.been.core.persistence;
+package cz.cuni.mff.d3s.been.persistence;
 
-import java.io.Serializable;
+import cz.cuni.mff.d3s.been.core.persistence.EntityID;
+
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A builder for {@link Query} objects
+ * A builder for {@link FetchQuery} objects
  *
  * @author darklight
  */
@@ -47,16 +48,30 @@ public class QueryBuilder {
 	}
 
 	/**
-	 * Build a query with using this builder's actual configuration.
+	 * Build a fetch query intended for data retrieval
 	 *
-	 * @return A new {@link Query}
+	 * @return A fetch query with this builder's current setup
 	 *
 	 * @throws IllegalStateException When some mandatory parameters are missing (Full entity ID is required)
 	 */
-	public Query build() throws IllegalStateException {
+	public Query fetch() throws IllegalStateException {
 		if (entityID == null || entityID.getGroup() == null || entityID.getKind() == null) {
 			throw new IllegalStateException("Entity ID or some of its fields are null.");
 		}
-		return new Query(entityID, selectors);
+		return new FetchQuery(entityID, selectors);
+	}
+
+	/**
+	 * Build a query intended for data removal.
+	 *
+	 * @return A delete query with this builder's current setup
+	 *
+	 * @throws IllegalStateException When the entity id is only filled partially
+	 */
+	public Query delete() throws IllegalStateException {
+		if (entityID != null && (entityID.getKind() == null || entityID.getGroup() == null)) {
+			throw new IllegalStateException("Entity ID is filled partially");
+		}
+		return new DeleteQuery(entityID, selectors);
 	}
 }

@@ -1,12 +1,10 @@
-package cz.cuni.mff.d3s.been.persistence.queue;
+package cz.cuni.mff.d3s.been.repository;
 
 import com.hazelcast.core.IMap;
-import cz.cuni.mff.d3s.been.core.persistence.Query;
 import cz.cuni.mff.d3s.been.persistence.DAOException;
+import cz.cuni.mff.d3s.been.persistence.Query;
 import cz.cuni.mff.d3s.been.persistence.SuccessAction;
 import cz.cuni.mff.d3s.been.storage.Storage;
-
-import java.util.Collection;
 
 /**
  * An action that answers a query (finds the response and shares it across the cluster).s

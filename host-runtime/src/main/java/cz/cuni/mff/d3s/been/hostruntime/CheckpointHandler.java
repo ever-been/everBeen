@@ -3,7 +3,7 @@ package cz.cuni.mff.d3s.been.hostruntime;
 import cz.cuni.mff.d3s.been.cluster.action.Action;
 import cz.cuni.mff.d3s.been.cluster.action.Actions;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
-import cz.cuni.mff.d3s.been.core.utils.JsonException;
+import cz.cuni.mff.d3s.been.util.JsonException;
 import cz.cuni.mff.d3s.been.socketworks.SocketHandlerException;
 import cz.cuni.mff.d3s.been.socketworks.twoway.ReadReplyHandler;
 import cz.cuni.mff.d3s.been.socketworks.twoway.Replies;

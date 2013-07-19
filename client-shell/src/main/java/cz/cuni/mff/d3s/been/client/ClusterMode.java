@@ -17,8 +17,8 @@ import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskEntries;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
-import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
-import cz.cuni.mff.d3s.been.core.utils.JsonException;
+import cz.cuni.mff.d3s.been.util.JSONUtils;
+import cz.cuni.mff.d3s.been.util.JsonException;
 import cz.cuni.mff.d3s.been.debugassistant.DebugListItem;
 
 /**
@@ -28,6 +28,7 @@ class ClusterMode extends AbstractMode {
 
 	private final ClusterContext clusterContext;
 	private final BeenApi api;
+	private final JSONUtils jsonUtils;
 
 	private enum Action {
 		HELP, TASKS, TASKCONTEXTS, RUNTIMES, BENCHMARKS, BREAK, INSTANCES, BPKS, LOGS, DEBUG;
@@ -51,6 +52,7 @@ class ClusterMode extends AbstractMode {
 		super(reader, "> ", getActionStrings());
 		this.clusterContext = clusterContext;
 		this.api = new BeenApiImpl(clusterContext);
+		this.jsonUtils = JSONUtils.newInstance();
 	}
 
 	@Override
@@ -123,7 +125,7 @@ class ClusterMode extends AbstractMode {
 			out.printf("ID: %s\n", id);
 			for (LogMessage msg : api.getLogs(id)) {
 				try {
-					out.printf("\t%s\n", JSONUtils.serialize(msg));
+					out.printf("\t%s\n", jsonUtils.serialize(msg));
 				} catch (JsonException e) {
 					out.println("\tERROR: Cannot deserialize the message!");
 				}

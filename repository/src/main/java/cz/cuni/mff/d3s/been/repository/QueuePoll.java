@@ -1,7 +1,6 @@
-package cz.cuni.mff.d3s.been.persistence.queue;
+package cz.cuni.mff.d3s.been.repository;
 
 import com.hazelcast.core.IQueue;
-import cz.cuni.mff.d3s.been.persistence.Poll;
 
 /**
  * @author darklight

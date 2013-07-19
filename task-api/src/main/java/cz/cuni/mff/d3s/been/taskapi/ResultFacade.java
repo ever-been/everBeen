@@ -3,8 +3,8 @@ package cz.cuni.mff.d3s.been.taskapi;
 import java.util.Collection;
 
 import cz.cuni.mff.d3s.been.core.persistence.EntityID;
-import cz.cuni.mff.d3s.been.core.persistence.Query;
 import cz.cuni.mff.d3s.been.persistence.DAOException;
+import cz.cuni.mff.d3s.been.persistence.Query;
 import cz.cuni.mff.d3s.been.results.Result;
 
 /**
@@ -46,17 +46,20 @@ public interface ResultFacade {
 	/**
 	 * Retrieve results based on the id of targeted entity and a selector (query).
 	 *
-	 * @param query Provided selection criteria
+	 * @param fetchQuery Provided selection criteria
 	 * @param resultClass Class of the unmarshalled results
 	 * @param <T> Type of the result
 	 *
 	 * @return Return a collection of results corresponding (at the given query time) to matching results present in the persistence layer
 	 */
-	<T extends Result> Collection<T> retrieveResults(Query query, Class<T> resultClass) throws DAOException;
+	<T extends Result> Collection<T> query(Query fetchQuery, Class<T> resultClass) throws DAOException;
 
-	/*
-	Collection<String> listGroupsOfKind(String kind);
-	Collection<Result> retrieveResults(EntityID entityId);
-	Collection<Result> retrieveResults(EntityID entityId, Entity filter);
-	*/
+	/**
+	 * Delete some results. Actually, don't do this, it won't save you from the raptors.
+	 *
+	 * @param deleteQuery Delete some results. Or something...
+	 *
+	 * @throws DAOException When delete fails. Or something more nefarious happens. Like apocalypse. Muhaha...
+	 */
+	//void delete(Query deleteQuery) throws DAOException;
 }

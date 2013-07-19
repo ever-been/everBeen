@@ -7,7 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
 
-import cz.cuni.mff.d3s.been.persistence.Repository;
+import cz.cuni.mff.d3s.been.repository.Repository;
 import org.apache.commons.io.IOUtils;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;

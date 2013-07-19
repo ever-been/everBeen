@@ -5,10 +5,8 @@ import java.util.Properties;
 import java.util.ServiceLoader;
 
 import cz.cuni.mff.d3s.been.core.persistence.Entity;
-import cz.cuni.mff.d3s.been.core.persistence.Query;
-import cz.cuni.mff.d3s.been.core.persistence.QueryBuilder;
+import cz.cuni.mff.d3s.been.persistence.QueryBuilder;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
@@ -17,13 +15,15 @@ import org.junit.runners.model.Statement;
 
 import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.core.persistence.EntityID;
-import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
-import cz.cuni.mff.d3s.been.core.utils.JsonException;
+import cz.cuni.mff.d3s.been.util.JSONUtils;
+import cz.cuni.mff.d3s.been.util.JsonException;
 import cz.cuni.mff.d3s.been.persistence.DAOException;
 import cz.cuni.mff.d3s.been.storage.Storage;
 import cz.cuni.mff.d3s.been.storage.StorageBuilder;
 
 public final class MongoStorageTest extends Assert {
+
+	private final JSONUtils jsonUtils = JSONUtils.newInstance();
 
 	public class DummyEntity extends Entity {
 		/** A testing string */
@@ -98,22 +98,22 @@ public final class MongoStorageTest extends Assert {
 
 	@Test
 	public void testSubmitAndRetrieveItems() throws JsonException, DAOException {
-		storage.store(dummyId, JSONUtils.serialize(new DummyEntity()));
-		assertEquals(1, storage.query(new QueryBuilder().on(dummyId).with("something", "strange").build()).size());
+		storage.store(dummyId, jsonUtils.serialize(new DummyEntity()));
+		assertEquals(1, storage.query(new QueryBuilder().on(dummyId).with("something", "strange").fetch()).getData().size());
 
-		storage.store(dummyId, JSONUtils.serialize(new DummyEntity()));
-		assertEquals(2, storage.query(new QueryBuilder().on(dummyId).with("something", "strange").build()).size());
+		storage.store(dummyId, jsonUtils.serialize(new DummyEntity()));
+		assertEquals(2, storage.query(new QueryBuilder().on(dummyId).with("something", "strange").fetch()).getData().size());
 	}
 
 	@Test
 	public void testRetrieveEmptyResults() throws JsonException, DAOException {
-		storage.store(dummyId, JSONUtils.serialize(new DummyEntity()));
-		assertEquals(0, storage.query(new QueryBuilder().on(dummyId).with("something", "funny").build()).size());
+		storage.store(dummyId, jsonUtils.serialize(new DummyEntity()));
+		assertEquals(0, storage.query(new QueryBuilder().on(dummyId).with("something", "funny").fetch()).getData().size());
 	}
 
 	@Test
 	public void testRetrieveFromInexistentCollection() {
-		assertEquals(0, storage.query(new QueryBuilder().on(dummyId).with("something", "strange").build()).size());
+		assertEquals(0, storage.query(new QueryBuilder().on(dummyId).with("something", "strange").fetch()).getData().size());
 	}
 
 }

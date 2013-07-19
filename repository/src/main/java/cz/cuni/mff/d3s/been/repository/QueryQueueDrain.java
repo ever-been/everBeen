@@ -1,13 +1,10 @@
-package cz.cuni.mff.d3s.been.persistence.queue;
+package cz.cuni.mff.d3s.been.repository;
 
-import com.hazelcast.core.IMap;
 import cz.cuni.mff.d3s.been.cluster.Names;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
-import cz.cuni.mff.d3s.been.core.persistence.Query;
+import cz.cuni.mff.d3s.been.persistence.Query;
 import cz.cuni.mff.d3s.been.persistence.SuccessAction;
 import cz.cuni.mff.d3s.been.storage.Storage;
-
-import java.util.Collection;
 
 /**
  * Queue drain for the querying queue. Drains queries and initiates query processing.

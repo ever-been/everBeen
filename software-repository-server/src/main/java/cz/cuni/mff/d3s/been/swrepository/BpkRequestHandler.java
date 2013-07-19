@@ -23,8 +23,8 @@ import org.xml.sax.SAXException;
 
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.core.jaxb.ConvertorException;
-import cz.cuni.mff.d3s.been.core.utils.JSONUtils;
-import cz.cuni.mff.d3s.been.core.utils.JsonException;
+import cz.cuni.mff.d3s.been.util.JSONUtils;
+import cz.cuni.mff.d3s.been.util.JsonException;
 import cz.cuni.mff.d3s.been.datastore.BpkStore;
 import cz.cuni.mff.d3s.been.datastore.StorePersister;
 import cz.cuni.mff.d3s.been.datastore.StoreReader;
@@ -38,6 +38,7 @@ import cz.cuni.mff.d3s.been.swrepository.httpserver.SkeletalRequestHandler;
 public class BpkRequestHandler extends SkeletalRequestHandler {
 	private static final Logger log = LoggerFactory.getLogger(BpkRequestHandler.class);
 	private final BpkStore store;
+	private final JSONUtils jsonUtils;
 
 	/**
 	 * Create the request handler over a persistence store.
@@ -47,6 +48,7 @@ public class BpkRequestHandler extends SkeletalRequestHandler {
 	 */
 	public BpkRequestHandler(BpkStore store) {
 		this.store = store;
+		this.jsonUtils = JSONUtils.newInstance();
 	}
 
 	@Override
@@ -81,7 +83,7 @@ public class BpkRequestHandler extends SkeletalRequestHandler {
 
 		StringEntity entity = null;
 		try {
-			String jsonString = JSONUtils.serialize(list);
+			String jsonString = jsonUtils.serialize(list);
 			entity = new StringEntity(jsonString);
 		} catch (UnsupportedEncodingException e) {
 			response.setStatusCode(400);
@@ -98,7 +100,7 @@ public class BpkRequestHandler extends SkeletalRequestHandler {
 	private void handleGetSingleBpk(HttpRequest request, HttpResponse response) {
 		BpkIdentifier bpkIdentifier = null;
 		try {
-			bpkIdentifier = JSONUtils.<BpkIdentifier> deserialize(
+			bpkIdentifier = jsonUtils.<BpkIdentifier> deserialize(
 					request.getFirstHeader(BPK_IDENTIFIER_HEADER_NAME).getValue(),
 					BpkIdentifier.class);
 		} catch (JsonException e) {
@@ -128,7 +130,7 @@ public class BpkRequestHandler extends SkeletalRequestHandler {
 	private void handleListTaskDescriptors(HttpRequest request, HttpResponse response) {
 		BpkIdentifier bpkIdentifier = null;
 		try {
-			bpkIdentifier = JSONUtils.<BpkIdentifier> deserialize(
+			bpkIdentifier = jsonUtils.<BpkIdentifier> deserialize(
 					request.getFirstHeader(BPK_IDENTIFIER_HEADER_NAME).getValue(),
 					BpkIdentifier.class);
 		} catch (JsonException e) {
@@ -158,7 +160,7 @@ public class BpkRequestHandler extends SkeletalRequestHandler {
 
 		StringEntity entity = null;
 		try {
-			String jsonString = JSONUtils.serialize(descriptors);
+			String jsonString = jsonUtils.serialize(descriptors);
 			entity = new StringEntity(jsonString);
 		} catch (UnsupportedEncodingException e) {
 			response.setStatusCode(400);
@@ -176,7 +178,7 @@ public class BpkRequestHandler extends SkeletalRequestHandler {
 	private void handleListTaskContextDescriptors(HttpRequest request, HttpResponse response) {
 		BpkIdentifier bpkIdentifier = null;
 		try {
-			bpkIdentifier = JSONUtils.<BpkIdentifier> deserialize(
+			bpkIdentifier = jsonUtils.<BpkIdentifier> deserialize(
 					request.getFirstHeader(BPK_IDENTIFIER_HEADER_NAME).getValue(),
 					BpkIdentifier.class);
 		} catch (JsonException e) {
@@ -206,7 +208,7 @@ public class BpkRequestHandler extends SkeletalRequestHandler {
 
 		StringEntity entity = null;
 		try {
-			String jsonString = JSONUtils.serialize(descriptors);
+			String jsonString = jsonUtils.serialize(descriptors);
 			entity = new StringEntity(jsonString);
 		} catch (UnsupportedEncodingException e) {
 			response.setStatusCode(400);
@@ -235,7 +237,7 @@ public class BpkRequestHandler extends SkeletalRequestHandler {
 
 		BasicHttpEntityEnclosingRequest put = (BasicHttpEntityEnclosingRequest) request;
 		try {
-			bpkIdentifier = JSONUtils.deserialize(
+			bpkIdentifier = jsonUtils.deserialize(
 					request.getFirstHeader(BPK_IDENTIFIER_HEADER_NAME).getValue(),
 					BpkIdentifier.class);
 		} catch (JsonException e) {

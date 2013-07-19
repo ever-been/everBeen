@@ -1,6 +1,6 @@
 package cz.cuni.mff.d3s.been.socketworks.twoway;
 
-import cz.cuni.mff.d3s.been.core.utils.JsonException;
+import cz.cuni.mff.d3s.been.util.JsonException;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
 import cz.cuni.mff.d3s.been.socketworks.SocketHandlerException;
 import org.junit.After;

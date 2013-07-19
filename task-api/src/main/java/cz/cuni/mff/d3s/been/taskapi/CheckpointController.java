@@ -2,7 +2,7 @@ package cz.cuni.mff.d3s.been.taskapi;
 
 import java.util.concurrent.TimeoutException;
 
-import cz.cuni.mff.d3s.been.core.utils.JsonException;
+import cz.cuni.mff.d3s.been.util.JsonException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

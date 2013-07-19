@@ -1,16 +1,16 @@
 package cz.cuni.mff.d3s.been.hostruntime;
 
-import com.hazelcast.core.EntryEvent;
-import com.hazelcast.core.EntryListener;
-import com.hazelcast.core.IMap;
-import com.hazelcast.core.IQueue;
-import cz.cuni.mff.d3s.been.cluster.Names;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
-import cz.cuni.mff.d3s.been.core.persistence.Query;
+import cz.cuni.mff.d3s.been.persistence.DAOException;
+import cz.cuni.mff.d3s.been.persistence.Query;
+import cz.cuni.mff.d3s.been.persistence.QuerySerializer;
 import cz.cuni.mff.d3s.been.socketworks.SocketHandlerException;
 import cz.cuni.mff.d3s.been.socketworks.twoway.ReadReplyHandler;
+import cz.cuni.mff.d3s.been.util.JsonException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectReader;
+import org.codehaus.jackson.map.type.TypeFactory;
+import org.codehaus.jackson.type.JavaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,30 +26,33 @@ public class PersistenceQueryHandler implements ReadReplyHandler {
 	private static final Logger log = LoggerFactory.getLogger(PersistenceQueryHandler.class);
 
 	private final ClusterContext ctx;
-	private final HandlerRecycler recycler;
 	private final ObjectMapper om;
-	private final ObjectReader queryReader;
+	private final QuerySerializer querySerializer;
+	private final HandlerRecycler recycler;
 
 	PersistenceQueryHandler(ClusterContext ctx, ObjectMapper om, HandlerRecycler recycler) {
 		this.ctx = ctx;
 		this.om = om;
-		this.queryReader = om.reader(Query.class);
+		this.querySerializer = new QuerySerializer();
 		this.recycler = recycler;
 	}
 
+	@Override
 	public String handle(String message) throws SocketHandlerException, InterruptedException {
 		log.debug("Got {}", message);
 		Query q = null;
 		try {
-			q = queryReader.readValue(message);
-		} catch (IOException e) {
+			q = querySerializer.deserializeQuery(message);
+		} catch (JsonException e) {
 			throw new SocketHandlerException(String.format("Failed to deserialize query '%s'", message), e);
 		}
 		try {
-			final String answer = om.writeValueAsString(ctx.getPersistence().query(q)); // will produce [JSON, JSON, ..., JSON] which is valid JSON
+			final String answer = querySerializer.serializeAnswer(ctx.getPersistence().query(q));
 			log.debug("Replying {}", answer);
 			return answer;
-		} catch (IOException e) {
+		} catch (DAOException e) {
+			throw new SocketHandlerException("Query failed", e);
+		} catch (JsonException e) {
 			throw new SocketHandlerException("Failed to serialize query results", e);
 		}
 	}
