@@ -14,6 +14,7 @@ import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.debugassistant.DebugListItem;
+import cz.cuni.mff.d3s.been.persistence.DAOException;
 import cz.cuni.mff.d3s.been.persistence.Query;
 import cz.cuni.mff.d3s.been.persistence.QueryAnswer;
 
@@ -34,14 +35,18 @@ public interface BeenApi {
 	public Collection<TaskContextEntry> getTaskContextsInBenchmark(String benchmarkId);
 	public Collection<TaskEntry> getTasksInTaskContext(String taskContextId);
 
+	public void saveTaskDescriptor(TaskDescriptor descriptor, String taskId, String contextId, String benchmarkId) throws DAOException;
+	public void saveNamedTaskDescriptor(TaskDescriptor descriptor, String name, String taskId, String contextId, String benchmarkId) throws DAOException;
+	public void saveContextDescriptor(TaskContextDescriptor descriptor, String taskId, String contextId, String benchmarkId) throws DAOException;
+	public void saveNamedContextDescriptor(TaskContextDescriptor descriptor, String name, String taskId, String contextId, String benchmarkId) throws DAOException;
+
 	public String submitTask(TaskDescriptor taskDescriptor);
 	public String submitTaskContext(TaskContextDescriptor taskContextDescriptor);
 	public String submitTaskContext(TaskContextDescriptor taskContextDescriptor, String benchmarkId);
 	public String submitBenchmark(TaskDescriptor benchmarkTaskDescriptor);
 
 	public void killTask(String taskId);
-	public void killTaskContext(String taskContextId);
-	public void killBenchmark(String benchmarkId);
+	public void killTaskContext(String taskId);
 
 	public void removeTaskEntry(String taskId);
 	public void removeTaskContextEntry(String taskContextId);

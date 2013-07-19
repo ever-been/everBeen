@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
+import cz.cuni.mff.d3s.been.core.task.*;
 import cz.cuni.mff.d3s.been.persistence.DAOException;
 import cz.cuni.mff.d3s.been.persistence.Query;
 import cz.cuni.mff.d3s.been.persistence.QueryAnswer;
@@ -26,10 +27,6 @@ import cz.cuni.mff.d3s.been.core.LogMessage;
 import cz.cuni.mff.d3s.been.core.benchmark.BenchmarkEntry;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.sri.SWRepositoryInfo;
-import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
-import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
-import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
-import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.datastore.SoftwareStoreBuilderFactory;
 import cz.cuni.mff.d3s.been.debugassistant.DebugAssistant;
 import cz.cuni.mff.d3s.been.debugassistant.DebugListItem;
@@ -109,6 +106,36 @@ public class BeenApiImpl implements BeenApi {
 	public RuntimeInfo getRuntime(String id) {
 		return clusterContext.getRuntimes().getRuntimeInfo(id);
 	}
+
+
+
+	// --------------------
+	// CONFIG PERSISTENCE
+	// ------------------
+
+
+	@Override
+	public void saveTaskDescriptor(TaskDescriptor descriptor, String taskId, String contextId, String benchmarkId) throws DAOException {
+		clusterContext.getPersistence().asyncPersist(PersistentDescriptors.TASK_DESCRIPTOR, PersistentDescriptors.wrapTaskDescriptor(descriptor, taskId, contextId, benchmarkId));
+	}
+
+	@Override
+	public void saveNamedTaskDescriptor(TaskDescriptor descriptor, String name, String taskId, String contextId, String benchmarkId) throws DAOException {
+		clusterContext.getPersistence().asyncPersist(PersistentDescriptors.NAMED_TASK_DESCRIPTOR, PersistentDescriptors.wrapNamedTaskDescriptor(descriptor, name, taskId, contextId, benchmarkId));
+	}
+
+	@Override
+	public void saveContextDescriptor(TaskContextDescriptor descriptor, String taskId, String contextId, String benchmarkId) throws DAOException {
+		clusterContext.getPersistence().asyncPersist(PersistentDescriptors.CONTEXT_DESCRIPTOR, PersistentDescriptors.wrapContextDescriptor(descriptor, taskId, contextId, benchmarkId));
+	}
+
+	@Override
+	public void saveNamedContextDescriptor(TaskContextDescriptor descriptor, String name, String taskId, String contextId, String benchmarkId) throws DAOException {
+		clusterContext.getPersistence().asyncPersist(PersistentDescriptors.NAMED_CONTEXT_DESCRIPTOR, PersistentDescriptors.wrapNamedContextDescriptor(descriptor, name, taskId, contextId, benchmarkId));
+	}
+
+
+
 
 	@Override
 	public Collection<String> getLogSets() {
@@ -214,6 +241,12 @@ public class BeenApiImpl implements BeenApi {
 	}
 
 	@Override
+	public void killTask(String taskId) {
+		// TODO
+		throw new UnsupportedOperationException("Not yet implemented.");
+	}
+
+	@Override
 	public String submitTaskContext(TaskContextDescriptor taskContextDescriptor) {
 		return clusterContext.getTaskContexts().submit(taskContextDescriptor, null);
 	}
@@ -224,19 +257,9 @@ public class BeenApiImpl implements BeenApi {
 	}
 
 	@Override
-	public void killTask(String taskId) {
-		clusterContext.getTasks().kill(taskId);
-	}
-
-	@Override
-	public void killTaskContext(String taskContextId) {
+	public void killTaskContext(String taskId) {
 		// TODO
 		throw new UnsupportedOperationException("Not yet implemented.");
-	}
-
-	@Override
-	public void killBenchmark(String benchmarkId) {
-		clusterContext.getBenchmarks().kill(benchmarkId);
 	}
 
 	@Override
