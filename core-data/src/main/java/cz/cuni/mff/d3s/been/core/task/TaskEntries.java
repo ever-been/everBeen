@@ -3,6 +3,7 @@ package cz.cuni.mff.d3s.been.core.task;
 import static cz.cuni.mff.d3s.been.core.jaxb.Factory.TASK;
 
 import java.io.StringWriter;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -149,6 +150,7 @@ public class TaskEntries {
 		StateChangeEntry logEntry = TASK.createStateChangeEntry();
 		logEntry.setState(state);
 		logEntry.setReason(String.format(reasonFormat, reasonArgs));
+		logEntry.setTimestamp(new Date().getTime());
 		return logEntry;
 	}
 }
