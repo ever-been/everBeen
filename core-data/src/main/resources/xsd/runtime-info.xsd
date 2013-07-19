@@ -22,6 +22,7 @@
 	<xs:element name="exclusivity" type="xs:string" />
 	<xs:element name="exclusiveId" type="xs:string" default="NON_EXCLUSIVE" />
 	<xs:element name="taskCount" type="xs:int" />
+    <xs:element name="taskDirs" type="xs:string"/>
 	
 	<xs:complexType name="java">
 		<xs:all>
@@ -73,8 +74,14 @@
 				<xs:element name="java" type="runtimeinfo:java" minOccurs="0" maxOccurs="1" />
                 <xs:element name="operatingSystem" type="runtimeinfo:operatingSystem" minOccurs="1" maxOccurs="1" />
                 <xs:element name="filesystem" type="runtimeinfo:filesystem" minOccurs="0" maxOccurs="unbounded" />
+                <xs:sequence>
+                    <xs:element ref="runtimeinfo:taskDirs" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
+
+
+
 
 </xs:schema>

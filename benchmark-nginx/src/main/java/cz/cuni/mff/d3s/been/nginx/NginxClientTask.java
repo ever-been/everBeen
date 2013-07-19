@@ -21,7 +21,11 @@ public class NginxClientTask extends Task {
 
 	private static final Logger log = LoggerFactory.getLogger(NginxClientTask.class);
 
+	private boolean fakeRun = false;
+
 	private void downloadClientScript() {
+		if (fakeRun) return;
+
 		MyUtils.exec(".", "wget", new String[] { "http://httperf.googlecode.com/files/httperf-0.9.0.tar.gz" });
 		MyUtils.exec(".", "tar", new String[] { "xzvf", "httperf-0.9.0.tar.gz" });
 		MyUtils.exec("./httperf-0.9.0", "./configure", new String[] {});
@@ -29,6 +33,8 @@ public class NginxClientTask extends Task {
 	}
 
 	private void runClientScript(String address) {
+		if (fakeRun) return;
+
 		String[] splitted = address.split(":");
 		String hostname = splitted[0];
 		int port = Integer.parseInt(splitted[1]);
@@ -137,6 +143,7 @@ public class NginxClientTask extends Task {
 	@Override
 	public void run(String[] args) {
 		try (CheckpointController requestor = CheckpointController.create()) {
+			fakeRun = Boolean.parseBoolean(this.getProperty("fakeRun"));
 
 			log.info("Nginx Client Task started.");
 
@@ -158,6 +165,13 @@ public class NginxClientTask extends Task {
 			}
 
 			log.info("Client finished benchmarking.");
+
+			if (fakeRun) {
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e) {
+				}
+			}
 
 			requestor.latchCountDown("shutdown-latch");
 		} catch (MessagingException e) {

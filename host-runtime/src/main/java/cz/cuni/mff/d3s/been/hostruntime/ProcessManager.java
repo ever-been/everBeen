@@ -269,7 +269,7 @@ final class ProcessManager implements Service {
      * @throws BpkConfigurationException
      * @throws TaskException
      */
-    private TaskProcess
+    private synchronized TaskProcess
     createTaskProcess(TaskEntry taskEntry, File taskDirectory) throws IOException, BpkConfigurationException, TaskException {
 
         TaskDescriptor taskDescriptor = taskEntry.getTaskDescriptor();

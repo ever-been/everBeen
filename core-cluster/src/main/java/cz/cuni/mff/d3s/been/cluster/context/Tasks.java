@@ -3,6 +3,8 @@ package cz.cuni.mff.d3s.been.cluster.context;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
+import cz.cuni.mff.d3s.been.core.protocol.Context;
+import cz.cuni.mff.d3s.been.core.protocol.messages.KillTaskMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -160,5 +162,26 @@ public class Tasks {
 		} else {
 			throw new IllegalStateException(String.format("Trying to remove task %s, but it's in state %s.", taskId, state));
 		}
+	}
+
+	/**
+	 * Issues a "kill task" message and sends it to the global topic. This message will
+	 * be delivered to the appropriate host runtime, which will try to kill the specified
+	 * task.
+	 *
+	 * @param taskId ID of the task to kill
+	 */
+	public void kill(String taskId) {
+		TaskEntry taskEntry = getTask(taskId);
+		TaskState state = taskEntry.getState();
+
+		if (state == TaskState.ABORTED || state == TaskState.FINISHED) {
+			throw new IllegalStateException(String.format("Trying to kill task %s, but it's in state %s.", taskId, state));
+		}
+
+		String senderId = taskEntry.getOwnerId();
+		String receiverId = taskEntry.getRuntimeId();
+		KillTaskMessage killMessage = new KillTaskMessage(senderId, receiverId, "killed by user", taskId);
+		clusterCtx.getTopics().publishInGlobalTopic(killMessage);
 	}
 }
