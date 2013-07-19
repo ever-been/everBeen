@@ -1021,3 +1021,25 @@ table.inner-task-list td {
 .dl-horizontal dd {
   min-height: 20px;
 }
+
+
+table.logs tr.data {
+	cursor: pointer;
+}
+
+table.logs tr.data:hover {
+	opacity: 0.5;
+}
+
+table.logs tr.data td {
+    padding: 0 .8em;
+    letter-spacing: -1px;
+}
+
+table.logs tr.loglevel-4 {
+	background-color: #fcc;
+}
+
+table.logs tr.loglevel-5 {
+	background-color: #f66;
+}
