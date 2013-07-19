@@ -25,7 +25,7 @@ public class Logs extends Page {
 
 	void onActivate(String taskId) {
 		task = api.getApi().getTask(taskId);
-		logs = api.getApi().getLogs(taskId);
+		logs = api.getApi().getLogsForTask(taskId);
 	}
 
 }

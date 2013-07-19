@@ -50,8 +50,7 @@ public interface BeenApi {
 	public Collection<RuntimeInfo> getRuntimes();
 	public RuntimeInfo getRuntime(String id);
 
-	public Collection<String> getLogSets();
-	public Collection<LogMessage> getLogs(String setId);
+	public Collection<LogMessage> getLogsForTask(String taskId);
 	public void addLogListener(LogListener listener);
 	public void removeLogListener(LogListener listener);
 

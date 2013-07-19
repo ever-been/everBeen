@@ -121,9 +121,9 @@ class ClusterMode extends AbstractMode {
 
 	private void handleLogs(String[] args) {
 
-		for (String id : api.getLogSets()) {
-			out.printf("ID: %s\n", id);
-			for (LogMessage msg : api.getLogs(id)) {
+		if (args.length == 2) {
+			Collection<LogMessage> logs = api.getLogsForTask(args[1]);
+			for (LogMessage msg : logs) {
 				try {
 					out.printf("\t%s\n", jsonUtils.serialize(msg));
 				} catch (JsonException e) {
@@ -131,6 +131,7 @@ class ClusterMode extends AbstractMode {
 				}
 			}
 		}
+
 	}
 
 	private void handleHelp(String[] args) {
@@ -140,7 +141,7 @@ class ClusterMode extends AbstractMode {
 		out.println("taskcontexts");
 		out.println("runtimes");
 		out.println("instances [instance-type] [instance-name]");
-		out.println("logs [taskId]");
+		out.println("logs taskId");
 	}
 
 	private void handleRuntimes(String[] args) {
