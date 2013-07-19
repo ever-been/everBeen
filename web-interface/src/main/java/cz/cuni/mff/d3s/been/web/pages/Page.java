@@ -13,6 +13,7 @@ import java.text.DecimalFormat;
 import java.text.FieldPosition;
 import java.text.Format;
 import java.text.ParsePosition;
+import java.util.Date;
 
 import static cz.cuni.mff.d3s.been.web.components.Layout.Section;
 
@@ -147,4 +148,28 @@ public abstract class Page {
 
 		return s + " " + state;
 	}
+
+	public Date taskLastChanged(TaskEntry taskEntry) {
+		java.util.List<StateChangeEntry> logEntries = taskEntry.getStateChangeLog().getLogEntries();
+		if (logEntries.size() == 0) return null;
+		StateChangeEntry entry = logEntries.get(0);
+		if (entry.getTimestamp() == 0) return null;
+		return new Date(entry.getTimestamp());
+	}
+
+	public boolean benchmarkInFinalState(String benchmarkId) {
+		String generatorId = this.api.getApi().getBenchmark(benchmarkId).getGeneratorId();
+		TaskEntry taskEntry = this.api.getApi().getTask(generatorId);
+		TaskState state = taskEntry.getState();
+
+		return state == TaskState.ABORTED || state == TaskState.FINISHED;
+	}
+
+	public boolean taskInFinalState(String taskId) {
+		TaskEntry taskEntry = this.api.getApi().getTask(taskId);
+		TaskState state = taskEntry.getState();
+
+		return state == TaskState.ABORTED || state == TaskState.FINISHED;
+	}
+
 }

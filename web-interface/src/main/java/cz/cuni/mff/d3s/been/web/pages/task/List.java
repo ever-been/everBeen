@@ -55,12 +55,4 @@ public class List extends Page {
 		return taskIndex == 0;
 	}
 
-	public Date taskLastChanged(TaskEntry taskEntry) {
-		java.util.List<StateChangeEntry> logEntries = taskEntry.getStateChangeLog().getLogEntries();
-		if (logEntries.size() == 0) return null;
-		StateChangeEntry entry = logEntries.get(0);
-		if (entry.getTimestamp() == 0) return null;
-		return new Date(entry.getTimestamp());
-	}
-
 }

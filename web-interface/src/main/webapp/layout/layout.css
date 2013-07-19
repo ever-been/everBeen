@@ -1015,3 +1015,9 @@ table.inner-task-list td {
     z-index: 9999 !important;
 }
 /*** JQUERY BUG 2500 FIX END */
+
+
+/* Bootstrap fix */
+.dl-horizontal dd {
+  min-height: 20px;
+}
