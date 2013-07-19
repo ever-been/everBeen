@@ -54,14 +54,6 @@ public class Tree extends Page {
 		return taskEntry.getState();
 	}
 
-	public boolean benchmarkInFinalState(String benchmarkId) {
-		String generatorId = this.api.getApi().getBenchmark(benchmarkId).getGeneratorId();
-		TaskEntry taskEntry = this.api.getApi().getTask(generatorId);
-		TaskState state = taskEntry.getState();
-
-		return state == TaskState.ABORTED || state == TaskState.FINISHED;
-	}
-
 	@Property
 	private ArrayList<TaskEntry> orphanedContext;
 

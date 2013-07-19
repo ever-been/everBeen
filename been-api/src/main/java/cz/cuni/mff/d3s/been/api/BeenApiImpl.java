@@ -9,9 +9,13 @@ import java.util.Collections;
 import java.util.Map;
 
 import cz.cuni.mff.d3s.been.core.task.*;
+import cz.cuni.mff.d3s.been.core.persistence.EntityID;
 import cz.cuni.mff.d3s.been.persistence.DAOException;
 import cz.cuni.mff.d3s.been.persistence.Query;
 import cz.cuni.mff.d3s.been.persistence.QueryAnswer;
+import cz.cuni.mff.d3s.been.persistence.QueryBuilder;
+import cz.cuni.mff.d3s.been.util.JSONUtils;
+import cz.cuni.mff.d3s.been.util.JsonException;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +46,8 @@ public class BeenApiImpl implements BeenApi {
 	private static final Logger log = LoggerFactory.getLogger(BeenApiImpl.class);
 
 	private final ClusterContext clusterContext;
+
+	private final JSONUtils jsonUtils = JSONUtils.newInstance();
 
 	public BeenApiImpl(String host, int port, String groupName, String groupPassword) {
 		HazelcastInstance instance = Instance.newNativeInstance(host, port, groupName, groupPassword);
@@ -134,16 +140,6 @@ public class BeenApiImpl implements BeenApi {
 		clusterContext.getPersistence().asyncPersist(PersistentDescriptors.NAMED_CONTEXT_DESCRIPTOR, PersistentDescriptors.wrapNamedContextDescriptor(descriptor, name, taskId, contextId, benchmarkId));
 	}
 
-
-
-
-	@Override
-	public Collection<String> getLogSets() {
-		// TODO logs must be fetched from Results Repository
-		log.warn("Logs must be fetched from Results Repository!");
-		return Collections.EMPTY_LIST;
-	}
-
 	@Override
 	public void addLogListener(final LogListener listener) {
 		EntryListener<String, String> logsListener = new EntryListener<String, String>() {
@@ -173,10 +169,20 @@ public class BeenApiImpl implements BeenApi {
 	}
 
 	@Override
-	public Collection<LogMessage> getLogs(String setId) {
-		// TODO logs must be fetched from Results Repository
-		log.warn("Logs must be fetched from Results Repository!");
-		return Collections.EMPTY_LIST;
+	public Collection<LogMessage> getLogsForTask(String taskId) {
+		EntityID entityID = new EntityID();
+		entityID.setKind("log");
+		entityID.setGroup("task");
+		Query query = new QueryBuilder().on(entityID).with("taskId", taskId).fetch();
+
+		Collection<String> stringCollection = this.queryPersistence(query).getData();
+		try {
+			return jsonUtils.deserialize(stringCollection, LogMessage.class);
+		} catch (JsonException e) {
+			e.printStackTrace();
+			// TODO error handling
+			return null;
+		}
 	}
 
 	@Override
@@ -324,6 +330,7 @@ public class BeenApiImpl implements BeenApi {
 			return clusterContext.getPersistence().query(query);
 		} catch (DAOException e) {
 			log.error("Interrupted when trying to execute persistence query '{}'", query.toString(), e);
+			// TODO error handling
 			return null;
 		}
 	}
