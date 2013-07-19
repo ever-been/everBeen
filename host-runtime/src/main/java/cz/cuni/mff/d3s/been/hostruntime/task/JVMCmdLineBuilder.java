@@ -156,8 +156,8 @@ class JVMCmdLineBuilder implements CmdLineBuilder {
 	 *          command line to which the generated argument should be added
 	 */
 	private void addClassPath(TaskCommandLine cmdLine) {
-		String filesClasspath = fileDir.toPath().resolve(CP_WILDCARD).toString(); // dirty tricks (using *) :)
-		String libClasspath = libDir.toPath().resolve(CP_WILDCARD).toString();
+		String filesClasspath = fileDir.toPath().toString() + File.separator + CP_WILDCARD;
+		String libClasspath = libDir.toPath().toString() + File.separator + CP_WILDCARD;
 		cmdLine.addArgument(JAVA_CLASSPATH_ARG).addArgument(concat(filesClasspath, libClasspath));
 	}
 
@@ -268,10 +268,8 @@ class JVMCmdLineBuilder implements CmdLineBuilder {
 	 *          ... suspend policy = SUSPEND_NONE
 	 * @return created parameter
 	 */
-	private String createDebugParam(boolean server, String address,
-			boolean suspend) {
-		return String.format(JAVA_DEBUG_ARG_TEMPLATE, (server ? "y" : "n"), address, (suspend
-				? "y" : "n"));
+	private String createDebugParam(boolean server, String address, boolean suspend) {
+		return String.format(JAVA_DEBUG_ARG_TEMPLATE, (server ? "y" : "n"), address, (suspend ? "y" : "n"));
 	}
 
 	/**
