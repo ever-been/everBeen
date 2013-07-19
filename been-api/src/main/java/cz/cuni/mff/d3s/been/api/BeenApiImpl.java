@@ -247,12 +247,6 @@ public class BeenApiImpl implements BeenApi {
 	}
 
 	@Override
-	public void killTask(String taskId) {
-		// TODO
-		throw new UnsupportedOperationException("Not yet implemented.");
-	}
-
-	@Override
 	public String submitTaskContext(TaskContextDescriptor taskContextDescriptor) {
 		return clusterContext.getTaskContexts().submit(taskContextDescriptor, null);
 	}
@@ -263,9 +257,19 @@ public class BeenApiImpl implements BeenApi {
 	}
 
 	@Override
-	public void killTaskContext(String taskId) {
+	public void killTask(String taskId) {
+		clusterContext.getTasks().kill(taskId);
+	}
+
+	@Override
+	public void killTaskContext(String taskContextId) {
 		// TODO
 		throw new UnsupportedOperationException("Not yet implemented.");
+	}
+
+	@Override
+	public void killBenchmark(String benchmarkId) {
+		clusterContext.getBenchmarks().kill(benchmarkId);
 	}
 
 	@Override
