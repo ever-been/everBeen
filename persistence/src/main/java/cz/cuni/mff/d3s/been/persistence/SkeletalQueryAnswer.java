@@ -1,5 +1,9 @@
 package cz.cuni.mff.d3s.been.persistence;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.annotate.JsonSubTypes;
+import org.codehaus.jackson.annotate.JsonTypeInfo;
+
 import java.util.Collection;
 
 /**
@@ -7,8 +11,21 @@ import java.util.Collection;
  *
  * @author darklight
  */
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
+@JsonSubTypes({
+		@JsonSubTypes.Type(value = DataQueryAnswer.class),
+		@JsonSubTypes.Type(value = SimpleQueryAnswer.class)
+})
+@JsonIgnoreProperties({"data", "carryingData"})
 abstract class SkeletalQueryAnswer implements QueryAnswer {
-	private final QueryStatus status;
+	private QueryStatus status;
+
+	/**
+	 * Only Jackson should use this constructor
+	 */
+	SkeletalQueryAnswer() {
+		this.status = null;
+	}
 
 	SkeletalQueryAnswer(QueryStatus status) {
 		this.status = status;
@@ -19,8 +36,12 @@ abstract class SkeletalQueryAnswer implements QueryAnswer {
 		return status;
 	}
 
+	void setStatus(QueryStatus status) {
+		this.status = status;
+	}
+
 	@Override
-	public boolean isData() {
+	public boolean isCarryingData() {
 		return false;
 	}
 

@@ -26,6 +26,17 @@ public class JSONUtils {
 		return new JSONUtils(om);
 	}
 
+	/**
+	 * Create a new instance of {@link JSONUtils} with a predefined {@link ObjectMapper}. This is useful when the serialization/deserialization config of the {@link ObjectMapper} has been overriden to match user requirements
+	 *
+	 * @param om {@link ObjectMapper} to use
+	 *
+	 * @return A new instance of JSON utilities with the given {@link ObjectMapper}
+	 */
+	public static JSONUtils newInstance(ObjectMapper om) {
+		return new JSONUtils(om);
+	}
+
 	public String serialize(Object obj) throws JsonException {
 		try {
 			return om.writeValueAsString(obj);

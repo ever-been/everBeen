@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
-import cz.cuni.mff.d3s.been.persistence.Query;
-import cz.cuni.mff.d3s.been.persistence.QuerySerializer;
+import cz.cuni.mff.d3s.been.persistence.*;
+import cz.cuni.mff.d3s.been.util.JSONUtils;
 import cz.cuni.mff.d3s.been.util.JsonException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
@@ -19,7 +19,6 @@ import cz.cuni.mff.d3s.been.core.persistence.EntityID;
 import cz.cuni.mff.d3s.been.mq.IMessageQueue;
 import cz.cuni.mff.d3s.been.mq.IMessageSender;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
-import cz.cuni.mff.d3s.been.persistence.DAOException;
 import cz.cuni.mff.d3s.been.results.Result;
 import cz.cuni.mff.d3s.been.socketworks.NamedSockets;
 import cz.cuni.mff.d3s.been.socketworks.twoway.Requestor;
@@ -30,6 +29,7 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 
 	private final ObjectMapper om;
 	private final QuerySerializer querySerializer;
+	private final JSONUtils jsonUtils;
 	private final IMessageQueue<String> queue;
 	private final Collection<ResultPersister> allocatedPersisters;
 	String taskId, contextId, benchmarkId;
@@ -44,6 +44,8 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 				new FieldVisibilityChecker()));
 		om.setDeserializationConfig(om.getDeserializationConfig().withVisibilityChecker(new FieldVisibilityChecker()));
 		om.enableDefaultTyping(ObjectMapper.DefaultTyping.OBJECT_AND_NON_CONCRETE);
+
+		jsonUtils= JSONUtils.newInstance(om);
 	}
 
 	/** Create a new result serialization facade */
@@ -86,19 +88,19 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 		String queryString = null;
 		String replyString = null;
 
+		QueryChecks.assertIsFetch(fetchQuery);
+		QueryChecks.assertIsResult(fetchQuery);
+
 		try {
 			queryString = querySerializer.serializeQuery(fetchQuery);
 		} catch (JsonException e) {
 			throw new DAOException("Failed to serialize query", e);
 		}
 
-		log.debug(
-				"Attempting to connect to persistence querying socket on {}",
-				NamedSockets.TASK_RESULT_QUERY_0MQ.getConnection());
 		try {
 			requestor = Requestor.create(NamedSockets.TASK_RESULT_QUERY_0MQ.getConnection());
 		} catch (MessagingException e) {
-			throw new DAOException("Failed to create result query request", e);
+			throw new DAOException("Failed to create result query requestor", e);
 		}
 
 		log.debug("Querying persistence with {}", queryString);
@@ -117,14 +119,55 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 		log.debug("Persistence replied {}", replyString);
 
 		try {
-			final Collection<String> coll = om.readValue(replyString, Collection.class);
-			final ArrayList<T> res = new ArrayList<T>(coll.size());
-			for (String elm : coll) {
-				res.add(om.readValue(elm, resultClass));
+			final QueryAnswer answer = querySerializer.deserializeAnswer(replyString);
+			if (!answer.isCarryingData()) {
+				throw new DAOException(String.format("Query returned with no data. Answer status is: '%s'", answer.getStatus().getDescription()));
 			}
-			return res;
-		} catch (IOException e) {
+			return jsonUtils.deserialize(answer.getData(), resultClass);
+		} catch (JsonException e) {
 			throw new DAOException(String.format("Failed to deserialize results matching query %s", queryString), e);
+		}
+	}
+
+	// @Override
+	// Not permitted because of general contract, but remains here as a proof of concept
+	public void delete(Query deleteQuery) throws DAOException {
+		QueryChecks.assertIsDelete(deleteQuery);
+		QueryChecks.assertIsResult(deleteQuery);
+
+		String queryString = null;
+		Requestor requestor = null;
+		String answerString = null;
+
+		try {
+			queryString = querySerializer.serializeQuery(deleteQuery);
+		} catch (JsonException e) {
+			throw new DAOException("Failed to serialize query", e);
+		}
+
+		try {
+			requestor = Requestor.create(NamedSockets.TASK_RESULT_QUERY_0MQ.getConnection());
+		} catch (MessagingException e) {
+			throw new DAOException("Failed to create query requestor", e);
+		}
+
+		try {
+			answerString = requestor.request(queryString);
+		} finally {
+			try {
+				requestor.close();
+			} catch (MessagingException e) {
+				throw new DAOException("Querying connection left hanging. Task will not finish", e);
+			}
+		}
+
+		try {
+			final QueryAnswer answer = querySerializer.deserializeAnswer(answerString);
+			if (! QueryStatus.OK.equals(answer.getStatus())) {
+				throw new DAOException(String.format("Query failed: %s", answer.getStatus().getDescription()));
+			}
+		} catch (JsonException e) {
+			throw new DAOException("Failed to deserialize query answer", e);
 		}
 	}
 

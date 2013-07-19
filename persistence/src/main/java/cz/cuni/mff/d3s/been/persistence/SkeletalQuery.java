@@ -41,14 +41,29 @@ abstract class SkeletalQuery implements Query {
 		return selectors;
 	}
 
+	/**
+	 * Setter for Jackson mapping
+	 *
+	 * @param id Query ID to set
+	 */
 	void setId(String id) {
 		this.id = id;
 	}
 
+	/**
+	 * Setter for Jackson mapping
+	 *
+	 * @param entityID Entity ID to set
+	 */
 	void setEntityID(EntityID entityID) {
 		this.entityID = entityID;
 	}
 
+	/**
+	 * Setter for Jackson mapping
+	 *
+	 * @param selectors Selectors to set
+	 */
 	void setSelectors(Map<String, String> selectors) {
 		this.selectors = selectors;
 	}

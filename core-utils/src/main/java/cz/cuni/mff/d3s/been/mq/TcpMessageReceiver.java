@@ -65,7 +65,8 @@ public class TcpMessageReceiver implements IMessageReceiver<String> {
 		}
 
 		socket = context.socket(ZMQ.PULL);
-		port = socket.bindToRandomPort(connection);
+		final PortRange range = RandomPortRangePicker.getRange();
+		port = socket.bindToRandomPort(connection, range.getFrom(), range.getTo());
 
 		if (port <= 0) {
 			socket = null;

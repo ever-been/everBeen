@@ -2,6 +2,7 @@ package cz.cuni.mff.d3s.been.persistence;
 
 import cz.cuni.mff.d3s.been.core.persistence.Entity;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 /**
@@ -9,14 +10,14 @@ import java.util.Collection;
  *
  * @author darklight
  */
-public interface QueryAnswer {
+public interface QueryAnswer extends Serializable {
 
 	/**
 	 * Whether this answer carries any data.
 	 *
 	 * @return <code>true</code> if there is a dataset associated with this query; <code>false</code> otherwise
 	 */
-	boolean isData();
+	boolean isCarryingData();
 
 	/**
 	 * Get the data associated with this answer. Will be <code>null</code> if the corresponding query resulted in an error.

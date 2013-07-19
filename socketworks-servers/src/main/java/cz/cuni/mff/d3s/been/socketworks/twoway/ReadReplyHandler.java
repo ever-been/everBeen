@@ -18,7 +18,7 @@ public interface ReadReplyHandler {
 	 * 
 	 * @return The response (once this message is processed)
 	 * 
-	 * @throws HandlerException
+	 * @throws SocketHandlerException
 	 *           If something goes wrong during handling
 	 * @throws InterruptedException
 	 *           If the call blocks and is interrupted

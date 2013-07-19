@@ -54,9 +54,12 @@ public interface ResultFacade {
 	 */
 	<T extends Result> Collection<T> query(Query fetchQuery, Class<T> resultClass) throws DAOException;
 
-	/*
-	Collection<String> listGroupsOfKind(String kind);
-	Collection<Result> query(EntityID entityId);
-	Collection<Result> query(EntityID entityId, Entity filter);
-	*/
+	/**
+	 * Delete some results. Actually, don't do this, it won't save you from the raptors.
+	 *
+	 * @param deleteQuery Delete some results. Or something...
+	 *
+	 * @throws DAOException When delete fails. Or something more nefarious happens. Like apocalypse. Muhaha...
+	 */
+	//void delete(Query deleteQuery) throws DAOException;
 }

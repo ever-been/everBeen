@@ -295,7 +295,7 @@ public class BeenApiImpl implements BeenApi {
 	public QueryAnswer queryPersistence(Query query) {
 		try {
 			return clusterContext.getPersistence().query(query);
-		} catch (InterruptedException e) {
+		} catch (DAOException e) {
 			log.error("Interrupted when trying to execute persistence query '{}'", query.toString(), e);
 			return null;
 		}

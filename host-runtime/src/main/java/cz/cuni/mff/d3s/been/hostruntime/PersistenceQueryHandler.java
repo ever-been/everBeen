@@ -1,6 +1,7 @@
 package cz.cuni.mff.d3s.been.hostruntime;
 
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
+import cz.cuni.mff.d3s.been.persistence.DAOException;
 import cz.cuni.mff.d3s.been.persistence.Query;
 import cz.cuni.mff.d3s.been.persistence.QuerySerializer;
 import cz.cuni.mff.d3s.been.socketworks.SocketHandlerException;
@@ -36,6 +37,7 @@ public class PersistenceQueryHandler implements ReadReplyHandler {
 		this.recycler = recycler;
 	}
 
+	@Override
 	public String handle(String message) throws SocketHandlerException, InterruptedException {
 		log.debug("Got {}", message);
 		Query q = null;
@@ -45,10 +47,12 @@ public class PersistenceQueryHandler implements ReadReplyHandler {
 			throw new SocketHandlerException(String.format("Failed to deserialize query '%s'", message), e);
 		}
 		try {
-			final String answer = om.writeValueAsString(ctx.getPersistence().query(q)); // will produce [JSON, JSON, ..., JSON] which is valid JSON
+			final String answer = querySerializer.serializeAnswer(ctx.getPersistence().query(q));
 			log.debug("Replying {}", answer);
 			return answer;
-		} catch (IOException e) {
+		} catch (DAOException e) {
+			throw new SocketHandlerException("Query failed", e);
+		} catch (JsonException e) {
 			throw new SocketHandlerException("Failed to serialize query results", e);
 		}
 	}
