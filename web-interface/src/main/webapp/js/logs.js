@@ -15,7 +15,7 @@ $(document).ready(function() {
         var log = JSON.parse($(this).attr("data-json"));
 
 		var content = $("<div>");
-		var d = Date.create(log.time).format("{year}-{MM}-{dd} {H}:{mm}:{ss}.{fff}");
+		var d = Date.create(log.created).format("{year}-{MM}-{dd} {H}:{mm}:{ss}.{fff}");
 		content.append($("<p>").append($("<b>Timestamp:</b><br>")).append($("<span>").text(d)));
 		content.append($("<p>").append($("<b>Task ID:</b><br>")).append($("<span>").text(log.taskId)));
 		content.append($("<p>").append($("<b>Level:</b><br>")).append($("<span>").text(logLevelToString(log.level))));
