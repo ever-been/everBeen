@@ -37,7 +37,7 @@
 		<mockito.version>1.9.5</mockito.version>
 		<sigar.version>1.6.4</sigar.version>
 		<tapestry-cometd.version>0.9.17</tapestry-cometd.version>
-        <tapestry-conversations.version>0.1.2</tapestry-conversations.version>
+		<tapestry-conversations.version>0.1.2</tapestry-conversations.version>
 		<tapestry5-jquery.version>3.3.1</tapestry5-jquery.version>
 		<tapestry5.version>5.3.6</tapestry5.version>
 		<servlet-api.version>2.5</servlet-api.version>
@@ -77,13 +77,6 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>${slf4j.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
-			<version>${slf4j.version}</version>
-			<scope>runtime</scope>
 		</dependency>
 
 		<dependency>
@@ -173,6 +166,7 @@
 				<module>task-test</module>
 				<module>been-api</module>
 				<module>benchmark-api</module>
+				<module>slf4j-been</module>
 			</modules>
 		</profile>
 
@@ -203,8 +197,8 @@
 			<id>buildWebInterface</id>
 
 			<modules>
-                <module>web-interface</module>
-                <module>web-interface-standalone</module>
+				<module>web-interface</module>
+				<module>web-interface-standalone</module>
 			</modules>
 		</profile>
 
