@@ -71,7 +71,11 @@
 	<dd>${task.taskDependency}</dd>
 
 	<dt>Args:</dt>
-	<dd>${task.args}</dd>
+	<dd>
+		<t:loop source="task.args.arg" value="arg">
+			${arg}<br />
+		</t:loop>
+	</dd>
 
 	<dt>Description:</dt>
 	<dd>${task.taskDescriptor.description}</dd>
@@ -82,10 +86,16 @@
 	<dd>${task.taskDescriptor.exclusive}</dd>
 
 	<dt>Properties:</dt>
-	<dd>${task.taskDescriptor.properties}</dd>
+	<dd>
+		<t:loop source="task.taskDescriptor.properties.property" value="property">
+		    ${property.name} = ${property.value}<br />
+		</t:loop>
+	</dd>
 
 	<dt>Debug:</dt>
-	<dd>${task.taskDescriptor.debug}</dd>
+	<dd>
+		${taskDebugToString(task.taskDescriptor.debug)}
+	</dd>
 </dl>
 
 </html>
