@@ -11,6 +11,9 @@
     <link href="${context:layout/layout.css}" rel="stylesheet" type="text/css"/>
 	<link rel="stylesheet" href="${context:css/font-awesome.min.css}" />
 
+	<link href="${context:js/fancybox/jquery.fancybox-1.3.4.css}" rel="stylesheet" type="text/css"/>
+	<script src="${context:js/fancybox/jquery.fancybox-1.3.4.js}"></script>
+
 	<title>BEEN</title>
 </head>
 

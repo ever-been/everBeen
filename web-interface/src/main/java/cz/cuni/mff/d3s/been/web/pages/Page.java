@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.web.pages;
 
+import cz.cuni.mff.d3s.been.core.LogMessage;
 import cz.cuni.mff.d3s.been.core.task.*;
 import cz.cuni.mff.d3s.been.web.services.BeenApiService;
 import org.apache.tapestry5.annotations.Property;
@@ -9,10 +10,7 @@ import org.slf4j.Logger;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.text.DecimalFormat;
-import java.text.FieldPosition;
-import java.text.Format;
-import java.text.ParsePosition;
+import java.text.*;
 import java.util.Date;
 
 import static cz.cuni.mff.d3s.been.web.components.Layout.Section;
@@ -170,6 +168,19 @@ public abstract class Page {
 		TaskState state = taskEntry.getState();
 
 		return state == TaskState.ABORTED || state == TaskState.FINISHED;
+	}
+
+	public String logDateToString(LogMessage log) {
+		return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(new Date(log.getCreated()));
+	}
+
+	public String logLevelToString(int logLevel) {
+		if (logLevel == 1) return "TRACE";
+		if (logLevel == 2) return "DEBUG";
+		if (logLevel == 3) return "INFO";
+		if (logLevel == 4) return "WARN";
+		if (logLevel == 5) return "ERROR";
+		return Integer.toString(logLevel);
 	}
 
 }

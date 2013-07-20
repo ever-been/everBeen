@@ -19,9 +19,15 @@
 		<!-- CLUSTER DEPENDENCIES -->
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
-			<artifactId>core-utils</artifactId>
+			<artifactId>core-data</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+
+        <dependency>
+            <groupId>cz.cuni.mff.d3s.been</groupId>
+            <artifactId>core-utils</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
 		<!-- TESTING LIBRARIES -->
 		<dependency>
