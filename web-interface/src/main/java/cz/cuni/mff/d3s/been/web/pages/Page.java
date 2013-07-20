@@ -170,8 +170,8 @@ public abstract class Page {
 		return state == TaskState.ABORTED || state == TaskState.FINISHED;
 	}
 
-	public String logDateToString(LogMessage log) {
-		return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(new Date(log.getCreated()));
+	public String timestampToString(long timestamp) {
+		return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(new Date(timestamp));
 	}
 
 	public String logLevelToString(int logLevel) {

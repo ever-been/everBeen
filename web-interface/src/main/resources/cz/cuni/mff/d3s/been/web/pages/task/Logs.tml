@@ -20,7 +20,7 @@
 
 	<t:loop source="logs" value="log">
 		<tr class="data loglevel-${log.level}" data-json="${jsonLog(log)}">
-			<td>${logDateToString(log)}</td>
+			<td>${timestampToString(log.created)}</td>
 			<td>
 				<i class="icon-beaker"></i>&nbsp;
 				<a href="/task/detail/${log.taskId}"><t:output format="idFormat" value="log.taskId" /></a>
