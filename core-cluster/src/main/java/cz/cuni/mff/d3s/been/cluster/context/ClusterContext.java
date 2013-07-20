@@ -1,13 +1,17 @@
 package cz.cuni.mff.d3s.been.cluster.context;
 
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 
 import com.hazelcast.config.Config;
 import com.hazelcast.core.*;
+
 import cz.cuni.mff.d3s.been.cluster.Names;
+import cz.cuni.mff.d3s.been.cluster.NodeType;
 
 /**
  * 
@@ -102,40 +106,36 @@ public class ClusterContext {
 	}
 
 	/**
+	 * Returns type of the current instance
 	 * 
-	 * Returns port of this member.
-	 * 
-	 * Use {@link cz.cuni.mff.d3s.been.core.ClusterContext#getInetSocketAddress()}
-	 * instead.
-	 * 
-	 * @return port of this member
+	 * @return instance type
 	 */
-	@Deprecated
-	public int getPort() {
-		return getLocalMember().getInetSocketAddress().getPort();
-
+	public NodeType getInstanceType() {
+		return cz.cuni.mff.d3s.been.cluster.Instance.getNodeType();
 	}
 
 	/**
-	 * Returns host name of this member.
+	 * Returns the InetSocketAddress of this node.
 	 * 
-	 * Use {@link cz.cuni.mff.d3s.been.core.ClusterContext#getInetSocketAddress()}
-	 * instead.
+	 * In case of DATA/LITE member it's the address the node is connected to the
+	 * cluster.
 	 * 
-	 * @return host name of this member
-	 */
-	@Deprecated
-	public String getHostName() {
-		return getLocalMember().getInetSocketAddress().getHostName();
-	}
-
-	/**
-	 * Returns the InetSocketAddress of this member.
+	 * In case of a NATIVE node hostname with 0 port is returned.
 	 * 
-	 * @return InetSocketAddress of this member
+	 * @return InetSocketAddress Of the cluster member or hostname of a native
+	 *         client
 	 */
 	public InetSocketAddress getInetSocketAddress() {
-		return getLocalMember().getInetSocketAddress();
+		if (getInstanceType() == NodeType.NATIVE) {
+			try {
+				return new InetSocketAddress(InetAddress.getLocalHost(), 0);
+			} catch (UnknownHostException e) {
+				e.printStackTrace();
+				return new InetSocketAddress("localhost", 0);
+			}
+		} else {
+			return getLocalMember().getInetSocketAddress();
+		}
 	}
 
 	public Member getLocalMember() {
