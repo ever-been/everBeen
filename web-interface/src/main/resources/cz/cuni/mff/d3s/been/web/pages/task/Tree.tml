@@ -119,11 +119,10 @@
 
 <h2 style="clear: both; padding: 40px 0 0 0;">Orphaned tasks</h2>
 
-<table class="list">
+<table class="list wide">
 	<thead>
 	<tr>
 		<th>Context ID</th>
-		<th></th>
 		<th>Task ID</th>
 		<th>Name</th>
 		<th>State</th>
@@ -135,18 +134,18 @@
 			<tr>
 				<td>
 					<t:if test="isFirstInContext()">
+						<i class="icon-book"></i>&nbsp;
 						<a href="/context/detail/${task.taskContextId}"><t:output format="idFormat" value="task.taskContextId" /></a>
 					</t:if>
 				</td>
 				<td>
 					<t:if test="taskBenchmark(task)">
-						<i class="icon-book"></i>
+						<i class="icon-rocket"></i>
 						<p:else>
 							<i class="icon-beaker"></i>
 						</p:else>
-					</t:if>
-				</td>
-				<td><a href="/task/detail/${task.id}"><t:output format="idFormat" value="task.id" /></a></td>
+					</t:if>&nbsp;
+					<a href="/task/detail/${task.id}"><t:output format="idFormat" value="task.id" /></a></td>
 				<td>${task.taskDescriptor.name}</td>
 				<td>
 					<t:outputRaw value="taskStateWithIcon(task.state)"/>
