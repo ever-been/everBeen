@@ -55,8 +55,6 @@ public class ExampleTask extends Task {
 			//rp.close(); <- notice this forgotten close: it works anyway
 		} catch (DAOException e) {
 			log.error("Cannot persist result.", e);
-		} catch (IllegalAccessException | InstantiationException e) {
-			log.error("Cannot create result instance", e);
 		}
 	}
 
