@@ -1,6 +1,8 @@
 package cz.cuni.mff.d3s.been.persistence;
 
 /**
+ * Simple checks on queries
+ *
  * @author darklight
  */
 public final class QueryChecks {

@@ -1,24 +1,25 @@
-package cz.cuni.mff.d3s.been.core.task;
+package cz.cuni.mff.d3s.been.persistence.task;
 
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.core.persistence.Entity;
+import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
 
 /**
- * A wrapper that enables persistence of {@link TaskContextDescriptor}
+ * A wrapper that enables persistence of {@link cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor}
  *
  * @author darklight
  */
 class PersistentContextDescriptor extends Entity {
-	private TaskContextDescriptor contextDescriptor;
+	private TaskContextDescriptor descriptor;
     private BpkIdentifier bpkId;
 
 	/**
 	 * Set the task context descriptor
 	 *
-	 * @param contextDescriptor {@link TaskContextDescriptor} to set
+	 * @param descriptor {@link TaskContextDescriptor} to set
 	 */
-	public void setContextDescriptor(TaskContextDescriptor contextDescriptor) {
-		this.contextDescriptor = contextDescriptor;
+	public void setDescriptor(TaskContextDescriptor descriptor) {
+		this.descriptor = descriptor;
 	}
 
 	/**
@@ -26,8 +27,8 @@ class PersistentContextDescriptor extends Entity {
 	 *
 	 * @return The {@link TaskContextDescriptor}
 	 */
-	public TaskContextDescriptor getContextDescriptor() {
-		return contextDescriptor;
+	public TaskContextDescriptor getDescriptor() {
+		return descriptor;
 	}
 
     /**

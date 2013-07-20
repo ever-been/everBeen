@@ -1,10 +1,11 @@
-package cz.cuni.mff.d3s.been.core.task;
+package cz.cuni.mff.d3s.been.persistence.task;
 
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.core.persistence.Entity;
+import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 
 /**
- * Wrapper that enables persistence of {@link TaskDescriptor}
+ * Wrapper that enables persistence of {@link cz.cuni.mff.d3s.been.core.task.TaskDescriptor}
  *
  * @author darklight
  */

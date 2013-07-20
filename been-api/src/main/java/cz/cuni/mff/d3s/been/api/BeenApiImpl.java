@@ -5,15 +5,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 
 import cz.cuni.mff.d3s.been.core.task.*;
 import cz.cuni.mff.d3s.been.core.persistence.EntityID;
-import cz.cuni.mff.d3s.been.persistence.DAOException;
-import cz.cuni.mff.d3s.been.persistence.Query;
-import cz.cuni.mff.d3s.been.persistence.QueryAnswer;
-import cz.cuni.mff.d3s.been.persistence.QueryBuilder;
+import cz.cuni.mff.d3s.been.persistence.*;
+import cz.cuni.mff.d3s.been.persistence.task.PersistentDescriptors;
 import cz.cuni.mff.d3s.been.util.JSONUtils;
 import cz.cuni.mff.d3s.been.util.JsonException;
 import org.apache.commons.io.IOUtils;
@@ -36,6 +33,8 @@ import cz.cuni.mff.d3s.been.debugassistant.DebugAssistant;
 import cz.cuni.mff.d3s.been.debugassistant.DebugListItem;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
+
+import static cz.cuni.mff.d3s.been.persistence.task.PersistentDescriptors.*;
 
 
 /**
@@ -127,20 +126,56 @@ public class BeenApiImpl implements BeenApi {
 
 	@Override
 	public void saveNamedTaskDescriptor(TaskDescriptor descriptor, String name, BpkIdentifier bpkId) throws DAOException {
-		clusterContext.getPersistence().asyncPersist(PersistentDescriptors.NAMED_TASK_DESCRIPTOR, PersistentDescriptors.wrapNamedTaskDescriptor(descriptor, name, bpkId));
+		clusterContext.getPersistence().asyncPersist(NAMED_TASK_DESCRIPTOR, PersistentDescriptors.wrapNamedTaskDescriptor(descriptor, name, bpkId));
 	}
 
 	@Override
 	public void saveContextDescriptor(TaskContextDescriptor descriptor, String taskId, String contextId, String benchmarkId) throws DAOException {
-		clusterContext.getPersistence().asyncPersist(PersistentDescriptors.CONTEXT_DESCRIPTOR, PersistentDescriptors.wrapContextDescriptor(descriptor, taskId, contextId, benchmarkId));
+		clusterContext.getPersistence().asyncPersist(CONTEXT_DESCRIPTOR, PersistentDescriptors.wrapContextDescriptor(descriptor, taskId, contextId, benchmarkId));
 	}
 
 	@Override
 	public void saveNamedContextDescriptor(TaskContextDescriptor descriptor, String name, BpkIdentifier bpkId) throws DAOException {
-		clusterContext.getPersistence().asyncPersist(PersistentDescriptors.NAMED_CONTEXT_DESCRIPTOR, PersistentDescriptors.wrapNamedContextDescriptor(descriptor, name, bpkId));
+		clusterContext.getPersistence().asyncPersist(NAMED_CONTEXT_DESCRIPTOR, PersistentDescriptors.wrapNamedContextDescriptor(descriptor, name, bpkId));
 	}
 
-	@Override
+    @Override
+    public TaskDescriptor getDescriptorForTask(String taskId) throws DAOException {
+        final QueryAnswer answer = clusterContext.getPersistence().query(new QueryBuilder().on(TASK_DESCRIPTOR).with("taskId", taskId).fetch());
+        if (!answer.isCarryingData()) {
+            throw new DAOException(String.format("Query for task descriptor with contextId='%s' yielded no result: %s", taskId, answer.getStatus().getDescription()));
+        }
+        return PersistentDescriptors.unpackTaskDescriptor(answer);
+    }
+
+    @Override
+    public TaskContextDescriptor getDescriptorForContext(String contextId) throws DAOException {
+        final QueryAnswer answer = clusterContext.getPersistence().query(new QueryBuilder().on(CONTEXT_DESCRIPTOR).with("contextId", contextId).fetch());
+        if (!answer.isCarryingData()) {
+            throw new DAOException(String.format("Query for context descriptor with contextId='%s' yielded no result: %s", contextId, answer.getStatus().getDescription()));
+        }
+        return PersistentDescriptors.unpackContextDescriptor(answer);
+    }
+
+    @Override
+    public Map<String, TaskDescriptor> getNamedTaskDescriptorsForBpk(BpkIdentifier bpkIdentifier) throws DAOException {
+	    final QueryAnswer answer = clusterContext.getPersistence().query(new QueryBuilder().on(NAMED_TASK_DESCRIPTOR).with("bpkId", PersistentDescriptors.serializeBpkId(bpkIdentifier)).fetch());
+	    if (!answer.isCarryingData()) {
+	        throw new DAOException(String.format("Query for task descriptors for BPK '%s' yielded no result: %s", bpkIdentifier.toString(), answer.getStatus().getDescription()));
+	    }
+	    return PersistentDescriptors.unpackNamedTaskDescriptors(answer);
+    }
+
+    @Override
+    public Map<String, TaskContextDescriptor> getNamedContextDescriptorsForBpk(BpkIdentifier bpkIdentifier) throws DAOException {
+        final QueryAnswer answer = clusterContext.getPersistence().query(new QueryBuilder().on(NAMED_CONTEXT_DESCRIPTOR).with("bpkId", PersistentDescriptors.serializeBpkId(bpkIdentifier)).fetch());
+        if (!answer.isCarryingData()) {
+            throw new DAOException(String.format("Query for context descriptors for BPK '%s' yielded no result: %s", bpkIdentifier.toString(), answer.getStatus().getDescription()));
+        }
+        return PersistentDescriptors.unpackNamedContextDescriptors(answer);
+    }
+
+    @Override
 	public void addLogListener(final LogListener listener) {
 		EntryListener<String, String> logsListener = new EntryListener<String, String>() {
 			@Override

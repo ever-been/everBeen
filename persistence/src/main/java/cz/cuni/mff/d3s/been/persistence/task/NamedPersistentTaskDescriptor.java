@@ -1,12 +1,14 @@
-package cz.cuni.mff.d3s.been.core.task;
+package cz.cuni.mff.d3s.been.persistence.task;
 
 /**
+ * Named persistent wrapper for this task descriptor
+ *
  * @author darklight
  */
-class NamedPersistentContextDescriptor extends PersistentContextDescriptor {
+class NamedPersistentTaskDescriptor extends PersistentTaskDescriptor {
 
 	/**
-	 * Name with which this {@link PersistentContextDescriptor} will be persisted
+	 * Name with which this {@link PersistentTaskDescriptor} will be persisted
 	 */
 	private String name;
 
