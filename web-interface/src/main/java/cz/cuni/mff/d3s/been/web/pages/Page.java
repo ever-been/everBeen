@@ -171,6 +171,13 @@ public abstract class Page {
 		return state == TaskState.ABORTED || state == TaskState.FINISHED;
 	}
 
+	public boolean taskContextInFinalState(String contextId) {
+		TaskContextEntry taskContextEntry = this.api.getApi().getTaskContext(contextId);
+		TaskContextState state = taskContextEntry.getContextState();
+
+		return state == TaskContextState.FAILED || state == TaskContextState.FINISHED;
+	}
+
 	public String timestampToString(long timestamp) {
 		return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(new Date(timestamp));
 	}
