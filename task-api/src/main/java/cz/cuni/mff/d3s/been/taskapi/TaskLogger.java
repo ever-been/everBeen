@@ -38,7 +38,6 @@ class TaskLogger extends TaskLoggerBase {
 			tmpLogLevel = TaskLogLevel.valueOf(logLevelString);
 		} catch (IllegalArgumentException | NullPointerException e) {
 			tmpLogLevel = DEFAULT_LOG_LEVEL;
-			e.printStackTrace();
 		}
 
 		logLevel = tmpLogLevel;
