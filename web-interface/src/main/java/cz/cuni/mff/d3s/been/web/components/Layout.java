@@ -126,7 +126,11 @@ public class Layout {
 
         CONTEXT_DETAIL(cz.cuni.mff.d3s.been.web.pages.context.Detail.class, "Contexts", null, true),
 
-        CONFIGURATION(cz.cuni.mff.d3s.been.web.pages.Configuration.class, "Configuration", null, true);
+        CONFIGURATION(cz.cuni.mff.d3s.been.web.pages.Configuration.class, "Configuration", null, true),
+
+	    CLUSTER_INFO(cz.cuni.mff.d3s.been.web.pages.cluster.Info.class, "Cluster", null),
+
+	    ;
 
         public final Class<? extends Page> page;
 

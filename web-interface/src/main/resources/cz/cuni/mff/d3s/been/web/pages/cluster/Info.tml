@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+
+<html t:type="layout" section="section"
+      xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd" xmlns:p="tapestry:parameter">
+
+<h2>Cluster members</h2>
+
+<table class="list wide">
+	<thead>
+	<tr>
+		<th>Socket address</th>
+		<th>Lite member</th>
+		<th>Member ID</th>
+	</tr>
+	</thead>
+
+	<t:loop source="clusterMembers" value="member">
+		<tr class="data">
+			<td>${member.inetSocketAddress}</td>
+			<td>${member.liteMember}</td>
+			<td>${member.UUID}</td>
+		</tr>
+
+		<p:empty>
+			<tr>
+				<td colspan="3">
+					<i class="icon-info-sign"></i> There are no members in the cluster.
+				</td>
+			</tr>
+		</p:empty>
+	</t:loop>
+</table>
+
+<h2>Cluster services</h2>
+
+<table class="list wide">
+	<thead>
+	<tr>
+		<th>Service</th>
+		<th>Info</th>
+	</tr>
+	</thead>
+
+	<t:loop source="clusterServices" value="service">
+		<tr class="data">
+			<td>${service.name}</td>
+			<td>${service.info}</td>
+		</tr>
+
+		<p:empty>
+			<tr>
+				<td colspan="2">
+					<i class="icon-info-sign"></i> There are no services in the cluster.
+				</td>
+			</tr>
+		</p:empty>
+	</t:loop>
+</table>
+
+</html>

@@ -5,6 +5,10 @@ import com.hazelcast.core.IMap;
 import cz.cuni.mff.d3s.been.cluster.Names;
 import cz.cuni.mff.d3s.been.core.sri.SWRepositoryInfo;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Purpose of this class is to associate methods for cluster-wide services like
  * Software Repository or Results Repository.
@@ -37,6 +41,16 @@ public class Services {
 					swRepObject.getClass().getName(),
 					SWRepositoryInfo.class.getName()), e);
 		}
+	}
+
+	public Map<String, String> getServicesInfo() {
+		HashMap<String, String> result = new HashMap<>();
+
+		SWRepositoryInfo swRepositoryInfo = getSWRepositoryInfo();
+		String swRepoString = swRepositoryInfo.getHost() + ":" + swRepositoryInfo.getHttpServerPort();
+		result.put("SOFTWARE_REPOSITORY", swRepoString);
+
+		return result;
 	}
 
 	/**
