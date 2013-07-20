@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.core.task;
 
+import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.core.persistence.Entity;
 import cz.cuni.mff.d3s.been.core.persistence.EntityID;
 
@@ -52,17 +53,15 @@ public final class PersistentDescriptors {
 	 *
 	 * @param td {@link TaskDescriptor} to wrap
 	 * @param name Name with which to save the descriptor
-	 * @param taskId ID of the task which is submitting this context descriptor
-	 * @param contextId ID of the context in which the submitting task is running
-	 * @param benchmarkId ID of the benchmark in which the submitting task is running
+     * @param bpkId ID of the BPK to associate this descriptor with
 	 *
 	 * @return A persistable {@link Entity} wrapping provided {@link TaskContextDescriptor}
 	 */
-	public static Entity wrapNamedTaskDescriptor(TaskDescriptor td, String name, String taskId, String contextId, String benchmarkId) {
+	public static Entity wrapNamedTaskDescriptor(TaskDescriptor td, String name, BpkIdentifier bpkId) {
 		final NamedPersistentTaskDescriptor wrap = new NamedPersistentTaskDescriptor();
 		wrap.setDescriptor(td);
 		wrap.setName(name);
-		setRuntimeIDs(wrap, taskId, contextId, benchmarkId);
+        wrap.setBpkId(bpkId);
 		return wrap;
 	}
 
@@ -88,17 +87,15 @@ public final class PersistentDescriptors {
 	 *
 	 * @param tcd {@link TaskContextDescriptor} to wrap
 	 * @param name Name with which to save the descriptor
-	 * @param taskId ID of the task which is submitting this context descriptor
-	 * @param contextId ID of the context in which the submitting task is running
-	 * @param benchmarkId ID of the benchmark in which the submitting task is running
+     * @param bpkId Identifier of the BPK this named configuration should be associated with
 	 *
 	 * @return A persistable {@link Entity} wrapping provided {@link TaskContextDescriptor}
 	 */
-	public static Entity wrapNamedContextDescriptor(TaskContextDescriptor tcd, String name, String taskId, String contextId, String benchmarkId) {
+	public static Entity wrapNamedContextDescriptor(TaskContextDescriptor tcd, String name, BpkIdentifier bpkId) {
 		final NamedPersistentContextDescriptor wrap = new NamedPersistentContextDescriptor();
 		wrap.setContextDescriptor(tcd);
 		wrap.setName(name);
-		setRuntimeIDs(wrap, taskId, contextId, benchmarkId);
+        wrap.setBpkId(bpkId);
 		return wrap;
 	}
 

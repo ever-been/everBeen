@@ -1,7 +1,5 @@
 package cz.cuni.mff.d3s.been.persistence;
 
-import cz.cuni.mff.d3s.been.core.persistence.Entity;
-
 import java.io.Serializable;
 import java.util.Collection;
 
