@@ -126,8 +126,8 @@ public class BeenApiImpl implements BeenApi {
 	}
 
 	@Override
-	public void saveNamedTaskDescriptor(TaskDescriptor descriptor, String name, String taskId, String contextId, String benchmarkId) throws DAOException {
-		clusterContext.getPersistence().asyncPersist(PersistentDescriptors.NAMED_TASK_DESCRIPTOR, PersistentDescriptors.wrapNamedTaskDescriptor(descriptor, name, taskId, contextId, benchmarkId));
+	public void saveNamedTaskDescriptor(TaskDescriptor descriptor, String name, BpkIdentifier bpkId) throws DAOException {
+		clusterContext.getPersistence().asyncPersist(PersistentDescriptors.NAMED_TASK_DESCRIPTOR, PersistentDescriptors.wrapNamedTaskDescriptor(descriptor, name, bpkId));
 	}
 
 	@Override
@@ -136,8 +136,8 @@ public class BeenApiImpl implements BeenApi {
 	}
 
 	@Override
-	public void saveNamedContextDescriptor(TaskContextDescriptor descriptor, String name, String taskId, String contextId, String benchmarkId) throws DAOException {
-		clusterContext.getPersistence().asyncPersist(PersistentDescriptors.NAMED_CONTEXT_DESCRIPTOR, PersistentDescriptors.wrapNamedContextDescriptor(descriptor, name, taskId, contextId, benchmarkId));
+	public void saveNamedContextDescriptor(TaskContextDescriptor descriptor, String name, BpkIdentifier bpkId) throws DAOException {
+		clusterContext.getPersistence().asyncPersist(PersistentDescriptors.NAMED_CONTEXT_DESCRIPTOR, PersistentDescriptors.wrapNamedContextDescriptor(descriptor, name, bpkId));
 	}
 
 	@Override

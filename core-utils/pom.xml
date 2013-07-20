@@ -13,11 +13,6 @@
 
 
 	<dependencies>
-		<dependency>
-			<groupId>cz.cuni.mff.d3s.been</groupId>
-			<artifactId>core-data</artifactId>
-			<version>${project.version}</version>
-		</dependency>
 		
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>

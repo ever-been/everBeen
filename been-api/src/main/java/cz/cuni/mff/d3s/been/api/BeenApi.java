@@ -36,9 +36,9 @@ public interface BeenApi {
 	public Collection<TaskEntry> getTasksInTaskContext(String taskContextId);
 
 	public void saveTaskDescriptor(TaskDescriptor descriptor, String taskId, String contextId, String benchmarkId) throws DAOException;
-	public void saveNamedTaskDescriptor(TaskDescriptor descriptor, String name, String taskId, String contextId, String benchmarkId) throws DAOException;
+	public void saveNamedTaskDescriptor(TaskDescriptor descriptor, String name, BpkIdentifier bpkId) throws DAOException;
 	public void saveContextDescriptor(TaskContextDescriptor descriptor, String taskId, String contextId, String benchmarkId) throws DAOException;
-	public void saveNamedContextDescriptor(TaskContextDescriptor descriptor, String name, String taskId, String contextId, String benchmarkId) throws DAOException;
+	public void saveNamedContextDescriptor(TaskContextDescriptor descriptor, String name, BpkIdentifier bpkId) throws DAOException;
 
 	public String submitTask(TaskDescriptor taskDescriptor);
 	public String submitTaskContext(TaskContextDescriptor taskContextDescriptor);
