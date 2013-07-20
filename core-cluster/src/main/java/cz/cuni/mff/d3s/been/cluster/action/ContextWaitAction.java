@@ -4,9 +4,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import cz.cuni.mff.d3s.been.socketworks.twoway.Replies;
-import cz.cuni.mff.d3s.been.socketworks.twoway.Reply;
-import cz.cuni.mff.d3s.been.socketworks.twoway.Request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +14,9 @@ import com.hazelcast.core.IMap;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskContextState;
+import cz.cuni.mff.d3s.been.socketworks.twoway.Replies;
+import cz.cuni.mff.d3s.been.socketworks.twoway.Reply;
+import cz.cuni.mff.d3s.been.socketworks.twoway.Request;
 
 /**
  * @author Kuba Brecka
@@ -46,8 +46,7 @@ public class ContextWaitAction implements Action {
 
 		@Override
 		public void entryUpdated(EntryEvent<String, TaskContextEntry> event) {
-			if (event.getValue().getContextState() == TaskContextState.FINISHED) {
-				// TODO aborted?
+			if (isContextDone(event.getValue())) {
 
 				queue.add(event.getValue());
 			}
@@ -76,7 +75,7 @@ public class ContextWaitAction implements Action {
 		boolean timeout = false;
 
 		// TODO states...
-		if (value == null || value.getContextState() != TaskContextState.FINISHED) {
+		if (value == null || !isContextDone(value)) {
 			try {
 				if (request.getTimeout() <= 0) {
 					value = queue.take();
@@ -106,5 +105,10 @@ public class ContextWaitAction implements Action {
 		queue.clear();
 
 		return reply;
+	}
+
+	// TODO move to an utility class
+	private boolean isContextDone(TaskContextEntry entry) {
+		return entry.getContextState() == TaskContextState.FINISHED || entry.getContextState() == TaskContextState.FAILED;
 	}
 }

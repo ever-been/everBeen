@@ -29,7 +29,7 @@ public class TaskContextCheckerAction implements TaskAction {
 	private final TaskEntry entry;
 
 	/** format of sql query predicate for finding all unfinished tasks */
-	private static final String QUERY_FORMAT = "taskContextId = '%s' AND (state == %s)";
+	private static final String QUERY_FORMAT = "taskContextId = '%s' AND ((state == %s) OR (state == %s))";
 
 	/**
 	 * Creates new context checker action.
@@ -60,7 +60,7 @@ public class TaskContextCheckerAction implements TaskAction {
 		TaskContextEntry contextEntry = contexts.getTaskContext(taskContextId);
 
 		// optimization: fist check, and if needed then lock and check again
-		if (contextEntry.getContextState() == TaskContextState.FINISHED) {
+		if (isContextDone(contextEntry)) {
 			return;
 		}
 
@@ -75,7 +75,7 @@ public class TaskContextCheckerAction implements TaskAction {
 			// must fetch again
 			contextEntry = contexts.getTaskContext(taskContextId);
 
-			if (contextEntry.getContextState() == TaskContextState.FINISHED) {
+			if (isContextDone(contextEntry)) {
 				return;
 			}
 
@@ -84,7 +84,12 @@ public class TaskContextCheckerAction implements TaskAction {
 			boolean isFinished = (values.size() == contextEntry.getContainedTask().size());
 
 			if (isFinished) {
-				contextEntry.setContextState(TaskContextState.FINISHED);
+				TaskContextState finalState = TaskContextState.FINISHED;
+
+				if (isFailed(values)) {
+					finalState = TaskContextState.FAILED;
+				}
+				contextEntry.setContextState(finalState);
 				ctx.getTaskContexts().cleanupTaskContext(contextEntry);
 			}
 		} finally {
@@ -103,8 +108,22 @@ public class TaskContextCheckerAction implements TaskAction {
 	 *         context
 	 */
 	private SqlPredicate getPredicate(String contextId) {
-		String sql = String.format(QUERY_FORMAT, contextId, TaskState.FINISHED);
+		String sql = String.format(QUERY_FORMAT, contextId, TaskState.FINISHED, TaskState.ABORTED);
 
 		return new SqlPredicate(sql);
+	}
+
+	private boolean isFailed(Collection<TaskEntry> tasks) {
+		for (TaskEntry taskEntry : tasks) {
+			if (taskEntry.getState() == TaskState.ABORTED) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private boolean isContextDone(TaskContextEntry entry) {
+		return entry.getContextState() == TaskContextState.FINISHED || entry.getContextState() == TaskContextState.FAILED;
 	}
 }
