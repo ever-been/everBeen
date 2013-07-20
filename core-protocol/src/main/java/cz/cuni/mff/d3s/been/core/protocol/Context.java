@@ -2,9 +2,7 @@ package cz.cuni.mff.d3s.been.core.protocol;
 
 public enum Context {
 
-	GLOBAL_TOPIC("BEEN_GLOBAL_TOPIC", false),
-	GLOBAL_TOPIC_BRIDGE("BEEN_GLOBAL_TOPIC_BRIDGE", false),
-	NODE_INFO_LIST("BEEN_NODE_INFO_LIST", true);
+	GLOBAL_TOPIC("BEEN_GLOBAL_TOPIC", false);
 
 	private String name;
 
@@ -21,10 +19,6 @@ public enum Context {
 
 	public String getName() {
 		return name;
-	}
-	
-	public boolean equals(String anotherContextName) {
-		return name.equals(anotherContextName);
 	}
 
 }

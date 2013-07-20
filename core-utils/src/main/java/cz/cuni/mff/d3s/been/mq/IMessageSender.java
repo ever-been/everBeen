@@ -11,7 +11,7 @@ import cz.cuni.mff.d3s.been.annotation.NotThreadSafe;
  * @author Martin Sixta
  */
 @NotThreadSafe
-public interface IMessageSender<T extends Serializable> {
+public interface IMessageSender<T extends Serializable> extends AutoCloseable {
 
 	/**
 	 * Sends an object (= message) to its message queue.
