@@ -26,6 +26,7 @@ public class Detail extends DetailPage {
 	}
 
 	public String taskDebugToString(Debug debug) {
+		if (debug == null) return "NONE";
 		if (debug.getMode() == ModeEnum.NONE) return "NONE";
 		else if (debug.getMode() == ModeEnum.LISTEN) return "LISTEN, port: " + debug.getPort();
 		else if (debug.getMode() == ModeEnum.CONNECT) return "CONNECT, host: " + debug.getHost() + ", port: " + debug.getPort();
