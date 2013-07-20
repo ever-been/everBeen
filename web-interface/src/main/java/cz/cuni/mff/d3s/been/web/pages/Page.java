@@ -158,6 +158,7 @@ public abstract class Page {
 	public boolean benchmarkInFinalState(String benchmarkId) {
 		String generatorId = this.api.getApi().getBenchmark(benchmarkId).getGeneratorId();
 		TaskEntry taskEntry = this.api.getApi().getTask(generatorId);
+		if (taskEntry == null) return true;
 		TaskState state = taskEntry.getState();
 
 		return state == TaskState.ABORTED || state == TaskState.FINISHED;

@@ -45,12 +45,14 @@ public class Tree extends Page {
 	public String benchmarkName(String benchmarkId) {
 		String generatorId = this.api.getApi().getBenchmark(benchmarkId).getGeneratorId();
 		TaskEntry taskEntry = this.api.getApi().getTask(generatorId);
+		if (taskEntry == null) return "";
 		return taskEntry.getTaskDescriptor().getName();
 	}
 
 	public TaskState benchmarkState(String benchmarkId) {
 		String generatorId = this.api.getApi().getBenchmark(benchmarkId).getGeneratorId();
 		TaskEntry taskEntry = this.api.getApi().getTask(generatorId);
+		if (taskEntry == null) return null;
 		return taskEntry.getState();
 	}
 
