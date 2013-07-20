@@ -16,9 +16,12 @@ import cz.cuni.mff.d3s.been.util.JsonException;
  */
 class TaskLogger extends TaskLoggerBase {
 
+	private static final TaskLogLevel DEFAULT_LOG_LEVEL = TaskLogLevel.INFO;
+
 	private static final String taskId;
 	private static final String contextId;
 	private static final String benchmarkId;
+	private static final TaskLogLevel logLevel;
 
 	private String name;
 	private final JSONUtils jsonUtils = JSONUtils.newInstance();
@@ -27,9 +30,23 @@ class TaskLogger extends TaskLoggerBase {
 		taskId = System.getenv(TASK_ID);
 		contextId = System.getenv(CONTEXT_ID);
 		benchmarkId = System.getenv(BENCHMARK_ID);
+
+		String logLevelString = System.getenv(TASK_LOG_LEVEL);
+
+		TaskLogLevel tmpLogLevel;
+		try {
+			tmpLogLevel = TaskLogLevel.valueOf(logLevelString);
+		} catch (IllegalArgumentException | NullPointerException e) {
+			tmpLogLevel = DEFAULT_LOG_LEVEL;
+			e.printStackTrace();
+		}
+
+		logLevel = tmpLogLevel;
 	}
 
 	public TaskLogger(String name) {
+
+		setLogLevel(logLevel);
 
 		this.name = name;
 	}
@@ -46,8 +63,8 @@ class TaskLogger extends TaskLoggerBase {
 	 *          throwable when logging exceptions
 	 * 
 	 */
+	@Override
 	void log(int level, String message, Throwable t) {
-
 		String serializedMsg;
 		try {
 			serializedMsg = createJsonLogMessage(level, message, t);
@@ -76,4 +93,5 @@ class TaskLogger extends TaskLoggerBase {
 		return jsonUtils.serialize(logMsg);
 
 	}
+
 }

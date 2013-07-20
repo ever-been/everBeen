@@ -30,4 +30,7 @@ public class TaskPropertyNames {
 	 */
 	public static final String LOGGER = "logger";
 
+	/** Name of the environment property which sets Task log level */
+	public static final String TASK_LOG_LEVEL = "task.log.level";
+
 }
