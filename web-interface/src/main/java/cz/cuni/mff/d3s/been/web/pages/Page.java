@@ -179,7 +179,11 @@ public abstract class Page {
 	}
 
 	public String timestampToString(long timestamp) {
-		return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(new Date(timestamp));
+		return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date(timestamp));
+	}
+
+	public String nanotimeToString(long nanotime) {
+		return timestampToString(nanotime / 1_000_000);
 	}
 
 	public String logLevelToString(int logLevel) {

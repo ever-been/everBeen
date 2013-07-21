@@ -2,7 +2,99 @@
 
 <html t:type="layout" section="section" xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd">
 
-<t:beandisplay object="runtime">
-</t:beandisplay>
+<h2>Runtime ${runtime.id}</h2>
+
+<dl class="dl-horizontal">
+	<dt>Runtime ID:</dt>
+	<dd>
+		<i class="icon-laptop"></i>&nbsp;
+		<b>${runtime.id}</b>
+	</dd>
+	<dt>Hostname:</dt>
+	<dd>${runtime.host}</dd>
+	<dt>Port:</dt>
+	<dd>${runtime.port}</dd>
+</dl>
+
+<dl class="dl-horizontal">
+	<dt>Working directory:</dt>
+	<dd>${runtime.workingDirectory}</dd>
+	<dt>Tasks working dir:</dt>
+	<dd>${runtime.tasksWorkingDirectory}</dd>
+	<dt>Type:</dt>
+	<dd>${runtime.type}</dd>
+	<dt>Exclusivity:</dt>
+	<dd>${runtime.exclusivity}</dd>
+	<dt>Exclusive ID:</dt>
+	<dd>${runtime.exclusiveId}</dd>
+	<dt>Tasks:</dt>
+	<dd>${runtime.taskCount}</dd>
+</dl>
+
+<dl class="dl-horizontal">
+	<dt>CPUs:</dt>
+	<dd>
+		<t:loop source="runtime.hardware.cpu" value="cpu">
+			${cpu.vendor} ${cpu.model} @ ${cpu.mhz} MHz, cache size ${cpu.cacheSize} kB<br />
+		</t:loop>
+	</dd>
+	<dt>Network interfaces:</dt>
+	<dd>
+		<t:loop source="runtime.hardware.networkInterface" value="networkInterface">
+			${networkInterface.name} ${networkInterface.hwaddr}, type: ${networkInterface.type},
+			MTU: ${networkInterface.mtu}, address: ${networkInterface.address}, netmask: ${networkInterface.netmask},
+			broadcast: ${networkInterface.broadcast}
+			<br />
+		</t:loop>
+	</dd>
+	<dt>Memory:</dt>
+	<dd>${bytesReadable(runtime.hardware.memory.ram)} RAM, ${bytesReadable(runtime.hardware.memory.swap)} swap</dd>
+	<dt>Java:</dt>
+	<dd>
+		${runtime.java.version} ${runtime.java.vendor}<br />
+		Runtime: ${runtime.java.runtimeVersion} ${runtime.java.runtimeName} <br />
+		VM: ${runtime.java.vmVersion} ${runtime.java.vmVendor}<br />
+		Specification: ${runtime.java.specificationVersion}
+	</dd>
+	<dt>Operating system:</dt>
+	<dd>
+		${runtime.operatingSystem.name} ${runtime.operatingSystem.version}<br />
+		Architecture: ${runtime.operatingSystem.arch}, data model: ${runtime.operatingSystem.dataModel}, endian: ${runtime.operatingSystem.endian}<br />
+		Vendor: ${runtime.operatingSystem.vendor} ${runtime.operatingSystem.vendorVersion}
+	</dd>
+	<dt>Filesystems:</dt>
+	<dd>
+		<t:loop source="runtime.filesystem" value="filesystem">
+			${filesystem.deviceName}, type: ${filesystem.type}, directory: ${filesystem.directory},
+			free: ${bytesReadable(filesystem.free)}, total: ${bytesReadable(filesystem.total)}<br />
+		</t:loop>
+	</dd>
+	<dt>Task directories:</dt>
+	<dd>
+		<t:loop source="runtime.taskDirs" value="taskDir">
+			${taskDir}<br />
+		</t:loop>
+	</dd>
+</dl>
+
+<dl class="dl-horizontal">
+	<dt>Monitoring sample:</dt>
+	<dd>
+		Timestamp: ${nanotimeToString(runtime.monitorSample.timestamp)}<br />
+		Free memory: ${bytesReadable(runtime.monitorSample.freeMemory)}<br />
+		Processes: ${runtime.monitorSample.processCount}<br />
+		Load average: ${runtime.monitorSample.loadAverage.load1} ${runtime.monitorSample.loadAverage.load5} ${runtime.monitorSample.loadAverage.load15}<br />
+		<b>Network interfaces</b>:<br />
+		<t:loop source="runtime.monitorSample.interfaces" value="monitorInterface">
+			${monitorInterface.name}, bytes in: ${monitorInterface.bytesIn}, bytes out: ${monitorInterface.bytesOut}<br />
+		</t:loop>
+		<b>Filesystems</b>:<br />
+		<t:loop source="runtime.monitorSample.filesystems" value="monitorFilesystem">
+			Device: ${monitorFilesystem.deviceName}, directory: ${monitorFilesystem.directory},
+			reads: ${monitorFilesystem.reads}, writes: ${monitorFilesystem.writes},
+			read bytes: ${monitorFilesystem.readBytes}, write bytes: ${monitorFilesystem.writeBytes}<br />
+		</t:loop>
+	</dd>
+</dl>
 
 </html>
