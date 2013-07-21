@@ -2,6 +2,7 @@
 
 <html t:type="layout" xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd">
 
+<h2>Connect to Been Cluster</h2>
 
 <t:connectFormComponent t:successPage="successPage"></t:connectFormComponent>
 

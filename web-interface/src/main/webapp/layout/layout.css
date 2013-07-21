@@ -1117,3 +1117,5 @@ table.tasktemplate td, table.tasktemplate th {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0044cc', GradientType=0) !important;
   filter: progid:DXImageTransform.Microsoft.gradient(enabled=false) !important;
 }
+
+.t-error ul { margin: 0 80px !important; }

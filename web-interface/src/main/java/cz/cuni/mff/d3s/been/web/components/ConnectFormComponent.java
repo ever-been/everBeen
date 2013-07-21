@@ -32,7 +32,7 @@ public class ConnectFormComponent extends Component {
 			api.connect(connectionProperties.hostname, connectionProperties.port, connectionProperties.groupName,
 					connectionProperties.groupPassword);
 		} catch (Exception e) {
-			connectForm.recordError("unable to connect: " + e.getMessage());
+			connectForm.recordError(e.getMessage());
 			return this;
 		}
 		return Overview.class;
