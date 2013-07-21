@@ -977,12 +977,26 @@ pre {
 	color: #c00000;
 }
 
+.fullheight {
+    top: 90px;
+    bottom: 0px;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    min-height: 550px;
+}
+
 .overview-container {
 	text-align: center;
+	height: 45%;
 }
 
 .overview-block {
-    display: inline-block; margin: 5px 5px; width: 48%; min-width: 600px; vertical-align: top; text-align: left;
+    display: inline-block; margin: 5px 5px; width: 48%; min-width: 600px; vertical-align: top; text-align: left; height: 80%;
+}
+
+.overview-table {
+	border: 1px solid #ddd; overflow-y: scroll; height: 100%; padding: 10px;
 }
 
 table.inner-task-list td {
