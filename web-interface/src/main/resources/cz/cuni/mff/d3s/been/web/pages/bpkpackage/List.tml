@@ -3,6 +3,41 @@
 <html t:type="layout" section="section"
       xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd" xmlns:p="tapestry:parameter">
 
-<t:packages.list></t:packages.list>
+<h2>Packages Available in Software Repository</h2>
+
+<div style="float: right; text-align: right;">
+	<button class="btn btn-primary" onclick="location.href='/bpkpackage/upload'; return false;">Upload new package</button>
+</div>
+
+<table class="list wide">
+	<thead>
+	<tr>
+		<th>Group</th>
+		<th>Name</th>
+		<th>Version</th>
+		<th></th>
+	</tr>
+	</thead>
+
+	<t:loop source="packages" value="pkg">
+		<tr class="data">
+			<td>${pkg.groupId}</td>
+			<td>${pkg.bpkId}</td>
+			<td>${pkg.version}</td>
+			<td>
+				<a href="/bpkpackage/download/${pkg.groupId}/${pkg.bpkId}/${pkg.version}" class="btn btn-small">download</a>
+			</td>
+		</tr>
+
+		<p:empty>
+			<tr>
+				<td colspan="3">
+					<i class="icon-info-sign"></i> There are no packages in software repository.
+				</td>
+			</tr>
+		</p:empty>
+	</t:loop>
+</table>
+
 
 </html>
