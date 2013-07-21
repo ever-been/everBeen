@@ -1043,3 +1043,36 @@ table.logs tr.loglevel-4 {
 table.logs tr.loglevel-5 {
 	background-color: #f66;
 }
+
+legend+.control-group {
+    margin-top: 0 !important;
+}
+
+.form-horizontal .control-group {
+	margin-bottom: 5px;
+}
+
+legend {
+	font-size: 16px;
+	line-height: 20px;
+	margin: 10px 0;
+}
+
+fieldset {
+	margin: 10px 0;
+}
+
+table.tasktemplate {
+	width: 70%;
+	margin: 0 auto;
+}
+
+table.tasktemplate th {
+	background-color: #eee;
+}
+
+table.tasktemplate td, table.tasktemplate th {
+	padding: 2px;
+	border-top: 1px solid #ddd;
+	border-bottom: 1px solid #ddd;
+}

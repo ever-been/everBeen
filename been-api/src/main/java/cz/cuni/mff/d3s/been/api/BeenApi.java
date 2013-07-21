@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.Map;
 
+import com.hazelcast.core.Member;
 import cz.cuni.mff.d3s.been.bpk.BpkConfigurationException;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.core.LogMessage;
@@ -25,6 +26,9 @@ import cz.cuni.mff.d3s.been.persistence.QueryAnswer;
 public interface BeenApi {
 
 	public void shutdown();
+
+	public Collection<Member> getClusterMembers();
+	public Map<String, String> getClusterServices();
 
 	public Collection<TaskEntry> getTasks();
 	public TaskEntry getTask(String id);

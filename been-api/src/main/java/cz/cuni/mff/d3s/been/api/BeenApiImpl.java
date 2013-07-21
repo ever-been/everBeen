@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.Map;
 
+import com.hazelcast.core.Member;
 import cz.cuni.mff.d3s.been.core.task.*;
 import cz.cuni.mff.d3s.been.core.persistence.EntityID;
 import cz.cuni.mff.d3s.been.persistence.*;
@@ -60,6 +61,16 @@ public class BeenApiImpl implements BeenApi {
 	@Override
 	public void shutdown() {
 		Instance.shutdown();
+	}
+
+	@Override
+	public Collection<Member> getClusterMembers() {
+		return clusterContext.getMembers();
+	}
+
+	@Override
+	public Map<String, String> getClusterServices() {
+		return clusterContext.getServices().getServicesInfo();
 	}
 
 	@Override

@@ -1,8 +1,7 @@
 package cz.cuni.mff.d3s.been.hostruntime;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.net.InetSocketAddress;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -27,19 +26,21 @@ public class HostRuntimes {
 	 * This method returns singleton instance of {@link HostRuntime}. If runtime
 	 * doesn't exists, this method creates one.
 	 * 
-	 * @param hazelcastInstance Hazelcast instance to build on
-     * @param properties BEEN properties
-     *
+	 * @param hazelcastInstance
+	 *          Hazelcast instance to build on
+	 * @param properties
+	 *          BEEN properties
+	 * 
 	 * @return A host runtime instance
 	 */
-	public static synchronized HostRuntime getRuntime(
-			HazelcastInstance hazelcastInstance, Properties properties) {
+	public static synchronized HostRuntime getRuntime(HazelcastInstance hazelcastInstance, Properties properties) {
 		if (hostRuntime == null) {
 			ClusterContext clusterContext = new ClusterContext(hazelcastInstance);
-			SwRepoClientFactory swRepoClientFactory = new SwRepoClientFactory(SoftwareStoreBuilderFactory.getSoftwareStoreBuilder().withProperties(properties).buildCache());
-            WorkingDirectoryResolver workingDirectoryResolver = new WorkingDirectoryResolver(properties);
-            File workingDirectory = workingDirectoryResolver.getHostRuntimeWorkingDirectory();
-            File tasksWorkingDIrectory = workingDirectoryResolver.getTasksWorkingDirectory();
+			SwRepoClientFactory swRepoClientFactory = new SwRepoClientFactory(SoftwareStoreBuilderFactory.getSoftwareStoreBuilder().withProperties(
+					properties).buildCache());
+			WorkingDirectoryResolver workingDirectoryResolver = new WorkingDirectoryResolver(properties);
+			File workingDirectory = workingDirectoryResolver.getHostRuntimeWorkingDirectory();
+			File tasksWorkingDIrectory = workingDirectoryResolver.getTasksWorkingDirectory();
 
 			RuntimeInfo info = newRuntimeInfo(clusterContext, workingDirectory, tasksWorkingDIrectory);
 			hostRuntime = new HostRuntime(clusterContext, swRepoClientFactory, info);
@@ -50,24 +51,29 @@ public class HostRuntimes {
 	/**
 	 * Creates new {@link RuntimeInfo} and initializes all possible values.
 	 * 
-	 *
-     * @param clusterContext
-     *
-     * @param workingDirectory
-     * @param tasksWorkingDirectory
-     * @return initialized RuntimeInfo
+	 * 
+	 * @param clusterContext
+	 *          Connection to the cluster
+	 * @param workingDirectory
+	 *          Directory to use to hold Host Runtime files
+	 * @param tasksWorkingDirectory
+	 *          Directory where tasks files to keep in
+	 * @return Detailed information about the Host Runtime
 	 */
-	public static RuntimeInfo newRuntimeInfo(ClusterContext clusterContext, File workingDirectory, File tasksWorkingDirectory) {
+	public static RuntimeInfo newRuntimeInfo(ClusterContext clusterContext, File workingDirectory,
+			File tasksWorkingDirectory) {
 		RuntimeInfo ri = new RuntimeInfo();
 
 		ri.setWorkingDirectory(workingDirectory.getAbsolutePath());
-        ri.setTasksWorkingDirectory(tasksWorkingDirectory.getAbsolutePath());
+		ri.setTasksWorkingDirectory(tasksWorkingDirectory.getAbsolutePath());
 
 		String nodeId = UUID.randomUUID().toString();
 		ri.setId(nodeId);
 
-		ri.setPort(clusterContext.getPort());
-		ri.setHost(clusterContext.getHostName());
+		final InetSocketAddress address = clusterContext.getInetSocketAddress();
+		ri.setHost(address.getHostName());
+		ri.setPort(address.getPort());
+		ri.setType(clusterContext.getInstanceType().toString());
 
 		Detector detector = new Detector();
 		detector.detectAll(ri);

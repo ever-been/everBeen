@@ -1,9 +1,11 @@
 <t:container class="form-horizontal"
              xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd" xmlns:p="tapestry:parameter">
 
+<div class="container">
     <div class="row">
         <div class="span6">
-            <h2>Basic task properties</h2>
+	        <fieldset>
+	        <legend>Basic task properties</legend>
             <div class="control-group">
                 <label class="control-label">Name</label>
 
@@ -47,9 +49,12 @@
                 </div>
             </div>
 
+	        </fieldset>
+
         </div>
         <div class="span6">
-            <h2>Environment properties</h2>
+	        <fieldset>
+            <legend>Environment properties</legend>
 
             <div class="control-group" t:type="loop" index="loopIndex"
                  source="taskDescriptor.properties.property">
@@ -62,13 +67,15 @@
                            t:value="taskDescriptor.properties.property.get(loopIndex).value"/>
                 </div>
             </div>
+	        </fieldset>
         </div>
     </div>
 
 
     <div class="row">
         <div class="span6">
-            <h2>Arguments</h2>
+	        <fieldset>
+            <legend>Arguments</legend>
 
                     <div class="control-group" t:type="ajaxformloop" t:id="argumentList"
                  source="args" value="arg" encoder="argsKeyValuePairEncoder">
@@ -94,21 +101,25 @@
                     </div>
                 </div>
             </div>
+	        </fieldset>
         </div>
         <div class="span6">
-            <h2>Other</h2>
+	        <fieldset>
+            <legend>Other</legend>
             <t:label for="longDescription" class="control-label">Description</t:label>
 
             <div class="controls">
                 <t:textarea t:id="longDescription"
                             t:value="taskDescriptor.longDescription"/>
             </div>
+	        </fieldset>
         </div>
     </div>
 
     <div class="row">
         <div class="span6">
-            <h2>Java options</h2>
+	        <fieldset>
+            <legend>Java options</legend>
 
             <div class="control-group" t:type="ajaxformloop" t:id="javaOptList"
                  source="opts" value="opt" encoder="javaOptsKeyValuePairEncoder">
@@ -134,9 +145,11 @@
                     </div>
                 </div>
             </div>
+	        </fieldset>
         </div>
         <div class="span6">
-            <h2>Failure policy</h2>
+	        <fieldset>
+            <legend>Failure policy</legend>
             <div class="control-group">
                 <label class="control-label">Timeout for single run (0 = disabled)</label>
 
@@ -151,13 +164,15 @@
                     <t:textfield class="span2" value="taskDescriptor.failurePolicy.restartMax"/>
                 </div>
             </div>
+	        </fieldset>
         </div>
     </div>
 
 
     <div class="row">
         <div class="span6">
-            <h2>Debug options</h2>
+	        <fieldset>
+            <legend>Debug options</legend>
 
             <div class="control-group">
                 <t:label for="debugMode" class="control-label">Mode</t:label>
@@ -179,6 +194,7 @@
                     <t:textfield t:id="debugPort" t:value="taskDescriptor.debug.port"/>
                 </div>
             </div>
+	        </fieldset>
         </div>
         <!--
         <div class="span6">
@@ -206,4 +222,7 @@
         </div>
         -->
     </div>
+
+</div>
+
 </t:container>

@@ -155,6 +155,11 @@ public class Tasks {
 	public void remove(String taskId) {
 		TaskEntry taskEntry = getTask(taskId);
 
+		if (taskEntry == null) {
+			log.warn("Tried to remove task {} which does not exist.", taskId);
+			return;
+		}
+
 		TaskState state = taskEntry.getState();
 		if (state == TaskState.ABORTED || state == TaskState.FINISHED) {
 			log.info("Removing task {} from map.", taskId);

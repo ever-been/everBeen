@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+
+<html t:type="layout" section="section"
+      xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd" xmlns:p="tapestry:parameter">
+
+<h2>State history for task ${task.id}</h2>
+
+<table class="list wide">
+	<thead>
+	<tr>
+		<th>Timestamp</th>
+		<th>State</th>
+		<th>Reason</th>
+	</tr>
+	</thead>
+
+	<t:loop source="history" value="entry">
+		<tr>
+			<td>${timestampToString(entry.timestamp)}</td>
+			<td>${entry.state}</td>
+			<td>${entry.reason}</td>
+		</tr>
+
+		<p:empty>
+			<tr>
+				<td colspan="7">
+					<i class="icon-info-sign"></i> There are no logs.
+				</td>
+			</tr>
+		</p:empty>
+	</t:loop>
+</table>
+
+</html>

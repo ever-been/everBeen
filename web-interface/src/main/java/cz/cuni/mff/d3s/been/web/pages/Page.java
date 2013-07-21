@@ -158,6 +158,7 @@ public abstract class Page {
 	public boolean benchmarkInFinalState(String benchmarkId) {
 		String generatorId = this.api.getApi().getBenchmark(benchmarkId).getGeneratorId();
 		TaskEntry taskEntry = this.api.getApi().getTask(generatorId);
+		if (taskEntry == null) return true;
 		TaskState state = taskEntry.getState();
 
 		return state == TaskState.ABORTED || state == TaskState.FINISHED;
@@ -170,8 +171,15 @@ public abstract class Page {
 		return state == TaskState.ABORTED || state == TaskState.FINISHED;
 	}
 
-	public String logDateToString(LogMessage log) {
-		return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(new Date(log.getCreated()));
+	public boolean taskContextInFinalState(String contextId) {
+		TaskContextEntry taskContextEntry = this.api.getApi().getTaskContext(contextId);
+		TaskContextState state = taskContextEntry.getContextState();
+
+		return state == TaskContextState.FAILED || state == TaskContextState.FINISHED;
+	}
+
+	public String timestampToString(long timestamp) {
+		return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(new Date(timestamp));
 	}
 
 	public String logLevelToString(int logLevel) {

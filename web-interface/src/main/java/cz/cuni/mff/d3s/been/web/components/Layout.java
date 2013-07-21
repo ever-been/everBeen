@@ -106,8 +106,6 @@ public class Layout {
 
         PACKAGE_UPLOAD(cz.cuni.mff.d3s.been.web.pages.bpkpackage.Upload.class, "Packages", "Upload"),
 
-        ABOUT(cz.cuni.mff.d3s.been.web.pages.About.class, "About", null, true),
-
         TASK_TREE(cz.cuni.mff.d3s.been.web.pages.task.Tree.class, "Benchmarks & Tasks", "Benchmark tree"),
 
         TASK_TASKS(cz.cuni.mff.d3s.been.web.pages.task.List.class, "Benchmarks & Tasks", "Tasks"),
@@ -122,11 +120,11 @@ public class Layout {
 
         RUNTIME_DETAIL(cz.cuni.mff.d3s.been.web.pages.runtime.Detail.class, "Runtimes", null),
 
-        LOGS(cz.cuni.mff.d3s.been.web.pages.Logs.class, "Logs", null, true),
-
         CONTEXT_DETAIL(cz.cuni.mff.d3s.been.web.pages.context.Detail.class, "Contexts", null, true),
 
-        CONFIGURATION(cz.cuni.mff.d3s.been.web.pages.Configuration.class, "Configuration", null, true);
+	    CLUSTER_INFO(cz.cuni.mff.d3s.been.web.pages.cluster.Info.class, "Cluster", null),
+
+	    ;
 
         public final Class<? extends Page> page;
 

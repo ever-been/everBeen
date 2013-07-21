@@ -17,7 +17,7 @@ import java.util.Collection;
  */
 @Page.Navigation(section = Layout.Section.TASK_DETAIL)
 @ImportJQueryUI
-@Import(library = { "context:js/jquery.dotdotdot.min.js", "context:js/logs.js" })
+@Import(library = { "context:js/logs.js" })
 public class Logs extends Page {
 
 	@Property
