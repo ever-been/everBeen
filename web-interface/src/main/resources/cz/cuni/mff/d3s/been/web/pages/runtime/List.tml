@@ -3,18 +3,49 @@
 <html t:type="layout" section="section"
       xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd" xmlns:p="tapestry:parameter">
 
+<h2>Available Host Runtimes</h2>
 
-<t:grid source="runtimes" row="runtime" inPlace="true" add="load,memory">
-	<p:idCell>
-		<a href="${getDetailLink(runtime.id)}">${runtime.id}</a>
-	</p:idCell>
-	<p:loadCell>
-		${runtime.monitorSample.loadAverage.load1}
-	</p:loadCell>
-	<p:memoryCell>
-		${runtime.monitorSample.freeMemory}
-	</p:memoryCell>
-</t:grid>
+<table class="list wide">
+	<thead>
+	<tr>
+		<th>Runtime ID</th>
+		<th>Hostname</th>
+		<th>Port</th>
+		<th>Type</th>
+		<th>System</th>
+		<th>Hardware info</th>
+		<th>Exclusive</th>
+		<th>Tasks</th>
+		<th>CPU load</th>
+		<th>Free memory</th>
+	</tr>
+	</thead>
 
+	<t:loop source="runtimes" value="runtime">
+		<tr class="data">
+			<td>
+				<i class="icon-laptop"></i>&nbsp;
+				<a href="/runtime/detail/${runtime.id}"><t:output format="idFormat" value="runtime.id" /></a>
+			</td>
+			<td>${runtime.host}</td>
+			<td>${runtime.port}</td>
+			<td>${runtime.type}</td>
+			<td>${runtime.operatingSystem.name} (${runtime.operatingSystem.arch})</td>
+			<td>${runtime.hardware.cpu.size()} CPUs, ${bytesReadable(runtime.hardware.memory.ram)} RAM</td>
+			<td>${runtime.exclusivity}</td>
+			<td>${runtime.taskCount}</td>
+			<td><t:output format="cpuUsageFormat" value="runtime.monitorSample.cpuUsage" /> %</td>
+			<td>${bytesReadable(runtime.monitorSample.freeMemory)}</td>
+		</tr>
+
+		<p:empty>
+			<tr>
+				<td colspan="8">
+					<i class="icon-info-sign"></i> There are no host runtimes.
+				</td>
+			</tr>
+		</p:empty>
+	</t:loop>
+</table>
 
 </html>
