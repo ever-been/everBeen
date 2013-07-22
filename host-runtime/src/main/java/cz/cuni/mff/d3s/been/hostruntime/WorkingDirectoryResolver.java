@@ -53,6 +53,6 @@ public class WorkingDirectoryResolver {
         }
 
         return new File(tasksParentDir, "" + new Date().getTime());
-
     }
+
 }
