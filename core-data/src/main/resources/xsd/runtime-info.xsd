@@ -19,7 +19,7 @@
     <xs:element name="tasksWorkingDirectory" type="xs:string" />
 	<xs:element name="port" type="xs:int" />
     <xs:element name="host" type="xs:string" />
-    <xs:element name="startTime" type="xs:dateTime" />
+    <xs:element name="startUpTime" type="xs:dateTime" />
 	<xs:element name="exclusivity" type="xs:string" />
 	<xs:element name="exclusiveId" type="xs:string" default="NON_EXCLUSIVE" />
 	<xs:element name="taskCount" type="xs:int" />
@@ -68,10 +68,12 @@
 				<xs:element ref="runtimeinfo:host" minOccurs="1" maxOccurs="1" />
                 <xs:element ref="runtimeinfo:workingDirectory" minOccurs="1" maxOccurs="1" />
                 <xs:element ref="runtimeinfo:tasksWorkingDirectory" minOccurs="1" maxOccurs="1" />
+                <xs:element ref="runtimeinfo:type" minOccurs="1" maxOccurs="1"/>
 				<xs:element ref="runtimeinfo:exclusivity" minOccurs="1" maxOccurs="1" />
 				<xs:element ref="runtimeinfo:exclusiveId" minOccurs="1" maxOccurs="1" />
 				<xs:element ref="runtimeinfo:taskCount" minOccurs="1" maxOccurs="1" />
                 <xs:element ref="hardwareinfo:hardware" minOccurs="1" maxOccurs="1" />
+                <xs:element ref="runtimeinfo:startUpTime" minOccurs="1" maxOccurs="1" />
                 <xs:element ref="monitor:monitorSample" minOccurs="0" maxOccurs="1"/>
 				<xs:element name="java" type="runtimeinfo:java" minOccurs="0" maxOccurs="1" />
                 <xs:element name="operatingSystem" type="runtimeinfo:operatingSystem" minOccurs="1" maxOccurs="1" />

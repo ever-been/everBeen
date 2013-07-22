@@ -1119,3 +1119,11 @@ table.tasktemplate td, table.tasktemplate th {
 }
 
 .t-error ul { margin: 0 80px !important; }
+
+.green-font {
+  color: green;
+}
+
+.red-font {
+  color: red;
+}

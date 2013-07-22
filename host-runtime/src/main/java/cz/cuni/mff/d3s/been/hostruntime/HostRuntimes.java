@@ -4,6 +4,9 @@ import java.io.File;
 import java.net.InetSocketAddress;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 import com.hazelcast.core.HazelcastInstance;
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
@@ -77,7 +80,7 @@ public class HostRuntimes {
 
         Calendar c = GregorianCalendar.getInstance();
         c.setTime(new Date());
-        ri.setStartTime(new XMLGregorianCalendarImpl((GregorianCalendar) c));
+        ri.setStartUpTime(new XMLGregorianCalendarImpl((GregorianCalendar) c));
 
         Detector detector = new Detector();
 		detector.detectAll(ri);

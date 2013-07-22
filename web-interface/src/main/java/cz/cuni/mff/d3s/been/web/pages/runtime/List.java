@@ -78,37 +78,16 @@ public class List extends Page {
         return allTasks;
     }
 
-    public String shorten(String what, int beginChars, int endChars) {
-        if (beginChars < 0 || endChars < 0) {
-            throw new IllegalArgumentException("Negative offset for shortening string.");
-        }
-
-        if (what == null) {
-            return null;
-        }
-
-        if (what.length() <= beginChars + endChars + 6) {
-            // why number 6? Because four dots + two spaces = 6 characters
-            return what;
-        }
-
-        return what.substring(0, beginChars) + " .... " + what.substring(what.length() - endChars, what.length());
-    }
-
-    public String getInfo(RuntimeInfo runtime) {
+    public String getErrors(RuntimeInfo runtime) {
         if (getOldTaskDirsOnRuntime(runtime).isEmpty()) {
             return "";
         }
         return "Undeleted working directories of unfinished (failed/killed) tasks still exists in host runtime working directory.";
     }
 
-    public String getMemoryInMB(RuntimeInfo runtime) {
-        NumberFormat formatter = NumberFormat.getIntegerInstance();
-        return formatter.format(runtime.getMonitorSample().getFreeMemory() / 1024 / 1024);
-    }
 
-    public String getStartTime(RuntimeInfo runtime) {
-        GregorianCalendar c = runtime.getStartTime().toGregorianCalendar();
+    public String getStartUpTime(RuntimeInfo runtime) {
+        GregorianCalendar c = runtime.getStartUpTime().toGregorianCalendar();
         Date startTime = c.getTime();
         DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return formatter.format(startTime);
