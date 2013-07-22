@@ -195,16 +195,20 @@ final class ProcessManagerContext {
 		hostInfo.setExclusivity(currentExclusivity.toString());
 		hostInfo.setExclusiveId(currentExclusiveId);
 		hostInfo.setTaskCount(getTasksCount());
-        hostInfo.getTaskDirs().clear();
-        hostInfo.getTaskDirs().addAll(getTaskDirs());
+		hostInfo.getTaskDirs().clear();
+		hostInfo.getTaskDirs().addAll(getTaskDirs());
 		clusterContext.getRuntimes().storeRuntimeInfo(hostInfo);
 	}
 
-    private List<String> getTaskDirs() {
-        return Arrays.asList(new File(hostInfo.getTasksWorkingDirectory()).list());
-    }
+	private List<String> getTaskDirs() {
+		if (hostInfo.isSetTasksWorkingDirectory()) {
+			return Arrays.asList(new File(hostInfo.getTasksWorkingDirectory()).list());
+		} else {
+			return Collections.emptyList();
+		}
+	}
 
-    /**
+	/**
 	 * Sets current exclusivity.
 	 * 
 	 * @param exclusivity

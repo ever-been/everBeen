@@ -3,9 +3,13 @@ package cz.cuni.mff.d3s.been.hostruntime;
 import static cz.cuni.mff.d3s.been.core.task.TaskExclusivity.*;
 import static org.mockito.Mockito.*;
 
+import java.io.IOException;
+
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -32,6 +36,9 @@ public class ProcessManagerContextTest extends Assert {
 
 	private static final String contextId1 = "1234567890";
 	private static final String contextId2 = "0987654321";
+
+	@Rule
+	public TemporaryFolder tmp = new TemporaryFolder();
 
 	@Mock
 	private TaskProcess process1;
@@ -66,23 +73,23 @@ public class ProcessManagerContextTest extends Assert {
 	// ------------------------------------------------------------------------
 
 	@Test
-	public void testAcceptNonExclusiveInNonExclusive() {
+	public void testAcceptNonExclusiveInNonExclusive() throws IOException {
 		RuntimeInfo runtimeInfo = createRuntimeInfo();
 		testAcceptTaskTemplate(NON_EXCLUSIVE, null, runtimeInfo);
 	}
 
 	@Test
-	public void testAcceptSecondNonExclusiveInNonExclusive() {
+	public void testAcceptSecondNonExclusiveInNonExclusive() throws IOException {
 		testAcceptSecondTemplate(NON_EXCLUSIVE, NON_EXCLUSIVE, null);
 	}
 
 	@Test(expected = IllegalStateException.class)
-	public void testRejectSecondExclusiveInNonExclusive() {
+	public void testRejectSecondExclusiveInNonExclusive() throws IOException {
 		testRejectSecondTemplate(NON_EXCLUSIVE, EXCLUSIVE, null);
 	}
 
 	@Test(expected = IllegalStateException.class)
-	public void testRejectSecondContextExclusiveInNonExclusive() {
+	public void testRejectSecondContextExclusiveInNonExclusive() throws IOException {
 		testRejectSecondTemplate(NON_EXCLUSIVE, CONTEXT_EXCLUSIVE, null);
 	}
 
@@ -90,24 +97,24 @@ public class ProcessManagerContextTest extends Assert {
 	// IN EXCLUSIVE
 	// ------------------------------------------------------------------------
 	@Test
-	public void testAcceptExclusiveInNonExclusive() {
+	public void testAcceptExclusiveInNonExclusive() throws IOException {
 		RuntimeInfo runtimeInfo = createRuntimeInfo();
 		testAcceptTaskTemplate(EXCLUSIVE, taskId1, runtimeInfo);
 
 	}
 
 	@Test(expected = IllegalStateException.class)
-	public void testRejectSecondNonExclusiveInExclusive() {
+	public void testRejectSecondNonExclusiveInExclusive() throws IOException {
 		testRejectSecondTemplate(EXCLUSIVE, NON_EXCLUSIVE, taskId1);
 	}
 
 	@Test(expected = IllegalStateException.class)
-	public void testRejectSecondExclusiveInExclusive() {
+	public void testRejectSecondExclusiveInExclusive() throws IOException {
 		testRejectSecondTemplate(EXCLUSIVE, EXCLUSIVE, taskId1);
 	}
 
 	@Test(expected = IllegalStateException.class)
-	public void testRejectSecondContextExclusiveInExclusive() {
+	public void testRejectSecondContextExclusiveInExclusive() throws IOException {
 		testRejectSecondTemplate(EXCLUSIVE, CONTEXT_EXCLUSIVE, taskId1);
 	}
 
@@ -116,19 +123,19 @@ public class ProcessManagerContextTest extends Assert {
 	// ------------------------------------------------------------------------
 
 	@Test
-	public void testAcceptContextExclusiveInNonExclusive() {
+	public void testAcceptContextExclusiveInNonExclusive() throws IOException {
 		RuntimeInfo runtimeInfo = createRuntimeInfo();
 		testAcceptTaskTemplate(CONTEXT_EXCLUSIVE, contextId1, runtimeInfo);
 	}
 
 	@Test
-	public void testAcceptSecondContextExclusiveInContextExclusiveSameContext() {
+	public void testAcceptSecondContextExclusiveInContextExclusiveSameContext() throws IOException {
 		testAcceptSecondTemplate(CONTEXT_EXCLUSIVE, CONTEXT_EXCLUSIVE, contextId1);
 
 	}
 
 	@Test(expected = IllegalStateException.class)
-	public void testRejectSecondContextExclusiveInContextExclusiveDifferentContext() {
+	public void testRejectSecondContextExclusiveInContextExclusiveDifferentContext() throws IOException {
 
 		RuntimeInfo runtimeInfo = createRuntimeInfo();
 
@@ -156,12 +163,12 @@ public class ProcessManagerContextTest extends Assert {
 	}
 
 	@Test(expected = IllegalStateException.class)
-	public void testRejectSecondNonExclusiveInContextExclusive() {
+	public void testRejectSecondNonExclusiveInContextExclusive() throws IOException {
 		testRejectSecondTemplate(CONTEXT_EXCLUSIVE, NON_EXCLUSIVE, contextId1);
 	}
 
 	@Test(expected = IllegalStateException.class)
-	public void testRejectSecondExclusiveInContextExclusive() {
+	public void testRejectSecondExclusiveInContextExclusive() throws IOException {
 		testRejectSecondTemplate(CONTEXT_EXCLUSIVE, EXCLUSIVE, contextId1);
 	}
 
@@ -176,17 +183,17 @@ public class ProcessManagerContextTest extends Assert {
 	IMap map;
 
 	@Test
-	public void testRemoveNonExclusiveLast() {
+	public void testRemoveNonExclusiveLast() throws IOException {
 		testRemoveLastTemplate(NON_EXCLUSIVE, null);
 	}
 
 	@Test
-	public void testRemoveExclusiveLast() {
+	public void testRemoveExclusiveLast() throws IOException {
 		testRemoveLastTemplate(EXCLUSIVE, taskId1);
 	}
 
 	@Test
-	public void testRemoveContextExclusiveLast() {
+	public void testRemoveContextExclusiveLast() throws IOException {
 		testRemoveLastTemplate(CONTEXT_EXCLUSIVE, contextId1);
 	}
 
@@ -195,7 +202,7 @@ public class ProcessManagerContextTest extends Assert {
 	// ------------------------------------------------------------------------
 
 	private void testRejectSecondTemplate(TaskExclusivity firstExclusivity, TaskExclusivity secondExclusivity,
-			String exclusivityId) {
+			String exclusivityId) throws IOException {
 		RuntimeInfo runtimeInfo = createRuntimeInfo();
 
 		ProcessManagerContext managerContext = new ProcessManagerContext(clusterContext, runtimeInfo);
@@ -235,7 +242,7 @@ public class ProcessManagerContextTest extends Assert {
 	}
 
 	private void testAcceptSecondTemplate(TaskExclusivity firstExclusivity, TaskExclusivity secondExclusivity,
-			String exclusiveId) {
+			String exclusiveId) throws IOException {
 
 		RuntimeInfo runtimeInfo = createRuntimeInfo();
 		ProcessManagerContext managerContext = testAcceptTaskTemplate(firstExclusivity, exclusiveId, runtimeInfo);
@@ -248,7 +255,7 @@ public class ProcessManagerContextTest extends Assert {
 		verifyMangerContext(managerContext, 2, firstExclusivity, exclusiveId, runtimeInfo);
 	}
 
-	private void testRemoveLastTemplate(TaskExclusivity exclusivity, String exclusivityId) {
+	private void testRemoveLastTemplate(TaskExclusivity exclusivity, String exclusivityId) throws IOException {
 		RuntimeInfo runtimeInfo = createRuntimeInfo();
 		ProcessManagerContext managerContext = testAcceptTaskTemplate(exclusivity, exclusivityId, runtimeInfo);
 
@@ -290,8 +297,8 @@ public class ProcessManagerContextTest extends Assert {
 		}
 	}
 
-	private RuntimeInfo createRuntimeInfo() {
-		return new RuntimeInfo().withId(runtimeId);
+	private RuntimeInfo createRuntimeInfo() throws IOException {
+		return new RuntimeInfo().withId(runtimeId).withTasksWorkingDirectory(tmp.newFolder().toString());
 	}
 
 }
