@@ -9,6 +9,8 @@ import cz.cuni.mff.d3s.been.bpk.BpkConfigurationException;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.core.LogMessage;
 import cz.cuni.mff.d3s.been.core.benchmark.BenchmarkEntry;
+import cz.cuni.mff.d3s.been.core.protocol.command.CommandEntry;
+import cz.cuni.mff.d3s.been.core.protocol.command.CommandEntryState;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
@@ -61,6 +63,8 @@ public interface BeenApi {
 	public void removeTaskContextEntry(String taskContextId);
 	public void removeBenchmarkEntry(String benchmarkId);
 
+    public CommandEntry deleteTaskWrkDirectory(String runtimeId, String taskWrkDir) throws CommandTimeoutException;
+
 	public Collection<RuntimeInfo> getRuntimes();
 	public RuntimeInfo getRuntime(String id);
 
@@ -81,7 +85,9 @@ public interface BeenApi {
 
 	public QueryAnswer queryPersistence(Query query);
 
-	interface LogListener {
+    public Collection<TaskEntry> listActiveTasksOnRuntime(String runtimeId);
+
+    interface LogListener {
 		public void logAdded(String jsonLog);
 	}
 }

@@ -191,18 +191,12 @@ final class ProcessManagerContext {
 	/**
 	 * Updates Host Runtime information in the cluster
 	 */
-	private void updateHostInfo() {
+	void updateHostInfo() {
 		hostInfo.setExclusivity(currentExclusivity.toString());
 		hostInfo.setExclusiveId(currentExclusiveId);
 		hostInfo.setTaskCount(getTasksCount());
-        hostInfo.getTaskDirs().clear();
-        hostInfo.getTaskDirs().addAll(getTaskDirs());
 		clusterContext.getRuntimes().storeRuntimeInfo(hostInfo);
 	}
-
-    private List<String> getTaskDirs() {
-        return Arrays.asList(new File(hostInfo.getTasksWorkingDirectory()).list());
-    }
 
     /**
 	 * Sets current exclusivity.

@@ -3,6 +3,7 @@ package cz.cuni.mff.d3s.been.web.pages.runtime;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.web.components.Layout;
+import cz.cuni.mff.d3s.been.web.model.TaskWrkDirChecker;
 import cz.cuni.mff.d3s.been.web.pages.Page;
 import org.apache.tapestry5.annotations.Property;
 
@@ -41,18 +42,12 @@ public class List extends Page {
         }
     }
 
+    private TaskWrkDirChecker taskWrkDirChecker = null;
     private java.util.List<String> getOldTaskDirsOnRuntime(RuntimeInfo runtime) {
-        java.util.List<String> taskDirsOnRuntime = oldWrkDirs.get(runtime);
-
-        if (taskDirsOnRuntime == null) {
-            java.util.List<TaskEntry> tasksOnRuntime = getUnfinishedTasksOnHost(runtime);
-            taskDirsOnRuntime = getTaskDirsOnHost(runtime);
-
-            for (TaskEntry entry : tasksOnRuntime) {
-                taskDirsOnRuntime.remove(entry.getWorkingDirectory());
-            }
+        if (taskWrkDirChecker == null) {
+            taskWrkDirChecker = new TaskWrkDirChecker(api.getApi());
         }
-        return taskDirsOnRuntime;
+        return taskWrkDirChecker.getOldTaskDirsOnRuntime(runtime);
     }
 
     private java.util.List<String> getTaskDirsOnHost(RuntimeInfo runtime) {

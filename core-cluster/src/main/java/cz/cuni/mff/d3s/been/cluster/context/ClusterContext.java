@@ -267,4 +267,10 @@ public class ClusterContext {
 		getMap(Names.SERVICES_MAP_NAME).remove(serviceName);
 	}
 
+
+
+    public long generateId(String key) {
+        return getInstance().getIdGenerator(key).newId();
+    }
+
 }

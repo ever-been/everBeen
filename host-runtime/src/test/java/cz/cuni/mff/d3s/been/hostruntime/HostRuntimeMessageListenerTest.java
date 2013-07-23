@@ -38,7 +38,7 @@ public class HostRuntimeMessageListenerTest extends Assert {
 	@Ignore
 	@Test
 	public void testKillTaskMessageWillCallCorrectMethod() throws Exception {
-		KillTaskMessage msg = new KillTaskMessage(null, null, null, null);
+		KillTaskMessage msg = new KillTaskMessage(null, null, null);
 
 		// TODO: FIXME onMessage signature changed after moving to pure
 		// Hazelcast interface
@@ -52,7 +52,7 @@ public class HostRuntimeMessageListenerTest extends Assert {
 	@Ignore
 	@Test
 	public void testRunTaskMessageWillCallCorrectMethod() throws Exception {
-		RunTaskMessage msg = new RunTaskMessage(null, null, null);
+		RunTaskMessage msg = new RunTaskMessage(null, null);
 
 		// TODO: FIXME onMessage signature changed after moving to pure
 		// Hazelcast interface

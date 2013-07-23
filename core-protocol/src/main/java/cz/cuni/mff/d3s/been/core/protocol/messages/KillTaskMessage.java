@@ -21,9 +21,7 @@ public final class KillTaskMessage extends BaseMessage {
 
 	/**
 	 * Constructs new message.
-	 * 
-	 * @param senderId
-	 *          id of message sender
+	 *
 	 * @param recieverId
 	 *          id of message receiver
 	 * @param reason
@@ -33,8 +31,8 @@ public final class KillTaskMessage extends BaseMessage {
 	 *          cluster-wide unique task identifier
 	 * 
 	 */
-	public KillTaskMessage(String senderId, String recieverId, String reason, String taskId) {
-		super(senderId, recieverId);
+	public KillTaskMessage(String recieverId, String reason, String taskId) {
+		super(recieverId);
 		this.reason = reason;
 		this.taskId = taskId;
 	}

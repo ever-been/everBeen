@@ -36,7 +36,7 @@ public abstract class Page {
     @Environmental
     private JavaScriptSupport javaScriptSupport;
 
-    void setupRender() {
+    public void setupRender() {
         javaScriptSupport.addScript("$(document).on('hover', '.show_tooltip', \n" +
                 " function(){\n " +
                 "   $(this).tooltip('show');\n" +
