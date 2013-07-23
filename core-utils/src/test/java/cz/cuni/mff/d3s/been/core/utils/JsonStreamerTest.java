@@ -1,10 +1,11 @@
 package cz.cuni.mff.d3s.been.core.utils;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import cz.cuni.mff.d3s.been.util.JsonException;
 import cz.cuni.mff.d3s.been.util.JsonKeyHandler;
 import cz.cuni.mff.d3s.been.util.JsonStreamer;
-import org.junit.Assert;
-import org.junit.Test;
 
 /**
  * @author Martin Sixta
@@ -15,6 +16,8 @@ public class JsonStreamerTest extends Assert {
 	private static final String jsonWithArray = "{\n" + "\"employees\": [\n" + "{ \"firstName\":\"John\" , \"lastName\":\"Doe\" },\n" + "{ \"firstName\":\"Anna\" , \"lastName\":\"Smith\" },\n" + "{ \"firstName\":\"Peter\" , \"lastName\":\"Jones\" }\n" + "]" + "}\n";
 
 	private static final String jsonGarbage = "a45q4ew54e6tdt";
+
+	static final String INNER_TEST = "{\"id\": \"1\", \"LogMessage\" : {\"contextId\":\"edabbcbd-d083-4414-9787-08da8a834d38\"}}";
 
 	private static class OneTimeHandler implements JsonKeyHandler {
 
@@ -113,6 +116,21 @@ public class JsonStreamerTest extends Assert {
 		JsonStreamer streamer = new JsonStreamer();
 		streamer.addHandler(key, handler);
 		streamer.process(jsonGarbage);
+
+	}
+
+	@Test
+	public void testJsonInnerObject() throws JsonException {
+		final String key = "contextId";
+		final String value = "edabbcbd-d083-4414-9787-08da8a834d38";
+
+		OneTimeHandler handler = new OneTimeHandler(key);
+
+		JsonStreamer streamer = new JsonStreamer();
+		streamer.addHandler(key, handler);
+		streamer.process(INNER_TEST);
+
+		handler.validate(value);
 
 	}
 

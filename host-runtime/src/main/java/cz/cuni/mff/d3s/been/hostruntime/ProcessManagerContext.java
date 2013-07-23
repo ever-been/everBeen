@@ -191,7 +191,7 @@ final class ProcessManagerContext {
 	/**
 	 * Updates Host Runtime information in the cluster
 	 */
-	void updateHostInfo() {
+	private void updateHostInfo() {
 		hostInfo.setExclusivity(currentExclusivity.toString());
 		hostInfo.setExclusiveId(currentExclusiveId);
 		hostInfo.setTaskCount(getTasksCount());
