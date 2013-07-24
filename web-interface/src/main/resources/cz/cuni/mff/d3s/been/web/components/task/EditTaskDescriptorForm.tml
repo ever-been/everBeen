@@ -182,6 +182,14 @@
                 </div>
             </div>
 
+
+            <div class="control-group">
+                <t:label t:for="suspend" class="control-label">Suspend on start</t:label>
+                <div class="controls">
+                    <t:checkbox t:id="suspend" value="taskDescriptor.debug.suspend"/>  (relevant in CONNECT or LISTEN mode)
+                </div>
+            </div>
+
             <div class="control-group">
                 <t:label for="debugHost" class="control-label">Host</t:label>
                 <div class="controls">

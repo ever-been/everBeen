@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cz.cuni.mff.d3s.been.core.task.ModeEnum;
 import org.apache.tapestry5.annotations.Component;
 import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.annotations.SessionState;
@@ -217,6 +218,10 @@ public class SubmitTaskDescriptor extends Page {
 				taskDescriptor.getJava().getJavaOptions().getJavaOption().add(opt.value);
 			}
 		}
+
+        if (taskDescriptor.getDebug().getMode() == ModeEnum.NONE) {
+            taskDescriptor.getDebug().setSuspend(false);
+        }
 
 		submitTaskDescriptor(taskDescriptor);
 
