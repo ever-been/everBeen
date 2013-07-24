@@ -71,6 +71,7 @@ public class BeenApiImpl implements BeenApi {
 
     @Override
     public Collection<Member> getClusterMembers() {
+
         return clusterContext.getMembers();
     }
 
@@ -455,5 +456,4 @@ public class BeenApiImpl implements BeenApi {
         IMap<?, T> map = clusterContext.getMap(mapName);
         return map.values(queryPredicate);
     }
-
 }
