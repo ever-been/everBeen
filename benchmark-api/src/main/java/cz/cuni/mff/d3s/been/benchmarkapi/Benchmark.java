@@ -150,6 +150,10 @@ public abstract class Benchmark extends Task {
 		}
 	}
 
+	/**
+	 * Use {@link ContextBuilder} instead.
+	 */
+	@Deprecated
 	public TaskContextDescriptor getTaskContextFromResource(String resourceName) throws BenchmarkException {
 
 		try {
@@ -167,6 +171,10 @@ public abstract class Benchmark extends Task {
 
 	}
 
+	/**
+	 * Use {@link ContextBuilder} instead.
+	 */
+	@Deprecated
 	public void setTaskContextProperty(TaskContextDescriptor descriptor, String key, String value) {
 		Property p = new Property();
 		p.setName(key);
