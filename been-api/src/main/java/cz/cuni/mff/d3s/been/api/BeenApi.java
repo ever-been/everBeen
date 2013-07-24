@@ -85,7 +85,11 @@ public interface BeenApi {
 
 	public QueryAnswer queryPersistence(Query query);
 
-    public Collection<TaskEntry> listActiveTasksOnRuntime(String runtimeId);
+    public Collection<TaskEntry> listActiveTasks(String runtimeId);
+
+    public Collection<CommandEntry> listCommandEntries(String runtimeId);
+
+    public Collection<TaskEntry> listTasks(String id);
 
     interface LogListener {
 		public void logAdded(String jsonLog);

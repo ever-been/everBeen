@@ -45,10 +45,10 @@
             <td>
                 <t:if t:test="getErrors(runtime)">
                     <span data-placement="top"
-                          data-toggle="tooltip" class="red-font show_tooltip"
+                          data-toggle="tooltip" class="orange-font show_tooltip"
                           data-original-title="${getErrors(runtime)}">
                         <i class="icon-thumbs-down"></i>
-                        <strong>&nbsp;KO</strong>
+                        <strong>&nbsp;WARN</strong>
                     </span>
                     <p:else>
                         <span class="green-font">

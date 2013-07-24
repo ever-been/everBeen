@@ -430,8 +430,24 @@ public class BeenApiImpl implements BeenApi {
     }
 
     @Override
-    public Collection<TaskEntry> listActiveTasksOnRuntime(String runtimeId) {
+    public Collection<CommandEntry> listCommandEntries(String runtimeId) {
+        String sql = String.format("runtimeId = '%s'", runtimeId);
+        SqlPredicate predicate = new SqlPredicate(sql);
+        return queryHazelcastList(CommandEntry.class, Names.BEEN_MAP_COMMAND_ENTRIES, predicate);
+    }
+
+
+    @Override
+    public Collection<TaskEntry> listActiveTasks(String runtimeId) {
         String sql = String.format("runtimeId = '%s' AND state != %s", runtimeId, TaskState.ABORTED);
+        SqlPredicate predicate = new SqlPredicate(sql);
+        return queryHazelcastList(TaskEntry.class, Names.TASKS_MAP_NAME, predicate);
+    }
+
+
+    @Override
+    public Collection<TaskEntry> listTasks(String runtimeId) {
+        String sql = String.format("runtimeId = '%s'", runtimeId, TaskState.ABORTED);
         SqlPredicate predicate = new SqlPredicate(sql);
         return queryHazelcastList(TaskEntry.class, Names.TASKS_MAP_NAME, predicate);
     }

@@ -40,7 +40,7 @@ public final class TaskWrkDirChecker {
 
     private Collection<TaskEntry> getLiveTasksOnHost(RuntimeInfo runtime) {
         if (liveTasksOnHosts == null) {
-            liveTasksOnHosts = api.listActiveTasksOnRuntime(runtime.getId());
+            liveTasksOnHosts = api.listActiveTasks(runtime.getId());
         }
         return liveTasksOnHosts;
     }

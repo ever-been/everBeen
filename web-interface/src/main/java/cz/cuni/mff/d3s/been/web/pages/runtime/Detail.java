@@ -4,17 +4,22 @@ import cz.cuni.mff.d3s.been.api.CommandTimeoutException;
 import cz.cuni.mff.d3s.been.core.protocol.command.CommandEntry;
 import cz.cuni.mff.d3s.been.core.protocol.command.CommandEntryState;
 import cz.cuni.mff.d3s.been.core.ri.*;
+import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.web.components.Layout;
 import cz.cuni.mff.d3s.been.web.model.TaskWrkDirChecker;
 import cz.cuni.mff.d3s.been.web.pages.Page;
 import org.apache.tapestry5.Asset;
 import org.apache.tapestry5.Block;
 import org.apache.tapestry5.annotations.Environmental;
+import org.apache.tapestry5.annotations.InjectComponent;
 import org.apache.tapestry5.annotations.Path;
 import org.apache.tapestry5.annotations.Property;
+import org.apache.tapestry5.corelib.components.Zone;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.services.ajax.AjaxResponseRenderer;
 import org.apache.tapestry5.services.javascript.JavaScriptSupport;
+
+import java.util.*;
 
 /**
  * This page is used to display information about host runtime and to resolve problems
@@ -84,6 +89,18 @@ public class Detail extends Page {
     private String oldTaskWrkDir;
 
     /**
+     * property for loop through tasks on underlying runtime
+     */
+    @Property
+    private TaskEntry task;
+
+    /**
+     * property for loop through command entries for this runtime
+     */
+    @Property
+    private CommandEntry commandEntry;
+
+    /**
      * property for loop through interfaces of sample monitor
      */
     @Property
@@ -114,9 +131,21 @@ public class Detail extends Page {
     private RuntimeInfo runtime;
 
 
-    // --------------------
-    // BLOCKS FOR INJECTION
-    // --------------------
+    // ------------------------------
+    // ZONES AND BLOCKS FOR INJECTION
+    // ------------------------------
+
+    /**
+     * Zone with loop of commandHistory
+     */
+    @InjectComponent
+    private Zone commandHistoryZone;
+
+    /**
+     * Zone with task count
+     */
+    @InjectComponent
+    private Zone taskCountZone;
 
     /**
      * "Old task working directory has been deleted" block
@@ -129,6 +158,12 @@ public class Detail extends Page {
      */
     @Inject
     private Block timeoutedBlock;
+
+    /**
+     * Block with task list
+     */
+    @Inject
+    private Block taskListBlock;
 
     /**
      * "Old task working directory deletion has failed" block
@@ -213,7 +248,21 @@ public class Detail extends Page {
         } catch (CommandTimeoutException e) {
             ajaxResponseRenderer.addRender("oldTaskWrkDirDeleteZone_" + zoneIndex, timeoutedBlock);
         }
+        ajaxResponseRenderer.addRender("commandHistoryZone", commandHistoryZone.getBody());
 
+    }
+
+    public String getSubdirName(String fullPath) {
+        int slashPos = fullPath.lastIndexOf("/");
+        if (slashPos <= 0) {
+            slashPos = fullPath.lastIndexOf("\\");
+        }
+
+        if (slashPos < 0) {
+            slashPos = 0;
+        }
+
+        return fullPath.substring(slashPos +1);
     }
 
     /**
@@ -238,4 +287,34 @@ public class Detail extends Page {
         onActionFromDeleteOldTaskWrkDir(oldTaskWorkingDir, zoneIndex);
     }
 
+    public void onActionFromShowTasksLink() {
+        ajaxResponseRenderer.addRender(taskCountZone.getClientId(), taskListBlock);
+    }
+
+    public void onActionFromHideTasksLink() {
+        ajaxResponseRenderer.addRender(taskCountZone.getClientId(), taskCountZone.getBody());
+    }
+
+
+    // ----------------------------------
+    // TAPESTRY TEMPLATE PROPERTY GETTERS
+    // ----------------------------------
+
+    /**
+     * Collects history of command entries for underlying runtime.
+     * @return
+     */
+    public Collection<CommandEntry> getCommandEntries() {
+        return api.getApi().listCommandEntries(runtime.getId());
+    }
+
+    /**
+     * Collect information about tasks on this runtime.
+     * @return
+     */
+    public Collection<TaskEntry> getTasks() {
+        return api.getApi().listTasks(runtime.getId());
+    }
 }
+
+
