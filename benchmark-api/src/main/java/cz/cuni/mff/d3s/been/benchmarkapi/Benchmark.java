@@ -137,12 +137,12 @@ public abstract class Benchmark extends Task {
 				// First save the local storage, before submitting the context
 				benchmarkRequestor.storagePersist(getBenchmarkId(), storage);
 
-				log.debug("Submitting task context descriptor.");
+				log.trace("Submitting task context descriptor.");
 				String taskContextId = benchmarkRequestor.contextSubmit(taskContextDescriptor, getBenchmarkId());
-				log.debug("Task context descriptor with ID '{}' submitted", taskContextId);
+				log.trace("Task context descriptor with ID '{}' submitted", taskContextId);
 
 				benchmarkRequestor.contextWait(taskContextId);
-				log.debug("Task context '{}' finished.", taskContextId);
+				log.trace("Task context '{}' finished.", taskContextId);
 			} catch (TimeoutException e) {
 				throw new RuntimeException(e.getMessage(), e);
 				// TODO this must be handled with greater care!
