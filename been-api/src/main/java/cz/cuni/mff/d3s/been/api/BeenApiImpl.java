@@ -316,8 +316,7 @@ public class BeenApiImpl implements BeenApi {
 
     @Override
     public void killTaskContext(String taskContextId) {
-        // TODO
-        throw new UnsupportedOperationException("Not yet implemented.");
+        clusterContext.getTaskContexts().kill(taskContextId);
     }
 
     @Override
@@ -433,7 +432,7 @@ public class BeenApiImpl implements BeenApi {
     public Collection<CommandEntry> listCommandEntries(String runtimeId) {
         String sql = String.format("runtimeId = '%s'", runtimeId);
         SqlPredicate predicate = new SqlPredicate(sql);
-        return queryHazelcastList(CommandEntry.class, Names.BEEN_MAP_COMMAND_ENTRIES, predicate);
+        return queryHazelcastMap(Names.BEEN_MAP_COMMAND_ENTRIES, predicate);
     }
 
 
@@ -441,7 +440,7 @@ public class BeenApiImpl implements BeenApi {
     public Collection<TaskEntry> listActiveTasks(String runtimeId) {
         String sql = String.format("runtimeId = '%s' AND state != %s", runtimeId, TaskState.ABORTED);
         SqlPredicate predicate = new SqlPredicate(sql);
-        return queryHazelcastList(TaskEntry.class, Names.TASKS_MAP_NAME, predicate);
+        return queryHazelcastMap(Names.TASKS_MAP_NAME, predicate);
     }
 
 
@@ -449,11 +448,11 @@ public class BeenApiImpl implements BeenApi {
     public Collection<TaskEntry> listTasks(String runtimeId) {
         String sql = String.format("runtimeId = '%s'", runtimeId, TaskState.ABORTED);
         SqlPredicate predicate = new SqlPredicate(sql);
-        return queryHazelcastList(TaskEntry.class, Names.TASKS_MAP_NAME, predicate);
+        return queryHazelcastMap(Names.TASKS_MAP_NAME, predicate);
     }
 
-    private <T> Collection<T> queryHazelcastList(Class<T> type, String listName, SqlPredicate queryPredicate) {
-        IMap<?, T> map = clusterContext.getMap(listName);
+    private <T> Collection<T> queryHazelcastMap(String mapName, SqlPredicate queryPredicate) {
+        IMap<?, T> map = clusterContext.getMap(mapName);
         return map.values(queryPredicate);
     }
 
