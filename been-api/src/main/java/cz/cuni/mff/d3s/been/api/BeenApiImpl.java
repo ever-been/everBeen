@@ -18,6 +18,7 @@ import cz.cuni.mff.d3s.been.core.task.*;
 import cz.cuni.mff.d3s.been.datastore.SoftwareStoreBuilderFactory;
 import cz.cuni.mff.d3s.been.debugassistant.DebugAssistant;
 import cz.cuni.mff.d3s.been.debugassistant.DebugListItem;
+import cz.cuni.mff.d3s.been.evaluators.EvaluatorResult;
 import cz.cuni.mff.d3s.been.persistence.DAOException;
 import cz.cuni.mff.d3s.been.persistence.Query;
 import cz.cuni.mff.d3s.been.persistence.QueryAnswer;
@@ -239,7 +240,45 @@ public class BeenApiImpl implements BeenApi {
         }
     }
 
-    @Override
+	@Override
+	public Collection<EvaluatorResult> getEvaluatorResults() {
+		EntityID entityID = new EntityID();
+		entityID.setKind("been");
+		entityID.setGroup("evaluator-results");
+		Query query = new QueryBuilder().on(entityID).fetch();
+
+		Collection<String> stringCollection = this.queryPersistence(query).getData();
+		try {
+			return jsonUtils.deserialize(stringCollection, EvaluatorResult.class);
+		} catch (JsonException e) {
+			e.printStackTrace();
+			// TODO error handling
+			return null;
+		}
+	}
+
+	@Override
+	public EvaluatorResult getEvaluatorResult(String resultId) {
+		EntityID entityID = new EntityID();
+		entityID.setKind("been");
+		entityID.setGroup("evaluator-results");
+		Query query = new QueryBuilder().on(entityID).with("id", resultId).fetch();
+
+		Collection<String> stringCollection = this.queryPersistence(query).getData();
+		try {
+			Collection<EvaluatorResult> evaluatorResults = jsonUtils.deserialize(stringCollection, EvaluatorResult.class);
+			for (EvaluatorResult evaluatorResult : evaluatorResults) {
+				return evaluatorResult;
+			}
+			return null;
+		} catch (JsonException e) {
+			e.printStackTrace();
+			// TODO error handling
+			return null;
+		}
+	}
+
+	@Override
     public Collection<BpkIdentifier> getBpks() {
         SWRepositoryInfo swInfo = clusterContext.getServices().getSWRepositoryInfo();
         SwRepoClient client = new SwRepoClientFactory(SoftwareStoreBuilderFactory.getSoftwareStoreBuilder().buildCache()).getClient(

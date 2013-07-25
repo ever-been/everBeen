@@ -49,6 +49,11 @@
 			<version>3.0.0</version>
 		</dependency>
 
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>results</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
 		<!-- EXTERNAL -->
 

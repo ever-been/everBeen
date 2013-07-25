@@ -65,6 +65,7 @@
 					<taskDescriptors>
 						<param>src/main/resources/cz/cuni/mff/d3s/been/task/ExampleTask.td.xml</param>
 						<param>src/main/resources/cz/cuni/mff/d3s/been/task/ExampleBenchmark.td.xml</param>
+						<param>src/main/resources/cz/cuni/mff/d3s/been/task/ExampleEvaluator.td.xml</param>
 					</taskDescriptors>
 					<taskContextDescriptors>
 						<param>src/main/resources/cz/cuni/mff/d3s/been/task/Example.tcd.xml</param>

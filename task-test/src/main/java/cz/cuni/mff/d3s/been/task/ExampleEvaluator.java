@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.task;
 
+import cz.cuni.mff.d3s.been.evaluators.EvaluatorResult;
 import cz.cuni.mff.d3s.been.taskapi.Evaluator;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -11,9 +12,11 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Date;
 
 /**
  * @author Kuba Brecka
@@ -21,7 +24,7 @@ import java.nio.file.Files;
 public class ExampleEvaluator extends Evaluator {
 
 	@Override
-	public File evaluate() {
+	public EvaluatorResult evaluate() {
 		DefaultPieDataset dataset = new DefaultPieDataset();
 		dataset.setValue("Linux", 29);
 		dataset.setValue("Mac", 20);
@@ -42,9 +45,16 @@ public class ExampleEvaluator extends Evaluator {
 		chart.draw(graphics, new Rectangle2D.Double(0, 0, 400, 400));
 
 		try {
+			ByteArrayOutputStream os = new ByteArrayOutputStream();
 			File tmpFile = Files.createTempFile(null, null).toFile();
-			ImageIO.write(image, "png", tmpFile);
-			return tmpFile;
+			ImageIO.write(image, "png", os);
+
+			EvaluatorResult r = new EvaluatorResult();
+			r.setTimestamp(new Date().getTime());
+			r.setFilename("example-result.png");
+			r.setMimeType(EvaluatorResult.MIME_TYPE_IMAGE_PNG);
+			r.setData(os.toByteArray());
+			return r;
 		} catch (IOException e) {
 			throw new RuntimeException(e.getMessage(), e);
 		}

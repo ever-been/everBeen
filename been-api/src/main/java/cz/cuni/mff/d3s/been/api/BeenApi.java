@@ -17,6 +17,7 @@ import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.debugassistant.DebugListItem;
+import cz.cuni.mff.d3s.been.evaluators.EvaluatorResult;
 import cz.cuni.mff.d3s.been.persistence.DAOException;
 import cz.cuni.mff.d3s.been.persistence.Query;
 import cz.cuni.mff.d3s.been.persistence.QueryAnswer;
@@ -71,6 +72,9 @@ public interface BeenApi {
 	public Collection<LogMessage> getLogsForTask(String taskId);
 	public void addLogListener(LogListener listener);
 	public void removeLogListener(LogListener listener);
+	
+	public Collection<EvaluatorResult> getEvaluatorResults();
+	public EvaluatorResult getEvaluatorResult(String resultId);
 
 	public Collection<BpkIdentifier> getBpks();
 	public void uploadBpk(InputStream bpkInputStream) throws BpkConfigurationException;
@@ -89,7 +93,7 @@ public interface BeenApi {
 
     public Collection<CommandEntry> listCommandEntries(String runtimeId);
 
-    public Collection<TaskEntry> listTasks(String id);
+    public Collection<TaskEntry> listTasks(String runtimeId);
 
     interface LogListener {
 		public void logAdded(String jsonLog);
