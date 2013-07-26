@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.taskapi;
 
+import cz.cuni.mff.d3s.been.core.persistence.Entities;
 import cz.cuni.mff.d3s.been.core.persistence.EntityID;
 import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
 import cz.cuni.mff.d3s.been.evaluators.EvaluatorResult;
@@ -24,12 +25,8 @@ public abstract class Evaluator extends Task {
 	public void run(String[] args) {
 		EvaluatorResult evaluatorResult = evaluate();
 
-		final EntityID eid = new EntityID();
-		eid.setKind("been");
-		eid.setGroup("evaluator-results");
-
 		try {
-			ResultPersister rp = results.createResultPersister(eid);
+			ResultPersister rp = results.createResultPersister(Entities.RESULT_EVALUATOR.getId());
 			rp.persist(evaluatorResult);
 			rp.close();
 		} catch (DAOException e) {
