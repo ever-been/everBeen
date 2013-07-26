@@ -229,7 +229,7 @@ public class BeenApiImpl implements BeenApi {
 
     @Override
     public Collection<TaskLogMessage> getLogsForTask(String taskId) throws DAOException {
-        Query query = new QueryBuilder().on(Entities.LOG_TASK).with("taskId", taskId).fetch();
+        Query query = new QueryBuilder().on(Entities.LOG_TASK.getId()).with("taskId", taskId).fetch();
 
         Collection<String> stringCollection = this.queryPersistence(query).getData();
         try {
@@ -241,7 +241,7 @@ public class BeenApiImpl implements BeenApi {
 
 	@Override
 	public Collection<EvaluatorResult> getEvaluatorResults() {
-		Query query = new QueryBuilder().on(Entities.RESULT_EVALUATOR).fetch();
+		Query query = new QueryBuilder().on(Entities.RESULT_EVALUATOR.getId()).fetch();
 
 		Collection<String> stringCollection = this.queryPersistence(query).getData();
 		try {
@@ -255,7 +255,7 @@ public class BeenApiImpl implements BeenApi {
 
 	@Override
 	public void deleteResult(String resultId) {
-		Query query = new QueryBuilder().on(Entities.RESULT_EVALUATOR).with("id", resultId).delete();
+		Query query = new QueryBuilder().on(Entities.RESULT_EVALUATOR.getId()).with("id", resultId).delete();
 		QueryStatus status = this.queryPersistence(query).getStatus();
 		if (status != QueryStatus.OK) {
 			log.error("Delete query failed with status {}", status.getDescription());
@@ -264,7 +264,7 @@ public class BeenApiImpl implements BeenApi {
 
 	@Override
 	public EvaluatorResult getEvaluatorResult(String resultId) {
-		Query query = new QueryBuilder().on(Entities.RESULT_EVALUATOR).with("id", resultId).fetch();
+		Query query = new QueryBuilder().on(Entities.RESULT_EVALUATOR.getId()).with("id", resultId).fetch();
 
 		Collection<String> stringCollection = this.queryPersistence(query).getData();
 		try {
@@ -499,7 +499,7 @@ public class BeenApiImpl implements BeenApi {
     }
     @Override
     public Collection<ServiceLogMessage> getServiceLogsByBeenId(String beenId) throws DAOException {
-        final QueryAnswer qa = clusterContext.getPersistence().query(new QueryBuilder().on(Entities.LOG_SERVICE).with("beenId", beenId).fetch());
+        final QueryAnswer qa = clusterContext.getPersistence().query(new QueryBuilder().on(Entities.LOG_SERVICE.getId()).with("beenId", beenId).fetch());
         if (!qa.isCarryingData()) {
             throw new DAOException(String.format("Persistence layer response for service logs from node '%s' yielded no data: %s", beenId, qa.getStatus().getDescription()));
         }
@@ -512,7 +512,7 @@ public class BeenApiImpl implements BeenApi {
 
     @Override
     public Collection<ServiceLogMessage> getServiceLogsByHostRuntimeId(String hostRuntimeId) throws DAOException {
-        final QueryAnswer qa = clusterContext.getPersistence().query(new QueryBuilder().on(Entities.LOG_SERVICE).with("hostRuntimeId", hostRuntimeId).fetch());
+        final QueryAnswer qa = clusterContext.getPersistence().query(new QueryBuilder().on(Entities.LOG_SERVICE.getId()).with("hostRuntimeId", hostRuntimeId).fetch());
         if (!qa.isCarryingData()) {
             throw new DAOException(String.format("Persistence layer response for service logs from host runtime '%s' yielded no data: %s", hostRuntimeId, qa.getStatus().getDescription()));
         }
@@ -525,7 +525,7 @@ public class BeenApiImpl implements BeenApi {
 
     @Override
     public Collection<ServiceLogMessage> getServiceLogsByServiceName(String serviceName) throws DAOException {
-        final QueryAnswer qa = clusterContext.getPersistence().query(new QueryBuilder().on(Entities.LOG_SERVICE).with("serviceName", serviceName).fetch());
+        final QueryAnswer qa = clusterContext.getPersistence().query(new QueryBuilder().on(Entities.LOG_SERVICE.getId()).with("serviceName", serviceName).fetch());
         if (!qa.isCarryingData()) {
             throw new DAOException(String.format("Persistence layer response for service logs from service '%s' yielded no data: %s", serviceName, qa.getStatus().getDescription()));
         }
