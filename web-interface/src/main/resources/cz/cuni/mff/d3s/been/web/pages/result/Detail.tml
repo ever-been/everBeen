@@ -7,6 +7,8 @@
 
 <div style="float: right; text-align: right;">
 	<button class="btn btn-success" onclick="location.href='/result/download/${result.id}'; return false;">Download</button>
+	<br /><br />
+	<a href="/result/delete/${result.id}" class="btn btn-danger" onclick="return window.confirm('Are you sure?');">Delete</a>
 </div>
 
 <dl class="dl-horizontal">
@@ -16,6 +18,13 @@
 	</dd>
 	<dt>Timestamp:</dt>
 	<dd><b>${timestampToString(result.timestamp)}</b></dd>
+	<dt>Benchmark ID</dt>
+	<dd>
+		<t:if test="result.benchmarkId">
+			<i class="icon-rocket"></i>&nbsp;
+			<a href="/benchmark/detail/${result.benchmarkId}"><t:output format="idFormat" value="result.benchmarkId" /></a>
+		</t:if>
+	</dd>
 	<dt>Filename:</dt>
 	<dd><b>${result.filename}</b></dd>
 	<dt>MIME type:</dt>

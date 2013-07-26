@@ -80,6 +80,7 @@ public interface BeenApi {
 	
 	public Collection<EvaluatorResult> getEvaluatorResults() throws DAOException;
 	public EvaluatorResult getEvaluatorResult(String resultId) throws DAOException;
+    public void deleteResult(String resultId);
 
 	public Collection<BpkIdentifier> getBpks();
 	public void uploadBpk(InputStream bpkInputStream) throws BpkConfigurationException;
@@ -88,6 +89,7 @@ public interface BeenApi {
 	public Map<String, TaskDescriptor> getTaskDescriptors(BpkIdentifier bpkIdentifier);
 	public TaskDescriptor getTaskDescriptor(BpkIdentifier bpkIdentifier, String descriptorName);
 	public Map<String, TaskContextDescriptor> getTaskContextDescriptors(BpkIdentifier bpkIdentifier);
+
 	public TaskContextDescriptor getTaskContextDescriptor(BpkIdentifier bpkIdentifier, String descriptorName);
 
 	public Collection<DebugListItem> getDebugWaitingTasks();
@@ -100,7 +102,7 @@ public interface BeenApi {
 
     public Collection<TaskEntry> listTasks(String runtimeId);
 
-    interface LogListener {
+	interface LogListener {
 		public void logAdded(String jsonLog);
 	}
 }

@@ -9,9 +9,11 @@
 	<thead>
 	<tr>
 		<th>Result ID</th>
+		<th>Benchmark ID</th>
 		<th>Timestamp</th>
 		<th>Filename</th>
 		<th>MIME type</th>
+		<th></th>
 		<th></th>
 		<th></th>
 	</tr>
@@ -19,6 +21,12 @@
 
 	<tr t:type="loop" source="results" value="result">
 		<td>${result.id}</td>
+		<td>
+			<t:if test="result.benchmarkId">
+				<i class="icon-rocket"></i>&nbsp;
+				<a href="/benchmark/detail/${result.benchmarkId}"><t:output format="idFormat" value="result.benchmarkId" /></a>
+			</t:if>
+		</td>
 		<td>${timestampToString(result.timestamp)}</td>
 		<td>${result.filename}</td>
 		<td>${result.mimetype}</td>
@@ -29,6 +37,9 @@
 		</td>
 		<td>
 			<a href="/result/download/${result.id}" class="btn">download</a>
+		</td>
+		<td>
+			<a href="/result/delete/${result.id}" class="btn btn-danger" onclick="return window.confirm('Are you sure?');">delete</a>
 		</td>
 
 		<p:empty>

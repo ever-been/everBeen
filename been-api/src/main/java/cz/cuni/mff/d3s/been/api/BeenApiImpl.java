@@ -43,10 +43,7 @@ import cz.cuni.mff.d3s.been.datastore.SoftwareStoreBuilderFactory;
 import cz.cuni.mff.d3s.been.debugassistant.DebugAssistant;
 import cz.cuni.mff.d3s.been.debugassistant.DebugListItem;
 import cz.cuni.mff.d3s.been.evaluators.EvaluatorResult;
-import cz.cuni.mff.d3s.been.persistence.DAOException;
-import cz.cuni.mff.d3s.been.persistence.Query;
-import cz.cuni.mff.d3s.been.persistence.QueryAnswer;
-import cz.cuni.mff.d3s.been.persistence.QueryBuilder;
+import cz.cuni.mff.d3s.been.persistence.*;
 import cz.cuni.mff.d3s.been.persistence.task.PersistentDescriptors;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
@@ -258,12 +255,41 @@ public class BeenApiImpl implements BeenApi {
         try {
             return jsonUtils.deserialize(stringCollection, TaskLogMessage.class);
         } catch (JsonException e) {
-            throw new DAOException(String.format("Could not deserialize logs for task '%s'", taskId), e);
+            throw new DAOException(String.format("Failed to deserialize task logs for task '%s'", taskId), e);
         }
     }
 
 	@Override
-	public EvaluatorResult getEvaluatorResult(String resultId) throws DAOException {
+	public Collection<EvaluatorResult> getEvaluatorResults() {
+		EntityID entityID = new EntityID();
+		entityID.setKind("been");
+		entityID.setGroup("evaluator-results");
+		Query query = new QueryBuilder().on(entityID).fetch();
+
+		Collection<String> stringCollection = this.queryPersistence(query).getData();
+		try {
+			return jsonUtils.deserialize(stringCollection, EvaluatorResult.class);
+		} catch (JsonException e) {
+			e.printStackTrace();
+			// TODO error handling
+			return null;
+		}
+	}
+
+	@Override
+	public void deleteResult(String resultId) {
+		EntityID entityID = new EntityID();
+		entityID.setKind("been");
+		entityID.setGroup("evaluator-results");
+		Query query = new QueryBuilder().on(entityID).with("id", resultId).delete();
+		QueryStatus status = this.queryPersistence(query).getStatus();
+		if (status != QueryStatus.OK) {
+			log.error("Delete query failed with status {}", status.getDescription());
+		}
+	}
+
+	@Override
+	public EvaluatorResult getEvaluatorResult(String resultId) {
 		EntityID entityID = new EntityID();
 		entityID.setKind("been");
 		entityID.setGroup("evaluator-results");
@@ -277,24 +303,11 @@ public class BeenApiImpl implements BeenApi {
 			}
 			return null;
 		} catch (JsonException e) {
-            throw new DAOException(String.format("Cannot deserialize evaluator result '%s'", resultId), e);
+			e.printStackTrace();
+			// TODO error handling
+			return null;
 		}
 	}
-
-    @Override
-    public Collection<EvaluatorResult> getEvaluatorResults() throws DAOException {
-        EntityID entityID = new EntityID();
-        entityID.setKind("been");
-        entityID.setGroup("evaluator-results");
-        Query query = new QueryBuilder().on(entityID).fetch();
-
-        Collection<String> stringCollection = this.queryPersistence(query).getData();
-        try {
-            return jsonUtils.deserialize(stringCollection, EvaluatorResult.class);
-        } catch (JsonException e) {
-            throw new DAOException("Cannot deserialize evaluator results.", e);
-        }
-    }
 
 	@Override
     public Collection<BpkIdentifier> getBpks() {
