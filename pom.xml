@@ -193,7 +193,6 @@
 
 			<modules>
 				<module>jackson</module>
-				<module>benchmark-nginx</module>
 				<module>task-sync-test</module>
 				<module>task-sync-test2</module>
 			</modules>
