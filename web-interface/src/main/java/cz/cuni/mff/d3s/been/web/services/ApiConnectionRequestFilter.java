@@ -2,6 +2,7 @@ package cz.cuni.mff.d3s.been.web.services;
 
 import java.io.IOException;
 
+import com.hazelcast.client.NoMemberAvailableException;
 import org.apache.tapestry5.services.*;
 import org.slf4j.Logger;
 
@@ -30,7 +31,7 @@ public class ApiConnectionRequestFilter implements RequestFilter {
 			RequestHandler handler) throws IOException {
 		try {
 			return handler.service(request, response);
-		} catch (ServiceUnavailableException e) {
+		} catch (NoMemberAvailableException | ServiceUnavailableException e) {
 			log.error(
 					"Been Api is not connected (It seems that it has been disconnected unexpectedly).",
 					e);

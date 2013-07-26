@@ -15,7 +15,7 @@ public class MonitoringSampleMessage extends BaseMessage {
 	}
 
 	public MonitoringSampleMessage(MonitorSample sample) {
-		super(null, null);
+		super(null);
 		this.sample = sample;
 	}
 }

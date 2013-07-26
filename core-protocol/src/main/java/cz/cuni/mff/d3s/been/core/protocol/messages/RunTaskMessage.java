@@ -8,8 +8,8 @@ public final class RunTaskMessage extends BaseMessage {
 	 */
 	public String taskId;
 
-	public RunTaskMessage(String senderId, String receiverId, String taskId) {
-		super(senderId, receiverId);
+	public RunTaskMessage(String receiverId, String taskId) {
+		super(receiverId);
 		this.taskId = taskId;
 	}
 

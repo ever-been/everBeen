@@ -977,12 +977,26 @@ pre {
 	color: #c00000;
 }
 
+.fullheight {
+    top: 90px;
+    bottom: 0px;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    min-height: 550px;
+}
+
 .overview-container {
 	text-align: center;
+	height: 45%;
 }
 
 .overview-block {
-    display: inline-block; margin: 5px 5px; width: 48%; min-width: 600px; vertical-align: top; text-align: left;
+    display: inline-block; margin: 5px 5px; width: 48%; min-width: 600px; vertical-align: top; text-align: left; height: 80%;
+}
+
+.overview-table {
+	border: 1px solid #ddd; overflow-y: scroll; height: 100%; padding: 10px;
 }
 
 table.inner-task-list td {
@@ -1075,4 +1089,45 @@ table.tasktemplate td, table.tasktemplate th {
 	padding: 2px;
 	border-top: 1px solid #ddd;
 	border-bottom: 1px solid #ddd;
+}
+
+/* upload form fix */
+
+.qq-upload-button { background: rgb(79, 184, 79) !important; color: white; color: black !important; margin: 0 auto !important; }
+#uploadBpk { text-align: center; }
+.qq-uploader { margin: 0 auto !important; display: inline-block !important; width: auto !important; }
+.qq-upload-list { width: 400px !important; border: none !important; }
+.qq-upload-drop-area { left: 100px !important; }
+.qq-upload-button.btn:before {
+	content: 'Select a file to '
+}
+.qq-upload-button.btn {
+  color: #ffffff !important;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25) !important;
+  background-color: #006dcc !important;
+  *background-color: #0044cc !important;
+  background-image: -moz-linear-gradient(top, #0088cc, #0044cc) !important;
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0088cc), to(#0044cc)) !important;
+  background-image: -webkit-linear-gradient(top, #0088cc, #0044cc) !important;
+  background-image: -o-linear-gradient(top, #0088cc, #0044cc) !important;
+  background-image: linear-gradient(to bottom, #0088cc, #0044cc) !important;
+  background-repeat: repeat-x !important;
+  border-color: #0044cc #0044cc #002a80 !important;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25) !important;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0044cc', GradientType=0) !important;
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false) !important;
+}
+
+.t-error ul { margin: 0 80px !important; }
+
+.green-font {
+  color: green;
+}
+
+.red-font {
+  color: red;
+}
+
+.orange-font {
+  color: orange;
 }

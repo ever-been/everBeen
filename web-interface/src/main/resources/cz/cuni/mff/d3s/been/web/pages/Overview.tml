@@ -3,12 +3,13 @@
 <html t:type="layout" section="section" xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd"
       xmlns:p="tapestry:parameter">
 
+<div class="fullheight">
 <div class="overview-container">
 
 	<div class="overview-block">
 		<h2>Runtimes</h2>
 		<t:cometd.PushTarget topic="/runtimes" event="runtimesUpdated" update="replace"
-		                     style="border: 1px solid #ddd; overflow-y: scroll; height: 170px; padding: 10px;">
+		                     class="overview-table">
 			<p style="text-align: center;">
 				<i class="icon-spinner icon-spin"></i> Loading live feed of runtimes...
 			</p>
@@ -56,7 +57,7 @@
 	<div class="overview-block">
 		<h2>Tasks</h2>
 		<t:cometd.PushTarget topic="/tasks" event="tasksUpdated" update="replace"
-		                     style="border: 1px solid #ddd; overflow-y: scroll; height: 170px; padding: 10px;">
+		                     class="overview-table">
 			<p style="text-align: center;">
 				<i class="icon-spinner icon-spin"></i> Loading live feed of tasks...
 			</p>
@@ -137,8 +138,8 @@
 		<h2>
 			Logs
 		</h2>
-		<t:cometd.PushTarget class="logsTarget" topic="/logs" event="logsUpdated"
-		                     style="border: 1px solid #ddd; overflow-y: scroll; height: 250px; padding: 10px;">
+		<t:cometd.PushTarget class="logsTarget overview-table" topic="/logs" event="logsUpdated"
+		                     style="min-height: 250px; height: 100%;">
 			<p style="text-align: center;" id="logsLoading">
 				<i class="icon-info-sign"></i> There are no logs yet.
 			</p>
@@ -149,6 +150,7 @@
 		</t:cometd.PushTarget>
 	</div>
 
+</div>
 </div>
 
 </html>

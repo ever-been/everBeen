@@ -4,9 +4,12 @@ import java.io.File;
 import java.net.InetSocketAddress;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 import com.hazelcast.core.HazelcastInstance;
-
+import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskExclusivity;
@@ -75,7 +78,11 @@ public class HostRuntimes {
 		ri.setPort(address.getPort());
 		ri.setType(clusterContext.getInstanceType().toString());
 
-		Detector detector = new Detector();
+        Calendar c = GregorianCalendar.getInstance();
+        c.setTime(new Date());
+        ri.setStartUpTime(new XMLGregorianCalendarImpl((GregorianCalendar) c));
+
+        Detector detector = new Detector();
 		detector.detectAll(ri);
 		ri.setExclusivity(TaskExclusivity.NON_EXCLUSIVE.toString());
 

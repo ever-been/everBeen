@@ -35,7 +35,7 @@
 
 				<configuration>
 					<includes>
-						<include>cz/cuni/mff/d3s/been/results/*</include>
+						<include>cz/cuni/mff/d3s/been/**</include>
 						<include>xsd/*</include>
 						<include>META-INF/*</include>
 					</includes>

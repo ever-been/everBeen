@@ -20,21 +20,76 @@ import cz.cuni.mff.d3s.been.taskapi.Task;
  */
 public abstract class Benchmark extends Task {
 
+	/** Logging */
 	private static final Logger log = LoggerFactory.getLogger(Benchmark.class);
 
-	public abstract TaskContextDescriptor generateTaskContext() throws BenchmarkException;
-
+	/** Local storage which is synced to been */
 	private Map<String, String> storage;
+
 	private BenchmarkRequestor benchmarkRequestor;
 
+	/**
+	 * Method which drives the benchmark by generating Contexts.
+	 * 
+	 * The context is submitted and run by BEEN.
+	 * 
+	 * To indicated end of the benchmark null must be returned.
+	 * 
+	 * @return TaskContextDescriptor to be submitted, or null to indicate end of
+	 *         the benchmark
+	 * 
+	 * @throws BenchmarkException
+	 */
+	public abstract TaskContextDescriptor generateTaskContext() throws BenchmarkException;
+
+	/**
+	 * Retrieves a value for the given key from benchmark wide storage.
+	 * 
+	 * If no value is found, null is returned instead.
+	 * 
+	 * The values are preserved among runs of the generator for the same
+	 * benchmark.
+	 * 
+	 * @param key
+	 *          identification of the value
+	 * @return benchmark-wide value for the given key if it exists, null otherwise
+	 */
 	protected String storageGet(String key) {
 		return storage.get(key);
 	}
 
+	/**
+	 * Retrieves a value for the given key from benchmark wide storage.
+	 * 
+	 * If no value is found, defaultValue is returned instead.
+	 * 
+	 * The values are preserved among runs of the generator for the same
+	 * benchmark.
+	 * 
+	 * 
+	 * @param key
+	 *          identification of the value
+	 * @param defaultValue
+	 *          value returned if no benchmark-value is found
+	 * @return benchmark-wide value for the given key if it exists, defaultValue
+	 *         otherwise
+	 */
 	protected String storageGet(String key, String defaultValue) {
 		return storage.get(key) != null ? storage.get(key) : defaultValue;
 	}
 
+	/**
+	 * Stores a value with the given key to Benchmark-wide storage.
+	 * 
+	 * The values are preserved among runs of the generator for the same benchmark
+	 * and can be retrieved with {@link Benchmark#storageGet(String)} or
+	 * {@link Benchmark#storageGet(String, String)}
+	 * 
+	 * @param key
+	 *          identification of the value
+	 * @param value
+	 *          value to store to the benchmark-wide storage
+	 */
 	protected void storageSet(String key, String value) {
 		storage.put(key, value);
 	}
@@ -45,7 +100,9 @@ public abstract class Benchmark extends Task {
 			benchmarkRequestor = BenchmarkRequestor.create();
 		} catch (MessagingException e) {
 			log.error("Could not initialize checkpoint requestor", e);
+			return;
 		}
+
 		try {
 			processContexts();
 		} finally {
@@ -59,7 +116,7 @@ public abstract class Benchmark extends Task {
 
 	private void processContexts() {
 		try {
-			this.storage = benchmarkRequestor.storageRetrieve(this.getBenchmarkId());
+			this.storage = benchmarkRequestor.storageRetrieve(getBenchmarkId());
 		} catch (TimeoutException e) {
 			throw new RuntimeException(e.getMessage(), e);
 		}
@@ -77,20 +134,26 @@ public abstract class Benchmark extends Task {
 			}
 
 			try {
-				log.info("Submitting task context descriptor.");
-				String taskContextId = benchmarkRequestor.contextSubmit(taskContextDescriptor, this.getBenchmarkId());
-				log.info("Task context descriptor with ID {}.", taskContextId);
+				// First save the local storage, before submitting the context
+				benchmarkRequestor.storagePersist(getBenchmarkId(), storage);
 
-				benchmarkRequestor.storagePersist(this.getBenchmarkId(), this.storage);
+				log.trace("Submitting task context descriptor.");
+				String taskContextId = benchmarkRequestor.contextSubmit(taskContextDescriptor, getBenchmarkId());
+				log.trace("Task context descriptor with ID '{}' submitted", taskContextId);
 
 				benchmarkRequestor.contextWait(taskContextId);
-				log.info("Task context finished.");
+				log.trace("Task context '{}' finished.", taskContextId);
 			} catch (TimeoutException e) {
 				throw new RuntimeException(e.getMessage(), e);
+				// TODO this must be handled with greater care!
 			}
 		}
 	}
 
+	/**
+	 * Use {@link ContextBuilder} instead.
+	 */
+	@Deprecated
 	public TaskContextDescriptor getTaskContextFromResource(String resourceName) throws BenchmarkException {
 
 		try {
@@ -108,6 +171,10 @@ public abstract class Benchmark extends Task {
 
 	}
 
+	/**
+	 * Use {@link ContextBuilder} instead.
+	 */
+	@Deprecated
 	public void setTaskContextProperty(TaskContextDescriptor descriptor, String key, String value) {
 		Property p = new Property();
 		p.setName(key);

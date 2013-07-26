@@ -21,9 +21,14 @@ public class Detail extends DetailPage {
 	@Property
 	private TaskProperty property;
 
-	public TaskEntry getTask() {
-		return api.getApi().getTask(itemId);
-	}
+    @Property
+    private TaskEntry task;
+
+    @Override
+	public void setupRender() {
+        this.task = api.getApi().getTask(itemId);
+        super.setupRender();
+    }
 
 	public String taskDebugToString(Debug debug) {
 		if (debug == null) return "NONE";

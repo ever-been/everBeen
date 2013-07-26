@@ -2,6 +2,9 @@
              xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd"
              xmlns:p="tapestry:parameter">
 
-        <t:beenBeanEditForm t:id="connectForm" id="connectForm" t:object="connectionProperties" t:submitLabel="Connect" t:reorder="hostname,port,groupName,groupPassword"/>
+<div class="container">
+	<t:beenBeanEditForm t:id="connectForm" id="connectForm" t:object="connectionProperties"
+	                    t:submitLabel="Connect" t:reorder="hostname,port,groupName,groupPassword" />
+</div>
 
 </t:container>

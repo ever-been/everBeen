@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<html t:type="layout" section="section"
+      xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd" xmlns:p="tapestry:parameter">
+
+<h2>Evaluator results</h2>
+
+<table class="list wide">
+	<thead>
+	<tr>
+		<th>Result ID</th>
+		<th>Timestamp</th>
+		<th>Filename</th>
+		<th>MIME type</th>
+		<th></th>
+		<th></th>
+	</tr>
+	</thead>
+
+	<tr t:type="loop" source="results" value="result">
+		<td>${result.id}</td>
+		<td>${timestampToString(result.timestamp)}</td>
+		<td>${result.filename}</td>
+		<td>${result.mimetype}</td>
+		<td>
+			<t:if test="mimeTypeSupported(result.mimetype)">
+				<a href="/result/detail/${result.id}" class="btn">show</a>
+			</t:if>
+		</td>
+		<td>
+			<a href="/result/download/${result.id}" class="btn">download</a>
+		</td>
+
+		<p:empty>
+			<tr>
+				<td colspan="6">
+					<i class="icon-info-sign"></i>
+					There are no results.
+				</td>
+			</tr>
+		</p:empty>
+	</tr>
+</table>
+
+</html>

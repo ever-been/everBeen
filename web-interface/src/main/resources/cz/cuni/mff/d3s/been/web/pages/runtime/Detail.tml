@@ -2,7 +2,193 @@
 
 <html t:type="layout" section="section" xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd">
 
-<t:beandisplay object="runtime">
-</t:beandisplay>
+    <h2>Runtime ${runtime.id}</h2>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span8" style="border-right: 2px solid #C2CAC3">
 
+                <h4>Runtime Info</h4>
+                <dl class="dl-horizontal">
+                    <dt>Runtime ID:</dt>
+                    <dd>
+                        <i class="icon-laptop"></i>&nbsp;
+                        <b>${runtime.id}</b>
+                    </dd>
+                    <dt>Hostname:</dt>
+                    <dd>${runtime.host}</dd>
+                    <dt>Port:</dt>
+                    <dd>${runtime.port}</dd>
+                </dl>
+
+                <dl class="dl-horizontal">
+                    <dt>Working directory:</dt>
+                    <dd>${runtime.workingDirectory}</dd>
+                    <dt>Tasks working dir:</dt>
+                    <dd>${runtime.tasksWorkingDirectory}</dd>
+                    <dt>Type:</dt>
+                    <dd>${runtime.type}</dd>
+                    <dt>Exclusivity:</dt>
+                    <dd>${runtime.exclusivity}</dd>
+                    <dt>Exclusive ID:</dt>
+                    <dd>${runtime.exclusiveId}</dd>
+                    <dt>Tasks:</dt>
+                    <dd>
+                        <t:zone t:id="taskCountZone">
+                            active tasks count: ${runtime.taskCount} (<t:actionLink t:zone="^" t:id="showTasksLink">show tasks</t:actionLink> [<i>including finished and aborted tasks in last 300s</i>])
+                        </t:zone>
+                        <t:block t:id="taskListBlock">
+                            (<t:actionLink t:zone="^" t:id="hideTasksLink">hide tasks</t:actionLink>)  <br/>
+                            <t:loop source="tasks" value="task">
+                                ${task.taskDescriptor.type} - ${task.taskDescriptor.name} - <t:pagelink t:page="task/detail" t:context="task.id">${task.id}</t:pagelink> - ${task.state}
+                                <br/>
+                            </t:loop>
+                        </t:block>
+                    </dd>
+                </dl>
+
+                <dl class="dl-horizontal">
+                    <dt>CPUs:</dt>
+                    <dd>
+                        <t:loop source="runtime.hardware.cpu" value="cpu">
+                            ${cpu.vendor} ${cpu.model} @ ${cpu.mhz} MHz, cache size ${cpu.cacheSize} kB
+                            <br/>
+                        </t:loop>
+                    </dd>
+                    <dt>Network interfaces:</dt>
+                    <dd>
+                        <t:loop source="runtime.hardware.networkInterface" value="networkInterface">
+                            ${networkInterface.name} ${networkInterface.hwaddr}, type: ${networkInterface.type},
+                            MTU: ${networkInterface.mtu}, address: ${networkInterface.address}, netmask:
+                            ${networkInterface.netmask},
+                            broadcast: ${networkInterface.broadcast}
+                            <br/>
+                        </t:loop>
+                    </dd>
+                    <dt>Memory:</dt>
+                    <dd>${bytesReadable(runtime.hardware.memory.ram)} RAM,
+                        ${bytesReadable(runtime.hardware.memory.swap)} swap
+                    </dd>
+                    <dt>Java:</dt>
+                    <dd>
+                        ${runtime.java.version} ${runtime.java.vendor}
+                        <br/>
+                        Runtime: ${runtime.java.runtimeVersion} ${runtime.java.runtimeName}
+                        <br/>
+                        VM: ${runtime.java.vmVersion} ${runtime.java.vmVendor}
+                        <br/>
+                        Specification: ${runtime.java.specificationVersion}
+                    </dd>
+                    <dt>Operating system:</dt>
+                    <dd>
+                        ${runtime.operatingSystem.name} ${runtime.operatingSystem.version}
+                        <br/>
+                        Architecture: ${runtime.operatingSystem.arch}, data model: ${runtime.operatingSystem.dataModel},
+                        endian:
+                        ${runtime.operatingSystem.endian}
+                        <br/>
+                        Vendor: ${runtime.operatingSystem.vendor} ${runtime.operatingSystem.vendorVersion}
+                    </dd>
+                    <dt>Filesystems:</dt>
+                    <dd>
+                        <t:loop source="runtime.filesystem" value="filesystem">
+                            ${filesystem.deviceName}, type: ${filesystem.type}, directory: ${filesystem.directory},
+                            free: ${bytesReadable(filesystem.free)}, total: ${bytesReadable(filesystem.total)}
+                            <br/>
+                        </t:loop>
+                    </dd>
+                    <dt>Task directories:</dt>
+                    <dd>
+                        <t:loop source="runtime.taskDirs" value="taskDir">
+                            ${taskDir}
+                            <br/>
+                        </t:loop>
+                    </dd>
+                </dl>
+
+                <dl class="dl-horizontal">
+                    <dt>Monitoring sample:</dt>
+                    <dd>
+                        Timestamp: ${nanotimeToString(runtime.monitorSample.timestamp)}
+                        <br/>
+                        Free memory: ${bytesReadable(runtime.monitorSample.freeMemory)}
+                        <br/>
+                        Processes: ${runtime.monitorSample.processCount}
+                        <br/>
+                        Load average: ${runtime.monitorSample.loadAverage.load1}
+                        ${runtime.monitorSample.loadAverage.load5}
+                        ${runtime.monitorSample.loadAverage.load15}
+                        <br/>
+                        <b>Network interfaces</b>:
+                        <br/>
+                        <t:loop source="runtime.monitorSample.interfaces" value="monitorInterface">
+                            ${monitorInterface.name}, bytes in: ${monitorInterface.bytesIn}, bytes out:
+                            ${monitorInterface.bytesOut}
+                            <br/>
+                        </t:loop>
+                        <b>Filesystems</b>:
+                        <br/>
+                        <t:loop source="runtime.monitorSample.filesystems" value="monitorFilesystem">
+                            Device: ${monitorFilesystem.deviceName}, directory: ${monitorFilesystem.directory},
+                            reads: ${monitorFilesystem.reads}, writes: ${monitorFilesystem.writes},
+                            read bytes: ${monitorFilesystem.readBytes}, write bytes: ${monitorFilesystem.writeBytes}
+                            <br/>
+                        </t:loop>
+                    </dd>
+                </dl>
+            </div>
+            <div class="span4">
+                <h4>Maintenance</h4>
+                <h5>Working directopries of failed tasks</h5>
+
+                <t:loop t:source="taskWrkDirChecker.getOldTaskDirsOnRuntime(runtime)" t:value="oldTaskWrkDir"
+                        t:index="zoneIdIndex">
+                    <t:zone id="oldTaskWrkDirDeleteZone_${zoneIdIndex}">
+
+
+                        ${getSubdirName(oldTaskWrkDir)} -
+                        <t:actionLink t:zone="^" t:id="deleteOldTaskWrkDir"
+                                      t:context="[oldTaskWrkDir,zoneIdIndex]"
+                                      class="progress_on_click">delete
+                        </t:actionLink>
+                        <br/>
+
+                    </t:zone>
+                </t:loop>
+                <br/>
+
+                <t:block t:id="deletedBlock">
+                    ${getSubdirName(oldTaskWrkDir)} - DELETED
+                    <br/>
+                </t:block>
+                <t:block t:id="errorBlock">
+                    ${getSubdirName(oldTaskWrkDir)} - FAILED -
+                    <t:actionLink t:zone="^" t:id="deleteOldTaskWrkDir_failed"
+                                  t:context="[oldTaskWrkDir,zoneIdIndex]"
+                                  class="progress_on_click">try delete again
+                    </t:actionLink>
+                    <br/>
+                </t:block>
+                <t:block t:id="timeoutedBlock">
+                    ${getSubdirName(oldTaskWrkDir)} - TIMEOUTED -
+                    <t:actionLink t:zone="^" t:id="deleteOldTaskWrkDir_timeouted"
+                                  t:context="[oldTaskWrkDir,zoneIdIndex]"
+                                  class="progress_on_click">try delete again
+                    </t:actionLink>
+                    <br/>
+                </t:block>
+
+
+                <h4>Command history (last 300 s)</h4>
+                <t:zone t:id="commandHistoryZone">
+                    <table class="table">
+                        <tr t:type="loop" t:source="commandEntries" t:value="commandEntry">
+                            <td>${commandEntry.description}<br/>status:
+                                <strong>${commandEntry.state}</strong>
+                            </td>
+                        </tr>
+                    </table>
+                </t:zone>
+            </div>
+        </div>
+    </div>
 </html>

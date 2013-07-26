@@ -56,17 +56,19 @@ public class Requestor {
 	}
 
 	/**
-	 * Sends an arbitrary request, waits for reply. The call will block until the request is handled by the Host Runtime.
+	 * Sends an arbitrary request, waits for reply. The call will block until the
+	 * request is handled by the Host Runtime.
 	 * 
-	 * @param request The request
-	 *
+	 * @param request
+	 *          The request
+	 * 
 	 * @return Reply for the request
 	 */
 	public String request(String request) {
 		socket.send(request);
-		log.debug("Sent {}", request);
+		log.trace("Sent {}", request);
 		final String replyString = socket.recvStr();
-		log.debug("Received {}", replyString);
+		log.trace("Received {}", replyString);
 		return replyString;
 	}
 

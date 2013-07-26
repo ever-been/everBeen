@@ -7,11 +7,4 @@
 		<mainClass>cz.cuni.mff.d3s.been.task.ExampleEvaluator</mainClass>
 	</java>
 
-	<debug>
-		<mode>connect</mode>
-		<host>localhost</host>
-		<port>5005</port>
-		<suspend>true</suspend>
-	</debug>
-
 </taskDescriptor>

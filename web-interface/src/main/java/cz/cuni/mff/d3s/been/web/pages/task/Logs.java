@@ -4,6 +4,7 @@ import cz.cuni.mff.d3s.been.logging.LogMessage;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.logging.ServiceLogMessage;
 import cz.cuni.mff.d3s.been.logging.TaskLogMessage;
+import cz.cuni.mff.d3s.been.persistence.DAOException;
 import cz.cuni.mff.d3s.been.util.JSONUtils;
 import cz.cuni.mff.d3s.been.util.JsonException;
 import cz.cuni.mff.d3s.been.web.components.Layout;
@@ -33,7 +34,7 @@ public class Logs extends Page {
 
 	private JSONUtils jsonUtils = JSONUtils.newInstance();
 
-	void onActivate(String taskId) {
+	void onActivate(String taskId) throws DAOException {
 		task = api.getApi().getTask(taskId);
 		logs = api.getApi().getLogsForTask(taskId);
 	}

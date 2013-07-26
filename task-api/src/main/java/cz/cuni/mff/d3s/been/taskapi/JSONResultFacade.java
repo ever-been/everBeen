@@ -84,7 +84,7 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 		ec = new EntityCarrier();
 		ec.setEntityId(entityId);
 		ec.setEntityJSON(serializedResult);
-		log.debug("Facade serialized a result into >>{}<<", serializedResult);
+		log.trace("Facade serialized a result into >>{}<<", serializedResult);
 
 		try (final IMessageSender<String> sender = queue.createSender()) {
 			sendRC(ec, sender);
@@ -118,7 +118,7 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 			throw new DAOException("Failed to create result query requestor", e);
 		}
 
-		log.debug("Querying persistence with {}", queryString);
+		log.trace("Querying persistence with {}", queryString);
 		try {
 			replyString = requestor.request(queryString);
 		} finally {
@@ -131,7 +131,7 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 		if (replyString == null) {
 			throw new DAOException(String.format("Unknown failure when processing request %s", queryString));
 		}
-		log.debug("Persistence replied {}", replyString);
+		log.trace("Persistence replied {}", replyString);
 
 		try {
 			final QueryAnswer answer = querySerializer.deserializeAnswer(replyString);
@@ -226,7 +226,7 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 	private void sendRC(final EntityCarrier rc, final IMessageSender<String> sender) throws DAOException {
 		try {
 			final String serializedRC = om.writeValueAsString(rc);
-			log.debug("About to request this serialized result carrier to Host Runtime: >>{}<<", serializedRC);
+			log.trace("About to request this serialized result carrier to Host Runtime: >>{}<<", serializedRC);
 			sender.send(serializedRC);
 
 			// TODO: Temporary bug workaround for JeroMQ big message bug
@@ -281,7 +281,7 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 			} catch (IOException e) {
 				throw new DAOException(String.format("Unable to serialize Result %s to json", result.toString()), e);
 			}
-			log.debug("Persister serialized a result into >>{}<<", serializedResult);
+			log.trace("Persister serialized a result into >>{}<<", serializedResult);
 			final EntityCarrier rc = new EntityCarrier();
 			rc.setEntityId(entityId);
 			rc.setEntityJSON(serializedResult);

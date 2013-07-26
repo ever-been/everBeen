@@ -1,18 +1,16 @@
-<form class="form-horizontal" t:id="form" validate="object"
+<form class="form-horizontal center" t:id="form" validate="object"
 	  xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd">
 
-	<t:errors/>
+	<t:errors t:banner="banner" />
 
+	<div style="display: inline-block; padding: 20px 50px 0 0;">
 
 	<t:beenBeanEditor t:id="editor" object="object" model="model" overrides="this"/>
 
-	<div class="control-group">
-		<div class="controls">
-			<button type="submit" class="btn">${submitLabel}</button>
-			<t:if test="cancel">
-				<button t:type="submit" type="submit" class="btn" mode="cancel">${message:cancel-label}</button>
-			</t:if>
-		</div>
+	<div class="control-group" style="padding: 15px 0 0 0;">
+		<button type="submit" class="btn btn-primary">${submitLabel}</button>
+	</div>
+
 	</div>
 
 </form>

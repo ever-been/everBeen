@@ -184,9 +184,8 @@ public class Tasks {
 			throw new IllegalStateException(String.format("Trying to kill task %s, but it's in state %s.", taskId, state));
 		}
 
-		String senderId = taskEntry.getOwnerId();
 		String receiverId = taskEntry.getRuntimeId();
-		KillTaskMessage killMessage = new KillTaskMessage(senderId, receiverId, "killed by user", taskId);
+		KillTaskMessage killMessage = new KillTaskMessage(receiverId, "killed by user", taskId);
 		clusterCtx.getTopics().publishInGlobalTopic(killMessage);
 	}
 }

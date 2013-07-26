@@ -80,4 +80,6 @@ public class Names {
 	 * All benchmarks run in a special task context with this ID.
 	 */
 	public static final String BENCHMARKS_CONTEXT_ID = "00000000-0000-0000-0000-000000001234";
+
+    public static final String BEEN_MAP_COMMAND_ENTRIES = "BEEN_MAP_COMMAND_ENTRIES";
 }

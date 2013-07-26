@@ -192,10 +192,9 @@ public final class ScheduleTaskAction implements TaskAction {
 	 * @return Run task message
 	 */
 	private RunTaskMessage newRunTaskMessage() {
-		String senderId = entry.getOwnerId();
 		String receiverId = entry.getRuntimeId();
 		String taskId = entry.getId();
-		return new RunTaskMessage(senderId, receiverId, taskId);
+		return new RunTaskMessage(receiverId, taskId);
 	}
 
 	/**

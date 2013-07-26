@@ -2,6 +2,7 @@ package cz.cuni.mff.d3s.been.hostruntime;
 
 import static cz.cuni.mff.d3s.been.core.task.TaskExclusivity.*;
 
+import java.io.File;
 import java.util.*;
 
 import org.slf4j.Logger;
@@ -197,7 +198,7 @@ final class ProcessManagerContext {
 		clusterContext.getRuntimes().storeRuntimeInfo(hostInfo);
 	}
 
-	/**
+    /**
 	 * Sets current exclusivity.
 	 * 
 	 * @param exclusivity

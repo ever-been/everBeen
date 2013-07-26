@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import cz.cuni.mff.d3s.been.logging.TaskLogMessage;
+import cz.cuni.mff.d3s.been.persistence.DAOException;
 import jline.console.ConsoleReader;
 
 import com.hazelcast.core.Instance;
@@ -123,7 +124,13 @@ class ClusterMode extends AbstractMode {
 	private void handleLogs(String[] args) {
 
 		if (args.length == 2) {
-			Collection<TaskLogMessage> logs = api.getLogsForTask(args[1]);
+			Collection<TaskLogMessage> logs = null;
+            try {
+                logs = api.getLogsForTask(args[1]);
+            } catch (DAOException e) {
+                out.printf(String.format("ERROR: Failed to retrieve logs for task '%s'. Reason: %s", args[1] ,e.getMessage()));
+                return;
+            }
 			for (TaskLogMessage msg : logs) {
 				try {
 					out.printf("\t%s\n", jsonUtils.serialize(msg));
