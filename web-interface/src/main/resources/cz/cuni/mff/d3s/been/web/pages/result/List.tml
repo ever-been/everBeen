@@ -30,6 +30,9 @@
 		<td>
 			<a href="/result/download/${result.id}" class="btn">download</a>
 		</td>
+		<td>
+			<a href="/result/delete/${result.id}" class="btn btn-error">delete</a>
+		</td>
 
 		<p:empty>
 			<tr>
