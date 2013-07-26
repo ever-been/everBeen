@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import static cz.cuni.mff.d3s.been.cluster.Names.ACTION_QUEUE_NAME;
 import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.*;
 
 /**
@@ -420,7 +421,7 @@ final class ProcessManager implements Service {
             IMessageReceiver<BaseMessage> receiver;
 
             try {
-                receiver = queues.getReceiver(HostRuntime.ACTION_QUEUE_NAME);
+                receiver = queues.getReceiver(ACTION_QUEUE_NAME);
             } catch (MessagingException e) {
                 String msg = String.format("Cannot start %s", TaskActionThread.class);
                 log.error(msg, e);
@@ -467,7 +468,7 @@ final class ProcessManager implements Service {
         public void poison() {
             IMessageSender<BaseMessage> sender = null;
             try {
-                sender = queues.createSender(HostRuntime.ACTION_QUEUE_NAME);
+                sender = queues.createSender(ACTION_QUEUE_NAME);
                 PoisonMessage msg = new PoisonMessage("0");
                 sender.send(msg);
             } catch (MessagingException e) {

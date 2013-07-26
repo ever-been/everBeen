@@ -6,6 +6,8 @@ package cz.cuni.mff.d3s.been.cluster;
  */
 public class Names {
 
+
+
 	// MAP NAMES
 	/**
 	 * In the map with this name should be stored information about all registered
@@ -36,15 +38,8 @@ public class Names {
 	public static final String BENCHMARKS_MAP_NAME = "BEEN_MAP_BENCHMARKS";
 
 	/**
-	 * Name of the queue of persist requests
+	 * Name of the map of answers on persistence queries
 	 */
-	public static final String PERSISTENCE_QUEUE_NAME = "BEEN_PERSISTENCE_ENTRIES";
-
-	/**
-	 * Name of the queue of queries to persistence layers
-	 */
-	public static final String PERSISTENCE_QUERY_QUEUE_NAME = "BEEN_PERSISTENCE_QUERIES";
-
 	public static final String PERSISTENCE_QUERY_ANSWERS_MAP_NAME = "BEEN_PERSISTENCE_ANSWERS";
 
 	/**
@@ -62,12 +57,35 @@ public class Names {
 	 */
 	public static final String LOGS_BENCHMARK_MAP_NAME = "been.task.logs.benchmark";
 
+
+
+	// QUEUE NAMES
+
+	/**
+	 * Name of the task action queue.
+	 */
+	public static final String ACTION_QUEUE_NAME = "been.hostruntime.actions";
+
+	/**
+	 * Name of the queue of persist requests
+	 */
+	public static final String PERSISTENCE_QUEUE_NAME = "BEEN_PERSISTENCE_ENTRIES";
+
+	/**
+	 * Name of the queue of queries to persistence layers
+	 */
+	public static final String PERSISTENCE_QUERY_QUEUE_NAME = "BEEN_PERSISTENCE_QUERIES";
+
+
+
 	// TOPIC NAMES
 	/**
 	 * In the topic with this name should be published complete communication
 	 * between Host Runtimes and Task Managers.
 	 */
 	public static final String BEEN_TOPIC_MAIN_NAME = "BEEN_TOPIC_MAIN";
+
+
 
 	// MAP KEYS
 	/**
