@@ -51,6 +51,7 @@ public class ExampleEvaluator extends Evaluator {
 
 			EvaluatorResult r = new EvaluatorResult();
 			r.setTimestamp(new Date().getTime());
+			r.setBenchmarkId(this.getBenchmarkId());
 			r.setFilename("example-result.png");
 			r.setMimeType(EvaluatorResult.MIME_TYPE_IMAGE_PNG);
 			r.setData(os.toByteArray());

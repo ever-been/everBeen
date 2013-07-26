@@ -9,6 +9,7 @@ import java.util.UUID;
  */
 public class EvaluatorResult extends Result {
 	private String id;
+	private String benchmarkId;
 	private long timestamp;
 	private String filename;
 	private String mimeType;
@@ -63,5 +64,13 @@ public class EvaluatorResult extends Result {
 
 	public void setData(byte[] data) {
 		this.data = data;
+	}
+
+	public String getBenchmarkId() {
+		return benchmarkId;
+	}
+
+	public void setBenchmarkId(String benchmarkId) {
+		this.benchmarkId = benchmarkId;
 	}
 }

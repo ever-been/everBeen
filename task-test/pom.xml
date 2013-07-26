@@ -69,6 +69,7 @@
 					</taskDescriptors>
 					<taskContextDescriptors>
 						<param>src/main/resources/cz/cuni/mff/d3s/been/task/Example.tcd.xml</param>
+						<param>src/main/resources/cz/cuni/mff/d3s/been/task/ExampleEvaluator.tcd.xml</param>
 					</taskContextDescriptors>
 				</configuration>
 			</plugin>
