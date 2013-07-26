@@ -126,6 +126,8 @@ public class Layout {
 
 	    CLUSTER_INFO(cz.cuni.mff.d3s.been.web.pages.cluster.Info.class, "Cluster", null),
 
+	    DEBUG_LIST(cz.cuni.mff.d3s.been.web.pages.debug.List.class, "Debug", null),
+
 	    ;
 
         public final Class<? extends Page> page;

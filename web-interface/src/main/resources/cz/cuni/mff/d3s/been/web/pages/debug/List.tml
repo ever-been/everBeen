@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<html t:type="layout" section="section"
+      xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd" xmlns:p="tapestry:parameter">
+
+<h2>Tasks waiting for debugger</h2>
+
+<table class="list wide">
+	<thead>
+	<tr>
+		<th>Task ID</th>
+		<th>Hostname</th>
+		<th>Port</th>
+		<th>Suspended</th>
+	</tr>
+	</thead>
+
+	<tr t:type="loop" source="tasks" value="task">
+		<td>
+			<i class="icon-beaker"></i>&nbsp;
+			<a href="/task/detail/${task.taskId}"><t:output format="idFormat" value="task.taskId" /></a>
+		</td>
+		<td>${task.hostName}</td>
+		<td>${task.debugPort}</td>
+		<td>${task.suspended}</td>
+
+		<p:empty>
+			<tr>
+				<td colspan="4">
+					<i class="icon-info-sign"></i>
+					There are no tasks waiting for a debugger.
+				</td>
+			</tr>
+		</p:empty>
+	</tr>
+</table>
+
+</html>
