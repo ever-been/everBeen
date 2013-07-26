@@ -72,7 +72,7 @@
 
 	<dt>Args:</dt>
 	<dd>
-		<t:loop source="task.args.arg" value="arg">
+		<t:loop source="task.args?.arg" value="arg">
 			${arg}<br />
 		</t:loop>
 	</dd>
