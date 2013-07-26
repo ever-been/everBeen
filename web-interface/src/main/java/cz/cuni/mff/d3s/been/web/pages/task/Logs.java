@@ -1,7 +1,9 @@
 package cz.cuni.mff.d3s.been.web.pages.task;
 
-import cz.cuni.mff.d3s.been.core.LogMessage;
+import cz.cuni.mff.d3s.been.logging.LogMessage;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
+import cz.cuni.mff.d3s.been.logging.ServiceLogMessage;
+import cz.cuni.mff.d3s.been.logging.TaskLogMessage;
 import cz.cuni.mff.d3s.been.util.JSONUtils;
 import cz.cuni.mff.d3s.been.util.JsonException;
 import cz.cuni.mff.d3s.been.web.components.Layout;
@@ -24,10 +26,10 @@ public class Logs extends Page {
 	private TaskEntry task;
 
 	@Property
-	private Collection<LogMessage> logs;
+	private Collection<TaskLogMessage> logs;
 
 	@Property
-	private LogMessage log;
+	private TaskLogMessage log;
 
 	private JSONUtils jsonUtils = JSONUtils.newInstance();
 
@@ -50,12 +52,12 @@ public class Logs extends Page {
 		return "..." + log.getName().substring(idx + 1);
 	}
 
-	public String jsonLog(LogMessage log) {
-		try {
-			return jsonUtils.serialize(log);
-		} catch (JsonException e) {
-			return "";
-		}
-	}
+    public String jsonTaskLog(TaskLogMessage taskLog) {
+        try {
+            return jsonUtils.serialize(taskLog);
+        } catch (JsonException e) {
+            return "";
+        }
+    }
 
 }

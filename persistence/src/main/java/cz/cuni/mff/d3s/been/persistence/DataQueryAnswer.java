@@ -1,10 +1,7 @@
 package cz.cuni.mff.d3s.been.persistence;
 
-import cz.cuni.mff.d3s.been.core.persistence.Entity;
 import org.codehaus.jackson.annotate.JsonTypeInfo;
-import org.codehaus.jackson.map.ObjectReader;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 /**

@@ -1,30 +1,52 @@
 package cz.cuni.mff.d3s.been.persistence.task;
 
+import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
+import cz.cuni.mff.d3s.been.core.persistence.NamedEntity;
+import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
+
 /**
+ * Persistent named wrapper for {@link TaskContextDescriptor}
+ *
  * @author darklight
  */
-class NamedPersistentContextDescriptor extends PersistentContextDescriptor {
+class NamedPersistentContextDescriptor extends NamedEntity {
 
-	/**
-	 * Name with which this {@link PersistentContextDescriptor} will be persisted
-	 */
-	private String name;
+    private TaskContextDescriptor descriptor;
+    private BpkIdentifier bpkId;
 
-	/**
-	 * Set the name under which to persist the descriptor
-	 *
-	 * @param name Persist name for this descriptor
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
+    /**
+     * Set carried context descriptor
+     *
+     * @param descriptor Descriptor to set
+     */
+    public void setDescriptor(TaskContextDescriptor descriptor) {
+        this.descriptor = descriptor;
+    }
 
-	/**
-	 * Get the name under which the descriptor will be persisted
-	 *
-	 * @return The persist name of this descriptor
-	 */
-	public String getName() {
-		return name;
-	}
+    /**
+     * Get carried context descriptor
+     *
+     * @return The context descriptor
+     */
+    public TaskContextDescriptor getDescriptor() {
+        return descriptor;
+    }
+
+    /**
+     * Get the ID of the BPK to which this named descriptor belongs
+     *
+     * @return The BPK ID
+     */
+    BpkIdentifier getBpkId() {
+        return bpkId;
+    }
+
+    /**
+     * Set the ID of the BPK for which this named descriptor was created
+     *
+     * @param bpkId The BPK ID
+     */
+    void setBpkId(BpkIdentifier bpkId) {
+        this.bpkId = bpkId;
+    }
 }

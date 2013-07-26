@@ -343,8 +343,8 @@ final class ProcessManager implements Service {
 		String contextId = entry.getTaskContextId();
 		String benchmarkId = entry.getBenchmarkId();
 
-		ClusterStreamHandler stdOutHandler = new ClusterStreamHandler(taskId, contextId, benchmarkId, "stdout");
-		ClusterStreamHandler stdErrHandler = new ClusterStreamHandler(taskId, contextId, benchmarkId, "stderr");
+		TaskStdInOutHandler stdOutHandler = new TaskStdInOutHandler(taskId, contextId, benchmarkId, "stdout");
+		TaskStdInOutHandler stdErrHandler = new TaskStdInOutHandler(taskId, contextId, benchmarkId, "stderr");
 
 		return new PumpStreamHandler(stdOutHandler, stdErrHandler);
 

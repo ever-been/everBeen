@@ -3,6 +3,7 @@ package cz.cuni.mff.d3s.been.client;
 import java.util.Collection;
 import java.util.Map;
 
+import cz.cuni.mff.d3s.been.logging.TaskLogMessage;
 import jline.console.ConsoleReader;
 
 import com.hazelcast.core.Instance;
@@ -11,7 +12,7 @@ import cz.cuni.mff.d3s.been.api.BeenApi;
 import cz.cuni.mff.d3s.been.api.BeenApiImpl;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
-import cz.cuni.mff.d3s.been.core.LogMessage;
+import cz.cuni.mff.d3s.been.logging.LogMessage;
 import cz.cuni.mff.d3s.been.core.benchmark.BenchmarkEntry;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
@@ -122,8 +123,8 @@ class ClusterMode extends AbstractMode {
 	private void handleLogs(String[] args) {
 
 		if (args.length == 2) {
-			Collection<LogMessage> logs = api.getLogsForTask(args[1]);
-			for (LogMessage msg : logs) {
+			Collection<TaskLogMessage> logs = api.getLogsForTask(args[1]);
+			for (TaskLogMessage msg : logs) {
 				try {
 					out.printf("\t%s\n", jsonUtils.serialize(msg));
 				} catch (JsonException e) {

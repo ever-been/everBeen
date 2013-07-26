@@ -40,7 +40,7 @@ import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
  * @author Tadeáš Palusga
  * 
  */
-class HostRuntime implements IClusterService {
+public final class HostRuntime implements IClusterService {
 
 	private static final Logger log = LoggerFactory.getLogger(HostRuntime.class);
 
@@ -133,6 +133,15 @@ class HostRuntime implements IClusterService {
 		}
 		log.info("Host Runtime started.");
 	}
+
+    /**
+     * Get the ID of the Host Runtime instance
+     *
+     * @return The Host Runtime ID
+     */
+    public String getId() {
+        return hostRuntimeInfo.getId();
+    }
 
 	private void startMonitoring() {
 		Path monitoringLogPath = FileSystems.getDefault().getPath(hostRuntimeInfo.getWorkingDirectory(), "monitoring.log");

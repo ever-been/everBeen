@@ -5,11 +5,9 @@ import cz.cuni.mff.d3s.been.persistence.SuccessAction;
 import cz.cuni.mff.d3s.been.persistence.DAOException;
 
 /**
- * Created with IntelliJ IDEA.
- * User: darklight
- * Date: 5/4/13
- * Time: 3:26 PM
- * To change this template use File | Settings | File Templates.
+ * A {@link SuccessAction} that stores items upon collection.
+ *
+ * @author darklight
  */
 public class StoragePersistAction implements SuccessAction<EntityCarrier> {
     private  final Storage storage;

@@ -19,7 +19,7 @@
 
 	<xs:complexType name="Result">
 		<xs:complexContent>
-			<xs:extension base="entity:Entity">
+			<xs:extension base="entity:TaskEntity">
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>

@@ -102,7 +102,13 @@ public class ClusterContext {
 	 * @return UUID of this member.
 	 */
 	public String getId() {
-		return getLocalMember().getUuid();
+        final Member localMember = getLocalMember();
+        if (localMember == null) {
+            // TODO vymysli picovinu
+            return null;
+        } else {
+            return getLocalMember().getUuid();
+        }
 	}
 
 	/**

@@ -17,7 +17,10 @@ public enum StatusCode {
 	EX_USAGE(67),
 
 	/** A component of this process has failed to run. */
-	EX_COMPONENT_FAILED(128);
+	EX_COMPONENT_FAILED(128),
+
+    /** Something is wrong with this computer's network configuration */
+    EX_NETWORK_ERROR(129);
 
 	/** The exit code */
 	private int code;

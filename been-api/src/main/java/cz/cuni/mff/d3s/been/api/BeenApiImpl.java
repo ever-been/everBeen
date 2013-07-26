@@ -8,8 +8,11 @@ import java.util.Collection;
 import java.util.Map;
 
 import com.hazelcast.core.Member;
+import cz.cuni.mff.d3s.been.core.persistence.Entities;
 import cz.cuni.mff.d3s.been.core.task.*;
 import cz.cuni.mff.d3s.been.core.persistence.EntityID;
+import cz.cuni.mff.d3s.been.logging.ServiceLogMessage;
+import cz.cuni.mff.d3s.been.logging.TaskLogMessage;
 import cz.cuni.mff.d3s.been.persistence.*;
 import cz.cuni.mff.d3s.been.persistence.task.PersistentDescriptors;
 import cz.cuni.mff.d3s.been.util.JSONUtils;
@@ -25,7 +28,7 @@ import cz.cuni.mff.d3s.been.bpk.*;
 import cz.cuni.mff.d3s.been.cluster.Instance;
 import cz.cuni.mff.d3s.been.cluster.Names;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
-import cz.cuni.mff.d3s.been.core.LogMessage;
+import cz.cuni.mff.d3s.been.logging.LogMessage;
 import cz.cuni.mff.d3s.been.core.benchmark.BenchmarkEntry;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.sri.SWRepositoryInfo;
@@ -215,7 +218,7 @@ public class BeenApiImpl implements BeenApi {
 	}
 
 	@Override
-	public Collection<LogMessage> getLogsForTask(String taskId) {
+	public Collection<TaskLogMessage> getLogsForTask(String taskId) {
 		EntityID entityID = new EntityID();
 		entityID.setKind("log");
 		entityID.setGroup("task");
@@ -223,7 +226,7 @@ public class BeenApiImpl implements BeenApi {
 
 		Collection<String> stringCollection = this.queryPersistence(query).getData();
 		try {
-			return jsonUtils.deserialize(stringCollection, LogMessage.class);
+			return jsonUtils.deserialize(stringCollection, TaskLogMessage.class);
 		} catch (JsonException e) {
 			e.printStackTrace();
 			// TODO error handling
@@ -385,4 +388,42 @@ public class BeenApiImpl implements BeenApi {
 		}
 	}
 
+    @Override
+    public Collection<ServiceLogMessage> getServiceLogsByBeenId(String beenId) throws DAOException {
+        final QueryAnswer qa = clusterContext.getPersistence().query(new QueryBuilder().on(Entities.SERVICE_LOG).with("beenId", beenId).fetch());
+        if (!qa.isCarryingData()) {
+            throw new DAOException(String.format("Persistence layer response for service logs from node '%s' yielded no data: %s", beenId, qa.getStatus().getDescription()));
+        }
+        try {
+            return jsonUtils.deserialize(qa.getData(), ServiceLogMessage.class);
+        } catch (JsonException e) {
+            throw new DAOException(String.format("Cannot deserialize service logs from node '%s'", beenId), e);
+        }
+    }
+
+    @Override
+    public Collection<ServiceLogMessage> getServiceLogsByHostRuntimeId(String hostRuntimeId) throws DAOException {
+        final QueryAnswer qa = clusterContext.getPersistence().query(new QueryBuilder().on(Entities.SERVICE_LOG).with("hostRuntimeId", hostRuntimeId).fetch());
+        if (!qa.isCarryingData()) {
+            throw new DAOException(String.format("Persistence layer response for service logs from host runtime '%s' yielded no data: %s", hostRuntimeId, qa.getStatus().getDescription()));
+        }
+        try {
+            return jsonUtils.deserialize(qa.getData(), ServiceLogMessage.class);
+        } catch (JsonException e) {
+            throw new DAOException(String.format("Cannot deserialize service logs from host runtime '%s'", hostRuntimeId), e);
+        }
+    }
+
+    @Override
+    public Collection<ServiceLogMessage> getServiceLogsByServiceName(String serviceName) throws DAOException {
+        final QueryAnswer qa = clusterContext.getPersistence().query(new QueryBuilder().on(Entities.SERVICE_LOG).with("serviceName", serviceName).fetch());
+        if (!qa.isCarryingData()) {
+            throw new DAOException(String.format("Persistence layer response for service logs from service '%s' yielded no data: %s", serviceName, qa.getStatus().getDescription()));
+        }
+        try {
+            return jsonUtils.deserialize(qa.getData(), ServiceLogMessage.class);
+        } catch (JsonException e) {
+            throw new DAOException(String.format("Cannot deserialize service logs from service '%s'", serviceName), e);
+        }
+    }
 }

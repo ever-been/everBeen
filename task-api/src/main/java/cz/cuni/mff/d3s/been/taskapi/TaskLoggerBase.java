@@ -1,7 +1,7 @@
 package cz.cuni.mff.d3s.been.taskapi;
 
-import static cz.cuni.mff.d3s.been.taskapi.TaskLoggerBase.TaskLogLevel.*;
-
+import cz.cuni.mff.d3s.been.logging.LogLevel;
+import static cz.cuni.mff.d3s.been.logging.LogLevel.*;
 import org.slf4j.helpers.FormattingTuple;
 import org.slf4j.helpers.MarkerIgnoringBase;
 import org.slf4j.helpers.MessageFormatter;
@@ -12,13 +12,8 @@ import org.slf4j.helpers.MessageFormatter;
  */
 abstract class TaskLoggerBase extends MarkerIgnoringBase {
 
-	static enum TaskLogLevel {
-		DUMMY, /** Not used, to set TRACE.ordinal() to 1 */
-		TRACE, DEBUG, INFO, WARN, ERROR
-	}
-
 	/** effective log level */
-	protected TaskLogLevel currentLogLevel = INFO;
+	protected LogLevel currentLogLevel = INFO;
 
 	/** Are {@code trace} messages currently enabled? */
 	@Override
@@ -270,13 +265,13 @@ abstract class TaskLoggerBase extends MarkerIgnoringBase {
 			log(ERROR.ordinal(), msg, t);
 	}
 
-	protected boolean isLevelEnabled(TaskLogLevel logLevel) {
+	protected boolean isLevelEnabled(LogLevel logLevel) {
 		// log level are numerically ordered so can use simple numeric
 		// comparison
 		return (logLevel.ordinal() >= currentLogLevel.ordinal());
 	}
 
-	private void formatAndLog(TaskLogLevel level, String format, Object arg1, Object arg2) {
+	private void formatAndLog(LogLevel level, String format, Object arg1, Object arg2) {
 		if (!isLevelEnabled(level)) {
 			return;
 		}
@@ -284,7 +279,7 @@ abstract class TaskLoggerBase extends MarkerIgnoringBase {
 		log(level.ordinal(), tp.getMessage(), tp.getThrowable());
 	}
 
-	private void formatAndLog(TaskLogLevel level, String format, Object... arguments) {
+	private void formatAndLog(LogLevel level, String format, Object... arguments) {
 		if (!isLevelEnabled(level)) {
 			return;
 		}
@@ -292,7 +287,7 @@ abstract class TaskLoggerBase extends MarkerIgnoringBase {
 		log(level.ordinal(), tp.getMessage(), tp.getThrowable());
 	}
 
-	final void setLogLevel(TaskLogLevel level) {
+	final void setLogLevel(LogLevel level) {
 		this.currentLogLevel = level;
 	}
 

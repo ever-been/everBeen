@@ -2,9 +2,10 @@ package cz.cuni.mff.d3s.been.hostruntime.task;
 
 import static cz.cuni.mff.d3s.been.socketworks.NamedSockets.TASK_LOG_0MQ;
 
+import cz.cuni.mff.d3s.been.logging.TaskLogMessage;
 import org.apache.commons.exec.LogOutputStream;
 
-import cz.cuni.mff.d3s.been.core.LogMessage;
+import cz.cuni.mff.d3s.been.logging.LogMessage;
 import cz.cuni.mff.d3s.been.core.TaskMessageType;
 import cz.cuni.mff.d3s.been.util.JSONUtils;
 import cz.cuni.mff.d3s.been.util.JsonException;
@@ -23,7 +24,7 @@ import cz.cuni.mff.d3s.been.mq.MessageQueues;
  * 
  * @author Martin Sixta
  */
-public class ClusterStreamHandler extends LogOutputStream {
+public class TaskStdInOutHandler extends LogOutputStream {
 	private final String taskId;
 	private final String contextId;
 	private final String benchmarkId;
@@ -32,7 +33,7 @@ public class ClusterStreamHandler extends LogOutputStream {
 	private final MessageQueues messageQueues;
 	private final JSONUtils jsonUtils;
 
-	public ClusterStreamHandler(String taskId, String contextId, String benchmarkId, String name) {
+	public TaskStdInOutHandler(String taskId, String contextId, String benchmarkId, String name) {
 		this.taskId = taskId;
 		this.contextId = contextId;
 		this.benchmarkId = benchmarkId;
@@ -57,7 +58,7 @@ public class ClusterStreamHandler extends LogOutputStream {
 	}
 
 	private String createJsonLogMessage(String line, int level) throws JsonException {
-		LogMessage logMsg = new LogMessage(name, level, line).withTimestamp();
+		TaskLogMessage logMsg = new TaskLogMessage().withMessage(new LogMessage(name, level, line));
 		logMsg.withTaskId(taskId).withContextId(contextId).withBenchmarkId(benchmarkId);
 
 		return jsonUtils.serialize(logMsg);

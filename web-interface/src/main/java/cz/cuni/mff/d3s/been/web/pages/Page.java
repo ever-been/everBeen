@@ -1,6 +1,6 @@
 package cz.cuni.mff.d3s.been.web.pages;
 
-import cz.cuni.mff.d3s.been.core.LogMessage;
+import cz.cuni.mff.d3s.been.logging.LogMessage;
 import cz.cuni.mff.d3s.been.core.task.*;
 import cz.cuni.mff.d3s.been.web.services.BeenApiService;
 import org.apache.tapestry5.annotations.Property;

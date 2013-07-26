@@ -1,15 +1,12 @@
 package cz.cuni.mff.d3s.been.storage;
 
 import cz.cuni.mff.d3s.been.cluster.Service;
-import cz.cuni.mff.d3s.been.core.persistence.Entity;
 import cz.cuni.mff.d3s.been.core.persistence.EntityCarrier;
 import cz.cuni.mff.d3s.been.core.persistence.EntityID;
 import cz.cuni.mff.d3s.been.persistence.DAOException;
 import cz.cuni.mff.d3s.been.persistence.Query;
 import cz.cuni.mff.d3s.been.persistence.QueryAnswer;
 import cz.cuni.mff.d3s.been.persistence.SuccessAction;
-
-import java.util.Collection;
 
 /**
  * A generic persistence layer for BEEN.

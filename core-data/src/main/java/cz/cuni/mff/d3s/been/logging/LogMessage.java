@@ -1,17 +1,17 @@
-package cz.cuni.mff.d3s.been.core;
+package cz.cuni.mff.d3s.been.logging;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import cz.cuni.mff.d3s.been.core.persistence.Entity;
+import cz.cuni.mff.d3s.been.core.persistence.TaskEntity;
 
 /**
  * Message used to log events on tasks. Java Task API.
  * 
  * @author Martin Sixta
  */
-public class LogMessage extends Entity {
+public class LogMessage {
 
 	/** Name of the logger */
 	private String name;
@@ -28,11 +28,8 @@ public class LogMessage extends Entity {
 	/** Name of the thread which logged the message. */
 	private String threadName;
 
-	/**
-	 * Time when the log was issued in milliseconds as returned by
-	 * System.currentTimeMillis()
-	 */
-	private long time;
+    /** Time at which this message was logged */
+    private long time;
 
 	public LogMessage() {
 		// make JSON deserializer happy
@@ -44,7 +41,7 @@ public class LogMessage extends Entity {
 		this.name = name;
 	}
 
-	public LogMessage withThroable(Throwable t) {
+	public LogMessage withThrowable(Throwable t) {
 		if (t != null) {
 			try (StringWriter sw = new StringWriter(); PrintWriter pw = new PrintWriter(sw)) {
 				t.printStackTrace(pw);
@@ -52,14 +49,7 @@ public class LogMessage extends Entity {
 			} catch (IOException e) {
 				// quell, what else to do?
 			}
-
 		}
-
-		return this;
-	}
-
-	public LogMessage withTimestamp() {
-		setCreated(System.currentTimeMillis());
 		return this;
 	}
 

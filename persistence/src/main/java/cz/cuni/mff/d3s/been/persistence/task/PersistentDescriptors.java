@@ -1,7 +1,8 @@
 package cz.cuni.mff.d3s.been.persistence.task;
 
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
-import cz.cuni.mff.d3s.been.core.persistence.Entity;
+import cz.cuni.mff.d3s.been.core.persistence.NamedEntity;
+import cz.cuni.mff.d3s.been.core.persistence.TaskEntity;
 import cz.cuni.mff.d3s.been.core.persistence.EntityID;
 import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
@@ -51,9 +52,9 @@ public final class PersistentDescriptors {
 	 * @param contextId ID of the context in which the submitting task is running
 	 * @param benchmarkId ID of the benchmark in which the submitting task is running
 	 *
-	 * @return A persistable {@link Entity} wrapping provided {@link cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor}
+	 * @return A persistable {@link cz.cuni.mff.d3s.been.core.persistence.TaskEntity} wrapping provided {@link cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor}
 	 */
-	public static Entity wrapTaskDescriptor(TaskDescriptor td, String taskId, String contextId, String benchmarkId) {
+	public static TaskEntity wrapTaskDescriptor(TaskDescriptor td, String taskId, String contextId, String benchmarkId) {
 		final PersistentTaskDescriptor wrap = new PersistentTaskDescriptor();
 		wrap.setDescriptor(td);
 		setRuntimeIDs(wrap, taskId, contextId, benchmarkId);
@@ -69,7 +70,7 @@ public final class PersistentDescriptors {
 	 *
 	 * @return A persistable {@link Entity} wrapping provided {@link cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor}
 	 */
-	public static Entity wrapNamedTaskDescriptor(TaskDescriptor td, String name, BpkIdentifier bpkId) {
+	public static NamedEntity wrapNamedTaskDescriptor(TaskDescriptor td, String name, BpkIdentifier bpkId) {
 		final NamedPersistentTaskDescriptor wrap = new NamedPersistentTaskDescriptor();
 		wrap.setDescriptor(td);
 		wrap.setName(name);
@@ -85,9 +86,9 @@ public final class PersistentDescriptors {
 	 * @param contextId ID of the context in which the submitting task is running
 	 * @param benchmarkId ID of the benchmark in which the submitting task is running
 	 *
-	 * @return A persistable {@link Entity} wrapping provided {@link cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor}
+	 * @return A persistable {@link cz.cuni.mff.d3s.been.core.persistence.TaskEntity} wrapping provided {@link cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor}
 	 */
-	public static Entity wrapContextDescriptor(TaskContextDescriptor tcd, String taskId, String contextId, String benchmarkId) {
+	public static TaskEntity wrapContextDescriptor(TaskContextDescriptor tcd, String taskId, String contextId, String benchmarkId) {
 		final PersistentContextDescriptor wrap = new PersistentContextDescriptor();
 		wrap.setDescriptor(tcd);
 		setRuntimeIDs(wrap, taskId, contextId, benchmarkId);
@@ -103,7 +104,7 @@ public final class PersistentDescriptors {
 	 *
 	 * @return A persistable {@link Entity} wrapping provided {@link TaskContextDescriptor}
 	 */
-	public static Entity wrapNamedContextDescriptor(TaskContextDescriptor tcd, String name, BpkIdentifier bpkId) {
+	public static NamedEntity wrapNamedContextDescriptor(TaskContextDescriptor tcd, String name, BpkIdentifier bpkId) {
 		final NamedPersistentContextDescriptor wrap = new NamedPersistentContextDescriptor();
 		wrap.setDescriptor(tcd);
 		wrap.setName(name);
@@ -233,7 +234,7 @@ public final class PersistentDescriptors {
         }
     }
 
-	private static void setRuntimeIDs(Entity to, String taskId, String contextId, String benchmarkId) {
+	private static void setRuntimeIDs(TaskEntity to, String taskId, String contextId, String benchmarkId) {
 		to.setTaskId(taskId);
 		to.setContextId(contextId);
 		to.setBenchmarkId(benchmarkId);

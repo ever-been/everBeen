@@ -7,7 +7,6 @@ import java.util.Map;
 import com.hazelcast.core.Member;
 import cz.cuni.mff.d3s.been.bpk.BpkConfigurationException;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
-import cz.cuni.mff.d3s.been.core.LogMessage;
 import cz.cuni.mff.d3s.been.core.benchmark.BenchmarkEntry;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
@@ -15,6 +14,8 @@ import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.debugassistant.DebugListItem;
+import cz.cuni.mff.d3s.been.logging.ServiceLogMessage;
+import cz.cuni.mff.d3s.been.logging.TaskLogMessage;
 import cz.cuni.mff.d3s.been.persistence.DAOException;
 import cz.cuni.mff.d3s.been.persistence.Query;
 import cz.cuni.mff.d3s.been.persistence.QueryAnswer;
@@ -48,6 +49,10 @@ public interface BeenApi {
     public Map<String, TaskDescriptor> getNamedTaskDescriptorsForBpk(BpkIdentifier bpkIdentifier) throws DAOException;
     public Map<String, TaskContextDescriptor> getNamedContextDescriptorsForBpk(BpkIdentifier bpkIdentifier) throws DAOException;
 
+    public Collection<ServiceLogMessage> getServiceLogsByBeenId(String beenId) throws DAOException;
+    public Collection<ServiceLogMessage> getServiceLogsByHostRuntimeId(String hostRuntimeId) throws DAOException;
+    public Collection<ServiceLogMessage> getServiceLogsByServiceName(String serviceName) throws DAOException;
+
 	public String submitTask(TaskDescriptor taskDescriptor);
 	public String submitTaskContext(TaskContextDescriptor taskContextDescriptor);
 	public String submitTaskContext(TaskContextDescriptor taskContextDescriptor, String benchmarkId);
@@ -64,7 +69,7 @@ public interface BeenApi {
 	public Collection<RuntimeInfo> getRuntimes();
 	public RuntimeInfo getRuntime(String id);
 
-	public Collection<LogMessage> getLogsForTask(String taskId);
+	public Collection<TaskLogMessage> getLogsForTask(String taskId);
 	public void addLogListener(LogListener listener);
 	public void removeLogListener(LogListener listener);
 

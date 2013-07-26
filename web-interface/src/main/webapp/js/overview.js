@@ -81,24 +81,25 @@ var logs = [];
 function addLog(log) {
 	logs.push(log);
 
-	var d = Date.create(log.time).format("{H}:{mm}:{ss}.{fff}");
-	var classname = log.name;
+	var d = Date.create(log.message.time).format("{H}:{mm}:{ss}.{fff}");
+	var classname = log.message.name;
 	classname = classname.substr(classname.lastIndexOf(".") + 1);
 	var t = "<a href='/task/detail/" + log.taskId + "'>" + log.taskId.substring(0, 8) + "</a>";
 
-	var lev = log.level;
-	if (log.level == LOG_LEVEL_TRACE) lev = "<i class='icon-caret-down'></i>";
-	else if (log.level == LOG_LEVEL_DEBUG) lev = "<i class='icon-caret-down'></i>";
-	else if (log.level == LOG_LEVEL_INFO) lev = "<i class='icon-info'></i>";
-	else if (log.level == LOG_LEVEL_WARN) lev = "<i class='icon-exclamation'></i>";
-	else if (log.level == LOG_LEVEL_ERROR) lev = "<i class='icon-bolt'></i>";
-	else lev = "<i class='icon-question'></i> " + log.level;
+
+	var lev = log.message.level;
+	if (log.message.level == LOG_LEVEL_TRACE) lev = "<i class='icon-caret-down'></i>";
+	else if (log.message.level == LOG_LEVEL_DEBUG) lev = "<i class='icon-caret-down'></i>";
+	else if (log.message.level == LOG_LEVEL_INFO) lev = "<i class='icon-info'></i>";
+	else if (log.message.level == LOG_LEVEL_WARN) lev = "<i class='icon-exclamation'></i>";
+	else if (log.message.level == LOG_LEVEL_ERROR) lev = "<i class='icon-bolt'></i>";
+	else lev = "<i class='icon-question'></i> " + log.message.level;
 
 	var color = "black";
-	if (log.level == LOG_LEVEL_WARN) color = "#c66";
-	else if (log.level == LOG_LEVEL_ERROR) color = "red";
+	if (log.message.level == LOG_LEVEL_WARN) color = "#c66";
+	else if (log.message.level == LOG_LEVEL_ERROR) color = "red";
 
-	var line = "<span style='color: " + color + "'>[" + d + "] " + t + " " + lev + " " + classname + " - " + log.message + "</span>";
+	var line = "<span style='color: " + color + "'>[" + d + "] " + t + " " + lev + " " + classname + " - " + log.message.message + "</span>";
 
 	$("#logsLoading").html("");
 	$("#logsTable").show();

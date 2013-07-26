@@ -1,7 +1,7 @@
 package cz.cuni.mff.d3s.been.persistence.task;
 
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
-import cz.cuni.mff.d3s.been.core.persistence.Entity;
+import cz.cuni.mff.d3s.been.core.persistence.TaskEntity;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 
 /**
@@ -9,7 +9,7 @@ import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
  *
  * @author darklight
  */
-class PersistentTaskDescriptor extends Entity {
+class PersistentTaskDescriptor extends TaskEntity {
 	private TaskDescriptor descriptor;
     private BpkIdentifier bpkId;
 

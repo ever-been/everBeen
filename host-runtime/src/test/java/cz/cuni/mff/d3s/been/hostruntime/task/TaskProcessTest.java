@@ -120,9 +120,9 @@ public class TaskProcessTest extends Assert {
 		process.start();
 	}
 
-	@Test(timeout = 10000)
+	@Test(timeout = 15000)
 	public void testProcessIsCorrectlyKilled() throws Exception {
-		setUpCmdLineBuilderWithExecTime(sourceWithTimeoutAsFirstArg, 100000);
+		setUpCmdLineBuilderWithExecTime(sourceWithTimeoutAsFirstArg, 10000);
 		Map<String, String> environment = new HashMap<>();
 		ExecuteStreamHandler streamhandler = new PumpStreamHandler();
 		final TaskProcess process = new TaskProcess(cmdLineBuilder, wrkDirPath, environment, streamhandler, dependencyDownloader);

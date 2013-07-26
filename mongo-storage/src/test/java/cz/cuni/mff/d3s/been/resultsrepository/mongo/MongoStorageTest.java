@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.ServiceLoader;
 
-import cz.cuni.mff.d3s.been.core.persistence.Entity;
+import cz.cuni.mff.d3s.been.core.persistence.TaskEntity;
 import cz.cuni.mff.d3s.been.persistence.QueryBuilder;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -25,7 +25,7 @@ public final class MongoStorageTest extends Assert {
 
 	private final JSONUtils jsonUtils = JSONUtils.newInstance();
 
-	public class DummyEntity extends Entity {
+	public class DummyEntity extends TaskEntity {
 		/** A testing string */
 		private String something = "strange";
 

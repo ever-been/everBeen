@@ -53,6 +53,12 @@
 			<version>${project.parent.version}</version>
 		</dependency>
 
+        <dependency>
+            <groupId>cz.cuni.mff.d3s.been</groupId>
+            <artifactId>service-logger-handler</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
 			<artifactId>repository</artifactId>
@@ -65,6 +71,14 @@
 			<version>${project.parent.version}</version>
 			<scope>runtime</scope>
 		</dependency>
+
+        <!-- BEEN LOGGING -->
+        <dependency>
+            <groupId>cz.cuni.mff.d3s.been</groupId>
+            <artifactId>logback-appender</artifactId>
+            <version>${project.version}</version>
+            <scope>runtime</scope>
+        </dependency>
 
 		<!-- EXTERNAL DEPENDENCIES -->
 		<dependency>

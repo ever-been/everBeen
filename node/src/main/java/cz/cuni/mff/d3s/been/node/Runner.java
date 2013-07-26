@@ -5,8 +5,13 @@ import static cz.cuni.mff.d3s.been.core.StatusCode.*;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Properties;
+import java.util.UUID;
 
+import cz.cuni.mff.d3s.been.hostruntime.HostRuntime;
+import cz.cuni.mff.d3s.been.logging.ServiceLogPersister;
 import cz.cuni.mff.d3s.been.repository.Repository;
 import org.apache.commons.io.IOUtils;
 import org.kohsuke.args4j.CmdLineException;
@@ -52,6 +57,8 @@ public class Runner {
 
 	private static final Logger log = LoggerFactory.getLogger(Runner.class);
 
+
+
 	// ------------------------------------------------------------------------
 	// COMMAND LINE ARGUMENTS
 	// ------------------------------------------------------------------------
@@ -68,9 +75,6 @@ public class Runner {
 	@Option(name = "-sw", aliases = { "--software-repository" }, usage = "Whether to run Software Repository on this node")
 	private boolean runSWRepository = false;
 
-	@Option(name = "-swp", aliases = { "--software-repository-port" }, usage = "Set the port for Software Repository")
-	private Integer swRepoPort = 8000;
-
 	@Option(name = "-rr", aliases = { "--repository" }, usage = "Whether to run Repository on this node. Requires a running matching persistence layer")
 	private boolean runRepository = false;
 
@@ -79,6 +83,15 @@ public class Runner {
 
 	@Option(name = "-h", aliases = { "--help" }, usage = "Prints help")
 	private boolean printHelp = false;
+
+    /** An ID of this BEEN running JVM */
+    private UUID runtimeId = null;
+
+    /** ID of the Host Runtime service running on this node. If no HR is running, will remain <code>null</code> */
+    private String hostRuntimeId = null;
+
+    /** Synthetic ID of this BEEN node. Will always be non-<code>null</code> once this BEEN node is initialized */
+    private String beenId = null;
 
 	public static void main(String[] args) {
 		new Runner().doMain(args);
@@ -94,8 +107,16 @@ public class Runner {
 
 		if (printHelp) {
 			printUsage();
-			System.exit(EX_OK.getCode());
+            EX_USAGE.sysExit();
 		}
+
+        this.runtimeId = UUID.randomUUID();
+        try {
+            this.beenId = InetAddress.getLocalHost().getHostName() + "--" + runtimeId.toString();
+        } catch (UnknownHostException e) {
+            log.error("Cannot determine local hostname, will terminate.", e);
+            EX_NETWORK_ERROR.sysExit();
+        }
 
 		Properties properties = loadProperties();
 
@@ -116,19 +137,21 @@ public class Runner {
 		Reaper clusterReaper = new ClusterReaper(instance);
 
 		try {
-			// Run Task Manager on DATA nodes
-			if (nodeType == NodeType.DATA) {
-				clusterReaper.pushTarget(startTaskManager(instance));
-			}
+            // standalone services
+            if (runSWRepository) {
+                clusterReaper.pushTarget(startSWRepository(instance, properties));
+            }
 
-			// standalone services
-			if (runSWRepository) {
-				clusterReaper.pushTarget(startSWRepository(instance, properties));
-			}
+            // Run Task Manager on DATA nodes
+            if (nodeType == NodeType.DATA) {
+                clusterReaper.pushTarget(startTaskManager(instance));
+            }
 
-			if (runHostRuntime) {
-				clusterReaper.pushTarget(startHostRuntime(instance, properties));
-			}
+            if (runHostRuntime) {
+                clusterReaper.pushTarget(startHostRuntime(instance, properties));
+            }
+
+            clusterReaper.pushTarget(startLogPersister(instance));
 
 			// Services that require a persistence layer
 			if (runRepository) {
@@ -195,8 +218,9 @@ public class Runner {
 	private
 			IClusterService
 			startHostRuntime(final HazelcastInstance instance, Properties properties) throws ServiceException {
-		IClusterService hostRuntime = HostRuntimes.getRuntime(instance, properties);
+		HostRuntime hostRuntime = HostRuntimes.getRuntime(instance, properties);
 		hostRuntime.start();
+        this.hostRuntimeId = hostRuntime.getId();
 		return hostRuntime;
 	}
 
@@ -210,6 +234,13 @@ public class Runner {
 		softwareRepository.start();
 		return softwareRepository;
 	}
+
+    private IClusterService startLogPersister(HazelcastInstance instance) throws ServiceException {
+        ClusterContext ctx = new ClusterContext(instance);
+        ServiceLogPersister logPersister = ServiceLogPersister.getHandlerInstance(ctx, beenId, hostRuntimeId);
+        logPersister.start();
+        return logPersister;
+    }
 
 	private IClusterService startRepository(HazelcastInstance instance,
 			Storage storage) throws ServiceException {

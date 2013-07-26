@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.cluster;
 
+import java.net.InetAddress;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -10,7 +11,6 @@ import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.config.Config;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
-import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 
 /**
  * Singleton for the HazelcastInstance object.
@@ -134,24 +134,14 @@ public final class Instance {
 
 		try {
 			Instance.init(NodeType.NATIVE, userProperties);
-
 			return getInstance();
 		} catch (ServiceException e) {
 			throw new RuntimeException("Cannot initialize client connection");
 		}
 	}
 
-	public synchronized ClusterContext createContext() throws ServiceException {
-		if (!isConnected()) {
-			throw new ServiceException("Not connected to the cluster!");
-		}
-
-		return new ClusterContext(getInstance());
-	}
-
 	/**
 	 * Shut downs connection to the Hazelcast cluster.
-	 * 
 	 */
 	public static synchronized void shutdown() {
 		if (!isConnected()) {
@@ -173,7 +163,7 @@ public final class Instance {
 
 	}
 
-	private static HazelcastInstance newDataInstance(Properties userProperties) throws ServiceException {
+	private static HazelcastInstance createDataInstance(Properties userProperties) throws ServiceException {
 
 		Config config = InstanceConfigHelper.createMemberConfig(userProperties);
 
@@ -183,7 +173,7 @@ public final class Instance {
 	private static HazelcastInstance join(NodeType type, Properties userProperties) throws ServiceException {
 		switch (type) {
 			case DATA:
-				return newDataInstance(userProperties);
+				return createDataInstance(userProperties);
 			case LITE:
 				throw new UnsupportedOperationException("LITE node not implemented!");
 			case NATIVE:

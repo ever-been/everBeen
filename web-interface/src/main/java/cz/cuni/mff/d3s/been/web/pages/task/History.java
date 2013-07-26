@@ -1,6 +1,6 @@
 package cz.cuni.mff.d3s.been.web.pages.task;
 
-import cz.cuni.mff.d3s.been.core.LogMessage;
+import cz.cuni.mff.d3s.been.logging.LogMessage;
 import cz.cuni.mff.d3s.been.core.task.StateChangeEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.web.components.Layout;

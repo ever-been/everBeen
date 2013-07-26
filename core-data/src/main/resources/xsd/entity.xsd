@@ -5,18 +5,38 @@
 		targetNamespace="http://been.d3s.mff.cuni.cz/entity"
 		xmlns:xs="http://www.w3.org/2001/XMLSchema"
 		xmlns:common="http://been.d3s.mff.cuni.cz/common"
+        xmlns:entity="http://been.d3s.mff.cuni.cz/entity"
 		>
 
 	<xs:import namespace="http://been.d3s.mff.cuni.cz/common"/>
 
 	<xs:complexType name="Entity">
-		<xs:all>
+		<xs:sequence>
 			<xs:element name="created" type="common:positiveLong"/>
-			<xs:element name="taskId" type="xs:string"/>
-			<xs:element name="contextId" type="xs:string"/>
-			<xs:element name="benchmarkId" type="xs:string"/>
-		</xs:all>
+		</xs:sequence>
 	</xs:complexType>
+    
+    <xs:complexType name="TaskEntity">
+        <xs:complexContent>
+            <xs:extension base="entity:Entity">
+                <xs:sequence>
+                    <xs:element name="taskId" type="xs:string"/>
+                    <xs:element name="contextId" type="xs:string"/>
+                    <xs:element name="benchmarkId" type="xs:string"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="NamedEntity">
+        <xs:complexContent>
+            <xs:extension base="entity:Entity">
+                <xs:sequence>
+                    <xs:element name="name" type="xs:string"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
 
 	<xs:complexType name="EntityID">
 		<xs:all>

@@ -2,7 +2,10 @@ package cz.cuni.mff.d3s.been.taskapi;
 
 import static cz.cuni.mff.d3s.been.core.TaskMessageType.LOG_MESSAGE;
 import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.*;
-import cz.cuni.mff.d3s.been.core.LogMessage;
+
+import cz.cuni.mff.d3s.been.logging.LogLevel;
+import cz.cuni.mff.d3s.been.logging.LogMessage;
+import cz.cuni.mff.d3s.been.logging.TaskLogMessage;
 import cz.cuni.mff.d3s.been.util.JSONUtils;
 import cz.cuni.mff.d3s.been.util.JsonException;
 
@@ -16,12 +19,12 @@ import cz.cuni.mff.d3s.been.util.JsonException;
  */
 class TaskLogger extends TaskLoggerBase {
 
-	private static final TaskLogLevel DEFAULT_LOG_LEVEL = TaskLogLevel.INFO;
+	private static final LogLevel DEFAULT_LOG_LEVEL = LogLevel.INFO;
 
 	private static final String taskId;
 	private static final String contextId;
 	private static final String benchmarkId;
-	private static final TaskLogLevel logLevel;
+	private static final LogLevel logLevel;
 
 	private String name;
 	private final JSONUtils jsonUtils = JSONUtils.newInstance();
@@ -33,9 +36,9 @@ class TaskLogger extends TaskLoggerBase {
 
 		String logLevelString = System.getenv(TASK_LOG_LEVEL);
 
-		TaskLogLevel tmpLogLevel;
+		LogLevel tmpLogLevel;
 		try {
-			tmpLogLevel = TaskLogLevel.valueOf(logLevelString);
+			tmpLogLevel = LogLevel.valueOf(logLevelString);
 		} catch (IllegalArgumentException | NullPointerException e) {
 			tmpLogLevel = DEFAULT_LOG_LEVEL;
 		}
@@ -86,7 +89,7 @@ class TaskLogger extends TaskLoggerBase {
 
 	private String createJsonLogMessage(int level, String message, Throwable t) throws JsonException {
 
-		LogMessage logMsg = new LogMessage(name, level, message).withThreadName().withTimestamp().withThroable(t);
+		TaskLogMessage logMsg = new TaskLogMessage().withMessage(new LogMessage(name, level, message).withThreadName().withThrowable(t));
 		logMsg.withTaskId(taskId).withContextId(contextId).withBenchmarkId(benchmarkId);
 
 		return jsonUtils.serialize(logMsg);
