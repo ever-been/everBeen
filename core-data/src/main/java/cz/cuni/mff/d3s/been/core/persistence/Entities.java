@@ -13,5 +13,8 @@ public final class Entities {
     private Entities(){}
 
 
-    public static final EntityID SERVICE_LOG = new EntityID().withKind("log").withGroup("service");
+    public static final EntityID LOG_SERVICE = new EntityID().withKind("log").withGroup("service");
+    public static final EntityID LOG_TASK = new EntityID().withKind("log").withGroup("task");
+
+    public static final EntityID RESULT_EVALUATOR = new EntityID().withKind("result").withGroup("evaluation");
 }

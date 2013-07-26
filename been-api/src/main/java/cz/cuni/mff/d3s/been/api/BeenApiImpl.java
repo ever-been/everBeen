@@ -10,7 +10,6 @@ import java.util.Map;
 import com.hazelcast.core.Member;
 import cz.cuni.mff.d3s.been.core.persistence.Entities;
 import cz.cuni.mff.d3s.been.core.task.*;
-import cz.cuni.mff.d3s.been.core.persistence.EntityID;
 import cz.cuni.mff.d3s.been.logging.ServiceLogMessage;
 import cz.cuni.mff.d3s.been.logging.TaskLogMessage;
 import cz.cuni.mff.d3s.been.persistence.*;
@@ -30,35 +29,19 @@ import cz.cuni.mff.d3s.been.bpk.*;
 import cz.cuni.mff.d3s.been.cluster.Instance;
 import cz.cuni.mff.d3s.been.cluster.Names;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
-import cz.cuni.mff.d3s.been.logging.LogMessage;
 import cz.cuni.mff.d3s.been.core.benchmark.BenchmarkEntry;
-import cz.cuni.mff.d3s.been.core.persistence.EntityID;
 import cz.cuni.mff.d3s.been.core.protocol.command.CommandEntry;
 import cz.cuni.mff.d3s.been.core.protocol.command.CommandEntryState;
 import cz.cuni.mff.d3s.been.core.protocol.messages.DeleteTaskWrkDirMessage;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.sri.SWRepositoryInfo;
-import cz.cuni.mff.d3s.been.core.task.*;
 import cz.cuni.mff.d3s.been.datastore.SoftwareStoreBuilderFactory;
 import cz.cuni.mff.d3s.been.debugassistant.DebugAssistant;
 import cz.cuni.mff.d3s.been.debugassistant.DebugListItem;
 import cz.cuni.mff.d3s.been.evaluators.EvaluatorResult;
-import cz.cuni.mff.d3s.been.persistence.*;
-import cz.cuni.mff.d3s.been.persistence.task.PersistentDescriptors;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
-import cz.cuni.mff.d3s.been.util.JSONUtils;
-import cz.cuni.mff.d3s.been.util.JsonException;
-import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -246,10 +229,7 @@ public class BeenApiImpl implements BeenApi {
 
     @Override
     public Collection<TaskLogMessage> getLogsForTask(String taskId) throws DAOException {
-        EntityID entityID = new EntityID();
-        entityID.setKind("log");
-        entityID.setGroup("task");
-        Query query = new QueryBuilder().on(entityID).with("taskId", taskId).fetch();
+        Query query = new QueryBuilder().on(Entities.LOG_TASK).with("taskId", taskId).fetch();
 
         Collection<String> stringCollection = this.queryPersistence(query).getData();
         try {
@@ -261,10 +241,7 @@ public class BeenApiImpl implements BeenApi {
 
 	@Override
 	public Collection<EvaluatorResult> getEvaluatorResults() {
-		EntityID entityID = new EntityID();
-		entityID.setKind("been");
-		entityID.setGroup("evaluator-results");
-		Query query = new QueryBuilder().on(entityID).fetch();
+		Query query = new QueryBuilder().on(Entities.RESULT_EVALUATOR).fetch();
 
 		Collection<String> stringCollection = this.queryPersistence(query).getData();
 		try {
@@ -278,10 +255,7 @@ public class BeenApiImpl implements BeenApi {
 
 	@Override
 	public void deleteResult(String resultId) {
-		EntityID entityID = new EntityID();
-		entityID.setKind("been");
-		entityID.setGroup("evaluator-results");
-		Query query = new QueryBuilder().on(entityID).with("id", resultId).delete();
+		Query query = new QueryBuilder().on(Entities.RESULT_EVALUATOR).with("id", resultId).delete();
 		QueryStatus status = this.queryPersistence(query).getStatus();
 		if (status != QueryStatus.OK) {
 			log.error("Delete query failed with status {}", status.getDescription());
@@ -290,10 +264,7 @@ public class BeenApiImpl implements BeenApi {
 
 	@Override
 	public EvaluatorResult getEvaluatorResult(String resultId) {
-		EntityID entityID = new EntityID();
-		entityID.setKind("been");
-		entityID.setGroup("evaluator-results");
-		Query query = new QueryBuilder().on(entityID).with("id", resultId).fetch();
+		Query query = new QueryBuilder().on(Entities.RESULT_EVALUATOR).with("id", resultId).fetch();
 
 		Collection<String> stringCollection = this.queryPersistence(query).getData();
 		try {
@@ -528,7 +499,7 @@ public class BeenApiImpl implements BeenApi {
     }
     @Override
     public Collection<ServiceLogMessage> getServiceLogsByBeenId(String beenId) throws DAOException {
-        final QueryAnswer qa = clusterContext.getPersistence().query(new QueryBuilder().on(Entities.SERVICE_LOG).with("beenId", beenId).fetch());
+        final QueryAnswer qa = clusterContext.getPersistence().query(new QueryBuilder().on(Entities.LOG_SERVICE).with("beenId", beenId).fetch());
         if (!qa.isCarryingData()) {
             throw new DAOException(String.format("Persistence layer response for service logs from node '%s' yielded no data: %s", beenId, qa.getStatus().getDescription()));
         }
@@ -541,7 +512,7 @@ public class BeenApiImpl implements BeenApi {
 
     @Override
     public Collection<ServiceLogMessage> getServiceLogsByHostRuntimeId(String hostRuntimeId) throws DAOException {
-        final QueryAnswer qa = clusterContext.getPersistence().query(new QueryBuilder().on(Entities.SERVICE_LOG).with("hostRuntimeId", hostRuntimeId).fetch());
+        final QueryAnswer qa = clusterContext.getPersistence().query(new QueryBuilder().on(Entities.LOG_SERVICE).with("hostRuntimeId", hostRuntimeId).fetch());
         if (!qa.isCarryingData()) {
             throw new DAOException(String.format("Persistence layer response for service logs from host runtime '%s' yielded no data: %s", hostRuntimeId, qa.getStatus().getDescription()));
         }
@@ -554,7 +525,7 @@ public class BeenApiImpl implements BeenApi {
 
     @Override
     public Collection<ServiceLogMessage> getServiceLogsByServiceName(String serviceName) throws DAOException {
-        final QueryAnswer qa = clusterContext.getPersistence().query(new QueryBuilder().on(Entities.SERVICE_LOG).with("serviceName", serviceName).fetch());
+        final QueryAnswer qa = clusterContext.getPersistence().query(new QueryBuilder().on(Entities.LOG_SERVICE).with("serviceName", serviceName).fetch());
         if (!qa.isCarryingData()) {
             throw new DAOException(String.format("Persistence layer response for service logs from service '%s' yielded no data: %s", serviceName, qa.getStatus().getDescription()));
         }

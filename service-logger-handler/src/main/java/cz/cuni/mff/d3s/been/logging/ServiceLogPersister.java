@@ -68,7 +68,7 @@ public class ServiceLogPersister implements IClusterService {
         while((polledMsg = logs.poll()) != null) {
             final ServiceLogMessage serviceMessage = new ServiceLogMessage().withMessage(polledMsg).withHostRuntimeId(hostRuntimeId).withBeenId(beenId).withServiceName(extractServiceName(polledMsg.getName()));
             try {
-                logPersistence.put(new EntityCarrier().withId(Entities.SERVICE_LOG).withData(jsonUtils.serialize(serviceMessage)));
+                logPersistence.put(new EntityCarrier().withId(Entities.LOG_SERVICE).withData(jsonUtils.serialize(serviceMessage)));
             } catch (InterruptedException e) {
                 System.err.println(String.format("Cannot log following message to cluster: threads handling distributed data structures were unexpectedly interrupted.\n%s", polledMsg.toString()));
             } catch (JsonException e) {
