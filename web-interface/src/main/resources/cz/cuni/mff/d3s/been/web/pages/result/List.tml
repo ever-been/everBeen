@@ -14,6 +14,7 @@
 		<th>MIME type</th>
 		<th></th>
 		<th></th>
+		<th></th>
 	</tr>
 	</thead>
 
@@ -31,7 +32,7 @@
 			<a href="/result/download/${result.id}" class="btn">download</a>
 		</td>
 		<td>
-			<a href="/result/delete/${result.id}" class="btn btn-error">delete</a>
+			<a href="/result/delete/${result.id}" class="btn btn-danger" onclick="return window.confirm('Are you sure?');">delete</a>
 		</td>
 
 		<p:empty>

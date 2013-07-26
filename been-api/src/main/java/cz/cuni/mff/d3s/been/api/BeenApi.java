@@ -72,17 +72,19 @@ public interface BeenApi {
 	public Collection<LogMessage> getLogsForTask(String taskId);
 	public void addLogListener(LogListener listener);
 	public void removeLogListener(LogListener listener);
-	
-	public Collection<EvaluatorResult> getEvaluatorResults();
-	public EvaluatorResult getEvaluatorResult(String resultId);
 
+	public Collection<EvaluatorResult> getEvaluatorResults();
+	public void deleteResult(String resultId);
+
+	public EvaluatorResult getEvaluatorResult(String resultId);
 	public Collection<BpkIdentifier> getBpks();
 	public void uploadBpk(InputStream bpkInputStream) throws BpkConfigurationException;
-	public InputStream downloadBpk(BpkIdentifier bpkIdentifier);
 
+	public InputStream downloadBpk(BpkIdentifier bpkIdentifier);
 	public Map<String, TaskDescriptor> getTaskDescriptors(BpkIdentifier bpkIdentifier);
 	public TaskDescriptor getTaskDescriptor(BpkIdentifier bpkIdentifier, String descriptorName);
 	public Map<String, TaskContextDescriptor> getTaskContextDescriptors(BpkIdentifier bpkIdentifier);
+
 	public TaskContextDescriptor getTaskContextDescriptor(BpkIdentifier bpkIdentifier, String descriptorName);
 
 	public Collection<DebugListItem> getDebugWaitingTasks();
@@ -95,7 +97,7 @@ public interface BeenApi {
 
     public Collection<TaskEntry> listTasks(String runtimeId);
 
-    interface LogListener {
+	interface LogListener {
 		public void logAdded(String jsonLog);
 	}
 }

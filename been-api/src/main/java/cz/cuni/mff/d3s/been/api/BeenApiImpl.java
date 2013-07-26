@@ -19,10 +19,7 @@ import cz.cuni.mff.d3s.been.datastore.SoftwareStoreBuilderFactory;
 import cz.cuni.mff.d3s.been.debugassistant.DebugAssistant;
 import cz.cuni.mff.d3s.been.debugassistant.DebugListItem;
 import cz.cuni.mff.d3s.been.evaluators.EvaluatorResult;
-import cz.cuni.mff.d3s.been.persistence.DAOException;
-import cz.cuni.mff.d3s.been.persistence.Query;
-import cz.cuni.mff.d3s.been.persistence.QueryAnswer;
-import cz.cuni.mff.d3s.been.persistence.QueryBuilder;
+import cz.cuni.mff.d3s.been.persistence.*;
 import cz.cuni.mff.d3s.been.persistence.task.PersistentDescriptors;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
@@ -254,6 +251,18 @@ public class BeenApiImpl implements BeenApi {
 			e.printStackTrace();
 			// TODO error handling
 			return null;
+		}
+	}
+
+	@Override
+	public void deleteResult(String resultId) {
+		EntityID entityID = new EntityID();
+		entityID.setKind("been");
+		entityID.setGroup("evaluator-results");
+		Query query = new QueryBuilder().on(entityID).with("id", resultId).delete();
+		QueryStatus status = this.queryPersistence(query).getStatus();
+		if (status != QueryStatus.OK) {
+			log.error("Delete query failed with status {}", status.getDescription());
 		}
 	}
 
