@@ -6,25 +6,28 @@ package cz.cuni.mff.d3s.been.core.persistence;
  * @author darklight
  */
 public enum Entities {
-    LOG_SERVICE("log", "service"),
-    LOG_TASK("log", "task"),
-    RESULT_EVALUATOR("result", "evaluation");
+	LOG_SERVICE("log", "service"),
+	LOG_TASK("log", "task"),
 
-    private final String kind;
-    private final String group;
+	RESULT_EVALUATOR("result", "evaluation"),
 
-    private Entities(String kind, String group) {
-        this.kind = kind;
-        this.group = group;
-    }
+	OUTCOME_TASK("outcome", "task");
 
-    /**
-     * Get a new {@link EntityID} for this type
-     *
-     * @return The Entity ID
-     */
-    public EntityID getId() {
-        return new EntityID().withKind(kind).withGroup(group);
-    }
+	private final String kind;
+	private final String group;
+
+	private Entities(String kind, String group) {
+		this.kind = kind;
+		this.group = group;
+	}
+
+	/**
+	 * Get a new {@link EntityID} for this type
+	 *
+	 * @return The Entity ID
+	 */
+	public EntityID getId() {
+		return new EntityID().withKind(kind).withGroup(group);
+	}
 
 }
