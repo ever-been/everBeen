@@ -1,4 +1,4 @@
-package cz.cuni.mff.d3s.been.resultsrepository.mongo;
+package cz.cuni.mff.d3s.been.repository.mongo;
 
 import java.net.UnknownHostException;
 import java.util.*;
