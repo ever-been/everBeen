@@ -1,6 +1,3 @@
-/**
- *
- */
 package cz.cuni.mff.d3s.been.swrepository;
 
 import cz.cuni.mff.d3s.been.bpk.ArtifactIdentifier;
@@ -29,6 +26,8 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import static cz.cuni.mff.d3s.been.swrepository.FSBasedStoreConfiguration.*;
+
 /**
  * @author darklight
  */
@@ -36,16 +35,8 @@ final class FSBasedStore implements SoftwareStore {
 
     private static final Logger log = LoggerFactory.getLogger(FSBasedStore.class);
 
-    private static final String DEFAULT_CACHE_FS_ROOT_NAME = ".swcache";
-    private static final String DEFAULT_SERVER_FS_ROOT_NAME = ".swrepository";
     private static final String ARTIFACTS_ROOT_NAME = "artifacts";
     private static final String BPKS_ROOT_NAME = "bpks";
-
-    private static final String SWREP_PERSISTENCE_FOLDER_PROPERTY_NAME = "swrepository.persistence.folder";
-    private static final String HR_SWCACHE_FOLDER_PROPERTY_NAME = "hostruntime.swcache.folder";
-    private static final String HR_SWCACHE_MAX_SIZE_PROPERTY_NAME = "hostruntime.swcache.maxSize";
-
-    private static final Long DEFAULT_CACHE_MBYTES = 1024l;
 
     private final File fsRoot;
     private final File artifactFSRoot;
@@ -64,15 +55,15 @@ final class FSBasedStore implements SoftwareStore {
     static FSBasedStore createCache(Properties properties) {
         final PropertyReader propReader = PropertyReader.on(properties);
 
-        final String rootDir = propReader.getString(HR_SWCACHE_FOLDER_PROPERTY_NAME, DEFAULT_CACHE_FS_ROOT_NAME);
-        final Long cacheSizeString = propReader.getLong(HR_SWCACHE_MAX_SIZE_PROPERTY_NAME, DEFAULT_CACHE_MBYTES);
+        final String rootDir = propReader.getString(CACHE_FS_ROOT, DEFAULT_CACHE_FS_ROOT);
+        final Long cacheSizeString = propReader.getLong(SWCACHE_MAX_SIZE, DEFAULT_SWCACHE_MAX_SIZE);
 
         // TODO infer a cache size control mechanism
         return new FSBasedStore(rootDir);
     }
 
     static FSBasedStore createServer(Properties properties) {
-        final String rootDir = properties.getProperty(SWREP_PERSISTENCE_FOLDER_PROPERTY_NAME, DEFAULT_SERVER_FS_ROOT_NAME);
+        final String rootDir = properties.getProperty(SERVER_FS_ROOT, DEFAULT_SERVER_FS_ROOT);
 
         return new FSBasedStore(rootDir);
     }
