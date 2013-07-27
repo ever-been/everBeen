@@ -8,7 +8,10 @@ import org.slf4j.LoggerFactory;
 import cz.cuni.mff.d3s.been.core.PropertyReader;
 import cz.cuni.mff.d3s.been.core.TaskMessageType;
 import cz.cuni.mff.d3s.been.core.TaskPropertyNames;
+import cz.cuni.mff.d3s.been.core.persistence.EntityID;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
+import cz.cuni.mff.d3s.been.persistence.DAOException;
+import cz.cuni.mff.d3s.been.results.Result;
 
 /**
  * 
@@ -93,6 +96,26 @@ public abstract class Task {
 		} else {
 			return propertyValue;
 		}
+	}
+
+	/**
+	 * Stores a {@link Result} on behalf of the Task.
+	 * 
+	 * taskId, contextId and contextId will be filled in to the result.
+	 * 
+	 * @param result
+	 *          Result to persist
+	 * @param kind
+	 *          Kind of the result
+	 * @param group
+	 *          Group of the result
+	 * @throws DAOException
+	 *           when result cannot be persisted
+	 */
+	public void store(final Result result, final String kind, final String group) throws DAOException {
+		final EntityID entityID = new EntityID().withKind(kind).withGroup(group);
+		result.withTaskId(getId()).withContextId(getContextId()).withBenchmarkId(getBenchmarkId());
+		results.persistResult(result, entityID);
 	}
 
 	/**
