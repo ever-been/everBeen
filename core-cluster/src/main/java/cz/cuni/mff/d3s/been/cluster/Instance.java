@@ -1,6 +1,5 @@
 package cz.cuni.mff.d3s.been.cluster;
 
-import java.net.InetAddress;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -11,6 +10,10 @@ import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.config.Config;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
+
+import static cz.cuni.mff.d3s.been.cluster.ClusterClientConfiguration.MEMBERS;
+import static cz.cuni.mff.d3s.been.cluster.ClusterConfiguration.GROUP;
+import static cz.cuni.mff.d3s.been.cluster.ClusterConfiguration.PASSWORD;
 
 /**
  * Singleton for the HazelcastInstance object.
@@ -35,31 +38,6 @@ public final class Instance {
 	/** Type of the instance */
 	private static NodeType nodeType = null;
 
-	/**
-	 * Timeout of the native client connection.
-	 * 
-	 * Hazelcast tends to disconnect/reconnect clients too often with default
-	 * settings.
-	 */
-	public static final String PROPERTY_CLIENT_TIMEOUT = "been.cluster.client.timeout";
-	public static final String PROPERTY_CLIENT_MEMBERS = "been.cluster.client.members";
-
-	public static final String PROPERTY_CLUSTER_GROUP = "been.cluster.group";
-	public static final String PROPERTY_CLUSTER_PASSWORD = "been.cluster.password";
-
-	public static final String PROPERTY_CLUSTER_SOCKET_BIND_ANY = "been.cluster.socket.bind.any";
-
-	public static final String PROPERTY_CLUSTER_PREFER_IPV4 = "been.cluster.preferIPv4Stack";
-	public static final String PROPERTY_CLUSTER_PORT = "been.cluster.port";
-	public static final String PROPERTY_CLUSTER_INTERFACES = "been.cluster.interfaces";
-	public static final String PROPERTY_CLUSTER_MULTICAST_PORT = "been.cluster.multicast.port";
-	public static final String PROPERTY_CLUSTER_MULTICAST_GROUP = "been.cluster.multicast.group";
-	public static final String PROPERTY_CLUSTER_TCP_MEMBERS = "been.cluster.tcp.members";
-	public static final String PROPERTY_CLUSTER_LOGGING = "been.cluster.logging";
-
-	//public static final String PROPERTY_CLUSTER_TCP_INTERFACES = "been.cluster.tcp.interfaces";
-
-	public static final String PROPERTY_CLUSTER_JOIN = "been.cluster.join";
 
 	/**
 	 * Path to the default Hazelcast configuration resource.
@@ -126,11 +104,11 @@ public final class Instance {
 			throw new RuntimeException("Already connected");
 		}
 
-		Properties userProperties = new Properties();
+		final Properties userProperties = new Properties();
 
-		userProperties.setProperty(PROPERTY_CLIENT_MEMBERS, String.format("%s:%d", host, port));
-		userProperties.setProperty(PROPERTY_CLUSTER_GROUP, groupName);
-		userProperties.setProperty(PROPERTY_CLUSTER_PASSWORD, groupPassword);
+		userProperties.setProperty(MEMBERS, String.format("%s:%d", host, port));
+		userProperties.setProperty(GROUP, groupName);
+		userProperties.setProperty(PASSWORD, groupPassword);
 
 		try {
 			Instance.init(NodeType.NATIVE, userProperties);
@@ -141,7 +119,7 @@ public final class Instance {
 	}
 
 	/**
-	 * Shut downs connection to the Hazelcast cluster.
+	 * Shuts down connection to the Hazelcast cluster.
 	 */
 	public static synchronized void shutdown() {
 		if (!isConnected()) {

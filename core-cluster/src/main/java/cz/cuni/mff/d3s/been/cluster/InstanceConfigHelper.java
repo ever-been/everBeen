@@ -1,6 +1,7 @@
 package cz.cuni.mff.d3s.been.cluster;
 
-import static cz.cuni.mff.d3s.been.cluster.Instance.*;
+import static cz.cuni.mff.d3s.been.cluster.ClusterClientConfiguration.*;
+import static cz.cuni.mff.d3s.been.cluster.ClusterConfiguration.*;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 import java.io.IOException;
@@ -14,11 +15,11 @@ import com.hazelcast.client.AddressHelper;
 import com.hazelcast.client.ClientConfig;
 import com.hazelcast.config.*;
 import com.hazelcast.nio.Address;
+import cz.cuni.mff.d3s.been.core.PropertyReader;
 
 /**
  * Utility class for creating Hazelcast configurations.
  * 
- * ClientConfig and (Member)Config mixed together.
  */
 final class InstanceConfigHelper {
 
@@ -27,9 +28,6 @@ final class InstanceConfigHelper {
 
 	/** Path to resource with default hazelcast configuration */
 	static final String CONFIG_RESOURCE = "/hazelcast.xml";
-
-	/** Path to resource with default user configuration */
-	static final String DEFAULT_PROPERTIES_RESOURCE = "/default-network.properties";
 
 	/** Name of hazelcast property for preferred TCP/IP stack */
 	static final String PROPERTY_HAZELCAST_PREFER_IPV4_STACK = "hazelcast.prefer.ipv4.stack";
@@ -40,11 +38,6 @@ final class InstanceConfigHelper {
 	/** How will Hazelcast log its messages */
 	private static final String PROPERTY_HAZELCAST_LOGGING_TYPE = "hazelcast.logging.type";
 
-	/** Type of the Hazelcast join method. */
-	private static enum JOIN_TYPE {
-		MULTICAST, TCP
-	}
-
 	/**
 	 * Properties which are used to create configs.
 	 * 
@@ -53,23 +46,9 @@ final class InstanceConfigHelper {
 	 */
 	private Properties properties;
 
-	/** Default properties */
-	private Properties defaults;
-
 	/** Creates the helper class */
 	private InstanceConfigHelper(Properties userProperties) throws ServiceException {
-
-		// Create and load default network properties
-		defaults = new Properties();
-
-		try {
-			defaults.load(Instance.class.getResourceAsStream(DEFAULT_PROPERTIES_RESOURCE));
-		} catch (IOException e) {
-			throw new ServiceException("Cannot load default properties for cluster configuration", e);
-		}
-
-		initProperties(userProperties);
-
+		this.properties = userProperties;
 	}
 
 	/**
@@ -107,21 +86,18 @@ final class InstanceConfigHelper {
 	 */
 	ClientConfig createClientConfig() throws ServiceException {
 
-		final int timeout = (int) SECONDS.toMillis(getInt(PROPERTY_CLIENT_TIMEOUT));
-		final List<InetSocketAddress> socketAddresses = getPeers(PROPERTY_CLIENT_MEMBERS);
+		final PropertyReader propReader = PropertyReader.on(properties);
+
+		final int timeout = (int) SECONDS.toMillis(propReader.getInteger(TIMEOUT, DEFAULT_TIMEOUT));
+		final List<InetSocketAddress> socketAddresses = getPeers(propReader.getString(MEMBERS, DEFAULT_MEMBERS));
+
 		final GroupConfig groupConfig = createGroupConfig();
-
 		ClientConfig clientConfig = new ClientConfig();
-
 		clientConfig.setConnectionTimeout(timeout).setGroupConfig(groupConfig).addInetSocketAddress(socketAddresses);
 
 		// Enable/Disable hazelcast logging
-		String loggingMode = "none";
-		boolean enableHazelcastLogging = getBoolean(PROPERTY_CLUSTER_LOGGING);
-
-		if (enableHazelcastLogging) {
-			loggingMode = "slf4j";
-		}
+		final boolean enableHazelcastLogging = propReader.getBoolean(LOGGING, DEFAULT_LOGGING);
+		final String loggingMode = enableHazelcastLogging ? "slf4j" : "none";
 
 		// There is no way to set property on the ClientConfig as far as I know (v2.5)
 		// So you system properties
@@ -165,21 +141,19 @@ final class InstanceConfigHelper {
 	 */
 	private void overrideConfiguration(Config mainConfig) throws ServiceException {
 
-		final int port = getInt(PROPERTY_CLUSTER_PORT);
-		final Interfaces interfaces = getInterfaces(PROPERTY_CLUSTER_INTERFACES);
+		final PropertyReader propReader = PropertyReader.on(properties);
+
+		final int port = propReader.getInteger(PORT, DEFAULT_PORT);
+		final Interfaces interfaces = getInterfaces(propReader.getString(INTERFACES, DEFAULT_INTERFACES));
 		final GroupConfig groupConfig = createGroupConfig();
 		final Join joinConfig = createJoinConfig();
 
 		final NetworkConfig networkConfig = new NetworkConfig();
 
 		networkConfig.setPort(port).setInterfaces(interfaces).setJoin(joinConfig);
-
 		mainConfig.setNetworkConfig(networkConfig).setGroupConfig(groupConfig);
-
-		mainConfig.setProperty(PROPERTY_HAZELCAST_PREFER_IPV4_STACK, getString(PROPERTY_CLUSTER_PREFER_IPV4));
-
-		mainConfig.setProperty(PROPERTY_HAZELCAST_SOCKET_BIND_ANY, getString(PROPERTY_CLUSTER_SOCKET_BIND_ANY));
-
+		mainConfig.setProperty(PROPERTY_HAZELCAST_PREFER_IPV4_STACK, propReader.getBoolean(PREFER_IPV4, DEFAULT_PREFER_IPV4).toString());
+		mainConfig.setProperty(PROPERTY_HAZELCAST_SOCKET_BIND_ANY, propReader.getBoolean(SOCKET_BIND_ANY, DEFAULT_SOCKET_BIND_ANY).toString());
 	}
 
 	private Join createJoinConfig() throws ServiceException {
@@ -203,13 +177,17 @@ final class InstanceConfigHelper {
 	}
 
 	private GroupConfig createGroupConfig() {
-		String group = getString(PROPERTY_CLUSTER_GROUP);
-		String password = getString(PROPERTY_CLUSTER_PASSWORD);
+		final PropertyReader propReader = PropertyReader.on(properties);
+
+		String group = propReader.getString(GROUP, DEFAULT_GROUP);
+		String password = propReader.getString(PASSWORD, DEFAULT_PASSWORD);
 		return new GroupConfig().setName(group).setPassword(password);
 	}
 
 	private JOIN_TYPE getJoinType() throws ServiceException {
-		String joinStringValue = getString(PROPERTY_CLUSTER_JOIN);
+		final PropertyReader propReader = PropertyReader.on(properties);
+
+		String joinStringValue = propReader.getString(JOIN, DEFAULT_JOIN);
 		try {
 			return JOIN_TYPE.valueOf(joinStringValue.toUpperCase());
 		} catch (IllegalArgumentException e) {
@@ -219,30 +197,31 @@ final class InstanceConfigHelper {
 	}
 
 	private MulticastConfig createMulticastConfig() throws ServiceException {
+		final PropertyReader propReader = PropertyReader.on(properties);
 
 		MulticastConfig multicastConfig = new MulticastConfig();
 		multicastConfig.setEnabled(true);
-		multicastConfig.setMulticastGroup(getString(PROPERTY_CLUSTER_MULTICAST_GROUP));
-		multicastConfig.setMulticastPort(getInt(PROPERTY_CLUSTER_MULTICAST_PORT));
+		multicastConfig.setMulticastGroup(propReader.getString(MULTICAST_GROUP, DEFAULT_MULTICAST_GROUP));
+		multicastConfig.setMulticastPort(propReader.getInteger(MULTICAST_PORT, DEFAULT_MULTICAST_PORT));
 
 		return multicastConfig;
 	}
 
 	private TcpIpConfig createTcpIpConfig() throws ServiceException {
+		final PropertyReader propReader = PropertyReader.on(properties);
+
 		TcpIpConfig tcpIpConfig = new TcpIpConfig();
 		tcpIpConfig.setEnabled(true);
 
-		for (InetSocketAddress inetSocketAddress : getPeers(PROPERTY_CLUSTER_TCP_MEMBERS)) {
+		for (InetSocketAddress inetSocketAddress : getPeers(propReader.getString(TCP_MEMBERS, DEFAULT_TCP_MEMBERS))) {
 			tcpIpConfig.addAddress(new Address(inetSocketAddress));
 		}
 
 		return tcpIpConfig;
 	}
 
-	private List<InetSocketAddress> getPeers(String key) {
+	private List<InetSocketAddress> getPeers(String peersList) {
 		List<InetSocketAddress> peers = new LinkedList<>();
-		String peersList = getString(key);
-
 		for (String address : peersList.split(VALUE_SEPARATOR)) {
 			peers.addAll(AddressHelper.getSocketAddresses(address));
 		}
@@ -251,86 +230,19 @@ final class InstanceConfigHelper {
 
 	}
 
-	private Interfaces getInterfaces(String key) {
+	private Interfaces getInterfaces(String interfaceList) {
 		Interfaces interfaces = new Interfaces();
-		String value = getString(key);
 
-		if (value == null || value.isEmpty()) {
+		if (interfaceList == null || interfaceList.isEmpty()) {
 			interfaces.setEnabled(false);
 			return interfaces;
 		}
 
-		for (String ip : value.split(VALUE_SEPARATOR)) {
+		for (String ip : interfaceList.split(VALUE_SEPARATOR)) {
 			interfaces.addInterface(ip);
 		}
 
 		interfaces.setEnabled(true);
 		return interfaces;
 	}
-
-	/**
-	 * Merges default properties with user-defined properties.
-	 * 
-	 * @param userProperties
-	 *          user-defined properties
-	 */
-	private void initProperties(Properties userProperties) {
-		if (userProperties == null) {
-			properties = new Properties();
-		} else {
-			properties = userProperties;
-		}
-
-		for (String key : defaults.stringPropertyNames()) {
-			String propertyValue = properties.getProperty(key, "");
-			if (propertyValue.isEmpty()) {
-				String defaultValue = defaults.getProperty(key);
-				properties.setProperty(key, defaultValue);
-			}
-		}
-	}
-
-	/**
-	 * 
-	 * 
-	 * @param key
-	 *          key
-	 * @return value for the given key or an empty String
-	 */
-	private String getString(String key) {
-		String value = properties.getProperty(key);
-
-		if (value == null) {
-			return "";
-		}
-
-		return value;
-	}
-
-	/**
-	 * Returns a property value as an integer.
-	 * 
-	 * @param key
-	 *          key
-	 * @return integer representation of a value
-	 * @throws ServiceException
-	 */
-	private int getInt(String key) throws ServiceException {
-		String stringValue = properties.getProperty(key);
-
-		try {
-			return Integer.parseInt(stringValue);
-		} catch (NumberFormatException e) {
-			String msg = String.format("Cannot convert '%s' to integer value for property '%s'", stringValue, key);
-			throw new ServiceException(msg, e);
-		}
-	}
-
-	private boolean getBoolean(String key) {
-		String stringValue = properties.getProperty(key);
-
-		return Boolean.valueOf(stringValue);
-
-	}
-
 }
