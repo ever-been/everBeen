@@ -1,8 +1,11 @@
 package cz.cuni.mff.d3s.been.taskapi;
 
+import java.util.Properties;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cz.cuni.mff.d3s.been.core.PropertyReader;
 import cz.cuni.mff.d3s.been.core.TaskMessageType;
 import cz.cuni.mff.d3s.been.core.TaskPropertyNames;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
@@ -57,6 +60,21 @@ public abstract class Task {
 	 */
 	public String getProperty(String propertyName) {
 		return System.getenv(propertyName);
+	}
+
+	/**
+	 * Creates a {@link PropertyReader} from environment properties of the
+	 * {@link Task} which are passed to it by it's Host Runtime
+	 * 
+	 * @return {@link PropertyReader} initialized from environment properties of
+	 *         the {@link Task}
+	 */
+	public PropertyReader createPropertyReader() {
+		Properties properties = new Properties();
+		properties.putAll(System.getenv());
+
+		return PropertyReader.on(properties);
+
 	}
 
 	/**
