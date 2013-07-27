@@ -3,6 +3,7 @@ package cz.cuni.mff.d3s.been.repository.mongo;
 import java.net.UnknownHostException;
 import java.util.Properties;
 
+import cz.cuni.mff.d3s.been.core.PropertyReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,6 +12,8 @@ import com.mongodb.MongoClientOptions;
 import cz.cuni.mff.d3s.been.storage.Storage;
 import cz.cuni.mff.d3s.been.storage.StorageBuilder;
 import cz.cuni.mff.d3s.been.storage.StorageBuilderFactory;
+
+import static cz.cuni.mff.d3s.been.repository.mongo.MongoStorageConfiguration.*;
 
 /**
  * A {@link StorageBuilderFactory} that creates a connection to a Mongodb
@@ -23,10 +26,6 @@ public class MongoStorageBuilder implements StorageBuilder {
 
 	/** slf4j logger for this builder */
 	private static final Logger log = LoggerFactory.getLogger(MongoStorageBuilder.class);
-
-	private static final String DEFAULT_HOSTNAME = "localhost";
-	private static final String DEFAULT_DBNAME = "BEEN";
-
 	private Properties properties = new Properties();
 
 	@Override
@@ -41,20 +40,19 @@ public class MongoStorageBuilder implements StorageBuilder {
 
 	@Override
 	public Storage build() {
-		final String user = properties.getProperty("mongodb.user");
-		final String password = properties.getProperty("mongodb.password");
-		final String hostname = properties.getProperty("mongodb.hostname");
-		final String dbname = properties.getProperty("mongodb.dbname");
+		final PropertyReader propertyReader = PropertyReader.on(properties);
+		final String user = propertyReader.getString(MONGO_USERNAME, DEFAULT_MONGO_USERNAME);
+		final String password = propertyReader.getString(MONGO_PASSWORD, DEFAULT_MONGO_PASSWORD);
+		final String hostname = propertyReader.getString(MONGO_HOSTNAME, DEFAULT_MONGO_HOSTNAME);
+		final String dbname = propertyReader.getString(MONGO_DBNAME, DEFAULT_MONGO_DBNAME);
 
 		try {
 			if (user != null && password != null) {
 				// if authentication is configured, use it
-				return MongoStorage.create((hostname != null) ? hostname : DEFAULT_HOSTNAME, (dbname != null) ? dbname
-						: DEFAULT_DBNAME, user, password, new MongoClientOptions.Builder().build());
+				return MongoStorage.create(hostname, dbname, user, password, new MongoClientOptions.Builder().build());
 			} else {
 				// otherwise don't use authentication
-				return MongoStorage.create((hostname != null) ? hostname : DEFAULT_HOSTNAME, (dbname != null) ? dbname
-						: DEFAULT_DBNAME, new MongoClientOptions.Builder().build());
+				return MongoStorage.create(hostname, dbname, new MongoClientOptions.Builder().build());
 			}
 		} catch (UnknownHostException e) {
 			return null;
