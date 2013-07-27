@@ -6,14 +6,14 @@
 	<artifactId>core-utils</artifactId>
 
 	<parent>
-		<artifactId>clustered</artifactId>
+		<artifactId>been</artifactId>
 		<groupId>cz.cuni.mff.d3s.been</groupId>
 		<version>3.0.0</version>
 	</parent>
 
 
 	<dependencies>
-		
+
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-mapper-asl</artifactId>

@@ -1,54 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-    <artifactId>detectors</artifactId>
+	<artifactId>detectors</artifactId>
 
-    <parent>
-        <groupId>cz.cuni.mff.d3s.been</groupId>
-        <artifactId>clustered</artifactId>
-        <version>3.0.0</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
+	<parent>
+		<groupId>cz.cuni.mff.d3s.been</groupId>
+		<artifactId>been</artifactId>
+		<version>3.0.0</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
 
-    <dependencies>
-        <dependency>
-            <groupId>cz.cuni.mff.d3s.been</groupId>
-            <artifactId>core-data</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
+	<dependencies>
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>core-data</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
 
-        <dependency>
-            <groupId>cz.cuni.mff.d3s.been</groupId>
-            <artifactId>core-utils</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>core-utils</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
 
-        <dependency>
-            <groupId>org.fusesource</groupId>
-            <artifactId>sigar</artifactId>
-            <version>${sigar.version}</version>
-        </dependency>
+		<dependency>
+			<groupId>org.fusesource</groupId>
+			<artifactId>sigar</artifactId>
+			<version>${sigar.version}</version>
+		</dependency>
 
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>${commons-io.version}</version>
-        </dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>${commons-io.version}</version>
+		</dependency>
 
-        <dependency>
-            <groupId>commons-jxpath</groupId>
-            <artifactId>commons-jxpath</artifactId>
-            <version>${commons-jxpath.version}</version>
-        </dependency>
+		<dependency>
+			<groupId>commons-jxpath</groupId>
+			<artifactId>commons-jxpath</artifactId>
+			<version>${commons-jxpath.version}</version>
+		</dependency>
 
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
-            <version>${jackson-mapper-asl.version}</version>
-        </dependency>
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>${jackson-mapper-asl.version}</version>
+		</dependency>
 
-    </dependencies>
+	</dependencies>
 
 </project>

@@ -5,9 +5,9 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>cz.cuni.mff.d3s.been</groupId>
-	<artifactId>clustered</artifactId>
+	<artifactId>been</artifactId>
 	<version>3.0.0</version>
-    <packaging>pom</packaging>
+	<packaging>pom</packaging>
 
 	<properties>
 		<!-- BEEN DEPENDENCIES -->
@@ -165,9 +165,9 @@
 				<module>task-test</module>
 				<module>been-api</module>
 				<module>benchmark-api</module>
-                <module>service-logger-handler</module>
-                <module>service-logger</module>
-                <module>logback-appender</module>
+				<module>service-logger-handler</module>
+				<module>service-logger</module>
+				<module>logback-appender</module>
 			</modules>
 		</profile>
 
