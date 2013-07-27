@@ -1,9 +1,11 @@
 package cz.cuni.mff.d3s.been.benchmarkapi;
 
+import cz.cuni.mff.d3s.been.taskapi.TaskException;
+
 /**
  * @author Kuba Brecka
  */
-public class BenchmarkException extends Exception {
+public class BenchmarkException extends TaskException {
 
 	/** {@inheritDoc} */
 	public BenchmarkException() {

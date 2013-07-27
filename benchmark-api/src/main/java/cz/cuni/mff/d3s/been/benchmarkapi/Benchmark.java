@@ -1,17 +1,18 @@
 package cz.cuni.mff.d3s.been.benchmarkapi;
 
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
+import cz.cuni.mff.d3s.been.core.benchmark.ResubmitHistoryItem;
+import cz.cuni.mff.d3s.been.core.task.*;
+import cz.cuni.mff.d3s.been.util.JsonException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.d3s.been.core.jaxb.BindingParser;
 import cz.cuni.mff.d3s.been.core.jaxb.XSD;
-import cz.cuni.mff.d3s.been.core.task.Properties;
-import cz.cuni.mff.d3s.been.core.task.Property;
-import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
 import cz.cuni.mff.d3s.been.taskapi.Task;
 
@@ -41,6 +42,10 @@ public abstract class Benchmark extends Task {
 	 * @throws BenchmarkException
 	 */
 	public abstract TaskContextDescriptor generateTaskContext() throws BenchmarkException;
+
+	public abstract void onResubmit();
+
+	public abstract void onTaskContextFinished(String taskContextId, TaskContextState state);
 
 	/**
 	 * Retrieves a value for the given key from benchmark wide storage.
@@ -95,30 +100,67 @@ public abstract class Benchmark extends Task {
 	}
 
 	@Override
-	public void run(String[] args) {
-		try {
-			benchmarkRequestor = BenchmarkRequestor.create();
-		} catch (MessagingException e) {
-			log.error("Could not initialize checkpoint requestor", e);
-			return;
-		}
+	public void run(String[] args) throws BenchmarkException, MessagingException {
+		benchmarkRequestor = BenchmarkRequestor.create();
 
 		try {
 			processContexts();
+		} catch (TimeoutException | JsonException e) {
+			throw new BenchmarkException("Benchmark has encountered an internal exception.", e);
 		} finally {
-			try {
-				benchmarkRequestor.close();
-			} catch (MessagingException e) {
-				log.error("Could not close checkpoint requestor", e);
-			}
+			benchmarkRequestor.close();
 		}
 	}
 
-	private void processContexts() {
+	private boolean isResubmittedBenchmark() {
+		try {
+			Collection<ResubmitHistoryItem> historyItems;
+			historyItems = benchmarkRequestor.resubmitHistoryRetrieve(getBenchmarkId());
+
+			return historyItems.size() > 0;
+		} catch (TimeoutException e) {
+			throw new RuntimeException(e.getMessage(), e);
+		}
+	}
+
+	private String benchmarkRunningContext() throws TimeoutException, JsonException {
+		TaskContextStateInfo info = benchmarkRequestor.containedContextsRetrieve(getBenchmarkId());
+		int numberOfRunningContexts = 0;
+		String contextId = null;
+		for (TaskContextStateInfo.Item item : info.items) {
+			if (item.state == TaskContextState.RUNNING) {
+				contextId = item.taskContextId;
+				numberOfRunningContexts++;
+			}
+		}
+
+		if (numberOfRunningContexts > 1) {
+			throw new RuntimeException(String.format("The benchmark %s has more than one running context!", getBenchmarkId()));
+		}
+
+		return contextId;
+	}
+
+	private void processContexts() throws TimeoutException, JsonException {
 		try {
 			this.storage = benchmarkRequestor.storageRetrieve(getBenchmarkId());
 		} catch (TimeoutException e) {
 			throw new RuntimeException(e.getMessage(), e);
+		}
+
+		if (isResubmittedBenchmark()) {
+			this.onResubmit();
+
+			String taskContextId = benchmarkRunningContext();
+			if (taskContextId != null) {
+				try {
+					TaskContextState state = benchmarkRequestor.contextWait(taskContextId);
+					log.trace("Task context '{}' finished with state {}.", taskContextId, state);
+					this.onTaskContextFinished(taskContextId, state);
+				} catch (TimeoutException e) {
+					throw new RuntimeException(e.getMessage(), e);
+				}
+			}
 		}
 
 		while (true) {
@@ -141,8 +183,10 @@ public abstract class Benchmark extends Task {
 				String taskContextId = benchmarkRequestor.contextSubmit(taskContextDescriptor, getBenchmarkId());
 				log.trace("Task context descriptor with ID '{}' submitted", taskContextId);
 
-				benchmarkRequestor.contextWait(taskContextId);
-				log.trace("Task context '{}' finished.", taskContextId);
+				TaskContextState state = benchmarkRequestor.contextWait(taskContextId);
+				log.trace("Task context '{}' finished with state {}.", taskContextId, state);
+
+				this.onTaskContextFinished(taskContextId, state);
 			} catch (TimeoutException e) {
 				throw new RuntimeException(e.getMessage(), e);
 				// TODO this must be handled with greater care!

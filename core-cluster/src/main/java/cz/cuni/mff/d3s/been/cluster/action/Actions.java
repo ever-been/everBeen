@@ -39,6 +39,10 @@ public class Actions {
 				return new StoragePersistAction(request, ctx);
 			case STORAGE_RETRIEVE:
 				return new StorageRetrieveAction(request, ctx);
+			case RESUBMIT_HISTORY_RETRIEVE:
+				return new ResubmitHistoryRetrieve(request, ctx);
+			case CONTAINED_CONTEXTS_RETRIEVE:
+				return new ContainedContextsRetrieve(request, ctx);
 			default:
 				String msg = String.format("No such action %s", request.getType());
 				log.warn(msg);

@@ -1,5 +1,7 @@
 package cz.cuni.mff.d3s.been.benchmarkapi;
 
+import cz.cuni.mff.d3s.been.core.benchmark.ResubmitHistory;
+import cz.cuni.mff.d3s.been.core.benchmark.ResubmitHistoryItem;
 import cz.cuni.mff.d3s.been.core.benchmark.Storage;
 import cz.cuni.mff.d3s.been.core.benchmark.StorageItem;
 import cz.cuni.mff.d3s.been.core.jaxb.BindingComposer;
@@ -7,6 +9,9 @@ import cz.cuni.mff.d3s.been.core.jaxb.BindingParser;
 import cz.cuni.mff.d3s.been.core.jaxb.ConvertorException;
 import cz.cuni.mff.d3s.been.core.jaxb.XSD;
 import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
+import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
+import cz.cuni.mff.d3s.been.core.task.TaskContextState;
+import cz.cuni.mff.d3s.been.core.task.TaskContextStateInfo;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
 import cz.cuni.mff.d3s.been.socketworks.NamedSockets;
 import cz.cuni.mff.d3s.been.socketworks.twoway.Reply;
@@ -16,12 +21,16 @@ import cz.cuni.mff.d3s.been.socketworks.twoway.Requestor;
 import cz.cuni.mff.d3s.been.task.checkpoints.CheckpointRequest;
 import cz.cuni.mff.d3s.been.task.checkpoints.CheckpointRequestType;
 import cz.cuni.mff.d3s.been.taskapi.CheckpointController;
+import cz.cuni.mff.d3s.been.util.JSONUtils;
+import cz.cuni.mff.d3s.been.util.JsonException;
 import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBException;
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
@@ -107,6 +116,16 @@ public class BenchmarkRequestor {
 		return map;
 	}
 
+	public Collection<ResubmitHistoryItem> resubmitHistoryFromXml(String xml) {
+		try {
+			BindingParser<ResubmitHistory> parser = XSD.STORAGE.createParser(ResubmitHistory.class);
+			ResubmitHistory history = parser.parse(new ByteArrayInputStream(xml.getBytes()));
+			return history.getResubmitHistoryItem();
+		} catch (SAXException | JAXBException | ConvertorException e) {
+			throw new IllegalArgumentException("Cannot parse resubmit history XML.", e);
+		}
+	}
+
 	private void assertValidReply(Reply reply, String value) throws TimeoutException {
 		if (reply.getReplyType() == ReplyType.ERROR) {
 			if (value.equals("TIMEOUT")) {
@@ -133,12 +152,14 @@ public class BenchmarkRequestor {
 		return value;
 	}
 
-	public void contextWait(String taskContextEntryId) throws TimeoutException {
+	public TaskContextState contextWait(String taskContextEntryId) throws TimeoutException {
 		CheckpointRequest request = new CheckpointRequest(CheckpointRequestType.CONTEXT_WAIT, "", taskContextEntryId);
 		Reply reply = checkpointController.request(request);
 
 		String value = reply.getValue();
 		assertValidReply(reply, value);
+
+		return TaskContextState.valueOf(value);
 	}
 
 	public void storagePersist(String benchmarkId, Map<String, String> storage) throws TimeoutException {
@@ -157,5 +178,25 @@ public class BenchmarkRequestor {
 		assertValidReply(reply, value);
 
 		return storageFromXml(value);
+	}
+
+	public Collection<ResubmitHistoryItem> resubmitHistoryRetrieve(String benchmarkId) throws TimeoutException {
+		CheckpointRequest request = new CheckpointRequest(CheckpointRequestType.RESUBMIT_HISTORY_RETRIEVE, benchmarkId, "");
+		Reply reply = checkpointController.request(request);
+
+		String value = reply.getValue();
+		assertValidReply(reply, value);
+
+		return resubmitHistoryFromXml(value);
+	}
+
+	public TaskContextStateInfo containedContextsRetrieve(String benchmarkId) throws TimeoutException, JsonException {
+		CheckpointRequest request = new CheckpointRequest(CheckpointRequestType.CONTAINED_CONTEXTS_RETRIEVE, benchmarkId, "");
+		Reply reply = checkpointController.request(request);
+
+		String value = reply.getValue();
+		assertValidReply(reply, value);
+
+		return JSONUtils.newInstance().deserialize(value, TaskContextStateInfo.class);
 	}
 }
