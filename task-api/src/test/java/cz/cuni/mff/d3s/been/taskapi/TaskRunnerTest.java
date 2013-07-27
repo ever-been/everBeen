@@ -25,7 +25,7 @@ public class TaskRunnerTest extends Assert {
 	/** Dummy task, throws DummyException in doMain to ensure it was called. */
 	static class DummyTask extends Task {
 		@Override
-		public void doMain(String[] args) {
+		public int doMain(String[] args) {
 			throw new DummyException();
 		}
 
@@ -38,8 +38,8 @@ public class TaskRunnerTest extends Assert {
 	/** Dummy task class which is private -> cannot be created */
 	private static class PrivateDummyTask extends Task {
 		@Override
-		public void doMain(String[] args) {
-
+		public int doMain(String[] args) {
+			return 0;
 		}
 
 		@Override
@@ -51,8 +51,9 @@ public class TaskRunnerTest extends Assert {
 	/** Dummy task which checks that doMain was called with no arguments */
 	static class DummyTaskArgs0 extends Task {
 		@Override
-		public void doMain(String[] args) {
+		public int doMain(String[] args) {
 			assertEquals(0, args.length);
+			return 0;
 		}
 
 		@Override
@@ -64,9 +65,10 @@ public class TaskRunnerTest extends Assert {
 	/** Dummy task which checks that doMain was called with one arguments */
 	static class DummyTaskArgs1 extends Task {
 		@Override
-		public void doMain(String[] args) {
+		public int doMain(String[] args) {
 			assertEquals(1, args.length);
 			assertEquals(ARG0, args[0]);
+			return 0;
 		}
 
 		@Override

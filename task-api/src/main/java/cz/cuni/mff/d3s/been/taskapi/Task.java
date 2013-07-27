@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.d3s.been.core.PropertyReader;
+import cz.cuni.mff.d3s.been.core.StatusCode;
 import cz.cuni.mff.d3s.been.core.TaskMessageType;
 import cz.cuni.mff.d3s.been.core.TaskPropertyNames;
 import cz.cuni.mff.d3s.been.core.persistence.EntityID;
@@ -123,7 +124,7 @@ public abstract class Task {
 	 * 
 	 * To execute a task {@link #doMain(String[])} will be called.
 	 */
-	public abstract void run(String[] args);
+	public abstract void run(String[] args) throws TaskException, MessagingException, DAOException;
 
 	/**
 	 * 
@@ -132,13 +133,28 @@ public abstract class Task {
 	 * 
 	 * @param args
 	 */
-	public void doMain(String[] args) {
+	public int doMain(String[] args) {
 		try {
 			initialize();
 			run(args);
+		} catch (MessagingException e) {
+			System.err.println("The task encountered ");
+			e.printStackTrace();
+			return StatusCode.EX_NETWORK_ERROR.getCode();
+		} catch (TaskException e) {
+			log.error("Task encountered an exception", e);
+			return StatusCode.EX_UNKNOWN.getCode();
+		} catch (DAOException e) {
+			log.error("Task cannot persist a result", e);
+			return StatusCode.EX_UNKNOWN.getCode();
+		} catch (Throwable t) {
+			log.error("Task encountered an unknown exception", t);
+			return StatusCode.EX_UNKNOWN.getCode();
 		} finally {
 			tearDown();
 		}
+
+		return StatusCode.EX_OK.getCode();
 	}
 
 	private void initialize() {
