@@ -8,6 +8,7 @@ import cz.cuni.mff.d3s.been.BeenServiceConfiguration;
  * @author darklight
  */
 public class MongoStorageConfiguration extends BeenServiceConfiguration {
+	private MongoStorageConfiguration() {}
 
 	/** Property name of the username to use for MongoDB connection */
 	public static final String MONGO_USERNAME = "mongodb.username";

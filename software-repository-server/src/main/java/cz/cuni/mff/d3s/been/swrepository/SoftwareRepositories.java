@@ -12,6 +12,9 @@ import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.datastore.SoftwareStore;
 import cz.cuni.mff.d3s.been.swrepository.httpserver.HttpServer;
 
+import static cz.cuni.mff.d3s.been.swrepository.SotwareRepositoryConfiguration.DEFAULT_PORT;
+import static cz.cuni.mff.d3s.been.swrepository.SotwareRepositoryConfiguration.PORT;
+
 /**
  * Utility class for creating SoftwareRepository instances.
  * 
@@ -21,7 +24,6 @@ import cz.cuni.mff.d3s.been.swrepository.httpserver.HttpServer;
  */
 public class SoftwareRepositories {
 
-    private static final int DEFAULT_SWREPO_PORT = 8000;
 
 	private static final Logger log = LoggerFactory.getLogger(SoftwareRepositories.class);
 
@@ -39,7 +41,7 @@ public class SoftwareRepositories {
 
 		final SoftwareStore dataStore = SoftwareStoreBuilderFactory.getSoftwareStoreBuilder().withProperties(properties).buildServer();
         final InetSocketAddress clusterSockAddr = ctx.getLocalMember().getInetSocketAddress();
-        final InetSocketAddress mySockAddr = new InetSocketAddress(clusterSockAddr.getAddress(), propReader.getInteger("swrepository.port", DEFAULT_SWREPO_PORT));
+        final InetSocketAddress mySockAddr = new InetSocketAddress(clusterSockAddr.getAddress(), propReader.getInteger(PORT, DEFAULT_PORT));
 		HttpServer httpServer = new HttpServer(mySockAddr);
 
 		dataStore.init();

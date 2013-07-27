@@ -8,6 +8,7 @@ import cz.cuni.mff.d3s.been.BeenServiceConfiguration;
  * @author darklight
  */
 public class FSBasedStoreConfiguration extends BeenServiceConfiguration {
+	private FSBasedStoreConfiguration() {}
 
 	/** Property name for software caching directory (host-runtime) */
 	public static final String CACHE_FS_ROOT = "hostruntime.swcache.folder";

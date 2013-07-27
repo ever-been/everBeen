@@ -8,6 +8,8 @@ import cz.cuni.mff.d3s.been.BeenServiceConfiguration;
  * @author darklight
  */
 public final class HostRuntimeConfiguration extends BeenServiceConfiguration {
+	private HostRuntimeConfiguration() {}
+
 	/** Name of the Host Runtime working directory property */
 	public static final String WRKDIR_NAME = "hostruntime.wrkdir.name";
 	/** Default name of the Host Runtime working directory */
