@@ -289,10 +289,7 @@ public class BeenApiImpl implements BeenApi {
     public Collection<TaskLogMessage> getLogsForTask(String taskId) throws BeenApiException {
         Collection<String> stringCollection;
         try {
-            EntityID entityID = new EntityID();
-            entityID.setKind("log");
-            entityID.setGroup("task");
-            Query query = new QueryBuilder().on(entityID).with("taskId", taskId).fetch();
+	        Query query = new QueryBuilder().on(Entities.LOG_TASK.getId()).with("taskId", taskId).fetch();
 
             stringCollection = this.queryPersistence(query).getData();
 
@@ -311,10 +308,7 @@ public class BeenApiImpl implements BeenApi {
     public Collection<EvaluatorResult> getEvaluatorResults() throws BeenApiException {
         Collection<String> stringCollection;
         try {
-            EntityID entityID = new EntityID();
-            entityID.setKind("been");
-            entityID.setGroup("evaluator-results");
-            Query query = new QueryBuilder().on(entityID).fetch();
+	        Query query = new QueryBuilder().on(Entities.RESULT_EVALUATOR.getId()).fetch();
 
             stringCollection = this.queryPersistence(query).getData();
         } catch (Exception e) {
@@ -330,10 +324,7 @@ public class BeenApiImpl implements BeenApi {
 
     @Override
     public void deleteResult(String resultId) throws BeenApiException {
-        EntityID entityID = new EntityID();
-        entityID.setKind("been");
-        entityID.setGroup("evaluator-results");
-        Query query = new QueryBuilder().on(entityID).with("id", resultId).delete();
+	    Query query = new QueryBuilder().on(Entities.RESULT_EVALUATOR.getId()).with("id", resultId).delete();
         try {
             QueryStatus status = this.queryPersistence(query).getStatus();
             if (status != QueryStatus.OK) {
@@ -346,10 +337,7 @@ public class BeenApiImpl implements BeenApi {
 
     @Override
     public EvaluatorResult getEvaluatorResult(String resultId) throws BeenApiException {
-        EntityID entityID = new EntityID();
-        entityID.setKind("been");
-        entityID.setGroup("evaluator-results");
-        Query query = new QueryBuilder().on(entityID).with("id", resultId).fetch();
+	    Query query = new QueryBuilder().on(Entities.RESULT_EVALUATOR.getId()).with("id", resultId).fetch();
         Collection<String> stringCollection;
         try {
             stringCollection = this.queryPersistence(query).getData();
