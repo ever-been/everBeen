@@ -195,6 +195,10 @@ public abstract class Page {
 		return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date(timestamp));
 	}
 
+	public String dateToString(Date date) {
+		return new SimpleDateFormat("yyyy-MM-dd").format(date);
+	}
+
 	public String nanotimeToString(long nanotime) {
 		return timestampToString(nanotime / 1_000_000);
 	}

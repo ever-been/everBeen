@@ -137,4 +137,8 @@ public class ServiceLogMessage extends Entity {
         setServiceName(serviceName);
         return this;
     }
+
+	public String toDownloadableString() {
+		return String.format("[%s %s %s] %s", hostRuntimeId, beenId, serviceName, message.toDownloadableString());
+	}
 }

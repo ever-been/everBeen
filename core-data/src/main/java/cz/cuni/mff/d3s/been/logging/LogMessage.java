@@ -3,6 +3,8 @@ package cz.cuni.mff.d3s.been.logging;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import cz.cuni.mff.d3s.been.core.persistence.TaskEntity;
 
@@ -98,4 +100,7 @@ public class LogMessage {
 		this.threadName = threadName;
 	}
 
+	public String toDownloadableString() {
+		return String.format("[%s %s] (%s) %s %s", name, threadName, level, message, errorTrace);
+	}
 }

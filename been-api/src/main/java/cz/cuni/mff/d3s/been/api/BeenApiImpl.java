@@ -37,10 +37,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -771,7 +768,47 @@ public class BeenApiImpl implements BeenApi {
         }
     }
 
-    private void checkIsActive(String format, String... args) throws ClusterConnectionUnavailableException {
+	@Override
+	public Collection<Date> getServiceLogsAvailableDates() throws BeenApiException {
+		EntityID entityID = Entities.LOG_SERVICE.getId();
+		NativeQuery query = new NativeQuery(String.format(
+				"function() { return db.getCollection('%s.%s').group({ keyf: function(d) { var e = new Date(d.created);" +
+						" return { year: 1900 + e.getYear(), month: 1 + e.getMonth(), day: e.getDate() }; }," +
+						" reduce: function(a,b){}, initial: {}}); }", entityID.getKind(), entityID.getGroup()));
+		try {
+			Collection<DateStructure> collection = jsonUtils.deserialize(queryPersistence(query).getData(), DateStructure.class);
+			Collection<Date> result = new ArrayList<Date>();
+			for (DateStructure d : collection) {
+				result.add(d.toDate());
+			}
+
+			return result;
+		} catch (JsonException e) {
+			throw createBeenApiException(e, "Interrupted when trying to execute persistence query '%s'", query.toString());
+		}
+	}
+
+	@Override
+	public Collection<ServiceLogMessage> getServiceLogsByDate(Date date) throws BeenApiException {
+		Long timeToday = date.getTime();
+		Calendar c = Calendar.getInstance();
+		c.setTime(date);
+		c.add(Calendar.DATE, 1);
+		Long timeTomorrow = c.getTime().getTime();
+
+		EntityID entityID = Entities.LOG_SERVICE.getId();
+		NativeQuery query = new NativeQuery(String.format(
+				"function() { var start = %d; var end = %d; return db.getCollection('%s.%s').find(" +
+						"{created: {$gte: start, $lt: end}}, {_id: 0}).toArray(); }", timeToday, timeTomorrow, entityID.getKind(), entityID.getGroup()));
+		try {
+			Collection<String> data = queryPersistence(query).getData();
+			return jsonUtils.deserialize(data, ServiceLogMessage.class);
+		} catch (JsonException e) {
+			throw createBeenApiException(e, "Interrupted when trying to execute persistence query '%s'", query.toString());
+		}
+	}
+
+	private void checkIsActive(String format, String... args) throws ClusterConnectionUnavailableException {
         String message = String.format(format, args);
 
         if (!isConnected()) {
