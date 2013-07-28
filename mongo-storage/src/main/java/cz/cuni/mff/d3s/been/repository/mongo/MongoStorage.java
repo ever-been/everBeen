@@ -139,6 +139,13 @@ public final class MongoStorage implements Storage {
 				} catch (DAOException e) {
 					return QueryAnswerFactory.unknownError();
 				}
+			case NATIVE:
+				try {
+					NativeQuery nq = (NativeQuery)query;
+					return QueryAnswerFactory.fetched(nativeQuery(nq.getJsFunction()));
+				} catch (DAOException e) {
+					return QueryAnswerFactory.unknownError();
+				}
 			default:
 				return QueryAnswerFactory.badQuery();
 		}
@@ -167,5 +174,24 @@ public final class MongoStorage implements Storage {
 
 	private final void delete(EntityID entityID, DBObject filter) throws DAOException {
 		mapEntity(entityID).remove(filter);
+	}
+
+	private Collection<String> nativeQuery(String jsFunction) throws DAOException {
+		CommandResult commandResult = db.doEval(jsFunction);
+		Object retval = commandResult.get("retval");
+		if (retval instanceof BasicDBList) {
+			BasicDBList list = (BasicDBList) retval;
+			List<String> result = new ArrayList<>();
+			for (Object o : list) {
+				result.add(o.toString());
+			}
+			return result;
+		} else if (retval instanceof BasicDBObject) {
+			List<String> result = new ArrayList<>();
+			result.add(retval.toString());
+			return result;
+		} else {
+			throw new DAOException("Invalid retval from evaluated query: " + retval.toString());
+		}
 	}
 }
