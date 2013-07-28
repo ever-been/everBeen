@@ -2,6 +2,7 @@ package cz.cuni.mff.d3s.been.web.pages.task;
 
 import java.util.*;
 
+import cz.cuni.mff.d3s.been.api.BeenApiException;
 import cz.cuni.mff.d3s.been.core.benchmark.BenchmarkEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
@@ -30,26 +31,26 @@ public class Tree extends Page {
 	@Property
 	private BenchmarkEntry benchmark;
 
-	public Collection<BenchmarkEntry> getBenchmarks() {
+	public Collection<BenchmarkEntry> getBenchmarks() throws BeenApiException {
 		return this.api.getApi().getBenchmarks();
 	}
 
-	public Collection<TaskContextEntry> contextsForBenchmark(String benchmarkId) {
+	public Collection<TaskContextEntry> contextsForBenchmark(String benchmarkId) throws BeenApiException {
 		return this.api.getApi().getTaskContextsInBenchmark(benchmarkId);
 	}
 
-	public Collection<TaskEntry> tasksForContext(String contextId) {
+	public Collection<TaskEntry> tasksForContext(String contextId) throws BeenApiException {
 		return this.api.getApi().getTasksInTaskContext(contextId);
 	}
 
-	public String benchmarkName(String benchmarkId) {
+	public String benchmarkName(String benchmarkId) throws BeenApiException {
 		String generatorId = this.api.getApi().getBenchmark(benchmarkId).getGeneratorId();
 		TaskEntry taskEntry = this.api.getApi().getTask(generatorId);
 		if (taskEntry == null) return "";
 		return taskEntry.getTaskDescriptor().getName();
 	}
 
-	public TaskState benchmarkState(String benchmarkId) {
+	public TaskState benchmarkState(String benchmarkId) throws BeenApiException {
 		String generatorId = this.api.getApi().getBenchmark(benchmarkId).getGeneratorId();
 		TaskEntry taskEntry = this.api.getApi().getTask(generatorId);
 		if (taskEntry == null) return null;
@@ -62,7 +63,7 @@ public class Tree extends Page {
 	@Property
 	private int taskIndex;
 
-	public ArrayList<ArrayList<TaskEntry>> getOrphanedContexts() {
+	public ArrayList<ArrayList<TaskEntry>> getOrphanedContexts() throws BeenApiException {
 		Collection<TaskEntry> allTasks = this.api.getApi().getTasks();
 		Collection<String> tasksInTree = getTaskIdsFromTree();
 		Collection<String> generatorTasks = getGeneratorTaskIds();
@@ -98,7 +99,7 @@ public class Tree extends Page {
 		return new ArrayList<>(tasksByContexts.values());
 	}
 
-	private Collection<String> getGeneratorTaskIds() {
+	private Collection<String> getGeneratorTaskIds() throws BeenApiException {
 		ArrayList<String> result = new ArrayList<>();
 		for (BenchmarkEntry benchmarkEntry : this.getBenchmarks()) {
 			result.add(benchmarkEntry.getGeneratorId());
@@ -106,7 +107,7 @@ public class Tree extends Page {
 		return result;
 	}
 
-	private Collection<String> getTaskIdsFromTree() {
+	private Collection<String> getTaskIdsFromTree() throws BeenApiException {
 		ArrayList<String> result = new ArrayList<>();
 		for (BenchmarkEntry benchmarkEntry : getBenchmarks()) {
 			for (TaskContextEntry taskContextEntry : contextsForBenchmark(benchmarkEntry.getId())) {

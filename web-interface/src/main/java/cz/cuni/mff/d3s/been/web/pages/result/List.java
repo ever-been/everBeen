@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.web.pages.result;
 
+import cz.cuni.mff.d3s.been.api.BeenApiException;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.evaluators.EvaluatorResult;
 import cz.cuni.mff.d3s.been.persistence.DAOException;
@@ -20,7 +21,7 @@ public class List extends Page {
 	@Property
 	private EvaluatorResult result;
 
-	public Collection<EvaluatorResult> getResults() throws DAOException {
+	public Collection<EvaluatorResult> getResults() throws DAOException, BeenApiException {
 		    return api.getApi().getEvaluatorResults();
 	}
 

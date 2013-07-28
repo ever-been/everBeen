@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.web.pages;
 
+import cz.cuni.mff.d3s.been.api.BeenApiException;
 import cz.cuni.mff.d3s.been.logging.LogMessage;
 import cz.cuni.mff.d3s.been.core.task.*;
 import cz.cuni.mff.d3s.been.web.services.BeenApiService;
@@ -167,7 +168,7 @@ public abstract class Page {
 		return new Date(entry.getTimestamp());
 	}
 
-	public boolean benchmarkInFinalState(String benchmarkId) {
+	public boolean benchmarkInFinalState(String benchmarkId) throws BeenApiException {
 		String generatorId = this.api.getApi().getBenchmark(benchmarkId).getGeneratorId();
 		TaskEntry taskEntry = this.api.getApi().getTask(generatorId);
 		if (taskEntry == null) return true;
@@ -176,14 +177,14 @@ public abstract class Page {
 		return state == TaskState.ABORTED || state == TaskState.FINISHED;
 	}
 
-	public boolean taskInFinalState(String taskId) {
+	public boolean taskInFinalState(String taskId) throws BeenApiException {
 		TaskEntry taskEntry = this.api.getApi().getTask(taskId);
 		TaskState state = taskEntry.getState();
 
 		return state == TaskState.ABORTED || state == TaskState.FINISHED;
 	}
 
-	public boolean taskContextInFinalState(String contextId) {
+	public boolean taskContextInFinalState(String contextId) throws BeenApiException {
 		TaskContextEntry taskContextEntry = this.api.getApi().getTaskContext(contextId);
 		TaskContextState state = taskContextEntry.getContextState();
 

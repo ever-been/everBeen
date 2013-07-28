@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.web.pages.debug;
 
+import cz.cuni.mff.d3s.been.api.BeenApiException;
 import cz.cuni.mff.d3s.been.debugassistant.DebugListItem;
 import cz.cuni.mff.d3s.been.web.components.Layout;
 import cz.cuni.mff.d3s.been.web.pages.Page;
@@ -19,7 +20,7 @@ public class List extends Page {
 	@Property
 	private DebugListItem task;
 
-	void onActivate() {
+	void onActivate() throws BeenApiException {
 		tasks = this.api.getApi().getDebugWaitingTasks();
 	}
 

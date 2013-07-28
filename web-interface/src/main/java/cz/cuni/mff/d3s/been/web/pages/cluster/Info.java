@@ -1,6 +1,7 @@
 package cz.cuni.mff.d3s.been.web.pages.cluster;
 
 import com.hazelcast.core.Member;
+import cz.cuni.mff.d3s.been.api.BeenApiException;
 import cz.cuni.mff.d3s.been.web.components.Layout;
 import cz.cuni.mff.d3s.been.web.pages.Page;
 import org.apache.tapestry5.annotations.Property;
@@ -18,7 +19,7 @@ public class Info extends Page {
 	@Property
 	Member member;
 
-	public Collection<Member> getClusterMembers() {
+	public Collection<Member> getClusterMembers() throws BeenApiException {
 		return this.api.getApi().getClusterMembers();
 	}
 
@@ -30,7 +31,7 @@ public class Info extends Page {
 	@Property
 	ServiceEntry service;
 
-	public Collection<ServiceEntry> getClusterServices() {
+	public Collection<ServiceEntry> getClusterServices() throws BeenApiException {
 		ArrayList<ServiceEntry> list = new ArrayList<ServiceEntry>();
 
 		for (Map.Entry<String, String> entry : this.api.getApi().getClusterServices().entrySet()) {

@@ -1,6 +1,7 @@
 package cz.cuni.mff.d3s.been.web.services;
 
 import cz.cuni.mff.d3s.been.api.BeenApi;
+import cz.cuni.mff.d3s.been.api.ClusterConnectionUnavailableException;
 
 /**
  * User: donarus
@@ -14,7 +15,7 @@ public interface BeenApiService {
 
     public boolean connect(String host, int port, String groupName, String groupPassword);
 
-    public BeenApi getApi();
+    public BeenApi getApi() throws ClusterConnectionUnavailableException;
 
 	public void disconnect();
 }

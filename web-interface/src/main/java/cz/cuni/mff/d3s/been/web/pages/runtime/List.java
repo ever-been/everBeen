@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.web.pages.runtime;
 
+import cz.cuni.mff.d3s.been.api.BeenApiException;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.web.components.Layout;
@@ -30,12 +31,13 @@ public class List extends Page {
 
     private Map<RuntimeInfo, java.util.List<String>> oldWrkDirs = new HashMap<>();
 
-    public Collection<RuntimeInfo> getRuntimes() {
+    public Collection<RuntimeInfo> getRuntimes() throws BeenApiException {
         return this.api.getApi().getRuntimes();
     }
 
-    public String getRowClass(RuntimeInfo runtime) {
-        if (getOldTaskDirsOnRuntime(runtime).isEmpty()) {
+    public String getRowClass(RuntimeInfo runtime) throws BeenApiException {
+        if (getOldTaskDirsOnRuntime
+                (runtime).isEmpty()) {
             return "";
         } else {
             return "error";
@@ -43,7 +45,7 @@ public class List extends Page {
     }
 
     private TaskWrkDirChecker taskWrkDirChecker = null;
-    private java.util.List<String> getOldTaskDirsOnRuntime(RuntimeInfo runtime) {
+    private java.util.List<String> getOldTaskDirsOnRuntime(RuntimeInfo runtime) throws BeenApiException {
         if (taskWrkDirChecker == null) {
             taskWrkDirChecker = new TaskWrkDirChecker(api.getApi());
         }
@@ -54,7 +56,7 @@ public class List extends Page {
         return new ArrayList<>(runtime.getTaskDirs());
     }
 
-    private java.util.List<TaskEntry> getUnfinishedTasksOnHost(RuntimeInfo runtime) {
+    private java.util.List<TaskEntry> getUnfinishedTasksOnHost(RuntimeInfo runtime) throws BeenApiException {
         java.util.List<TaskEntry> allTasks = getAllTasks();
         java.util.List<TaskEntry> tasksOnHost = new ArrayList<>();
         for (TaskEntry entry : allTasks) {
@@ -66,14 +68,14 @@ public class List extends Page {
     }
 
 
-    private java.util.List<TaskEntry> getAllTasks() {
+    private java.util.List<TaskEntry> getAllTasks() throws BeenApiException {
         if (allTasks == null) {
             allTasks = new ArrayList<>(this.api.getApi().getTasks());
         }
         return allTasks;
     }
 
-    public String getErrors(RuntimeInfo runtime) {
+    public String getErrors(RuntimeInfo runtime) throws BeenApiException {
         if (getOldTaskDirsOnRuntime(runtime).isEmpty()) {
             return "";
         }

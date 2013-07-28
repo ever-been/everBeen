@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.web.pages.task;
 
+import cz.cuni.mff.d3s.been.api.BeenApiException;
 import cz.cuni.mff.d3s.been.logging.LogMessage;
 import cz.cuni.mff.d3s.been.core.task.StateChangeEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
@@ -25,7 +26,7 @@ public class History extends Page {
 	@Property
 	private StateChangeEntry entry;
 
-	void onActivate(String taskId) {
+	void onActivate(String taskId) throws BeenApiException {
 		task = api.getApi().getTask(taskId);
 		history = task.getStateChangeLog().getLogEntries();
 	}

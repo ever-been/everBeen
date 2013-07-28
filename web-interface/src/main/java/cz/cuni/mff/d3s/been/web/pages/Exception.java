@@ -1,9 +1,11 @@
 package cz.cuni.mff.d3s.been.web.pages;
 
-import com.hazelcast.client.NoMemberAvailableException;
-import org.apache.tapestry5.PersistenceConstants;
-import org.apache.tapestry5.annotations.Persist;
+import cz.cuni.mff.d3s.been.api.BeenApiException;
+import cz.cuni.mff.d3s.been.api.ClusterConnectionUnavailableException;
+import cz.cuni.mff.d3s.been.api.SoftwareRepositoryUnavailableException;
+import org.apache.tapestry5.Block;
 import org.apache.tapestry5.annotations.Property;
+import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.services.ExceptionReporter;
 
 /**
@@ -11,37 +13,67 @@ import org.apache.tapestry5.services.ExceptionReporter;
  */
 public class Exception extends Page implements ExceptionReporter {
 
-	@Property
-	@Persist(PersistenceConstants.FLASH)
-	private String message;
+    @Property
+    private String message;
 
-	@Property
-	private Throwable exception;
+    @Property
+    private Block correctExceptionBlock;
 
-	@Override
-	public void reportException(Throwable exception) {
-		this.exception = exception;
-		this.message = exception.getMessage();
+    @Property
+    private String originalMessage;
 
-		Throwable t = exception;
-		while (t != null) {
-			if (t instanceof RuntimeException && t.getMessage() != null &&
-					t.getMessage().equals("HazelcastClient is no longer active.")) {
-				log.error(t.getMessage(), t);
-				api.disconnect();
-				break;
-			}
+    @Property
+    private Throwable exception;
 
-			if (t instanceof NoMemberAvailableException && t.getMessage() != null &&
-					t.getMessage().equals("No cluster member available to connect")) {
-				log.error(t.getMessage(), t);
-				api.disconnect();
-				break;
-			}
+    @Property
+    private Throwable originalException;
 
-			t = t.getCause();
-		}
+    @Inject
+    private Block softwareRepositoryUnavailableExceptionBlock;
 
-		log.error("Exception in web interface.", exception);
-	}
+    @Inject
+    private Block hazelcastDisconnectedExceptionBlock;
+
+    @Inject
+    private Block unknownExceptionBlock;
+
+    @Override
+    public void reportException(Throwable exception) {
+
+        this.originalException = exception;
+        this.originalMessage = exception.getMessage();
+
+        this.exception = exception;
+        this.message = "An unexpected exception has occurred";
+
+        this.correctExceptionBlock = unknownExceptionBlock;
+
+        Throwable t = exception;
+        while (t != null) {
+
+            if (BeenApiException.class.isAssignableFrom(t.getClass())) {
+                handleBeenApiException(t);
+            }
+
+            t = t.getCause();
+        }
+
+        log.error("Exception in web interface.", exception);
+    }
+
+    private void handleBeenApiException(Throwable t) {
+
+        this.message = t.getMessage();
+        this.exception = t;
+
+        if (t instanceof ClusterConnectionUnavailableException) {
+            this.correctExceptionBlock = hazelcastDisconnectedExceptionBlock;
+            api.disconnect();
+        } else if (t instanceof SoftwareRepositoryUnavailableException) {
+            this.correctExceptionBlock = softwareRepositoryUnavailableExceptionBlock;
+        }
+
+
+
+    }
 }

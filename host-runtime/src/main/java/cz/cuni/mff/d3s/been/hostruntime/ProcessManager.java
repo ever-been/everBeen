@@ -488,7 +488,6 @@ final class ProcessManager implements Service {
         String runtimeId = hostInfo.getId();
         commandEntries.put(msg.operationId, new CommandEntry(runtimeId, description, CommandEntryState.PENDING, msg.operationId));
 
-
         File taskWrkDir = new File(msg.taskWrkDirName);
         try {
             FileUtils.deleteDirectory(taskWrkDir);

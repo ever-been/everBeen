@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cz.cuni.mff.d3s.been.api.BeenApiException;
 import cz.cuni.mff.d3s.been.core.task.ModeEnum;
 import org.apache.tapestry5.annotations.Component;
 import org.apache.tapestry5.annotations.Property;
@@ -149,7 +150,7 @@ public class SubmitTaskDescriptor extends Page {
 	 *         onActivate and onPassivate methods)
 	 */
 	@SuppressWarnings("unused")
-	Object onActivate(String groupId, String bpkId, String version, String descriptorName) {
+	Object onActivate(String groupId, String bpkId, String version, String descriptorName) throws BeenApiException {
 		// load correct task descriptor
 		BpkIdentifier bpkIdentifier = new BpkIdentifier();
 		bpkIdentifier.setGroupId(groupId);
@@ -192,7 +193,7 @@ public class SubmitTaskDescriptor extends Page {
 	 * @param taskDescriptor
 	 *          task descriptor to submit
 	 */
-	protected void submitTaskDescriptor(TaskDescriptor taskDescriptor) {
+	protected void submitTaskDescriptor(TaskDescriptor taskDescriptor) throws BeenApiException {
 		this.api.getApi().submitTask(taskDescriptor);
 	}
 
@@ -203,7 +204,7 @@ public class SubmitTaskDescriptor extends Page {
 	 * @return redirect to {@link Overview} page
 	 */
 	@SuppressWarnings("unused")
-	Object onSubmitFromSubmitTaskForm() {
+	Object onSubmitFromSubmitTaskForm() throws BeenApiException {
 
 		args.remove(null);
 		taskDescriptor.getArguments().getArgument().clear();

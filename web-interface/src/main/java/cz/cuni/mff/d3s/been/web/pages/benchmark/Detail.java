@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.web.pages.benchmark;
 
+import cz.cuni.mff.d3s.been.api.BeenApiException;
 import cz.cuni.mff.d3s.been.core.benchmark.BenchmarkEntry;
 import cz.cuni.mff.d3s.been.core.benchmark.ResubmitHistoryItem;
 import cz.cuni.mff.d3s.been.core.benchmark.StorageItem;
@@ -36,7 +37,7 @@ public class Detail extends Page {
 	@Property
 	TaskContextEntry context;
 
-	void onActivate(String benchmarkId) {
+	void onActivate(String benchmarkId) throws BeenApiException {
 		benchmark = api.getApi().getBenchmark(benchmarkId);
 		generator = api.getApi().getTask(benchmark.getGeneratorId());
 		contexts = api.getApi().getTaskContextsInBenchmark(benchmarkId);

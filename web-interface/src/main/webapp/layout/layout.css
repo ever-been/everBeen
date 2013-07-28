@@ -1131,3 +1131,7 @@ table.tasktemplate td, table.tasktemplate th {
 .orange-font {
   color: orange;
 }
+
+.size-60 {
+  font-size: 60px;
+}

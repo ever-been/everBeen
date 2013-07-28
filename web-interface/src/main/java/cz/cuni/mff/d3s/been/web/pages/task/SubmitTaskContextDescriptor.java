@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.web.pages.task;
 
+import cz.cuni.mff.d3s.been.api.BeenApiException;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.core.task.ObjectFactory;
 import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
@@ -170,7 +171,7 @@ public class SubmitTaskContextDescriptor extends Page {
      * @return null (see tapestry page documentation about return values from onActivate and onPassivate methods)
      */
     @SuppressWarnings("unused")
-    Object onActivate(String groupId, String bpkId, String version, String descriptorName) {
+    Object onActivate(String groupId, String bpkId, String version, String descriptorName) throws BeenApiException {
         // load correct task context descriptor
         BpkIdentifier bpkIdentifier = new BpkIdentifier();
         bpkIdentifier.setGroupId(groupId);
@@ -237,7 +238,7 @@ public class SubmitTaskContextDescriptor extends Page {
      * @return redirect to {@link Overview} page
      */
     @SuppressWarnings("unused")
-    Object onSubmitFromSubmitTaskContextForm() {
+    Object onSubmitFromSubmitTaskContextForm() throws BeenApiException {
         this.api.getApi().submitTaskContext(taskContextDescriptor);
 
 

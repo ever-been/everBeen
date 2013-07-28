@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.web.pages.context;
 
+import cz.cuni.mff.d3s.been.api.BeenApiException;
 import cz.cuni.mff.d3s.been.core.task.StateChangeEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
@@ -18,7 +19,7 @@ public class List extends Page {
 	@Property
 	private TaskContextEntry context;
 
-	public ArrayList<TaskContextEntry> getContexts() {
+	public ArrayList<TaskContextEntry> getContexts() throws BeenApiException {
 		Collection<TaskContextEntry> allContexts = this.api.getApi().getTaskContexts();
 
 		ArrayList<TaskContextEntry> entries = new ArrayList<>(allContexts);

@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.web.pages.task;
 
+import cz.cuni.mff.d3s.been.api.BeenApiException;
 import cz.cuni.mff.d3s.been.logging.LogMessage;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.logging.ServiceLogMessage;
@@ -34,7 +35,7 @@ public class Logs extends Page {
 
 	private JSONUtils jsonUtils = JSONUtils.newInstance();
 
-	void onActivate(String taskId) throws DAOException {
+	void onActivate(String taskId) throws DAOException, BeenApiException {
 		task = api.getApi().getTask(taskId);
 		logs = api.getApi().getLogsForTask(taskId);
 	}

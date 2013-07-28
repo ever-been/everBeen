@@ -2,9 +2,7 @@ package cz.cuni.mff.d3s.been.web.services;
 
 import cz.cuni.mff.d3s.been.api.BeenApi;
 import cz.cuni.mff.d3s.been.api.BeenApiImpl;
-import cz.cuni.mff.d3s.been.api.ServiceUnavailableException;
-
-import java.net.InetSocketAddress;
+import cz.cuni.mff.d3s.been.api.ClusterConnectionUnavailableException;
 
 /**
  * User: donarus
@@ -17,19 +15,19 @@ public class BeenApiServiceImpl implements BeenApiService {
 
     @Override
     public boolean isConnected() {
-        return api != null;
+        return (api != null) && api.isConnected();
     }
 
     @Override
     public boolean connect(String host, int port, String groupName, String groupPassword) {
         api = new BeenApiImpl(host, port, groupName, groupPassword);
-        return true;
+        return isConnected();
     }
 
     @Override
-	public BeenApi getApi() {
+	public BeenApi getApi() throws ClusterConnectionUnavailableException {
 		if (! isConnected())
-			throw new ServiceUnavailableException("API is not connected.");
+			throw new ClusterConnectionUnavailableException("API is not connected.");
 
 		return api;
 	}

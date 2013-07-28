@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.web.pages.bpkpackage;
 
+import cz.cuni.mff.d3s.been.api.BeenApiException;
 import cz.cuni.mff.d3s.been.bpk.BpkConfigurationException;
 import cz.cuni.mff.d3s.been.web.components.Layout;
 import cz.cuni.mff.d3s.been.web.pages.Page;
@@ -36,7 +37,7 @@ public class Upload extends Page {
 	private AjaxResponseRenderer ajaxResponseRenderer;
 
 	@OnEvent(component = "uploadBpk", value = JQueryEventConstants.AJAX_UPLOAD)
-	void onUpload(UploadedFile uploadedFile) {
+	void onUpload(UploadedFile uploadedFile) throws BeenApiException {
 
 		try {
 			api.getApi().uploadBpk(uploadedFile.getStream());

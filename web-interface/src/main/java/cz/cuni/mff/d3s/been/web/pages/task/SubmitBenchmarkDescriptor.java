@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.web.pages.task;
 
+import cz.cuni.mff.d3s.been.api.BeenApiException;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.web.components.Layout;
@@ -17,7 +18,7 @@ import org.apache.tapestry5.corelib.components.Form;
 public class SubmitBenchmarkDescriptor extends SubmitTaskDescriptor {
 
 	@Override
-	protected void submitTaskDescriptor(TaskDescriptor taskDescriptor) {
+	protected void submitTaskDescriptor(TaskDescriptor taskDescriptor) throws BeenApiException {
 		this.api.getApi().submitBenchmark(taskDescriptor);
 	}
 
