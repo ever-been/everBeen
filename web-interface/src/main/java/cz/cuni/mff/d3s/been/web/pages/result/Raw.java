@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.web.pages.result;
 
+import cz.cuni.mff.d3s.been.api.BeenApiException;
 import cz.cuni.mff.d3s.been.evaluators.EvaluatorResult;
 import cz.cuni.mff.d3s.been.persistence.DAOException;
 import cz.cuni.mff.d3s.been.web.pages.Page;
@@ -15,7 +16,7 @@ import java.io.InputStream;
  */
 public class Raw extends Page {
 
-	Object onActivate(String resultId) throws DAOException {
+	Object onActivate(String resultId) throws DAOException, BeenApiException {
 		final EvaluatorResult result = this.api.getApi().getEvaluatorResult(resultId);
 		final InputStream is = new ByteArrayInputStream(result.getData());
 

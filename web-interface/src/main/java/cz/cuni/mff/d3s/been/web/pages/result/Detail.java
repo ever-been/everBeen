@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.web.pages.result;
 
+import cz.cuni.mff.d3s.been.api.BeenApiException;
 import cz.cuni.mff.d3s.been.evaluators.EvaluatorResult;
 import cz.cuni.mff.d3s.been.persistence.DAOException;
 import cz.cuni.mff.d3s.been.web.components.Layout;
@@ -15,7 +16,7 @@ public class Detail extends Page {
 	@Property
 	private EvaluatorResult result;
 
-	void onActivate(String resultId) throws DAOException {
+	void onActivate(String resultId) throws DAOException, BeenApiException {
 		result = this.api.getApi().getEvaluatorResult(resultId);
 	}
 

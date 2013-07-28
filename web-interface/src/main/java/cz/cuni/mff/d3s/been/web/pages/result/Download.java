@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.web.pages.result;
 
+import cz.cuni.mff.d3s.been.api.BeenApiException;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.evaluators.EvaluatorResult;
 import cz.cuni.mff.d3s.been.persistence.DAOException;
@@ -16,7 +17,7 @@ import java.io.InputStream;
  */
 public class Download extends Page {
 
-	Object onActivate(String resultId) throws DAOException {
+	Object onActivate(String resultId) throws DAOException, BeenApiException {
 		final EvaluatorResult result = this.api.getApi().getEvaluatorResult(resultId);
 		final InputStream is = new ByteArrayInputStream(result.getData());
 

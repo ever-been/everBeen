@@ -2,11 +2,74 @@
 
 <html t:type="layout" section="section" xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd">
 
-<h2>An unexpected exception has occurred</h2>
-<p>${message}</p>
 
-<div style="padding: 20px;">
-	<t:exceptiondisplay exception="exception"/>
-</div>
+    <div class="container">
+        <div class="row">
+            <div class="span12">
+                <p style="vertical-align: middle; display:inline-block;
+                line-height: 60px; font-weight: bold; font-size: 30px;">
+                    <i class="icon-exclamation-sign red-font"></i>&nbsp;&nbsp; Error
+                </p>
+            </div>
+        </div>
+        <div class="row">
+
+
+            <div class="span12">
+                <t:delegate t:to="correctExceptionBlock">
+
+                </t:delegate>
+            </div>
+        </div>
+
+        <div style="display:none" id="stack-trace-div">
+            <h2>An unexpected exception has occurred</h2>
+            <p>${originalMessage}</p>
+
+            <div style="padding: 20px;">
+                <t:exceptiondisplay exception="originalException"/>
+            </div>
+        </div>
+
+    </div>
+
+    <div style="position:fixed; bottom: 0px; right: 0px; padding: 3px">
+        <a href="#" id="display-stack-trace-link" style="color: #6E6E6E;">display full stack trace for debug purposes
+        </a>
+        <a href="#" id="hide-stack-trace-link" style="color: #6E6E6E; display:none">hide full stack trace for debug
+            purposes
+        </a>
+
+    </div>
+
+    <t:block t:id="hazelcastDisconnectedExceptionBlock">
+        <p>${message}</p>
+        <p>Click <t:pagelink t:page="Connect">here</t:pagelink> to go to connect page.</p>
+    </t:block>
+
+    <t:block t:id="unknownExceptionBlock">
+        <p>${message}</p>
+    </t:block>
+
+    <t:block t:id="softwareRepositoryUnavailableExceptionBlock">
+        <p>${message}</p>
+        <p>Check <t:pagelink t:page="cluster/Info">cluster info</t:pagelink> page.</p>
+    </t:block>
+
+    <script>
+        jQuery(document).ready(function() {
+        jQuery('#display-stack-trace-link').click(function() {
+        jQuery('#stack-trace-div').show();
+        jQuery('#display-stack-trace-link').hide();
+        jQuery('#hide-stack-trace-link').show();
+        });
+
+        jQuery('#hide-stack-trace-link').click(function() {
+        jQuery('#stack-trace-div').hide();
+        jQuery('#display-stack-trace-link').show();
+        jQuery('#hide-stack-trace-link').hide();
+        });
+        });
+    </script>
 
 </html>

@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.web.pages.context;
 
+import cz.cuni.mff.d3s.been.api.BeenApiException;
 import cz.cuni.mff.d3s.been.core.benchmark.BenchmarkEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
@@ -11,7 +12,7 @@ import cz.cuni.mff.d3s.been.web.pages.task.Tree;
  */
 public class Remove extends Page {
 
-	Object onActivate(String contextId) {
+	Object onActivate(String contextId) throws BeenApiException {
 		this.api.getApi().removeTaskContextEntry(contextId);
 		return Tree.class;
 	}

@@ -2,6 +2,7 @@ package cz.cuni.mff.d3s.been.web.services;
 
 import java.util.Collection;
 
+import cz.cuni.mff.d3s.been.api.BeenApiException;
 import org.apache.tapestry5.ioc.Invokable;
 import org.apache.tapestry5.ioc.services.ParallelExecutor;
 import org.lazan.t5.cometd.services.PushManager;
@@ -44,14 +45,18 @@ public class LiveFeedServiceImpl implements LiveFeedService {
 					} catch (InterruptedException e) {}
 				}
 
-				api.getApi().addLogListener(new BeenApi.LogListener() {
-					@Override
-					public void logAdded(String log) {
-						broadcast("/logs", log);
-					}
-				});
+                try {
+                    api.getApi().addLogListener(new BeenApi.LogListener() {
+                        @Override
+                        public void logAdded(String log) {
+                            broadcast("/logs", log);
+                        }
+                    });
+                } catch (BeenApiException e) {
+                    e.printStackTrace();
+                }
 
-				while (true) {
+               while (true) {
 
 					try {
 						if (!api.isConnected()) {

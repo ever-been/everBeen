@@ -5,10 +5,18 @@ package cz.cuni.mff.d3s.been.api;
  *
  * @author donarus
  */
-public class CommandTimeoutException extends Throwable {
+public class CommandTimeoutException extends BeenApiException {
 
     public CommandTimeoutException(String message) {
         super(message);
+    }
+
+    public CommandTimeoutException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public CommandTimeoutException(Throwable cause) {
+        super(cause);
     }
 
 }

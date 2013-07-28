@@ -34,14 +34,6 @@ public class AppModule {
 		configuration.add(SymbolConstants.HMAC_PASSPHRASE, "alI87U3Jzbhdsjf12POksldqmlp9");
 	}
 
-	public void contributeRequestHandler(OrderedConfiguration<RequestFilter> configuration,
-			PageRenderLinkSource pageRenderLinkSource, BeenApiService beenApiService, Logger log) {
-		configuration.add(
-				"ApiConnectionRequestFilter",
-				new ApiConnectionRequestFilter(pageRenderLinkSource, beenApiService, log),
-				"before:*");
-	}
-
 	public void contributeServiceOverride(MappedConfiguration<Class, Object> configuration,
 			@Local RequestExceptionHandler handler) {
 		configuration.add(RequestExceptionHandler.class, handler);

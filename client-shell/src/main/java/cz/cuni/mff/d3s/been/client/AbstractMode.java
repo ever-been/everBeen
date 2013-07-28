@@ -1,5 +1,7 @@
 package cz.cuni.mff.d3s.been.client;
 
+import cz.cuni.mff.d3s.been.api.BeenApiException;
+import cz.cuni.mff.d3s.been.persistence.DAOException;
 import jline.console.ConsoleReader;
 import jline.console.completer.Completer;
 import jline.console.completer.StringsCompleter;
@@ -59,7 +61,7 @@ abstract class AbstractMode implements IMode {
 	}
 
 	@Override
-	public IMode takeAction(String[] args) {
+	public IMode takeAction(String[] args) throws DAOException, BeenApiException {
 		for(String arg: args) {
 		   out.println(arg);
 		}

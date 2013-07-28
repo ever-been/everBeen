@@ -1,6 +1,7 @@
 package cz.cuni.mff.d3s.been.web.model;
 
 import cz.cuni.mff.d3s.been.api.BeenApi;
+import cz.cuni.mff.d3s.been.api.BeenApiException;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 
@@ -22,7 +23,7 @@ public final class TaskWrkDirChecker {
 
     }
 
-    public java.util.List<String> getOldTaskDirsOnRuntime(RuntimeInfo runtime) {
+    public java.util.List<String> getOldTaskDirsOnRuntime(RuntimeInfo runtime) throws BeenApiException {
         java.util.List<String> taskDirsOnRuntime = getTaskDirsOnHost(runtime);
 
         for (TaskEntry entry : getLiveTasksOnHost(runtime)) {
@@ -38,7 +39,7 @@ public final class TaskWrkDirChecker {
 
     private Collection<TaskEntry> liveTasksOnHosts;
 
-    private Collection<TaskEntry> getLiveTasksOnHost(RuntimeInfo runtime) {
+    private Collection<TaskEntry> getLiveTasksOnHost(RuntimeInfo runtime) throws BeenApiException {
         if (liveTasksOnHosts == null) {
             liveTasksOnHosts = api.listActiveTasks(runtime.getId());
         }

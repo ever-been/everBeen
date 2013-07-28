@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.xml.bind.JAXBException;
 
+import cz.cuni.mff.d3s.been.api.BeenApiException;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -79,7 +80,7 @@ public class Submitter {
 		api = new BeenApiImpl(host, port, groupName, groupPassword);
 	}
 
-	private void submitSingleTask(File tdFile) throws JAXBException, SAXException, ConvertorException {
+	private void submitSingleTask(File tdFile) throws JAXBException, SAXException, ConvertorException, BeenApiException {
 		TaskDescriptor td = createTaskDescriptor(tdFile);
 		api.submitTask(td);
 	}
@@ -91,13 +92,13 @@ public class Submitter {
 		return bindingComposer.parse(tdFile);
 	}
 
-	private void submitTaskContext(File tcdFile) throws JAXBException, SAXException, ConvertorException {
+	private void submitTaskContext(File tcdFile) throws JAXBException, SAXException, ConvertorException, BeenApiException {
 		BindingParser<TaskContextDescriptor> bindingComposer = XSD.TASK_CONTEXT_DESCRIPTOR.createParser(TaskContextDescriptor.class);
 		TaskContextDescriptor taskContextDescriptor = bindingComposer.parse(tcdFile);
 		api.submitTaskContext(taskContextDescriptor);
 	}
 
-	private void submitBenchmark(File bdFile) throws JAXBException, SAXException, ConvertorException {
+	private void submitBenchmark(File bdFile) throws JAXBException, SAXException, ConvertorException, BeenApiException {
 		api.submitBenchmark(createTaskDescriptor(bdFile));
 	}
 
@@ -141,7 +142,7 @@ public class Submitter {
 		}
 	}
 
-	private void uploadBpk(String bpkFile) throws BpkConfigurationException, FileNotFoundException {
+	private void uploadBpk(String bpkFile) throws BpkConfigurationException, FileNotFoundException, BeenApiException {
 		FileInputStream fis = new FileInputStream(new File(bpkFile));
 		api.uploadBpk(fis);
 		System.out.printf("%s uploaded to Software Repository\n", bpkFile);

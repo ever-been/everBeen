@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.web.pages.task;
 
+import cz.cuni.mff.d3s.been.api.BeenApiException;
 import cz.cuni.mff.d3s.been.core.task.Debug;
 import cz.cuni.mff.d3s.been.core.task.ModeEnum;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
@@ -21,12 +22,16 @@ public class Detail extends DetailPage {
 	@Property
 	private TaskProperty property;
 
-    @Property
     private TaskEntry task;
 
+    public TaskEntry getTask() throws BeenApiException {
+        if (this.task == null) {
+            this.task = api.getApi().getTask(itemId);
+        }
+        return task ;
+    }
     @Override
 	public void setupRender() {
-        this.task = api.getApi().getTask(itemId);
         super.setupRender();
     }
 

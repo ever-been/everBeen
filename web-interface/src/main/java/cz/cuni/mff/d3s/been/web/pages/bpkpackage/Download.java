@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.web.pages.bpkpackage;
 
+import cz.cuni.mff.d3s.been.api.BeenApiException;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.web.pages.Page;
 import org.apache.tapestry5.StreamResponse;
@@ -15,7 +16,7 @@ import java.io.InputStream;
  */
 public class Download extends Page {
 
-	Object onActivate(String groupId, String bpkId, String version) {
+	Object onActivate(String groupId, String bpkId, String version) throws BeenApiException {
 		BpkIdentifier bpkIdentifier = constructBpkIdentifier(groupId, bpkId, version);
 		String filename = String.format("%s-%s.bpk", bpkId, version);
 

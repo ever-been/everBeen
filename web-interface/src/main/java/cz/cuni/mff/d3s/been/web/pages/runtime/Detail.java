@@ -1,6 +1,7 @@
 package cz.cuni.mff.d3s.been.web.pages.runtime;
 
 import cz.cuni.mff.d3s.been.api.CommandTimeoutException;
+import cz.cuni.mff.d3s.been.api.BeenApiException;
 import cz.cuni.mff.d3s.been.core.protocol.command.CommandEntry;
 import cz.cuni.mff.d3s.been.core.protocol.command.CommandEntryState;
 import cz.cuni.mff.d3s.been.core.ri.*;
@@ -191,7 +192,7 @@ public class Detail extends Page {
      *
      * @param runtimeId id of displayed runtime
      */
-    void onActivate(String runtimeId) {
+    void onActivate(String runtimeId) throws BeenApiException {
         runtime = api.getApi().getRuntime(runtimeId);
         taskWrkDirChecker = new TaskWrkDirChecker(api.getApi());
     }
@@ -234,7 +235,7 @@ public class Detail extends Page {
      * @param oldTaskWorkingDir task directory which should be deleted
      * @param zoneIndex         index of the zone which should be updated after this callback
      */
-    public void onActionFromDeleteOldTaskWrkDir(String oldTaskWorkingDir, int zoneIndex) {
+    public void onActionFromDeleteOldTaskWrkDir(String oldTaskWorkingDir, int zoneIndex) throws BeenApiException {
         this.oldTaskWrkDir = oldTaskWorkingDir;
         // create request for delete operation
         try {
@@ -272,7 +273,7 @@ public class Detail extends Page {
      * @param oldTaskWorkingDir task directory which should be deleted
      * @param zoneIndex         index of the zone which should be updated after this callback
      */
-    public void onActionFromDeleteOldTaskWrkDir_failed(String oldTaskWorkingDir, int zoneIndex) {
+    public void onActionFromDeleteOldTaskWrkDir_failed(String oldTaskWorkingDir, int zoneIndex) throws BeenApiException {
         onActionFromDeleteOldTaskWrkDir(oldTaskWorkingDir, zoneIndex);
     }
 
@@ -283,7 +284,7 @@ public class Detail extends Page {
      * @param oldTaskWorkingDir task directory which should be deleted
      * @param zoneIndex         index of the zone which should be updated after this callback
      */
-    public void onActionFromDeleteOldTaskWrkDir_timeouted(String oldTaskWorkingDir, int zoneIndex) {
+    public void onActionFromDeleteOldTaskWrkDir_timeouted(String oldTaskWorkingDir, int zoneIndex) throws BeenApiException {
         onActionFromDeleteOldTaskWrkDir(oldTaskWorkingDir, zoneIndex);
     }
 
@@ -304,7 +305,7 @@ public class Detail extends Page {
      * Collects history of command entries for underlying runtime.
      * @return
      */
-    public Collection<CommandEntry> getCommandEntries() {
+    public Collection<CommandEntry> getCommandEntries() throws BeenApiException {
         return api.getApi().listCommandEntries(runtime.getId());
     }
 
@@ -312,7 +313,7 @@ public class Detail extends Page {
      * Collect information about tasks on this runtime.
      * @return
      */
-    public Collection<TaskEntry> getTasks() {
+    public Collection<TaskEntry> getTasks() throws BeenApiException {
         return api.getApi().listTasks(runtime.getId());
     }
 }

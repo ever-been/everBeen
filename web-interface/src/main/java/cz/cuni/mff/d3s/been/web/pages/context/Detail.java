@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.web.pages.context;
 
+import cz.cuni.mff.d3s.been.api.BeenApiException;
 import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskProperty;
@@ -34,7 +35,7 @@ public class Detail extends Page {
 	@Property
 	private cz.cuni.mff.d3s.been.core.task.Property property;
 
-	void onActivate(String taskContextId) {
+	void onActivate(String taskContextId) throws BeenApiException {
 		context = api.getApi().getTaskContext(taskContextId);
 
 		taskIds = context.getContainedTask();

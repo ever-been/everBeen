@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.web.pages.task;
 
+import cz.cuni.mff.d3s.been.api.BeenApiException;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
@@ -26,7 +27,7 @@ public class Submit extends Page {
 	@Property
 	BpkIdentifier bpk;
 
-	public Collection<BpkIdentifier> getBpks() {
+	public Collection<BpkIdentifier> getBpks() throws BeenApiException {
 		return this.api.getApi().getBpks();
 	}
 
@@ -44,7 +45,7 @@ public class Submit extends Page {
 	@Inject
 	URLEncoder urlEncoder;
 
-	public Collection<Descriptor> descriptorsInBpk(BpkIdentifier bpk) {
+	public Collection<Descriptor> descriptorsInBpk(BpkIdentifier bpk) throws BeenApiException {
 		Collection<Descriptor> result = new ArrayList<Descriptor>();
 		for (Map.Entry<String, TaskDescriptor> entry : this.api.getApi().getTaskDescriptors(bpk).entrySet()) {
 			String descriptorName = entry.getKey();

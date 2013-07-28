@@ -1,5 +1,11 @@
 package cz.cuni.mff.d3s.been.cluster.context;
 
+import com.hazelcast.client.HazelcastClient;
+import com.hazelcast.config.Config;
+import com.hazelcast.core.*;
+import cz.cuni.mff.d3s.been.cluster.Names;
+import cz.cuni.mff.d3s.been.cluster.NodeType;
+
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
@@ -23,8 +29,6 @@ import cz.cuni.mff.d3s.been.cluster.NodeType;
  */
 public class ClusterContext {
 
-	private final Properties properties;
-
 	private final Maps maps;
 	private final Runtimes runtimes;
 	private final Tasks tasks;
@@ -34,10 +38,12 @@ public class ClusterContext {
 	private final Benchmarks benchmarks;
 	private final Persistence persistence;
 	private final HazelcastInstance hcInstance;
+	private final boolean usesHazelcastClient;
+	private final Properties properties;
 
 	public ClusterContext(HazelcastInstance hcInstance, Properties properties) {
-		this.properties = properties;
 		this.hcInstance = hcInstance;
+		this.properties = properties;
 
 		this.maps = new Maps(this);
 		this.runtimes = new Runtimes(this);
@@ -47,6 +53,12 @@ public class ClusterContext {
 		this.services = new Services(this);
 		this.benchmarks = new Benchmarks(this);
 		this.persistence = new Persistence(this);
+		
+		if (hcInstance instanceof HazelcastClient) {
+            this.usesHazelcastClient = true;
+        } else {
+            usesHazelcastClient = false;
+        }
 	}
 
 	public ICountDownLatch getCountDownLatch(String name) {
@@ -282,6 +294,16 @@ public class ClusterContext {
 
     public long generateId(String key) {
         return getInstance().getIdGenerator(key).newId();
+    }
+
+    public boolean isActive() {
+        if (usesHazelcastClient) {
+            return ((HazelcastClient) hcInstance).isActive();
+        }
+
+        // Otherwise hcInstance is member of cluster, so
+        // ClusterCTX is connected to cluster by default
+        return true;
     }
 
 	/**
