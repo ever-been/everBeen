@@ -55,4 +55,22 @@ public final class QueryAnswerFactory {
 	public static final QueryAnswer badQuery() {
 		return new SimpleQueryAnswer(QueryStatus.INVALID_QUERY);
 	}
+
+	/**
+	 * Create an answer saying the query timed out before it had a chance to be evaluated.
+	 *
+	 * @return The answer
+	 */
+	public static final QueryAnswer transportTimedOut() {
+		return new SimpleQueryAnswer(QueryStatus.TRANSPORT_TIMED_OUT);
+	}
+
+	/**
+	 * Create an answer saying the the query started to get evaluated, but didn't get back in time
+	 *
+	 * @return The answer
+	 */
+	public static final QueryAnswer processingTimedOut() {
+		return new SimpleQueryAnswer(QueryStatus.PROCESSING_TIMED_OUT);
+	}
 }

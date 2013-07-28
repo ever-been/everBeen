@@ -35,11 +35,12 @@ public class SoftwareRepositories {
 	 *
 	 * @return {@link SoftwareRepository} ready to be started.
 	 */
-	public static SoftwareRepository createSWRepository(ClusterContext ctx, Properties properties) {
-        final PropertyReader propReader = PropertyReader.on(properties);
+	public static SoftwareRepository createSWRepository(ClusterContext ctx) {
+		final Properties props = ctx.getProperties();
+        final PropertyReader propReader = PropertyReader.on(props);
 		SoftwareRepository swRepo = new SoftwareRepository(ctx);
 
-		final SoftwareStore dataStore = SoftwareStoreBuilderFactory.getSoftwareStoreBuilder().withProperties(properties).buildServer();
+		final SoftwareStore dataStore = SoftwareStoreBuilderFactory.getSoftwareStoreBuilder().withProperties(props).buildServer();
         final InetSocketAddress clusterSockAddr = ctx.getLocalMember().getInetSocketAddress();
         final InetSocketAddress mySockAddr = new InetSocketAddress(clusterSockAddr.getAddress(), propReader.getInteger(PORT, DEFAULT_PORT));
 		HttpServer httpServer = new HttpServer(mySockAddr);

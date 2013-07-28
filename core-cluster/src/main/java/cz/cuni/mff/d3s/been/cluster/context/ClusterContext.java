@@ -5,6 +5,7 @@ import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Properties;
 import java.util.Set;
 
 import com.hazelcast.config.Config;
@@ -22,6 +23,8 @@ import cz.cuni.mff.d3s.been.cluster.NodeType;
  */
 public class ClusterContext {
 
+	private final Properties properties;
+
 	private final Maps maps;
 	private final Runtimes runtimes;
 	private final Tasks tasks;
@@ -32,8 +35,10 @@ public class ClusterContext {
 	private final Persistence persistence;
 	private final HazelcastInstance hcInstance;
 
-	public ClusterContext(HazelcastInstance hcInstance) {
+	public ClusterContext(HazelcastInstance hcInstance, Properties properties) {
+		this.properties = properties;
 		this.hcInstance = hcInstance;
+
 		this.maps = new Maps(this);
 		this.runtimes = new Runtimes(this);
 		this.tasks = new Tasks(this);
@@ -278,5 +283,14 @@ public class ClusterContext {
     public long generateId(String key) {
         return getInstance().getIdGenerator(key).newId();
     }
+
+	/**
+	 * Get BEEN configuration properties.
+	 *
+	 * @return BEEN properties
+	 */
+	public Properties getProperties() {
+		return new Properties(properties);
+	}
 
 }

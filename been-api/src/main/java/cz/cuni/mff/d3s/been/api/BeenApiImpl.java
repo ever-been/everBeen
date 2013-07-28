@@ -4,10 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import com.hazelcast.core.Member;
 import cz.cuni.mff.d3s.been.core.persistence.Entities;
@@ -46,6 +43,7 @@ import cz.cuni.mff.d3s.been.evaluators.EvaluatorResult;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
 
+import java.util.Properties;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -65,8 +63,8 @@ public class BeenApiImpl implements BeenApi {
 	private final JSONUtils jsonUtils = JSONUtils.newInstance();
 
 	public BeenApiImpl(String host, int port, String groupName, String groupPassword) {
-		HazelcastInstance instance = Instance.newNativeInstance(host, port, groupName, groupPassword);
-		clusterContext = new ClusterContext(instance);
+		Instance.newNativeInstance(host, port, groupName, groupPassword);
+		clusterContext = Instance.createContext();
 	}
 
 	public BeenApiImpl(ClusterContext clusterContext) {

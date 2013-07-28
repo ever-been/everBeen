@@ -5,19 +5,19 @@ import com.hazelcast.core.EntryListener;
 import com.hazelcast.core.IMap;
 import com.hazelcast.core.IQueue;
 import cz.cuni.mff.d3s.been.cluster.Names;
+import cz.cuni.mff.d3s.been.core.PropertyReader;
 import cz.cuni.mff.d3s.been.core.persistence.Entity;
-import cz.cuni.mff.d3s.been.core.persistence.TaskEntity;
 import cz.cuni.mff.d3s.been.core.persistence.EntityCarrier;
 import cz.cuni.mff.d3s.been.core.persistence.EntityID;
-import cz.cuni.mff.d3s.been.persistence.DAOException;
-import cz.cuni.mff.d3s.been.persistence.Query;
-import cz.cuni.mff.d3s.been.persistence.QueryAnswer;
-import cz.cuni.mff.d3s.been.persistence.QuerySerializer;
+import cz.cuni.mff.d3s.been.persistence.*;
 import cz.cuni.mff.d3s.been.util.JSONUtils;
 import cz.cuni.mff.d3s.been.util.JsonException;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
+
+import static cz.cuni.mff.d3s.been.cluster.ClusterPersistenceConfiguration.*;
 
 /**
  * Cluster-based operations related to object persistence and retrieval
@@ -26,19 +26,22 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class Persistence {
 
-	private final ClusterContext ctx;
+	private final Long queryTimeout;
+	private final Long queryProcessingTimeout;
+
 	private final IQueue<EntityCarrier> asyncPersistence;
 	private final IQueue<Query> queryQueue;
 	private final IMap<String, QueryAnswer> queryAnswerMap;
-	private final QuerySerializer querySerializer;
 	private final JSONUtils jsonUtils;
 
 	Persistence(ClusterContext ctx) {
-		this.ctx = ctx;
+		final PropertyReader propertyReader = PropertyReader.on(ctx.getProperties());
+		this.queryTimeout = propertyReader.getLong(QUERY_TIMEOUT, DEFAULT_QUERY_TIMEOUT);
+		this.queryProcessingTimeout = propertyReader.getLong(QUERY_PROCESSING_TIMEOUT, DEFAULT_QUERY_PROCESSING_TIMEOUT);
+
 		this.asyncPersistence = ctx.getQueue(Names.PERSISTENCE_QUEUE_NAME);
 		this.queryAnswerMap = ctx.getMap(Names.PERSISTENCE_QUERY_ANSWERS_MAP_NAME);
 		this.queryQueue = ctx.getQueue(Names.PERSISTENCE_QUERY_QUEUE_NAME);
-		this.querySerializer = new QuerySerializer();
 		this.jsonUtils = JSONUtils.newInstance();
 	}
 
@@ -52,14 +55,27 @@ public class Persistence {
 	 * @throws DAOException When the wait for the query outcome is interrupted or when provided query fails to serialize
 	 */
 	public final QueryAnswer query(Query query) throws DAOException {
+		final BlockingQueue<String> answerReadyNotifier = new LinkedBlockingQueue<String>();
+		final MapEntryReadyHook hook = new MapEntryReadyHook(answerReadyNotifier);
+		queryAnswerMap.addEntryListener(hook, query.getId(), false);
 		try {
-			final BlockingQueue<String> answerReadyNotifier = new LinkedBlockingQueue<String>();
-			queryAnswerMap.addEntryListener(new MapEntryReadyHook(answerReadyNotifier), query.getId(), false);
 			queryQueue.add(query);
-			final String queryId = answerReadyNotifier.take();
-			return queryAnswerMap.remove(queryId);
+			if (answerReadyNotifier.poll(queryTimeout, TimeUnit.SECONDS) == null) {
+				if (queryQueue.remove(query)) {
+					return QueryAnswerFactory.transportTimedOut();
+				} else {
+					if (answerReadyNotifier.poll(queryProcessingTimeout, TimeUnit.SECONDS) != null) {
+						return queryAnswerMap.remove(query.getId());
+					} else {
+						return QueryAnswerFactory.processingTimedOut();
+					}
+				}
+			}
+			return queryAnswerMap.remove(query.getId());
 		} catch (InterruptedException e) {
 			throw new DAOException(String.format("Interrupted when waiting for query result. Query was %s", query.toString()));
+		} finally {
+			queryAnswerMap.removeEntryListener(hook);
 		}
 	}
 
