@@ -53,6 +53,10 @@ public interface BeenApi {
     public Collection<ServiceLogMessage> getServiceLogsByHostRuntimeId(String hostRuntimeId) throws DAOException;
     public Collection<ServiceLogMessage> getServiceLogsByServiceName(String serviceName) throws DAOException;
 
+	public void clearPersistenceForTask(String taskId) throws DAOException;
+	public void clearPersistenceForContext(String contextId) throws DAOException;
+	public void clearPersistenceForBenchmark(String benchmarkId) throws DAOException;
+
 	public Collection<String> getTasksWithFinalState(TaskState state) throws DAOException;
 	public Collection<String> getTasksWithFinalStateFromContext(TaskState state, String contextId) throws DAOException;
 	public Collection<String> getTasksWithFinalStateFromBenchmark(TaskState state, String benchmarkId) throws DAOException;
