@@ -628,4 +628,31 @@ public class BeenApiImpl implements BeenApi {
 			throw new DAOException(String.format("Failed to unmarshall data responding to query '%s'",query.toString()), e);
 		}
 	}
+
+	@Override
+	public void clearPersistenceForTask(String taskId) throws DAOException {
+		final Query deleteQuery = new QueryBuilder().with("taskId", taskId).delete();
+		final QueryAnswer answer = clusterContext.getPersistence().query(deleteQuery);
+		if (! answer.getStatus().isOk()) {
+			throw new DAOException(String.format("Failed to delete leftover entities with taskId '%s': %s", taskId, answer.getStatus().getDescription()));
+		}
+	}
+
+	@Override
+	public void clearPersistenceForContext(String contextId) throws DAOException {
+		final Query deleteQuery = new QueryBuilder().with("contextId", contextId).delete();
+		final QueryAnswer answer = clusterContext.getPersistence().query(deleteQuery);
+		if (! answer.getStatus().isOk()) {
+			throw new DAOException(String.format("Failed to delete leftover entities with contextId '%s': %s", contextId, answer.getStatus().getDescription()));
+		}
+	}
+
+	@Override
+	public void clearPersistenceForBenchmark(String benchmarkId) throws DAOException {
+		final Query deleteQuery = new QueryBuilder().with("benchmarkId", benchmarkId).delete();
+		final QueryAnswer answer = clusterContext.getPersistence().query(deleteQuery);
+		if (! answer.getStatus().isOk()) {
+			throw new DAOException(String.format("Failed to delete leftover entities with benchmarkId '%s': %s", benchmarkId, answer.getStatus().getDescription()));
+		}
+	}
 }

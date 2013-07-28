@@ -11,7 +11,6 @@ import java.util.Map;
  * @author darklight
  */
 public class QueryBuilder {
-	private String id;
 	private EntityID entityID;
 	private Map<String, String> selectors = new HashMap<String, String>();
 
@@ -27,8 +26,13 @@ public class QueryBuilder {
 	 * @param value Expected value of the attribute
 	 *
 	 * @return The same query, with added criteria
+	 *
+	 * @throws NullPointerException When any of the two parameters are null
 	 */
 	public QueryBuilder with(String attribute, String value) {
+		if (attribute == null || value == null) {
+			throw new NullPointerException(String.format("Invalid attribute specification '(key, value) == (%s, %s)': both key and value must be non-null", attribute, value));
+		}
 		selectors.put(attribute, value);
 		return this;
 	}
@@ -41,6 +45,9 @@ public class QueryBuilder {
 	 * @return The same query, with criteria removed (if they were part of the query)
 	 */
 	public QueryBuilder without(String attribute) {
+		if (attribute == null) {
+			throw new NullPointerException("Attribute name was null, but only non-null values are accepted");
+		}
 		if (selectors.containsKey(attribute)) {
 			selectors.remove(attribute);
 		}
