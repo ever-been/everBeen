@@ -7,7 +7,7 @@
 	<packaging>jar</packaging>
 
 	<parent>
-		<artifactId>clustered</artifactId>
+		<artifactId>been</artifactId>
 		<groupId>cz.cuni.mff.d3s.been</groupId>
 		<version>3.0.0</version>
 	</parent>

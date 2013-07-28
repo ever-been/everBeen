@@ -1,4 +1,4 @@
-package cz.cuni.mff.d3s.been.resultsrepository.mongo;
+package cz.cuni.mff.d3s.been.repository.mongo;
 
 import java.net.UnknownHostException;
 import java.util.*;
@@ -82,6 +82,15 @@ public final class MongoStorage implements Storage {
 		db = client.getDB(dbname);
 		if (authenticate && !db.authenticate(username, password.toCharArray())) {
 			throw new StorageException("Failed to authenticate against BEEN database");
+		}
+		try {
+			final CommandResult statRes = db.getStats();
+			if (!statRes.ok()) {
+				throw new StorageException("Failed to get DB stats. Mongo database is probably not running.");
+			}
+			log.info("Mongo connection initalized. Current Mongo stats:\n{}", statRes.toString());
+		} catch (MongoException e) {
+			throw new StorageException("Error getting DB stats. Mongo database is probably not running.", e);
 		}
 	}
 

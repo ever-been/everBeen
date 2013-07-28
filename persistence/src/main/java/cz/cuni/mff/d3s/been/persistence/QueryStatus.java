@@ -8,18 +8,24 @@ import java.io.Serializable;
  * @author darklight
  */
 public enum QueryStatus implements Serializable {
-	OK("Query successful"),
-	PERSISTENCE_DOWN("The persistence layer is currently down"),
-	INVALID_QUERY("Provided query was invalid"),
-	UNKNOWN("Unknown error");
+	OK("Query successful", true),
+	PERSISTENCE_DOWN("The persistence layer is currently down", false),
+	INVALID_QUERY("Provided query was invalid", false),
+	UNKNOWN("Unknown error", false);
 
 	private final String desc;
+	private final boolean ok;
 
-	QueryStatus(String desc) {
+	QueryStatus(String desc, boolean ok) {
 		this.desc = desc;
+		this.ok = ok;
 	}
 
 	public String getDescription() {
 		return desc;
+	}
+
+	public boolean isOk() {
+		return ok;
 	}
 }

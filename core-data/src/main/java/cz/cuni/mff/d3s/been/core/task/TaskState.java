@@ -4,7 +4,7 @@ package cz.cuni.mff.d3s.been.core.task;
  * Different states a BEEN task can happen to be in.
  * 
  * To change the state of a {@link TaskEntry} use {@link
- * TaskEntries.setState();}, as it will also create a log entry with the reason
+ * TaskEntries#setState(TaskEntry, TaskState, String, Object...)}, as it will also create a log entry with the reason
  * for the task state change.
  * 
  * @author Martin Sixta

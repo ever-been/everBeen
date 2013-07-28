@@ -15,6 +15,7 @@ import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
+import cz.cuni.mff.d3s.been.core.task.TaskState;
 import cz.cuni.mff.d3s.been.debugassistant.DebugListItem;
 import cz.cuni.mff.d3s.been.logging.ServiceLogMessage;
 import cz.cuni.mff.d3s.been.logging.TaskLogMessage;
@@ -55,6 +56,18 @@ public interface BeenApi {
     public Collection<ServiceLogMessage> getServiceLogsByBeenId(String beenId) throws BeenApiException;
     public Collection<ServiceLogMessage> getServiceLogsByHostRuntimeId(String hostRuntimeId) throws BeenApiException;
     public Collection<ServiceLogMessage> getServiceLogsByServiceName(String serviceName) throws BeenApiException;
+    
+	public void clearPersistenceForTask(String taskId) throws DAOException;
+	public void clearPersistenceForContext(String contextId) throws DAOException;
+	public void clearPersistenceForBenchmark(String benchmarkId) throws DAOException;
+
+	public Collection<String> getTasksWithFinalState(TaskState state) throws DAOException;
+	public Collection<String> getTasksWithFinalStateFromContext(TaskState state, String contextId) throws DAOException;
+	public Collection<String> getTasksWithFinalStateFromBenchmark(TaskState state, String benchmarkId) throws DAOException;
+
+	public TaskState getFinalTaskState(String taskId) throws DAOException;
+	public Map<String, TaskState> getFinalTaskStatesForContext(String contextId) throws DAOException;
+	public Map<String, TaskState> getFinalTaskStatesForBenchmark(String benchmarkId) throws DAOException;
 
 	public String submitTask(TaskDescriptor taskDescriptor) throws BeenApiException;
 	public String submitTaskContext(TaskContextDescriptor taskContextDescriptor) throws BeenApiException;

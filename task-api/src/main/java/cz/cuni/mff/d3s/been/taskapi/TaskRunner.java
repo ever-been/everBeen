@@ -30,7 +30,11 @@ public class TaskRunner {
 
 		String[] taskArgs = createTaskArgs(args);
 
-		task.doMain(taskArgs);
+		int exitValue = task.doMain(taskArgs);
+
+		if (exitValue != 0) {
+			System.exit(exitValue);
+		}
 
 	}
 

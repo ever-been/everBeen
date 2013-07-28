@@ -1,14 +1,19 @@
 package cz.cuni.mff.d3s.been.taskapi;
 
+import cz.cuni.mff.d3s.been.core.PropertyReader;
+import cz.cuni.mff.d3s.been.core.StatusCode;
+import cz.cuni.mff.d3s.been.core.TaskMessageType;
+import cz.cuni.mff.d3s.been.core.TaskPropertyNames;
+import cz.cuni.mff.d3s.been.core.persistence.EntityID;
+import cz.cuni.mff.d3s.been.mq.MessagingException;
+import cz.cuni.mff.d3s.been.persistence.DAOException;
+import cz.cuni.mff.d3s.been.results.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cz.cuni.mff.d3s.been.core.TaskMessageType;
-import cz.cuni.mff.d3s.been.core.TaskPropertyNames;
-import cz.cuni.mff.d3s.been.mq.MessagingException;
+import java.util.Properties;
 
 /**
- * 
  * @author Kuba Břečka
  */
 public abstract class Task {
@@ -22,7 +27,7 @@ public abstract class Task {
 
 	/**
 	 * Returns ID of the running task.
-	 * 
+	 *
 	 * @return ID of the running task
 	 */
 	public String getId() {
@@ -31,7 +36,7 @@ public abstract class Task {
 
 	/**
 	 * Returns context ID the running task is associated with.
-	 * 
+	 *
 	 * @return context ID associated with the running task
 	 */
 	public String getContextId() {
@@ -40,7 +45,7 @@ public abstract class Task {
 
 	/**
 	 * Returns benchmark ID of the running task.
-	 * 
+	 *
 	 * @return benchmark ID of the running task
 	 */
 	public String getBenchmarkId() {
@@ -49,10 +54,8 @@ public abstract class Task {
 
 	/**
 	 * Returns system property associated with the running task.
-	 * 
-	 * @param propertyName
-	 *          name of the property
-	 * 
+	 *
+	 * @param propertyName name of the property
 	 * @return value associated with the name
 	 */
 	public String getProperty(String propertyName) {
@@ -60,11 +63,24 @@ public abstract class Task {
 	}
 
 	/**
+	 * Creates a {@link PropertyReader} from environment properties of the
+	 * {@link Task} which are passed to it by it's Host Runtime
+	 *
+	 * @return {@link PropertyReader} initialized from environment properties of
+	 *         the {@link Task}
+	 */
+	public PropertyReader createPropertyReader() {
+		Properties properties = new Properties();
+		properties.putAll(System.getenv());
+
+		return PropertyReader.on(properties);
+
+	}
+
+	/**
 	 * Returns system property associated with the running task or default value
-	 * 
-	 * @param propertyName
-	 *          name of the property
-	 * 
+	 *
+	 * @param propertyName name of the property
 	 * @return value associated with the name or the default value when the
 	 *         property is not set
 	 */
@@ -78,26 +94,57 @@ public abstract class Task {
 	}
 
 	/**
-	 * The method subclasses override to implement task's functionality.
-	 * 
-	 * To execute a task {@link #doMain(String[])} will be called.
+	 * Stores a {@link Result} on behalf of the Task.
+	 * <p/>
+	 * taskId, contextId and contextId will be filled in to the result.
+	 *
+	 * @param result Result to persist
+	 * @param kind   Kind of the result
+	 * @param group  Group of the result
+	 * @throws DAOException when result cannot be persisted
 	 */
-	public abstract void run(String[] args);
+	public void store(final Result result, final String kind, final String group) throws DAOException {
+		final EntityID entityID = new EntityID().withKind(kind).withGroup(group);
+		long time = System.currentTimeMillis();
+		result.withTaskId(getId()).withContextId(getContextId()).withBenchmarkId(getBenchmarkId()).withCreated(time);
+		results.persistResult(result, entityID);
+	}
 
 	/**
-	 * 
+	 * The method subclasses override to implement task's functionality.
+	 * <p/>
+	 * To execute a task {@link #doMain(String[])} will be called.
+	 */
+	public abstract void run(String[] args) throws TaskException, MessagingException, DAOException;
+
+	/**
 	 * The method which sets up task's environment and calls
 	 * {@link #run(String[])}.
-	 * 
+	 *
 	 * @param args
 	 */
-	public void doMain(String[] args) {
+	public int doMain(String[] args) {
 		try {
 			initialize();
 			run(args);
+		} catch (MessagingException e) {
+			System.err.println("The task encountered ");
+			e.printStackTrace();
+			return StatusCode.EX_NETWORK_ERROR.getCode();
+		} catch (TaskException e) {
+			log.error("Task encountered an exception", e);
+			return StatusCode.EX_UNKNOWN.getCode();
+		} catch (DAOException e) {
+			log.error("Task cannot persist a result", e);
+			return StatusCode.EX_UNKNOWN.getCode();
+		} catch (Throwable t) {
+			log.error("Task encountered an unknown exception", t);
+			return StatusCode.EX_UNKNOWN.getCode();
 		} finally {
 			tearDown();
 		}
+
+		return StatusCode.EX_OK.getCode();
 	}
 
 	private void initialize() {

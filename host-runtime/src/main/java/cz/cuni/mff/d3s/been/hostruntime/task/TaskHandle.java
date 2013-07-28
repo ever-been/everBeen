@@ -1,9 +1,14 @@
 package cz.cuni.mff.d3s.been.hostruntime.task;
 
+import static cz.cuni.mff.d3s.been.core.task.TaskState.ABORTED;
 import static cz.cuni.mff.d3s.been.core.task.TaskState.ACCEPTED;
+import static cz.cuni.mff.d3s.been.core.task.TaskState.FINISHED;
 
 import java.util.Collection;
 
+import cz.cuni.mff.d3s.been.core.persistence.Entities;
+import cz.cuni.mff.d3s.been.persistence.DAOException;
+import cz.cuni.mff.d3s.been.persistence.task.PersistentTaskState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,9 +49,9 @@ public class TaskHandle {
 	 * Creates new handle.
 	 * 
 	 * @param entry
-	 *          entry to manipulate upon
+	 *		  entry to manipulate upon
 	 * @param ctx
-	 *          connection to the cluster
+	 *		  connection to the cluster
 	 */
 	public TaskHandle(TaskEntry entry, ClusterContext ctx) {
 		this.entry = entry;
@@ -74,7 +79,7 @@ public class TaskHandle {
 	 * The change is cluster visible.
 	 * 
 	 * @param process
-	 *          where to get runtime information to be updated in the entry
+	 *		  where to get runtime information to be updated in the entry
 	 */
 	public void setRunning(TaskProcess process) throws IllegalStateException {
 		entry.setWorkingDirectory(process.getWorkingDirectory());
@@ -88,7 +93,7 @@ public class TaskHandle {
 	 * The change is cluster visible.
 	 * 
 	 * @param exitValue
-	 *          the exit value of the task
+	 *		  the exit value of the task
 	 */
 	public void setFinished(int exitValue) throws IllegalStateException {
 		entry.setExitCode(exitValue);
@@ -99,9 +104,9 @@ public class TaskHandle {
 	 * Sets state of the entry to ABORTED
 	 * 
 	 * @param format
-	 *          formatted message of why the change happened
+	 *		  formatted message of why the change happened
 	 * @param args
-	 *          arguments for the formatted message
+	 *		  arguments for the formatted message
 	 */
 	public void setAborted(String format, Object... args) throws IllegalStateException {
 		updateEntry(TaskState.ABORTED, format, args);
@@ -115,9 +120,9 @@ public class TaskHandle {
 	 * in this context of execution.
 	 * 
 	 * @param format
-	 *          formatted message of why the change happened
+	 *		  formatted message of why the change happened
 	 * @param args
-	 *          arguments for the formatted message
+	 *		  arguments for the formatted message
 	 * 
 	 * @throws IllegalArgumentException
 	 */
@@ -160,14 +165,14 @@ public class TaskHandle {
 	 * Updates the entry in the cluster.
 	 * 
 	 * @param state
-	 *          new state of the task
+	 *		  new state of the task
 	 * @param format
-	 *          formatted message of why the change happened
+	 *		  formatted message of why the change happened
 	 * @param args
-	 *          arguments for the formatted message
+	 *		  arguments for the formatted message
 	 * 
 	 * @throws IllegalStateException
-	 *           if the current entry has been concurrently modified
+	 *		   if the current entry has been concurrently modified
 	 */
 	private void updateEntry(TaskState state, String format, Object... args) throws IllegalStateException {
 
@@ -194,6 +199,14 @@ public class TaskHandle {
 			map.unlock(id);
 		}
 
+		if (FINISHED.equals(state) || ABORTED.equals(state)) {
+			try {
+				ctx.getPersistence().asyncPersist(Entities.OUTCOME_TASK.getId(), new PersistentTaskState().withTaskState(state).withTaskId(id).withContextId(entry.getTaskContextId()).withBenchmarkId(entry.getBenchmarkId()));
+			} catch (DAOException e) {
+				log.warn("Could not record finishing state of task '{}'. Task data may remain dangling.", id, e);
+			}
+		}
+
 		log.debug("State of task {} has been changed to {}", id, state.toString());
 
 	}
@@ -202,9 +215,9 @@ public class TaskHandle {
 	 * Checks whether the current entry is still valid.
 	 * 
 	 * @param clusterEntry
-	 *          entry to compare against
+	 *		  entry to compare against
 	 * @return true if the current entry has not been modified from the outside,
-	 *         false otherwise
+	 *		 false otherwise
 	 */
 	private boolean isSame(TaskEntry clusterEntry) {
 		boolean isScheduledHere = entry.getRuntimeId().equals(clusterEntry.getRuntimeId());
@@ -219,9 +232,9 @@ public class TaskHandle {
 	 * Adds necessary debug information to the cluster.
 	 * 
 	 * @param debugPort
-	 *          debug port
+	 *		  debug port
 	 * @param suspended
-	 *          whether the task has been started suspended
+	 *		  whether the task has been started suspended
 	 */
 	public void setDebug(int debugPort, boolean suspended) {
 		DebugAssistant debugAssistant = new DebugAssistant(ctx);
@@ -232,7 +245,7 @@ public class TaskHandle {
 	 * Adds command line arguments information to the entry
 	 * 
 	 * @param taskArguments
-	 *          task command line arguments
+	 *		  task command line arguments
 	 */
 	private void setTaskEntryArgs(Collection<String> taskArguments) {
 		TaskEntry.Args args = new TaskEntry.Args();

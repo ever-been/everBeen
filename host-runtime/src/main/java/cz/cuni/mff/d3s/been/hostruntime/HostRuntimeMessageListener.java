@@ -1,7 +1,5 @@
 package cz.cuni.mff.d3s.been.hostruntime;
 
-import static cz.cuni.mff.d3s.been.hostruntime.HostRuntime.ACTION_QUEUE_NAME;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +15,8 @@ import cz.cuni.mff.d3s.been.core.protocol.messages.BaseMessage;
 import cz.cuni.mff.d3s.been.mq.IMessageSender;
 import cz.cuni.mff.d3s.been.mq.MessageQueues;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
+
+import static cz.cuni.mff.d3s.been.cluster.Names.ACTION_QUEUE_NAME;
 
 final class HostRuntimeMessageListener implements MessageListener<BaseMessage>, Service {
 

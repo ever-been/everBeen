@@ -9,17 +9,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+import static cz.cuni.mff.d3s.been.hostruntime.HostRuntimeConfiguration.*;
+
 /**
  * Author: donarus
  */
 public class WorkingDirectoryResolver {
+	private static final String TASKS_WRKDIR_PARENT = "tasks";
 
-    private static final String HR_WRKDIR_NAME_PROPERTY_NAME = "hostruntime.wrkdir.name";
-    private static final String HR_WRKDIR_NAME_DEFAULT = ".HostRuntime";
-    private static final String HR_TASKS_WRKDIR_PARENT = "tasks";
-
-    private static final String HR_TASKS_WRKDIR_MAX_HISTORY_PROPERTY_NAME = "hostruntime.tasks.wrkdir.maxHistory";
-    private static final Integer HR_TASKS_WRKDIR_MAX_HISTORY_DEFAULT = 4;
     private Properties properties;
 
     public WorkingDirectoryResolver(Properties properties) {
@@ -29,19 +26,19 @@ public class WorkingDirectoryResolver {
     public File getHostRuntimeWorkingDirectory() {
         final PropertyReader propReader = PropertyReader.on(properties);
 
-        final String hrWrkDir = propReader.getString(HR_WRKDIR_NAME_PROPERTY_NAME, HR_WRKDIR_NAME_DEFAULT);
+        final String hrWrkDir = propReader.getString(WRKDIR_NAME, DEFAULT_WRKDIR_NAME);
         return new File(hrWrkDir);
     }
 
     public File getTasksWorkingDirectory() {
         final PropertyReader propReader = PropertyReader.on(properties);
-        Integer hrTasksWrkDirMaxHistory = propReader.getInteger(HR_TASKS_WRKDIR_MAX_HISTORY_PROPERTY_NAME, HR_TASKS_WRKDIR_MAX_HISTORY_DEFAULT);
+        Integer hrTasksWrkDirMaxHistory = propReader.getInteger(TASKS_WRKDIR_MAX_HISTORY, DEFAULT_TASKS_WRKDIR_MAX_HISTORY);
         if (hrTasksWrkDirMaxHistory < 1) {
             hrTasksWrkDirMaxHistory = 1;
         }
 
         File hrWrkDir = getHostRuntimeWorkingDirectory();
-        File tasksParentDir = new File(hrWrkDir, HR_TASKS_WRKDIR_PARENT);
+        File tasksParentDir = new File(hrWrkDir, TASKS_WRKDIR_PARENT);
 
         if (tasksParentDir.exists()) {
             List<File> oldTasksWrkDirs = Arrays.asList(tasksParentDir.listFiles());

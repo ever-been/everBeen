@@ -27,6 +27,8 @@ import cz.cuni.mff.d3s.been.mq.MessagingException;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
 
+import static cz.cuni.mff.d3s.been.cluster.Names.ACTION_QUEUE_NAME;
+
 /**
  * 
  * This is the main implementation of Host Runtime.
@@ -76,11 +78,6 @@ public final class HostRuntime implements IClusterService {
 	 * Message Queues manager.
 	 */
 	private final MessageQueues messageQueues;
-
-	/**
-	 * Name of the task action queue.
-	 */
-	static final String ACTION_QUEUE_NAME = "been.hostruntime.actions";
 
 	/**
 	 * Name of the resource with the logger.py
