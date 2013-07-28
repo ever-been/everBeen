@@ -8,6 +8,7 @@ import cz.cuni.mff.d3s.been.cluster.Names;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.benchmark.BenchmarkEntry;
 import cz.cuni.mff.d3s.been.core.persistence.Entities;
+import cz.cuni.mff.d3s.been.core.persistence.Entity;
 import cz.cuni.mff.d3s.been.core.persistence.EntityID;
 import cz.cuni.mff.d3s.been.core.protocol.command.CommandEntry;
 import cz.cuni.mff.d3s.been.core.protocol.command.CommandEntryState;
@@ -23,6 +24,7 @@ import cz.cuni.mff.d3s.been.logging.ServiceLogMessage;
 import cz.cuni.mff.d3s.been.logging.TaskLogMessage;
 import cz.cuni.mff.d3s.been.persistence.*;
 import cz.cuni.mff.d3s.been.persistence.task.PersistentDescriptors;
+import cz.cuni.mff.d3s.been.persistence.task.PersistentTaskState;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
 import cz.cuni.mff.d3s.been.util.JSONUtils;
@@ -35,7 +37,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -725,7 +729,7 @@ public class BeenApiImpl implements BeenApi {
 
     @Override
     public Collection<ServiceLogMessage> getServiceLogsByBeenId(String beenId) throws BeenApiException {
-        Query query = new QueryBuilder().on(Entities.SERVICE_LOG).with("beenId", beenId).fetch();
+        Query query = new QueryBuilder().on(Entities.LOG_SERVICE.getId()).with("beenId", beenId).fetch();
         try {
             final QueryAnswer qa = clusterContext.getPersistence().query(query);
             if (!qa.isCarryingData()) {
@@ -739,11 +743,12 @@ public class BeenApiImpl implements BeenApi {
         } catch (Exception e) {
             throw createBeenApiException(e, "Interrupted when trying to execute persistence query '%s'", query.toString());
         }
+
     }
 
     @Override
     public Collection<ServiceLogMessage> getServiceLogsByHostRuntimeId(String hostRuntimeId) throws BeenApiException {
-        Query query = new QueryBuilder().on(Entities.SERVICE_LOG).with("hostRuntimeId", hostRuntimeId).fetch();
+        Query query = new QueryBuilder().on(Entities.LOG_SERVICE.getId()).with("hostRuntimeId", hostRuntimeId).fetch();
         try {
             final QueryAnswer qa = clusterContext.getPersistence().query(query);
             if (!qa.isCarryingData()) {
@@ -761,7 +766,7 @@ public class BeenApiImpl implements BeenApi {
 
     @Override
     public Collection<ServiceLogMessage> getServiceLogsByServiceName(String serviceName) throws BeenApiException {
-        Query query = new QueryBuilder().on(Entities.SERVICE_LOG).with("serviceName", serviceName).fetch();
+        Query query = new QueryBuilder().on(Entities.LOG_SERVICE.getId()).with("serviceName", serviceName).fetch();
         try {
             final QueryAnswer qa = clusterContext.getPersistence().query(query);
             if (!qa.isCarryingData()) {
@@ -794,6 +799,121 @@ public class BeenApiImpl implements BeenApi {
 
     private BeenApiException createBeenApiException(Exception e, String format, String... args) {
         return new BeenApiException(String.format(format, args), e);
+    }
+
+
+    // TASK STATE RETRIEVAL
+
+    @Override
+    public Collection<String> getTasksWithFinalState(TaskState state) throws DAOException {
+        final Query fetchQuery = new QueryBuilder().on(Entities.OUTCOME_TASK.getId()).with("taskState", state.name()).fetch();
+        final Collection<PersistentTaskState> pStates = unpackDataAnswer(fetchQuery, clusterContext.getPersistence().query(fetchQuery), PersistentTaskState.class);
+        final Collection<String> res = new ArrayList<String>(pStates.size());
+        for (PersistentTaskState pState : pStates) {
+            res.add(pState.getTaskId());
+        }
+        return res;
+    }
+
+    @Override
+    public Collection<String> getTasksWithFinalStateFromContext(TaskState state, String contextId) throws DAOException {
+        final Query fetchQuery = new QueryBuilder().on(Entities.OUTCOME_TASK.getId()).with("taskState", state.name()).with("contextId", contextId).fetch();
+        final Collection<PersistentTaskState> pStates = unpackDataAnswer(fetchQuery, clusterContext.getPersistence().query(fetchQuery), PersistentTaskState.class);
+        final Collection<String> res = new ArrayList<String>(pStates.size());
+        for (PersistentTaskState pState : pStates) {
+            res.add(pState.getTaskId());
+        }
+        return res;
+    }
+
+    @Override
+    public Collection<String> getTasksWithFinalStateFromBenchmark(TaskState state, String benchmarkId) throws DAOException {
+        final Query fetchQuery = new QueryBuilder().on(Entities.OUTCOME_TASK.getId()).with("taskState", state.name()).with("benchmarkId", benchmarkId).fetch();
+        final Collection<PersistentTaskState> pStates = unpackDataAnswer(fetchQuery, clusterContext.getPersistence().query(fetchQuery), PersistentTaskState.class);
+        final Collection<String> res = new ArrayList<String>(pStates.size());
+        for (PersistentTaskState pState : pStates) {
+            res.add(pState.getTaskId());
+        }
+        return res;
+    }
+
+    @Override
+    public TaskState getFinalTaskState(String taskId) throws DAOException {
+        final Query fetchQuery = new QueryBuilder().on(Entities.OUTCOME_TASK.getId()).with("taskId", taskId).fetch();
+        final Collection<PersistentTaskState> pStates = unpackDataAnswer(fetchQuery, clusterContext.getPersistence().query(fetchQuery), PersistentTaskState.class);
+        for (PersistentTaskState pState : pStates) {
+            return pState.getTaskState();
+        }
+        throw new DAOException(String.format("No final task state found for task '%s'", taskId));
+    }
+
+    @Override
+    public Map<String, TaskState> getFinalTaskStatesForContext(String contextId) throws DAOException {
+        final Query fetchQuery = new QueryBuilder().on(Entities.OUTCOME_TASK.getId()).with("contextId", contextId).fetch();
+        final Collection<PersistentTaskState> pStates = unpackDataAnswer(fetchQuery, clusterContext.getPersistence().query(fetchQuery), PersistentTaskState.class);
+        final Map<String, TaskState> res = new HashMap<String, TaskState>(pStates.size());
+        for (PersistentTaskState pState : pStates) {
+            res.put(pState.getTaskId(), pState.getTaskState());
+        }
+        return res;
+    }
+
+    @Override
+    public Map<String, TaskState> getFinalTaskStatesForBenchmark(String benchmarkId) throws DAOException {
+        final Query fetchQuery = new QueryBuilder().on(Entities.OUTCOME_TASK.getId()).with("benchmarkId", benchmarkId).fetch();
+        final Collection<PersistentTaskState> pStates = unpackDataAnswer(fetchQuery, clusterContext.getPersistence().query(fetchQuery), PersistentTaskState.class);
+        final Map<String, TaskState> res = new HashMap<String, TaskState>(pStates.size());
+        for (PersistentTaskState pState : pStates) {
+            res.put(pState.getTaskId(), pState.getTaskState());
+        }
+        return res;
+    }
+
+    /**
+     * Unmarshall a collection of accordingly typed entities from a {@link QueryAnswer}, or throw a {@link DAOException} if something goes wrong
+     * Call this on a {@link QueryAnswer} that should be bringing you data. Provide the {@link Query} this answer originated from. If the answer is not carrying the data it should, an informative exception is thrown.
+     *
+     * @param query       {@link Query} you used to retrieve data. This method should only be using for fetch-type queries
+     * @param answer      The {@link QueryAnswer} you got as a response to this query
+     * @param entityClass Class of the entity to unmarshall
+     * @throws DAOException When there is no data in the answer
+     */
+    private <T extends Entity> Collection<T> unpackDataAnswer(Query query, QueryAnswer answer, Class<T> entityClass) throws DAOException {
+        if (!answer.isCarryingData()) {
+            throw new DAOException(String.format("Answer for query '%s' returned with no data: %s", query.toString(), answer.getStatus().getDescription()));
+        }
+        try {
+            return jsonUtils.deserialize(answer.getData(), entityClass);
+        } catch (JsonException e) {
+            throw new DAOException(String.format("Failed to unmarshall data responding to query '%s'", query.toString()), e);
+        }
+    }
+
+    @Override
+    public void clearPersistenceForTask(String taskId) throws DAOException {
+        final Query deleteQuery = new QueryBuilder().with("taskId", taskId).delete();
+        final QueryAnswer answer = clusterContext.getPersistence().query(deleteQuery);
+        if (!answer.getStatus().isOk()) {
+            throw new DAOException(String.format("Failed to delete leftover entities with taskId '%s': %s", taskId, answer.getStatus().getDescription()));
+        }
+    }
+
+    @Override
+    public void clearPersistenceForContext(String contextId) throws DAOException {
+        final Query deleteQuery = new QueryBuilder().with("contextId", contextId).delete();
+        final QueryAnswer answer = clusterContext.getPersistence().query(deleteQuery);
+        if (!answer.getStatus().isOk()) {
+            throw new DAOException(String.format("Failed to delete leftover entities with contextId '%s': %s", contextId, answer.getStatus().getDescription()));
+        }
+    }
+
+    @Override
+    public void clearPersistenceForBenchmark(String benchmarkId) throws DAOException {
+        final Query deleteQuery = new QueryBuilder().with("benchmarkId", benchmarkId).delete();
+        final QueryAnswer answer = clusterContext.getPersistence().query(deleteQuery);
+        if (!answer.getStatus().isOk()) {
+            throw new DAOException(String.format("Failed to delete leftover entities with benchmarkId '%s': %s", benchmarkId, answer.getStatus().getDescription()));
+        }
     }
 
 }
