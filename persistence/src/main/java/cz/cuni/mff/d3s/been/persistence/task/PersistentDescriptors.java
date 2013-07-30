@@ -68,7 +68,7 @@ public final class PersistentDescriptors {
 	 * @param name Name with which to save the descriptor
      * @param bpkId ID of the BPK to associate this descriptor with
 	 *
-	 * @return A persistable {@link Entity} wrapping provided {@link cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor}
+	 * @return A persistable {@link NamedEntity} wrapping provided {@link cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor}
 	 */
 	public static NamedEntity wrapNamedTaskDescriptor(TaskDescriptor td, String name, BpkIdentifier bpkId) {
 		final NamedPersistentTaskDescriptor wrap = new NamedPersistentTaskDescriptor();
@@ -102,7 +102,7 @@ public final class PersistentDescriptors {
 	 * @param name Name with which to save the descriptor
      * @param bpkId Identifier of the BPK this named configuration should be associated with
 	 *
-	 * @return A persistable {@link Entity} wrapping provided {@link TaskContextDescriptor}
+	 * @return A persistable {@link NamedEntity} wrapping provided {@link TaskContextDescriptor}
 	 */
 	public static NamedEntity wrapNamedContextDescriptor(TaskContextDescriptor tcd, String name, BpkIdentifier bpkId) {
 		final NamedPersistentContextDescriptor wrap = new NamedPersistentContextDescriptor();
