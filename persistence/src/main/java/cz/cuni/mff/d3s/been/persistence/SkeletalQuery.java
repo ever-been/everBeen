@@ -24,7 +24,7 @@ abstract class SkeletalQuery implements Query {
 
 	private String id;
 	private EntityID entityID;
-	private Map<String, String> selectors;
+	protected Map<String, String> selectors;
 
 	SkeletalQuery() {
 		this.id = null;

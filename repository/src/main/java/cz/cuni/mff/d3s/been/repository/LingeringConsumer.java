@@ -9,10 +9,14 @@ public class LingeringConsumer<T> extends Consumer<T> {
 	private static final Logger log = LoggerFactory.getLogger(LingeringConsumer.class);
 
 	protected final Take<T> take;
+	protected final Float failRateThreshold;
+	protected final Long suspendTimeOnHighFailRate;
 
-	LingeringConsumer(Take<T> take, SuccessAction<T> successAction, FailAction<T> failAction) {
-		super(successAction, failAction);
+	LingeringConsumer(Take<T> take, SuccessAction<T> successAction, FailAction<T> failAction, FailRate failRateMonitor, Float failRateThreshold, Long suspendTimeOnHighFailRate) {
+		super(successAction, failAction, failRateMonitor);
 		this.take = take;
+		this.failRateThreshold = failRateThreshold;
+		this.suspendTimeOnHighFailRate = suspendTimeOnHighFailRate;
 	}
 
 	@Override
@@ -38,11 +42,12 @@ public class LingeringConsumer<T> extends Consumer<T> {
 					// other circumstances than during interruption.
 					throw new InterruptedException("Queue take yielded null item.");
 				}
-				log.debug("Taken item {} from queue", item);
-				act(item);
+				if (!act(item) && (failRateMonitor.getFailRate() >= failRateThreshold)) {
+					Thread.sleep(suspendTimeOnHighFailRate);
+				}
 			} catch (InterruptedException e) {
 				// the take has been interrupted - a signal that this repository is being terminated
-				log.warn("Queue take interrupted..");
+				log.warn("Lingering queue consumer interrupted.");
 				Thread.currentThread().interrupt();
 			}
 		}

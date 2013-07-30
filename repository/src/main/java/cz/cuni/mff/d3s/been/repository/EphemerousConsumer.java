@@ -10,8 +10,8 @@ public class EphemerousConsumer<T> extends Consumer<T> {
 
 	protected final Poll<T> poll;
 
-	public EphemerousConsumer(Poll<T> poll, SuccessAction<T> successAction, FailAction<T> failAction) {
-		super(successAction, failAction);
+	public EphemerousConsumer(Poll<T> poll, SuccessAction<T> successAction, FailAction<T> failAction, FailRate failRateMonitor) {
+		super(successAction, failAction, failRateMonitor);
 		this.poll = poll;
 	}
 
@@ -21,11 +21,12 @@ public class EphemerousConsumer<T> extends Consumer<T> {
 		while (!Thread.currentThread().isInterrupted()) {
 			final T item = poll.perform();
 			if (item == null) {
-				// there is nothing to do, end execution (this thread is ephemerous) 
-				Thread.currentThread().interrupt();
+				// there is nothing to do, end execution (this thread is ephemerous)
+				break;
 			} else {
-				log.debug("Taken item {} from the queue.", item);
-				act(item);
+				if (!act(item)) {
+					break;
+				}
 			}
 		}
 		log.debug("Thread terminating.");

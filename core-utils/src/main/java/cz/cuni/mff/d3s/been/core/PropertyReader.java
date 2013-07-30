@@ -108,6 +108,35 @@ public class PropertyReader {
 	}
 
 	/**
+	 * Get a {@link Float} from properties
+	 *
+	 * The default value will be returned if
+	 * <ul>
+	 * <li>the system property has no value associated with it</li>
+	 * <li>the value cannot be parsed as a float</li>
+	 * </ul>
+	 *
+	 * @param name
+	 *          Name of desired property
+	 * @param defaultValue
+	 *          Value to assign if lookup or conversion fails
+	 *
+	 * @return Float value of wanted property
+	 */
+	public Float getFloat(String name, Float defaultValue) {
+		final String propString = properties.getProperty(name);
+		if (propString == null) {
+			return defaultValue;
+		}
+		try {
+			return Float.parseFloat(propString);
+		} catch (NumberFormatException e) {
+			log.warn("Cannot convert value '{}' of property '{}' to Float");
+		}
+		return defaultValue;
+	}
+
+	/**
 	 * Get a {@link Boolean} from properties
 	 * 
 	 * The default value will be returned if

@@ -53,7 +53,7 @@ public final class QueryAnswerFactory {
 	 * @return The answer
 	 */
 	public static final QueryAnswer badQuery() {
-		return new SimpleQueryAnswer(QueryStatus.INVALID_QUERY);
+		return new SimpleQueryAnswer(QueryStatus.UNSUPPORTED_QUERY);
 	}
 
 	/**

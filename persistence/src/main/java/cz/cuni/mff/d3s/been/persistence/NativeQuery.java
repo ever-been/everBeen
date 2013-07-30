@@ -7,16 +7,20 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 /**
+ * Database-specific native query.
+ *
  * @author Kuba Brecka
+ *
+ * @deprecated The entire principle of native querying needs to be rethought and possibly eliminated. Usage strongle discouraged.
  */
+@Deprecated
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
-public class NativeQuery extends SkeletalQuery implements Serializable {
+class NativeQuery extends SkeletalQuery {
 
-	private String jsFunction;
+	private String queryString;
 
-	public NativeQuery(String jsFunction) {
+	public NativeQuery(String queryString) {
 		super(new EntityID(), new HashMap<String, String>());
-		this.jsFunction = jsFunction;
 	}
 
 	@Override
@@ -24,11 +28,11 @@ public class NativeQuery extends SkeletalQuery implements Serializable {
 		return QueryType.NATIVE;
 	}
 
-	public String getJsFunction() {
-		return jsFunction;
+	public String getQueryString() {
+		return queryString;
 	}
 
-	public void setJsFunction(String jsFunction) {
-		this.jsFunction = jsFunction;
+	public void setQueryString(String queryString) {
+		this.queryString = queryString;
 	}
 }

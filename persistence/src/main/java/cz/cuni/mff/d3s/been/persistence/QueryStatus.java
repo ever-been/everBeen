@@ -10,7 +10,7 @@ import java.io.Serializable;
 public enum QueryStatus implements Serializable {
 	OK("Query successful", true),
 	PERSISTENCE_DOWN("The persistence layer is currently down", false),
-	INVALID_QUERY("Provided query was invalid", false),
+	UNSUPPORTED_QUERY("Provided query not recognized", false),
 	UNKNOWN("Unknown error", false),
 	TRANSPORT_TIMED_OUT("Transporting the query to persistenc layer timed out", false),
 	PROCESSING_TIMED_OUT("Query processing timed out", false);
