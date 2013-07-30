@@ -20,6 +20,12 @@ public class BeenApiServiceImpl implements BeenApiService {
 
     @Override
     public boolean connect(String host, int port, String groupName, String groupPassword) {
+        if (!isConnected()) {
+            if (api != null) {
+                api.shutdown();
+            }
+            api = null;
+        }
         api = new BeenApiImpl(host, port, groupName, groupPassword);
         return isConnected();
     }

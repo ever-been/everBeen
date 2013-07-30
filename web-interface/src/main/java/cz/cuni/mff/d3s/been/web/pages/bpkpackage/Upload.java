@@ -1,6 +1,7 @@
 package cz.cuni.mff.d3s.been.web.pages.bpkpackage;
 
 import cz.cuni.mff.d3s.been.api.BeenApiException;
+import cz.cuni.mff.d3s.been.api.BpkStreamHolder;
 import cz.cuni.mff.d3s.been.bpk.BpkConfigurationException;
 import cz.cuni.mff.d3s.been.web.components.Layout;
 import cz.cuni.mff.d3s.been.web.pages.Page;
@@ -15,6 +16,8 @@ import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.services.ajax.AjaxResponseRenderer;
 import org.apache.tapestry5.upload.services.UploadedFile;
 import org.got5.tapestry5.jquery.JQueryEventConstants;
+
+import java.io.IOException;
 
 /**
  * User: donarus
@@ -40,12 +43,12 @@ public class Upload extends Page {
 	void onUpload(UploadedFile uploadedFile) throws BeenApiException {
 
 		try {
-			api.getApi().uploadBpk(uploadedFile.getStream());
-		} catch (BpkConfigurationException e) {
-			message = "Cannot store uploaded BPK in repository: " + e.getMessage();
-			ajaxResponseRenderer.addRender("uploadResult", uploadResult);
-			return;
-		}
+			api.getApi().uploadBpk(new BpkStreamHolder(uploadedFile.getStream()));
+		} catch (BpkConfigurationException | IOException | BeenApiException e) {
+            message = "Cannot store uploaded BPK in repository: " + e.getMessage();
+            ajaxResponseRenderer.addRender("uploadResult", uploadResult);
+            return;
+        }
 
 		message = "Successfully uploaded package.";
 		ajaxResponseRenderer.addRender("uploadResult", uploadResult);

@@ -170,7 +170,13 @@ public final class Instance {
 	}
 
 	private static boolean isConnected() {
-		return (nodeType != null && hazelcastInstance != null);
+        if (hazelcastInstance != null) {
+            if (hazelcastInstance instanceof HazelcastClient) {
+                return ((HazelcastClient) hazelcastInstance).isActive();
+            }
+            return true;
+        }
+        return false;
 	}
 
 }

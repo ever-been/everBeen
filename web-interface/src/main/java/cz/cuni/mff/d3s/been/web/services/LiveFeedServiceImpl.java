@@ -2,6 +2,8 @@ package cz.cuni.mff.d3s.been.web.services;
 
 import java.util.Collection;
 
+import com.hazelcast.core.EntryEvent;
+import com.hazelcast.core.EntryListener;
 import cz.cuni.mff.d3s.been.api.BeenApiException;
 import org.apache.tapestry5.ioc.Invokable;
 import org.apache.tapestry5.ioc.services.ParallelExecutor;
@@ -46,12 +48,32 @@ public class LiveFeedServiceImpl implements LiveFeedService {
 				}
 
                 try {
-                    api.getApi().addLogListener(new BeenApi.LogListener() {
+
+                    EntryListener<String, String> logsListener = new EntryListener<String, String>() {
                         @Override
-                        public void logAdded(String log) {
-                            broadcast("/logs", log);
+                        public void entryAdded(EntryEvent<String, String> event) {
+                            broadcast("/logs", event.getValue());
                         }
-                    });
+
+                        @Override
+                        public void entryRemoved(EntryEvent<String, String> event) {
+                        }
+
+                        @Override
+                        public void entryUpdated(EntryEvent<String, String> event) {
+                            broadcast("/logs", event.getValue());
+                        }
+
+                        @Override
+                        public void entryEvicted(EntryEvent<String, String> event) {
+                        }
+                    };
+
+
+
+
+
+                    api.getApi().addLogListener(logsListener);
                 } catch (BeenApiException e) {
                     e.printStackTrace();
                 }
