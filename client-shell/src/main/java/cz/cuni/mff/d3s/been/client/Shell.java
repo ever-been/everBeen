@@ -81,7 +81,7 @@ public class Shell {
 			// connect to the cluster
 
 			Instance.init(NodeType.NATIVE, properties);
-			clusterContext = new ClusterContext(Instance.getInstance());
+			clusterContext = Instance.createContext();
 
 		} catch (CmdLineException e) {
 

@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.debugassistant;
 
+import cz.cuni.mff.d3s.been.cluster.ClusterConfiguration;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Created with IntelliJ IDEA.
@@ -59,7 +61,7 @@ public class DebugAssistantRunner {
 		System.setProperty("hazelcast.logging.type", "none");
 
 		HazelcastInstance inst = Instance.newNativeInstance(host, port, groupName, groupPassword);
-		ClusterContext clusterCtx = new ClusterContext(inst);
+		ClusterContext clusterCtx = new ClusterContext(inst, new Properties());
 
 		try {
 

@@ -5,5 +5,6 @@ package cz.cuni.mff.d3s.been.persistence;
  */
 public enum QueryType {
 	FETCH,
-	DELETE
+	DELETE,
+	NATIVE
 }

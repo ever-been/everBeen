@@ -124,7 +124,9 @@ public class Layout {
 
         CONTEXT_DETAIL(cz.cuni.mff.d3s.been.web.pages.context.Detail.class, "Contexts", null, true),
 
-	    CLUSTER_INFO(cz.cuni.mff.d3s.been.web.pages.cluster.Info.class, "Cluster", null),
+	    CLUSTER_INFO(cz.cuni.mff.d3s.been.web.pages.cluster.Info.class, "Cluster", "Info"),
+
+	    CLUSTER_LOGS(cz.cuni.mff.d3s.been.web.pages.cluster.Logs.class, "Cluster", "Service logs"),
 
 	    DEBUG_LIST(cz.cuni.mff.d3s.been.web.pages.debug.List.class, "Debug", null),
 

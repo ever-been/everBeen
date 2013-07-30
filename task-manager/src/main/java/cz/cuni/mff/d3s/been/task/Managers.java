@@ -3,7 +3,10 @@ package cz.cuni.mff.d3s.been.task;
 import com.hazelcast.core.HazelcastInstance;
 
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
+import cz.cuni.mff.d3s.been.cluster.Instance;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
+
+import java.util.Properties;
 
 /**
  * Static factory for the IManager implementation.
@@ -19,9 +22,9 @@ import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 public final class Managers {
 	private static IClusterService clusterManager;
 
-	public static IClusterService getManager(HazelcastInstance instance) {
+	public static IClusterService getManager(ClusterContext ctx) {
 		if (clusterManager == null) {
-			clusterManager = new ClusterManager(new ClusterContext(instance));
+			clusterManager = new ClusterManager(ctx);
 		}
 
 		return clusterManager;

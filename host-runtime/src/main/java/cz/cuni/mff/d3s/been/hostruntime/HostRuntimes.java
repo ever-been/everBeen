@@ -10,6 +10,7 @@ import java.util.GregorianCalendar;
 
 import com.hazelcast.core.HazelcastInstance;
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
+import cz.cuni.mff.d3s.been.cluster.Instance;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskExclusivity;
@@ -38,7 +39,7 @@ public class HostRuntimes {
 	 */
 	public static synchronized HostRuntime getRuntime(HazelcastInstance hazelcastInstance, Properties properties) {
 		if (hostRuntime == null) {
-			ClusterContext clusterContext = new ClusterContext(hazelcastInstance);
+			ClusterContext clusterContext = Instance.createContext();
 			SwRepoClientFactory swRepoClientFactory = new SwRepoClientFactory(SoftwareStoreBuilderFactory.getSoftwareStoreBuilder().withProperties(
 					properties).buildCache());
 			WorkingDirectoryResolver workingDirectoryResolver = new WorkingDirectoryResolver(properties);

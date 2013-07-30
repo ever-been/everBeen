@@ -16,7 +16,8 @@ import java.util.*;
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
 @JsonSubTypes({
 		@JsonSubTypes.Type(value = FetchQuery.class),
-		@JsonSubTypes.Type(value = DeleteQuery.class)
+		@JsonSubTypes.Type(value = DeleteQuery.class),
+		@JsonSubTypes.Type(value = NativeQuery.class)
 })
 @JsonIgnoreProperties({"type", "selectorNames"})
 abstract class SkeletalQuery implements Query {

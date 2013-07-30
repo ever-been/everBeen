@@ -1,10 +1,13 @@
 package cz.cuni.mff.d3s.been.repository.mongo;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.ServiceLoader;
 
 import cz.cuni.mff.d3s.been.core.persistence.TaskEntity;
+import cz.cuni.mff.d3s.been.persistence.NativeQuery;
+import cz.cuni.mff.d3s.been.persistence.Query;
 import cz.cuni.mff.d3s.been.persistence.QueryBuilder;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -25,7 +28,7 @@ public final class MongoStorageTest extends Assert {
 
 	private final JSONUtils jsonUtils = JSONUtils.newInstance();
 
-	public class DummyEntity extends TaskEntity {
+	public static class DummyEntity extends TaskEntity {
 		/** A testing string */
 		private String something = "strange";
 
@@ -114,6 +117,23 @@ public final class MongoStorageTest extends Assert {
 	@Test
 	public void testRetrieveFromInexistentCollection() {
 		assertEquals(0, storage.query(new QueryBuilder().on(dummyId).with("something", "strange").fetch()).getData().size());
+	}
+
+	@Test
+	public void testNativeQuery() throws JsonException, DAOException {
+		DummyEntity entity = new DummyEntity();
+		storage.store(dummyId, jsonUtils.serialize(entity));
+
+		assertEquals(1, storage.query(new QueryBuilder().on(dummyId).with("something", "strange").fetch()).getData().size());
+
+		Query query = new NativeQuery(String.format("function() { return db.getCollection('%s.%s').find({}, {_id: 0}).toArray(); }", dummyId.getKind(), dummyId.getGroup()));
+		Collection<String> data = storage.query(query).getData();
+		
+		Collection<DummyEntity> collection = JSONUtils.newInstance().deserialize(data, DummyEntity.class);
+		assertEquals(1, collection.size());
+		for (DummyEntity item : collection) {
+			assertEquals(entity.something, item.something);
+		}
 	}
 
 }

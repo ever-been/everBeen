@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+
+<html t:type="layout" section="section"
+      xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd" xmlns:p="tapestry:parameter">
+
+<h2>Service logs</h2>
+
+<table class="list wide">
+	<thead>
+	<tr>
+		<th>Date</th>
+		<th></th>
+		<th></th>
+	</tr>
+	</thead>
+
+	<t:loop source="dates" value="date">
+		<tr class="data">
+			<td>Logs from ${dateToString(date)}</td>
+			<td><a href="/cluster/logsdownload/${dateToString(date)}" class="btn">download</a></td>
+		</tr>
+
+		<p:empty>
+			<tr>
+				<td colspan="3">
+					<i class="icon-info-sign"></i> There are no service logs.
+				</td>
+			</tr>
+		</p:empty>
+	</t:loop>
+</table>
+
+</html>

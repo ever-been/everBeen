@@ -139,24 +139,24 @@ public class Runner {
 		try {
             // standalone services
             if (runSWRepository) {
-                clusterReaper.pushTarget(startSWRepository(instance, properties));
+                clusterReaper.pushTarget(startSWRepository());
             }
 
             // Run Task Manager on DATA nodes
             if (nodeType == NodeType.DATA) {
-                clusterReaper.pushTarget(startTaskManager(instance));
+                clusterReaper.pushTarget(startTaskManager());
             }
 
             if (runHostRuntime) {
                 clusterReaper.pushTarget(startHostRuntime(instance, properties));
             }
 
-            clusterReaper.pushTarget(startLogPersister(instance));
+            clusterReaper.pushTarget(startLogPersister());
 
 			// Services that require a persistence layer
 			if (runRepository) {
 				final Storage storage = StorageBuilderFactory.createBuilder(properties).build();
-				clusterReaper.pushTarget(startRepository(instance, storage));
+				clusterReaper.pushTarget(startRepository(storage));
 			}
 
 		} catch (ServiceException se) {
@@ -207,10 +207,9 @@ public class Runner {
 
 	}
 
-	private
-			IClusterService
-			startTaskManager(final HazelcastInstance instance) throws ServiceException {
-		IClusterService taskManager = Managers.getManager(instance);
+	private IClusterService startTaskManager() throws ServiceException {
+		final ClusterContext ctx = Instance.createContext();
+		IClusterService taskManager = Managers.getManager(ctx);
 		taskManager.start();
 		return taskManager;
 	}
@@ -224,27 +223,24 @@ public class Runner {
 		return hostRuntime;
 	}
 
-	private IClusterService startSWRepository(HazelcastInstance instance, Properties properties) throws ServiceException {
-		ClusterContext ctx = new ClusterContext(instance);
-		SoftwareRepository softwareRepository = SoftwareRepositories.createSWRepository(
-				ctx,
-				properties);
+	private IClusterService startSWRepository() throws ServiceException {
+		ClusterContext ctx = Instance.createContext();
+		SoftwareRepository softwareRepository = SoftwareRepositories.createSWRepository(ctx);
 		softwareRepository.init();
 
 		softwareRepository.start();
 		return softwareRepository;
 	}
 
-    private IClusterService startLogPersister(HazelcastInstance instance) throws ServiceException {
-        ClusterContext ctx = new ClusterContext(instance);
+    private IClusterService startLogPersister() throws ServiceException {
+        ClusterContext ctx = Instance.createContext();
         ServiceLogPersister logPersister = ServiceLogPersister.getHandlerInstance(ctx, beenId, hostRuntimeId);
         logPersister.start();
         return logPersister;
     }
 
-	private IClusterService startRepository(HazelcastInstance instance,
-			Storage storage) throws ServiceException {
-		ClusterContext ctx = new ClusterContext(instance);
+	private IClusterService startRepository(Storage storage) throws ServiceException {
+		ClusterContext ctx = Instance.createContext();
 		Repository repository = Repository.create(ctx, storage);
 		repository.start();
 		return repository;

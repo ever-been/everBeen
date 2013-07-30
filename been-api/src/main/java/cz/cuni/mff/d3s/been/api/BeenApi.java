@@ -2,6 +2,7 @@ package cz.cuni.mff.d3s.been.api;
 
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 
 import com.hazelcast.core.EntryListener;
@@ -54,6 +55,9 @@ public interface BeenApi {
     public Collection<ServiceLogMessage> getServiceLogsByBeenId(String beenId) throws BeenApiException;
     public Collection<ServiceLogMessage> getServiceLogsByHostRuntimeId(String hostRuntimeId) throws BeenApiException;
     public Collection<ServiceLogMessage> getServiceLogsByServiceName(String serviceName) throws BeenApiException;
+
+	public Collection<Date> getServiceLogsAvailableDates() throws BeenApiException;
+	public Collection<ServiceLogMessage> getServiceLogsByDate(Date date) throws BeenApiException;
     
 	public void clearPersistenceForTask(String taskId) throws BeenApiException;
 	public void clearPersistenceForContext(String contextId) throws BeenApiException;

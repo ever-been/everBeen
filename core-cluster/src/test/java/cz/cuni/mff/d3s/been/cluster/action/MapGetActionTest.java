@@ -2,6 +2,7 @@ package cz.cuni.mff.d3s.been.cluster.action;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 
 import cz.cuni.mff.d3s.been.socketworks.twoway.Reply;
 import cz.cuni.mff.d3s.been.socketworks.twoway.ReplyType;
@@ -35,6 +36,7 @@ public class MapGetActionTest extends Assert {
 
 	private static HazelcastInstance hazelcastInstance;
 	private static ClusterContext ctx;
+	private static Properties properties;
 
 	@Before
 	public void setUp() {
@@ -52,12 +54,14 @@ public class MapGetActionTest extends Assert {
 		c1.getNetworkConfig().getJoin().getTcpIpConfig().setMembers(allMembers);
 
 		hazelcastInstance = Hazelcast.newHazelcastInstance(c1);
-		ctx = new ClusterContext(hazelcastInstance);
+		properties = new Properties();
+		ctx = new ClusterContext(hazelcastInstance, properties);
 
 	}
 
 	@AfterClass
 	public static void tearDownClass() throws Exception {
+		properties = null;
 		ctx = null;
 		hazelcastInstance.getLifecycleService().shutdown();
 	}

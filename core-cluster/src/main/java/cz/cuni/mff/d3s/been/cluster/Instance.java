@@ -2,6 +2,7 @@ package cz.cuni.mff.d3s.been.cluster;
 
 import java.util.Properties;
 
+import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,6 +35,7 @@ public final class Instance {
 
 	/** The singleton Hazelcast instance */
 	private static HazelcastInstance hazelcastInstance = null;
+	private static Properties properties = null;
 
 	/** Type of the instance */
 	private static NodeType nodeType = null;
@@ -92,10 +94,16 @@ public final class Instance {
 		if (isConnected()) {
 			throw new IllegalStateException("The node is already connected!");
 		}
-
+		properties = userProperties;
 		hazelcastInstance = join(type, userProperties);
 		nodeType = type;
+	}
 
+	public static ClusterContext createContext() {
+		if (!isConnected()) {
+			throw new IllegalStateException("The node is not connected yet");
+		}
+		return new ClusterContext(hazelcastInstance, properties);
 	}
 
 	public static synchronized HazelcastInstance newNativeInstance(String host, int port, String groupName,
