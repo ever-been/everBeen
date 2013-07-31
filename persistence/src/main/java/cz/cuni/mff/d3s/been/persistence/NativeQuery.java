@@ -11,7 +11,7 @@ import java.util.HashMap;
  *
  * @author Kuba Brecka
  *
- * @deprecated The entire principle of native querying needs to be rethought and possibly eliminated. Usage strongle discouraged.
+ * @deprecated The entire principle of native querying needs to be rethought and possibly eliminated. Usage strongly discouraged.
  */
 @Deprecated
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
@@ -21,6 +21,7 @@ class NativeQuery extends SkeletalQuery {
 
 	public NativeQuery(String queryString) {
 		super(new EntityID(), new HashMap<String, String>());
+        this.queryString = queryString;
 	}
 
 	@Override

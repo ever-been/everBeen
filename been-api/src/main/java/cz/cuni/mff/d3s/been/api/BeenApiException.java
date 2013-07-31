@@ -5,6 +5,8 @@ package cz.cuni.mff.d3s.been.api;
  */
 public class BeenApiException extends Exception {
 
+    private String detailedReason;
+
     public BeenApiException(String message) {
         super(message);
     }
@@ -15,6 +17,14 @@ public class BeenApiException extends Exception {
 
     public BeenApiException(Throwable cause) {
         super(cause);
+    }
+
+    public void setDetailedReason(String detailedReason) {
+        this.detailedReason = detailedReason;
+    }
+
+    public String getDetailedReason() {
+        return detailedReason;
     }
 
 }
