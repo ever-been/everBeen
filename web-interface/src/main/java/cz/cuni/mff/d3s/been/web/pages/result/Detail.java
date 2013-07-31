@@ -13,11 +13,19 @@ import org.apache.tapestry5.annotations.Property;
 @Page.Navigation(section = Layout.Section.RESULTS_LIST)
 public class Detail extends Page {
 
-	@Property
-	private EvaluatorResult result;
+    @Property
+    private EvaluatorResult result;
 
-	void onActivate(String resultId) throws DAOException, BeenApiException {
-		result = this.api.getApi().getEvaluatorResult(resultId);
-	}
+    @Property
+    private String resultId;
+
+    void onActivate(String resultId) throws DAOException, BeenApiException {
+        this.resultId = resultId;
+        result = this.api.getApi().getEvaluatorResult(resultId);
+    }
+
+    Object onPassivate() {
+        return resultId;
+    }
 
 }

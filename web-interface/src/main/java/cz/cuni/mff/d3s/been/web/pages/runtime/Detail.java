@@ -181,6 +181,9 @@ public class Detail extends Page {
     @Path("context:img/ajax-loader.gif")
     private Asset spinner;
 
+    @Property
+    private String runtimeId;
+
 
     // -------------------
     // PAGE INITIALIZATION
@@ -193,6 +196,7 @@ public class Detail extends Page {
      * @param runtimeId id of displayed runtime
      */
     void onActivate(String runtimeId) throws BeenApiException {
+        this.runtimeId = runtimeId;
         runtime = api.getApi().getRuntime(runtimeId);
         taskWrkDirChecker = new TaskWrkDirChecker(api.getApi());
     }
@@ -204,7 +208,7 @@ public class Detail extends Page {
      * @returm id of displayed runtime
      */
     Object onPassivate() {
-        return runtime.getId();
+        return runtimeId;
     }
 
     /**

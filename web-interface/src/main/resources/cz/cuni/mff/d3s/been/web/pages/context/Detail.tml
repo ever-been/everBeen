@@ -1,66 +1,88 @@
 <!DOCTYPE html>
 
-<html t:type="layout" section="section" xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd" xmlns:p="tapestry:parameter">
+<html t:type="layout" section="section" xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd"
+      xmlns:p="tapestry:parameter">
 
-<h2>Task Context ${context.id}</h2>
+    <h2>Task context ${contextId}</h2>
+    <t:if t:test="context" t:negate="true">
+        Task context ${contextId} was not found
+        <p:else>
+            <div style="float: right; text-align: right;">
+                <t:if test="taskContextInFinalState(context.id)">
+                    <button class="btn btn-warning"
+                            onclick="if (window.confirm('Are you sure?')) location.href='/context/remove/${context.id}'; return false;">
+                        Remove context
+                    </button>
+                    <p:else>
+                        <button class="btn btn-danger"
+                                onclick="if (window.confirm('Are you sure?')) location.href='/context/kill/${context.id}'; return false;">
+                            Kill context
+                        </button>
+                    </p:else>
+                </t:if>
+            </div>
 
-<div style="float: right; text-align: right;">
-	<t:if test="taskContextInFinalState(context.id)">
-		<button class="btn btn-warning" onclick="if (window.confirm('Are you sure?')) location.href='/context/remove/${context.id}'; return false;">Remove context</button>
-		<p:else>
-			<button class="btn btn-danger" onclick="if (window.confirm('Are you sure?')) location.href='/context/kill/${context.id}'; return false;">Kill context</button>
-		</p:else>
-	</t:if>
-</div>
+            <dl class="dl-horizontal">
+                <dt>Context ID:</dt>
+                <dd>
+                    <i class="icon-book"></i>&nbsp;
+                    <b>${context.id}</b>
+                </dd>
+                <dt>Name:</dt>
+                <dd>
+                    <b>${context.taskContextDescriptor?.name}</b>
+                </dd>
+                <dt>State:</dt>
+                <dd>
+                    <t:outputRaw value="contextStateWithIcon(context.contextState)"/>
+                </dd>
 
-<dl class="dl-horizontal">
-	<dt>Context ID:</dt>
-	<dd>
-		<i class="icon-book"></i>&nbsp;
-		<b>${context.id}</b>
-	</dd>
-	<dt>Name:</dt>
-	<dd><b>${context.taskContextDescriptor?.name}</b></dd>
-	<dt>State:</dt>
-	<dd><t:outputRaw value="contextStateWithIcon(context.contextState)"/></dd>
+                <dt>Benchmark ID:</dt>
+                <dd>
+                    <t:if test="context.benchmarkId">
+                        <i class="icon-rocket"></i>&nbsp;
+                        <a href="/benchmark/detail/${context.benchmarkId}">
+                            <t:output format="idFormat" value="context.benchmarkId"/>
+                        </a>
+                    </t:if>
+                </dd>
+            </dl>
 
-	<dt>Benchmark ID:</dt>
-	<dd>
-		<t:if test="context.benchmarkId">
-			<i class="icon-rocket"></i>&nbsp;
-			<a href="/benchmark/detail/${context.benchmarkId}"><t:output format="idFormat" value="context.benchmarkId" /></a>
-		</t:if>
-	</dd>
-</dl>
+            <dl class="dl-horizontal">
+                <dt>Lingering:</dt>
+                <dd>${context.lingering}</dd>
+                <dt>Description:</dt>
+                <dd>${context.taskContextDescriptor?.contextDescription}</dd>
+                <dt>Properties:</dt>
+                <dd>
+                    <t:loop source="context.taskContextDescriptor?.properties?.property" value="property">
+                        ${property.name} = ${property.value}
+                        <br/>
+                    </t:loop>
+                </dd>
+            </dl>
 
-<dl class="dl-horizontal">
-	<dt>Lingering:</dt>
-	<dd>${context.lingering}</dd>
-	<dt>Description:</dt>
-	<dd>${context.taskContextDescriptor?.contextDescription}</dd>
-	<dt>Properties:</dt>
-	<dd>
-		<t:loop source="context.taskContextDescriptor?.properties?.property" value="property">
-			${property.name} = ${property.value}<br />
-		</t:loop>
-	</dd>
-</dl>
-
-<dl class="dl-horizontal">
-	<dt>Contained tasks:</dt>
-	<dd>
-		<table class="inner-task-list">
-			<t:loop source="taskIds" value="taskId">
-				<tr>
-					<td><i class="icon-beaker"></i>&nbsp;<a href="/task/detail/${taskId}"><t:output format="idFormat" value="taskId" /></a></td>
-					<td>${taskEntryWithId(taskId)?.taskDescriptor.name}</td>
-					<td>
-						<t:outputRaw value="taskStateWithIcon(taskEntryWithId(taskId)?.state)"/>
-					</td>
-				</tr>
-			</t:loop>
-		</table>
-	</dd>
-</dl>
+            <dl class="dl-horizontal">
+                <dt>Contained tasks:</dt>
+                <dd>
+                    <table class="inner-task-list">
+                        <t:loop source="taskIds" value="taskId">
+                            <tr>
+                                <td><i class="icon-beaker"></i>&nbsp;
+                                    <a href="/task/detail/${taskId}">
+                                        <t:output format="idFormat" value="taskId"/>
+                                    </a>
+                                </td>
+                                <td>${taskEntryWithId(taskId)?.taskDescriptor.name}</td>
+                                <td>
+                                    <t:outputRaw value="taskStateWithIcon(taskEntryWithId(taskId)?.state)"/>
+                                </td>
+                            </tr>
+                        </t:loop>
+                    </table>
+                </dd>
+            </dl>
+        </p:else>
+    </t:if>
 
 </html>

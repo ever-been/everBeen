@@ -23,7 +23,6 @@
         </div>
 
         <div style="display:none" id="stack-trace-div">
-            <h2>An unexpected exception has occurred</h2>
             <p>${originalMessage}</p>
 
             <div style="padding: 20px;">
@@ -34,26 +33,31 @@
     </div>
 
     <div style="position:fixed; bottom: 0px; right: 0px; padding: 3px">
-        <a href="#" id="display-stack-trace-link" style="color: #6E6E6E;">display full stack trace for debug purposes
+        <a href="#" id="display-stack-trace-link" style="color: #6E6E6E;">
+            display full stack trace for debug purposes
         </a>
-        <a href="#" id="hide-stack-trace-link" style="color: #6E6E6E; display:none">hide full stack trace for debug
-            purposes
+        <a href="#" id="hide-stack-trace-link" style="color: #6E6E6E; display:none">
+            hide full stack trace
         </a>
 
     </div>
 
     <t:block t:id="hazelcastDisconnectedExceptionBlock">
         <p>${message}</p>
-        <p>Click <t:pagelink t:page="Connect">here</t:pagelink> to go to connect page.</p>
-    </t:block>
-
-    <t:block t:id="unknownExceptionBlock">
-        <p>${message}</p>
+        <p>Click <t:pagelink t:page="Connect">here</t:pagelink> to redirect to connect page.</p>
     </t:block>
 
     <t:block t:id="softwareRepositoryUnavailableExceptionBlock">
         <p>${message}</p>
         <p>Check <t:pagelink t:page="cluster/Info">cluster info</t:pagelink> page.</p>
+    </t:block>
+
+    <t:block t:id="standardBeenApiExceptionBlock">
+        <p>${message}</p>
+    </t:block>
+
+    <t:block t:id="unknownExceptionBlock">
+        <p>${message}</p>
     </t:block>
 
     <script>

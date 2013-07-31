@@ -1,76 +1,102 @@
 <!DOCTYPE html>
 
-<html t:type="layout" section="section" xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd" xmlns:p="tapestry:parameter">
+<html t:type="layout" section="section" xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd"
+      xmlns:p="tapestry:parameter">
 
-<h2>Benchmark ${benchmark.id}</h2>
+    <h2>Benchmark ${benchmarkId}</h2>
+    <t:if t:test="benchmark" t:negate="true">
+        Benchmark ${benchmarkId} was not found
+        <p:else>
 
-<div style="float: right; text-align: right;">
-	<t:if test="benchmarkInFinalState(benchmark.id)">
-		<button class="btn btn-warning" onclick="if (window.confirm('Are you sure?')) location.href='/benchmark/remove/${benchmark.id}'; return false;">Remove benchmark</button>
-		<p:else>
-			<button class="btn btn-danger" onclick="if (window.confirm('Are you sure?')) location.href='/benchmark/kill/${benchmark.id}'; return false;">Kill benchmark</button>
-		</p:else>
-	</t:if>
-</div>
+            <div style="float: right; text-align: right;">
+                <t:if test="benchmarkInFinalState(benchmark.id)">
+                    <button class="btn btn-warning"
+                            onclick="if (window.confirm('Are you sure?')) location.href='/benchmark/remove/${benchmark.id}'; return false;">
+                        Remove benchmark
+                    </button>
+                    <p:else>
+                        <button class="btn btn-danger"
+                                onclick="if (window.confirm('Are you sure?')) location.href='/benchmark/kill/${benchmark.id}'; return false;">
+                            Kill benchmark
+                        </button>
+                    </p:else>
+                </t:if>
+            </div>
 
-<dl class="dl-horizontal">
-	<dt>Benchmark ID:</dt>
-	<dd>
-		<i class="icon-rocket"></i>&nbsp;
-		<b>${benchmark.id}</b>
-	</dd>
-	<dt>Name:</dt>
-	<dd><b>${generator.taskDescriptor.name}</b></dd>
-</dl>
+            <dl class="dl-horizontal">
+                <dt>Benchmark ID:</dt>
+                <dd>
+                    <i class="icon-rocket"></i>&nbsp;
+                    <b>${benchmark.id}</b>
+                </dd>
+                <dt>Name:</dt>
+                <dd>
+                    <b>${generator.taskDescriptor.name}</b>
+                </dd>
+            </dl>
 
-<dl class="dl-horizontal">
-	<dt>Generator task:</dt>
-	<dd>
-		<i class="icon-beaker"></i>&nbsp;
-		<a href="/task/detail/${benchmark.generatorId}"><t:output format="idFormat" value="benchmark.generatorId" /></a>
-	</dd>
-	<dt>State:</dt>
-	<dd><t:outputRaw value="taskStateWithIcon(generator.state)"/></dd>
-	<dt>BPK package:</dt>
-	<dd>${generator.taskDescriptor.groupId}, ${generator.taskDescriptor.bpkId}, ${generator.taskDescriptor.version}</dd>
-	<dt>Last changed:</dt>
-	<dd>${taskLastChanged(generator)}</dd>
-</dl>
+            <dl class="dl-horizontal">
+                <dt>Generator task:</dt>
+                <dd>
+                    <i class="icon-beaker"></i>&nbsp;
+                    <a href="/task/detail/${benchmark.generatorId}">
+                        <t:output format="idFormat" value="benchmark.generatorId"/>
+                    </a>
+                </dd>
+                <dt>State:</dt>
+                <dd>
+                    <t:outputRaw value="taskStateWithIcon(generator.state)"/>
+                </dd>
+                <dt>BPK package:</dt>
+                <dd>${generator.taskDescriptor.groupId}, ${generator.taskDescriptor.bpkId},
+                    ${generator.taskDescriptor.version}
+                </dd>
+                <dt>Last changed:</dt>
+                <dd>${taskLastChanged(generator)}</dd>
+            </dl>
 
-<dl class="dl-horizontal">
-	<dt>Generator storage:</dt>
-	<dd>
-		<t:loop source="benchmark.storage?.storageItem" value="storageItem">
-			${storageItem.key} = ${storageItem.value}
-		</t:loop>
-	</dd>
-	<dt>Generated:</dt>
-	<dd>${benchmark.generatedContextCount}</dd>
-	<dt>Allows resubmits:</dt>
-	<dd>${benchmark.allowResubmit}</dd>
-	<dt>Resubmits:</dt>
-	<dd>
-		<t:loop source="benchmark.resubmitHistory.resubmitHistoryItem" value="resubmit">
-			At ${timestampToString(resubmit.timestamp)}, old generator task ID: ${resubmit.oldGeneratorId}, old runtime ID: ${resubmit.oldRuntimeId}<br />
-		</t:loop>
-	</dd>
-</dl>
+            <dl class="dl-horizontal">
+                <dt>Generator storage:</dt>
+                <dd>
+                    <t:loop source="benchmark.storage?.storageItem" value="storageItem">
+                        ${storageItem.key} = ${storageItem.value}
+                    </t:loop>
+                </dd>
+                <dt>Generated:</dt>
+                <dd>${benchmark.generatedContextCount}</dd>
+                <dt>Allows resubmits:</dt>
+                <dd>${benchmark.allowResubmit}</dd>
+                <dt>Resubmits:</dt>
+                <dd>
+                    <t:loop source="benchmark.resubmitHistory.resubmitHistoryItem" value="resubmit">
+                        At ${timestampToString(resubmit.timestamp)}, old generator task ID: ${resubmit.oldGeneratorId},
+                        old runtime ID: ${resubmit.oldRuntimeId}
+                        <br/>
+                    </t:loop>
+                </dd>
+            </dl>
 
-<dl class="dl-horizontal">
-	<dt>Contained contexts:</dt>
-	<dd>
-		<table class="inner-task-list">
-			<t:loop source="contexts" value="context">
-				<tr>
-					<td><i class="icon-book"></i>&nbsp;<a href="/context/detail/${context.id}"><t:output format="idFormat" value="context.id" /></a></td>
-					<td>${context.taskContextDescriptor?.name}</td>
-					<td>
-						<t:outputRaw value="contextStateWithIcon(context.contextState)"/>
-					</td>
-				</tr>
-			</t:loop>
-		</table>
-	</dd>
-</dl>
+            <dl class="dl-horizontal">
+                <dt>Contained contexts:</dt>
+                <dd>
+                    <table class="inner-task-list">
+                        <t:loop source="contexts" value="context">
+                            <tr>
+                                <td><i class="icon-book"></i>&nbsp;
+                                    <a href="/context/detail/${context.id}">
+                                        <t:output format="idFormat" value="context.id"/>
+                                    </a>
+                                </td>
+                                <td>${context.taskContextDescriptor?.name}</td>
+                                <td>
+                                    <t:outputRaw value="contextStateWithIcon(context.contextState)"/>
+                                </td>
+                            </tr>
+                        </t:loop>
+                    </table>
+                </dd>
+            </dl>
+        </p:else>
+    </t:if>
 
 </html>
