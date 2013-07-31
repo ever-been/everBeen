@@ -32,6 +32,9 @@ public class Exception extends Page implements ExceptionReporter {
     private Block softwareRepositoryUnavailableExceptionBlock;
 
     @Inject
+    private Block standardBeenApiExceptionBlock;
+
+    @Inject
     private Block hazelcastDisconnectedExceptionBlock;
 
     @Inject
@@ -71,6 +74,8 @@ public class Exception extends Page implements ExceptionReporter {
             api.disconnect();
         } else if (t instanceof SoftwareRepositoryUnavailableException) {
             this.correctExceptionBlock = softwareRepositoryUnavailableExceptionBlock;
+        } else if (t instanceof BeenApiException) {
+            this.correctExceptionBlock = standardBeenApiExceptionBlock;
         }
 
 

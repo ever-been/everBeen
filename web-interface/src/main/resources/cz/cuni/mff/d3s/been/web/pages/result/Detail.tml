@@ -3,35 +3,53 @@
 <html t:type="layout" section="section"
       xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd" xmlns:p="tapestry:parameter">
 
-<h2>Evaluator result ${result.id}</h2>
+    <h2>Evaluator result ${resultId}</h2>
+    <t:if t:test="result" t:negate="true">
+        Evaluator result ${resultId} was not found
 
-<div style="float: right; text-align: right;">
-	<button class="btn btn-success" onclick="location.href='/result/download/${result.id}'; return false;">Download</button>
-	<br /><br />
-	<a href="/result/delete/${result.id}" class="btn btn-danger" onclick="return window.confirm('Are you sure?');">Delete</a>
-</div>
+        <p:else>
+            <div style="float: right; text-align: right;">
+                <button class="btn btn-success" onclick="location.href='/result/download/${result.id}'; return false;">
+                    Download
+                </button>
+                <br/>
+                <br/>
+                <a href="/result/delete/${result.id}" class="btn btn-danger"
+                   onclick="return window.confirm('Are you sure?');">Delete
+                </a>
+            </div>
 
-<dl class="dl-horizontal">
-	<dt>Result ID:</dt>
-	<dd>
-		<b>${result.id}</b>
-	</dd>
-	<dt>Timestamp:</dt>
-	<dd><b>${timestampToString(result.timestamp)}</b></dd>
-	<dt>Benchmark ID</dt>
-	<dd>
-		<t:if test="result.benchmarkId">
-			<i class="icon-rocket"></i>&nbsp;
-			<a href="/benchmark/detail/${result.benchmarkId}"><t:output format="idFormat" value="result.benchmarkId" /></a>
-		</t:if>
-	</dd>
-	<dt>Filename:</dt>
-	<dd><b>${result.filename}</b></dd>
-	<dt>MIME type:</dt>
-	<dd><b>${result.mimetype}</b></dd>
-</dl>
+            <dl class="dl-horizontal">
+                <dt>Result ID:</dt>
+                <dd>
+                    <b>${result.id}</b>
+                </dd>
+                <dt>Timestamp:</dt>
+                <dd>
+                    <b>${timestampToString(result.timestamp)}</b>
+                </dd>
+                <dt>Benchmark ID</dt>
+                <dd>
+                    <t:if test="result.benchmarkId">
+                        <i class="icon-rocket"></i>&nbsp;
+                        <a href="/benchmark/detail/${result.benchmarkId}">
+                            <t:output format="idFormat" value="result.benchmarkId"/>
+                        </a>
+                    </t:if>
+                </dd>
+                <dt>Filename:</dt>
+                <dd>
+                    <b>${result.filename}</b>
+                </dd>
+                <dt>MIME type:</dt>
+                <dd>
+                    <b>${result.mimetype}</b>
+                </dd>
+            </dl>
 
-<iframe src="/result/raw/${result.id}" style="width: 100%; height: 600px; border: 2px solid gray;"></iframe>
+            <iframe src="/result/raw/${result.id}" style="width: 100%; height: 600px; border: 2px solid gray;"></iframe>
 
 
+        </p:else>
+    </t:if>
 </html>

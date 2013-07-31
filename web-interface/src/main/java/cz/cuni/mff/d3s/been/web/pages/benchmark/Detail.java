@@ -11,7 +11,6 @@ import cz.cuni.mff.d3s.been.web.pages.Page;
 import org.apache.tapestry5.annotations.Property;
 
 import java.util.Collection;
-import java.util.HashMap;
 
 /**
  * @author Kuba Brecka
@@ -19,28 +18,39 @@ import java.util.HashMap;
 @Page.Navigation(section = Layout.Section.TASK_DETAIL)
 public class Detail extends Page {
 
-	@Property
-	BenchmarkEntry benchmark;
+    @Property
+    BenchmarkEntry benchmark;
 
-	@Property
-	TaskEntry generator;
+    @Property
+    TaskEntry generator;
 
-	@Property
-	StorageItem storageItem;
+    @Property
+    StorageItem storageItem;
 
-	@Property
-	ResubmitHistoryItem resubmit;
+    @Property
+    ResubmitHistoryItem resubmit;
 
-	@Property
-	Collection<TaskContextEntry> contexts;
+    @Property
+    Collection<TaskContextEntry> contexts;
 
-	@Property
-	TaskContextEntry context;
+    @Property
+    TaskContextEntry context;
 
-	void onActivate(String benchmarkId) throws BeenApiException {
-		benchmark = api.getApi().getBenchmark(benchmarkId);
-		generator = api.getApi().getTask(benchmark.getGeneratorId());
-		contexts = api.getApi().getTaskContextsInBenchmark(benchmarkId);
-	}
+    @Property
+    private String benchmarkId;
+
+    void onActivate(String benchmarkId) throws BeenApiException {
+        this.benchmarkId = benchmarkId;
+        this.benchmark = api.getApi().getBenchmark(benchmarkId);
+
+        if (benchmark != null) {
+            this.generator = api.getApi().getTask(benchmark.getGeneratorId());
+            this.contexts = api.getApi().getTaskContextsInBenchmark(benchmarkId);
+        }
+    }
+
+    Object onPasivate() {
+        return benchmarkId;
+    }
 
 }
