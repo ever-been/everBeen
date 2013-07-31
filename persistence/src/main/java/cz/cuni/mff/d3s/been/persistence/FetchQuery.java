@@ -15,7 +15,7 @@ class FetchQuery extends SkeletalQuery implements Serializable {
 	private FetchQuery() {
 	}
 
-	FetchQuery(EntityID entityID, Map<String, String> selectors) {
+	FetchQuery(EntityID entityID, Map<String, SkeletalAttributeFilter> selectors) {
 		super(entityID, selectors);
 	}
 

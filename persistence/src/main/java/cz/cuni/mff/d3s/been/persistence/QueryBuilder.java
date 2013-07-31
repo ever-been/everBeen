@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public class QueryBuilder {
 	private EntityID entityID;
-	private Map<String, String> selectors = new HashMap<String, String>();
+	Map<String, SkeletalAttributeFilter> selectors = new HashMap<String, SkeletalAttributeFilter>();
 
 	public QueryBuilder on(EntityID entityID) {
 		this.entityID = entityID;
@@ -33,8 +33,12 @@ public class QueryBuilder {
 		if (attribute == null || value == null) {
 			throw new NullPointerException(String.format("Invalid attribute specification '(key, value) == (%s, %s)': both key and value must be non-null", attribute, value));
 		}
-		selectors.put(attribute, value);
+		selectors.put(attribute, new EqAttributeFilter(value));
 		return this;
+	}
+
+	public AttributeFilterBuilder with(String attribute) {
+		return new AttributeFilterBuilder(this, attribute);
 	}
 
 	/**

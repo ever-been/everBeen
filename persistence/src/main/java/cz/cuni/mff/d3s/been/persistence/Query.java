@@ -38,9 +38,9 @@ public interface Query extends Serializable {
 	 *
 	 * @param selectorName Name of the selector
 	 *
-	 * @return Value of that selector
+	 * @return The selector
 	 */
-	String getSelector(String selectorName);
+	AttributeFilter getSelector(String selectorName);
 
 	/**
 	 * Get the type of this query

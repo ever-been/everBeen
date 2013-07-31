@@ -24,7 +24,7 @@ abstract class SkeletalQuery implements Query {
 
 	private String id;
 	private EntityID entityID;
-	protected Map<String, String> selectors;
+	protected Map<String, SkeletalAttributeFilter> selectors;
 
 	SkeletalQuery() {
 		this.id = null;
@@ -32,13 +32,13 @@ abstract class SkeletalQuery implements Query {
 		this.selectors = null;
 	}
 
-	SkeletalQuery(EntityID entityID, Map<String, String> selectors) {
+	SkeletalQuery(EntityID entityID, Map<String, SkeletalAttributeFilter> selectors) {
 		this.id = UUID.randomUUID().toString();
 		this.entityID = entityID;
 		this.selectors = Collections.unmodifiableMap(selectors);
 	}
 
-	public Map<String, String> getSelectors() {
+	public Map<String, SkeletalAttributeFilter> getSelectors() {
 		return selectors;
 	}
 
@@ -65,7 +65,7 @@ abstract class SkeletalQuery implements Query {
 	 *
 	 * @param selectors Selectors to set
 	 */
-	void setSelectors(Map<String, String> selectors) {
+	void setSelectors(Map<String, SkeletalAttributeFilter> selectors) {
 		this.selectors = selectors;
 	}
 
@@ -85,7 +85,7 @@ abstract class SkeletalQuery implements Query {
 	}
 
 	@Override
-	public String getSelector(String selectorName) {
+	public AttributeFilter getSelector(String selectorName) {
 		return selectors.get(selectorName);
 	}
 }

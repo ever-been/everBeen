@@ -1,6 +1,7 @@
 package cz.cuni.mff.d3s.been.persistence;
 
 import cz.cuni.mff.d3s.been.core.persistence.EntityID;
+import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.codehaus.jackson.annotate.JsonTypeInfo;
 
 import java.util.Map;
@@ -19,7 +20,7 @@ class DeleteQuery extends SkeletalQuery {
 	private DeleteQuery() {
 	}
 
-	DeleteQuery(EntityID entityID, Map<String, String> selectors) {
+	DeleteQuery(EntityID entityID, Map<String, SkeletalAttributeFilter> selectors) {
 		super(entityID, selectors);
 	}
 
