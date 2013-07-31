@@ -4,7 +4,6 @@ import com.hazelcast.core.EntryListener;
 import com.hazelcast.core.IMap;
 import com.hazelcast.core.Member;
 import com.hazelcast.query.SqlPredicate;
-import cz.cuni.mff.d3s.been.bpk.Bpk;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.cluster.Instance;
 import cz.cuni.mff.d3s.been.cluster.Names;
@@ -35,10 +34,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -49,18 +46,17 @@ import static cz.cuni.mff.d3s.been.persistence.task.PersistentDescriptors.*;
 /**
  * User: donarus Date: 4/27/13 Time: 11:50 AM
  */
-public final class BeenApiImpl implements BeenApi {
+public class BeenApiImpl implements BeenApi {
 
-    private static final String ERR_MSG_DISCONNECTED_FROM_CLUSTER = "Been API is not connected to Cluster";
-
-    private static final Logger log = LoggerFactory.getLogger(BeenApiImpl.class);
+    private static Logger log = LoggerFactory.getLogger(BeenApiImpl.class);
 
     private final ClusterContext clusterContext;
 
     private final JSONUtils jsonUtils = JSONUtils.newInstance();
 
     public BeenApiImpl(final String host, final int port, final String groupName, final String groupPassword) {
-        clusterContext = new ClusterContext(Instance.newNativeInstance(host, port, groupName, groupPassword));
+        Instance.newNativeInstance(host, port, groupName, groupPassword);
+        clusterContext = Instance.createContext();
     }
 
     public BeenApiImpl(final ClusterContext clusterContext) {
@@ -75,6 +71,7 @@ public final class BeenApiImpl implements BeenApi {
     @Override
     public Collection<Member> getClusterMembers() throws BeenApiException {
         final String errorMsg = "Failed to list connected members";
+
         checkIsActive(errorMsg);
 
         try {
@@ -87,6 +84,7 @@ public final class BeenApiImpl implements BeenApi {
     @Override
     public Map<String, String> getClusterServices() throws BeenApiException {
         final String errorMsg = "Failed to list available cluster services";
+
         checkIsActive(errorMsg);
 
         try {
@@ -99,6 +97,7 @@ public final class BeenApiImpl implements BeenApi {
     @Override
     public Collection<TaskEntry> getTasks() throws BeenApiException {
         final String errorMsg = "Failed to list task entries";
+
         checkIsActive(errorMsg);
 
         try {
@@ -110,7 +109,8 @@ public final class BeenApiImpl implements BeenApi {
 
     @Override
     public TaskEntry getTask(final String taskId) throws BeenApiException {
-        String errorMsg = String.format("Failed to get task with id '%s'", taskId);
+        final String errorMsg = String.format("Failed to get task with id '%s'", taskId);
+
         checkIsActive(errorMsg);
 
         try {
@@ -123,6 +123,7 @@ public final class BeenApiImpl implements BeenApi {
     @Override
     public Collection<TaskContextEntry> getTaskContexts() throws BeenApiException {
         final String errorMsg = "Failed to list task contexts";
+
         checkIsActive(errorMsg);
 
         try {
@@ -135,6 +136,7 @@ public final class BeenApiImpl implements BeenApi {
     @Override
     public TaskContextEntry getTaskContext(final String taskContextId) throws BeenApiException {
         final String errorMsg = String.format("Failed to get task context with id '%s'", taskContextId);
+
         checkIsActive(errorMsg);
 
         try {
@@ -147,6 +149,7 @@ public final class BeenApiImpl implements BeenApi {
     @Override
     public Collection<BenchmarkEntry> getBenchmarks() throws BeenApiException {
         final String errorMsg = "Failed to list benchmarks";
+
         checkIsActive(errorMsg);
 
         try {
@@ -159,6 +162,7 @@ public final class BeenApiImpl implements BeenApi {
     @Override
     public BenchmarkEntry getBenchmark(final String benchmarkId) throws BeenApiException {
         final String errorMsg = String.format("Failed to get benchmark with id '%s'", benchmarkId);
+
         checkIsActive(errorMsg);
 
         try {
@@ -171,6 +175,7 @@ public final class BeenApiImpl implements BeenApi {
     @Override
     public Collection<TaskContextEntry> getTaskContextsInBenchmark(final String benchmarkId) throws BeenApiException {
         final String errorMsg = String.format("Failed to list task contexts for benchmark with id '%s'", benchmarkId);
+
         checkIsActive(errorMsg);
 
         try {
@@ -183,6 +188,7 @@ public final class BeenApiImpl implements BeenApi {
     @Override
     public Collection<TaskEntry> getTasksInTaskContext(final String taskContextId) throws BeenApiException {
         final String errorMsg = String.format("Failed to list tasks for task context with id '%s'", taskContextId);
+
         checkIsActive(errorMsg);
 
         try {
@@ -195,6 +201,7 @@ public final class BeenApiImpl implements BeenApi {
     @Override
     public Collection<RuntimeInfo> getRuntimes() throws BeenApiException {
         final String errorMsg = "Failed to list host runtimes";
+
         checkIsActive(errorMsg);
 
         try {
@@ -231,7 +238,7 @@ public final class BeenApiImpl implements BeenApi {
     }
 
     @Override
-    public void saveNamedTaskDescriptor(TaskDescriptor descriptor, String name, BpkIdentifier bpkId) throws BeenApiException {
+    public void saveNamedTaskDescriptor(final TaskDescriptor descriptor, final String name, final BpkIdentifier bpkId) throws BeenApiException {
         final String errorMsg = String.format("Failed to save named task descriptor '%s'", name);
         final NamedEntity entity = PersistentDescriptors.wrapNamedTaskDescriptor(descriptor, name, bpkId);
         final EntityID entityId = NAMED_TASK_DESCRIPTOR;
@@ -240,7 +247,7 @@ public final class BeenApiImpl implements BeenApi {
     }
 
     @Override
-    public void saveContextDescriptor(final TaskContextDescriptor descriptor, final String taskId, final String contextId, final String benchmarkId) throws BeenApiException {
+    public void saveContextDescriptor(TaskContextDescriptor descriptor, final String taskId, final String contextId, final String benchmarkId) throws BeenApiException {
         final String errorMsg = "Failed to save task context descriptor";
         final EntityID entityId = CONTEXT_DESCRIPTOR;
         final TaskEntity entity = PersistentDescriptors.wrapContextDescriptor(descriptor, taskId, contextId, benchmarkId);
@@ -263,14 +270,14 @@ public final class BeenApiImpl implements BeenApi {
         try {
             clusterContext.getPersistence().asyncPersist(entityId, entity);
         } catch (DAOException e) {
-            throw creatPersistenceException(errorMsg, e);
+            throw createPersistenceException(errorMsg, e);
         } catch (Exception e) {
             throw createBeenApiException(errorMsg, e);
         }
     }
 
     @Override
-    public TaskDescriptor getDescriptorForTask(String taskId) throws BeenApiException {
+    public TaskDescriptor getDescriptorForTask(final String taskId) throws BeenApiException {
         final String errorMsg = String.format("Failed to load task descriptor with id '%s'", taskId);
         final Query query = new QueryBuilder().on(TASK_DESCRIPTOR).with("taskId", taskId).fetch();
         final QueryAnswer answer = performQuery(query, errorMsg);
@@ -278,14 +285,14 @@ public final class BeenApiImpl implements BeenApi {
         try {
             return PersistentDescriptors.unpackTaskDescriptor(answer);
         } catch (DAOException e) {
-            throw creatPersistenceException(errorMsg, e);
+            throw createPersistenceException(errorMsg, e);
         } catch (Exception e) {
             throw createBeenApiException(errorMsg, e);
         }
     }
 
     @Override
-    public TaskContextDescriptor getDescriptorForContext(String contextId) throws BeenApiException {
+    public TaskContextDescriptor getDescriptorForContext(final String contextId) throws BeenApiException {
         final Query query = new QueryBuilder().on(TASK_DESCRIPTOR).with("contextId", contextId).fetch();
         final String errorMsg = String.format("Failed to load task context descriptor with id '%s'", contextId);
         final QueryAnswer answer = performQuery(query, errorMsg);
@@ -293,22 +300,22 @@ public final class BeenApiImpl implements BeenApi {
         try {
             return PersistentDescriptors.unpackContextDescriptor(answer);
         } catch (DAOException e) {
-            throw creatPersistenceException(errorMsg, e);
+            throw createPersistenceException(errorMsg, e);
         } catch (Exception e) {
             throw createBeenApiException(errorMsg, e);
         }
     }
 
     @Override
-    public Map<String, TaskDescriptor> getNamedTaskDescriptorsForBpk(BpkIdentifier bpkIdentifier) throws BeenApiException {
-        String errorMsg = String.format("Failed to load named task descriptors for %s:%s:%s", bpkIdentifier.getGroupId(), bpkIdentifier.getBpkId(), bpkIdentifier.getVersion());
+    public Map<String, TaskDescriptor> getNamedTaskDescriptorsForBpk(final BpkIdentifier bpkIdentifier) throws BeenApiException {
+        final String errorMsg = String.format("Failed to load named task descriptors for %s:%s:%s", bpkIdentifier.getGroupId(), bpkIdentifier.getBpkId(), bpkIdentifier.getVersion());
         checkIsActive(errorMsg);
 
-        String serializedBpkId;
+        final String serializedBpkId;
         try {
             serializedBpkId = PersistentDescriptors.serializeBpkId(bpkIdentifier);
         } catch (DAOException e) {
-            throw creatPersistenceException(errorMsg, e);
+            throw createPersistenceException(errorMsg, e);
         }
 
         final Query query = new QueryBuilder().on(NAMED_TASK_DESCRIPTOR).with("bpkId", serializedBpkId).fetch();
@@ -317,21 +324,21 @@ public final class BeenApiImpl implements BeenApi {
         try {
             return PersistentDescriptors.unpackNamedTaskDescriptors(answer);
         } catch (DAOException e) {
-            throw creatPersistenceException(errorMsg, e);
+            throw createPersistenceException(errorMsg, e);
         } catch (Exception e) {
             throw createBeenApiException(errorMsg, e);
         }
     }
 
     @Override
-    public Map<String, TaskContextDescriptor> getNamedContextDescriptorsForBpk(BpkIdentifier bpkIdentifier) throws BeenApiException {
-        String errorMsg = String.format("Failed to load named task context descriptors for %s:%s:%s", bpkIdentifier.getGroupId(), bpkIdentifier.getBpkId(), bpkIdentifier.getVersion());
+    public Map<String, TaskContextDescriptor> getNamedContextDescriptorsForBpk(final BpkIdentifier bpkIdentifier) throws BeenApiException {
+        final String errorMsg = String.format("Failed to load named task context descriptors for %s:%s:%s", bpkIdentifier.getGroupId(), bpkIdentifier.getBpkId(), bpkIdentifier.getVersion());
 
-        String serializedBpkId;
+        final String serializedBpkId;
         try {
             serializedBpkId = PersistentDescriptors.serializeBpkId(bpkIdentifier);
         } catch (DAOException e) {
-            throw creatPersistenceException(errorMsg, e);
+            throw createPersistenceException(errorMsg, e);
         }
 
         final Query query = new QueryBuilder().on(NAMED_CONTEXT_DESCRIPTOR).with("bpkId", serializedBpkId).fetch();
@@ -340,7 +347,7 @@ public final class BeenApiImpl implements BeenApi {
         try {
             return PersistentDescriptors.unpackNamedContextDescriptors(answer);
         } catch (DAOException e) {
-            throw creatPersistenceException(errorMsg, e);
+            throw createPersistenceException(errorMsg, e);
         } catch (Exception e) {
             throw createBeenApiException(errorMsg, e);
         }
@@ -348,7 +355,7 @@ public final class BeenApiImpl implements BeenApi {
 
     @Override
     public void addLogListener(final EntryListener<String, String> listener) throws BeenApiException {
-        String errorMsg = "Failed to add task log listener";
+        final String errorMsg = "Failed to add task log listener";
         checkIsActive(errorMsg);
 
         try {
@@ -359,8 +366,8 @@ public final class BeenApiImpl implements BeenApi {
     }
 
     @Override
-    public void removeLogListener(EntryListener<String, String> listener) throws BeenApiException {
-        String errorMsg = "Failed to remove task log listener";
+    public void removeLogListener(final EntryListener<String, String> listener) throws BeenApiException {
+        final String errorMsg = "Failed to remove task log listener";
         checkIsActive(errorMsg);
 
         try {
@@ -371,56 +378,39 @@ public final class BeenApiImpl implements BeenApi {
     }
 
     @Override
-    public Collection<TaskLogMessage> getLogsForTask(String taskId) throws BeenApiException {
-        String errorMsg = String.format("Failed to collect logs for task '%s'", taskId);
-        EntityID entityID = new EntityID().withKind("log").withGroup("task");
-        Query query = new QueryBuilder().on(entityID).with("taskId", taskId).fetch();
+    public Collection<TaskLogMessage> getLogsForTask(final String taskId) throws BeenApiException {
+        final String errorMsg = String.format("Failed to list logs for task with id '%s'", taskId);
+        final Query query = new QueryBuilder().on(Entities.LOG_TASK.getId()).with("taskId", taskId).fetch();
 
-        QueryAnswer answer = performQuery(query, errorMsg);
-
-        Collection<String> stringCollection;
-        try {
-            stringCollection = answer.getData();
-        } catch (Exception e) {
-            throw createBeenApiException(errorMsg, e);
-        }
+        final QueryAnswer answer = performQuery(query, errorMsg);
 
         try {
-            return jsonUtils.deserialize(stringCollection, TaskLogMessage.class);
-        } catch (JsonException e) {
+            return unpackDataAnswer(query, answer, TaskLogMessage.class);
+        } catch (DAOException e) {
             throw createBeenApiException(errorMsg, e);
         }
     }
 
     @Override
     public Collection<EvaluatorResult> getEvaluatorResults() throws BeenApiException {
-        String errorMsg = "Failed to collect logs for task";
-        EntityID entityID = new EntityID().withKind("been").withGroup("evaluator-results");
-        Query query = new QueryBuilder().on(entityID).fetch();
+        final String errorMsg = "Failed to list logs for task";
+        final Query query = new QueryBuilder().on(Entities.RESULT_EVALUATOR.getId()).fetch();
 
-        QueryAnswer answer = performQuery(query, errorMsg);
-
-        Collection<String> stringCollection;
-        try {
-            stringCollection = answer.getData();
-        } catch (Exception e) {
-            throw createBeenApiException(errorMsg, e);
-        }
+        final QueryAnswer answer = performQuery(query, errorMsg);
 
         try {
-            return jsonUtils.deserialize(stringCollection, EvaluatorResult.class);
-        } catch (JsonException e) {
+            return unpackDataAnswer(query, answer, EvaluatorResult.class);
+        } catch (DAOException e) {
             throw createBeenApiException(errorMsg, e);
         }
     }
 
     @Override
-    public void deleteResult(String resultId) throws BeenApiException {
-        String errorMsg = String.format("Failed to delete result with id '%s'", resultId);
-        EntityID entityID = new EntityID().withKind("been").withGroup("evaluator-results");
-        Query query = new QueryBuilder().on(entityID).with("id", resultId).delete();
+    public void deleteResult(final String resultId) throws BeenApiException {
+        final String errorMsg = String.format("Failed to delete result with id '%s'", resultId);
+        final Query query = new QueryBuilder().on(Entities.RESULT_EVALUATOR.getId()).with("id", resultId).delete();
 
-        QueryAnswer answer = performQuery(query, errorMsg);
+        final QueryAnswer answer = performQuery(query, errorMsg);
 
         if (answer.getStatus() != QueryStatus.OK) {
             throw createBeenApiException(errorMsg, answer.getStatus().getDescription());
@@ -428,44 +418,31 @@ public final class BeenApiImpl implements BeenApi {
     }
 
     @Override
-    public EvaluatorResult getEvaluatorResult(String resultId) throws BeenApiException {
-        String errorMsg = String.format("Failed to get evaluator results with id '%s'", resultId);
-        EntityID entityID = new EntityID().withKind("been").withGroup("evaluator-results");
-        Query query = new QueryBuilder().on(entityID).with("id", resultId).fetch();
+    public EvaluatorResult getEvaluatorResult(final String resultId) throws BeenApiException {
+        final String errorMsg = String.format("Failed to get evaluator results with id '%s'", resultId);
+        final Query query = new QueryBuilder().on(Entities.RESULT_EVALUATOR.getId()).with("id", resultId).fetch();
 
-        QueryAnswer answer = performQuery(query, errorMsg);
+        final QueryAnswer answer = performQuery(query, errorMsg);
 
         try {
-            Collection<EvaluatorResult> evaluatorResults = unpackDataAnswer(query, answer, EvaluatorResult.class);
+            final Collection<EvaluatorResult> evaluatorResults = unpackDataAnswer(query, answer, EvaluatorResult.class);
             if (evaluatorResults.size() != 1) {
                 throw createBeenApiException(errorMsg, String.format("Found '%d' results but expected exactly 1 result", evaluatorResults.size()));
             }
             return evaluatorResults.iterator().next();
         } catch (DAOException e) {
-            throw creatPersistenceException(errorMsg, e);
+            throw createPersistenceException(errorMsg, e);
         }
     }
 
     @Override
     public Collection<BpkIdentifier> getBpks() throws BeenApiException {
-        String errorMsg = "Failed to list bpks";
+        final String errorMsg = "Failed to list bpks";
         checkIsActive(errorMsg);
 
-        SWRepositoryInfo swInfo;
-        try {
-            swInfo = clusterContext.getServices().getSWRepositoryInfo();
-        } catch (Exception e) {
-            throw createBeenApiException(errorMsg, e);
-        }
-
-        if (swInfo == null) {
-            throw createSoftwareRepositoryUnavailableException(errorMsg);
-        }
+        final SwRepoClient client = getSwRepoClient(errorMsg);
 
         try {
-            SoftwareStore softwareCache = SoftwareStoreBuilderFactory.getSoftwareStoreBuilder().buildCache();
-            SwRepoClientFactory swRepoClientFactory = new SwRepoClientFactory(softwareCache);
-            SwRepoClient client = swRepoClientFactory.getClient(swInfo.getHost(), swInfo.getHttpServerPort());
             return client.listBpks();
         } catch (Exception e) {
             throw createBeenApiException(errorMsg, e);
@@ -474,36 +451,23 @@ public final class BeenApiImpl implements BeenApi {
 
 
     @Override
-    public void uploadBpk(BpkStreamHolder bpkFileHolder) throws BeenApiException {
-        BpkIdentifier bpkIdentifier;
+    public void uploadBpk(final BpkStreamHolder bpkFileHolder) throws BeenApiException {
+        final BpkIdentifier bpkIdentifier;
         try {
             bpkIdentifier = bpkFileHolder.getBpkIdentifier();
         } catch (Exception e) {
             throw createBeenApiException("Failed to read bpk info from bpk stream", e);
         }
 
-        String groupId = bpkIdentifier.getGroupId();
-        String bpkId = bpkIdentifier.getBpkId();
-        String version = bpkIdentifier.getVersion();
-        String errorMsg = String.format("Failed to upload bpk '%s:%s:%s'", groupId, bpkId, version);
+        final String groupId = bpkIdentifier.getGroupId();
+        final String bpkId = bpkIdentifier.getBpkId();
+        final String version = bpkIdentifier.getVersion();
+        final String errorMsg = String.format("Failed to upload bpk '%s:%s:%s'", groupId, bpkId, version);
 
         checkIsActive(errorMsg);
 
-        SWRepositoryInfo swInfo;
+        final SwRepoClient client = getSwRepoClient(errorMsg);
         try {
-            swInfo = clusterContext.getServices().getSWRepositoryInfo();
-        } catch (Exception e) {
-            throw createBeenApiException(errorMsg, e);
-        }
-
-        if (swInfo == null) {
-            throw createSoftwareRepositoryUnavailableException(errorMsg);
-        }
-
-        try {
-            SoftwareStore softwareCache = SoftwareStoreBuilderFactory.getSoftwareStoreBuilder().buildCache();
-            SwRepoClientFactory swRepoClientFactory = new SwRepoClientFactory(softwareCache);
-            SwRepoClient client = swRepoClientFactory.getClient(swInfo.getHost(), swInfo.getHttpServerPort());
             client.putBpk(bpkIdentifier, bpkFileHolder.getInputStream());
         } catch (Exception e) {
             throw createBeenApiException(errorMsg, e);
@@ -511,43 +475,28 @@ public final class BeenApiImpl implements BeenApi {
     }
 
     @Override
-    public InputStream downloadBpk(BpkIdentifier bpkIdentifier) throws BeenApiException {
-        String groupId = bpkIdentifier.getGroupId();
-        String bpkId = bpkIdentifier.getBpkId();
-        String version = bpkIdentifier.getVersion();
-        String errorMsg = String.format("Failed to download bpk '%s:%s:%s'", groupId, bpkId, version);
+    public InputStream downloadBpk(final BpkIdentifier bpkIdentifier) throws BeenApiException {
+        final String groupId = bpkIdentifier.getGroupId();
+        final String bpkId = bpkIdentifier.getBpkId();
+        final String version = bpkIdentifier.getVersion();
+        final String errorMsg = String.format("Failed to download bpk '%s:%s:%s'", groupId, bpkId, version);
 
         checkIsActive(errorMsg);
 
-        SWRepositoryInfo swInfo;
+        final SwRepoClient client = getSwRepoClient(errorMsg);
         try {
-            swInfo = clusterContext.getServices().getSWRepositoryInfo();
-        } catch (Exception e) {
-            throw createBeenApiException(errorMsg, e);
-        }
-
-        if (swInfo == null) {
-            throw createSoftwareRepositoryUnavailableException(errorMsg);
-        }
-
-        try {
-            SoftwareStore softwareCache = SoftwareStoreBuilderFactory.getSoftwareStoreBuilder().buildCache();
-            SwRepoClientFactory swRepoClientFactory = new SwRepoClientFactory(softwareCache);
-            SwRepoClient client = swRepoClientFactory.getClient(swInfo.getHost(), swInfo.getHttpServerPort());
-
-            Bpk bpk = client.getBpk(bpkIdentifier);
-            return bpk.getInputStream();
+            return client.getBpk(bpkIdentifier).getInputStream();
         } catch (Exception e) {
             throw createBeenApiException(errorMsg, e);
         }
     }
 
     @Override
-    public String submitTask(TaskDescriptor descriptor) throws BeenApiException {
-        String groupId = descriptor.getGroupId();
-        String bpkId = descriptor.getBpkId();
-        String version = descriptor.getVersion();
-        String errorMsg = String.format("Failed to submit task descriptor '%s:%s:%s'", groupId, bpkId, version);
+    public final String submitTask(final TaskDescriptor descriptor) throws BeenApiException {
+        final String groupId = descriptor.getGroupId();
+        final String bpkId = descriptor.getBpkId();
+        final String version = descriptor.getVersion();
+        final String errorMsg = String.format("Failed to submit task descriptor '%s:%s:%s'", groupId, bpkId, version);
 
         checkIsActive(errorMsg);
 
@@ -559,8 +508,8 @@ public final class BeenApiImpl implements BeenApi {
     }
 
     @Override
-    public String submitTaskContext(TaskContextDescriptor descriptor) throws BeenApiException {
-        String errorMsg = String.format("Failed to submit task context descriptor '%s'", descriptor.getName());
+    public final String submitTaskContext(final TaskContextDescriptor descriptor) throws BeenApiException {
+        final String errorMsg = String.format("Failed to submit task context descriptor '%s'", descriptor.getName());
 
         checkIsActive(errorMsg);
 
@@ -572,8 +521,8 @@ public final class BeenApiImpl implements BeenApi {
     }
 
     @Override
-    public String submitTaskContext(TaskContextDescriptor descriptor, String benchmarkId) throws BeenApiException {
-        String errorMsg = String.format("Failed to submit task context descriptor '%s' for benchmark '%s'", descriptor.getName(), benchmarkId);
+    public final String submitTaskContext(final TaskContextDescriptor descriptor, final String benchmarkId) throws BeenApiException {
+        final String errorMsg = String.format("Failed to submit task context descriptor '%s' for benchmark '%s'", descriptor.getName(), benchmarkId);
 
         checkIsActive(errorMsg);
 
@@ -585,11 +534,11 @@ public final class BeenApiImpl implements BeenApi {
     }
 
     @Override
-    public String submitBenchmark(TaskDescriptor benchmarkTaskDescriptor) throws BeenApiException {
-        String groupId = benchmarkTaskDescriptor.getGroupId();
-        String bpkId = benchmarkTaskDescriptor.getBpkId();
-        String version = benchmarkTaskDescriptor.getVersion();
-        String errorMsg = String.format("Failed to submit benchmark descriptor '%s:%s:%s'", groupId, bpkId, version);
+    public final String submitBenchmark(final TaskDescriptor benchmarkTaskDescriptor) throws BeenApiException {
+        final String groupId = benchmarkTaskDescriptor.getGroupId();
+        final String bpkId = benchmarkTaskDescriptor.getBpkId();
+        final String version = benchmarkTaskDescriptor.getVersion();
+        final String errorMsg = String.format("Failed to submit benchmark descriptor '%s:%s:%s'", groupId, bpkId, version);
 
         checkIsActive(errorMsg);
 
@@ -601,8 +550,8 @@ public final class BeenApiImpl implements BeenApi {
     }
 
     @Override
-    public void killTask(String taskId) throws BeenApiException {
-        String errorMsg = String.format("Failed to kill task '%s'", taskId);
+    public void killTask(final String taskId) throws BeenApiException {
+        final String errorMsg = String.format("Failed to kill task '%s'", taskId);
 
         checkIsActive(errorMsg);
 
@@ -614,8 +563,8 @@ public final class BeenApiImpl implements BeenApi {
     }
 
     @Override
-    public void killTaskContext(String taskContextId) throws BeenApiException {
-        String errorMsg = String.format("Failed to kill task context '%s'", taskContextId);
+    public void killTaskContext(final String taskContextId) throws BeenApiException {
+        final String errorMsg = String.format("Failed to kill task context '%s'", taskContextId);
 
         checkIsActive(errorMsg);
 
@@ -627,8 +576,8 @@ public final class BeenApiImpl implements BeenApi {
     }
 
     @Override
-    public void killBenchmark(String benchmarkId) throws BeenApiException {
-        String errorMsg = String.format("Failed to kill benchmark '%s'", benchmarkId);
+    public void killBenchmark(final String benchmarkId) throws BeenApiException {
+        final String errorMsg = String.format("Failed to kill benchmark '%s'", benchmarkId);
 
         checkIsActive(errorMsg);
 
@@ -640,8 +589,8 @@ public final class BeenApiImpl implements BeenApi {
     }
 
     @Override
-    public void removeTaskEntry(String taskId) throws BeenApiException {
-        String errorMsg = String.format("Failed to remove task entry '%s'", taskId);
+    public void removeTaskEntry(final String taskId) throws BeenApiException {
+        final String errorMsg = String.format("Failed to remove task entry '%s'", taskId);
 
         checkIsActive(errorMsg);
 
@@ -653,8 +602,8 @@ public final class BeenApiImpl implements BeenApi {
     }
 
     @Override
-    public void removeTaskContextEntry(String taskContextId) throws BeenApiException {
-        String errorMsg = String.format("Failed to remove task context entry '%s'", taskContextId);
+    public void removeTaskContextEntry(final String taskContextId) throws BeenApiException {
+        final String errorMsg = String.format("Failed to remove task context entry '%s'", taskContextId);
 
         checkIsActive(errorMsg);
 
@@ -666,8 +615,8 @@ public final class BeenApiImpl implements BeenApi {
     }
 
     @Override
-    public void removeBenchmarkEntry(String benchmarkId) throws BeenApiException {
-        String errorMsg = String.format("Failed to remove benchmark entry '%s'", benchmarkId);
+    public void removeBenchmarkEntry(final String benchmarkId) throws BeenApiException {
+        final String errorMsg = String.format("Failed to remove benchmark entry '%s'", benchmarkId);
 
         checkIsActive(errorMsg);
 
@@ -680,21 +629,21 @@ public final class BeenApiImpl implements BeenApi {
 
 
     @Override
-    public CommandEntry deleteTaskWrkDirectory(String runtimeId, String taskWrkDir) throws BeenApiException {
+    public CommandEntry deleteTaskWrkDirectory(final String runtimeId, final String taskWrkDir) throws BeenApiException {
 
         // FIXME needs refactoring
 
-        String errorMsg = String.format("Failed to delete task working directory '%s' on runtime '%s'", taskWrkDir, runtimeId);
+        final String errorMsg = String.format("Failed to delete task working directory '%s' on runtime '%s'", taskWrkDir, runtimeId);
 
         try {
             long operationId = clusterContext.generateId(DeleteTaskWrkDirMessage.OPERATION_ID_KEY);
-            DeleteTaskWrkDirMessage deleteMessage = new DeleteTaskWrkDirMessage(runtimeId, taskWrkDir, operationId);
+            final DeleteTaskWrkDirMessage deleteMessage = new DeleteTaskWrkDirMessage(runtimeId, taskWrkDir, operationId);
             clusterContext.getTopics().publishInGlobalTopic(deleteMessage);
 
-            IMap<Long, CommandEntry> map = clusterContext.getMap(Names.BEEN_MAP_COMMAND_ENTRIES);
+            final IMap<Long, CommandEntry> map = clusterContext.getMap(Names.BEEN_MAP_COMMAND_ENTRIES);
 
 
-            BlockingQueue<CommandEntry> queue = new LinkedBlockingQueue<>();
+            final BlockingQueue<CommandEntry> queue = new LinkedBlockingQueue<>();
             final EntryListener<Long, CommandEntry> waiter = new CommandEntryMapWaiter(queue);
 
             map.addEntryListener(waiter, operationId, true);
@@ -726,7 +675,7 @@ public final class BeenApiImpl implements BeenApi {
 
     @Override
     public Collection<DebugListItem> getDebugWaitingTasks() throws BeenApiException {
-        String errorMsg = "Failed to list tasks waiting for debug";
+        final String errorMsg = "Failed to list tasks waiting for debug";
         checkIsActive(errorMsg);
 
         try {
@@ -737,30 +686,17 @@ public final class BeenApiImpl implements BeenApi {
     }
 
     @Override
-    public Map<String, TaskDescriptor> getTaskDescriptors(BpkIdentifier bpkIdentifier) throws BeenApiException {
-        String groupId = bpkIdentifier.getGroupId();
-        String bpkId = bpkIdentifier.getBpkId();
-        String version = bpkIdentifier.getVersion();
-        String errorMsg = String.format("Failed to list task descriptors for bpk '%s:%s:%s'", groupId, bpkId, version);
+    public Map<String, TaskDescriptor> getTaskDescriptors(final BpkIdentifier bpkIdentifier) throws BeenApiException {
+        final String groupId = bpkIdentifier.getGroupId();
+        final String bpkId = bpkIdentifier.getBpkId();
+        final String version = bpkIdentifier.getVersion();
+        final String errorMsg = String.format("Failed to list task descriptors for bpk '%s:%s:%s'", groupId, bpkId, version);
 
         checkIsActive(errorMsg);
 
-        SWRepositoryInfo swInfo;
-        try {
-            swInfo = clusterContext.getServices().getSWRepositoryInfo();
-        } catch (Exception e) {
-            throw createBeenApiException(errorMsg, e);
-        }
-
-        if (swInfo == null) {
-            throw createSoftwareRepositoryUnavailableException(errorMsg);
-        }
+        final SwRepoClient client = getSwRepoClient(errorMsg);
 
         try {
-            SoftwareStore softwareCache = SoftwareStoreBuilderFactory.getSoftwareStoreBuilder().buildCache();
-            SwRepoClientFactory swRepoClientFactory = new SwRepoClientFactory(softwareCache);
-            SwRepoClient client = swRepoClientFactory.getClient(swInfo.getHost(), swInfo.getHttpServerPort());
-
             return client.listTaskDescriptors(bpkIdentifier);
         } catch (Exception e) {
             throw createBeenApiException(errorMsg, e);
@@ -768,11 +704,11 @@ public final class BeenApiImpl implements BeenApi {
     }
 
     @Override
-    public TaskDescriptor getTaskDescriptor(BpkIdentifier bpkIdentifier, String descriptorName) throws BeenApiException {
-        String groupId = bpkIdentifier.getGroupId();
-        String bpkId = bpkIdentifier.getBpkId();
-        String version = bpkIdentifier.getVersion();
-        String errorMsg = String.format("Failed to get task descriptor for bpk '%s:%s:%s' with name '%s'", groupId, bpkId, version, descriptorName);
+    public TaskDescriptor getTaskDescriptor(final BpkIdentifier bpkIdentifier, final String descriptorName) throws BeenApiException {
+        final String groupId = bpkIdentifier.getGroupId();
+        final String bpkId = bpkIdentifier.getBpkId();
+        final String version = bpkIdentifier.getVersion();
+        final String errorMsg = String.format("Failed to get task descriptor for bpk '%s:%s:%s' with name '%s'", groupId, bpkId, version, descriptorName);
 
         // check if cluster is live is done in getTaskDescriptors method
         try {
@@ -783,31 +719,17 @@ public final class BeenApiImpl implements BeenApi {
     }
 
     @Override
-    public Map<String, TaskContextDescriptor> getTaskContextDescriptors(BpkIdentifier bpkIdentifier) throws BeenApiException {
-        String groupId = bpkIdentifier.getGroupId();
-        String bpkId = bpkIdentifier.getBpkId();
-        String version = bpkIdentifier.getVersion();
-        String errorMsg = String.format("Failed to list task context descriptors for bpk '%s:%s:%s'", groupId, bpkId, version);
+    public Map<String, TaskContextDescriptor> getTaskContextDescriptors(final BpkIdentifier bpkIdentifier) throws BeenApiException {
+        final String groupId = bpkIdentifier.getGroupId();
+        final String bpkId = bpkIdentifier.getBpkId();
+        final String version = bpkIdentifier.getVersion();
+        final String errorMsg = String.format("Failed to list task context descriptors for bpk '%s:%s:%s'", groupId, bpkId, version);
 
         checkIsActive(errorMsg);
 
 
-        SWRepositoryInfo swInfo;
+        final SwRepoClient client = getSwRepoClient(errorMsg);
         try {
-            swInfo = clusterContext.getServices().getSWRepositoryInfo();
-        } catch (Exception e) {
-            throw createBeenApiException(errorMsg, e);
-        }
-
-        if (swInfo == null) {
-            throw createSoftwareRepositoryUnavailableException(errorMsg);
-        }
-
-        try {
-            SoftwareStore softwareCache = SoftwareStoreBuilderFactory.getSoftwareStoreBuilder().buildCache();
-            SwRepoClientFactory swRepoClientFactory = new SwRepoClientFactory(softwareCache);
-            SwRepoClient client = swRepoClientFactory.getClient(swInfo.getHost(), swInfo.getHttpServerPort());
-
             return client.listTaskContextDescriptors(bpkIdentifier);
         } catch (Exception e) {
             throw createBeenApiException(errorMsg, e);
@@ -815,11 +737,11 @@ public final class BeenApiImpl implements BeenApi {
     }
 
     @Override
-    public TaskContextDescriptor getTaskContextDescriptor(BpkIdentifier bpkIdentifier, String descriptorName) throws BeenApiException {
-        String groupId = bpkIdentifier.getGroupId();
-        String bpkId = bpkIdentifier.getBpkId();
-        String version = bpkIdentifier.getVersion();
-        String errorMsg = String.format("Failed to get task context descriptor for bpk '%s:%s:%s' with name '%s'", groupId, bpkId, version, descriptorName);
+    public TaskContextDescriptor getTaskContextDescriptor(final BpkIdentifier bpkIdentifier, final String descriptorName) throws BeenApiException {
+        final String groupId = bpkIdentifier.getGroupId();
+        final String bpkId = bpkIdentifier.getBpkId();
+        final String version = bpkIdentifier.getVersion();
+        final String errorMsg = String.format("Failed to get task context descriptor for bpk '%s:%s:%s' with name '%s'", groupId, bpkId, version, descriptorName);
 
         // check if cluster is live is done in getTaskContextDescriptors method
         try {
@@ -830,17 +752,17 @@ public final class BeenApiImpl implements BeenApi {
     }
 
     @Override
-    public QueryAnswer queryPersistence(Query query) throws BeenApiException {
+    public QueryAnswer queryPersistence(final Query query) throws BeenApiException {
         return performQuery(query, "Failed to perform persistence query");
     }
 
     @Override
-    public Collection<CommandEntry> listCommandEntries(String runtimeId) throws BeenApiException {
-        String errorMsg = String.format("Failed to list command entries for runtime '%s'", runtimeId);
+    public Collection<CommandEntry> listCommandEntries(final String runtimeId) throws BeenApiException {
+        final String errorMsg = String.format("Failed to list command entries for runtime '%s'", runtimeId);
 
         checkIsActive(errorMsg);
 
-        SqlPredicate predicate = new SqlPredicate(String.format("runtimeId = '%s'", runtimeId));
+        final SqlPredicate predicate = new SqlPredicate(String.format("runtimeId = '%s'", runtimeId));
 
         try {
             return queryHazelcastMap(Names.BEEN_MAP_COMMAND_ENTRIES, predicate);
@@ -851,12 +773,12 @@ public final class BeenApiImpl implements BeenApi {
 
 
     @Override
-    public Collection<TaskEntry> listActiveTasks(String runtimeId) throws BeenApiException {
-        String errorMsg = String.format("Failed to list active tasks on runtime '%s'", runtimeId);
+    public Collection<TaskEntry> listActiveTasks(final String runtimeId) throws BeenApiException {
+        final String errorMsg = String.format("Failed to list active tasks on runtime '%s'", runtimeId);
 
         checkIsActive(errorMsg);
 
-        SqlPredicate predicate = new SqlPredicate(String.format("runtimeId = '%s' AND state != %s", runtimeId, TaskState.ABORTED));
+        final SqlPredicate predicate = new SqlPredicate(String.format("runtimeId = '%s' AND state != %s", runtimeId, TaskState.ABORTED));
 
         try {
             return queryHazelcastMap(Names.TASKS_MAP_NAME, predicate);
@@ -867,12 +789,12 @@ public final class BeenApiImpl implements BeenApi {
 
 
     @Override
-    public Collection<TaskEntry> listTasks(String runtimeId) throws BeenApiException {
-        String errorMsg = String.format("Failed to list tasks on runtime '%s'", runtimeId);
+    public Collection<TaskEntry> listTasks(final String runtimeId) throws BeenApiException {
+        final String errorMsg = String.format("Failed to list tasks on runtime '%s'", runtimeId);
 
         checkIsActive(errorMsg);
 
-        SqlPredicate predicate = new SqlPredicate(String.format("runtimeId = '%s'", runtimeId));
+        final SqlPredicate predicate = new SqlPredicate(String.format("runtimeId = '%s'", runtimeId));
 
         try {
             return queryHazelcastMap(Names.TASKS_MAP_NAME, predicate);
@@ -881,8 +803,8 @@ public final class BeenApiImpl implements BeenApi {
         }
     }
 
-    private <T> Collection<T> queryHazelcastMap(String mapName, SqlPredicate queryPredicate) {
-        IMap<?, T> map = clusterContext.getMap(mapName);
+    private <T> Collection<T> queryHazelcastMap(final String mapName, final SqlPredicate queryPredicate) {
+        final IMap<?, T> map = clusterContext.getMap(mapName);
         return map.values(queryPredicate);
     }
 
@@ -892,48 +814,91 @@ public final class BeenApiImpl implements BeenApi {
      * @throws BeenApiException
      */
     @Override
-    public Collection<ServiceLogMessage> getServiceLogsByBeenId(String participantId) throws BeenApiException {
-        String errorMsg = String.format("Failed to collect service logs for service wwith participant id '%s'", participantId);
-        Query query = new QueryBuilder().on(Entities.LOG_SERVICE.getId()).with("beenId", participantId).fetch();
+    public Collection<ServiceLogMessage> getServiceLogsByBeenId(final String participantId) throws BeenApiException {
+        final String errorMsg = String.format("Failed to list service logs for service wwith participant id '%s'", participantId);
+        final Query query = new QueryBuilder().on(Entities.LOG_SERVICE.getId()).with("beenId", participantId).fetch();
 
-        QueryAnswer answer = performQuery(query, errorMsg);
+        final QueryAnswer answer = performQuery(query, errorMsg);
 
         try {
             return unpackDataAnswer(query, answer, ServiceLogMessage.class);
         } catch (DAOException e) {
-            throw creatPersistenceException(errorMsg, e);
+            throw createPersistenceException(errorMsg, e);
         }
     }
 
     @Override
-    public Collection<ServiceLogMessage> getServiceLogsByHostRuntimeId(String hostRuntimeId) throws BeenApiException {
-        String errorMsg = String.format("Failed to collect host runtime logs for runtime with id '%s'", hostRuntimeId);
-        Query query = new QueryBuilder().on(Entities.LOG_SERVICE.getId()).with("hostRuntimeId", hostRuntimeId).fetch();
+    public Collection<ServiceLogMessage> getServiceLogsByHostRuntimeId(final String hostRuntimeId) throws BeenApiException {
+        final String errorMsg = String.format("Failed to list host runtime logs for runtime with id '%s'", hostRuntimeId);
+        final Query query = new QueryBuilder().on(Entities.LOG_SERVICE.getId()).with("hostRuntimeId", hostRuntimeId).fetch();
 
-        QueryAnswer answer = performQuery(query, errorMsg);
+        final QueryAnswer answer = performQuery(query, errorMsg);
 
         try {
             return unpackDataAnswer(query, answer, ServiceLogMessage.class);
         } catch (DAOException e) {
-            throw creatPersistenceException(errorMsg, e);
+            throw createPersistenceException(errorMsg, e);
         }
     }
 
     @Override
-    public Collection<ServiceLogMessage> getServiceLogsByServiceName(String serviceName) throws BeenApiException {
-        String errorMsg = String.format("Failed to collect logs for service '%s'", serviceName);
-        Query query = new QueryBuilder().on(Entities.LOG_SERVICE.getId()).with("serviceName", serviceName).fetch();
-        QueryAnswer answer = performQuery(query, errorMsg);
+    public Collection<ServiceLogMessage> getServiceLogsByServiceName(final String serviceName) throws BeenApiException {
+        final String errorMsg = String.format("Failed to list logs for service '%s'", serviceName);
+        final Query query = new QueryBuilder().on(Entities.LOG_SERVICE.getId()).with("serviceName", serviceName).fetch();
+        final QueryAnswer answer = performQuery(query, errorMsg);
 
         try {
             return unpackDataAnswer(query, answer, ServiceLogMessage.class);
         } catch (DAOException e) {
-            throw creatPersistenceException(errorMsg, e);
+            throw createPersistenceException(errorMsg, e);
         }
     }
 
-    private void checkIsActive(String errorMessage) throws ClusterConnectionUnavailableException {
-        String message = String.format("%s. %s.", errorMessage, ERR_MSG_DISCONNECTED_FROM_CLUSTER);
+    @Override
+    public Collection<Date> getServiceLogsAvailableDates() throws BeenApiException {
+        final String errorMsg = "Failed to list service logs available dates";
+        final EntityID entityID = Entities.LOG_SERVICE.getId();
+        final NativeQuery query = new NativeQuery(String.format(
+                "function() { return db.getCollection('%s.%s').group({ keyf: function(d) { var e = new Date(d.created);" +
+                        " return { year: 1900 + e.getYear(), month: 1 + e.getMonth(), day: e.getDate() }; }," +
+                        " reduce: function(a,b){}, initial: {}}); }", entityID.getKind(), entityID.getGroup()));
+        try {
+            final Collection<DateStructure> collection = jsonUtils.deserialize(queryPersistence(query).getData(), DateStructure.class);
+            final Collection<Date> result = new ArrayList<>();
+            for (DateStructure d : collection) {
+                result.add(d.toDate());
+            }
+
+            return result;
+        } catch (JsonException e) {
+            throw createBeenApiException(errorMsg, e);
+        }
+    }
+
+    @Override
+    public Collection<ServiceLogMessage> getServiceLogsByDate(final Date date) throws BeenApiException {
+        final String errorMsg = String.format("Failed to list service log messages for date '%s'", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date));
+        final Long timeToday = date.getTime();
+        final Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(Calendar.DATE, 1);
+        final Long timeTomorrow = c.getTime().getTime();
+
+        final EntityID entityID = Entities.LOG_SERVICE.getId();
+        final NativeQuery query = new NativeQuery(String.format(
+                "function() { var start = %d; var end = %d; return db.getCollection('%s.%s').find(" +
+                        "{created: {$gte: start, $lt: end}}, {_id: 0}).toArray(); }", timeToday, timeTomorrow, entityID.getKind(), entityID.getGroup()));
+
+        final QueryAnswer answer = queryPersistence(query);
+        try {
+            return unpackDataAnswer(query, answer, ServiceLogMessage.class);
+        } catch (DAOException e) {
+            throw createPersistenceException(errorMsg, e);
+        }
+    }
+
+    private void checkIsActive(final String format, final String... args) throws ClusterConnectionUnavailableException {
+        final String message = String.format(format, args);
 
         if (!isConnected()) {
             throw new ClusterConnectionUnavailableException(message);
@@ -945,134 +910,151 @@ public final class BeenApiImpl implements BeenApi {
         return clusterContext.isActive();
     }
 
-
-    private BeenApiException createBeenApiException(String errorMsg, Exception e) {
-        return new BeenApiException(String.format("%s. Reason: %s", errorMsg, e.getMessage()), e);
-    }
-
-    private BeenApiException createBeenApiException(String errorMsg, String reason) {
-        return new BeenApiException(String.format("%s. Reason: %s", errorMsg, reason));
-    }
-
-
     // TASK STATE RETRIEVAL
 
     @Override
-    public Collection<String> getTasksWithState(TaskState state) throws BeenApiException {
-        String errorMsg = String.format("Failed to collect tasks with state '%s'", state.name());
+    public Collection<String> getTasksWithState(final TaskState state) throws BeenApiException {
+        final String errorMsg = String.format("Failed to list tasks with state '%s'", state.name());
         final Query query = new QueryBuilder().on(Entities.OUTCOME_TASK.getId()).with("taskState", state.name()).fetch();
 
-        QueryAnswer answer = performQuery(query, errorMsg);
-
-        Collection<PersistentTaskState> persistentTaskStates;
-        try {
-            persistentTaskStates = unpackDataAnswer(query, answer, PersistentTaskState.class);
-        } catch (DAOException e) {
-            throw creatPersistenceException(errorMsg, e);
-        }
-
-        final Collection<String> taskIds = new ArrayList<>(persistentTaskStates.size());
-        for (PersistentTaskState persistentTaskState : persistentTaskStates) {
-            taskIds.add(persistentTaskState.getTaskId());
-        }
-        return taskIds;
-    }
-
-    @Override
-    public Collection<String> getTasksWithStateFromContext(TaskState state, String contextId) throws BeenApiException {
-        String errorMsg = String.format("Failed to collect tasks with state '%s' from task context '%s'", state.name(), contextId);
-        final Query query = new QueryBuilder().on(Entities.OUTCOME_TASK.getId()).with("taskState", state.name()).with("contextId", contextId).fetch();
-
-        QueryAnswer answer = performQuery(query, errorMsg);
-
-        Collection<PersistentTaskState> persistentTaskStates;
-        try {
-            persistentTaskStates = unpackDataAnswer(query, answer, PersistentTaskState.class);
-        } catch (DAOException e) {
-            throw creatPersistenceException(errorMsg, e);
-        }
-
-        final Collection<String> taskIds = new ArrayList<>(persistentTaskStates.size());
-        for (PersistentTaskState persistentTaskState : persistentTaskStates) {
-            taskIds.add(persistentTaskState.getTaskId());
-        }
-        return taskIds;
-    }
-
-    @Override
-    public Collection<String> getTasksWithStateFromBenchmark(TaskState state, String benchmarkId) throws BeenApiException {
-        String errorMsg = String.format("Failed to collect tasks with state '%s' from benchmark '%s'", state.name(), benchmarkId);
-        final Query query = new QueryBuilder().on(Entities.OUTCOME_TASK.getId()).with("taskState", state.name()).with("benchmarkId", benchmarkId).fetch();
-
-        QueryAnswer answer = performQuery(query, errorMsg);
+        final QueryAnswer answer = performQuery(query, errorMsg);
 
         try {
-            Collection<PersistentTaskState> persistentTaskStates = unpackDataAnswer(query, answer, PersistentTaskState.class);
+            final Collection<PersistentTaskState> persistentTaskStates = unpackDataAnswer(query, answer, PersistentTaskState.class);
             final Collection<String> taskIds = new ArrayList<>(persistentTaskStates.size());
             for (PersistentTaskState persistentTaskState : persistentTaskStates) {
                 taskIds.add(persistentTaskState.getTaskId());
             }
             return taskIds;
         } catch (DAOException e) {
-            throw creatPersistenceException(errorMsg, e);
+            throw createPersistenceException(errorMsg, e);
         }
     }
 
     @Override
-    public TaskState getTaskState(String taskId) throws BeenApiException {
-        String errorMsg = String.format("Failed to get state of task '%s'", taskId);
-        final Query query = new QueryBuilder().on(Entities.OUTCOME_TASK.getId()).with("taskId", taskId).fetch();
+    public Collection<String> getTasksWithStateFromContext(final TaskState state, final String contextId) throws BeenApiException {
+        final String errorMsg = String.format("Failed to list tasks with state '%s' from task context '%s'", state.name(), contextId);
+        final Query query = new QueryBuilder().on(Entities.OUTCOME_TASK.getId()).with("taskState", state.name()).with("contextId", contextId).fetch();
 
-        QueryAnswer answer = performQuery(query, errorMsg);
+        final QueryAnswer answer = performQuery(query, errorMsg);
+
+        final Collection<PersistentTaskState> persistentTaskStates;
+        try {
+            persistentTaskStates = unpackDataAnswer(query, answer, PersistentTaskState.class);
+        } catch (DAOException e) {
+            throw createPersistenceException(errorMsg, e);
+        }
+
+        final Collection<String> taskIds = new ArrayList<>(persistentTaskStates.size());
+        for (PersistentTaskState persistentTaskState : persistentTaskStates) {
+            taskIds.add(persistentTaskState.getTaskId());
+        }
+        return taskIds;
+    }
+
+    @Override
+    public Collection<String> getTasksWithStateFromBenchmark(TaskState state, final String benchmarkId) throws BeenApiException {
+        final String errorMsg = String.format("Failed to list tasks with state '%s' from benchmark '%s'", state.name(), benchmarkId);
+        final Query query = new QueryBuilder().on(Entities.OUTCOME_TASK.getId()).with("taskState", state.name()).with("benchmarkId", benchmarkId).fetch();
+
+        final QueryAnswer answer = performQuery(query, errorMsg);
 
         try {
-            Collection<PersistentTaskState> states = unpackDataAnswer(query, answer, PersistentTaskState.class);
+            final Collection<PersistentTaskState> persistentTaskStates = unpackDataAnswer(query, answer, PersistentTaskState.class);
+            final Collection<String> taskIds = new ArrayList<>(persistentTaskStates.size());
+            for (PersistentTaskState persistentTaskState : persistentTaskStates) {
+                taskIds.add(persistentTaskState.getTaskId());
+            }
+            return taskIds;
+        } catch (DAOException e) {
+            throw createPersistenceException(errorMsg, e);
+        }
+    }
+
+    @Override
+    public TaskState getTaskState(final String taskId) throws BeenApiException {
+        final String errorMsg = String.format("Failed to get state of task '%s'", taskId);
+        final Query query = new QueryBuilder().on(Entities.OUTCOME_TASK.getId()).with("taskId", taskId).fetch();
+
+        final QueryAnswer answer = performQuery(query, errorMsg);
+
+        try {
+            final Collection<PersistentTaskState> states = unpackDataAnswer(query, answer, PersistentTaskState.class);
             if (states.size() != 1) {
                 throw createBeenApiException(errorMsg, String.format("Found '%d' results but expected exactly 1 result", states.size()));
             }
             return states.iterator().next().getTaskState();
         } catch (DAOException e) {
-            throw creatPersistenceException(errorMsg, e);
+            throw createPersistenceException(errorMsg, e);
         }
     }
 
     @Override
-    public Map<String, TaskState> getTaskStatesForContext(String contextId) throws BeenApiException {
-        String errorMsg = String.format("Failed to collect states of tasks running in task context '%s'", contextId);
+    public Map<String, TaskState> getTaskStatesForContext(final String contextId) throws BeenApiException {
+        final String errorMsg = String.format("Failed to list states of tasks running in task context '%s'", contextId);
         final Query query = new QueryBuilder().on(Entities.OUTCOME_TASK.getId()).with("contextId", contextId).fetch();
 
-        QueryAnswer answer = performQuery(query, errorMsg);
+        final QueryAnswer answer = performQuery(query, errorMsg);
 
         try {
-            Collection<PersistentTaskState> states = unpackDataAnswer(query, answer, PersistentTaskState.class);
+            final Collection<PersistentTaskState> states = unpackDataAnswer(query, answer, PersistentTaskState.class);
             final Map<String, TaskState> statesMap = new HashMap<>(states.size());
             for (PersistentTaskState pState : states) {
                 statesMap.put(pState.getTaskId(), pState.getTaskState());
             }
             return statesMap;
         } catch (DAOException e) {
-            throw creatPersistenceException(errorMsg, e);
+            throw createPersistenceException(errorMsg, e);
         }
     }
 
     @Override
-    public Map<String, TaskState> getTaskStatesForBenchmark(String benchmarkId) throws BeenApiException {
-        String errorMsg = String.format("Failed to collect states of tasks running in benchmark '%s'", benchmarkId);
+    public Map<String, TaskState> getTaskStatesForBenchmark(final String benchmarkId) throws BeenApiException {
+        final String errorMsg = String.format("Failed to list states of tasks running in benchmark '%s'", benchmarkId);
         final Query query = new QueryBuilder().on(Entities.OUTCOME_TASK.getId()).with("benchmarkId", benchmarkId).fetch();
 
-        QueryAnswer answer = performQuery(query, errorMsg);
+        final QueryAnswer answer = performQuery(query, errorMsg);
 
         try {
-            Collection<PersistentTaskState> states = unpackDataAnswer(query, answer, PersistentTaskState.class);
+            final Collection<PersistentTaskState> states = unpackDataAnswer(query, answer, PersistentTaskState.class);
             final Map<String, TaskState> statesMap = new HashMap<>(states.size());
             for (PersistentTaskState pState : states) {
                 statesMap.put(pState.getTaskId(), pState.getTaskState());
             }
             return statesMap;
         } catch (DAOException e) {
-            throw creatPersistenceException(errorMsg, e);
+            throw createPersistenceException(errorMsg, e);
         }
     }
+
+    // --------------------
+    // PERSISTENCE CLEARING
+    // --------------------
+
+    @Override
+    public void clearPersistenceForTask(final String taskId) throws BeenApiException {
+        final Query query = new QueryBuilder().with("taskId", taskId).delete();
+        final String errorMsg = String.format("Failed to delete leftover entities for task with id '%s'", taskId);
+        performQuery(query, errorMsg);
+    }
+
+    @Override
+    public void clearPersistenceForContext(final String contextId) throws BeenApiException {
+        final Query query = new QueryBuilder().with("contextId", contextId).delete();
+        final String errorMsg = String.format("Failed to delete leftover entities for task context with id '%s'", contextId);
+        performQuery(query, errorMsg);
+    }
+
+    @Override
+    public void clearPersistenceForBenchmark(final String benchmarkId) throws BeenApiException {
+        final Query query = new QueryBuilder().with("benchmarkId", benchmarkId).delete();
+        final String errorMsg = String.format("Failed to delete leftover entities for benchmark with id '%s'", benchmarkId);
+        performQuery(query, errorMsg);
+    }
+
+    // ---------------
+    // NON-API METHODS
+    // ---------------
 
     /**
      * Unmarshall a collection of accordingly typed entities from a {@link QueryAnswer}, or throw a {@link DAOException} if something goes wrong
@@ -1083,7 +1065,7 @@ public final class BeenApiImpl implements BeenApi {
      * @param entityClass Class of the entity to unmarshall
      * @throws DAOException When there is no data in the answer
      */
-    private <T extends Entity> Collection<T> unpackDataAnswer(Query query, QueryAnswer answer, Class<T> entityClass) throws DAOException {
+    private <T extends Entity> Collection<T> unpackDataAnswer(final Query query, final QueryAnswer answer, final Class<T> entityClass) throws DAOException {
         if (!answer.isCarryingData()) {
             throw new DAOException(String.format("Answer for query '%s' returned with no data: %s", query.toString(), answer.getStatus().getDescription()));
         }
@@ -1092,31 +1074,6 @@ public final class BeenApiImpl implements BeenApi {
         } catch (JsonException e) {
             throw new DAOException(String.format("Failed to unmarshall data responding to query '%s'", query.toString()), e);
         }
-    }
-
-    // --------------------
-    // PERSISTENCE CLEARING
-    // --------------------
-
-    @Override
-    public void clearPersistenceForTask(String taskId) throws BeenApiException {
-        final Query query = new QueryBuilder().with("taskId", taskId).delete();
-        String errorMsg = String.format("Failed to delete leftover entities for task with id '%s'", taskId);
-        performQuery(query, errorMsg);
-    }
-
-    @Override
-    public void clearPersistenceForContext(String contextId) throws BeenApiException {
-        final Query query = new QueryBuilder().with("contextId", contextId).delete();
-        String errorMsg = String.format("Failed to delete leftover entities for task context with id '%s'", contextId);
-        performQuery(query, errorMsg);
-    }
-
-    @Override
-    public void clearPersistenceForBenchmark(String benchmarkId) throws BeenApiException {
-        final Query query = new QueryBuilder().with("benchmarkId", benchmarkId).delete();
-        String errorMsg = String.format("Failed to delete leftover entities for benchmark with id '%s'", benchmarkId);
-        performQuery(query, errorMsg);
     }
 
     /**
@@ -1129,14 +1086,14 @@ public final class BeenApiImpl implements BeenApi {
      * @throws PersistenceException when retrieved query answer is invalid or with status other than OK
      * @throws BeenApiException     when something other goes wrong while retrieving query answer
      */
-    private QueryAnswer performQuery(Query query, String errorMsg) throws BeenApiException {
+    private QueryAnswer performQuery(final Query query, final String errorMsg) throws BeenApiException {
         checkIsActive(errorMsg);
 
         final QueryAnswer answer;
         try {
             answer = clusterContext.getPersistence().query(query);
         } catch (DAOException e) {
-            throw creatPersistenceException(errorMsg, e);
+            throw createPersistenceException(errorMsg, e);
         } catch (Exception e) {
             throw createBeenApiException(errorMsg, e);
         }
@@ -1148,20 +1105,48 @@ public final class BeenApiImpl implements BeenApi {
         return answer;
     }
 
+    private SwRepoClient getSwRepoClient(final String errorMsg) throws BeenApiException {
+        final SWRepositoryInfo swInfo;
+        try {
+            swInfo = clusterContext.getServices().getSWRepositoryInfo();
+        } catch (Exception e) {
+            throw createBeenApiException(errorMsg, e);
+        }
 
-    private PersistenceException creatPersistenceException(String errorMsg, Exception cause) {
-        String msg = String.format("%s. Reason: %s", errorMsg, cause.getMessage());
+        if (swInfo == null) {
+            throw createSoftwareRepositoryUnavailableException(errorMsg);
+        }
+
+        try {
+            final SoftwareStore softwareCache = SoftwareStoreBuilderFactory.getSoftwareStoreBuilder().buildCache();
+            final SwRepoClientFactory swRepoClientFactory = new SwRepoClientFactory(softwareCache);
+            return swRepoClientFactory.getClient(swInfo.getHost(), swInfo.getHttpServerPort());
+        } catch (Exception e) {
+            throw createBeenApiException(errorMsg, e);
+        }
+    }
+
+    private PersistenceException createPersistenceException(final String errorMsg, Exception cause) {
+        final String msg = String.format("%s. Reason: %s", errorMsg, cause.getMessage());
         return new PersistenceException(msg, cause);
     }
 
-    private PersistenceException creatPersistenceException(String errorMsg, String reason) {
-        String msg = String.format("%s. Reason: %s", errorMsg, reason);
+    private PersistenceException creatPersistenceException(final String errorMsg, final String reason) {
+        final String msg = String.format("%s. Reason: %s", errorMsg, reason);
         return new PersistenceException(msg);
     }
 
-    private SoftwareRepositoryUnavailableException createSoftwareRepositoryUnavailableException(String errorMsg) {
-        String msg = String.format("%s. Reason: Software repository is not available", errorMsg);
+    private SoftwareRepositoryUnavailableException createSoftwareRepositoryUnavailableException(final String errorMsg) {
+        final String msg = String.format("%s. Reason: Software repository is not available", errorMsg);
         return new SoftwareRepositoryUnavailableException(msg);
+    }
+
+    private BeenApiException createBeenApiException(final String errorMsg, final Exception e) {
+        return new BeenApiException(String.format("%s. Reason: %s", errorMsg, e.getMessage()), e);
+    }
+
+    private BeenApiException createBeenApiException(final String errorMsg, final String reason) {
+        return new BeenApiException(String.format("%s. Reason: %s", errorMsg, reason));
     }
 
 }
