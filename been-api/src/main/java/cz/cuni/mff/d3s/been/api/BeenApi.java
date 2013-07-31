@@ -98,7 +98,7 @@ public interface BeenApi {
     public void deleteResult(String resultId) throws BeenApiException;
 
 	public Collection<BpkIdentifier> getBpks() throws BeenApiException;
-	public void uploadBpk(BpkStreamHolder bpkFileHolder) throws BeenApiException;
+	public void uploadBpk(BpkHolder bpkFileHolder) throws BeenApiException;
 	public InputStream downloadBpk(BpkIdentifier bpkIdentifier) throws BeenApiException;
 
 	public Map<String, TaskDescriptor> getTaskDescriptors(BpkIdentifier bpkIdentifier) throws BeenApiException;

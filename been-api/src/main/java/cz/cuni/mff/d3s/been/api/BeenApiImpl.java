@@ -355,6 +355,7 @@ public class BeenApiImpl implements BeenApi {
         }
     }
 
+    // FIXME - EntryListener is haazelcast dependency !!!
     @Override
     public void addLogListener(final EntryListener<String, String> listener) throws BeenApiException {
         final String errorMsg = "Failed to add task log listener";
@@ -453,7 +454,7 @@ public class BeenApiImpl implements BeenApi {
 
 
     @Override
-    public void uploadBpk(final BpkStreamHolder bpkFileHolder) throws BeenApiException {
+    public void uploadBpk(final BpkHolder bpkFileHolder) throws BeenApiException {
         final BpkIdentifier bpkIdentifier;
         try {
             bpkIdentifier = bpkFileHolder.getBpkIdentifier();
