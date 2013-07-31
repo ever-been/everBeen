@@ -36,8 +36,7 @@ public class TaskEntries {
 	 *          for which the new entry is created
 	 * @return initialized entry
 	 */
-	public static TaskEntry create(TaskDescriptor taskDescriptor,
-			String taskContextId) {
+	public static TaskEntry create(TaskDescriptor taskDescriptor, String taskContextId) {
 		if (taskContextId == null) {
 			throw new NullPointerException("Task context ID cannot be null.");
 		}
@@ -53,11 +52,7 @@ public class TaskEntries {
 		entry.setTaskContextId(taskContextId);
 		entry.setTaskDescriptor(taskDescriptor);
 
-		// id of the data node which owns this entry
-		entry.setOwnerId("0");
-
-		// id of the host runtime on which the task is scheduled
-		entry.setRuntimeId("0");
+		// do not set ownerId and runtimeId
 
 		return entry;
 	}
@@ -105,8 +100,9 @@ public class TaskEntries {
 	 * @throws IllegalArgumentException
 	 *           if the transition to a new state is illegal.
 	 */
-	public static void setState(TaskEntry entry, TaskState newState,
-			String reasonFormat, Object... reasonArgs) throws IllegalStateException {
+	public static
+			void
+			setState(TaskEntry entry, TaskState newState, String reasonFormat, Object... reasonArgs) throws IllegalStateException {
 		TaskState oldState = entry.getState();
 
 		if (oldState == null || !oldState.canChangeTo(newState)) {
@@ -145,8 +141,7 @@ public class TaskEntries {
 	 * @param reasonArgs
 	 * @return
 	 */
-	private static StateChangeEntry createStateChangeEntry(TaskState state,
-			String reasonFormat, Object... reasonArgs) {
+	private static StateChangeEntry createStateChangeEntry(TaskState state, String reasonFormat, Object... reasonArgs) {
 		StateChangeEntry logEntry = TASK.createStateChangeEntry();
 		logEntry.setState(state);
 		logEntry.setReason(String.format(reasonFormat, reasonArgs));

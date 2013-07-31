@@ -61,10 +61,12 @@
 
                 <dt>Runtime ID:</dt>
                 <dd>
-                    <i class="icon-laptop"></i>&nbsp;
-                    <a href="/runtime/detail/${task.runtimeId}">
-                        <t:output format="idFormat" value="task.runtimeId"/>
-                    </a>
+                	<t:if test="task.runtimeId">
+						<i class="icon-laptop"></i>&nbsp;
+						<a href="/runtime/detail/${task.runtimeId}">
+							<t:output format="idFormat" value="task.runtimeId"/>
+						</a>
+					</t:if>
                 </dd>
 
                 <dt>Task Context ID:</dt>
