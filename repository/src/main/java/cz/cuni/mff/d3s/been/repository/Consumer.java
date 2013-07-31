@@ -1,6 +1,5 @@
 package cz.cuni.mff.d3s.been.repository;
 
-import cz.cuni.mff.d3s.been.persistence.DAOException;
 import cz.cuni.mff.d3s.been.persistence.SuccessAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,29 +11,35 @@ abstract class Consumer<T> implements Runnable {
 	/** Result persistence layer */
 	protected final SuccessAction<T> successAction;
 	protected final FailAction<T> failAction;
+	protected final FailRate failRateMonitor;
 
-	Consumer(SuccessAction<T> successAction, FailAction<T> failAction) {
+	Consumer(SuccessAction<T> successAction, FailAction<T> failAction, FailRate failRateMonitor) {
 		this.successAction = successAction;
 		this.failAction = failAction;
+		this.failRateMonitor = failRateMonitor;
 	}
 
-	protected void act(T what) {
+	/**
+	 * Perform actions on the retrieved item
+	 *
+	 * @param what Retrieved item
+	 *
+	 * @return <code>true</code> if the action was successful, <code>false</code> if not
+	 */
+	protected boolean act(T what) {
 		try {
 			successAction.perform(what);
-		} catch (DAOException e) {
+			failRateMonitor.success();
+			return true;
+		} catch (Exception e) {
 			log.error("Cannot perform {} - {}", what.toString(), e.getMessage());
 			actOnFailure(what);
+			failRateMonitor.fail();
+			return false;
 		}
 	}
 
 	protected void actOnFailure(T what) {
-		while (true) {
-			try {
-				failAction.perform(what);
-				break;
-			} catch (InterruptedException e) {
-				log.warn("Worker thread interrupted when attempting to take fail action. Will be reattempting that indefinitely to prevent data loss.");
-			}
-		}
+		failAction.perform(what);
 	}
 }

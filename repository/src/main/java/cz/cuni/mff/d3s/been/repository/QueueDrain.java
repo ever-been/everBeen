@@ -14,6 +14,8 @@ import cz.cuni.mff.d3s.been.persistence.SuccessAction;
  */
 abstract class QueueDrain<T> implements Service {
 
+	private final Float failRateThreshold;
+	private final Long suspendTimeOnHighFailRate;
 	private final String queueName;
 	private final ClusterContext ctx;
 	private final SuccessAction<T> successAction;
@@ -21,16 +23,18 @@ abstract class QueueDrain<T> implements Service {
 	private Digester<T> digester;
 	private ItemCounterListener<T> itemListener;
 
-	protected QueueDrain(ClusterContext ctx, String queueName, SuccessAction<T> successAction) {
+	protected QueueDrain(ClusterContext ctx, String queueName, SuccessAction<T> successAction, Float failRateThreshold, Long suspendTimeOnHighFailRate) {
 		this.ctx = ctx;
 		this.queueName = queueName;
 		this.successAction = successAction;
+		this.failRateThreshold = failRateThreshold;
+		this.suspendTimeOnHighFailRate = suspendTimeOnHighFailRate;
 	}
 
 	@Override
 	public void start() throws ServiceException {
 		queue = ctx.getQueue(queueName);
-		digester = Digester.create(createTakeAction(), createPollAction(), successAction, createFailAction());
+		digester = Digester.create(createTakeAction(), createPollAction(), successAction, createFailAction(), failRateThreshold, suspendTimeOnHighFailRate);
 		itemListener = ItemCounterListener.create(digester);
 
 		digester.start();

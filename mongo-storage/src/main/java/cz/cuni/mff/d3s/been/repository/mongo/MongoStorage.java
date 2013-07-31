@@ -83,14 +83,8 @@ public final class MongoStorage implements Storage {
 		if (authenticate && !db.authenticate(username, password.toCharArray())) {
 			throw new StorageException("Failed to authenticate against BEEN database");
 		}
-		try {
-			final CommandResult statRes = db.getStats();
-			if (!statRes.ok()) {
-				throw new StorageException("Failed to get DB stats. Mongo database is probably not running.");
-			}
-			log.info("Mongo connection initalized. Current Mongo stats:\n{}", statRes.toString());
-		} catch (MongoException e) {
-			throw new StorageException("Error getting DB stats. Mongo database is probably not running.", e);
+		if (!isConnected()) {
+			throw new StorageException("Error getting DB stats. Mongo database is probably not running.");
 		}
 	}
 
@@ -101,12 +95,16 @@ public final class MongoStorage implements Storage {
 
 	@Override
 	public void store(EntityID entityId, String entityJSON) throws DAOException {
-		final WriteResult wr = mapEntity(entityId).insert((DBObject) JSON.parse(entityJSON));
-		if (wr.getError() != null) {
-			throw new DAOException(String.format(
-					"Write on Entity ID %s resulted in the following error: %s.",
-					entityId.toString(),
-					wr.getError()));
+		try {
+			final WriteResult wr = mapEntity(entityId).insert((DBObject) JSON.parse(entityJSON));
+			if (wr.getError() != null) {
+				throw new DAOException(String.format(
+						"Write on Entity ID %s resulted in the following error: %s.",
+						entityId.toString(),
+						wr.getError()));
+			}
+		} catch (MongoException e) {
+			throw new DAOException(String.format("Failed to store persistent object (%s, %s)", entityId.toString(), entityJSON), e);
 		}
 	}
 
@@ -121,33 +119,56 @@ public final class MongoStorage implements Storage {
 		for (String selectorName: query.getSelectorNames()) {
 			filter.put(selectorName, query.getSelector(selectorName));
 		}
-		switch (query.getType()) {
-			case FETCH:
-				try {
-					return QueryAnswerFactory.fetched(fetch(query.getEntityID(), filter));
-				} catch (DAOException e) {
-					return QueryAnswerFactory.unknownError();
-				}
-			case DELETE:
-				try {
-					if (query.getEntityID() != null) {
-						delete(query.getEntityID(), filter);
-					} else {
-						delete(filter);
+		try {
+			switch (query.getType()) {
+				case FETCH:
+					try {
+						return QueryAnswerFactory.fetched(fetch(query.getEntityID(), filter));
+					} catch (DAOException e) {
+						return QueryAnswerFactory.unknownError();
 					}
-					return QueryAnswerFactory.deleted();
-				} catch (DAOException e) {
-					return QueryAnswerFactory.unknownError();
-				}
-			case NATIVE:
-				try {
-					NativeQuery nq = (NativeQuery)query;
-					return QueryAnswerFactory.fetched(nativeQuery(nq.getJsFunction()));
-				} catch (DAOException e) {
-					return QueryAnswerFactory.unknownError();
-				}
-			default:
-				return QueryAnswerFactory.badQuery();
+				case DELETE:
+					try {
+						if (query.getEntityID() != null) {
+							delete(query.getEntityID(), filter);
+						} else {
+							delete(filter);
+						}
+						return QueryAnswerFactory.deleted();
+					} catch (DAOException e) {
+						return QueryAnswerFactory.unknownError();
+					}
+				case NATIVE:
+					try {
+						return QueryAnswerFactory.fetched(nativeQuery(MongoQueryInterpret.getMongoQueryString(query)));
+					} catch (DAOException e) {
+						return QueryAnswerFactory.unknownError();
+					}
+				default:
+					return QueryAnswerFactory.badQuery();
+			}
+		} catch (MongoException e) {
+			if (e instanceof MongoException.Network) {
+				return QueryAnswerFactory.persistenceDown();
+			} else {
+				return QueryAnswerFactory.unknownError();
+			}
+		}
+	}
+
+	@Override
+	public boolean isConnected() {
+		try {
+			CommandResult cr = db.getStats();
+			log.info("MongoDB connected with stats {}", cr.toString());
+			return true;
+		} catch (MongoException e) {
+			if (e instanceof MongoException.Network) {
+				log.warn("MongoDB disconnected");
+				return false;
+			} else {
+				return true;
+			}
 		}
 	}
 
@@ -156,13 +177,12 @@ public final class MongoStorage implements Storage {
 	}
 
 	private final Collection<String> fetch(EntityID entityId, DBObject filter) throws DAOException {
-		log.debug("Querying {} with filter {} and projection {}", entityId.toString(), filter.toString(), PROJECT_IGNORE_MONGO_ID.toString());
-		final DBCursor cursor = mapEntity(entityId).find(filter, PROJECT_IGNORE_MONGO_ID);
+		final DBCursor cursor;
+		cursor = mapEntity(entityId).find(filter, PROJECT_IGNORE_MONGO_ID);
 		List<String> result = new ArrayList<String>(cursor.count());
 		while (cursor.hasNext()) {
 			result.add(cursor.next().toString());
 		}
-		log.debug("Query result: {}", result.toString());
 		return result;
 	}
 
@@ -176,9 +196,15 @@ public final class MongoStorage implements Storage {
 		mapEntity(entityID).remove(filter);
 	}
 
-	private Collection<String> nativeQuery(String jsFunction) throws DAOException {
-		CommandResult commandResult = db.doEval(jsFunction);
-		Object retval = commandResult.get("retval");
+	private Collection<String> nativeQuery(String query) throws DAOException {
+		final CommandResult commandResult = db.doEval(query);
+		if (!commandResult.ok()) {
+			throw new DAOException(String.format("Native query '%s' failed: %s", query, commandResult.getErrorMessage()));
+		}
+		final Object retval = commandResult.get("retval");
+		if (retval == null) {
+			throw new DAOException(String.format("Native query '%s' yielded no result", query));
+		}
 		if (retval instanceof BasicDBList) {
 			BasicDBList list = (BasicDBList) retval;
 			List<String> result = new ArrayList<>();

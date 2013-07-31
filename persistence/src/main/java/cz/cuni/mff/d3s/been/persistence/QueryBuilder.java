@@ -81,4 +81,13 @@ public class QueryBuilder {
 		}
 		return new DeleteQuery(entityID, selectors);
 	}
+
+	/**
+	 * Build a database-specific native query. Use carefully.
+	 *
+	 * @return A native query, specific to the targeted database
+	 */
+	public Query nativa(String query) {
+		return new NativeQuery(query);
+	}
 }
