@@ -30,6 +30,8 @@ import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
 import cz.cuni.mff.d3s.been.util.JSONUtils;
 import cz.cuni.mff.d3s.been.util.JsonException;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -353,6 +355,7 @@ public class BeenApiImpl implements BeenApi {
         }
     }
 
+    // FIXME - EntryListener is haazelcast dependency !!!
     @Override
     public void addLogListener(final EntryListener<String, String> listener) throws BeenApiException {
         final String errorMsg = "Failed to add task log listener";
@@ -451,7 +454,7 @@ public class BeenApiImpl implements BeenApi {
 
 
     @Override
-    public void uploadBpk(final BpkStreamHolder bpkFileHolder) throws BeenApiException {
+    public void uploadBpk(final BpkHolder bpkFileHolder) throws BeenApiException {
         final BpkIdentifier bpkIdentifier;
         try {
             bpkIdentifier = bpkFileHolder.getBpkIdentifier();
@@ -862,17 +865,22 @@ public class BeenApiImpl implements BeenApi {
                 "function() { return db.getCollection('%s.%s').group({ keyf: function(d) { var e = new Date(d.created);" +
                         " return { year: 1900 + e.getYear(), month: 1 + e.getMonth(), day: e.getDate() }; }," +
                         " reduce: function(a,b){}, initial: {}}); }", entityID.getKind(), entityID.getGroup()));
-        try {
-            final Collection<DateStructure> collection = jsonUtils.deserialize(queryPersistence(query).getData(), DateStructure.class);
-            final Collection<Date> result = new ArrayList<>();
-            for (DateStructure d : collection) {
-                result.add(d.toDate());
-            }
 
-            return result;
-        } catch (JsonException e) {
-            throw createBeenApiException(errorMsg, e);
+        QueryAnswer answer = queryPersistence(query);
+
+        final Collection<DateStructure> collection;
+        try {
+            collection = unpackDataAnswer(query, answer, DateStructure.class);
+        } catch (DAOException e) {
+            throw createPersistenceException(errorMsg, e);
         }
+
+        final Collection<Date> result = new ArrayList<>();
+        for (DateStructure d : collection) {
+            result.add(d.toDate());
+        }
+
+        return result;
     }
 
     @Override
@@ -1099,7 +1107,7 @@ public class BeenApiImpl implements BeenApi {
         }
 
         if (!answer.getStatus().isOk()) {
-            throw creatPersistenceException(errorMsg, answer.getStatus().getDescription());
+            throw createPersistenceException(errorMsg, answer.getStatus().getDescription());
         }
 
         return answer;
@@ -1131,7 +1139,7 @@ public class BeenApiImpl implements BeenApi {
         return new PersistenceException(msg, cause);
     }
 
-    private PersistenceException creatPersistenceException(final String errorMsg, final String reason) {
+    private PersistenceException createPersistenceException(final String errorMsg, final String reason) {
         final String msg = String.format("%s. Reason: %s", errorMsg, reason);
         return new PersistenceException(msg);
     }

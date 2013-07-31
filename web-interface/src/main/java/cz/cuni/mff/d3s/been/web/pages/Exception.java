@@ -65,6 +65,7 @@ public class Exception extends Page implements ExceptionReporter {
     }
 
     private void handleBeenApiException(Throwable t) {
+        BeenApiException beenApiException = (BeenApiException) t;
 
         this.message = t.getMessage();
         this.exception = t;
@@ -77,8 +78,5 @@ public class Exception extends Page implements ExceptionReporter {
         } else if (t instanceof BeenApiException) {
             this.correctExceptionBlock = standardBeenApiExceptionBlock;
         }
-
-
-
     }
 }

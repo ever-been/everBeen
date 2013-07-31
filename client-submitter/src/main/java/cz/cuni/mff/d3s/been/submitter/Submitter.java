@@ -1,9 +1,6 @@
 package cz.cuni.mff.d3s.been.submitter;
 
-import cz.cuni.mff.d3s.been.api.BeenApi;
-import cz.cuni.mff.d3s.been.api.BeenApiException;
-import cz.cuni.mff.d3s.been.api.BeenApiImpl;
-import cz.cuni.mff.d3s.been.api.BpkStreamHolder;
+import cz.cuni.mff.d3s.been.api.*;
 import cz.cuni.mff.d3s.been.bpk.BpkConfigurationException;
 import cz.cuni.mff.d3s.been.cluster.Instance;
 import cz.cuni.mff.d3s.been.core.jaxb.BindingParser;
@@ -141,8 +138,7 @@ public class Submitter {
     }
 
     private void uploadBpk(String bpkFile) throws BpkConfigurationException, IOException, BeenApiException {
-        FileInputStream fis = new FileInputStream(new File(bpkFile));
-        api.uploadBpk(new BpkStreamHolder(fis));
+        api.uploadBpk(new BpkFileHolder(new File(bpkFile)));
         System.out.printf("%s uploaded to Software Repository\n", bpkFile);
     }
 }

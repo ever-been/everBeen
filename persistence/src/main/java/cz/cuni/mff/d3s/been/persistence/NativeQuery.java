@@ -3,6 +3,7 @@ package cz.cuni.mff.d3s.been.persistence;
 import cz.cuni.mff.d3s.been.core.persistence.EntityID;
 import org.codehaus.jackson.annotate.JsonTypeInfo;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 /**
@@ -10,7 +11,7 @@ import java.util.HashMap;
  *
  * @author Kuba Brecka
  *
- * @deprecated The entire principle of native querying needs to be rethought and possibly eliminated. Usage strongle discouraged.
+ * @deprecated The entire principle of native querying needs to be rethought and possibly eliminated. Usage strongly discouraged.
  */
 @Deprecated
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")

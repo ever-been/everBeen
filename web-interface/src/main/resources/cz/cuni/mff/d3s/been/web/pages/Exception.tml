@@ -44,12 +44,18 @@
 
     <t:block t:id="hazelcastDisconnectedExceptionBlock">
         <p>${message}</p>
-        <p>Click <t:pagelink t:page="Connect">here</t:pagelink> to redirect to connect page.</p>
+        <p>Click
+            <t:pagelink t:page="Connect">here</t:pagelink>
+            to redirect to connect page.
+        </p>
     </t:block>
 
     <t:block t:id="softwareRepositoryUnavailableExceptionBlock">
         <p>${message}</p>
-        <p>Check <t:pagelink t:page="cluster/Info">cluster info</t:pagelink> page.</p>
+        <p>Check
+            <t:pagelink t:page="cluster/Info">cluster info</t:pagelink>
+            page.
+        </p>
     </t:block>
 
     <t:block t:id="standardBeenApiExceptionBlock">

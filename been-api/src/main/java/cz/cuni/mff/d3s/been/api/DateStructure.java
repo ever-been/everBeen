@@ -1,5 +1,7 @@
 package cz.cuni.mff.d3s.been.api;
 
+import cz.cuni.mff.d3s.been.core.persistence.Entity;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -7,7 +9,7 @@ import java.util.GregorianCalendar;
 /**
  * @author Kuba Brecka
  */
-public class DateStructure {
+public class DateStructure extends Entity {
 	private int year;
 	private int month;
 	private int day;

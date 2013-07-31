@@ -3,9 +3,9 @@
 <html t:type="layout" section="section" xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd"
       xmlns:p="tapestry:parameter">
 
-    <h2>Task context ${contextId}</h2>
+    <h2>Task context ${taskContextId}</h2>
     <t:if t:test="context" t:negate="true">
-        Task context ${contextId} was not found
+        Task context ${taskContextId} was not found
         <p:else>
             <div style="float: right; text-align: right;">
                 <t:if test="taskContextInFinalState(context.id)">

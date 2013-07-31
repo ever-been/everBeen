@@ -12,19 +12,14 @@ import java.io.*;
 /**
  * @author donarus
  */
-public class BpkStreamHolder implements BpkHolder {
+public class BpkFileHolder implements BpkHolder {
 
     private File bpkFile;
 
     private BpkIdentifier bpkIdentifier;
 
-    public BpkStreamHolder(InputStream inputStream) throws IOException, BpkConfigurationException {
-        if (bpkFile == null) {
-            bpkFile = File.createTempFile("tmp", "bpk");
-            FileOutputStream fos = new FileOutputStream(bpkFile);
-            IOUtils.copy(inputStream, fos);
-            bpkFile.deleteOnExit();
-        }
+    public BpkFileHolder(File bpkFile) throws IOException, BpkConfigurationException {
+       this.bpkFile = bpkFile;
     }
 
     public InputStream getInputStream() throws IOException {
@@ -48,7 +43,7 @@ public class BpkStreamHolder implements BpkHolder {
 
     @Override
     public void close() throws IOException {
-        FileUtils.deleteQuietly(bpkFile);
+        // ignore - this class is not owner of given file
     }
 
 }
