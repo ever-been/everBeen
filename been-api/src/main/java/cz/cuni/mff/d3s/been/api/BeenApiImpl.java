@@ -858,7 +858,7 @@ public class BeenApiImpl implements BeenApi {
     public Collection<Date> getServiceLogsAvailableDates() throws BeenApiException {
         final String errorMsg = "Failed to list service logs available dates";
         final EntityID entityID = Entities.LOG_SERVICE.getId();
-        final NativeQuery query = new NativeQuery(String.format(
+        final Query query = new QueryBuilder().nativa(String.format(
                 "function() { return db.getCollection('%s.%s').group({ keyf: function(d) { var e = new Date(d.created);" +
                         " return { year: 1900 + e.getYear(), month: 1 + e.getMonth(), day: e.getDate() }; }," +
                         " reduce: function(a,b){}, initial: {}}); }", entityID.getKind(), entityID.getGroup()));
@@ -885,7 +885,7 @@ public class BeenApiImpl implements BeenApi {
         final Long timeTomorrow = c.getTime().getTime();
 
         final EntityID entityID = Entities.LOG_SERVICE.getId();
-        final NativeQuery query = new NativeQuery(String.format(
+        final Query query = new QueryBuilder().nativa(String.format(
                 "function() { var start = %d; var end = %d; return db.getCollection('%s.%s').find(" +
                         "{created: {$gte: start, $lt: end}}, {_id: 0}).toArray(); }", timeToday, timeTomorrow, entityID.getKind(), entityID.getGroup()));
 
