@@ -1,127 +1,157 @@
 <!DOCTYPE html>
 
 <html t:type="layout" section="section"
-      xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd">
+      xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd" xmlns:p="tapestry:parameter">
 
     <h2>Submit New Task Context</h2>
 
     <t:form class="form-horizontal" t:id="submitTaskContextForm">
-	    <div style="float: right; text-align: right;">
-		    <button type="submit" class="btn btn-primary">Submit</button>
-	    </div>
-
-	    <div class="container">
-        <div class="row">
-            <div class="span6">
-	            <fieldset>
-                <legend>Basic task properties</legend>
-
-                <div class="control-group">
-                    <label class="control-label">Name</label>
-
-                    <div class="controls">
-                        <input type="text" value="${taskContextDescriptor.name}" disabled="" style="font-weight: bold"/>
-                    </div>
-                </div>
-	            </fieldset>
-            </div>
-
-            <div class="span6">
-	            <fieldset>
-                <legend>Environment properties</legend>
-
-                <div class="control-group" t:type="loop" index="loopIndex"
-                     source="taskContextDescriptor.properties.property">
-                    <t:label class="control-label" for="propValue">
-                        ${taskContextDescriptor.properties.property.get(loopIndex).name}
-                    </t:label>
-
-                    <div class="controls">
-                        <input type="text" t:id="propValue" t:type="textfield"
-                               t:value="taskContextDescriptor.properties.property.get(loopIndex).value"/>
-                    </div>
-                </div>
-	            </fieldset>
-            </div>
+        <div style="float: right; text-align: right;">
+            <button type="submit" class="btn btn-primary">Submit</button>
         </div>
 
+        <div class="container">
+            <div class="row">
+                <div class="span6">
+                    <fieldset>
+                        <legend>Basic task properties</legend>
 
-        <div class="row">
-            <div class="span6">
-	            <fieldset>
-                <legend>Contained tasks</legend>
-                <table class="table tasktemplate">
-                    <tr>
-                        <th>#</th>
-                        <th>from template</th>
-                    </tr>
-                    <tr t:type="loop" source="taskContextDescriptor.task" index="loopIndex">
-                        <td>${loopIndex}</td>
-                        <td>${taskContextDescriptor.task.get(loopIndex).descriptor.fromTemplate}</td>
-                    </tr>
-                </table>
-	            </fieldset>
-            </div>
-            <div class="span6">
-	            <fieldset>
-                <legend>Task templates</legend>
-                <table class="table tasktemplate">
-                    <tr>
-                        <th>#</th>
-                        <th>template name</th>
-                        <th></th>
-                    </tr>
-                    <tr t:type="loop" source="taskContextDescriptor.templates.template"
-                        index="loopIndex">
-                        <td>${loopIndex}</td>
-                        <td>${taskContextDescriptor.templates.template.get(loopIndex).name}</td>
-                        <td>
+                        <div class="control-group">
+                            <label class="control-label">Name</label>
 
-                            <t:jquery.dialogAjaxlink t:id="dialogLink" t:dialog="dialog" t:context="loopIndex"
-                                                     t:zone="dialogZone" class="btn  btn-mini">
-                                edit
-                            </t:jquery.dialogAjaxlink>
-
-
-                        </td>
-                    </tr>
-                </table>
-	            </fieldset>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="span6">
-	            <fieldset>
-                <legend>Other</legend>
-                <t:label for="longDescription" class="control-label">Description</t:label>
-
-                <div class="controls">
-                    <t:textarea t:id="longDescription"
-                                t:value="taskContextDescriptor.contextDescription"/>
+                            <div class="controls">
+                                <input type="text" value="${taskContextDescriptor.name}" disabled=""
+                                       style="font-weight: bold"/>
+                            </div>
+                        </div>
+                    </fieldset>
                 </div>
-	            </fieldset>
+
+                <div class="span6">
+                    <fieldset>
+                        <legend>Environment properties</legend>
+
+                        <div class="control-group" t:type="loop" index="loopIndex"
+                             source="taskContextDescriptor.properties.property">
+                            <t:label class="control-label" for="propValue">
+                                ${taskContextDescriptor.properties.property.get(loopIndex).name}
+                            </t:label>
+
+                            <div class="controls">
+                                <input type="text" t:id="propValue" t:type="textfield"
+                                       t:value="taskContextDescriptor.properties.property.get(loopIndex).value"/>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="span6">
+                    <fieldset>
+                        <legend>Contained tasks</legend>
+                        <table class="table tasktemplate">
+                            <tr>
+                                <th>#</th>
+                                <th>from template</th>
+                            </tr>
+                            <tr t:type="loop" source="taskContextDescriptor.task" index="loopIndex">
+                                <td>${loopIndex}</td>
+                                <td>
+                                    <t:if t:test="taskContextDescriptor.task.get(loopIndex).descriptor.taskDescriptor">
+                                        ${taskContextDescriptor.task.get(loopIndex).descriptor.taskDescriptor.name}
+                                        <t:jquery.dialogAjaxlink t:id="taskDescriptorDialogLink" t:dialog="dialog"
+                                                                 t:context="loopIndex"
+                                                                 t:zone="dialogZone" class="btn  btn-mini">
+                                            edit
+                                        </t:jquery.dialogAjaxlink>
+                                        <p:else>
+                                            from template ${taskContextDescriptor.task.get(loopIndex).descriptor.fromTemplate}
+                                        </p:else>
+                                    </t:if>
+                                </td>
+                            </tr>
+                        </table>
+                    </fieldset>
+                </div>
+                <div class="span6">
+                    <fieldset>
+                        <legend>Task templates</legend>
+                        <table class="table tasktemplate">
+                            <tr>
+                                <th>#</th>
+                                <th>template name</th>
+                                <th></th>
+                            </tr>
+                            <tr t:type="loop" source="taskContextDescriptor.templates.template"
+                                index="loopIndex">
+                                <td>${loopIndex}</td>
+                                <td>${taskContextDescriptor.templates.template.get(loopIndex).name}</td>
+                                <td>
+
+                                    <t:jquery.dialogAjaxlink t:id="taskTemplateDialogLink" t:dialog="dialog"
+                                                             t:context="loopIndex"
+                                                             t:zone="dialogZone" class="btn  btn-mini">
+                                        edit
+                                    </t:jquery.dialogAjaxlink>
+
+
+                                </td>
+                            </tr>
+                        </table>
+                    </fieldset>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="span6">
+                    <fieldset>
+                        <legend>Other</legend>
+                        <t:label for="longDescription" class="control-label">Description</t:label>
+
+                        <div class="controls">
+                            <t:textarea t:id="longDescription"
+                                        t:value="taskContextDescriptor.contextDescription"/>
+                        </div>
+                    </fieldset>
+                </div>
             </div>
         </div>
-	    </div>
 
     </t:form>
 
 
-
-    <t:jquery.dialog t:clientId="dialog" t:id="dialog" t:params="literal:{position: [20,80], width: 640, modal: true, closeOnEsc: true}">
+    <t:jquery.dialog t:clientId="dialog" t:id="dialog"
+                     t:params="literal:{position: [20,80], width: 640, modal: true, closeOnEsc: true}">
         <t:zone t:id="dialogZone">
         </t:zone>
     </t:jquery.dialog>
 
-    <t:block t:id="dialogBlock">
-        <t:form t:id="templateForm" t:context="loopIndex" t:zone="dummyZone" class="form-horizontal">
+    <t:block t:id="taskTemplateDialogBlock">
+        <t:form t:id="taskTemplateForm" t:context="loopIndex" t:zone="dummyZone" class="form-horizontal">
 
-	        <div style="float: right; text-align: right;">
-		        <button type="submit" class="btn btn-primary">Save</button>
-	        </div>
+            <div style="float: right; text-align: right;">
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
 
-	        <t:task.editTaskDescriptorForm
+            <t:task.editTaskDescriptorForm
+                    t:index="loopIndex"
+                    t:tasksDescriptors="taskTemplatesDescriptors"
+                    t:tasksArgs="taskTemplatesArgs"
+                    t:tasksJavaOpts="taskTemplatesJavaOpts"/>
+        </t:form>
+    </t:block>
+
+
+    <t:block t:id="taskDescriptorDialogBlock">
+        <t:form t:id="taskDescriptorForm" t:context="loopIndex" t:zone="dummyZone" class="form-horizontal">
+
+            <div style="float: right; text-align: right;">
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+
+            <t:task.editTaskDescriptorForm
                     t:index="loopIndex"
                     t:tasksDescriptors="tasksDescriptors"
                     t:tasksArgs="tasksArgs"

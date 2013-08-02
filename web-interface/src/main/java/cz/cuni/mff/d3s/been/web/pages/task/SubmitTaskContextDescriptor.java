@@ -2,10 +2,7 @@ package cz.cuni.mff.d3s.been.web.pages.task;
 
 import cz.cuni.mff.d3s.been.api.BeenApiException;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
-import cz.cuni.mff.d3s.been.core.task.ObjectFactory;
-import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
-import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
-import cz.cuni.mff.d3s.been.core.task.Template;
+import cz.cuni.mff.d3s.been.core.task.*;
 import cz.cuni.mff.d3s.been.web.components.Layout;
 import cz.cuni.mff.d3s.been.web.model.ConversationHolder;
 import cz.cuni.mff.d3s.been.web.model.KeyValuePair;
@@ -15,11 +12,9 @@ import cz.cuni.mff.d3s.been.web.pages.Overview;
 import cz.cuni.mff.d3s.been.web.pages.Page;
 import org.apache.tapestry5.Block;
 import org.apache.tapestry5.annotations.Component;
-import org.apache.tapestry5.annotations.InjectComponent;
 import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.annotations.SessionState;
 import org.apache.tapestry5.corelib.components.Form;
-import org.apache.tapestry5.corelib.components.Zone;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.services.ajax.AjaxResponseRenderer;
 import org.apache.tapestry5.services.ajax.JavaScriptCallback;
@@ -43,6 +38,12 @@ public class SubmitTaskContextDescriptor extends Page {
 
     private static final String KEY_TASK_CONTEXT_DESCRIPTOR = "task_context_descriptor";
 
+    private static final String KEY_TASK_CONTEXT_TEMPLATE_TASKS_DESCRIPTORS = "task_context_template_tasks_descriptors";
+
+    private static final String KEY_TASK_CONTEXT_TEMPLATE_TASKS_ARGS = "task_context_template_tasks_args";
+
+    private static final String KEY_TASK_CONTEXT_TEMPLATE_TASKS_JAVA_OPTS = "task_context_template_tasks_java_opts";
+
     private static final String KEY_TASK_CONTEXT_TASKS_DESCRIPTORS = "task_context_tasks_descriptors";
 
     private static final String KEY_TASK_CONTEXT_TASKS_ARGS = "task_context_tasks_args";
@@ -50,7 +51,6 @@ public class SubmitTaskContextDescriptor extends Page {
     private static final String KEY_TASK_CONTEXT_TASKS_JAVA_OPTS = "task_context_tasks_java_opts";
 
     private static final String KEY_LOOP_INDEX = "loop_index";
-
 
     // -----------------------------
     // CONVERSATION POLICY
@@ -93,10 +93,32 @@ public class SubmitTaskContextDescriptor extends Page {
      */
     @Property
     @SuppressWarnings("unused")
-    private List<List<KeyValuePair>> tasksArgs;
+    private List<List<KeyValuePair>> taskTemplatesArgs;
 
     /**
      * List of lists of task java options (represented by KeyValuePairs) for task descriptor templates specified in task context descriptor
+     */
+    @Property
+    @SuppressWarnings("unused")
+    private List<List<KeyValuePair>> taskTemplatesJavaOpts;
+
+
+    /**
+     * List of task descriptor templates specified in task context descriptor.
+     */
+    @Property
+    @SuppressWarnings("unused")
+    private List<TaskDescriptor> taskTemplatesDescriptors;
+
+    /**
+     * List of lists of task arguments (represented by KeyValuePairs) for task descriptors specified in task context descriptor
+     */
+    @Property
+    @SuppressWarnings("unused")
+    private List<List<KeyValuePair>> tasksArgs;
+
+    /**
+     * List of lists of task java options (represented by KeyValuePairs) for task descriptors specified in task context descriptor
      */
     @Property
     @SuppressWarnings("unused")
@@ -104,7 +126,7 @@ public class SubmitTaskContextDescriptor extends Page {
 
 
     /**
-     * List of task descriptor templates specified in task context descriptor.
+     * List of task descriptors specified in task context descriptor.
      */
     @Property
     @SuppressWarnings("unused")
@@ -139,6 +161,9 @@ public class SubmitTaskContextDescriptor extends Page {
             return Index.class;
         } else {
             taskContextDescriptor = (TaskContextDescriptor) conversationHolder.get(conversationId).get(KEY_TASK_CONTEXT_DESCRIPTOR);
+            taskTemplatesArgs = (List<List<KeyValuePair>>) conversationHolder.get(conversationId).get(KEY_TASK_CONTEXT_TEMPLATE_TASKS_ARGS);
+            taskTemplatesJavaOpts = (List<List<KeyValuePair>>) conversationHolder.get(conversationId).get(KEY_TASK_CONTEXT_TEMPLATE_TASKS_JAVA_OPTS);
+            taskTemplatesDescriptors = (List<TaskDescriptor>) conversationHolder.get(conversationId).get(KEY_TASK_CONTEXT_TEMPLATE_TASKS_DESCRIPTORS);
             tasksArgs = (List<List<KeyValuePair>>) conversationHolder.get(conversationId).get(KEY_TASK_CONTEXT_TASKS_ARGS);
             tasksJavaOpts = (List<List<KeyValuePair>>) conversationHolder.get(conversationId).get(KEY_TASK_CONTEXT_TASKS_JAVA_OPTS);
             tasksDescriptors = (List<TaskDescriptor>) conversationHolder.get(conversationId).get(KEY_TASK_CONTEXT_TASKS_DESCRIPTORS);
@@ -188,6 +213,10 @@ public class SubmitTaskContextDescriptor extends Page {
             taskContextDescriptor.setProperties(new ObjectFactory().createProperties());
         }
 
+        taskTemplatesArgs = new ArrayList<>();
+        taskTemplatesJavaOpts = new ArrayList<>();
+        taskTemplatesDescriptors = new ArrayList<>();
+
         tasksArgs = new ArrayList<>();
         tasksJavaOpts = new ArrayList<>();
         tasksDescriptors = new ArrayList<>();
@@ -202,11 +231,31 @@ public class SubmitTaskContextDescriptor extends Page {
 
             TaskDescriptorInitializer.initialize(template.getTaskDescriptor(), args, javaOpts);
 
-            tasksArgs.add(args);
-            tasksJavaOpts.add(javaOpts);
-            tasksDescriptors.add(template.getTaskDescriptor());
+            taskTemplatesArgs.add(args);
+            taskTemplatesJavaOpts.add(javaOpts);
+            taskTemplatesDescriptors.add(template.getTaskDescriptor());
 
         }
+
+        for (Task task : taskContextDescriptor.getTask()) {
+            if (task.getDescriptor().isSetTaskDescriptor()) {
+                List<KeyValuePair> args = new ArrayList<>();
+                List<KeyValuePair> javaOpts = new ArrayList<>();
+
+                TaskDescriptorInitializer.initialize(task.getDescriptor().getTaskDescriptor(), args, javaOpts);
+                tasksArgs.add(args);
+                tasksJavaOpts.add(javaOpts);
+                tasksDescriptors.add(task.getDescriptor().getTaskDescriptor());
+            } else {
+                taskTemplatesArgs.add(null);
+                taskTemplatesJavaOpts.add(null);
+                taskTemplatesDescriptors.add(null);
+            }
+        }
+
+        conversationArgs.put(KEY_TASK_CONTEXT_TEMPLATE_TASKS_DESCRIPTORS, taskTemplatesDescriptors);
+        conversationArgs.put(KEY_TASK_CONTEXT_TEMPLATE_TASKS_ARGS, taskTemplatesArgs);
+        conversationArgs.put(KEY_TASK_CONTEXT_TEMPLATE_TASKS_JAVA_OPTS, taskTemplatesJavaOpts);
 
         conversationArgs.put(KEY_TASK_CONTEXT_TASKS_DESCRIPTORS, tasksDescriptors);
         conversationArgs.put(KEY_TASK_CONTEXT_TASKS_ARGS, tasksArgs);
@@ -240,9 +289,6 @@ public class SubmitTaskContextDescriptor extends Page {
     @SuppressWarnings("unused")
     Object onSubmitFromSubmitTaskContextForm() throws BeenApiException {
         this.api.getApi().submitTaskContext(taskContextDescriptor);
-
-
-
         return Overview.class;
     }
 
@@ -257,12 +303,27 @@ public class SubmitTaskContextDescriptor extends Page {
     private List<KeyValuePair> javaOpts;
 
     @Inject
-    private Block dialogBlock;
+    private Block taskTemplateDialogBlock;
+
+    @Inject
+    private Block taskDescriptorDialogBlock;
 
     @Component
     private Dialog dialog;
 
-    Object onActionFromDialoglink(Integer loopIndex) {
+    Object onActionFromTaskTemplateDialoglink(Integer loopIndex) {
+        displayModalDialog(loopIndex);
+        return taskTemplateDialogBlock;
+    }
+
+
+    Object onActionFromTaskDescriptorDialoglink(Integer loopIndex) {
+        displayModalDialog(loopIndex);
+        return taskDescriptorDialogBlock;
+    }
+
+
+    private void displayModalDialog(Integer loopIndex) {
         this.loopIndex = loopIndex;
         conversationHolder.get(conversationId).put(KEY_LOOP_INDEX, loopIndex);
 
@@ -272,10 +333,36 @@ public class SubmitTaskContextDescriptor extends Page {
                 javascriptSupport.addScript("$('#%s').dialog('option', 'width', ($(window).width() / 100) * 95);", dialog.getClientId());
             }
         });
-        return dialogBlock;
     }
 
-    void onSubmitFromTemplateForm(int loopIndex) {
+    void onSubmitFromTaskTemplateForm(int loopIndex) {
+        TaskDescriptor taskDescriptor = taskTemplatesDescriptors.get(loopIndex);
+        List<KeyValuePair> args = taskTemplatesArgs.get(loopIndex);
+        List<KeyValuePair> opts = taskTemplatesJavaOpts.get(loopIndex);
+        args.remove(null);
+        taskDescriptor.getArguments().getArgument().clear();
+        taskDescriptor.getJava().getJavaOptions().getJavaOption().clear();
+        for (KeyValuePair arg : args) {
+            if (arg.value != null) {
+                taskDescriptor.getArguments().getArgument().add(arg.value);
+            }
+        }
+        for (KeyValuePair opt : opts) {
+            if (opt.value != null) {
+                taskDescriptor.getJava().getJavaOptions().getJavaOption().add(opt.value);
+            }
+        }
+
+        ajaxResponseRenderer.addCallback(new JavaScriptCallback() {
+            @Override
+            public void run(JavaScriptSupport javascriptSupport) {
+                javascriptSupport.addScript("$('#%s').dialog('close');", dialog.getClientId());
+            }
+        });
+    }
+
+
+    void onSubmitFromTaskDescriptorForm(int loopIndex) {
         TaskDescriptor taskDescriptor = tasksDescriptors.get(loopIndex);
         List<KeyValuePair> args = tasksArgs.get(loopIndex);
         List<KeyValuePair> opts = tasksJavaOpts.get(loopIndex);
