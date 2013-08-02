@@ -149,7 +149,7 @@
                     </div>
                     <div class="span4">
                         <h4>Maintenance</h4>
-                        <h5>Working directopries of failed tasks</h5>
+                        <h5>Working directories of failed tasks</h5>
 
                         <t:loop t:source="taskWrkDirChecker.getOldTaskDirsOnRuntime(runtime)" t:value="oldTaskWrkDir"
                                 t:index="zoneIdIndex">
