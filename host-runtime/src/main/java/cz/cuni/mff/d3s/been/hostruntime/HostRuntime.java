@@ -82,6 +82,11 @@ public final class HostRuntime implements IClusterService {
 	private static final String LOGGER_RESOURCE_NAME = "scripts/logger.py";
 
 	/**
+	 * Monitoring object.
+	 */
+	private Monitoring monitoring;
+
+	/**
 	 * Creates new {@link HostRuntime} with cluster-unique id.
 	 * 
 	 * @param clusterContext
@@ -140,14 +145,15 @@ public final class HostRuntime implements IClusterService {
 	private void startMonitoring() {
 		Path monitoringLogPath = FileSystems.getDefault().getPath(hostRuntimeInfo.getWorkingDirectory(), "monitoring.log");
 
+		monitoring = new Monitoring(clusterContext.getProperties());
 		try {
-			Monitoring.addListener(ResendMonitoringListener.create(MessageQueues.getInstance().createSender(ACTION_QUEUE_NAME)));
-			Monitoring.addListener(new PersistMonitoringListener(clusterContext, this));
+			monitoring.addListener(ResendMonitoringListener.create(MessageQueues.getInstance().createSender(ACTION_QUEUE_NAME)));
+			monitoring.addListener(new PersistMonitoringListener(clusterContext, this));
 		} catch (MessagingException e) {
 			throw new RuntimeException("Cannot request message.", e);
 		}
 
-		Monitoring.startMonitoring(monitoringLogPath);
+		monitoring.startMonitoring(monitoringLogPath);
 	}
 
 	private void prepareFiles(String workingDirName, String tasksWorkingDirName) throws IOException {
@@ -187,7 +193,7 @@ public final class HostRuntime implements IClusterService {
 	@Override
 	public void stop() {
 		log.info("Stopping Host Runtime...");
-		Monitoring.stopMonitoring();
+		monitoring.stopMonitoring();
 		unregisterHostRuntime();
 		stopListeners();
 		stopProcessManager();
