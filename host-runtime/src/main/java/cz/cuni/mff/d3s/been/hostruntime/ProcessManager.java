@@ -270,6 +270,10 @@ final class ProcessManager implements Service {
                 log.warn(msg, e);
             }
 
+        } catch (TaskException e) {
+	        String msg = String.format("Task '%s' has been aborted due to underlying exception.", id);
+	        log.error(msg, e);
+	        taskHandle.setAborted(msg, e.getExitValue());
         } catch (Exception e) {
             String msg = String.format("Task '%s' has been aborted due to underlying exception.", id);
             log.error(msg, e);

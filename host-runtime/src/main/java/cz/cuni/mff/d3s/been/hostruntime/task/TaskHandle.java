@@ -103,13 +103,24 @@ public class TaskHandle {
 	/**
 	 * Sets state of the entry to ABORTED
 	 * 
-	 * @param format
+	 * @param message
 	 *		  formatted message of why the change happened
-	 * @param args
-	 *		  arguments for the formatted message
 	 */
-	public void setAborted(String format, Object... args) throws IllegalStateException {
-		updateEntry(TaskState.ABORTED, format, args);
+	public void setAborted(String message) throws IllegalStateException {
+		updateEntry(TaskState.ABORTED, "%s", message);
+	}
+
+	/**
+	 * Sets state of the entry to ABORTED
+	 *
+	 * @param message
+	 *		  formatted message of why the change happened
+	 * @param exitValue
+	 *        exit code of the aborted process
+	 */
+	public void setAborted(String message, int exitValue) throws IllegalStateException {
+		entry.setExitCode(exitValue);
+		updateEntry(TaskState.ABORTED, "%s", message);
 	}
 
 	/**

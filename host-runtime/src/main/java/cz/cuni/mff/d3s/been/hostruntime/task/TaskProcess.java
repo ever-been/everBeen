@@ -131,18 +131,18 @@ public class TaskProcess implements AutoCloseable {
 
 		} catch (ExecuteException e) {
 			if (killed) {
-				throw new TaskException(String.format("Task has been killed with exit value %d", e.getExitValue()));
+				throw new TaskException(String.format("Task has been killed with exit value %d", e.getExitValue()), e.getExitValue());
 			}
 
 			if (executor.isFailure(e.getExitValue()) && watchdog.killedProcess()) {
-				throw new TaskException(String.format("Timeout (%d seconds) exceeded", timeoutInMillis / 1000));
+				throw new TaskException(String.format("Timeout (%d seconds) exceeded", timeoutInMillis / 1000), e.getExitValue());
 			}
 
 			if (executor.isFailure(e.getExitValue())) {
-				throw new TaskException(String.format("Task process ended with error exit value %d", e.getExitValue()), e);
+				throw new TaskException(String.format("Task process ended with error exit value %d", e.getExitValue()), e, e.getExitValue());
 			}
 
-			throw new TaskException(String.format("Execution of task process failed"), e);
+			throw new TaskException(String.format("Execution of task process failed"), e, e.getExitValue());
 		} catch (IOException e) {
 			throw new TaskException("Execution of task process failed", e);
 		} catch (Throwable t) {
