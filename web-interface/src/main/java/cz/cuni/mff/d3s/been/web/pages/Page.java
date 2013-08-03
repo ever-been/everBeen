@@ -1,6 +1,8 @@
 package cz.cuni.mff.d3s.been.web.pages;
 
 import cz.cuni.mff.d3s.been.api.BeenApiException;
+import cz.cuni.mff.d3s.been.api.ClusterConnectionUnavailableException;
+import cz.cuni.mff.d3s.been.core.benchmark.BenchmarkEntry;
 import cz.cuni.mff.d3s.been.logging.LogMessage;
 import cz.cuni.mff.d3s.been.core.task.*;
 import cz.cuni.mff.d3s.been.web.services.BeenApiService;
@@ -15,6 +17,7 @@ import org.slf4j.Logger;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.text.*;
+import java.util.Collection;
 import java.util.Date;
 
 import static cz.cuni.mff.d3s.been.web.components.Layout.Section;
@@ -218,6 +221,17 @@ public abstract class Page {
 		final String[] units = new String[] { "B", "KB", "MB", "GB", "TB" };
 		int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
 		return new DecimalFormat("#,##0.#").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
+	}
+
+	public boolean isBenchmarkRemovable(BenchmarkEntry entry) throws BeenApiException {
+		Collection<TaskContextEntry> contexts = this.api.getApi().getTaskContextsInBenchmark(entry.getId());
+		for (TaskContextEntry context : contexts) {
+			if (context.getContextState() != TaskContextState.FINISHED && context.getContextState() != TaskContextState.FAILED) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 }
