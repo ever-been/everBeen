@@ -9,13 +9,12 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.jxpath.JXPathContext;
+import cz.cuni.mff.d3s.been.cluster.query.RuntimeInfoPredicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hazelcast.core.EntryListener;
 import com.hazelcast.core.IMap;
-import com.hazelcast.core.MapEntry;
 import com.hazelcast.core.Member;
 import com.hazelcast.query.Predicate;
 import com.hazelcast.query.SqlPredicate;
@@ -220,21 +219,7 @@ public class BeenApiImpl implements BeenApi {
 		final String errorMsg = String.format("Failed to get list of runtimes matching '%s'", xpath);
 		checkIsActive(errorMsg);
 
-		Predicate<?, ?> predicate = new Predicate<String, RuntimeInfo>() {
-			@Override
-			public boolean apply(MapEntry<String, RuntimeInfo> mapEntry) {
-				RuntimeInfo info = mapEntry.getValue();
-
-				JXPathContext context = JXPathContext.newContext(info);
-				Object obj = context.getValue(xpath);
-
-				if (obj != null && obj instanceof Boolean) {
-					return ((Boolean) obj);
-				} else {
-					return false;
-				}
-			}
-		};
+		Predicate<?, ?> predicate = new RuntimeInfoPredicate(xpath);
 
 		try {
 			return clusterContext.getRuntimes().getRuntimeMap().values(predicate);

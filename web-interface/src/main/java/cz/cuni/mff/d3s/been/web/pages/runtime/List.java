@@ -7,6 +7,8 @@ import cz.cuni.mff.d3s.been.web.components.Layout;
 import cz.cuni.mff.d3s.been.web.model.TaskWrkDirChecker;
 import cz.cuni.mff.d3s.been.web.pages.Page;
 import org.apache.tapestry5.annotations.Property;
+import org.apache.tapestry5.ioc.annotations.Inject;
+import org.apache.tapestry5.services.Request;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -26,13 +28,27 @@ public class List extends Page {
     @Property
     private RuntimeInfo runtime;
 
-    // cached (for this request only) list of all tasks in cluster
+	@Inject
+	private Request request;
+
+	// cached (for this request only) list of all tasks in cluster
     private java.util.List<TaskEntry> allTasks;
 
     private Map<RuntimeInfo, java.util.List<String>> oldWrkDirs = new HashMap<>();
 
+	public String getCurrentFilter() {
+		String filter = request.getParameter("filter");
+		if (filter == null) return "";
+		return filter;
+	}
+
     public Collection<RuntimeInfo> getRuntimes() throws BeenApiException {
-        return this.api.getApi().getRuntimes();
+	    String filter = request.getParameter("filter");
+	    if (filter == null) {
+            return this.api.getApi().getRuntimes();
+	    } else {
+		    return this.api.getApi().getRuntimes(filter);
+	    }
     }
 
     public String getRowClass(RuntimeInfo runtime) throws BeenApiException {
