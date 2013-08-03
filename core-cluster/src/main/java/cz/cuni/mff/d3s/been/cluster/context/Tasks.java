@@ -1,10 +1,10 @@
 package cz.cuni.mff.d3s.been.cluster.context;
 
+import static cz.cuni.mff.d3s.been.core.task.TaskState.*;
+
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
-import cz.cuni.mff.d3s.been.core.protocol.Context;
-import cz.cuni.mff.d3s.been.core.protocol.messages.KillTaskMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,6 +13,7 @@ import com.hazelcast.core.IMap;
 import com.hazelcast.query.SqlPredicate;
 
 import cz.cuni.mff.d3s.been.cluster.Names;
+import cz.cuni.mff.d3s.been.core.protocol.messages.KillTaskMessage;
 import cz.cuni.mff.d3s.been.core.task.TaskEntries;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
@@ -161,7 +162,7 @@ public class Tasks {
 		}
 
 		TaskState state = taskEntry.getState();
-		if (state == TaskState.ABORTED || state == TaskState.FINISHED) {
+		if ((state == ABORTED) || (state == FINISHED)) {
 			log.info("Removing task {} from map.", taskId);
 			getTasksMap().remove(taskId);
 		} else {
@@ -170,17 +171,39 @@ public class Tasks {
 	}
 
 	/**
-	 * Issues a "kill task" message and sends it to the global topic. This message will
-	 * be delivered to the appropriate host runtime, which will try to kill the specified
-	 * task.
-	 *
-	 * @param taskId ID of the task to kill
+	 * Issues a "kill task" message and sends it to the global topic. This message
+	 * will be delivered to the appropriate host runtime, which will try to kill
+	 * the specified task.
+	 * 
+	 * @param taskId
+	 *          ID of the task to kill
 	 */
-	public void kill(String taskId) {
+	public void kill(final String taskId) {
 		TaskEntry taskEntry = getTask(taskId);
 		TaskState state = taskEntry.getState();
 
-		if (state == TaskState.ABORTED || state == TaskState.FINISHED) {
+		// this is tricky, the task has not been scheduled as of time of getTask() but ..
+		if (state == WAITING) {
+			final IMap<String, TaskEntry> tasksMap = clusterCtx.getTasks().getTasksMap();
+
+			// ... we need to lock it ...
+			try {
+				tasksMap.lock(taskId);
+				taskEntry = getTask(taskId);
+				state = taskEntry.getState();
+
+				// ... and check again ...
+				if (state == WAITING) {
+					TaskEntries.setState(taskEntry, ABORTED, "Killed by user");
+					putTask(taskEntry);
+				}
+
+			} finally {
+				tasksMap.unlock(taskId);
+			}
+		}
+
+		if ((state == ABORTED) || (state == FINISHED)) {
 			throw new IllegalStateException(String.format("Trying to kill task %s, but it's in state %s.", taskId, state));
 		}
 
