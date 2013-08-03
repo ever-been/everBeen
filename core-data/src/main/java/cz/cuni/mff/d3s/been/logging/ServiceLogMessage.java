@@ -2,6 +2,9 @@ package cz.cuni.mff.d3s.been.logging;
 
 import cz.cuni.mff.d3s.been.core.persistence.Entity;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Log message logged by a BEEN service. Wraps {@link LogMessage} with additional info
  *
@@ -139,6 +142,7 @@ public class ServiceLogMessage extends Entity {
     }
 
 	public String toDownloadableString() {
-		return String.format("[%s %s %s] %s", hostRuntimeId, beenId, serviceName, message.toDownloadableString());
+		String strTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date(created));
+		return String.format("[%s %s %s] %s %s", hostRuntimeId, beenId, serviceName, strTime, message.toDownloadableString());
 	}
 }
