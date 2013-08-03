@@ -16,14 +16,4 @@ import java.util.List;
 @Page.Navigation(section = Layout.Section.CLUSTER_LOGS)
 public class Logs extends Page {
 
-	@Property
-	private Collection<Date> dates;
-
-	@Property
-	private Date date;
-
-	void onActivate() throws BeenApiException {
-		this.dates = this.api.getApi().getServiceLogsAvailableDates();
-	}
-
 }
