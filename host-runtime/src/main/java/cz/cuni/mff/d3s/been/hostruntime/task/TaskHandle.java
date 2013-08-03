@@ -5,8 +5,10 @@ import static cz.cuni.mff.d3s.been.core.task.TaskState.ACCEPTED;
 import static cz.cuni.mff.d3s.been.core.task.TaskState.FINISHED;
 
 import java.util.Collection;
+import java.util.List;
 
 import cz.cuni.mff.d3s.been.core.persistence.Entities;
+import cz.cuni.mff.d3s.been.core.persistence.TaskEntity;
 import cz.cuni.mff.d3s.been.persistence.DAOException;
 import cz.cuni.mff.d3s.been.persistence.task.PersistentTaskState;
 import org.slf4j.Logger;
@@ -212,7 +214,20 @@ public class TaskHandle {
 
 		if (FINISHED.equals(state) || ABORTED.equals(state)) {
 			try {
-				ctx.getPersistence().asyncPersist(Entities.OUTCOME_TASK.getId(), new PersistentTaskState().withTaskState(state).withTaskId(id).withContextId(entry.getTaskContextId()).withBenchmarkId(entry.getBenchmarkId()));
+				PersistentTaskState entity = new PersistentTaskState();
+				entity.setTaskState(state);
+				entity.setTaskId(id);
+				entity.setContextId(entry.getTaskContextId());
+				entity.setBenchmarkId(entry.getBenchmarkId());
+				entity.setRuntimeId(entry.getRuntimeId());
+
+				List<StateChangeEntry> logEntries = entry.getStateChangeLog().getLogEntries();
+				if (logEntries.size() > 0) {
+					entity.setTimeStarted(logEntries.get(0).getTimestamp());
+					entity.setTimeFinished(logEntries.get(logEntries.size() - 1).getTimestamp());
+				}
+
+				ctx.getPersistence().asyncPersist(Entities.OUTCOME_TASK.getId(), entity);
 			} catch (DAOException e) {
 				log.warn("Could not record finishing state of task '{}'. Task data may remain dangling.", id, e);
 			}

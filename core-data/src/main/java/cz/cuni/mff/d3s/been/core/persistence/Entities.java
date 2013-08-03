@@ -7,11 +7,15 @@ package cz.cuni.mff.d3s.been.core.persistence;
  */
 public enum Entities {
 	LOG_SERVICE("log", "service"),
+
 	LOG_TASK("log", "task"),
 
 	RESULT_EVALUATOR("result", "evaluation"),
 
-	OUTCOME_TASK("outcome", "task");
+	OUTCOME_TASK("outcome", "task"),
+
+	LOG_MONITORING("log", "monitoring"),
+	;
 
 	private final String kind;
 	private final String group;
