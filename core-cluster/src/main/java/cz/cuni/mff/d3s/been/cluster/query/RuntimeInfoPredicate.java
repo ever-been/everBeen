@@ -4,11 +4,18 @@ import com.hazelcast.core.MapEntry;
 import com.hazelcast.query.Predicate;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import org.apache.commons.jxpath.JXPathContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 /**
 * @author Kuba Brecka
 */
 public class RuntimeInfoPredicate implements Predicate<String, RuntimeInfo> {
+
+	private static final Logger log = LoggerFactory.getLogger(RuntimeInfoPredicate.class);
+
 	private final String xpath;
 
 	public RuntimeInfoPredicate(String xpath) {
@@ -20,12 +27,13 @@ public class RuntimeInfoPredicate implements Predicate<String, RuntimeInfo> {
 		RuntimeInfo info = mapEntry.getValue();
 
 		JXPathContext context = JXPathContext.newContext(info);
-		Object obj = context.getValue(xpath);
-
-		if (obj != null && obj instanceof Boolean) {
-			return ((Boolean) obj);
-		} else {
+		try {
+			List list = context.selectNodes(".[" + xpath + "]");
+			return (list != null) && (list.size() > 0);
+		} catch (Throwable t) {
+			log.error("XPath expression returned an exception.", t);
 			return false;
 		}
 	}
+
 }

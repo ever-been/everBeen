@@ -9,6 +9,10 @@ import com.hazelcast.query.Predicate;
 
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskExclusivity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 /**
  * 
@@ -17,6 +21,9 @@ import cz.cuni.mff.d3s.been.core.task.TaskExclusivity;
  * @author Martin Sixta
  */
 public final class XPathPredicate implements Predicate<String, RuntimeInfo> {
+
+	private static final Logger log = LoggerFactory.getLogger(XPathPredicate.class);
+
 	private final String xpath;
 	private final TaskExclusivity taskExclusivity;
 	private final String contextId;
@@ -63,11 +70,11 @@ public final class XPathPredicate implements Predicate<String, RuntimeInfo> {
 		}
 
 		JXPathContext context = JXPathContext.newContext(info);
-		Object obj = context.getValue(xpath);
-
-		if (obj != null && obj instanceof Boolean) {
-			return ((Boolean) obj);
-		} else {
+		try {
+			List list = context.selectNodes(".[" + xpath + "]");
+			return (list != null) && (list.size() > 0);
+		} catch (Throwable t) {
+			log.error("XPath expression returned an exception.", t);
 			return false;
 		}
 	}
