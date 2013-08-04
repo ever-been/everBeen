@@ -69,7 +69,16 @@ public class SubmitTaskContextDescriptor extends Page {
     // TAPESTRY TEMPLATE FIELDS
     // -----------------------------
 
-    /**
+	@Property
+	boolean save;
+
+	@Property
+	String saveName;
+
+	@Property
+	BpkIdentifier bpkIdentifier;
+
+	/**
      * Identifier of current conversation
      */
     private String conversationId;
@@ -198,7 +207,7 @@ public class SubmitTaskContextDescriptor extends Page {
     @SuppressWarnings("unused")
     Object onActivate(String groupId, String bpkId, String version, String descriptorName) throws BeenApiException {
         // load correct task context descriptor
-        BpkIdentifier bpkIdentifier = new BpkIdentifier();
+        bpkIdentifier = new BpkIdentifier();
         bpkIdentifier.setGroupId(groupId);
         bpkIdentifier.setBpkId(bpkId);
         bpkIdentifier.setVersion(version);
@@ -288,6 +297,11 @@ public class SubmitTaskContextDescriptor extends Page {
      */
     @SuppressWarnings("unused")
     Object onSubmitFromSubmitTaskContextForm() throws BeenApiException {
+
+	    if (save) {
+		    this.api.getApi().saveNamedContextDescriptor(taskContextDescriptor, saveName, bpkIdentifier);
+	    }
+
         this.api.getApi().submitTaskContext(taskContextDescriptor);
         return Overview.class;
     }

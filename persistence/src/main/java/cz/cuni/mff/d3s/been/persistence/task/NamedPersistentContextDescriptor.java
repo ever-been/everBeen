@@ -37,7 +37,7 @@ class NamedPersistentContextDescriptor extends NamedEntity {
      *
      * @return The BPK ID
      */
-    BpkIdentifier getBpkId() {
+    public BpkIdentifier getBpkId() {
         return bpkId;
     }
 
@@ -46,7 +46,7 @@ class NamedPersistentContextDescriptor extends NamedEntity {
      *
      * @param bpkId The BPK ID
      */
-    void setBpkId(BpkIdentifier bpkId) {
+    public void setBpkId(BpkIdentifier bpkId) {
         this.bpkId = bpkId;
     }
 }

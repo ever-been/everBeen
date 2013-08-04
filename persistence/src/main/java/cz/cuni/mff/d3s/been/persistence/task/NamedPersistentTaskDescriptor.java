@@ -19,7 +19,7 @@ class NamedPersistentTaskDescriptor extends NamedEntity {
      *
      * @return The descriptor
      */
-    TaskDescriptor getDescriptor() {
+    public TaskDescriptor getDescriptor() {
         return descriptor;
     }
 
@@ -28,7 +28,7 @@ class NamedPersistentTaskDescriptor extends NamedEntity {
      *
      * @param descriptor Descriptor to set
      */
-    void setDescriptor(TaskDescriptor descriptor) {
+    public void setDescriptor(TaskDescriptor descriptor) {
         this.descriptor = descriptor;
     }
 
@@ -37,7 +37,7 @@ class NamedPersistentTaskDescriptor extends NamedEntity {
      *
      * @return The BPK ID
      */
-    BpkIdentifier getBpkId() {
+    public BpkIdentifier getBpkId() {
         return bpkId;
     }
 
@@ -46,7 +46,7 @@ class NamedPersistentTaskDescriptor extends NamedEntity {
      *
      * @param bpkId The BPK ID
      */
-    void setBpkId(BpkIdentifier bpkId) {
+    public void setBpkId(BpkIdentifier bpkId) {
         this.bpkId = bpkId;
     }
 

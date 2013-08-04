@@ -119,6 +119,32 @@
             </div>
         </div>
 
+	    <div class="container">
+		    <div class="row">
+			    <div class="span6">
+				    <fieldset>
+					    <legend>Descriptor options</legend>
+
+					    <div class="control-group">
+						    <t:label t:for="save" class="control-label">Save</t:label>
+						    <div class="controls">
+							    <t:checkbox t:id="save" value="save" /> save as a template
+						    </div>
+					    </div>
+
+					    <div class="control-group">
+						    <t:label t:for="saveName" class="control-label">Name</t:label>
+						    <div class="controls">
+							    <t:textfield t:id="saveName" value="saveName" />
+						    </div>
+					    </div>
+
+				    </fieldset>
+			    </div>
+		    </div>
+	    </div>
+
+
     </t:form>
 
 
