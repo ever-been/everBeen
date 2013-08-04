@@ -246,32 +246,12 @@ public class BeenApiImpl implements BeenApi {
 	// ---------------------------------------------------
 
 	@Override
-	public void saveTaskDescriptor(final TaskDescriptor descriptor, final String taskId, final String contextId,
-			final String benchmarkId) throws BeenApiException {
-		final String errorMsg = "Failed to save task descriptor";
-		final TaskEntity entity = PersistentDescriptors.wrapTaskDescriptor(descriptor, taskId, contextId, benchmarkId);
-		final EntityID entityId = PersistentDescriptors.TASK_DESCRIPTOR;
-
-		saveDescriptor(errorMsg, entityId, entity);
-	}
-
-	@Override
 	public
 			void
 			saveNamedTaskDescriptor(final TaskDescriptor descriptor, final String name, final BpkIdentifier bpkId) throws BeenApiException {
 		final String errorMsg = String.format("Failed to save named task descriptor '%s'", name);
 		final NamedEntity entity = PersistentDescriptors.wrapNamedTaskDescriptor(descriptor, name, bpkId);
 		final EntityID entityId = NAMED_TASK_DESCRIPTOR;
-
-		saveDescriptor(errorMsg, entityId, entity);
-	}
-
-	@Override
-	public void saveContextDescriptor(TaskContextDescriptor descriptor, final String taskId, final String contextId,
-			final String benchmarkId) throws BeenApiException {
-		final String errorMsg = "Failed to save task context descriptor";
-		final EntityID entityId = CONTEXT_DESCRIPTOR;
-		final TaskEntity entity = PersistentDescriptors.wrapContextDescriptor(descriptor, taskId, contextId, benchmarkId);
 
 		saveDescriptor(errorMsg, entityId, entity);
 	}
@@ -293,36 +273,6 @@ public class BeenApiImpl implements BeenApi {
 
 		try {
 			clusterContext.getPersistence().asyncPersist(entityId, entity);
-		} catch (DAOException e) {
-			throw createPersistenceException(errorMsg, e);
-		} catch (Exception e) {
-			throw createBeenApiException(errorMsg, e);
-		}
-	}
-
-	@Override
-	public TaskDescriptor getDescriptorForTask(final String taskId) throws BeenApiException {
-		final String errorMsg = String.format("Failed to load task descriptor with id '%s'", taskId);
-		final Query query = new QueryBuilder().on(TASK_DESCRIPTOR).with("taskId", taskId).fetch();
-		final QueryAnswer answer = performQuery(query, errorMsg);
-
-		try {
-			return PersistentDescriptors.unpackTaskDescriptor(answer);
-		} catch (DAOException e) {
-			throw createPersistenceException(errorMsg, e);
-		} catch (Exception e) {
-			throw createBeenApiException(errorMsg, e);
-		}
-	}
-
-	@Override
-	public TaskContextDescriptor getDescriptorForContext(final String contextId) throws BeenApiException {
-		final Query query = new QueryBuilder().on(TASK_DESCRIPTOR).with("contextId", contextId).fetch();
-		final String errorMsg = String.format("Failed to load task context descriptor with id '%s'", contextId);
-		final QueryAnswer answer = performQuery(query, errorMsg);
-
-		try {
-			return PersistentDescriptors.unpackContextDescriptor(answer);
 		} catch (DAOException e) {
 			throw createPersistenceException(errorMsg, e);
 		} catch (Exception e) {

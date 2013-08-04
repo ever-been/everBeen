@@ -41,17 +41,10 @@ public interface BeenApi {
 
 	public
 			void
-			saveTaskDescriptor(TaskDescriptor descriptor, String taskId, String contextId, String benchmarkId) throws BeenApiException;
-	public
-			void
 			saveNamedTaskDescriptor(TaskDescriptor descriptor, String name, BpkIdentifier bpkId) throws BeenApiException;
-	public void saveContextDescriptor(TaskContextDescriptor descriptor, String taskId, String contextId,
-			String benchmarkId) throws BeenApiException;
 	public
 			void
 			saveNamedContextDescriptor(TaskContextDescriptor descriptor, String name, BpkIdentifier bpkId) throws BeenApiException;
-	public TaskDescriptor getDescriptorForTask(String taskId) throws BeenApiException;
-	public TaskContextDescriptor getDescriptorForContext(String contextId) throws BeenApiException;
 	public Map<String, TaskDescriptor> getNamedTaskDescriptorsForBpk(BpkIdentifier bpkIdentifier) throws BeenApiException;
 	public
 			Map<String, TaskContextDescriptor>

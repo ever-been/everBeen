@@ -1,10 +1,14 @@
 package cz.cuni.mff.d3s.been.cluster.context;
 
 import static cz.cuni.mff.d3s.been.core.task.TaskState.*;
+import static cz.cuni.mff.d3s.been.persistence.task.PersistentDescriptors.CONTEXT_DESCRIPTOR;
 
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
+import cz.cuni.mff.d3s.been.core.persistence.TaskEntity;
+import cz.cuni.mff.d3s.been.persistence.DAOException;
+import cz.cuni.mff.d3s.been.persistence.task.PersistentDescriptors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,13 +109,27 @@ public class Tasks {
 	 * 
 	 * @return id of the submitted task
 	 */
-	public String submit(TaskEntry taskEntry) {
+	public String submit(TaskEntry taskEntry)  {
 		// TODO
 		TaskEntries.setState(taskEntry, TaskState.SUBMITTED, "Submitted by ...");
 
 		getTasksMap().put(taskEntry.getId(), taskEntry);
 
+		persistTaskDescriptor(taskEntry);
+
 		return taskEntry.getId();
+
+	}
+
+	private void persistTaskDescriptor(TaskEntry taskEntry) {
+		final TaskEntity entity = PersistentDescriptors.wrapTaskDescriptor(taskEntry.getTaskDescriptor(), taskEntry.getId(), taskEntry.getTaskContextId(), taskEntry.getBenchmarkId());
+		try {
+			clusterCtx.getPersistence().asyncPersist(PersistentDescriptors.TASK_DESCRIPTOR, entity);
+		} catch (DAOException e) {
+			log.error("Persisting context descriptor failed.", e);
+			// continues without rethrowing, because the only reason for a DAOException is when
+			// the object cannot be serialized.
+		}
 
 	}
 
