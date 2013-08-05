@@ -4,8 +4,11 @@ import com.hazelcast.core.IMap;
 import com.hazelcast.core.Instance;
 import cz.cuni.mff.d3s.been.cluster.Names;
 import cz.cuni.mff.d3s.been.core.PropertyReader;
+import cz.cuni.mff.d3s.been.core.persistence.TaskEntity;
 import cz.cuni.mff.d3s.been.core.protocol.messages.KillTaskMessage;
 import cz.cuni.mff.d3s.been.core.task.*;
+import cz.cuni.mff.d3s.been.persistence.DAOException;
+import cz.cuni.mff.d3s.been.persistence.task.PersistentDescriptors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,6 +16,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static cz.cuni.mff.d3s.been.cluster.Names.BENCHMARKS_CONTEXT_ID;
+import static cz.cuni.mff.d3s.been.persistence.task.PersistentDescriptors.CONTEXT_DESCRIPTOR;
 
 /**
  * Created with IntelliJ IDEA. User: Kuba Date: 20.04.13 Time: 13:09 To change
@@ -71,10 +75,23 @@ public class TaskContexts {
         putContextEntry(contextEntry);
         log.debug("Task context was submitted with ID {}", contextEntry.getId());
 
+	    persistContextDescriptor(descriptor, benchmarkId, contextEntry);
+
         return contextEntry.getId();
     }
 
-    private void checkContextBeforeSubmit(TaskContextEntry contextEntry) {
+	private void persistContextDescriptor(TaskContextDescriptor descriptor, String benchmarkId, TaskContextEntry contextEntry) {
+		final TaskEntity entity = PersistentDescriptors.wrapContextDescriptor(descriptor, null, contextEntry.getId(), benchmarkId);
+		try {
+			clusterContext.getPersistence().asyncPersist(PersistentDescriptors.CONTEXT_DESCRIPTOR, entity);
+		} catch (DAOException e) {
+			log.error("Persisting context descriptor failed.", e);
+			// continues without rethrowing, because the only reason for a DAOException is when
+			// the object cannot be serialized.
+		}
+	}
+
+	private void checkContextBeforeSubmit(TaskContextEntry contextEntry) {
         TaskContextDescriptor descriptor = contextEntry.getTaskContextDescriptor();
 
         Collection<TaskEntry> entriesToSubmit = getTaskEntries(contextEntry);

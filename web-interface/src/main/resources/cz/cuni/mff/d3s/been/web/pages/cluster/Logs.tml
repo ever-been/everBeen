@@ -5,29 +5,30 @@
 
 <h2>Service logs</h2>
 
-<table class="list wide">
-	<thead>
-	<tr>
-		<th>Date</th>
-		<th></th>
-		<th></th>
-	</tr>
-	</thead>
+<div style="text-align: center; padding: 40px 0 0 0;">
+	<div style="display: inline-block;">
+		<p>
+			Select a date:
+		</p>
+		<p class="form-inline">
+			<input type="text" id="datepicker" />&nbsp;&nbsp;
+			<button id="batn" class="btn btn-primary">Download logs</button>
+		</p>
 
-	<t:loop source="dates" value="date">
-		<tr class="data">
-			<td>Logs from ${dateToString(date)}</td>
-			<td><a href="/cluster/logsdownload/${dateToString(date)}" class="btn">download</a></td>
-		</tr>
+		<div id="container"></div>
+	</div>
+</div>
 
-		<p:empty>
-			<tr>
-				<td colspan="3">
-					<i class="icon-info-sign"></i> There are no service logs.
-				</td>
-			</tr>
-		</p:empty>
-	</t:loop>
-</table>
+<script>
+	$(document).ready(function() {
+		$('#datepicker').val(Date.create().format('{yyyy}-{MM}-{dd}'));
+		$('#datepicker').Zebra_DatePicker({
+			always_visible: $('#container')
+		});
+		$('#batn').click(function() {
+			location.href = '/cluster/logsdownload/' + $('#datepicker').val();
+		});
+	});
+</script>
 
 </html>

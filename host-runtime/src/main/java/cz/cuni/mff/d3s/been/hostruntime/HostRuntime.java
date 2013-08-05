@@ -16,12 +16,9 @@ import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.TaskPropertyNames;
 import cz.cuni.mff.d3s.been.core.protocol.messages.BaseMessage;
-import cz.cuni.mff.d3s.been.core.ri.MonitorSample;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.detectors.Monitoring;
-import cz.cuni.mff.d3s.been.detectors.MonitoringListener;
 import cz.cuni.mff.d3s.been.mq.IMessageQueue;
-import cz.cuni.mff.d3s.been.mq.IMessageSender;
 import cz.cuni.mff.d3s.been.mq.MessageQueues;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
@@ -85,6 +82,11 @@ public final class HostRuntime implements IClusterService {
 	private static final String LOGGER_RESOURCE_NAME = "scripts/logger.py";
 
 	/**
+	 * Monitoring object.
+	 */
+	private Monitoring monitoring;
+
+	/**
 	 * Creates new {@link HostRuntime} with cluster-unique id.
 	 * 
 	 * @param clusterContext
@@ -143,25 +145,25 @@ public final class HostRuntime implements IClusterService {
 	private void startMonitoring() {
 		Path monitoringLogPath = FileSystems.getDefault().getPath(hostRuntimeInfo.getWorkingDirectory(), "monitoring.log");
 
+		monitoring = new Monitoring(clusterContext.getProperties());
 		try {
-			Monitoring.addListener(ResendMonitoringListener.create(MessageQueues.getInstance().createSender(ACTION_QUEUE_NAME)));
+			monitoring.addListener(ResendMonitoringListener.create(MessageQueues.getInstance().createSender(ACTION_QUEUE_NAME)));
+			monitoring.addListener(new PersistMonitoringListener(clusterContext, this));
 		} catch (MessagingException e) {
 			throw new RuntimeException("Cannot request message.", e);
 		}
 
-		Monitoring.startMonitoring(monitoringLogPath);
+		monitoring.startMonitoring(monitoringLogPath);
 	}
 
 	private void prepareFiles(String workingDirName, String tasksWorkingDirName) throws IOException {
 		Path workingDir = Paths.get(workingDirName).toAbsolutePath();
 		Files.createDirectories(workingDir);
 
-
         Path tasksWorkingDir = Paths.get(tasksWorkingDirName).toAbsolutePath();
         Files.createDirectories(tasksWorkingDir);
 
 		extractLogger(workingDir);
-
 	}
 
 	/**
@@ -191,7 +193,7 @@ public final class HostRuntime implements IClusterService {
 	@Override
 	public void stop() {
 		log.info("Stopping Host Runtime...");
-		Monitoring.stopMonitoring();
+		monitoring.stopMonitoring();
 		unregisterHostRuntime();
 		stopListeners();
 		stopProcessManager();

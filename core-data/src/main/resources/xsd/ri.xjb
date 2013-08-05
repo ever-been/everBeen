@@ -6,63 +6,10 @@
 		jaxb:version="2.0">
 
 	<jaxb:bindings schemaLocation="runtime-info.xsd">
+		<jaxb:property generateIsSetMethod="false"/>
 		<jaxb:schemaBindings>
 			<jaxb:package name="cz.cuni.mff.d3s.been.core.ri"/>
 		</jaxb:schemaBindings>
-
-		<jaxb:bindings node="xs:element[@name='runtimeInfo']">
-			<jaxb:bindings node=".//xs:element[@ref='runtimeinfo:id']">
-				<jaxb:property generateIsSetMethod="false"/>
-			</jaxb:bindings>
-
-			<jaxb:bindings node=".//xs:element[@ref='runtimeinfo:port']">
-				<jaxb:property generateIsSetMethod="false"/>
-			</jaxb:bindings>
-
-			<jaxb:bindings node=".//xs:element[@ref='runtimeinfo:host']">
-				<jaxb:property generateIsSetMethod="false"/>
-			</jaxb:bindings>
-
-			<jaxb:bindings node=".//xs:element[@ref='runtimeinfo:workingDirectory']">
-				<jaxb:property generateIsSetMethod="false"/>
-			</jaxb:bindings>
-
-
-			<jaxb:bindings node=".//xs:element[@ref='runtimeinfo:exclusivity']">
-				<jaxb:property generateIsSetMethod="false"/>
-			</jaxb:bindings>
-
-			<jaxb:bindings node=".//xs:element[@ref='runtimeinfo:exclusiveId']">
-				<jaxb:property generateIsSetMethod="false"/>
-			</jaxb:bindings>
-
-
-			<jaxb:bindings node=".//xs:element[@ref='runtimeinfo:taskCount']">
-				<jaxb:property generateIsSetMethod="false"/>
-			</jaxb:bindings>
-
-			<jaxb:bindings node=".//xs:element[@ref='hardwareinfo:hardware']">
-				<jaxb:property generateIsSetMethod="false"/>
-			</jaxb:bindings>
-
-			<jaxb:bindings node=".//xs:element[@ref='monitor:monitorSample']">
-				<jaxb:property generateIsSetMethod="false"/>
-			</jaxb:bindings>
-
-			<jaxb:bindings node=".//xs:element[@name='java']">
-				<jaxb:property generateIsSetMethod="false"/>
-			</jaxb:bindings>
-
-			<jaxb:bindings node=".//xs:element[@name='operatingSystem']">
-				<jaxb:property generateIsSetMethod="false"/>
-			</jaxb:bindings>
-
-			<jaxb:bindings node=".//xs:element[@name='filesystem']">
-				<jaxb:property generateIsSetMethod="false"/>
-			</jaxb:bindings>
-
-
-		</jaxb:bindings>
 	</jaxb:bindings>
 
 	<jaxb:bindings schemaLocation="hardware-info.xsd">
@@ -72,6 +19,7 @@
 	</jaxb:bindings>
 
 	<jaxb:bindings schemaLocation="monitor.xsd">
+		<jaxb:property generateIsSetMethod="false"/>
 		<jaxb:schemaBindings>
 			<jaxb:package name="cz.cuni.mff.d3s.been.core.ri"/>
 		</jaxb:schemaBindings>

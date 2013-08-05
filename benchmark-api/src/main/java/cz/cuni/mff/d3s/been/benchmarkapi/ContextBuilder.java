@@ -139,7 +139,7 @@ public final class ContextBuilder {
 	 */
 	public void addTemplate(String templateName) throws BenchmarkException {
 		for (Template template : descriptor.getTemplates().getTemplate()) {
-			if (template.isSetName() && templateName.equals(template.getName())) {
+			if (template.isSetName() && template.getName().equals(templateName)) {
 				String msg = String.format("Template with name '%s' already exists", templateName);
 				throw new BenchmarkException(msg);
 			}
@@ -148,6 +148,57 @@ public final class ContextBuilder {
 		Template template = new Template().withName(templateName).withTaskDescriptor(new TaskDescriptor());
 
 		descriptor.getTemplates().getTemplate().add(template);
+	}
+
+	/**
+	 * Returns template with <code>templateName</code>.
+	 * 
+	 * @param templateName
+	 *          name of the template to look for
+	 * @return the template with <code>templateName</code>
+	 * @throws BenchmarkException
+	 *           when no template with <code>templateName</code> exits
+	 */
+	public Template getTemplate(String templateName) throws BenchmarkException {
+		for (Template template : descriptor.getTemplates().getTemplate()) {
+			if (template.isSetName() && template.getName().equals(templateName)) {
+				return template;
+			}
+		}
+
+		String msg = String.format("No such with name '%s' exists", templateName);
+		throw new BenchmarkException(msg);
+
+	}
+
+	/**
+	 * Sets selector on a template.
+	 * 
+	 * @param templateName
+	 *          name of the template to set the selector on
+	 * @param selector
+	 *          expression which selects Host Runtimes the task can run on
+	 * 
+	 * @throws BenchmarkException
+	 *           when no template with <code>templateName</code> exits
+	 */
+	public void setSelector(String templateName, String selector) throws BenchmarkException {
+		Template template = getTemplate(templateName);
+
+		if (selector == null || selector.isEmpty()) {
+			return;
+		}
+
+		if (!template.isSetTaskDescriptor()) {
+			template.setTaskDescriptor(new TaskDescriptor());
+		}
+
+		if (!template.getTaskDescriptor().isSetHostRuntimes()) {
+			template.getTaskDescriptor().setHostRuntimes(new HostRuntimes());
+		}
+
+		template.getTaskDescriptor().getHostRuntimes().setXpath(selector);
+
 	}
 
 	/**

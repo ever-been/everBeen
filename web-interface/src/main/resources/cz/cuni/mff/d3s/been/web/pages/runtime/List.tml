@@ -3,6 +3,13 @@
 <html t:type="layout" section="section"
       xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd" xmlns:p="tapestry:parameter">
 
+	<span style="float: right; display: block; font-size: 12px; position: relative; top: -3px;">
+		<form action="/runtime/list" method="GET" class="form-inline">
+			Filter (XPath expression):
+			<input type="text" name="filter" value="${currentFilter}" class="input-small" style="height: 10px; width: 350px; vertical-align: baseline; font-size: 10px; line-height: 10px;" />
+			&nbsp;<button type="submit" class="btn btn-mini" style="height: 20px; vertical-align: baseline;">Apply</button>
+		</form>
+	</span>
     <h2>Available Host Runtimes</h2>
 
 

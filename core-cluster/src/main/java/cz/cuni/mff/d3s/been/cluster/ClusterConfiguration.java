@@ -1,5 +1,7 @@
 package cz.cuni.mff.d3s.been.cluster;
 
+import cz.cuni.mff.d3s.been.BeenServiceConfiguration;
+
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
@@ -8,7 +10,7 @@ import static java.lang.Boolean.TRUE;
  *
  * @author darklight
  */
-public class ClusterConfiguration {
+public class ClusterConfiguration extends BeenServiceConfiguration {
 	private ClusterConfiguration() {}
 
 	/**

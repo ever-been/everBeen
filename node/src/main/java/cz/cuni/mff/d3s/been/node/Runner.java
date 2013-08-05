@@ -2,18 +2,18 @@ package cz.cuni.mff.d3s.been.node;
 
 import static cz.cuni.mff.d3s.been.core.StatusCode.*;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.UnknownHostException;
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.UUID;
 
-import cz.cuni.mff.d3s.been.hostruntime.HostRuntime;
-import cz.cuni.mff.d3s.been.logging.ServiceLogPersister;
-import cz.cuni.mff.d3s.been.repository.Repository;
-import org.apache.commons.io.IOUtils;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -24,7 +24,10 @@ import com.hazelcast.core.HazelcastInstance;
 
 import cz.cuni.mff.d3s.been.cluster.*;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
+import cz.cuni.mff.d3s.been.hostruntime.HostRuntime;
 import cz.cuni.mff.d3s.been.hostruntime.HostRuntimes;
+import cz.cuni.mff.d3s.been.logging.ServiceLogPersister;
+import cz.cuni.mff.d3s.been.repository.Repository;
 import cz.cuni.mff.d3s.been.storage.Storage;
 import cz.cuni.mff.d3s.been.storage.StorageBuilderFactory;
 import cz.cuni.mff.d3s.been.swrepository.SoftwareRepositories;
@@ -57,8 +60,6 @@ public class Runner {
 
 	private static final Logger log = LoggerFactory.getLogger(Runner.class);
 
-
-
 	// ------------------------------------------------------------------------
 	// COMMAND LINE ARGUMENTS
 	// ------------------------------------------------------------------------
@@ -66,8 +67,8 @@ public class Runner {
 	@Option(name = "-t", aliases = { "--node-type" }, usage = "Type of the node. DEFAULT is DATA")
 	private NodeType nodeType = NodeType.DATA;
 
-	@Option(name = "-cf", aliases = { "--config-file" }, usage = "Path to BEEN config file.")
-	private String configFile = "../conf/been.properties";
+	@Option(name = "-cf", aliases = { "--config-file" }, usage = "Path or URL to BEEN config file.")
+	private String configFile;
 
 	@Option(name = "-r", aliases = { "--host-runtime" }, usage = "Whether to run Host runtime on this node")
 	private boolean runHostRuntime = false;
@@ -84,14 +85,20 @@ public class Runner {
 	@Option(name = "-h", aliases = { "--help" }, usage = "Prints help")
 	private boolean printHelp = false;
 
-    /** An ID of this BEEN running JVM */
-    private UUID runtimeId = null;
+	/** An ID of this BEEN running JVM */
+	private UUID runtimeId = null;
 
-    /** ID of the Host Runtime service running on this node. If no HR is running, will remain <code>null</code> */
-    private String hostRuntimeId = null;
+	/**
+	 * ID of the Host Runtime service running on this node. If no HR is running,
+	 * will remain <code>null</code>
+	 */
+	private String hostRuntimeId = null;
 
-    /** Synthetic ID of this BEEN node. Will always be non-<code>null</code> once this BEEN node is initialized */
-    private String beenId = null;
+	/**
+	 * Synthetic ID of this BEEN node. Will always be non-<code>null</code> once
+	 * this BEEN node is initialized
+	 */
+	private String beenId = null;
 
 	public static void main(String[] args) {
 		new Runner().doMain(args);
@@ -107,16 +114,16 @@ public class Runner {
 
 		if (printHelp) {
 			printUsage();
-            EX_USAGE.sysExit();
+			EX_USAGE.sysExit();
 		}
 
-        this.runtimeId = UUID.randomUUID();
-        try {
-            this.beenId = InetAddress.getLocalHost().getHostName() + "--" + runtimeId.toString();
-        } catch (UnknownHostException e) {
-            log.error("Cannot determine local hostname, will terminate.", e);
-            EX_NETWORK_ERROR.sysExit();
-        }
+		this.runtimeId = UUID.randomUUID();
+		try {
+			this.beenId = InetAddress.getLocalHost().getHostName() + "--" + runtimeId.toString();
+		} catch (UnknownHostException e) {
+			log.error("Cannot determine local hostname, will terminate.", e);
+			EX_NETWORK_ERROR.sysExit();
+		}
 
 		Properties properties = loadProperties();
 
@@ -137,21 +144,21 @@ public class Runner {
 		Reaper clusterReaper = new ClusterReaper(instance);
 
 		try {
-            // standalone services
-            if (runSWRepository) {
-                clusterReaper.pushTarget(startSWRepository());
-            }
+			// standalone services
+			if (runSWRepository) {
+				clusterReaper.pushTarget(startSWRepository());
+			}
 
-            // Run Task Manager on DATA nodes
-            if (nodeType == NodeType.DATA) {
-                clusterReaper.pushTarget(startTaskManager());
-            }
+			// Run Task Manager on DATA nodes
+			if (nodeType == NodeType.DATA) {
+				clusterReaper.pushTarget(startTaskManager());
+			}
 
-            if (runHostRuntime) {
-                clusterReaper.pushTarget(startHostRuntime(instance, properties));
-            }
+			if (runHostRuntime) {
+				clusterReaper.pushTarget(startHostRuntime(instance, properties));
+			}
 
-            clusterReaper.pushTarget(startLogPersister());
+			clusterReaper.pushTarget(startLogPersister());
 
 			// Services that require a persistence layer
 			if (runRepository) {
@@ -219,7 +226,7 @@ public class Runner {
 			startHostRuntime(final HazelcastInstance instance, Properties properties) throws ServiceException {
 		HostRuntime hostRuntime = HostRuntimes.getRuntime(instance, properties);
 		hostRuntime.start();
-        this.hostRuntimeId = hostRuntime.getId();
+		this.hostRuntimeId = hostRuntime.getId();
 		return hostRuntime;
 	}
 
@@ -232,12 +239,12 @@ public class Runner {
 		return softwareRepository;
 	}
 
-    private IClusterService startLogPersister() throws ServiceException {
-        ClusterContext ctx = Instance.createContext();
-        ServiceLogPersister logPersister = ServiceLogPersister.getHandlerInstance(ctx, beenId, hostRuntimeId);
-        logPersister.start();
-        return logPersister;
-    }
+	private IClusterService startLogPersister() throws ServiceException {
+		ClusterContext ctx = Instance.createContext();
+		ServiceLogPersister logPersister = ServiceLogPersister.getHandlerInstance(ctx, beenId, hostRuntimeId);
+		logPersister.start();
+		return logPersister;
+	}
 
 	private IClusterService startRepository(Storage storage) throws ServiceException {
 		ClusterContext ctx = Instance.createContext();
@@ -246,8 +253,7 @@ public class Runner {
 		return repository;
 	}
 
-	private HazelcastInstance getInstance(final NodeType nodeType,
-			Properties properties) throws ServiceException {
+	private HazelcastInstance getInstance(final NodeType nodeType, Properties properties) throws ServiceException {
 		Instance.init(nodeType, properties);
 		return Instance.getInstance();
 	}
@@ -262,40 +268,49 @@ public class Runner {
 
 	private Properties loadProperties() {
 
-		final Properties properties = new Properties();
-
-		final File propertiesFile = new File(configFile);
-		if (!propertiesFile.exists()) {
-			log.warn(
-					"Could not find property file \"{}\". Will start with default configuration.",
-					propertiesFile.getAbsolutePath());
-			return properties;
+		if (configFile == null || configFile.isEmpty()) {
+			log.info("No config file or url specified. Will start with default configuration.");
+			return new Properties();
 		}
 
-		FileReader propertyFileReader = null;
+		PropertyLoader loader = null;
+
+		// try as a file
 		try {
-			propertyFileReader = new FileReader(propertiesFile);
-		} catch (IOException e) {
-			log.warn(
-					"Failed to open properties file \"{}\" for reading.",
-					propertiesFile.getAbsolutePath());
-			return properties;
+			Path path = Paths.get(configFile);
+			if (Files.exists(path)) {
+				loader = PropertyLoader.fromPath(path);
+			}
+		} catch (InvalidPathException e) {
+			// quell
+		}
+
+		// try as an URL
+		if (loader == null) {
+			try {
+				URL url = new URL(configFile);
+				loader = PropertyLoader.fromUrl(url);
+			} catch (MalformedURLException e) {
+				// quell
+			}
+		}
+
+		if (loader == null) {
+			log.error("{} is not a file nor an URL. Aborting.", configFile);
+			EX_USAGE.sysExit();
+			throw new AssertionError(); // make the compiler happy
 		}
 
 		try {
-			properties.load(propertyFileReader);
+			Properties properties = loader.load();
+			log.info("Configuration loaded from {}", configFile);
+			return properties;
 		} catch (IOException e) {
-			log.warn(
-					"Could not parse properties file \"{}\".",
-					propertiesFile.getAbsolutePath());
-		} finally {
-			IOUtils.closeQuietly(propertyFileReader);
+			log.error("Cannot load properties from {}. Aborting.", e);
+			EX_USAGE.sysExit();
 		}
 
-		log.info(
-				"Properties loaded from file \"{}\".",
-				propertiesFile.getAbsolutePath());
-
-		return properties;
+		throw new AssertionError(); // will not get here, make the compiler happy
 	}
+
 }

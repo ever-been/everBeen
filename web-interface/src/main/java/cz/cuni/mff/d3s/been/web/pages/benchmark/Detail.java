@@ -39,6 +39,9 @@ public class Detail extends Page {
     @Property
     private String benchmarkId;
 
+	@Property
+	private boolean removable;
+
     void onActivate(String benchmarkId) throws BeenApiException {
         this.benchmarkId = benchmarkId;
         this.benchmark = api.getApi().getBenchmark(benchmarkId);
@@ -46,6 +49,7 @@ public class Detail extends Page {
         if (benchmark != null) {
             this.generator = api.getApi().getTask(benchmark.getGeneratorId());
             this.contexts = api.getApi().getTaskContextsInBenchmark(benchmarkId);
+	        this.removable = this.isBenchmarkRemovable(benchmark);
         }
     }
 

@@ -1,11 +1,15 @@
 package cz.cuni.mff.d3s.been.cluster;
 
+import cz.cuni.mff.d3s.been.BeenServiceConfiguration;
+
 /**
  * Configuration for persistence transport layer
  *
  * @author darklight
  */
-public class ClusterPersistenceConfiguration {
+public class ClusterPersistenceConfiguration extends BeenServiceConfiguration {
+	private ClusterPersistenceConfiguration() {}
+
 	/** Property that contains the timeout for queries into persistence layer. */
 	public static final String QUERY_TIMEOUT = "been.cluster.persistence.query-timeout";
 	/** By default, the timeout before a query is evicted is {@value #DEFAULT_QUERY_TIMEOUT} seconds */

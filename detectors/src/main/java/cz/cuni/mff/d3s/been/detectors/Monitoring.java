@@ -8,8 +8,10 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashSet;
+import java.util.Properties;
 import java.util.Set;
 
+import cz.cuni.mff.d3s.been.core.PropertyReader;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
@@ -23,33 +25,39 @@ import cz.cuni.mff.d3s.been.core.ri.MonitorSample;
 public class Monitoring {
 	private static final Logger log = LoggerFactory.getLogger(Monitoring.class);
 
-	private static int monitorInterval = 5000;
+	private int monitorInterval = MonitoringConfiguration.DEFAULT_INTERVAL;
 
-	private static volatile boolean monitoringRunning = false;
-	private static Thread monitoringThread;
+	private volatile boolean monitoringRunning = false;
+	private Thread monitoringThread;
 
-	private static Set<MonitoringListener> listeners = new HashSet<MonitoringListener>();
+	private Set<MonitoringListener> listeners = new HashSet<MonitoringListener>();
 
-	public static void addListener(MonitoringListener listener) {
+	public Monitoring(Properties properties) {
+		PropertyReader propertyReader = PropertyReader.on(properties);
+		Integer interval = propertyReader.getInteger(MonitoringConfiguration.INTERVAL, MonitoringConfiguration.DEFAULT_INTERVAL);
+		setMonitoringInterval(interval);
+	}
+
+	public void addListener(MonitoringListener listener) {
 		listeners.add(listener);
 	}
 
-	public static void removeListener(MonitoringListener listener) {
+	public void removeListener(MonitoringListener listener) {
 		listeners.remove(listener);
 	}
 
-	public static void setMonitoringInterval(int milliseconds) {
+	public void setMonitoringInterval(int milliseconds) {
 		if (milliseconds < 10)
 			milliseconds = 10;
 
 		monitorInterval = milliseconds;
 	}
 
-	public static int getMonitorInterval() {
+	public int getMonitorInterval() {
 		return monitorInterval;
 	}
 
-	public static synchronized void startMonitoring(final Path logPath) {
+	public synchronized void startMonitoring(final Path logPath) {
 
 		if (monitoringRunning)
 			return;
@@ -95,7 +103,7 @@ public class Monitoring {
 		monitoringThread.start();
 	}
 
-	public static synchronized void stopMonitoring() {
+	public synchronized void stopMonitoring() {
 		monitoringRunning = false;
 		monitoringThread.interrupt();
 

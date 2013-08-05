@@ -50,6 +50,12 @@ public class SubmitTaskDescriptor extends Page {
 	@SessionState(create = true)
 	private ConversationHolder<Map<String, Object>> conversationHolder;
 
+	@Property
+	boolean save;
+
+	@Property
+	String saveName;
+
 	/**
 	 * Task descriptor loaded in onActivate() method
 	 */
@@ -223,6 +229,14 @@ public class SubmitTaskDescriptor extends Page {
         if (taskDescriptor.getDebug().getMode() == ModeEnum.NONE) {
             taskDescriptor.getDebug().setSuspend(false);
         }
+
+		if (save) {
+			BpkIdentifier bpkIdentifier = new BpkIdentifier();
+			bpkIdentifier.setGroupId(taskDescriptor.getGroupId());
+			bpkIdentifier.setBpkId(taskDescriptor.getBpkId());
+			bpkIdentifier.setVersion(taskDescriptor.getVersion());
+			this.api.getApi().saveNamedTaskDescriptor(taskDescriptor, this.saveName, bpkIdentifier);
+		}
 
 		submitTaskDescriptor(taskDescriptor);
 
