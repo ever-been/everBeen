@@ -6,4 +6,5 @@ package cz.cuni.mff.d3s.been.persistence;
  * @author darklight
  */
 public interface AttributeFilter {
+	AttributeFilterType getType();
 }

@@ -858,32 +858,6 @@ public class BeenApiImpl implements BeenApi {
     }
 
     @Override
-    public Collection<Date> getServiceLogsAvailableDates() throws BeenApiException {
-        final String errorMsg = "Failed to list service logs available dates";
-        final EntityID entityID = Entities.LOG_SERVICE.getId();
-        final Query query = new QueryBuilder().nativa(String.format(
-                "function() { return db.getCollection('%s.%s').group({ keyf: function(d) { var e = new Date(d.created);" +
-                        " return { year: 1900 + e.getYear(), month: 1 + e.getMonth(), day: e.getDate() }; }," +
-                        " reduce: function(a,b){}, initial: {}}); }", entityID.getKind(), entityID.getGroup()));
-
-        QueryAnswer answer = queryPersistence(query);
-
-        final Collection<DateStructure> collection;
-        try {
-            collection = unpackDataAnswer(query, answer, DateStructure.class);
-        } catch (DAOException e) {
-            throw createPersistenceException(errorMsg, e);
-        }
-
-        final Collection<Date> result = new ArrayList<>();
-        for (DateStructure d : collection) {
-            result.add(d.toDate());
-        }
-
-        return result;
-    }
-
-    @Override
     public Collection<ServiceLogMessage> getServiceLogsByDate(final Date date) throws BeenApiException {
         final String errorMsg = String.format("Failed to list service log messages for date '%s'", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date));
         final Long timeToday = date.getTime();
@@ -892,12 +866,9 @@ public class BeenApiImpl implements BeenApi {
         c.add(Calendar.DATE, 1);
         final Long timeTomorrow = c.getTime().getTime();
 
-        final EntityID entityID = Entities.LOG_SERVICE.getId();
-        final Query query = new QueryBuilder().nativa(String.format(
-                "function() { var start = %d; var end = %d; return db.getCollection('%s.%s').find(" +
-                        "{created: {$gte: start, $lt: end}}, {_id: 0}).toArray(); }", timeToday, timeTomorrow, entityID.getKind(), entityID.getGroup()));
-
+		final Query query = new QueryBuilder().on(Entities.LOG_SERVICE.getId()).with("created").between(timeToday, timeTomorrow).fetch();
         final QueryAnswer answer = queryPersistence(query);
+
         try {
             return unpackDataAnswer(query, answer, ServiceLogMessage.class);
         } catch (DAOException e) {

@@ -18,10 +18,6 @@ public final class QueryChecks {
 		return "result".equals(query.getEntityID().getKind());
 	}
 
-	public static boolean isNative(Query query) {
-		return query instanceof NativeQuery;
-	}
-
 	public static void assertIsFetch(Query query) throws DAOException {
 		if (!isFetch(query)) throw new DAOException(String.format("Query %s is not a fetch query", query.toString()));
 	}
@@ -32,9 +28,5 @@ public final class QueryChecks {
 
 	public static void assertIsResult(Query query) throws DAOException {
 		if (!isResult(query)) throw new DAOException(String.format("Query %s does not target results", query.toString()));
-	}
-
-	public static void assertIsNative(Query query) throws DAOException {
-		if (!isNative(query)) throw new DAOException(String.format("Query %s is not native", query.toString()));
 	}
 }

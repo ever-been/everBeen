@@ -7,6 +7,7 @@ import cz.cuni.mff.d3s.been.persistence.DAOException;
 import cz.cuni.mff.d3s.been.persistence.Query;
 import cz.cuni.mff.d3s.been.persistence.QueryAnswer;
 import cz.cuni.mff.d3s.been.persistence.SuccessAction;
+import cz.cuni.mff.d3s.been.core.persistence.Entity;
 
 /**
  * A generic persistence layer for BEEN.

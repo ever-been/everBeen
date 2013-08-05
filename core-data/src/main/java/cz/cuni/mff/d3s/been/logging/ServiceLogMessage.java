@@ -12,7 +12,7 @@ public class ServiceLogMessage extends Entity {
     private LogMessage message;
     private String hostRuntimeId;
     private String beenId;
-    private String serviceName; // DON'T DELETE THIS FIELD; IT'S NOT BEING SET YET, BUT WILL BE IN THE FUTURE
+    private String serviceName;
 
     public ServiceLogMessage() {
         created = System.currentTimeMillis();

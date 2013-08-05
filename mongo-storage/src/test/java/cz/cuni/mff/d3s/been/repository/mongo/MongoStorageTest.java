@@ -1,14 +1,14 @@
 package cz.cuni.mff.d3s.been.repository.mongo;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.Properties;
+import java.util.Random;
 import java.util.ServiceLoader;
 
+import cz.cuni.mff.d3s.been.core.persistence.Entity;
 import cz.cuni.mff.d3s.been.core.persistence.TaskEntity;
 import cz.cuni.mff.d3s.been.persistence.*;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
@@ -23,46 +23,86 @@ import cz.cuni.mff.d3s.been.storage.Storage;
 import cz.cuni.mff.d3s.been.storage.StorageBuilder;
 
 public final class MongoStorageTest extends Assert {
+	private static final Random random = new Random();
 
 	private final JSONUtils jsonUtils = JSONUtils.newInstance();
 
-	public static class DummyEntity extends TaskEntity {
+	public static class DummyEntity extends Entity {
 		/** A testing string */
-		private String something = "strange";
+		private String something;
+		private Integer someNumber;
 
 		DummyEntity() {
-			this.taskId = "1";
-			this.contextId = "1";
-			this.benchmarkId = "1";
+			this.something = "strange";
+			this.someNumber = random.nextInt();
+		}
+
+		DummyEntity(int someNumber) {
+			this.something = "strange";
+			this.someNumber = someNumber;
 		}
 
 		public String getSomething() {
 			return something;
 		}
+
+		public Integer getSomeNumber() {
+			return someNumber;
+		}
 	}
 
 	class StorageUsingStatement extends Statement {
 		private final Statement base;
-		private final MongoServerStandalone mongo = new MongoServerStandalone();
+		private final MongoServerStandalone mongo;
 
 		StorageUsingStatement(Statement base) {
 			this.base = base;
+			this.mongo = new MongoServerStandalone();
 		}
 
 		@Override
 		public void evaluate() throws Throwable {
 			mongo.start();
 			connectStorage();
-			base.evaluate();
-			disconnectStorage();
+			try {
+				base.evaluate();
+			} finally {
+				disconnectStorage();
+				mongo.stop();
+			}
+		}
+	}
+
+	class OffedStorageUsingStatement extends Statement {
+		private final Statement base;
+		private final MongoServerStandalone mongo;
+
+		OffedStorageUsingStatement(Statement base) {
+			this.base = base;
+			this.mongo = new MongoServerStandalone();
+		}
+
+		@Override
+		public void evaluate() throws Throwable {
+			mongo.start();
+			connectStorage();
 			mongo.stop();
+			try {
+				base.evaluate();
+			} finally {
+				disconnectStorage();
+			}
 		}
 	}
 
 	class StorageAllocatorRule implements TestRule {
 		@Override
 		public Statement apply(Statement base, Description description) {
-			return new StorageUsingStatement(base);
+			if (description.getMethodName().endsWith("_dbDown")) {
+				return new OffedStorageUsingStatement(base);
+			} else {
+				return new StorageUsingStatement(base);
+			}
 		}
 	}
 
@@ -107,6 +147,16 @@ public final class MongoStorageTest extends Assert {
 	}
 
 	@Test
+	public void testDeleteSomeResults() throws JsonException, DAOException {
+		storage.store(dummyId, jsonUtils.serialize(new DummyEntity()));
+		storage.store(dummyId, jsonUtils.serialize(new DummyEntity()));
+		assertEquals(2, storage.query(new QueryBuilder().on(dummyId).with("something", "strange").fetch()).getData().size());
+
+		assertEquals(QueryStatus.OK, storage.query(new QueryBuilder().on(dummyId).with("something", "strange").delete()).getStatus());
+		assertEquals(0, storage.query(new QueryBuilder().on(dummyId).with("something", "strange").fetch()).getData().size());
+	}
+
+	@Test
 	public void testRetrieveEmptyResults() throws JsonException, DAOException {
 		storage.store(dummyId, jsonUtils.serialize(new DummyEntity()));
 		assertEquals(0, storage.query(new QueryBuilder().on(dummyId).with("something", "funny").fetch()).getData().size());
@@ -117,30 +167,47 @@ public final class MongoStorageTest extends Assert {
 		assertEquals(0, storage.query(new QueryBuilder().on(dummyId).with("something", "strange").fetch()).getData().size());
 	}
 
-	// FIXME kubabrecka This test has started to fail once I added correctness checks into the native query evaluation
-	@Ignore
 	@Test
-	public void testNativeQuery() throws JsonException, DAOException {
-		DummyEntity entity = new DummyEntity();
-		storage.store(dummyId, jsonUtils.serialize(entity));
-
-		assertEquals(1, storage.query(new QueryBuilder().on(dummyId).with("something", "strange").fetch()).getData().size());
-
-		Query query = new QueryBuilder().nativa(String.format("function() { return db.getCollection('%s.%s').find({}, {_id: 0}).toArray(); }", dummyId.getKind(), dummyId.getGroup()));
-		Collection<String> data = storage.query(query).getData();
-		
-		Collection<DummyEntity> collection = JSONUtils.newInstance().deserialize(data, DummyEntity.class);
-		assertEquals(1, collection.size());
-		for (DummyEntity item : collection) {
-			assertEquals(entity.something, item.something);
-		}
+	public void testFetchQuery_dbDown() {
+		final QueryAnswer answer = storage.query(new QueryBuilder().on(dummyId).fetch());
+		assertEquals(QueryStatus.PERSISTENCE_DOWN, answer.getStatus());
 	}
 
 	@Test
-	public void testNativeQuery_Error() {
-		final Query q = new QueryBuilder().nativa("not a query");
-		final QueryAnswer a = storage.query(q);
-		assertEquals(QueryStatus.UNKNOWN, a.getStatus());
+	public void testRegexQuery() throws JsonException, DAOException {
+		storage.store(dummyId, jsonUtils.serialize(new DummyEntity()));
+		assertEquals(1, storage.query(new QueryBuilder().on(dummyId).with("something").like("str.nge").fetch()).getData().size());
+	}
+
+	@Test
+	public void testAboveQuery() throws JsonException, DAOException {
+		storage.store(dummyId, jsonUtils.serialize(new DummyEntity(1)));
+		storage.store(dummyId, jsonUtils.serialize(new DummyEntity(2)));
+		final QueryAnswer answer = storage.query(new QueryBuilder().on(dummyId).with("someNumber").above(2).fetch());
+		assertEquals(QueryStatus.OK, answer.getStatus());
+		assertTrue(answer.isCarryingData());
+		assertEquals(1, answer.getData().size());
+	}
+
+	@Test
+	public void testBelowQuery() throws JsonException, DAOException {
+		storage.store(dummyId, jsonUtils.serialize(new DummyEntity(1)));
+		storage.store(dummyId, jsonUtils.serialize(new DummyEntity(2)));
+		final QueryAnswer answer = storage.query(new QueryBuilder().on(dummyId).with("someNumber").below(2).fetch());
+		assertEquals(QueryStatus.OK, answer.getStatus());
+		assertTrue(answer.isCarryingData());
+		assertEquals(1, answer.getData().size());
+	}
+
+	@Test
+	public void testIntervalQuery() throws JsonException, DAOException {
+		storage.store(dummyId, jsonUtils.serialize(new DummyEntity(1)));
+		storage.store(dummyId, jsonUtils.serialize(new DummyEntity(2)));
+		storage.store(dummyId, jsonUtils.serialize(new DummyEntity(3)));
+		final QueryAnswer answer = storage.query(new QueryBuilder().on(dummyId).with("someNumber").between(1, 3).fetch());
+		assertEquals(QueryStatus.OK, answer.getStatus());
+		assertTrue(answer.isCarryingData());
+		assertEquals(2, answer.getData().size());
 	}
 
 }

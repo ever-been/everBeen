@@ -9,33 +9,30 @@ import com.mongodb.util.JSON;
 import cz.cuni.mff.d3s.been.core.persistence.EntityCarrier;
 import cz.cuni.mff.d3s.been.core.persistence.EntityID;
 import cz.cuni.mff.d3s.been.persistence.*;
-import cz.cuni.mff.d3s.been.storage.Storage;
-import cz.cuni.mff.d3s.been.storage.StorageException;
-import cz.cuni.mff.d3s.been.storage.StoragePersistAction;
+import cz.cuni.mff.d3s.been.storage.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A mongoDB adapter for BEEN result persistence layer.
+ * A MongoDB adapter for BEEN result persistence layer.
  * 
  * @author darklight
  * 
  */
 public final class MongoStorage implements Storage {
-	private static final Logger log = LoggerFactory.getLogger(MongoStorage.class);
 
-	private static final DBObject PROJECT_IGNORE_MONGO_ID = new BasicDBObject();
+	private static final Logger log = LoggerFactory.getLogger(MongoStorage.class);
 
 	private final boolean authenticate;
 	private final String username;
 	private final String password;
 	private final String dbname;
 	private final MongoClient client;
-	private DB db;
+	private final MongoQueryRedactorFactory queryRedactorFactory;
+	private final QueryTranslator queryTranslator;
 
-	static {
-		PROJECT_IGNORE_MONGO_ID.put("_id", 0);
-	}
+	private DB db;
+	private QueryExecutorFactory queryExecutorFactory;
 
 	private MongoStorage(MongoClient client, String dbname) {
 		this.client = client;
@@ -43,6 +40,8 @@ public final class MongoStorage implements Storage {
 		this.authenticate = false;
 		this.username = null;
 		this.password = null;
+		this.queryRedactorFactory = new MongoQueryRedactorFactory();
+		this.queryTranslator = new QueryTranslator();
 	}
 
 	private MongoStorage(MongoClient client, String dbname, String username, String password) {
@@ -51,6 +50,8 @@ public final class MongoStorage implements Storage {
 		this.authenticate = true;
 		this.username = username;
 		this.password = password;
+		this.queryRedactorFactory = new MongoQueryRedactorFactory();
+		this.queryTranslator = new QueryTranslator();
 	}
 
 	public static
@@ -86,6 +87,7 @@ public final class MongoStorage implements Storage {
 		if (!isConnected()) {
 			throw new StorageException("Error getting DB stats. Mongo database is probably not running.");
 		}
+		queryExecutorFactory = new MongoQueryExecutorFactory(db);
 	}
 
 	@Override
@@ -115,44 +117,49 @@ public final class MongoStorage implements Storage {
 
 	@Override
 	public QueryAnswer query(Query query) {
-		final DBObject filter = new BasicDBObject();
-		for (String selectorName: query.getSelectorNames()) {
-			filter.put(selectorName, query.getSelector(selectorName));
+		QueryRedactor queryRedactor;
+		switch (query.getType()) {
+			case FETCH:
+				queryRedactor = queryRedactorFactory.fetch(query.getEntityID());
+				break;
+			case DELETE:
+				queryRedactor = queryRedactorFactory.delete(query.getEntityID());
+				break;
+			default:
+				return QueryAnswerFactory.badQuery();
 		}
+
 		try {
-			switch (query.getType()) {
-				case FETCH:
-					try {
-						return QueryAnswerFactory.fetched(fetch(query.getEntityID(), filter));
-					} catch (DAOException e) {
-						return QueryAnswerFactory.unknownError();
-					}
-				case DELETE:
-					try {
-						if (query.getEntityID() != null) {
-							delete(query.getEntityID(), filter);
-						} else {
-							delete(filter);
-						}
-						return QueryAnswerFactory.deleted();
-					} catch (DAOException e) {
-						return QueryAnswerFactory.unknownError();
-					}
-				case NATIVE:
-					try {
-						return QueryAnswerFactory.fetched(nativeQuery(MongoQueryInterpret.getMongoQueryString(query)));
-					} catch (DAOException e) {
-						return QueryAnswerFactory.unknownError();
-					}
-				default:
-					return QueryAnswerFactory.badQuery();
-			}
+			queryTranslator.interpret(query, queryRedactor);
+		} catch (DAOException e) {
+			log.error("Unsupported query '{}'", query, e);
+			return QueryAnswerFactory.badQuery();
+		}
+
+
+		final QueryExecutor queryExecutor;
+		try {
+			queryExecutor = queryExecutorFactory.createExecutor(queryRedactor);
+		} catch (DAOException e) {
+			log.error("Query '{}' is invalid.", query, e);
+			return QueryAnswerFactory.badQuery();
+		}
+
+		try {
+			return queryExecutor.execute();
+		} catch (QueryExecutionException e) {
+			log.error("Failed to execute query '{}': {}", query, e);
+			return QueryAnswerFactory.queryExecutionFailed();
 		} catch (MongoException e) {
 			if (e instanceof MongoException.Network) {
 				return QueryAnswerFactory.persistenceDown();
 			} else {
+				log.error("Unknown MongoDB exception processing query '{}'", query, e);
 				return QueryAnswerFactory.unknownError();
 			}
+		} catch (Throwable t) {
+			log.error("Unknown error processing query '{}'", query, t);
+			return QueryAnswerFactory.unknownError();
 		}
 	}
 
@@ -176,48 +183,4 @@ public final class MongoStorage implements Storage {
 		return db.getCollection(eid.getKind()).getCollection(eid.getGroup());
 	}
 
-	private final Collection<String> fetch(EntityID entityId, DBObject filter) throws DAOException {
-		final DBCursor cursor;
-		cursor = mapEntity(entityId).find(filter, PROJECT_IGNORE_MONGO_ID);
-		List<String> result = new ArrayList<String>(cursor.count());
-		while (cursor.hasNext()) {
-			result.add(cursor.next().toString());
-		}
-		return result;
-	}
-
-	private final void delete(DBObject filter) {
-		for (String collName: db.getCollectionNames()) {
-			db.getCollection(collName).remove(filter);
-		}
-	}
-
-	private final void delete(EntityID entityID, DBObject filter) throws DAOException {
-		mapEntity(entityID).remove(filter);
-	}
-
-	private Collection<String> nativeQuery(String query) throws DAOException {
-		final CommandResult commandResult = db.doEval(query);
-		if (!commandResult.ok()) {
-			throw new DAOException(String.format("Native query '%s' failed: %s", query, commandResult.getErrorMessage()));
-		}
-		final Object retval = commandResult.get("retval");
-		if (retval == null) {
-			throw new DAOException(String.format("Native query '%s' yielded no result", query));
-		}
-		if (retval instanceof BasicDBList) {
-			BasicDBList list = (BasicDBList) retval;
-			List<String> result = new ArrayList<>();
-			for (Object o : list) {
-				result.add(o.toString());
-			}
-			return result;
-		} else if (retval instanceof BasicDBObject) {
-			List<String> result = new ArrayList<>();
-			result.add(retval.toString());
-			return result;
-		} else {
-			throw new DAOException("Invalid retval from evaluated query: " + retval.toString());
-		}
-	}
 }

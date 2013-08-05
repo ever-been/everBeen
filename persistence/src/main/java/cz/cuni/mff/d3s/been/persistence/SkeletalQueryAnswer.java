@@ -47,6 +47,6 @@ abstract class SkeletalQueryAnswer implements QueryAnswer {
 
 	@Override
 	public Collection<String> getData() {
-		throw new UnsupportedOperationException(String.format("%s does not carry any data", getClass().getSimpleName()));
+		throw new UnsupportedOperationException(String.format("%s does not carry any data.", getClass().getSimpleName()));
 	}
 }

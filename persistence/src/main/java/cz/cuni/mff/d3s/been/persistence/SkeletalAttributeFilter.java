@@ -12,16 +12,16 @@ import java.util.Map;
  * @author darklight
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
-class SkeletalAttributeFilter implements AttributeFilter {
+abstract class SkeletalAttributeFilter implements AttributeFilter {
 
-	protected Map<String, String> values = new HashMap<String, String>();
+	protected Map<String, Object> values = new HashMap<String, Object>();
 
 	/**
 	 * Serialization getter for value map
 	 *
 	 * @return The values
 	 */
-	public Map<String, String> getValues() {
+	public Map<String, Object> getValues() {
 		return values;
 	}
 
@@ -30,7 +30,7 @@ class SkeletalAttributeFilter implements AttributeFilter {
 	 *
 	 * @param values Values to set
 	 */
-	public void setValues(Map<String, String> values) {
+	public void setValues(Map<String, Object> values) {
 		this.values = values;
 	}
 }

@@ -21,7 +21,7 @@ public class AttributeFilterBuilder {
 	 *
 	 * @return The query builder, with added selector
 	 */
-	public QueryBuilder equal(String value) {
+	public QueryBuilder equal(Object value) {
 		queryBuilder.selectors.put(attributeName, createEqFilter(value));
 		return queryBuilder;
 	}
@@ -33,7 +33,7 @@ public class AttributeFilterBuilder {
 	 *
 	 * @return The query builder, with added selector
 	 */
-	public QueryBuilder matching(String pattern) {
+	public QueryBuilder like(String pattern) {
 		queryBuilder.selectors.put(attributeName, createPatternFilter(pattern));
 		return queryBuilder;
 	}
@@ -45,7 +45,7 @@ public class AttributeFilterBuilder {
 	 *
 	 * @return The query builder, with added selector
 	 */
-	public QueryBuilder above(String value) {
+	public QueryBuilder above(Object value) {
 		queryBuilder.selectors.put(attributeName, createIntervalFilter(value, null));
 		return queryBuilder;
 	}
@@ -57,7 +57,7 @@ public class AttributeFilterBuilder {
 	 *
 	 * @return The query builder, with added selector
 	 */
-	public QueryBuilder below(String value) {
+	public QueryBuilder below(Object value) {
 		queryBuilder.selectors.put(attributeName, createIntervalFilter(null, value));
 		return queryBuilder;
 	}
@@ -70,12 +70,12 @@ public class AttributeFilterBuilder {
 	 *
 	 * @return The query builder, with added selector
 	 */
-	public QueryBuilder between(String lowBound, String highBound) {
+	public QueryBuilder between(Object lowBound, Object highBound) {
 		queryBuilder.selectors.put(attributeName, createIntervalFilter(lowBound, highBound));
 		return queryBuilder;
 	}
 
-	private SkeletalAttributeFilter createEqFilter(String value) {
+	private SkeletalAttributeFilter createEqFilter(Object value) {
 		return new EqAttributeFilter(value);
 	}
 
@@ -83,7 +83,7 @@ public class AttributeFilterBuilder {
 		return new PatternAttributeFilter(pattern);
 	}
 
-	private SkeletalAttributeFilter createIntervalFilter(String lo, String hi) {
+	private SkeletalAttributeFilter createIntervalFilter(Object lo, Object hi) {
 		return new IntervalAttributeFilter(lo, hi);
 	}
 }

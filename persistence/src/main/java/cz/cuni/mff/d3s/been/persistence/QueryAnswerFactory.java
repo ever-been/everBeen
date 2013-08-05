@@ -66,11 +66,20 @@ public final class QueryAnswerFactory {
 	}
 
 	/**
-	 * Create an answer saying the the query started to get evaluated, but didn't get back in time
+	 * Create an answer saying the query started to get evaluated, but didn't get back in time
 	 *
 	 * @return The answer
 	 */
 	public static final QueryAnswer processingTimedOut() {
 		return new SimpleQueryAnswer(QueryStatus.PROCESSING_TIMED_OUT);
+	}
+
+	/**
+	 * Create an answer saying the query failed to execute on the persistence layer side
+	 *
+	 * @return The answer
+	 */
+	public static final QueryAnswer queryExecutionFailed() {
+		return new SimpleQueryAnswer(QueryStatus.QUERY_EXECUTION_FAILED);
 	}
 }

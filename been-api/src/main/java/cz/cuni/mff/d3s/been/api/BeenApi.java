@@ -56,7 +56,6 @@ public interface BeenApi {
     public Collection<ServiceLogMessage> getServiceLogsByHostRuntimeId(String hostRuntimeId) throws BeenApiException;
     public Collection<ServiceLogMessage> getServiceLogsByServiceName(String serviceName) throws BeenApiException;
 
-	public Collection<Date> getServiceLogsAvailableDates() throws BeenApiException;
 	public Collection<ServiceLogMessage> getServiceLogsByDate(Date date) throws BeenApiException;
     
 	public void clearPersistenceForTask(String taskId) throws BeenApiException;

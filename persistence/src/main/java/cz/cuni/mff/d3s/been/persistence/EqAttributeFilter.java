@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.persistence;
 
+import static cz.cuni.mff.d3s.been.persistence.AttributeFilterType.EQUAL;
 import static cz.cuni.mff.d3s.been.persistence.FilterValues.HARD_VALUE;
 
 /**
@@ -9,7 +10,12 @@ import static cz.cuni.mff.d3s.been.persistence.FilterValues.HARD_VALUE;
  */
 class EqAttributeFilter extends SkeletalAttributeFilter {
 
-	EqAttributeFilter(String value) {
+	EqAttributeFilter(Object value) {
 		values.put(HARD_VALUE.getKey(), value);
+	}
+
+	@Override
+	public AttributeFilterType getType() {
+		return EQUAL;
 	}
 }

@@ -13,7 +13,8 @@ public enum QueryStatus implements Serializable {
 	UNSUPPORTED_QUERY("Provided query not recognized", false),
 	UNKNOWN("Unknown error", false),
 	TRANSPORT_TIMED_OUT("Transporting the query to persistenc layer timed out", false),
-	PROCESSING_TIMED_OUT("Query processing timed out", false);
+	PROCESSING_TIMED_OUT("Query processing timed out", false),
+	QUERY_EXECUTION_FAILED("Query failed to execute", false);
 
 	private final String desc;
 	private final boolean ok;
