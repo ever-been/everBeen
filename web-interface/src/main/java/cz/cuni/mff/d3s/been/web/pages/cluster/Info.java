@@ -16,31 +16,32 @@ import java.util.Map;
 @Page.Navigation(section = Layout.Section.CLUSTER_INFO)
 public class Info extends Page {
 
-	@Property
-	Member member;
+    @Property
+    Member member;
 
-	public Collection<Member> getClusterMembers() throws BeenApiException {
-		return this.api.getApi().getClusterMembers();
-	}
+    public Collection<Member> getClusterMembers() throws BeenApiException {
+        return this.api.getApi().getClusterMembers();
+    }
 
-	public class ServiceEntry {
-		public String name;
-		public String info;
-	}
+    public class ServiceEntry {
+        public String name;
+        public String info;
+    }
 
-	@Property
-	ServiceEntry service;
+    @Property
+    ServiceEntry service;
 
-	public Collection<ServiceEntry> getClusterServices() throws BeenApiException {
-		ArrayList<ServiceEntry> list = new ArrayList<ServiceEntry>();
+    public Collection<ServiceEntry> getClusterServices() throws BeenApiException {
+        ArrayList<ServiceEntry> list = new ArrayList<ServiceEntry>();
 
-		for (Map.Entry<String, String> entry : this.api.getApi().getClusterServices().entrySet()) {
-			ServiceEntry se = new ServiceEntry();
-			se.name = entry.getKey();
-			se.info = entry.getValue();
-			list.add(se);
-		}
+        Map<String, String> clusterServices = this.api.getApi().getClusterServices();
+        for (Map.Entry<String, String> entry : clusterServices.entrySet()) {
+            ServiceEntry se = new ServiceEntry();
+            se.name = entry.getKey();
+            se.info = entry.getValue();
+            list.add(se);
+        }
 
-		return list;
-	}
+        return list;
+    }
 }

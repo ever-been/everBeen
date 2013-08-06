@@ -31,6 +31,10 @@ public class Tree extends Page {
 	@Property
 	private BenchmarkEntry benchmark;
 
+    public boolean isSwRepositoryOnline() throws BeenApiException {
+        return this.api.getApi().isSwRepositoryOnline();
+    }
+
 	public Collection<BenchmarkEntry> getBenchmarks() throws BeenApiException {
 		return this.api.getApi().getBenchmarks();
 	}

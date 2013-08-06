@@ -1,6 +1,7 @@
 package cz.cuni.mff.d3s.been.web.pages.bpkpackage;
 
 import cz.cuni.mff.d3s.been.api.BeenApiException;
+import cz.cuni.mff.d3s.been.api.ClusterConnectionUnavailableException;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.web.pages.Page;
 import org.apache.tapestry5.annotations.Property;
@@ -15,14 +16,15 @@ import static cz.cuni.mff.d3s.been.web.components.Layout.Section;
 @Page.Navigation(section = Section.PACKAGE_LIST)
 public class List extends Page {
 
-	@Property
-	Collection<BpkIdentifier> packages;
+    @Property
+    BpkIdentifier pkg;
 
-	@Property
-	BpkIdentifier pkg;
+    public Collection<BpkIdentifier> getPackages() throws BeenApiException {
+        return this.api.getApi().getBpks();
+    }
 
-	private void onActivate() throws BeenApiException {
-		this.packages = this.api.getApi().getBpks();
-	}
+    public boolean isSwRepositoryOnline() throws BeenApiException {
+        return this.api.getApi().isSwRepositoryOnline();
+    }
 
 }

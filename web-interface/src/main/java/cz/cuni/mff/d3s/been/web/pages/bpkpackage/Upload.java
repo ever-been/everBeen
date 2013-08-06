@@ -54,4 +54,8 @@ public class Upload extends Page {
 		ajaxResponseRenderer.addRender("uploadResult", uploadResult);
 	}
 
+    public boolean isSwRepositoryOnline() throws BeenApiException {
+        return this.api.getApi().isSwRepositoryOnline();
+    }
+
 }
