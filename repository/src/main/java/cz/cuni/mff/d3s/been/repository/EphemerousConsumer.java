@@ -17,6 +17,14 @@ public class EphemerousConsumer<T> extends Consumer<T> {
 
 	@Override
 	public void run() {
+		try {
+			doRun();
+		} catch (Throwable t) {
+			log.error("Ephemerous consumer thread died.", t);
+		}
+	}
+
+	private void doRun() throws Throwable {
 		log.debug("Thread starting.");
 		while (!Thread.currentThread().isInterrupted()) {
 			final T item = poll.perform();
