@@ -10,6 +10,7 @@ import cz.cuni.mff.d3s.been.persistence.QueryRedactor;
 import cz.cuni.mff.d3s.been.persistence.UnsupportedQueryException;
 import cz.cuni.mff.d3s.been.storage.QueryExecutor;
 
+import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
@@ -29,11 +30,13 @@ abstract class MongoQueryRedactor implements QueryRedactor {
 	}
 
 	private final DBObject filter;
+	private final DBObject mapping;
 	private final EntityID entityID;
 
 	MongoQueryRedactor(EntityID entityID) {
 		this.entityID = entityID;
 		this.filter = new BasicDBObject();
+		this.mapping = new BasicDBObject();
 	}
 
 	@Override
@@ -83,7 +86,8 @@ abstract class MongoQueryRedactor implements QueryRedactor {
 	 * @return The attribute mapping
 	 */
 	protected DBObject getMapping() {
-		return NO_DBID_MAPPING;
+		mapping.putAll(NO_DBID_MAPPING);
+		return mapping;
 	}
 
 	/**
@@ -105,4 +109,11 @@ abstract class MongoQueryRedactor implements QueryRedactor {
 	 * @throws DAOException When a query cannot be constructed from provided information
 	 */
 	public abstract QueryExecutor createExecutor(DB db) throws DAOException;
+
+	@Override
+	public void map(Set<String> attributes) {
+		for (String attribute: attributes) {
+			mapping.put(attribute, 1);
+		}
+	}
 }

@@ -43,6 +43,13 @@ public interface Query extends Serializable {
 	AttributeFilter getSelector(String selectorName);
 
 	/**
+	 * Get the names of the attributes that should be fetched.
+	 *
+	 * @return The attributes this query should return if matched
+	 */
+	Set<String> getMappings();
+
+	/**
 	 * Get the type of this query
 	 *
 	 * @return Query type

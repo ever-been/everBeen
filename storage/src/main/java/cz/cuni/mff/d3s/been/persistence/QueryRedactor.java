@@ -2,6 +2,8 @@ package cz.cuni.mff.d3s.been.persistence;
 
 import cz.cuni.mff.d3s.been.storage.QueryExecutor;
 
+import java.util.Set;
+
 /**
  * A database-specific query interpreter injected into {@link cz.cuni.mff.d3s.been.persistence.QueryTranslator}. {@link cz.cuni.mff.d3s.been.persistence.QueryTranslator} will perform calls on this object when reading a {@link cz.cuni.mff.d3s.been.persistence.Query} to construct a database-specific implementation.
  *
@@ -49,4 +51,11 @@ public interface QueryRedactor {
 	 * @param highBound Value this attribute must be inferior to
 	 */
 	void intervalSelector(String attributeName, Object lowBound, Object highBound);
+
+	/**
+	 * This query only wants certain attributes
+	 *
+	 * @param attributes Attributes this query maps (others will be omitted)
+	 */
+	void map(Set<String> attributes);
 }

@@ -87,4 +87,9 @@ abstract class SkeletalQuery implements Query {
 	public AttributeFilter getSelector(String selectorName) {
 		return selectors.get(selectorName);
 	}
+
+	@Override
+	public Set<String> getMappings() {
+		return null;
+	}
 }

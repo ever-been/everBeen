@@ -1,12 +1,8 @@
 package cz.cuni.mff.d3s.been.repository.mongo;
 
-import java.util.Iterator;
-import java.util.Properties;
-import java.util.Random;
-import java.util.ServiceLoader;
+import java.util.*;
 
 import cz.cuni.mff.d3s.been.core.persistence.Entity;
-import cz.cuni.mff.d3s.been.core.persistence.TaskEntity;
 import cz.cuni.mff.d3s.been.persistence.*;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -21,8 +17,11 @@ import cz.cuni.mff.d3s.been.util.JSONUtils;
 import cz.cuni.mff.d3s.been.util.JsonException;
 import cz.cuni.mff.d3s.been.storage.Storage;
 import cz.cuni.mff.d3s.been.storage.StorageBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class MongoStorageTest extends Assert {
+	private static final Logger log = LoggerFactory.getLogger(MongoStorageTest.class);
 	private static final Random random = new Random();
 
 	private final JSONUtils jsonUtils = JSONUtils.newInstance();
@@ -48,6 +47,23 @@ public final class MongoStorageTest extends Assert {
 
 		public Integer getSomeNumber() {
 			return someNumber;
+		}
+	}
+
+	public static class ExtendedDummyEntity extends DummyEntity {
+		private Float someFloat;
+
+		public ExtendedDummyEntity() {
+			this.someFloat = random.nextFloat();
+		}
+
+		public ExtendedDummyEntity(int someNumber, Float someFloat) {
+			super(someNumber);
+			this.someFloat = someFloat;
+		}
+
+		public Float getSomeFloat() {
+			return someFloat;
 		}
 	}
 
@@ -208,6 +224,26 @@ public final class MongoStorageTest extends Assert {
 		assertEquals(QueryStatus.OK, answer.getStatus());
 		assertTrue(answer.isCarryingData());
 		assertEquals(2, answer.getData().size());
+	}
+
+	@Test
+	public void testEntityCropping() throws JsonException, DAOException {
+		storage.store(dummyId, jsonUtils.serialize(new ExtendedDummyEntity()));
+		final QueryAnswer answer = storage.query(new QueryBuilder().on(dummyId).retrieving("something", "someNumber").fetch());
+		assertEquals(QueryStatus.OK, answer.getStatus());
+		assertTrue(answer.isCarryingData());
+		assertEquals(1, answer.getData().size());
+		jsonUtils.deserialize(answer.getData(), DummyEntity.class);
+	}
+
+	@Test
+	public void testIncompleteEntityDeserialization() throws JsonException, DAOException {
+		storage.store(dummyId, jsonUtils.serialize(new ExtendedDummyEntity()));
+		final QueryAnswer answer = storage.query(new QueryBuilder().on(dummyId).retrieving("something", "someNumber").fetch());
+		assertEquals(QueryStatus.OK, answer.getStatus());
+		assertTrue(answer.isCarryingData());
+		assertEquals(1, answer.getData().size());
+		jsonUtils.deserialize(answer.getData(), ExtendedDummyEntity.class);
 	}
 
 }

@@ -3,7 +3,9 @@ package cz.cuni.mff.d3s.been.persistence;
 import cz.cuni.mff.d3s.been.core.persistence.EntityID;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A builder for {@link FetchQuery} objects
@@ -13,6 +15,7 @@ import java.util.Map;
 public class QueryBuilder {
 	private EntityID entityID;
 	Map<String, SkeletalAttributeFilter> selectors = new HashMap<String, SkeletalAttributeFilter>();
+	Set<String> mappings = new HashSet<String>();
 
 	public QueryBuilder on(EntityID entityID) {
 		this.entityID = entityID;
@@ -59,6 +62,20 @@ public class QueryBuilder {
 	}
 
 	/**
+	 * Set attributes to fetch. Other attributes will be omitted from the persistence layer query, and will not be set. This will probably result in <code>null</code> fields in targeted deserialization object.
+	 *
+	 * @param attributes Attributes to fetch
+	 *
+	 * @return The same query, with attribute mapping specified
+	 */
+	public QueryBuilder retrieving(String... attributes) {
+		for (String attribute: attributes) {
+			mappings.add(attribute);
+		}
+		return this;
+	}
+
+	/**
 	 * Build a fetch query intended for data retrieval
 	 *
 	 * @return A fetch query with this builder's current setup
@@ -69,7 +86,11 @@ public class QueryBuilder {
 		if (entityID == null || entityID.getGroup() == null || entityID.getKind() == null) {
 			throw new IllegalStateException("Entity ID or some of its fields are null.");
 		}
-		return new FetchQuery(entityID, selectors);
+		if (mappings.isEmpty()) {
+			return new FetchQuery(entityID, selectors);
+		} else {
+			return new FetchQuery(entityID, selectors, mappings);
+		}
 	}
 
 	/**
