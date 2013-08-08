@@ -32,7 +32,6 @@ abstract class Consumer<T> implements Runnable {
 			failRateMonitor.success();
 			return true;
 		} catch (Exception e) {
-			log.error("Cannot perform {} - {}", what.toString(), e.getMessage());
 			actOnFailure(what);
 			failRateMonitor.fail();
 			return false;
