@@ -274,7 +274,7 @@ public class ClusterContext {
 	 *          TODO: check for concurency issues
 	 */
 	public void registerService(String serviceName, Object serviceInfo) {
-		getMap(Names.SERVICES_MAP_NAME).put(serviceName, serviceInfo);
+		services.getServicesMap().put(serviceName, serviceInfo);
 	}
 
 	/**
@@ -287,7 +287,7 @@ public class ClusterContext {
 	 *          TODO: check for concurency issues
 	 */
 	public void unregisterService(String serviceName) {
-		getMap(Names.SERVICES_MAP_NAME).remove(serviceName);
+		services.getServicesMap().remove(serviceName);
 	}
 
 
