@@ -3,10 +3,6 @@ package cz.cuni.mff.d3s.been.logging;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import cz.cuni.mff.d3s.been.core.persistence.TaskEntity;
 
 /**
  * Message used to log events on tasks. Java Task API.
