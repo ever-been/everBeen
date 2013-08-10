@@ -238,6 +238,12 @@ public class SubmitTaskDescriptor extends Page {
 			this.api.getApi().saveNamedTaskDescriptor(taskDescriptor, this.saveName, bpkIdentifier);
 		}
 
+		// try to execute the filter to see if it is syntactically correct
+		String xpath = taskDescriptor.getHostRuntimes().getXpath();
+		if (xpath != null && !xpath.isEmpty()) {
+			this.api.getApi().getRuntimes(taskDescriptor.getHostRuntimes().getXpath());
+		}
+
 		submitTaskDescriptor(taskDescriptor);
 
 		return Overview.class;

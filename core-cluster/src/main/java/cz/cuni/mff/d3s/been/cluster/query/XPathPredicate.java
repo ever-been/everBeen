@@ -70,12 +70,7 @@ public final class XPathPredicate implements Predicate<String, RuntimeInfo> {
 		}
 
 		JXPathContext context = JXPathContext.newContext(info);
-		try {
-			List list = context.selectNodes(".[" + xpath + "]");
-			return (list != null) && (list.size() > 0);
-		} catch (Throwable t) {
-			log.error("XPath expression returned an exception.", t);
-			return false;
-		}
+		List list = context.selectNodes(".[" + xpath + "]");
+		return (list != null) && (list.size() > 0);
 	}
 }

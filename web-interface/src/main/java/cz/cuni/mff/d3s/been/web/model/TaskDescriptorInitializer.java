@@ -3,10 +3,7 @@ package cz.cuni.mff.d3s.been.web.model;
 import java.net.UnknownHostException;
 import java.util.List;
 
-import cz.cuni.mff.d3s.been.core.task.ModeEnum;
-import cz.cuni.mff.d3s.been.core.task.ObjectFactory;
-import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
-import cz.cuni.mff.d3s.been.core.task.TaskExclusivity;
+import cz.cuni.mff.d3s.been.core.task.*;
 
 /**
  * This class is used to initialize TaskDescriptor from bpk. The right meaning
@@ -88,6 +85,10 @@ public class TaskDescriptorInitializer {
 			// we can set the port because mode is DEBUG by default
 			taskDescriptor.getDebug().setPort(DEFAULT_DEBUG_PORT);
 
+		}
+
+		if (!taskDescriptor.isSetHostRuntimes()) {
+			taskDescriptor.setHostRuntimes(new HostRuntimes());
 		}
 
 		// insert all args and java opts to given lists of key value pais
