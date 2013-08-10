@@ -1,5 +1,7 @@
 package cz.cuni.mff.d3s.been.persistence;
 
+import org.codehaus.jackson.annotate.JsonTypeInfo;
+
 import static cz.cuni.mff.d3s.been.persistence.AttributeFilterType.ABOVE;
 import static cz.cuni.mff.d3s.been.persistence.AttributeFilterType.BELOW;
 import static cz.cuni.mff.d3s.been.persistence.AttributeFilterType.BETWEEN;
@@ -11,6 +13,7 @@ import static cz.cuni.mff.d3s.been.persistence.FilterValues.LOW_BOUND;
  *
  * @author darklight
  */
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
 public class IntervalAttributeFilter extends SkeletalAttributeFilter {
 
 	public IntervalAttributeFilter() {
