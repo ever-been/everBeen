@@ -10,6 +10,10 @@ import static cz.cuni.mff.d3s.been.persistence.FilterValues.PATTERN;
  */
 class PatternAttributeFilter extends SkeletalAttributeFilter {
 
+	public PatternAttributeFilter() {
+
+	}
+
 	PatternAttributeFilter(String pattern) {
 		values.put(PATTERN.getKey(), pattern);
 	}

@@ -1,6 +1,7 @@
 package cz.cuni.mff.d3s.been.persistence;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.annotate.JsonSubTypes;
 import org.codehaus.jackson.annotate.JsonTypeInfo;
 
 import java.util.HashMap;
@@ -12,6 +13,12 @@ import java.util.Map;
  * @author darklight
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
+@JsonSubTypes({
+		@JsonSubTypes.Type(value = EqAttributeFilter.class),
+		@JsonSubTypes.Type(value = IntervalAttributeFilter.class),
+		@JsonSubTypes.Type(value = PatternAttributeFilter.class),
+})
+@JsonIgnoreProperties({"type"})
 abstract class SkeletalAttributeFilter implements AttributeFilter {
 
 	protected Map<String, Object> values = new HashMap<String, Object>();

@@ -13,6 +13,10 @@ import static cz.cuni.mff.d3s.been.persistence.FilterValues.LOW_BOUND;
  */
 public class IntervalAttributeFilter extends SkeletalAttributeFilter {
 
+	public IntervalAttributeFilter() {
+
+	}
+
 	IntervalAttributeFilter(Object lowBound, Object highBound) {
 		if (lowBound != null) values.put(LOW_BOUND.getKey(), lowBound);
 		if (highBound != null) values.put(HIGH_BOUND.getKey(), highBound);
