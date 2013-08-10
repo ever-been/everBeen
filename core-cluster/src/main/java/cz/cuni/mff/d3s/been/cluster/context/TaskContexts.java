@@ -329,7 +329,9 @@ public class TaskContexts {
         Collection<TaskEntry> result = new ArrayList<>();
         for (String taskId : taskContextEntry.getContainedTask()) {
             TaskEntry entry = clusterContext.getTasks().getTask(taskId);
-            result.add(entry);
+	        if (entry != null) {
+                result.add(entry);
+	        }
         }
 
         return result;
