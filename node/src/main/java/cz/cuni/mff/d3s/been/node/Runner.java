@@ -306,7 +306,8 @@ public class Runner {
 			log.info("Configuration loaded from {}", configFile);
 			return properties;
 		} catch (IOException e) {
-			log.error("Cannot load properties from {}. Aborting.", e);
+			String msg = String.format("Cannot load properties from %s. Aborting.", configFile);
+			log.error(msg, e);
 			EX_USAGE.sysExit();
 		}
 
