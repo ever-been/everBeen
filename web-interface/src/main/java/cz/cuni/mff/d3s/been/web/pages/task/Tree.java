@@ -42,7 +42,15 @@ public class Tree extends Page {
 	}
 
 	public Collection<TaskContextEntry> contextsForBenchmark(String benchmarkId) throws BeenApiException {
-		return this.api.getApi().getTaskContextsInBenchmark(benchmarkId);
+		Collection<TaskContextEntry> contexts = this.api.getApi().getTaskContextsInBenchmark(benchmarkId);
+		ArrayList<TaskContextEntry> arrayList = new ArrayList<>(contexts);
+		Collections.sort(arrayList, new Comparator<TaskContextEntry>() {
+			@Override
+			public int compare(TaskContextEntry o1, TaskContextEntry o2) {
+				return Long.compare(o2.getCreated(), o1.getCreated());
+			}
+		});
+		return arrayList;
 	}
 
 	public Collection<TaskEntry> tasksForContext(String contextId) throws BeenApiException {

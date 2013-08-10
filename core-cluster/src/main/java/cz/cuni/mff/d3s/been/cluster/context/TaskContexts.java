@@ -69,6 +69,7 @@ public class TaskContexts {
         contextEntry.setId(UUID.randomUUID().toString());
         contextEntry.setBenchmarkId(benchmarkId);
         contextEntry.setContextState(TaskContextState.WAITING);
+	    contextEntry.setCreated(new Date().getTime());
 
         checkContextBeforeSubmit(contextEntry);
 

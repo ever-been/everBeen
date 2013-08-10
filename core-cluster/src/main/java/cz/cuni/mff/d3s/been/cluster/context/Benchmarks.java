@@ -133,6 +133,7 @@ public class Benchmarks {
 				taskContextEntry.setId(BENCHMARKS_CONTEXT_ID);
 				taskContextEntry.setContextState(TaskContextState.RUNNING);
 				taskContextEntry.setLingering(true); // do not destroy this context
+				taskContextEntry.setCreated(new Date().getTime());
 			}
 
 			taskContextEntry.getContainedTask().add(taskEntry.getId());
