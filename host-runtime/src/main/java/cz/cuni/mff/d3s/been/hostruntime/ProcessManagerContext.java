@@ -2,7 +2,11 @@ package cz.cuni.mff.d3s.been.hostruntime;
 
 import static cz.cuni.mff.d3s.been.core.task.TaskExclusivity.*;
 
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 import org.slf4j.Logger;
@@ -189,6 +193,28 @@ final class ProcessManagerContext {
 	}
 
 	/**
+	 * Updates information about tasks directories
+	 */
+	public synchronized void updateTaskDirs() {
+		List<String> taskDirs = hostInfo.getTaskDirs();
+		taskDirs.clear();
+
+		try {
+			final Path workingDirectory = Paths.get(hostInfo.getTasksWorkingDirectory());
+
+			for (Path item : Files.newDirectoryStream(workingDirectory)) {
+				taskDirs.add(item.toAbsolutePath().toString());
+			}
+
+		} catch (IOException | InvalidPathException e) {
+			log.error("Cannot list working directory of tasks", e);
+		}
+
+		updateHostInfo();
+
+	}
+
+	/**
 	 * Updates Host Runtime information in the cluster
 	 */
 	private void updateHostInfo() {
@@ -198,7 +224,7 @@ final class ProcessManagerContext {
 		clusterContext.getRuntimes().storeRuntimeInfo(hostInfo);
 	}
 
-    /**
+	/**
 	 * Sets current exclusivity.
 	 * 
 	 * @param exclusivity
