@@ -164,6 +164,10 @@ public class SubmitTaskDescriptor extends Page {
 		bpkIdentifier.setVersion(version);
 		this.taskDescriptor = this.api.getApi().getTaskDescriptor(bpkIdentifier, descriptorName);
 
+		if (this.taskDescriptor == null) {
+			this.taskDescriptor = this.api.getApi().getNamedTaskDescriptorsForBpk(bpkIdentifier).get(descriptorName);
+		}
+
 		args = new ArrayList<>();
 		opts = new ArrayList<>();
 
