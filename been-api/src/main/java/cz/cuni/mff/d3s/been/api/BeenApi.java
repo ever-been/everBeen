@@ -1,13 +1,7 @@
 package cz.cuni.mff.d3s.been.api;
 
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Map;
-
 import com.hazelcast.core.EntryListener;
 import com.hazelcast.core.Member;
-
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.core.benchmark.BenchmarkEntry;
 import cz.cuni.mff.d3s.been.core.protocol.command.CommandEntry;
@@ -19,6 +13,11 @@ import cz.cuni.mff.d3s.been.logging.ServiceLogMessage;
 import cz.cuni.mff.d3s.been.logging.TaskLogMessage;
 import cz.cuni.mff.d3s.been.persistence.Query;
 import cz.cuni.mff.d3s.been.persistence.QueryAnswer;
+
+import java.io.InputStream;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Map;
 
 /**
  * User: donarus Date: 4/27/13 Time: 11:40 AM
@@ -136,7 +135,9 @@ public interface BeenApi {
 
 	public boolean isConnected();
 
-	interface LogListener {
+    boolean isSwRepositoryOnline() throws BeenApiException;
+
+    interface LogListener {
 		public void logAdded(String jsonLog);
 	}
 }

@@ -36,7 +36,9 @@ public class Tree extends Page {
     }
 
 	public Collection<BenchmarkEntry> getBenchmarks() throws BeenApiException {
+        Collection<String> finishedTasks = this.api.getApi().getTasksWithState(TaskState.FINISHED);
 		return this.api.getApi().getBenchmarks();
+
 	}
 
 	public Collection<TaskContextEntry> contextsForBenchmark(String benchmarkId) throws BeenApiException {

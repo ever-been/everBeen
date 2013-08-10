@@ -3,6 +3,8 @@ package cz.cuni.mff.d3s.been.storage;
 import cz.cuni.mff.d3s.been.core.persistence.EntityID;
 import cz.cuni.mff.d3s.been.persistence.QueryRedactor;
 
+import java.util.Set;
+
 /**
  * @author darklight
  */

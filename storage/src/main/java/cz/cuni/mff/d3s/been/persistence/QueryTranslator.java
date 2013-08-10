@@ -57,5 +57,9 @@ public final class QueryTranslator {
 					throw new UnsupportedQueryException(query, String.format("Filter type '%s' on attribute '%s' not supported.", skelf.getType().name(), selectorName));
 			}
 		}
+
+		if (query.getMappings() != null) {
+			interpreter.map(query.getMappings());
+		}
 	}
 }

@@ -52,7 +52,18 @@ final class ReplyingWorker implements Runnable {
 
 	@Override
 	public void run() {
-		// lock here to prevent input data from being changed under our hands 
+		try {
+			doRun();
+		} catch (Throwable t) {
+			log.error(
+					"Worker using handler '{}' died unexpectedly. Requesting side will be left hanging.",
+					(handler == null) ? "null" : handler.getClass().getSimpleName(),
+					t);
+		}
+	}
+
+	private void doRun() throws Throwable {
+		// lock here to prevent input data from being changed under our hands
 		synchronized (runLock) {
 			if (work == null) {
 				log.error("No data to process");
