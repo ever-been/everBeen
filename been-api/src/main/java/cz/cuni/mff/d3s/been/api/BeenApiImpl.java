@@ -303,14 +303,11 @@ public class BeenApiImpl implements BeenApi {
                 bpkIdentifier.getVersion());
         checkIsActive(errorMsg);
 
-        final String serializedBpkId;
-        try {
-            serializedBpkId = PersistentDescriptors.serializeBpkId(bpkIdentifier);
-        } catch (DAOException e) {
-            throw createPersistenceException(errorMsg, e);
-        }
-
-        final Query query = new QueryBuilder().on(NAMED_TASK_DESCRIPTOR).with("bpkId", serializedBpkId).fetch();
+        final Query query = new QueryBuilder().on(NAMED_TASK_DESCRIPTOR)
+		        .with("bpkId.groupId", bpkIdentifier.getGroupId())
+		        .with("bpkId.bpkId", bpkIdentifier.getBpkId())
+		        .with("bpkId.version", bpkIdentifier.getVersion())
+		        .fetch();
         final QueryAnswer answer = performQuery(query, errorMsg);
 
         try {
@@ -331,14 +328,11 @@ public class BeenApiImpl implements BeenApi {
                 bpkIdentifier.getBpkId(),
                 bpkIdentifier.getVersion());
 
-        final String serializedBpkId;
-        try {
-            serializedBpkId = PersistentDescriptors.serializeBpkId(bpkIdentifier);
-        } catch (DAOException e) {
-            throw createPersistenceException(errorMsg, e);
-        }
-
-        final Query query = new QueryBuilder().on(NAMED_CONTEXT_DESCRIPTOR).with("bpkId", serializedBpkId).fetch();
+        final Query query = new QueryBuilder().on(NAMED_CONTEXT_DESCRIPTOR)
+		        .with("bpkId.groupId", bpkIdentifier.getGroupId())
+		        .with("bpkId.bpkId", bpkIdentifier.getBpkId())
+		        .with("bpkId.version", bpkIdentifier.getVersion())
+		        .fetch();
         final QueryAnswer answer = performQuery(query, errorMsg);
 
         try {
