@@ -162,6 +162,9 @@ public final class ContextBuilder {
 	public Template getTemplate(String templateName) throws BenchmarkException {
 		for (Template template : descriptor.getTemplates().getTemplate()) {
 			if (template.isSetName() && template.getName().equals(templateName)) {
+				if (!template.isSetTaskDescriptor()) {
+					template.setTaskDescriptor(new TaskDescriptor());
+				}
 				return template;
 			}
 		}
@@ -182,15 +185,11 @@ public final class ContextBuilder {
 	 * @throws BenchmarkException
 	 *           when no template with <code>templateName</code> exits
 	 */
-	public void setSelector(String templateName, String selector) throws BenchmarkException {
+	public void setSelector(final String templateName, final String selector) throws BenchmarkException {
 		Template template = getTemplate(templateName);
 
 		if (selector == null || selector.isEmpty()) {
 			return;
-		}
-
-		if (!template.isSetTaskDescriptor()) {
-			template.setTaskDescriptor(new TaskDescriptor());
 		}
 
 		if (!template.getTaskDescriptor().isSetHostRuntimes()) {
@@ -199,6 +198,21 @@ public final class ContextBuilder {
 
 		template.getTaskDescriptor().getHostRuntimes().setXpath(selector);
 
+	}
+
+	/**
+	 * Sets tasks exclusivity for a template.
+	 * 
+	 * @param templateName
+	 *          name of the template to set the <code>exclusivity</code> on
+	 * @param exclusivity
+	 *          exclusivity of all tasks created from the template
+	 * @throws BenchmarkException
+	 *           when no template with <code>templateName</code> exits
+	 */
+	public void setExclusivity(final String templateName, final TaskExclusivity exclusivity) throws BenchmarkException {
+		Template template = getTemplate(templateName);
+		template.getTaskDescriptor().setExclusive(exclusivity);
 	}
 
 	/**
