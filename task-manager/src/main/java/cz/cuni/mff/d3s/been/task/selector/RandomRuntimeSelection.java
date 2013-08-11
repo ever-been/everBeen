@@ -1,4 +1,4 @@
-package cz.cuni.mff.d3s.been.task.action;
+package cz.cuni.mff.d3s.been.task.selector;
 
 import static cz.cuni.mff.d3s.been.core.task.TaskExclusivity.EXCLUSIVE;
 import static cz.cuni.mff.d3s.been.core.task.TaskExclusivity.NON_EXCLUSIVE;
@@ -15,7 +15,6 @@ import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskExclusivity;
-import cz.cuni.mff.d3s.been.task.NoRuntimeFoundException;
 import cz.cuni.mff.d3s.been.task.RuntimesComparable;
 
 /**
@@ -25,17 +24,19 @@ final class RandomRuntimeSelection implements IRuntimeSelection {
 
 	private final Random rnd;
 	private ClusterContext clusterCtx;
+	private final TaskEntry entry;
 
-	public RandomRuntimeSelection(ClusterContext clusterCtx) {
+	public RandomRuntimeSelection(final ClusterContext clusterCtx, final TaskEntry entry) {
 		this.clusterCtx = clusterCtx;
+		this.entry = entry;
 		rnd = new Random();
 	}
 
 	@Override
-	public String select(final TaskEntry taskEntry) throws NoRuntimeFoundException {
+	public String select() throws NoRuntimeFoundException {
 
-		TaskExclusivity exclusivity = taskEntry.getTaskDescriptor().getExclusive();
-		String contextId = taskEntry.getTaskContextId();
+		TaskExclusivity exclusivity = entry.getTaskDescriptor().getExclusive();
+		String contextId = entry.getTaskContextId();
 
 		Predicate<?, ?> predicate = new ExclusivityPredicate(exclusivity, contextId);
 

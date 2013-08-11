@@ -100,8 +100,8 @@ public final class ContextBuilder {
 	 * The template must already exist.
 	 * <p/>
 	 * The Task will be properly initialized and added to the context. The task
-	 * can be further customized by setting its properties (i.e. can override
-	 * template)
+	 * can be further customized by setting its properties , but the
+	 * {@link TaskDescriptor} of the template will be used.
 	 * 
 	 * @param name
 	 *          user visible name of the task
@@ -111,22 +111,16 @@ public final class ContextBuilder {
 	 * @throws BenchmarkException
 	 *           when no template with <code>templateName</code> exists
 	 */
-	public Task addTask(String name, String templateName) throws BenchmarkException {
+	public Task addTask(final String name, final String templateName) throws BenchmarkException {
+		Template template = getTemplate(templateName);
 
-		if (descriptor.isSetTemplates()) {
-			for (Template template : descriptor.getTemplates().getTemplate()) {
-				if (template.isSetName() && template.getName().equals(templateName)) {
-					Task task = newEmptyTask().withName(name);
-					task.getDescriptor().setFromTemplate(templateName);
+		Task task = newEmptyTask().withName(name);
+		task.getDescriptor().setFromTemplate(templateName);
 
-					addTask(task);
+		addTask(task);
 
-					return task;
-				}
-			}
-		}
+		return task;
 
-		throw new BenchmarkException("No such template " + templateName);
 	}
 
 	/**

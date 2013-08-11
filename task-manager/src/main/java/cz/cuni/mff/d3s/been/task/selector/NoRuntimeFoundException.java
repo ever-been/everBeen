@@ -1,4 +1,4 @@
-package cz.cuni.mff.d3s.been.task;
+package cz.cuni.mff.d3s.been.task.selector;
 
 /**
  * @author Martin Sixta
@@ -24,7 +24,11 @@ public class NoRuntimeFoundException extends Exception {
 	}
 
 	/** {@inheritDoc} */
-	protected NoRuntimeFoundException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+	protected NoRuntimeFoundException(
+			String message,
+			Throwable cause,
+			boolean enableSuppression,
+			boolean writableStackTrace) {
 		super(message, cause, enableSuppression, writableStackTrace);
 	}
 

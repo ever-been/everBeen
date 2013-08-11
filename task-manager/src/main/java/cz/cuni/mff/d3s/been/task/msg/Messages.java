@@ -25,4 +25,8 @@ public class Messages {
 	public static TaskMessage createScheduleTaskMessage(TaskEntry entry) {
 		return new ScheduleTaskMessage(entry);
 	}
+
+	public static TaskMessage createCheckSchedulabilityMessage(TaskEntry entry) {
+		return new CheckSchedulabilityMessage(entry);
+	}
 }
