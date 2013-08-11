@@ -1,6 +1,5 @@
 package cz.cuni.mff.d3s.been.persistence;
 
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonTypeInfo;
 
 import java.util.HashMap;

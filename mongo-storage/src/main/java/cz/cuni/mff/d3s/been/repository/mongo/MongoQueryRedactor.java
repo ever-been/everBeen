@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
  * @author darklight
  */
 abstract class MongoQueryRedactor implements QueryRedactor {
+	private static final String NEQ_OPERATOR = "$ne";
 	private static final String ABOVE_OPERATOR = "$gte";
 	private static final String BELOW_OPERATOR = "$lt";
 
@@ -42,6 +43,13 @@ abstract class MongoQueryRedactor implements QueryRedactor {
 	@Override
 	public void equalitySelector(String attributeName, Object value) {
 		filter.put(attributeName, value);
+	}
+
+	@Override
+	public void inequalitySelector(String attributeName, Object value) {
+		final DBObject neq = new BasicDBObject();
+		neq.put(NEQ_OPERATOR, value);
+		filter.put(attributeName, neq);
 	}
 
 	@Override

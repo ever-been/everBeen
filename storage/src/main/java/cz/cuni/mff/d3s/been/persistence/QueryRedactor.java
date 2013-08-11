@@ -20,6 +20,14 @@ public interface QueryRedactor {
 	void equalitySelector(String attributeName, Object value);
 
 	/**
+	 * This query contains a 'different from' selector
+	 *
+	 * @param attributeName Attribute this selector restricts
+	 * @param value Value this attribute's value must be different from
+	 */
+	void inequalitySelector(String attributeName, Object value);
+
+	/**
 	 * This query contains a 'like' selector (regex)
 	 *
 	 * @param attributeName Attribute the selector restricts
