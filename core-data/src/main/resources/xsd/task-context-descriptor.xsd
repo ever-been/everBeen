@@ -105,6 +105,7 @@
 			</xs:sequence>
 			<xs:attribute name="lingering" type="xs:boolean" default="false"/>
 			<xs:attribute name="benchmarkId" type="xs:string" use="optional" default=""/>
+			<xs:attribute name="created" type="xs:long" default="0" />
 		</xs:complexType>
 	</xs:element>
 

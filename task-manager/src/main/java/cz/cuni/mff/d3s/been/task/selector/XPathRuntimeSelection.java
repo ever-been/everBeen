@@ -1,4 +1,4 @@
-package cz.cuni.mff.d3s.been.task.action;
+package cz.cuni.mff.d3s.been.task.selector;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,7 +12,6 @@ import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskExclusivity;
-import cz.cuni.mff.d3s.been.task.NoRuntimeFoundException;
 import cz.cuni.mff.d3s.been.task.RuntimesComparable;
 
 /**
@@ -20,14 +19,16 @@ import cz.cuni.mff.d3s.been.task.RuntimesComparable;
  */
 final class XPathRuntimeSelection implements IRuntimeSelection {
 	private ClusterContext clusterCtx;
+	private final TaskEntry entry;
 
-	public XPathRuntimeSelection(ClusterContext clusterCtx) {
+	public XPathRuntimeSelection(ClusterContext clusterCtx, final TaskEntry entry) {
 		this.clusterCtx = clusterCtx;
+		this.entry = entry;
 	}
 
 	@Override
-	public String select(TaskEntry taskEntry) throws NoRuntimeFoundException {
-		TaskDescriptor td = taskEntry.getTaskDescriptor();
+	public String select() throws NoRuntimeFoundException {
+		TaskDescriptor td = entry.getTaskDescriptor();
 
 		String xpath;
 		if (td.isSetHostRuntimes() && td.getHostRuntimes().isSetXpath()) {
@@ -37,7 +38,7 @@ final class XPathRuntimeSelection implements IRuntimeSelection {
 		}
 
 		TaskExclusivity exclusivity = td.getExclusive();
-		String contextId = taskEntry.getTaskContextId();
+		String contextId = entry.getTaskContextId();
 		Predicate<?, ?> predicate = new XPathPredicate(contextId, xpath, exclusivity);
 
 		List<RuntimeInfo> runtimes = new ArrayList<>(clusterCtx.getRuntimes().getRuntimeMap().values(predicate));

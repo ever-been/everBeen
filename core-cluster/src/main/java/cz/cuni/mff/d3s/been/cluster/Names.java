@@ -76,17 +76,6 @@ public class Names {
 	 */
 	public static final String PERSISTENCE_QUERY_QUEUE_NAME = "BEEN_PERSISTENCE_QUERIES";
 
-
-
-	// TOPIC NAMES
-	/**
-	 * In the topic with this name should be published complete communication
-	 * between Host Runtimes and Task Managers.
-	 */
-	public static final String BEEN_TOPIC_MAIN_NAME = "BEEN_TOPIC_MAIN";
-
-
-
 	// MAP KEYS
 	/**
 	 * Under this key should be stored information about Software Repository in

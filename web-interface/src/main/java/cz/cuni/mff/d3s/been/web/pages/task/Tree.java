@@ -36,11 +36,21 @@ public class Tree extends Page {
     }
 
 	public Collection<BenchmarkEntry> getBenchmarks() throws BeenApiException {
+        Collection<String> finishedTasks = this.api.getApi().getTasksWithState(TaskState.FINISHED);
 		return this.api.getApi().getBenchmarks();
+
 	}
 
 	public Collection<TaskContextEntry> contextsForBenchmark(String benchmarkId) throws BeenApiException {
-		return this.api.getApi().getTaskContextsInBenchmark(benchmarkId);
+		Collection<TaskContextEntry> contexts = this.api.getApi().getTaskContextsInBenchmark(benchmarkId);
+		ArrayList<TaskContextEntry> arrayList = new ArrayList<>(contexts);
+		Collections.sort(arrayList, new Comparator<TaskContextEntry>() {
+			@Override
+			public int compare(TaskContextEntry o1, TaskContextEntry o2) {
+				return Long.compare(o2.getCreated(), o1.getCreated());
+			}
+		});
+		return arrayList;
 	}
 
 	public Collection<TaskEntry> tasksForContext(String contextId) throws BeenApiException {

@@ -1,8 +1,5 @@
 package cz.cuni.mff.d3s.been.swrepository;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
 import cz.cuni.mff.d3s.been.cluster.Names;
 import cz.cuni.mff.d3s.been.cluster.Reaper;
@@ -11,6 +8,8 @@ import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.sri.SWRepositoryInfo;
 import cz.cuni.mff.d3s.been.datastore.SoftwareStore;
 import cz.cuni.mff.d3s.been.swrepository.httpserver.HttpServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A cluster node that can store and provide BPKs and Maven artifacts through a
@@ -59,8 +58,9 @@ public class SoftwareRepository implements IClusterService {
 		info = new SWRepositoryInfo();
 		info.setHost(httpServer.getHost().getHostName());
 		info.setHttpServerPort(httpServer.getPort());
+        info.setUuid(clusterCtx.getLocalMember().getUuid());
 
-		httpServer.start();
+        httpServer.start();
 		clusterCtx.registerService(Names.SWREPOSITORY_SERVICES_MAP_KEY, info);
 		log.info("Software Repository started.");
 	}

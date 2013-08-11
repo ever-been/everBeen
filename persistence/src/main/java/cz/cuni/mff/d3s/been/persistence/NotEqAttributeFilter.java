@@ -12,6 +12,8 @@ import static cz.cuni.mff.d3s.been.persistence.FilterValues.HARD_VALUE;
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
 class NotEqAttributeFilter extends SkeletalAttributeFilter {
 
+	public NotEqAttributeFilter(){}
+
 	NotEqAttributeFilter(Object value) {
 		values.put(HARD_VALUE.getKey(), value);
 	}

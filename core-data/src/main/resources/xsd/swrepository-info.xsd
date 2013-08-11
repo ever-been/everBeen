@@ -14,12 +14,14 @@
 	<xs:import namespace="http://been.d3s.mff.cuni.cz/common"/>
 
 	<xs:element name="httpServerPort" type="common:positiveInt" />
-	<xs:element name="host" type="xs:string" />
+    <xs:element name="host" type="xs:string" />
+    <xs:element name="uuid" type="xs:string" />
 	<xs:element name="sWRepositoryInfo">
 		<xs:complexType>
 			<xs:all>
 				<xs:element ref="swrepositoryinfo:httpServerPort" minOccurs="1" maxOccurs="1" />
-				<xs:element ref="swrepositoryinfo:host" minOccurs="1" maxOccurs="1" />
+                <xs:element ref="swrepositoryinfo:host" minOccurs="1" maxOccurs="1" />
+                <xs:element ref="swrepositoryinfo:uuid" minOccurs="1" maxOccurs="1" />
 			</xs:all>
 		</xs:complexType>
 	</xs:element>

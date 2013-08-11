@@ -3,22 +3,27 @@
 <html t:type="layout" section="section"
       xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd" xmlns:p="tapestry:parameter">
 
-<h2>Upload New Package</h2>
+    <h2>Upload New Package</h2>
+    <t:if t:negate="true" t:test="swRepositoryOnline">
+        You can't upload any new package because software repository is disconnected. Connect software repository and
+        try it again.
+        <p:else>
+            <t:jquery.ajaxUpload t:id="uploadBpk" t:multiple="true" t:allowedExtensions="[bpk]">
+                <noscript>
+                    <p>Your browser does not support JavaScript!</p>
+                </noscript>
+            </t:jquery.ajaxUpload>
 
-<t:jquery.ajaxUpload t:id="uploadBpk" t:multiple="true" t:allowedExtensions="[bpk]">
-	<noscript>
-		<p>Your browser does not support JavaScript!</p>
-	</noscript>
-</t:jquery.ajaxUpload>
-
-<t:zone t:id="uploadResult">
-	<div>
-		<t:if test="message">
-			<p style="text-align: center;">
-				<strong>${message}</strong>
-			</p>
-		</t:if>
-	</div>
-</t:zone>
+            <t:zone t:id="uploadResult">
+                <div>
+                    <t:if test="message">
+                        <p style="text-align: center;">
+                            <strong>${message}</strong>
+                        </p>
+                    </t:if>
+                </div>
+            </t:zone>
+        </p:else>
+    </t:if>
 
 </html>

@@ -7,6 +7,9 @@
 		<form action="/runtime/list" method="GET" class="form-inline">
 			Filter (XPath expression):
 			<input type="text" name="filter" value="${currentFilter}" class="input-small" style="height: 10px; width: 350px; vertical-align: baseline; font-size: 10px; line-height: 10px;" />
+			<t:if test="filterSyntaxError">
+				&nbsp;<span style="color: red; font-weight: bold;">Syntax error!</span>
+			</t:if>
 			&nbsp;<button type="submit" class="btn btn-mini" style="height: 20px; vertical-align: baseline;">Apply</button>
 		</form>
 	</span>

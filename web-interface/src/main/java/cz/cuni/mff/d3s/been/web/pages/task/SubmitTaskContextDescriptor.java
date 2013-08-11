@@ -213,6 +213,10 @@ public class SubmitTaskContextDescriptor extends Page {
         bpkIdentifier.setVersion(version);
         this.taskContextDescriptor = this.api.getApi().getTaskContextDescriptor(bpkIdentifier, descriptorName);
 
+	    if (this.taskContextDescriptor == null) {
+		    this.taskContextDescriptor = this.api.getApi().getNamedContextDescriptorsForBpk(bpkIdentifier).get(descriptorName);
+	    }
+
         HashMap<String, Object> conversationArgs = new HashMap<String, Object>();
         conversationArgs.put(KEY_TASK_CONTEXT_DESCRIPTOR, taskContextDescriptor);
         this.conversationId = conversationHolder.set(conversationArgs);

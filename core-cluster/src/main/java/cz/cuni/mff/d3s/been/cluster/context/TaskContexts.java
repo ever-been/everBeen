@@ -69,6 +69,7 @@ public class TaskContexts {
         contextEntry.setId(UUID.randomUUID().toString());
         contextEntry.setBenchmarkId(benchmarkId);
         contextEntry.setContextState(TaskContextState.WAITING);
+	    contextEntry.setCreated(new Date().getTime());
 
         checkContextBeforeSubmit(contextEntry);
 
@@ -329,7 +330,9 @@ public class TaskContexts {
         Collection<TaskEntry> result = new ArrayList<>();
         for (String taskId : taskContextEntry.getContainedTask()) {
             TaskEntry entry = clusterContext.getTasks().getTask(taskId);
-            result.add(entry);
+	        if (entry != null) {
+                result.add(entry);
+	        }
         }
 
         return result;

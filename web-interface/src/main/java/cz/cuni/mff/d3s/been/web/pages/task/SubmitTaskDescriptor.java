@@ -164,6 +164,10 @@ public class SubmitTaskDescriptor extends Page {
 		bpkIdentifier.setVersion(version);
 		this.taskDescriptor = this.api.getApi().getTaskDescriptor(bpkIdentifier, descriptorName);
 
+		if (this.taskDescriptor == null) {
+			this.taskDescriptor = this.api.getApi().getNamedTaskDescriptorsForBpk(bpkIdentifier).get(descriptorName);
+		}
+
 		args = new ArrayList<>();
 		opts = new ArrayList<>();
 
@@ -236,6 +240,12 @@ public class SubmitTaskDescriptor extends Page {
 			bpkIdentifier.setBpkId(taskDescriptor.getBpkId());
 			bpkIdentifier.setVersion(taskDescriptor.getVersion());
 			this.api.getApi().saveNamedTaskDescriptor(taskDescriptor, this.saveName, bpkIdentifier);
+		}
+
+		// try to execute the filter to see if it is syntactically correct
+		String xpath = taskDescriptor.getHostRuntimes().getXpath();
+		if (xpath != null && !xpath.isEmpty()) {
+			this.api.getApi().getRuntimes(taskDescriptor.getHostRuntimes().getXpath());
 		}
 
 		submitTaskDescriptor(taskDescriptor);

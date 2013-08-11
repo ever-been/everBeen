@@ -204,6 +204,20 @@
             </div>
 	        </fieldset>
         </div>
+
+	    <div class="span6">
+		    <fieldset>
+			    <legend>Host Runtime Filter</legend>
+
+			    <div class="control-group">
+				    <t:label for="debugHost" class="control-label">XPath expression</t:label>
+				    <div class="controls">
+					    <t:textfield t:id="xpath" t:value="taskDescriptor.hostRuntimes?.xpath"/>
+				    </div>
+			    </div>
+		    </fieldset>
+	    </div>
+
         <!--
         <div class="span6">
             <h2>Monitoring</h2>

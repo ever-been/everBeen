@@ -110,6 +110,16 @@ final class LocalTaskListener extends TaskManagerService implements EntryListene
 
 		// skip waiting tasks
 		if (state == TaskState.WAITING) {
+
+			try {
+				TaskMessage msg = Messages.createCheckSchedulabilityMessage(entry);
+
+				sender.send(msg);
+			} catch (MessagingException e) {
+				String msg = String.format("Cannot send message to '%s'", sender.getConnection());
+				log.error(msg, e);
+			}
+
 			return;
 		}
 

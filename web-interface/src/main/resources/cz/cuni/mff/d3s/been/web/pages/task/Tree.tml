@@ -6,7 +6,12 @@
 <h2>Benchmark &amp; Task Tree</h2>
 
 <div style="float: right; text-align: right;">
-	<button class="btn btn-primary" onclick="location.href='/task/submit'; return false;">Submit new item</button>
+    <t:if t:test="swRepositoryOnline">
+        <button class="btn btn-primary" onclick="location.href='/task/submit'; return false;">Submit new item</button>
+        <p:else>
+            <span class="text-warning">Software repository disconnected. Can't submit any new item.</span>
+        </p:else>
+    </t:if>
 	<br /><br />
 	<button class="btn btn-warning" onclick="if (window.confirm('Are you sure?')) location.href='/benchmark/remove/all-finished'; return false;">Remove finished benchmarks</button>
 </div>

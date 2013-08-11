@@ -6,7 +6,6 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import cz.cuni.mff.d3s.been.core.PropertyReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,13 +13,13 @@ import com.hazelcast.core.IMap;
 
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.cluster.context.Tasks;
-import cz.cuni.mff.d3s.been.core.protocol.Context;
+import cz.cuni.mff.d3s.been.core.PropertyReader;
 import cz.cuni.mff.d3s.been.core.protocol.messages.RunTaskMessage;
-import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntries;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
-import cz.cuni.mff.d3s.been.task.NoRuntimeFoundException;
+import cz.cuni.mff.d3s.been.task.selector.NoRuntimeFoundException;
+import cz.cuni.mff.d3s.been.task.selector.RuntimeSelectors;
 
 /**
  * 
@@ -83,7 +82,7 @@ public final class ScheduleTaskAction implements TaskAction {
 		try {
 
 			// 1) Find suitable Host Runtime
-			String receiverId = findHostRuntime();
+			String receiverId = RuntimeSelectors.fromEntry(entry, ctx).select();
 
 			// 2) Lock the entry
 			TaskEntry entryCopy = map.tryLockAndGet(id, getLockTimeout(), SECONDS);
@@ -148,41 +147,6 @@ public final class ScheduleTaskAction implements TaskAction {
 
 		} finally {
 			map.unlock(id);
-		}
-	}
-
-	/**
-	 * Tries to find a suitable Host Runtime for the task.
-	 * 
-	 * @return ID of a Host Runtime to schedule the task on
-	 * 
-	 * @throws NoRuntimeFoundException
-	 *           if no suitable Host Runtime is found
-	 */
-	private String findHostRuntime() throws NoRuntimeFoundException {
-
-		IRuntimeSelection selection = createSelection(entry.getTaskDescriptor());
-
-		return selection.select(entry);
-
-	}
-
-	/**
-	 * Creates appropriate Host Runtime selection method
-	 * 
-	 * 
-	 * @param td
-	 *          descriptor of the task
-	 * 
-	 * @return appropriate implementation of Host Runtime selection
-	 */
-	private IRuntimeSelection createSelection(final TaskDescriptor td) {
-		boolean useXPath = td.isSetHostRuntimes() && td.getHostRuntimes().isSetXpath();
-
-		if (useXPath) {
-			return new XPathRuntimeSelection(ctx);
-		} else {
-			return new RandomRuntimeSelection(ctx);
 		}
 	}
 

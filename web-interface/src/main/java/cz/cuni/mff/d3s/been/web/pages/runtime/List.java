@@ -6,6 +6,7 @@ import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.web.components.Layout;
 import cz.cuni.mff.d3s.been.web.model.TaskWrkDirChecker;
 import cz.cuni.mff.d3s.been.web.pages.Page;
+import org.apache.commons.jxpath.JXPathInvalidSyntaxException;
 import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.services.Request;
@@ -28,6 +29,9 @@ public class List extends Page {
     @Property
     private RuntimeInfo runtime;
 
+	@Property
+	private boolean filterSyntaxError;
+
 	@Inject
 	private Request request;
 
@@ -42,14 +46,26 @@ public class List extends Page {
 		return filter;
 	}
 
-    public Collection<RuntimeInfo> getRuntimes() throws BeenApiException {
-	    String filter = request.getParameter("filter");
-	    if (filter == null) {
-            return this.api.getApi().getRuntimes();
-	    } else {
-		    return this.api.getApi().getRuntimes(filter);
-	    }
-    }
+	@Property
+	Collection<RuntimeInfo> runtimes;
+
+	public void onActivate() throws BeenApiException {
+		String filter = request.getParameter("filter");
+		if (filter == null || filter.isEmpty()) {
+			runtimes = this.api.getApi().getRuntimes();
+		} else {
+			try {
+				runtimes = this.api.getApi().getRuntimes(filter);
+			} catch (BeenApiException e) {
+				if (e.getCause().getMessage().startsWith("Invalid XPath")) {
+					filterSyntaxError = true;
+					runtimes = new ArrayList<>();
+				} else {
+					throw e;
+				}
+			}
+		}
+	}
 
     public String getRowClass(RuntimeInfo runtime) throws BeenApiException {
         if (getOldTaskDirsOnRuntime

@@ -58,11 +58,11 @@ public class Runtimes {
 		getRuntimeMap().remove(id);
 	}
 
-	/**
-	 * @return modifiable map of all registered Host Runtimes.
-	 */
-	public IMap<String, RuntimeInfo> getRuntimeMap() {
-		return clusterCtx.getMap(Names.HOSTRUNTIMES_MAP_NAME);
-	}
+    /**
+     * @return modifiable map of all registered Host Runtimes.
+     */
+    public IMap<String, RuntimeInfo> getRuntimeMap() {
+        return clusterCtx.getMap(Names.HOSTRUNTIMES_MAP_NAME);
+    }
 
 }

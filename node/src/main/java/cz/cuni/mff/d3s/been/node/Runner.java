@@ -14,6 +14,7 @@ import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.UUID;
 
+import com.hazelcast.core.Cluster;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -166,6 +167,8 @@ public class Runner {
 				clusterReaper.pushTarget(startRepository(storage));
 			}
 
+            registerClusterCleaners(instance.getCluster());
+
 		} catch (ServiceException se) {
 			log.error("Service bootstrap failed.", se);
 			clusterReaper.start();
@@ -179,7 +182,13 @@ public class Runner {
 
 		Runtime.getRuntime().addShutdownHook(clusterReaper);
 	}
-	private void printUsage() {
+
+    private void registerClusterCleaners(Cluster cluster) {
+        // SW repository service info cleaner
+        cluster.addMembershipListener(new SwRepositoryInfoCleaner(Instance.createContext().getServices()));
+    }
+
+    private void printUsage() {
 		CmdLineParser parser = new CmdLineParser(this);
 		parser.printUsage(System.out);
 	}
@@ -234,7 +243,6 @@ public class Runner {
 		ClusterContext ctx = Instance.createContext();
 		SoftwareRepository softwareRepository = SoftwareRepositories.createSWRepository(ctx);
 		softwareRepository.init();
-
 		softwareRepository.start();
 		return softwareRepository;
 	}
@@ -306,7 +314,8 @@ public class Runner {
 			log.info("Configuration loaded from {}", configFile);
 			return properties;
 		} catch (IOException e) {
-			log.error("Cannot load properties from {}. Aborting.", e);
+			String msg = String.format("Cannot load properties from %s. Aborting.", configFile);
+			log.error(msg, e);
 			EX_USAGE.sysExit();
 		}
 

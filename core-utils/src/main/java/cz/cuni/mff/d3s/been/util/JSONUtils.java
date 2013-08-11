@@ -4,8 +4,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectReader;
+import org.codehaus.jackson.map.SerializationConfig;
+import org.codehaus.jackson.map.introspect.VisibilityChecker;
 import org.codehaus.jackson.type.TypeReference;
 
 public class JSONUtils {
@@ -22,7 +25,9 @@ public class JSONUtils {
 	 * @return A new instance of JSON utilities
 	 */
 	public static JSONUtils newInstance() {
-		final ObjectMapper om = new ObjectMapper();
+		ObjectMapper om = new ObjectMapper();
+		VisibilityChecker.Std checker = VisibilityChecker.Std.defaultInstance().withIsGetterVisibility(JsonAutoDetect.Visibility.NONE);
+		om.setSerializationConfig(om.getSerializationConfig().withVisibilityChecker(checker));
 		return new JSONUtils(om);
 	}
 
