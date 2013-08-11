@@ -585,6 +585,19 @@ public class BeenApiImpl implements BeenApi {
         }
     }
 
+	@Override
+	public void disallowResubmitsForBenchmark(String benchmarkId) throws BeenApiException {
+		final String errorMsg = String.format("Failed to disallow resubmits for benchmark '%s'", benchmarkId);
+
+		checkIsActive(errorMsg);
+
+		try {
+			clusterContext.getBenchmarks().disallowResubmits(benchmarkId);
+		} catch (Exception e) {
+			throw createBeenApiException(errorMsg, e);
+		}
+	}
+
     @Override
     public void removeTaskEntry(final String taskId) throws BeenApiException {
         final String errorMsg = String.format("Failed to remove task entry '%s'", taskId);

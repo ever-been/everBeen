@@ -11,9 +11,7 @@ import cz.cuni.mff.d3s.been.mq.IMessageSender;
 
 /**
  * 
- * Listens for client connection events. Takes appropriate actions.
- * 
- * 
+ * Listens for client connection events.
  * 
  * @author Martin Sixta
  */
@@ -30,12 +28,12 @@ final class ClientListener extends TaskManagerService implements com.hazelcast.c
 
 	@Override
 	public void clientConnected(Client client) {
-		log.info("Client connected: " + client);
+		log.debug("Client connected: " + client);
 	}
 
 	@Override
 	public void clientDisconnected(Client client) {
-		log.info("Client disconnected: " + client);
+		log.debug("Client disconnected: " + client);
 	}
 
 	@Override

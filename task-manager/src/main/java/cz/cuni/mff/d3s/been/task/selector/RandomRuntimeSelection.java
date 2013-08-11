@@ -15,7 +15,6 @@ import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskExclusivity;
-import cz.cuni.mff.d3s.been.task.RuntimesComparable;
 
 /**
  * @author Martin Sixta

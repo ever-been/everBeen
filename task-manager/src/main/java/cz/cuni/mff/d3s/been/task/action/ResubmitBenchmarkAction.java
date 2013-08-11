@@ -2,9 +2,15 @@ package cz.cuni.mff.d3s.been.task.action;
 
 import com.hazelcast.core.IMap;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
+import cz.cuni.mff.d3s.been.core.PropertyReader;
 import cz.cuni.mff.d3s.been.core.benchmark.BenchmarkEntry;
+import cz.cuni.mff.d3s.been.core.benchmark.ResubmitHistoryItem;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
+
+import java.util.List;
+
+import static cz.cuni.mff.d3s.been.task.action.ResubmitActionConfiguration.*;
 
 /**
  * @author Kuba Brecka
@@ -30,6 +36,14 @@ public class ResubmitBenchmarkAction implements TaskAction {
 			TaskEntry generatorTask = ctx.getTasks().getTask(generatorId);
 
 			if (! benchmarkEntry.isAllowResubmit()) {
+				return;
+			}
+
+			List<ResubmitHistoryItem> resubmits = benchmarkEntry.getResubmitHistory().getResubmitHistoryItem();
+
+			PropertyReader propertyReader = PropertyReader.on(ctx.getProperties());
+			int maximumResubmits = propertyReader.getInteger(MAXIMUM_ALLOWED_RESUBMITS, DEFAULT_MAXIMUM_ALLOWED_RESUBMITS);
+			if (resubmits.size() >= maximumResubmits) {
 				return;
 			}
 
