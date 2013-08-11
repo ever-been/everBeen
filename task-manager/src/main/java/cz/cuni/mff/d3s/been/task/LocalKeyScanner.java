@@ -1,5 +1,7 @@
 package cz.cuni.mff.d3s.been.task;
 
+import static cz.cuni.mff.d3s.been.task.TaskManagerConfiguration.*;
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -11,6 +13,7 @@ import com.hazelcast.core.IMap;
 
 import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
+import cz.cuni.mff.d3s.been.core.PropertyReader;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
 import cz.cuni.mff.d3s.been.mq.IMessageSender;
@@ -47,6 +50,8 @@ final class LocalKeyScanner extends TaskManagerService {
 	/** This node's ID */
 	private final String nodeId;
 
+	private final PropertyReader propertyReader;
+
 	/**
 	 * Creates the LocalKeyScanner {@link TaskManagerService}.
 	 * 
@@ -57,6 +62,8 @@ final class LocalKeyScanner extends TaskManagerService {
 		this.clusterCtx = clusterCtx;
 		this.nodeId = clusterCtx.getId();
 		this.runnable = new LocalKeyScannerRunnable();
+
+		this.propertyReader = PropertyReader.on(clusterCtx.getProperties());
 	}
 
 	/** Runnable to schedule with the executor */
@@ -129,7 +136,10 @@ final class LocalKeyScanner extends TaskManagerService {
 	public void start() throws ServiceException {
 		sender = createSender();
 		// TODO configurable period
-		scheduler.scheduleAtFixedRate(runnable, 30, 30, TimeUnit.SECONDS);
+
+		int delay = propertyReader.getInteger(SCANNER_INITIAL_DELAY, DEFAULT_SCANNER_INITIAL_DELAY);
+		int period = propertyReader.getInteger(SCANNER_PERIOD, DEFAULT_SCANNER_PERIOD);
+		scheduler.scheduleAtFixedRate(runnable, delay, period, TimeUnit.SECONDS);
 
 	}
 

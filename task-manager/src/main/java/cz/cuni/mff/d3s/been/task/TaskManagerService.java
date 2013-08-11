@@ -1,5 +1,7 @@
 package cz.cuni.mff.d3s.been.task;
 
+import static cz.cuni.mff.d3s.been.task.TaskManagerNames.ACTION_QUEUE_NAME;
+
 import cz.cuni.mff.d3s.been.cluster.Service;
 import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.mq.IMessageSender;
@@ -17,21 +19,19 @@ import cz.cuni.mff.d3s.been.task.msg.TaskMessage;
  */
 abstract class TaskManagerService implements Service {
 
-	private String MQ_NAME = TaskManagerNames.ACTION_QUEUE_NAME;
-
 	protected final MessageQueues mqs = MessageQueues.getInstance();
 
 	/**
 	 * Returns a new sender to the Task Manager's queue.
 	 * 
-	 * @return
+	 * @return Sender bind to the Task Manager's action queue
 	 * @throws ServiceException
 	 */
 	final IMessageSender<TaskMessage> createSender() throws ServiceException {
 		try {
-			return mqs.createSender(MQ_NAME);
+			return mqs.createSender(ACTION_QUEUE_NAME);
 		} catch (MessagingException e) {
-			String msg = String.format("Cannot create sender to %s", MQ_NAME);
+			String msg = String.format("Cannot create sender to %s", ACTION_QUEUE_NAME);
 			throw new ServiceException(msg, e);
 		}
 	}

@@ -1,4 +1,4 @@
-package cz.cuni.mff.d3s.been.task;
+package cz.cuni.mff.d3s.been.task.selector;
 
 import java.util.Comparator;
 
@@ -12,7 +12,7 @@ import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
  * 
  * @author Martin Sixta
  */
-public class RuntimesComparable implements Comparator<RuntimeInfo> {
+final class RuntimesComparable implements Comparator<RuntimeInfo> {
 	@Override
 	public int compare(RuntimeInfo o1, RuntimeInfo o2) {
 		int tasks1 = o1.getTaskCount();

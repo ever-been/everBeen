@@ -3,7 +3,6 @@ package cz.cuni.mff.d3s.been.task.action;
 import static cz.cuni.mff.d3s.been.core.task.TaskState.SCHEDULED;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.slf4j.Logger;
@@ -13,7 +12,6 @@ import com.hazelcast.core.IMap;
 
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.cluster.context.Tasks;
-import cz.cuni.mff.d3s.been.core.PropertyReader;
 import cz.cuni.mff.d3s.been.core.protocol.messages.RunTaskMessage;
 import cz.cuni.mff.d3s.been.core.task.TaskEntries;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
@@ -33,11 +31,8 @@ import cz.cuni.mff.d3s.been.task.selector.RuntimeSelectors;
  */
 public final class ScheduleTaskAction implements TaskAction {
 
-	/** name of the lock timeout property */
-	public static final String TM_LOCK_TIMEOUT = "been.schedule.lock.timeout";
-
 	/** default lock timeout value */
-	private static final int DEFAULT_LOCK_TIMEOUT = 60;
+	private static final int LOCK_TIMEOUT = 60;
 
 	/** logging */
 	private static Logger log = LoggerFactory.getLogger(ScheduleTaskAction.class);
@@ -85,7 +80,7 @@ public final class ScheduleTaskAction implements TaskAction {
 			String receiverId = RuntimeSelectors.fromEntry(entry, ctx).select();
 
 			// 2) Lock the entry
-			TaskEntry entryCopy = map.tryLockAndGet(id, getLockTimeout(), SECONDS);
+			TaskEntry entryCopy = map.tryLockAndGet(id, LOCK_TIMEOUT, SECONDS);
 
 			// check that we are processing unchanged entry
 			if (!areEqual(entry, entryCopy)) {
@@ -104,7 +99,7 @@ public final class ScheduleTaskAction implements TaskAction {
 			entry.setRuntimeId(receiverId);
 
 			// 4) Update entry
-			tasks.putTask(entry, 60, SECONDS);
+			tasks.putTask(entry);
 
 			map.unlock(id);
 
@@ -119,8 +114,13 @@ public final class ScheduleTaskAction implements TaskAction {
 
 			stashTask("No suitable host found");
 		} catch (TimeoutException e) {
-			log.warn("Could not lock task {} in {}. Will try later if needed.", id, getLockTimeout());
+			log.warn("Could not lock task {} in {}. Will try later if needed.", id, LOCK_TIMEOUT);
 			// will get to it later
+		} finally {
+			if (map.isLocked(id)) {
+				map.unlock(id);
+			}
+
 		}
 
 	}
@@ -142,7 +142,7 @@ public final class ScheduleTaskAction implements TaskAction {
 
 			if (entry.getState() != TaskState.WAITING) {
 				TaskEntries.setState(entry, TaskState.WAITING, msg);
-				tasks.putTask(entry, 300, TimeUnit.SECONDS);
+				tasks.putTask(entry);
 			}
 
 		} finally {
@@ -172,9 +172,5 @@ public final class ScheduleTaskAction implements TaskAction {
 	 */
 	private boolean areEqual(TaskEntry entry1, TaskEntry entry2) {
 		return entry1.equals(entry2);
-	}
-
-	private int getLockTimeout() {
-		return PropertyReader.system().getInteger(TM_LOCK_TIMEOUT, DEFAULT_LOCK_TIMEOUT);
 	}
 }
