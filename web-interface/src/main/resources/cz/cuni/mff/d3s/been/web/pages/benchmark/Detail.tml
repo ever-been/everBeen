@@ -67,7 +67,13 @@
                 <dt>Generated:</dt>
                 <dd>${benchmark.generatedContextCount}</dd>
                 <dt>Allows resubmits:</dt>
-                <dd>${benchmark.allowResubmit}</dd>
+                <dd>
+	                ${benchmark.allowResubmit}
+	                <t:if test="benchmark.allowResubmit">
+	                    &nbsp;<a href="/benchmark/disallowresubmits/${benchmark.id}" class="btn btn-mini">disallow</a>
+	                </t:if>
+                </dd>
+
                 <dt>Resubmits:</dt>
                 <dd>
                     <t:loop source="benchmark.resubmitHistory.resubmitHistoryItem" value="resubmit">

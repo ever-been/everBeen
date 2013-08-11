@@ -137,7 +137,9 @@ public interface BeenApi {
 
     boolean isSwRepositoryOnline() throws BeenApiException;
 
-    interface LogListener {
+	public void disallowResubmitsForBenchmark(String benchmarkId) throws BeenApiException;
+
+	interface LogListener {
 		public void logAdded(String jsonLog);
 	}
 }

@@ -335,4 +335,16 @@ public class Benchmarks {
 		}
 
 	}
+
+	public void disallowResubmits(String benchmarkId) {
+		IMap<String, BenchmarkEntry> benchmarksMap = getBenchmarksMap();
+		benchmarksMap.lock(benchmarkId);
+		try {
+			BenchmarkEntry benchmarkEntry = get(benchmarkId);
+			benchmarkEntry.setAllowResubmit(false);
+			put(benchmarkEntry);
+		} finally {
+			benchmarksMap.unlock(benchmarkId);
+		}
+	}
 }
