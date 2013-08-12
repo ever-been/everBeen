@@ -19,12 +19,14 @@ final class LocalContextListener extends TaskManagerService implements EntryList
 	private final TaskContexts contexts;
 	private final IMap<String, TaskContextEntry> contextsMap;
 	private final ClusterContext clusterCtx;
+	private final PersistentContextStateRegistrar persistentStateRegistrar;
 	private IMessageSender<TaskMessage> sender;
 
 	LocalContextListener(ClusterContext clusterCtx) {
 		this.clusterCtx = clusterCtx;
 		this.contexts = clusterCtx.getTaskContexts();
 		this.contextsMap = contexts.getTaskContextsMap();
+		this.persistentStateRegistrar = new PersistentContextStateRegistrar(clusterCtx);
 	}
 
 	@Override
@@ -41,16 +43,18 @@ final class LocalContextListener extends TaskManagerService implements EntryList
 
 	@Override
 	public synchronized void entryAdded(EntryEvent<String, TaskContextEntry> event) {
-		TaskContextEntry entry = event.getValue();
+		final TaskContextEntry entry = event.getValue();
 		contexts.runContext(entry.getId());
-
 	}
 
 	@Override
 	public void entryRemoved(EntryEvent<String, TaskContextEntry> event) {}
 
 	@Override
-	public void entryUpdated(EntryEvent<String, TaskContextEntry> event) {}
+	public void entryUpdated(EntryEvent<String, TaskContextEntry> event) {
+		final TaskContextEntry entry = event.getValue();
+		persistentStateRegistrar.processContextStateChange(entry.getId(), entry.getBenchmarkId(), entry.getContextState());
+	}
 
 	@Override
 	public void entryEvicted(EntryEvent<String, TaskContextEntry> event) {}

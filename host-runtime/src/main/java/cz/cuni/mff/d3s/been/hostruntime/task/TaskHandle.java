@@ -1,9 +1,5 @@
 package cz.cuni.mff.d3s.been.hostruntime.task;
 
-import static cz.cuni.mff.d3s.been.core.task.TaskState.ABORTED;
-import static cz.cuni.mff.d3s.been.core.task.TaskState.ACCEPTED;
-import static cz.cuni.mff.d3s.been.core.task.TaskState.FINISHED;
-
 import java.util.Collection;
 import java.util.List;
 
@@ -20,6 +16,8 @@ import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.cluster.context.Tasks;
 import cz.cuni.mff.d3s.been.core.task.*;
 import cz.cuni.mff.d3s.been.debugassistant.DebugAssistant;
+
+import static cz.cuni.mff.d3s.been.core.task.TaskState.*;
 
 /**
  * Utility class which encapsulate manipulation of {@link TaskEntry} of a given
@@ -212,7 +210,7 @@ public class TaskHandle {
 			map.unlock(id);
 		}
 
-		if (FINISHED.equals(state) || ABORTED.equals(state)) {
+		if (FINISHED.equals(state) || ABORTED.equals(state) || RUNNING.equals(state)) {
 			try {
 				PersistentTaskState entity = new PersistentTaskState();
 				entity.setTaskState(state);

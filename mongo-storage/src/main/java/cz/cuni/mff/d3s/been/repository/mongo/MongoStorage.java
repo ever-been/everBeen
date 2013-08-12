@@ -179,6 +179,12 @@ public final class MongoStorage implements Storage {
 		}
 	}
 
+	@Override
+	public boolean isIdle() {
+		// FIXME return heuristics about current DB work load
+		return true;
+	}
+
 	private final DBCollection mapEntity(EntityID eid) throws DAOException {
 		return db.getCollection(eid.getKind()).getCollection(eid.getGroup());
 	}

@@ -32,7 +32,7 @@ public class QueryBuilder {
 	 *
 	 * @throws NullPointerException When any of the two parameters are null
 	 */
-	public QueryBuilder with(String attribute, String value) {
+	public QueryBuilder with(String attribute, Object value) {
 		if (attribute == null || value == null) {
 			throw new NullPointerException(String.format("Invalid attribute specification '(key, value) == (%s, %s)': both key and value must be non-null", attribute, value));
 		}
@@ -97,13 +97,8 @@ public class QueryBuilder {
 	 * Build a query intended for data removal.
 	 *
 	 * @return A delete query with this builder's current setup
-	 *
-	 * @throws IllegalStateException When the entity id is only filled partially
 	 */
 	public Query delete() throws IllegalStateException {
-		if (entityID != null && (entityID.getKind() == null || entityID.getGroup() == null)) {
-			throw new IllegalStateException("Entity ID is filled partially");
-		}
 		return new DeleteQuery(entityID, selectors);
 	}
 }
