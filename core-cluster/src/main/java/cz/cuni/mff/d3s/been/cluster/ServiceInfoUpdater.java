@@ -1,4 +1,4 @@
-package cz.cuni.mff.d3s.been.swrepository;
+package cz.cuni.mff.d3s.been.cluster;
 
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.service.ServiceInfo;
