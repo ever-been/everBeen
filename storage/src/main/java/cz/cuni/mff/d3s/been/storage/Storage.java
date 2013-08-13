@@ -49,9 +49,16 @@ public interface Storage extends Service {
 	QueryAnswer query(Query query);
 
 	/**
-	 * Check the database for connectivity. This operation may be pretty expensive, so use it wisely.
+	 * Check the storage for connectivity. This operation may be pretty expensive, so use it wisely.
 	 *
 	 * @return <code>true</code> if this {@link Storage} is connected to its underlying persistence layer, <code>false</code> if not
 	 */
 	boolean isConnected();
+
+	/**
+	 * Check the storage for idleness/business.
+	 *
+	 * @return
+	 */
+	boolean isIdle();
 }

@@ -246,4 +246,15 @@ public final class MongoStorageTest extends Assert {
 		jsonUtils.deserialize(answer.getData(), ExtendedDummyEntity.class);
 	}
 
+	@Test
+	public void testInequalityQuery() throws JsonException, DAOException {
+		storage.store(dummyId, jsonUtils.serialize(new DummyEntity(4)));
+		storage.store(dummyId, jsonUtils.serialize(new DummyEntity(5)));
+		final QueryAnswer answer = storage.query(new QueryBuilder().on(dummyId).with("someNumber").differentFrom(5).fetch());
+		assertEquals(QueryStatus.OK, answer.getStatus());
+		assertTrue(answer.isCarryingData());
+		assertEquals(1, answer.getData().size());
+		assertEquals(Integer.valueOf(4), jsonUtils.deserialize(answer.getData().iterator().next(), DummyEntity.class).getSomeNumber());
+	}
+
 }

@@ -53,6 +53,11 @@ public final class QueryTranslator {
 							selectorName,
 							skelf.getValues().get(HARD_VALUE.getKey()));
 					break;
+				case NOT_EQUAL:
+					interpreter.inequalitySelector(
+							selectorName,
+							skelf.getValues().get(HARD_VALUE.getKey()));
+					break;
 				default:
 					throw new UnsupportedQueryException(query, String.format("Filter type '%s' on attribute '%s' not supported.", skelf.getType().name(), selectorName));
 			}

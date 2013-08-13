@@ -15,7 +15,7 @@ public class AttributeFilterBuilder {
 	}
 
 	/**
-	 * Put an equality selector on the attribute. Only entries whose attribute value is equal to specified will be selected.
+	 * Put an equality selector on the attribute. Only entries whose attribute value is equal to the specified value will be selected.
 	 *
 	 * @param value Value the attribute must have
 	 *
@@ -23,6 +23,18 @@ public class AttributeFilterBuilder {
 	 */
 	public QueryBuilder equal(Object value) {
 		queryBuilder.selectors.put(attributeName, createEqFilter(value));
+		return queryBuilder;
+	}
+
+	/**
+	 * Put a non-equality selector on the attribute. Only entries whose attribute value is different from the specified value will be selected.
+	 *
+	 * @param value Value the attribute must not have
+	 *
+	 * @return The query builder, with added selector
+	 */
+	public QueryBuilder differentFrom(Object value) {
+		queryBuilder.selectors.put(attributeName, createNotEqFilter(value));
 		return queryBuilder;
 	}
 
@@ -77,6 +89,10 @@ public class AttributeFilterBuilder {
 
 	private SkeletalAttributeFilter createEqFilter(Object value) {
 		return new EqAttributeFilter(value);
+	}
+
+	private SkeletalAttributeFilter createNotEqFilter(Object value) {
+		return new NotEqAttributeFilter(value);
 	}
 
 	private SkeletalAttributeFilter createPatternFilter(String pattern) {

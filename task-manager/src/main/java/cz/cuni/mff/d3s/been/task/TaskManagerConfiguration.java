@@ -26,7 +26,7 @@ final class TaskManagerConfiguration extends BeenServiceConfiguration {
 	/**
 	 * The initial delay in seconds before running the {@link LocalKeyScanner}
 	 */
-	public static String SCANNER_INITIAL_DELAY = "been.tm.scanner.period";
+	public static String SCANNER_INITIAL_DELAY = "been.tm.scanner.delay";
 
 	/**
 	 * The default value for the

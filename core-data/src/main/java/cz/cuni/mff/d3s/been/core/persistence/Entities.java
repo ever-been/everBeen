@@ -14,6 +14,8 @@ public enum Entities {
 
 	OUTCOME_TASK("outcome", "task"),
 
+	OUTCOME_CONTEXT("outcome", "context"),
+
 	LOG_MONITORING("log", "monitoring"),
 	;
 

@@ -5,6 +5,7 @@ import cz.cuni.mff.d3s.been.cluster.Names;
 import cz.cuni.mff.d3s.been.cluster.Reaper;
 import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
+import cz.cuni.mff.d3s.been.repository.janitor.Janitor;
 import cz.cuni.mff.d3s.been.storage.Storage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,7 @@ public final class Repository implements IClusterService {
 	private final Storage storage;
 	private PersistentQueueDrain entityDrain;
 	private QueryQueueDrain queryDrain;
+	private Janitor janitor;
 
 	private Repository(ClusterContext ctx, Storage storage) {
 		this.ctx = ctx;
@@ -44,17 +46,29 @@ public final class Repository implements IClusterService {
 		if (storage == null) {
 			throw new ServiceException("Cannot start a repository over a null Storage");
 		}
+
+		// create sub-services
 		entityDrain = PersistentQueueDrain.create(ctx, Names.PERSISTENCE_QUEUE_NAME, storage);
 		queryDrain = QueryQueueDrain.create(ctx, storage);
+		janitor = Janitor.create(ctx, storage);
+
+		// start sub-services
 		storage.start();
 		entityDrain.start();
 		queryDrain.start();
+		janitor.start();
 		log.info("Repository started.");
 	}
 
 	@Override
 	public void stop() {
 		log.info("Stopping Repository...");
+		janitor.interrupt();
+		try {
+			janitor.join();
+		} catch (InterruptedException e) {
+			log.warn("Interrupted when waiting for janitor termination. Exiting dirty");
+		}
 		entityDrain.stop();
 		queryDrain.stop();
 		storage.stop();

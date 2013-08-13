@@ -15,6 +15,7 @@ import java.util.Map;
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
 @JsonSubTypes({
 		@JsonSubTypes.Type(value = EqAttributeFilter.class),
+		@JsonSubTypes.Type(value = NotEqAttributeFilter.class),
 		@JsonSubTypes.Type(value = IntervalAttributeFilter.class),
 		@JsonSubTypes.Type(value = PatternAttributeFilter.class),
 })
