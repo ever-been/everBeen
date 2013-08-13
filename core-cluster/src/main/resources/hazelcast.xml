@@ -201,8 +201,6 @@
 
 		<!-- disable local object caching to avoid synchronization hell -->
 		<cache-value>false</cache-value>
-
-
 	</map>
 
 	<map name="BEEN_HOSTRUNTIMES">
@@ -235,7 +233,7 @@
                 -->
         <async-backup-count>1</async-backup-count>
         <!--
-            Failure detection of Host Runtimes
+            Command timeout
         -->
         <time-to-live-seconds>300</time-to-live-seconds>
 

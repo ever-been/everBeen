@@ -2,6 +2,7 @@ package cz.cuni.mff.d3s.been.task;
 
 import static cz.cuni.mff.d3s.been.task.TaskManagerNames.ACTION_QUEUE_NAME;
 
+import cz.cuni.mff.d3s.been.cluster.NodeType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +27,7 @@ final class ClusterManager implements IClusterService {
 	private final MembershipListener membershipListener;
 	private final ClientListener clientListener;
 	private final ClusterContext clusterCtx;
-	LocalKeyScanner keyScanner;
+	LocalKeyScanner keyScanner;    // used only in DATA members
 
 	private final MessageQueues messageQueues = MessageQueues.getInstance();
 
@@ -46,7 +47,6 @@ final class ClusterManager implements IClusterService {
 	@Override
 	public void start() throws ServiceException {
 		log.info("Starting Task Manager...");
-		keyScanner = new LocalKeyScanner(clusterCtx);
 		try {
 			messageQueues.createInprocQueue(ACTION_QUEUE_NAME);
 		} catch (MessagingException e) {
@@ -61,14 +61,21 @@ final class ClusterManager implements IClusterService {
 		localContextListener.start();
 		membershipListener.start();
 		clientListener.start();
-		keyScanner.start();
+        if (clusterCtx.getInstanceType() == NodeType.DATA) {
+            // keyScanner on Lite member is nonsense .. lite member hasno data
+            // keyScanner on Native instance is invalid .. native instance is not member
+            keyScanner = new LocalKeyScanner(clusterCtx);
+            keyScanner.start();
+        }
 		log.info("Task Manager started.");
 	}
 
 	@Override
 	public void stop() {
 		log.info("Stopping Task Manager...");
-		keyScanner.stop();
+        if (keyScanner != null) {
+		    keyScanner.stop();
+        }
 		clientListener.stop();
 		localRuntimeListener.stop();
 		localContextListener.stop();

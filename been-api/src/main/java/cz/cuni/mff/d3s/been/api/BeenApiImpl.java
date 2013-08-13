@@ -19,7 +19,7 @@ import cz.cuni.mff.d3s.been.core.protocol.command.CommandEntry;
 import cz.cuni.mff.d3s.been.core.protocol.command.CommandEntryState;
 import cz.cuni.mff.d3s.been.core.protocol.messages.DeleteTaskWrkDirMessage;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
-import cz.cuni.mff.d3s.been.core.sri.SWRepositoryInfo;
+import cz.cuni.mff.d3s.been.core.service.ServiceInfo;
 import cz.cuni.mff.d3s.been.core.task.*;
 import cz.cuni.mff.d3s.been.datastore.SoftwareStore;
 import cz.cuni.mff.d3s.been.datastore.SoftwareStoreBuilderFactory;
@@ -33,6 +33,7 @@ import cz.cuni.mff.d3s.been.persistence.task.PersistentDescriptors;
 import cz.cuni.mff.d3s.been.persistence.task.PersistentTaskState;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
+import cz.cuni.mff.d3s.been.swrepository.SWRepositoryServiceInfoConstants;
 import cz.cuni.mff.d3s.been.util.JSONUtils;
 import cz.cuni.mff.d3s.been.util.JsonException;
 import org.slf4j.Logger;
@@ -70,6 +71,7 @@ public class BeenApiImpl implements BeenApi {
 
     @Override
     public void shutdown() {
+        clusterContext.stop();
         Instance.shutdown();
     }
 
@@ -100,13 +102,13 @@ public class BeenApiImpl implements BeenApi {
     }
 
     @Override
-    public Map<String, String> getClusterServices() throws BeenApiException {
+    public List<ServiceInfo> getClusterServices() throws BeenApiException {
         final String errorMsg = "Failed to list available cluster services";
 
         checkIsActive(errorMsg);
 
         try {
-            return clusterContext.getServices().getServicesInfo();
+            return new ArrayList<>(clusterContext.getServices().getServicesMap().values());
         } catch (Exception e) {
             throw createBeenApiException(errorMsg, e);
         }
@@ -1147,7 +1149,7 @@ public class BeenApiImpl implements BeenApi {
     }
 
     private SwRepoClient getSwRepoClient(final String errorMsg) throws BeenApiException {
-        final SWRepositoryInfo swInfo;
+        final ServiceInfo swInfo;
         try {
             swInfo = clusterContext.getServices().getSWRepositoryInfo();
         } catch (Exception e) {
@@ -1161,7 +1163,9 @@ public class BeenApiImpl implements BeenApi {
         try {
             final SoftwareStore softwareCache = SoftwareStoreBuilderFactory.getSoftwareStoreBuilder().buildCache();
             final SwRepoClientFactory swRepoClientFactory = new SwRepoClientFactory(softwareCache);
-            return swRepoClientFactory.getClient(swInfo.getHost(), swInfo.getHttpServerPort());
+            final String hostname = (String) swInfo.getParam(SWRepositoryServiceInfoConstants.PARAM_HOST_NAME);
+            final int port = (int) swInfo.getParam(SWRepositoryServiceInfoConstants.PARAM_PORT);
+            return swRepoClientFactory.getClient(hostname, port);
         } catch (Exception e) {
             throw createBeenApiException(errorMsg, e);
         }

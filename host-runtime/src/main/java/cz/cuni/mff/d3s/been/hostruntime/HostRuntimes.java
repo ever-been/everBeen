@@ -25,24 +25,21 @@ public class HostRuntimes {
 	/**
 	 * This method returns singleton instance of {@link HostRuntime}. If runtime
 	 * doesn't exists, this method creates one.
-	 * 
-	 * @param hazelcastInstance
-	 *          Hazelcast instance to build on
+	 *
 	 * @param properties
 	 *          BEEN properties
 	 * 
 	 * @return A host runtime instance
 	 */
-	public static synchronized HostRuntime getRuntime(HazelcastInstance hazelcastInstance, Properties properties) {
+	public static synchronized HostRuntime getRuntime(ClusterContext clusterContext, Properties properties) {
 		if (hostRuntime == null) {
-			ClusterContext clusterContext = Instance.createContext();
 			SwRepoClientFactory swRepoClientFactory = new SwRepoClientFactory(SoftwareStoreBuilderFactory.getSoftwareStoreBuilder().withProperties(
 					properties).buildCache());
 			WorkingDirectoryResolver workingDirectoryResolver = new WorkingDirectoryResolver(properties);
 			File workingDirectory = workingDirectoryResolver.getHostRuntimeWorkingDirectory();
-			File tasksWorkingDIrectory = workingDirectoryResolver.getTasksWorkingDirectory();
+			File tasksWorkingDirectory = workingDirectoryResolver.getTasksWorkingDirectory();
 
-			RuntimeInfo info = newRuntimeInfo(clusterContext, workingDirectory, tasksWorkingDIrectory);
+			RuntimeInfo info = newRuntimeInfo(clusterContext, workingDirectory, tasksWorkingDirectory);
 			hostRuntime = new HostRuntime(clusterContext, swRepoClientFactory, info);
 		}
 		return hostRuntime;

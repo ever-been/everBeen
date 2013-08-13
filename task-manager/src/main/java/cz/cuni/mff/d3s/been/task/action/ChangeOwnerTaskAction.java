@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.task.action;
 
+import cz.cuni.mff.d3s.been.cluster.NodeType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +26,9 @@ public class ChangeOwnerTaskAction implements TaskAction {
 	private final TaskEntry entry;
 
 	public ChangeOwnerTaskAction(ClusterContext ctx, TaskEntry entry) {
+        if (ctx.getInstanceType() != NodeType.DATA) {
+            throw new AssertionError(String.format("%s must not be used on node of type %s", getClass().getName(), ctx.getInstanceType()));
+        }
 		this.ctx = ctx;
 		this.entry = entry;
 	}
@@ -37,7 +41,8 @@ public class ChangeOwnerTaskAction implements TaskAction {
 	@Override
 	public void execute() throws TaskActionException {
 		final Tasks tasks = ctx.getTasks();
-		final String nodeId = ctx.getId();
+        // we are sure that the node is of type DATA (see constructor assertion)
+		final String nodeId = ctx.getCluster().getLocalMember().getUuid();
 
 		Transaction txn = ctx.getTransaction();
 		try {

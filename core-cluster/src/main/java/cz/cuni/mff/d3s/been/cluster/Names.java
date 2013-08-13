@@ -77,11 +77,6 @@ public class Names {
 	public static final String PERSISTENCE_QUERY_QUEUE_NAME = "BEEN_PERSISTENCE_QUERIES";
 
 	// MAP KEYS
-	/**
-	 * Under this key should be stored information about Software Repository in
-	 * the map with name {@link Names#SERVICES_MAP_NAME}
-	 */
-	public static final String SWREPOSITORY_SERVICES_MAP_KEY = "SWREPOSITORY";
 
 	/**
 	 * All benchmarks run in a special task context with this ID.

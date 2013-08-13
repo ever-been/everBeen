@@ -5,6 +5,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 import java.util.concurrent.TimeoutException;
 
+import cz.cuni.mff.d3s.been.cluster.NodeType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,6 +59,9 @@ public final class ScheduleTaskAction implements TaskAction {
 	 *          task to schedule
 	 */
 	public ScheduleTaskAction(ClusterContext ctx, TaskEntry entry) {
+        if (ctx.getInstanceType() != NodeType.DATA) {
+            throw new AssertionError(String.format("%s must not be used on node of type %s", getClass().getName(), ctx.getInstanceType()));
+        }
 		this.ctx = ctx;
 		this.entry = entry;
 		this.tasks = ctx.getTasks();
@@ -68,7 +72,9 @@ public final class ScheduleTaskAction implements TaskAction {
 	public void execute() {
 
 		final String id = entry.getId();
-		final String nodeId = ctx.getId(); // cluster id of this member
+
+        // we are sure that the node is of type DATA (see constructor assertion)
+		final String nodeId = ctx.getCluster().getLocalMember().getUuid(); // cluster id of this member
 
 		log.debug("Received new task to schedule {}", id);
 

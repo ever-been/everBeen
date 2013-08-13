@@ -61,11 +61,17 @@
 			<version>${project.version}</version>
 		</dependency>
 
-		<dependency>
-			<groupId>cz.cuni.mff.d3s.been</groupId>
-			<artifactId>persistence</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+        <dependency>
+            <groupId>cz.cuni.mff.d3s.been</groupId>
+            <artifactId>persistence</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cz.cuni.mff.d3s.been</groupId>
+            <artifactId>software-repository</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
 	</dependencies>
 

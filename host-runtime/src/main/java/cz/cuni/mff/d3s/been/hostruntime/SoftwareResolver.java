@@ -3,14 +3,14 @@ package cz.cuni.mff.d3s.been.hostruntime;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import cz.cuni.mff.d3s.been.swrepoclient.SwRepositoryClientException;
+import cz.cuni.mff.d3s.been.core.service.ServiceInfo;
+import cz.cuni.mff.d3s.been.swrepository.SWRepositoryServiceInfoConstants;
 import org.apache.maven.artifact.Artifact;
 
 import cz.cuni.mff.d3s.been.bpk.ArtifactIdentifier;
 import cz.cuni.mff.d3s.been.bpk.Bpk;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.cluster.context.Services;
-import cz.cuni.mff.d3s.been.core.sri.SWRepositoryInfo;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
 
@@ -94,13 +94,13 @@ class SoftwareResolver {
 	 * @throws TaskException when client cannot be obtained
 	 */
 	private SwRepoClient getClient() throws TaskException {
-		SWRepositoryInfo swRepositoryInfo = services.getSWRepositoryInfo();
+		ServiceInfo swRepositoryInfo = services.getSWRepositoryInfo();
 
 		if (swRepositoryInfo == null) {
 			throw new TaskException("No Software Repository found!");
 		}
-		String host = swRepositoryInfo.getHost();
-		int port = swRepositoryInfo.getHttpServerPort();
+		String host = (String) swRepositoryInfo.getParam(SWRepositoryServiceInfoConstants.PARAM_HOST_NAME);
+		int port = (int) swRepositoryInfo.getParam(SWRepositoryServiceInfoConstants.PARAM_PORT);
 
 		SwRepoClient swRepoClient = clientFactory.getClient(host, port);
 		return swRepoClient;

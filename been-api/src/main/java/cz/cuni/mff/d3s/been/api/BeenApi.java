@@ -6,6 +6,7 @@ import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.core.benchmark.BenchmarkEntry;
 import cz.cuni.mff.d3s.been.core.protocol.command.CommandEntry;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
+import cz.cuni.mff.d3s.been.core.service.ServiceInfo;
 import cz.cuni.mff.d3s.been.core.task.*;
 import cz.cuni.mff.d3s.been.debugassistant.DebugListItem;
 import cz.cuni.mff.d3s.been.evaluators.EvaluatorResult;
@@ -17,6 +18,7 @@ import cz.cuni.mff.d3s.been.persistence.QueryAnswer;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,7 +29,7 @@ public interface BeenApi {
 	public void shutdown();
 
 	public Collection<Member> getClusterMembers() throws BeenApiException;
-	public Map<String, String> getClusterServices() throws BeenApiException;
+	public List<ServiceInfo> getClusterServices() throws BeenApiException;
 
 	public Collection<TaskEntry> getTasks() throws BeenApiException;
 	public TaskEntry getTask(String id) throws BeenApiException;

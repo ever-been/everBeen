@@ -6,6 +6,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import cz.cuni.mff.d3s.been.cluster.NodeType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,9 +42,6 @@ final class LocalKeyScanner extends TaskManagerService {
 	/** Task Action Queue */
 	private IMessageSender<TaskMessage> sender;
 
-	/** Executor to periodically schedule the scanner */
-	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-
 	/** The scanner runnable */
 	private final LocalKeyScannerRunnable runnable;
 
@@ -59,10 +57,12 @@ final class LocalKeyScanner extends TaskManagerService {
 	 *          connection to the cluster
 	 */
 	public LocalKeyScanner(ClusterContext clusterCtx) {
+        if (clusterCtx.getInstanceType() != NodeType.DATA) {
+            throw new AssertionError(String.format("Cannot start LocalKeyScanned on node of type %s", clusterCtx.getInstanceType()));
+        }
 		this.clusterCtx = clusterCtx;
-		this.nodeId = clusterCtx.getId();
+		this.nodeId = clusterCtx.getCluster().getLocalMember().getUuid();
 		this.runnable = new LocalKeyScannerRunnable();
-
 		this.propertyReader = PropertyReader.on(clusterCtx.getProperties());
 	}
 
@@ -135,17 +135,14 @@ final class LocalKeyScanner extends TaskManagerService {
 	@Override
 	public void start() throws ServiceException {
 		sender = createSender();
-		// TODO configurable period
-
 		int delay = propertyReader.getInteger(SCANNER_INITIAL_DELAY, DEFAULT_SCANNER_INITIAL_DELAY);
 		int period = propertyReader.getInteger(SCANNER_PERIOD, DEFAULT_SCANNER_PERIOD);
-		scheduler.scheduleAtFixedRate(runnable, delay, period, TimeUnit.SECONDS);
-
+		clusterCtx.schedule(runnable, delay, period, TimeUnit.SECONDS);
 	}
 
 	@Override
 	public void stop() {
-		scheduler.shutdown();
 		sender.close();
 	}
+
 }
