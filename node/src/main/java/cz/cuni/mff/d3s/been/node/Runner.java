@@ -1,12 +1,8 @@
 package cz.cuni.mff.d3s.been.node;
 
 import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.MembershipEvent;
-import com.hazelcast.core.MembershipListener;
-import com.hazelcast.query.SqlPredicate;
 import cz.cuni.mff.d3s.been.cluster.*;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
-import cz.cuni.mff.d3s.been.core.service.ServiceInfo;
 import cz.cuni.mff.d3s.been.hostruntime.HostRuntime;
 import cz.cuni.mff.d3s.been.hostruntime.HostRuntimes;
 import cz.cuni.mff.d3s.been.logging.ServiceLogPersister;
@@ -31,7 +27,6 @@ import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collection;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -190,21 +185,6 @@ public class Runner implements Reapable {
 
         Runtime.getRuntime().addShutdownHook(clusterReaper);
     }
- /*
-    private boolean validateCmdLineArguments() {
-        if (runSWRepository && nodeType == NodeType.NATIVE) {
-            System.out.println("ERROR: Software Repository is not allowed to run on NATIVE node (parameter --node-type)");
-            System.out.println();
-            return false;
-        }
-
-        if (runRepository && nodeType == NodeType.NATIVE) {
-            System.out.println("ERROR: Repository is not allowed to run on NATIVE node (parameter --node-type)");
-            System.out.println();
-            return false;
-        }
-        return true;  //To change body of created methods use File | Settings | File Templates.
-    }                              */
 
     private void registerServiceCleaner() {
         // when member is removed from cluster, remove its services immediately
