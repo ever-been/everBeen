@@ -29,9 +29,7 @@ public class MongoMapStoreFactory implements MapStoreFactory {
 	@Override
 	public MapLoader newMapStore(String mapName, Properties properties) {
 		MongoTemplate mongoTemplate = new MongoTemplate(mongoClient, "BEEN");
-		MongoMapStore mongoMapStore = new MongoMapStore();
-
-		mongoMapStore.setMongoTemplate(mongoTemplate);
+		MongoMapStore mongoMapStore = new MongoMapStore(mongoTemplate);
 
 		return mongoMapStore;
 
