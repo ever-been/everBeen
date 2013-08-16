@@ -2,24 +2,24 @@ package cz.cuni.mff.d3s.been.web.pages.task;
 
 import java.util.*;
 
+import org.apache.tapestry5.annotations.Import;
+import org.apache.tapestry5.annotations.Property;
+import org.got5.tapestry5.jquery.ImportJQueryUI;
+
 import cz.cuni.mff.d3s.been.api.BeenApiException;
 import cz.cuni.mff.d3s.been.core.benchmark.BenchmarkEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
-import cz.cuni.mff.d3s.been.core.task.TaskState;
-import org.apache.tapestry5.annotations.Import;
-import org.apache.tapestry5.annotations.Property;
-
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
+import cz.cuni.mff.d3s.been.core.task.TaskState;
 import cz.cuni.mff.d3s.been.web.components.Layout;
 import cz.cuni.mff.d3s.been.web.pages.Page;
-import org.got5.tapestry5.jquery.ImportJQueryUI;
 
 /**
  * User: donarus Date: 4/22/13 Time: 1:38 PM
  */
 @Page.Navigation(section = Layout.Section.TASK_TREE)
 @ImportJQueryUI
-@Import(library={"context:js/task-list.js"})
+@Import(library = { "context:js/task-list.js" })
 public class Tree extends Page {
 
 	@Property
@@ -31,12 +31,11 @@ public class Tree extends Page {
 	@Property
 	private BenchmarkEntry benchmark;
 
-    public boolean isSwRepositoryOnline() throws BeenApiException {
-        return this.api.getApi().isSwRepositoryOnline();
-    }
+	public boolean isSwRepositoryOnline() throws BeenApiException {
+		return this.api.getApi().isSwRepositoryOnline();
+	}
 
 	public Collection<BenchmarkEntry> getBenchmarks() throws BeenApiException {
-        Collection<String> finishedTasks = this.api.getApi().getTasksWithState(TaskState.FINISHED);
 		return this.api.getApi().getBenchmarks();
 
 	}
@@ -60,14 +59,16 @@ public class Tree extends Page {
 	public String benchmarkName(String benchmarkId) throws BeenApiException {
 		String generatorId = this.api.getApi().getBenchmark(benchmarkId).getGeneratorId();
 		TaskEntry taskEntry = this.api.getApi().getTask(generatorId);
-		if (taskEntry == null) return "";
+		if (taskEntry == null)
+			return "";
 		return taskEntry.getTaskDescriptor().getName();
 	}
 
 	public TaskState benchmarkState(String benchmarkId) throws BeenApiException {
 		String generatorId = this.api.getApi().getBenchmark(benchmarkId).getGeneratorId();
 		TaskEntry taskEntry = this.api.getApi().getTask(generatorId);
-		if (taskEntry == null) return null;
+		if (taskEntry == null)
+			return null;
 		return taskEntry.getState();
 	}
 
