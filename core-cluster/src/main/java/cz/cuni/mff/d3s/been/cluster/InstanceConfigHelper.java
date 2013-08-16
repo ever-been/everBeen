@@ -129,7 +129,59 @@ final class InstanceConfigHelper {
 		// override with user-defined configuration
 		overrideConfiguration(config);
 
+		setMapConfig(config);
+
 		return config;
+	}
+
+	private void setMapConfig(final Config config) {
+		MapConfig tasksMap = new MapConfig(Names.TASKS_MAP_NAME);
+		MapConfig contextsMap = new MapConfig(Names.TASK_CONTEXTS_MAP_NAME);
+		MapConfig benchmarksMap = new MapConfig(Names.BENCHMARKS_MAP_NAME);
+
+		final int backupCount = propReader.getInteger(BACKUP_COUNT, DEFAULT_BACKUP_COUNT);
+
+		// do not locally cache to avoid synchronization hell
+		tasksMap.setCacheValue(false).setBackupCount(backupCount);
+
+		contextsMap.setBackupCount(backupCount);
+
+		benchmarksMap.setBackupCount(backupCount);
+
+		if (propReader.getBoolean(USE_MAP_STORE, DEFAULT_USE_MAP_STORE)) {
+			String factoryClassName = propReader.getString(MAP_STORE_FACTORY, DEFAULT_MAP_STORE_FACTORY);
+			int writeDelay = propReader.getInteger(MAP_STORE_WRITE_DELAY, DEFAULT_MAP_STORE_WRITE_DALAY);
+
+			MapStoreConfig mapStoreConfig = new MapStoreConfig();
+
+			mapStoreConfig.setEnabled(true).setFactoryClassName(factoryClassName).setWriteDelaySeconds(writeDelay);
+
+			String dbname = propReader.getString(MAP_STORE_DB_NAME, DEFAULT_MAP_STORE_DB_NAME);
+			String username = propReader.getString(MAP_STORE_DB_USERNAME, DEFAULT_MAP_STORE_DB_USERNAME);
+			String hostname = propReader.getString(MAP_STORE_DB_HOSTNAME, DEFAULT_MAP_STORE_DB_HOSTNAME);
+			String password = propReader.getString(MAP_STORE_DB_PASSWORD, DEFAULT_MAP_STORE_DB_PASSWORD);
+
+			if (username == null) {
+				username = "";
+			}
+
+			if (password == null) {
+				password = "";
+			}
+
+			mapStoreConfig.setProperty("username", username);
+			mapStoreConfig.setProperty("password", password);
+			mapStoreConfig.setProperty("hostname", hostname);
+			mapStoreConfig.setProperty("dbname", dbname);
+
+			tasksMap.setMapStoreConfig(mapStoreConfig);
+			contextsMap.setMapStoreConfig(mapStoreConfig);
+			benchmarksMap.setMapStoreConfig(mapStoreConfig);
+
+		}
+
+		config.addMapConfig(tasksMap).addMapConfig(contextsMap).addMapConfig(benchmarksMap);
+
 	}
 
 	/**
