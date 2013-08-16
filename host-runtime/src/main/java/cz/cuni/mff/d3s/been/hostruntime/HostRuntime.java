@@ -1,5 +1,7 @@
 package cz.cuni.mff.d3s.been.hostruntime;
 
+import static cz.cuni.mff.d3s.been.cluster.Names.ACTION_QUEUE_NAME;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.FileSystems;
@@ -23,8 +25,6 @@ import cz.cuni.mff.d3s.been.mq.MessageQueues;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
-
-import static cz.cuni.mff.d3s.been.cluster.Names.ACTION_QUEUE_NAME;
 
 /**
  * 
@@ -97,7 +97,7 @@ public final class HostRuntime implements IClusterService {
 	 * @param hostRuntimeInfo
 	 *          object which stores basic information about HostRuntime
 	 */
-	public HostRuntime(ClusterContext clusterContext, SwRepoClientFactory swRepoClientFactory, RuntimeInfo hostRuntimeInfo) {
+	HostRuntime(ClusterContext clusterContext, SwRepoClientFactory swRepoClientFactory, RuntimeInfo hostRuntimeInfo) {
 		this.clusterContext = clusterContext;
 		this.hostRuntimeInfo = hostRuntimeInfo;
 		this.swRepoClientFactory = swRepoClientFactory;
@@ -133,14 +133,14 @@ public final class HostRuntime implements IClusterService {
 		log.info("Host Runtime started.");
 	}
 
-    /**
-     * Get the ID of the Host Runtime instance
-     *
-     * @return The Host Runtime ID
-     */
-    public String getId() {
-        return hostRuntimeInfo.getId();
-    }
+	/**
+	 * Get the ID of the Host Runtime instance
+	 * 
+	 * @return The Host Runtime ID
+	 */
+	public String getId() {
+		return hostRuntimeInfo.getId();
+	}
 
 	private void startMonitoring() {
 		Path monitoringLogPath = FileSystems.getDefault().getPath(hostRuntimeInfo.getWorkingDirectory(), "monitoring.log");
@@ -160,8 +160,8 @@ public final class HostRuntime implements IClusterService {
 		Path workingDir = Paths.get(workingDirName).toAbsolutePath();
 		Files.createDirectories(workingDir);
 
-        Path tasksWorkingDir = Paths.get(tasksWorkingDirName).toAbsolutePath();
-        Files.createDirectories(tasksWorkingDir);
+		Path tasksWorkingDir = Paths.get(tasksWorkingDirName).toAbsolutePath();
+		Files.createDirectories(tasksWorkingDir);
 
 		extractLogger(workingDir);
 	}
@@ -202,13 +202,12 @@ public final class HostRuntime implements IClusterService {
 
 	@Override
 	public Reaper createReaper() {
-		final Reaper reaper = new Reaper() {
+		return new Reaper() {
 			@Override
 			protected void reap() throws InterruptedException {
 				HostRuntime.this.stop();
 			}
 		};
-		return reaper;
 	}
 	/**
 	 * Starts process manger.

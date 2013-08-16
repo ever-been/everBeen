@@ -77,6 +77,8 @@ final class ProcessManagerContext {
 	 */
 	synchronized void tryAcceptTask(TaskHandle taskHandle) throws IllegalStateException {
 
+		//tryCheckLoad();
+
 		TaskExclusivity prevExclusivity = currentExclusivity;
 		String prevExclusiveId = currentExclusiveId;
 
@@ -92,10 +94,34 @@ final class ProcessManagerContext {
 				throw e;
 			}
 		} else {
-			throw new IllegalStateException("EXCLUSIVITY cannot be satisfied");
+			throw new IllegalStateException("Exclusivity cannot be satisfied");
 		}
 
 		updateHostInfo();
+
+	}
+
+	/**
+	 * Checks the current state of the runtime for overload conditions.
+	 * 
+	 * Memory load Maximum tasks
+	 * 
+	 * @throws IllegalStateException
+	 *           if a limit is reached
+	 */
+	private void tryCheckLoad() throws IllegalStateException {
+		if (getTasksCount() >= hostInfo.getTaskCount()) {
+			throw new IllegalStateException("Maximum number of tasks reached");
+		}
+
+		final Runtime runtime = Runtime.getRuntime();
+
+		final long totalMemory = runtime.totalMemory();
+		final long freeMemory = runtime.freeMemory();
+
+		if ((freeMemory / totalMemory) * 100 >= hostInfo.getMemoryThreshold()) {
+			throw new IllegalStateException("Memory threshold reached");
+		}
 
 	}
 

@@ -1,48 +1,49 @@
 package cz.cuni.mff.d3s.been.hostruntime;
 
-import java.io.File;
+import static cz.cuni.mff.d3s.been.hostruntime.HostRuntimeConfiguration.*;
+
 import java.net.InetSocketAddress;
 import java.util.*;
 
-import com.hazelcast.core.HazelcastInstance;
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
-import cz.cuni.mff.d3s.been.cluster.Instance;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
+import cz.cuni.mff.d3s.been.core.PropertyReader;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskExclusivity;
+import cz.cuni.mff.d3s.been.datastore.SoftwareStoreBuilder;
 import cz.cuni.mff.d3s.been.datastore.SoftwareStoreBuilderFactory;
 import cz.cuni.mff.d3s.been.detectors.Detector;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
 
 /**
+ * 
+ * {@link HostRuntime} factory class.
+ * 
  * @author Martin Sixta
  */
 public class HostRuntimes {
 
-	private static HostRuntime hostRuntime = null;
-
 	/**
-	 * This method returns singleton instance of {@link HostRuntime}. If runtime
-	 * doesn't exists, this method creates one.
-	 *
+	 * Creates {@link HostRuntime}.
+	 * 
+	 * @param clusterContext
+	 *          Connection to the cluster
 	 * @param properties
 	 *          BEEN properties
 	 * 
-	 * @return A host runtime instance
+	 * @return A new host runtime instance
 	 */
-	public static synchronized HostRuntime getRuntime(ClusterContext clusterContext, Properties properties) {
-		if (hostRuntime == null) {
-			SwRepoClientFactory swRepoClientFactory = new SwRepoClientFactory(SoftwareStoreBuilderFactory.getSoftwareStoreBuilder().withProperties(
-					properties).buildCache());
-			WorkingDirectoryResolver workingDirectoryResolver = new WorkingDirectoryResolver(properties);
-			File workingDirectory = workingDirectoryResolver.getHostRuntimeWorkingDirectory();
-			File tasksWorkingDirectory = workingDirectoryResolver.getTasksWorkingDirectory();
 
-			RuntimeInfo info = newRuntimeInfo(clusterContext, workingDirectory, tasksWorkingDirectory);
-			hostRuntime = new HostRuntime(clusterContext, swRepoClientFactory, info);
-		}
-		return hostRuntime;
+	public static synchronized
+			HostRuntime
+			createRuntime(final ClusterContext clusterContext, final Properties properties) {
+
+		SwRepoClientFactory swRepoClientFactory = createSwRepoClientFactory(properties);
+
+		RuntimeInfo info = createRuntimeInfo(clusterContext, properties);
+
+		return new HostRuntime(clusterContext, swRepoClientFactory, info);
 	}
 
 	/**
@@ -51,18 +52,19 @@ public class HostRuntimes {
 	 * 
 	 * @param clusterContext
 	 *          Connection to the cluster
-	 * @param workingDirectory
-	 *          Directory to use to hold Host Runtime files
-	 * @param tasksWorkingDirectory
-	 *          Directory where tasks files to keep in
+	 * @param properties
+	 *          configuration properties
+	 * 
 	 * @return Detailed information about the Host Runtime
 	 */
-	public static RuntimeInfo newRuntimeInfo(ClusterContext clusterContext, File workingDirectory,
-			File tasksWorkingDirectory) {
+	private static RuntimeInfo createRuntimeInfo(final ClusterContext clusterContext, final Properties properties) {
+		final WorkingDirectoryResolver resolver = new WorkingDirectoryResolver(properties);
+		final PropertyReader propertyReader = PropertyReader.on(properties);
+
 		RuntimeInfo ri = new RuntimeInfo();
 
-		ri.setWorkingDirectory(workingDirectory.getAbsolutePath());
-		ri.setTasksWorkingDirectory(tasksWorkingDirectory.getAbsolutePath());
+		ri.setWorkingDirectory(resolver.getHostRuntimeWorkingDirectory().getAbsolutePath());
+		ri.setTasksWorkingDirectory(resolver.getTasksWorkingDirectory().getAbsolutePath());
 
 		String nodeId = UUID.randomUUID().toString();
 		ri.setId(nodeId);
@@ -80,6 +82,26 @@ public class HostRuntimes {
 		detector.detectAll(ri);
 		ri.setExclusivity(TaskExclusivity.NON_EXCLUSIVE.toString());
 
+		int maxTasks = propertyReader.getInteger(MAX_TASKS, DEFAULT_MAX_TASKS);
+		int threshold = propertyReader.getInteger(MEMORY_THRESHOLD, DEFAULT_MEMORY_THRESHOLD);
+		if (threshold < 20 && threshold > 100) {
+			threshold = DEFAULT_MEMORY_THRESHOLD;
+		}
+
+		ri.withMaxTasks(maxTasks).withMemoryThreshold(threshold);
+
 		return ri;
+	}
+
+	/**
+	 * Auxiliary helper function which creates {@link SwRepoClientFactory}.
+	 * 
+	 * @param properties
+	 *          configuration properties
+	 * @return A new {@link SwRepoClientFactory}
+	 */
+	private static SwRepoClientFactory createSwRepoClientFactory(final Properties properties) {
+		SoftwareStoreBuilder builder = SoftwareStoreBuilderFactory.getSoftwareStoreBuilder().withProperties(properties);
+		return new SwRepoClientFactory(builder.buildCache());
 	}
 }

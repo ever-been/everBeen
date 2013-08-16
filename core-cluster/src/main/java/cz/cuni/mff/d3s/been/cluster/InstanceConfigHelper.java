@@ -2,6 +2,8 @@ package cz.cuni.mff.d3s.been.cluster;
 
 import static cz.cuni.mff.d3s.been.cluster.ClusterClientConfiguration.*;
 import static cz.cuni.mff.d3s.been.cluster.ClusterConfiguration.*;
+import static cz.cuni.mff.d3s.been.cluster.ClusterConfiguration.LOGGING_TYPE.NONE;
+import static cz.cuni.mff.d3s.been.cluster.ClusterConfiguration.LOGGING_TYPE.SLF4J;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 import java.io.IOException;
@@ -20,6 +22,8 @@ import cz.cuni.mff.d3s.been.core.PropertyReader;
 /**
  * Utility class for creating Hazelcast configurations.
  * 
+ * @author Martin Sixta
+ * @author Radek Mácha
  */
 final class InstanceConfigHelper {
 
@@ -44,11 +48,11 @@ final class InstanceConfigHelper {
 	 * The resulting properties are created by merging default and user
 	 * properties.
 	 */
-	private Properties properties;
+	private final PropertyReader propReader;
 
 	/** Creates the helper class */
-	private InstanceConfigHelper(Properties userProperties) throws ServiceException {
-		this.properties = userProperties;
+	private InstanceConfigHelper(final Properties userProperties) throws ServiceException {
+		this.propReader = PropertyReader.on(userProperties);
 	}
 
 	/**
@@ -60,7 +64,7 @@ final class InstanceConfigHelper {
 	 * @throws ServiceException
 	 *           if configuration cannot be created
 	 */
-	static ClientConfig createClientConfig(Properties userProperties) throws ServiceException {
+	static ClientConfig createClientConfig(final Properties userProperties) throws ServiceException {
 		return new InstanceConfigHelper(userProperties).createClientConfig();
 	}
 
@@ -73,7 +77,7 @@ final class InstanceConfigHelper {
 	 * @throws ServiceException
 	 *           if configuration cannot be created
 	 */
-	static Config createMemberConfig(Properties userProperties) throws ServiceException {
+	static Config createMemberConfig(final Properties userProperties) throws ServiceException {
 		return new InstanceConfigHelper(userProperties).createMemberConfig();
 	}
 
@@ -86,8 +90,6 @@ final class InstanceConfigHelper {
 	 */
 	ClientConfig createClientConfig() throws ServiceException {
 
-		final PropertyReader propReader = PropertyReader.on(properties);
-
 		final int timeout = (int) SECONDS.toMillis(propReader.getInteger(TIMEOUT, DEFAULT_TIMEOUT));
 		final List<InetSocketAddress> socketAddresses = getPeers(propReader.getString(MEMBERS, DEFAULT_MEMBERS));
 
@@ -95,13 +97,8 @@ final class InstanceConfigHelper {
 		ClientConfig clientConfig = new ClientConfig();
 		clientConfig.setConnectionTimeout(timeout).setGroupConfig(groupConfig).addInetSocketAddress(socketAddresses);
 
-		// Enable/Disable hazelcast logging
-		final boolean enableHazelcastLogging = propReader.getBoolean(LOGGING, DEFAULT_LOGGING);
-		final String loggingMode = enableHazelcastLogging ? "slf4j" : "none";
-
 		// There is no way to set property on the ClientConfig as far as I know (v2.5)
-		// So you system properties
-		System.setProperty(PROPERTY_HAZELCAST_LOGGING_TYPE, loggingMode);
+		System.setProperty(PROPERTY_HAZELCAST_LOGGING_TYPE, getLoggingMode());
 
 		return clientConfig;
 	}
@@ -110,7 +107,7 @@ final class InstanceConfigHelper {
 	 * 
 	 * The actual function which creates Config.
 	 * 
-	 * @return Config
+	 * @return Hazelcast member configuration
 	 * @throws ServiceException
 	 *           if configuration cannot be created
 	 */
@@ -119,6 +116,9 @@ final class InstanceConfigHelper {
 
 		Config config;
 		try {
+			// set logging type early otherwise loading of config will produce stderr messages
+			System.setProperty(PROPERTY_HAZELCAST_LOGGING_TYPE, getLoggingMode());
+
 			// create default config
 			config = new UrlXmlConfig(url);
 		} catch (IOException e) {
@@ -139,12 +139,9 @@ final class InstanceConfigHelper {
 	 *          Config to override
 	 * @throws ServiceException
 	 */
-	private void overrideConfiguration(Config mainConfig) throws ServiceException {
-
-		final PropertyReader propReader = PropertyReader.on(properties);
-
+	private void overrideConfiguration(final Config mainConfig) throws ServiceException {
 		final int port = propReader.getInteger(PORT, DEFAULT_PORT);
-		final Interfaces interfaces = getInterfaces(propReader.getString(INTERFACES, DEFAULT_INTERFACES));
+		final Interfaces interfaces = createInterfaces(propReader.getString(INTERFACES, DEFAULT_INTERFACES));
 		final GroupConfig groupConfig = createGroupConfig();
 		final Join joinConfig = createJoinConfig();
 
@@ -152,10 +149,23 @@ final class InstanceConfigHelper {
 
 		networkConfig.setPort(port).setInterfaces(interfaces).setJoin(joinConfig);
 		mainConfig.setNetworkConfig(networkConfig).setGroupConfig(groupConfig);
-		mainConfig.setProperty(PROPERTY_HAZELCAST_PREFER_IPV4_STACK, propReader.getBoolean(PREFER_IPV4, DEFAULT_PREFER_IPV4).toString());
-		mainConfig.setProperty(PROPERTY_HAZELCAST_SOCKET_BIND_ANY, propReader.getBoolean(SOCKET_BIND_ANY, DEFAULT_SOCKET_BIND_ANY).toString());
+		mainConfig.setProperty(
+				PROPERTY_HAZELCAST_PREFER_IPV4_STACK,
+				propReader.getBoolean(PREFER_IPV4, DEFAULT_PREFER_IPV4).toString());
+		mainConfig.setProperty(
+				PROPERTY_HAZELCAST_SOCKET_BIND_ANY,
+				propReader.getBoolean(SOCKET_BIND_ANY, DEFAULT_SOCKET_BIND_ANY).toString());
 	}
 
+	/**
+	 * Creates Hazelcast {@link Join} from configuration.
+	 * 
+	 * The {@link Join} class determines how cluster members will get to know
+	 * about each other.
+	 * 
+	 * @return Hazelcast {@link Join} configuration.
+	 * @throws ServiceException
+	 */
 	private Join createJoinConfig() throws ServiceException {
 		final Join join = new Join();
 
@@ -176,29 +186,28 @@ final class InstanceConfigHelper {
 
 	}
 
+	/**
+	 * Creates Hazelcast {@link GroupConfig} from configuration.
+	 * 
+	 * This determines properties of the group of members.
+	 * 
+	 * @return {@link GroupConfig} for the Hazelcast member
+	 */
 	private GroupConfig createGroupConfig() {
-		final PropertyReader propReader = PropertyReader.on(properties);
-
 		String group = propReader.getString(GROUP, DEFAULT_GROUP);
 		String password = propReader.getString(PASSWORD, DEFAULT_PASSWORD);
 		return new GroupConfig().setName(group).setPassword(password);
 	}
 
-	private JOIN_TYPE getJoinType() throws ServiceException {
-		final PropertyReader propReader = PropertyReader.on(properties);
-
-		String joinStringValue = propReader.getString(JOIN, DEFAULT_JOIN);
-		try {
-			return JOIN_TYPE.valueOf(joinStringValue.toUpperCase());
-		} catch (IllegalArgumentException e) {
-			String msg = String.format("Unknown join type %s", joinStringValue);
-			throw new ServiceException(msg, e);
-		}
-	}
-
+	/**
+	 * Creates Hazelcast {@link MulticastConfig} from configuration.
+	 * 
+	 * @return {@link MulticastConfig} for the Hazelcast member
+	 * 
+	 * @throws ServiceException
+	 *           when the config cannot be created due to config file errors
+	 */
 	private MulticastConfig createMulticastConfig() throws ServiceException {
-		final PropertyReader propReader = PropertyReader.on(properties);
-
 		MulticastConfig multicastConfig = new MulticastConfig();
 		multicastConfig.setEnabled(true);
 		multicastConfig.setMulticastGroup(propReader.getString(MULTICAST_GROUP, DEFAULT_MULTICAST_GROUP));
@@ -207,9 +216,15 @@ final class InstanceConfigHelper {
 		return multicastConfig;
 	}
 
+	/**
+	 * Creates Hazelcast {@link TcpIpConfig} from configuration.
+	 * 
+	 * @return {@link TcpIpConfig} for the Hazelcast member
+	 * 
+	 * @throws ServiceException
+	 *           when the config cannot be created due to config file errors
+	 */
 	private TcpIpConfig createTcpIpConfig() throws ServiceException {
-		final PropertyReader propReader = PropertyReader.on(properties);
-
 		TcpIpConfig tcpIpConfig = new TcpIpConfig();
 		tcpIpConfig.setEnabled(true);
 
@@ -220,17 +235,15 @@ final class InstanceConfigHelper {
 		return tcpIpConfig;
 	}
 
-	private List<InetSocketAddress> getPeers(String peersList) {
-		List<InetSocketAddress> peers = new LinkedList<>();
-		for (String address : peersList.split(VALUE_SEPARATOR)) {
-			peers.addAll(AddressHelper.getSocketAddresses(address));
-		}
-
-		return peers;
-
-	}
-
-	private Interfaces getInterfaces(String interfaceList) {
+	/**
+	 * Creates configuration of Hazelcast's interfaces.
+	 * 
+	 * @param interfaceList
+	 *          list of interfaces separated by
+	 *          {@link InstanceConfigHelper#VALUE_SEPARATOR}
+	 * @return Interface configuration of Hazelcast
+	 */
+	private Interfaces createInterfaces(final String interfaceList) {
 		Interfaces interfaces = new Interfaces();
 
 		if (interfaceList == null || interfaceList.isEmpty()) {
@@ -244,5 +257,51 @@ final class InstanceConfigHelper {
 
 		interfaces.setEnabled(true);
 		return interfaces;
+	}
+
+	/**
+	 * Returns list of {@link InetSocketAddress} from a String.
+	 * 
+	 * @param peersList
+	 *          List of peers separated by
+	 *          {@link InstanceConfigHelper#VALUE_SEPARATOR}
+	 * @return List of peers from the <code>peersList</code>
+	 */
+	private List<InetSocketAddress> getPeers(final String peersList) {
+		List<InetSocketAddress> peers = new LinkedList<>();
+		for (String address : peersList.split(VALUE_SEPARATOR)) {
+			peers.addAll(AddressHelper.getSocketAddresses(address));
+		}
+
+		return peers;
+
+	}
+
+	/**
+	 * Figures out what is the logging type for the instance.
+	 * 
+	 * @return String representing logging type usable in setProperty calls on a
+	 *         Hazelcast instance
+	 */
+	private String getLoggingMode() {
+		final boolean enableHazelcastLogging = propReader.getBoolean(LOGGING, DEFAULT_LOGGING);
+		return enableHazelcastLogging ? SLF4J.name().toLowerCase() : NONE.name().toLowerCase();
+	}
+
+	/**
+	 * Determines from the configuration how cluster members will join
+	 * 
+	 * @return the join type
+	 * @throws ServiceException
+	 *           if unknown join type is specified
+	 */
+	private JOIN_TYPE getJoinType() throws ServiceException {
+		String joinStringValue = propReader.getString(JOIN, DEFAULT_JOIN);
+		try {
+			return JOIN_TYPE.valueOf(joinStringValue.toUpperCase());
+		} catch (IllegalArgumentException e) {
+			String msg = String.format("Unknown join type %s", joinStringValue);
+			throw new ServiceException(msg, e);
+		}
 	}
 }

@@ -4,88 +4,90 @@
 		xmlns="http://been.d3s.mff.cuni.cz/runtime-info"
 		targetNamespace="http://been.d3s.mff.cuni.cz/runtime-info"
 		xmlns:runtimeinfo="http://been.d3s.mff.cuni.cz/runtime-info"
-        xmlns:hardwareinfo="http://been.d3s.mff.cuni.cz/hardware-info"
-        xmlns:monitor="http://been.d3s.mff.cuni.cz/monitor"
+		xmlns:hardwareinfo="http://been.d3s.mff.cuni.cz/hardware-info"
+		xmlns:monitor="http://been.d3s.mff.cuni.cz/monitor"
 		xmlns:xs="http://www.w3.org/2001/XMLSchema"
 		xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
 		jaxb:version="2.0"
 		>
 
-	<xs:import namespace="http://been.d3s.mff.cuni.cz/hardware-info" />
-	<xs:import namespace="http://been.d3s.mff.cuni.cz/monitor" />
-	
-	<xs:element name="id" type="xs:string" />
-    <xs:element name="workingDirectory" type="xs:string" />
-    <xs:element name="tasksWorkingDirectory" type="xs:string" />
-	<xs:element name="port" type="xs:int" />
-    <xs:element name="host" type="xs:string" />
-    <xs:element name="startUpTime" type="xs:dateTime" />
-	<xs:element name="exclusivity" type="xs:string" />
-	<xs:element name="exclusiveId" type="xs:string" default="NON_EXCLUSIVE" />
-	<xs:element name="taskCount" type="xs:int" />
-    <xs:element name="taskDirs" type="xs:string"/>
-    <xs:element name="type" type="xs:string"/>
-	
+	<xs:import namespace="http://been.d3s.mff.cuni.cz/hardware-info"/>
+	<xs:import namespace="http://been.d3s.mff.cuni.cz/monitor"/>
+
+	<xs:element name="id" type="xs:string"/>
+	<xs:element name="workingDirectory" type="xs:string"/>
+	<xs:element name="tasksWorkingDirectory" type="xs:string"/>
+	<xs:element name="port" type="xs:int"/>
+	<xs:element name="host" type="xs:string"/>
+	<xs:element name="startUpTime" type="xs:dateTime"/>
+	<xs:element name="exclusivity" type="xs:string"/>
+	<xs:element name="exclusiveId" type="xs:string" default="NON_EXCLUSIVE"/>
+	<xs:element name="taskCount" type="xs:int"/>
+	<xs:element name="maxTasks" type="xs:int"/>
+	<xs:element name="memoryThreshold" type="xs:int"/>
+	<xs:element name="taskDirs" type="xs:string"/>
+	<xs:element name="type" type="xs:string"/>
+
 	<xs:complexType name="java">
 		<xs:all>
 			<xs:element name="version" type="xs:string"/>
 			<xs:element name="vendor" type="xs:string"/>
-            <xs:element name="runtimeName" type="xs:string"/>
-            <xs:element name="VMVersion" type="xs:string"/>
-            <xs:element name="VMVendor" type="xs:string"/>
-            <xs:element name="runtimeVersion" type="xs:string"/>
-            <xs:element name="specificationVersion" type="xs:string"/>
+			<xs:element name="runtimeName" type="xs:string"/>
+			<xs:element name="VMVersion" type="xs:string"/>
+			<xs:element name="VMVendor" type="xs:string"/>
+			<xs:element name="runtimeVersion" type="xs:string"/>
+			<xs:element name="specificationVersion" type="xs:string"/>
 		</xs:all>
 	</xs:complexType>
 
-    <xs:complexType name="operatingSystem">
-        <xs:all>
-            <xs:element name="name" type="xs:string"/>
-            <xs:element name="version" type="xs:string"/>
-            <xs:element name="arch" type="xs:string"/>
-            <xs:element name="vendor" type="xs:string"/>
-            <xs:element name="vendorVersion" type="xs:string" />
-            <xs:element name="dataModel" type="xs:string" />
-            <xs:element name="endian" type="xs:string" />
-        </xs:all>
-    </xs:complexType>
+	<xs:complexType name="operatingSystem">
+		<xs:all>
+			<xs:element name="name" type="xs:string"/>
+			<xs:element name="version" type="xs:string"/>
+			<xs:element name="arch" type="xs:string"/>
+			<xs:element name="vendor" type="xs:string"/>
+			<xs:element name="vendorVersion" type="xs:string"/>
+			<xs:element name="dataModel" type="xs:string"/>
+			<xs:element name="endian" type="xs:string"/>
+		</xs:all>
+	</xs:complexType>
 
-    <xs:complexType name="filesystem">
-        <xs:all>
-            <xs:element name="deviceName" type="xs:string" />
-            <xs:element name="directory" type="xs:string" />
-            <xs:element name="type" type="xs:string" />
-            <xs:element name="free" type="xs:long" />
-            <xs:element name="total" type="xs:long" />
-        </xs:all>
-    </xs:complexType>
+	<xs:complexType name="filesystem">
+		<xs:all>
+			<xs:element name="deviceName" type="xs:string"/>
+			<xs:element name="directory" type="xs:string"/>
+			<xs:element name="type" type="xs:string"/>
+			<xs:element name="free" type="xs:long"/>
+			<xs:element name="total" type="xs:long"/>
+		</xs:all>
+	</xs:complexType>
 
 	<xs:element name="runtimeInfo">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element ref="runtimeinfo:id" minOccurs="1" maxOccurs="1" />
-				<xs:element ref="runtimeinfo:port" minOccurs="1" maxOccurs="1" />
-				<xs:element ref="runtimeinfo:host" minOccurs="1" maxOccurs="1" />
-                <xs:element ref="runtimeinfo:workingDirectory" minOccurs="1" maxOccurs="1" />
-                <xs:element ref="runtimeinfo:tasksWorkingDirectory" minOccurs="1" maxOccurs="1" />
-                <xs:element ref="runtimeinfo:type" minOccurs="1" maxOccurs="1"/>
-				<xs:element ref="runtimeinfo:exclusivity" minOccurs="1" maxOccurs="1" />
-				<xs:element ref="runtimeinfo:exclusiveId" minOccurs="1" maxOccurs="1" />
-				<xs:element ref="runtimeinfo:taskCount" minOccurs="1" maxOccurs="1" />
-                <xs:element ref="hardwareinfo:hardware" minOccurs="1" maxOccurs="1" />
-                <xs:element ref="runtimeinfo:startUpTime" minOccurs="1" maxOccurs="1" />
-                <xs:element ref="monitor:monitorSample" minOccurs="0" maxOccurs="1"/>
-				<xs:element name="java" type="runtimeinfo:java" minOccurs="0" maxOccurs="1" />
-                <xs:element name="operatingSystem" type="runtimeinfo:operatingSystem" minOccurs="1" maxOccurs="1" />
-                <xs:element name="filesystem" type="runtimeinfo:filesystem" minOccurs="0" maxOccurs="unbounded" />
-                <xs:sequence>
-                    <xs:element ref="runtimeinfo:taskDirs" minOccurs="0" maxOccurs="unbounded"/>
-                </xs:sequence>
+				<xs:element ref="runtimeinfo:id" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="runtimeinfo:port" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="runtimeinfo:host" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="runtimeinfo:workingDirectory" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="runtimeinfo:tasksWorkingDirectory" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="runtimeinfo:type" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="runtimeinfo:exclusivity" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="runtimeinfo:exclusiveId" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="runtimeinfo:taskCount" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="runtimeinfo:maxTasks" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="runtimeinfo:memoryThreshold" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="hardwareinfo:hardware" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="runtimeinfo:startUpTime" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="monitor:monitorSample" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="java" type="runtimeinfo:java" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="operatingSystem" type="runtimeinfo:operatingSystem" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="filesystem" type="runtimeinfo:filesystem" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:sequence>
+					<xs:element ref="runtimeinfo:taskDirs" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
-
-
 
 
 </xs:schema>
