@@ -1,6 +1,20 @@
 package cz.cuni.mff.d3s.been.submitter;
 
-import cz.cuni.mff.d3s.been.api.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
+import javax.xml.bind.JAXBException;
+
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
+import org.kohsuke.args4j.Option;
+import org.xml.sax.SAXException;
+
+import cz.cuni.mff.d3s.been.api.BeenApi;
+import cz.cuni.mff.d3s.been.api.BeenApiException;
+import cz.cuni.mff.d3s.been.api.BeenApiFactory;
+import cz.cuni.mff.d3s.been.api.BpkFileHolder;
 import cz.cuni.mff.d3s.been.bpk.BpkConfigurationException;
 import cz.cuni.mff.d3s.been.cluster.Instance;
 import cz.cuni.mff.d3s.been.core.jaxb.BindingParser;
@@ -8,137 +22,126 @@ import cz.cuni.mff.d3s.been.core.jaxb.ConvertorException;
 import cz.cuni.mff.d3s.been.core.jaxb.XSD;
 import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
-import org.kohsuke.args4j.CmdLineException;
-import org.kohsuke.args4j.CmdLineParser;
-import org.kohsuke.args4j.Option;
-import org.xml.sax.SAXException;
-
-import javax.xml.bind.JAXBException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.List;
 
 /**
  * Simple client which submits tasks to the cluster.
  * <p/>
  * <p/>
  * For debugging purposes!
- *
+ * 
  * @author Martin Sixta
  */
 public class Submitter {
-    @Option(name = "-h", aliases = {"--host"}, usage = "Hostname of a cluster member to connect to")
-    private String host = "localhost";
+	@Option(name = "-h", aliases = { "--host" }, usage = "Hostname of a cluster member to connect to")
+	private String host = "localhost";
 
-    @Option(name = "-p", aliases = {"--port"}, usage = "Port of the host")
-    private int port = 5701;
+	@Option(name = "-p", aliases = { "--port" }, usage = "Port of the host")
+	private int port = 5701;
 
-    @Option(name = "-td", aliases = {"--task-descriptor"}, usage = "TaskDescriptor to submit")
-    private List<String> tdPaths;
+	@Option(name = "-td", aliases = { "--task-descriptor" }, usage = "TaskDescriptor to submit")
+	private List<String> tdPaths;
 
-    @Option(name = "-tcd", aliases = {"--task-context-descriptor"}, usage = "TaskContextDescriptor to submit")
-    private String tcdPath;
+	@Option(name = "-tcd", aliases = { "--task-context-descriptor" }, usage = "TaskContextDescriptor to submit")
+	private String tcdPath;
 
-    @Option(name = "-bd", aliases = {"--benchmark-descriptor"}, usage = "TaskDescriptor of benchmark to submit")
-    private String bdPath;
+	@Option(name = "-bd", aliases = { "--benchmark-descriptor" }, usage = "TaskDescriptor of benchmark to submit")
+	private String bdPath;
 
-    @Option(name = "-gn", aliases = {"--group-name"}, usage = "Group Name")
-    private String groupName = "dev";
+	@Option(name = "-gn", aliases = { "--group-name" }, usage = "Group Name")
+	private String groupName = "dev";
 
-    @Option(name = "-gp", aliases = {"--group-password"}, usage = "Group Password")
-    private String groupPassword = "dev-pass";
+	@Option(name = "-gp", aliases = { "--group-password" }, usage = "Group Password")
+	private String groupPassword = "dev-pass";
 
-    @Option(name = "-ehl", aliases = {"--enable-hazelcast-logging"}, usage = "Turns on Hazelcast logging.")
-    private boolean debug = false;
+	@Option(name = "-ehl", aliases = { "--enable-hazelcast-logging" }, usage = "Turns on Hazelcast logging.")
+	private boolean debug = false;
 
-    @Option(name = "-pe", aliases = {"--print-entry"}, usage = "Print the created Task Entry")
-    private boolean printEntry = false;
+	@Option(name = "-pe", aliases = { "--print-entry" }, usage = "Print the created Task Entry")
+	private boolean printEntry = false;
 
-    @Option(name = "-bpk", aliases = {"--been-package"}, usage = "Upload BPK to Software Repository first.")
-    private List<String> bpkFiles;
+	@Option(name = "-bpk", aliases = { "--been-package" }, usage = "Upload BPK to Software Repository first.")
+	private List<String> bpkFiles;
 
-    public static void main(String[] args) {
-        new Submitter().doMain(args);
-    }
+	public static void main(String[] args) {
+		new Submitter().doMain(args);
+	}
 
-    private BeenApi api;
+	private BeenApi api;
 
-    private void initializeCluster() {
-        if (debug) {
-            System.setProperty("hazelcast.logging.type", "slf4j");
-        } else {
-            System.setProperty("hazelcast.logging.type", "none");
-        }
+	private void initializeCluster() {
+		if (debug) {
+			System.setProperty("hazelcast.logging.type", "slf4j");
+		} else {
+			System.setProperty("hazelcast.logging.type", "none");
+		}
 
-        api = new BeenApiImpl(host, port, groupName, groupPassword);
-    }
+		api = BeenApiFactory.connect(host, port, groupName, groupPassword);
+	}
 
-    private void submitSingleTask(File tdFile) throws JAXBException, SAXException, ConvertorException, BeenApiException {
-        TaskDescriptor td = createTaskDescriptor(tdFile);
-        api.submitTask(td);
-    }
+	private void submitSingleTask(File tdFile) throws JAXBException, SAXException, ConvertorException, BeenApiException {
+		TaskDescriptor td = createTaskDescriptor(tdFile);
+		api.submitTask(td);
+	}
 
-    private TaskDescriptor createTaskDescriptor(File tdFile) throws SAXException, JAXBException, ConvertorException {
-        // parse task descriptor
-        BindingParser<TaskDescriptor> bindingComposer = XSD.TASK_DESCRIPTOR.createParser(TaskDescriptor.class);
-        System.out.println(tdPaths);
-        return bindingComposer.parse(tdFile);
-    }
+	private TaskDescriptor createTaskDescriptor(File tdFile) throws SAXException, JAXBException, ConvertorException {
+		// parse task descriptor
+		BindingParser<TaskDescriptor> bindingComposer = XSD.TASK_DESCRIPTOR.createParser(TaskDescriptor.class);
+		System.out.println(tdPaths);
+		return bindingComposer.parse(tdFile);
+	}
 
-    private void submitTaskContext(File tcdFile) throws JAXBException, SAXException, ConvertorException, BeenApiException {
-        BindingParser<TaskContextDescriptor> bindingComposer = XSD.TASK_CONTEXT_DESCRIPTOR.createParser(TaskContextDescriptor.class);
-        TaskContextDescriptor taskContextDescriptor = bindingComposer.parse(tcdFile);
-        api.submitTaskContext(taskContextDescriptor);
-    }
+	private void submitTaskContext(File tcdFile) throws JAXBException, SAXException, ConvertorException, BeenApiException {
+		BindingParser<TaskContextDescriptor> bindingComposer = XSD.TASK_CONTEXT_DESCRIPTOR.createParser(TaskContextDescriptor.class);
+		TaskContextDescriptor taskContextDescriptor = bindingComposer.parse(tcdFile);
+		api.submitTaskContext(taskContextDescriptor);
+	}
 
-    private void submitBenchmark(File bdFile) throws JAXBException, SAXException, ConvertorException, BeenApiException {
-        api.submitBenchmark(createTaskDescriptor(bdFile));
-    }
+	private void submitBenchmark(File bdFile) throws JAXBException, SAXException, ConvertorException, BeenApiException {
+		api.submitBenchmark(createTaskDescriptor(bdFile));
+	}
 
-    private void doMain(String[] args) {
+	private void doMain(String[] args) {
 
-        CmdLineParser parser = new CmdLineParser(this);
+		CmdLineParser parser = new CmdLineParser(this);
 
-        try {
-            // parse the arguments.
-            parser.parseArgument(args);
+		try {
+			// parse the arguments.
+			parser.parseArgument(args);
 
-            initializeCluster();
+			initializeCluster();
 
-            if (bpkFiles != null) {
-                // upload BPK
-                for (String bpkFile : bpkFiles) {
-                    uploadBpk(bpkFile);
-                }
-            }
+			if (bpkFiles != null) {
+				// upload BPK
+				for (String bpkFile : bpkFiles) {
+					uploadBpk(bpkFile);
+				}
+			}
 
-            if (bdPath != null) {
-                submitBenchmark(new File(bdPath));
-            } else if (tcdPath != null) {
-                submitTaskContext(new File(tcdPath));
-            } else if (tdPaths != null) {
-                for (String tdPath : tdPaths) {
-                    submitSingleTask(new File(tdPath));
-                }
-            }
+			if (bdPath != null) {
+				submitBenchmark(new File(bdPath));
+			} else if (tcdPath != null) {
+				submitTaskContext(new File(tcdPath));
+			} else if (tdPaths != null) {
+				for (String tdPath : tdPaths) {
+					submitSingleTask(new File(tdPath));
+				}
+			}
 
-        } catch (CmdLineException e) {
+		} catch (CmdLineException e) {
 
-            System.err.println(e.getMessage());
-            System.err.println("\nUsage:");
-            parser.printUsage(System.err);
+			System.err.println(e.getMessage());
+			System.err.println("\nUsage:");
+			parser.printUsage(System.err);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            Instance.shutdown();
-        }
-    }
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			Instance.shutdown();
+		}
+	}
 
-    private void uploadBpk(String bpkFile) throws BpkConfigurationException, IOException, BeenApiException {
-        api.uploadBpk(new BpkFileHolder(new File(bpkFile)));
-        System.out.printf("%s uploaded to Software Repository\n", bpkFile);
-    }
+	private void uploadBpk(String bpkFile) throws BpkConfigurationException, IOException, BeenApiException {
+		api.uploadBpk(new BpkFileHolder(new File(bpkFile)));
+		System.out.printf("%s uploaded to Software Repository\n", bpkFile);
+	}
 }
