@@ -5,7 +5,9 @@ import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -489,23 +491,38 @@ final class ProcessManager implements Service {
 
 		Map<Long, CommandEntry> commandEntries = clusterContext.getMap(Names.BEEN_MAP_COMMAND_ENTRIES);
 		String runtimeId = hostInfo.getId();
+
 		commandEntries.put(
 				msg.operationId,
 				new CommandEntry(runtimeId, description, CommandEntryState.PENDING, msg.operationId));
 
-		File taskWrkDir = new File(msg.taskWrkDirName);
+		CommandEntry commandEntry;
+
 		try {
-			FileUtils.deleteDirectory(taskWrkDir);
-			tasks.updateTaskDirs();
-			commandEntries.put(
-					msg.operationId,
-					new CommandEntry(runtimeId, description, CommandEntryState.FINISHED, msg.operationId));
-		} catch (IOException e) {
-			log.error(String.format("Cannot delete task working directory '%s'", taskWrkDir), e);
-			commandEntries.put(
-					msg.operationId,
-					new CommandEntry(runtimeId, description + " - " + e.getMessage(), CommandEntryState.FAILED, msg.operationId));
+			Path tasksRoot = Paths.get(hostInfo.getTasksWorkingDirectory());
+			Path dirToDelete = Paths.get(msg.taskWrkDirName).toAbsolutePath(); // must use absolute path!
+
+			if (dirToDelete.startsWith(tasksRoot)) {
+				FileUtils.deleteDirectory(dirToDelete.toFile());
+				tasks.updateTaskDirs();
+				commandEntry = new CommandEntry(runtimeId, description, CommandEntryState.FINISHED, msg.operationId);
+			} else {
+				String errorMsg = String.format(
+						"Cannot delete task working directory '%s' because it is not a task directory",
+						msg.taskWrkDirName);
+				log.error(errorMsg);
+
+				commandEntry = new CommandEntry(runtimeId, errorMsg, CommandEntryState.FAILED, msg.operationId);
+			}
+		} catch (IOException | InvalidPathException e) {
+			String errorMsg = String.format("Cannot delete task working directory '%s'", msg.taskWrkDirName);
+			log.error(errorMsg, e);
+
+			commandEntry = new CommandEntry(runtimeId, errorMsg, CommandEntryState.FAILED, msg.operationId);
+
 		}
+
+		commandEntries.put(msg.operationId, commandEntry);
 
 	}
 
