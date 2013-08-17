@@ -72,6 +72,12 @@
 			<scope>runtime</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>mongodb-mapstore</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+
 		<!-- BEEN LOGGING -->
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>

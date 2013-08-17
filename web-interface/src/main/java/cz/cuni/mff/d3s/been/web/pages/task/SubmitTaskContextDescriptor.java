@@ -38,6 +38,8 @@ public class SubmitTaskContextDescriptor extends Page {
 
     private static final String KEY_TASK_CONTEXT_DESCRIPTOR = "task_context_descriptor";
 
+    private static final String KEY_BPK_IDENTIFIER = "bpk_identifier";
+
     private static final String KEY_TASK_CONTEXT_TEMPLATE_TASKS_DESCRIPTORS = "task_context_template_tasks_descriptors";
 
     private static final String KEY_TASK_CONTEXT_TEMPLATE_TASKS_ARGS = "task_context_template_tasks_args";
@@ -170,6 +172,7 @@ public class SubmitTaskContextDescriptor extends Page {
             return Index.class;
         } else {
             taskContextDescriptor = (TaskContextDescriptor) conversationHolder.get(conversationId).get(KEY_TASK_CONTEXT_DESCRIPTOR);
+            bpkIdentifier = (BpkIdentifier) conversationHolder.get(conversationId).get(KEY_BPK_IDENTIFIER);
             taskTemplatesArgs = (List<List<KeyValuePair>>) conversationHolder.get(conversationId).get(KEY_TASK_CONTEXT_TEMPLATE_TASKS_ARGS);
             taskTemplatesJavaOpts = (List<List<KeyValuePair>>) conversationHolder.get(conversationId).get(KEY_TASK_CONTEXT_TEMPLATE_TASKS_JAVA_OPTS);
             taskTemplatesDescriptors = (List<TaskDescriptor>) conversationHolder.get(conversationId).get(KEY_TASK_CONTEXT_TEMPLATE_TASKS_DESCRIPTORS);
@@ -219,6 +222,7 @@ public class SubmitTaskContextDescriptor extends Page {
 
         HashMap<String, Object> conversationArgs = new HashMap<String, Object>();
         conversationArgs.put(KEY_TASK_CONTEXT_DESCRIPTOR, taskContextDescriptor);
+        conversationArgs.put(KEY_BPK_IDENTIFIER, bpkIdentifier);
         this.conversationId = conversationHolder.set(conversationArgs);
 
 

@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.node;
 
+import static cz.cuni.mff.d3s.been.cluster.Names.*;
 import static cz.cuni.mff.d3s.been.core.StatusCode.*;
 
 import java.io.IOException;
@@ -36,19 +37,6 @@ import cz.cuni.mff.d3s.been.task.Managers;
 
 /**
  * Entry point for BEEN nodes.
- * <p/>
- * Responsibilities of BEEN nodes include: - joining the cluster - scheduling
- * tasks
- * <p/>
- * Possibly, there can be three types of a node: - full: cluster membership +
- * data + event handling - lite: cluster membership + event handling - client:
- * event handling
- * <p/>
- * Clients nodes could be used as "very lite" runtimes. Lite nodes have the
- * overhead of cluster membership, but does not hold/replicate data.
- * <p/>
- * <p/>
- * So far only full node is implemented.
  * 
  * @author Martin Sixta
  */
@@ -137,11 +125,16 @@ public class Runner implements Reapable {
 			log.info("The node is now connected to the cluster");
 		} catch (ServiceException e) {
 			log.error("Failed to initialize cluster instance", e);
-
 		}
 
 		Reaper clusterReaper = new ClusterReaper(instance);
 		this.clusterContext = Instance.createContext();
+
+        if (nodeType == NodeType.DATA) {
+            // must happen as soon as possible, see documentation for MapStore implementation
+            initializeMaps(TASKS_MAP_NAME, TASK_CONTEXTS_MAP_NAME, BENCHMARKS_MAP_NAME);
+        }
+        
 		registerServiceCleaner();
 		try {
 			// standalone services
@@ -154,167 +147,181 @@ public class Runner implements Reapable {
 				clusterReaper.pushTarget(startTaskManager());
 			}
 
-			if (runHostRuntime) {
-				clusterReaper.pushTarget(startHostRuntime(clusterContext, properties));
-			}
+            if (runHostRuntime) {
+                clusterReaper.pushTarget(startHostRuntime(clusterContext, properties));
+            }
 
-			clusterReaper.pushTarget(startLogPersister());
+            clusterReaper.pushTarget(startLogPersister());
 
-			// Services that require a persistence layer
-			if (runRepository) {
-				final Storage storage = StorageBuilderFactory.createBuilder(properties).build();
-				clusterReaper.pushTarget(startRepository(storage));
-			}
+            // Services that require a persistence layer
+            if (runRepository) {
+                final Storage storage = StorageBuilderFactory.createBuilder(properties).build();
+                clusterReaper.pushTarget(startRepository(storage));
+            }
 
-		} catch (ServiceException se) {
-			log.error("Service bootstrap failed.", se);
-			clusterReaper.start();
-			try {
-				clusterReaper.join();
-			} catch (InterruptedException e) {
-				log.error("Failed to perform cleanup due to user interruption. Exiting dirty.");
-			}
-			EX_COMPONENT_FAILED.sysExit();
-		}
+        } catch (ServiceException se) {
+            log.error("Service bootstrap failed.", se);
+            clusterReaper.start();
+            try {
+                clusterReaper.join();
+            } catch (InterruptedException e) {
+                log.error("Failed to perform cleanup due to user interruption. Exiting dirty.");
+            }
+            EX_COMPONENT_FAILED.sysExit();
+        }
 
-		clusterReaper.pushTarget(this);
+        clusterReaper.pushTarget(this);
 
-		Runtime.getRuntime().addShutdownHook(clusterReaper);
-	}
+        Runtime.getRuntime().addShutdownHook(clusterReaper);
+    }
 
-	private void registerServiceCleaner() {
-		// when member is removed from cluster, remove its services immediately
-		clusterContext.getCluster().addMembershipListener(new ServiceCleaner(clusterContext));
-	}
+    /**
+     * Will make Hazelcast to "touch" the maps.
+     *
+     * It causes Hazelcast to load data through its MapStore, if used, from a data
+     * store.
+     *
+     * @param mapNames
+     *          names of Maps to force to initialize
+     */
+    private void initializeMaps(String... mapNames) {
+        for (String mapName : mapNames) {
+            clusterContext.getMap(mapName);
+        }
+    }
 
-	private void printUsage() {
-		CmdLineParser parser = new CmdLineParser(this);
-		parser.printUsage(System.out);
-	}
+    private void registerServiceCleaner() {
+        // when member is removed from cluster, remove its services immediately
+        clusterContext.getCluster().addMembershipListener(new ServiceCleaner(clusterContext));
+    }
 
-	// ------------------------------------------------------------------------
-	// AUXILIARY FUNCTIONS
-	// ------------------------------------------------------------------------
+    private void printUsage() {
+        CmdLineParser parser = new CmdLineParser(this);
+        parser.printUsage(System.out);
+    }
 
-	/**
-	 * Parses supplied command line arguments for this object.
-	 * <p/>
-	 * In case of error, an error message and usage is print to System.err, then
-	 * program quits.
-	 * 
-	 * @param args
-	 *          Command line arguments
-	 */
-	private void parseCmdLineArguments(final String[] args) {
-		// Handle command-line arguments
-		CmdLineParser parser = new CmdLineParser(this);
+    // ------------------------------------------------------------------------
+    // AUXILIARY FUNCTIONS
+    // ------------------------------------------------------------------------
 
-		try {
-			// parse the arguments.
-			parser.parseArgument(args);
+    /**
+     * Parses supplied command line arguments for this object.
+     * <p/>
+     * In case of error, an error message and usage is print to System.err, then
+     * program quits.
+     *
+     * @param args Command line arguments
+     */
+    private void parseCmdLineArguments(final String[] args) {
+        // Handle command-line arguments
+        CmdLineParser parser = new CmdLineParser(this);
 
-		} catch (CmdLineException e) {
-			System.err.println(e.getMessage());
-			System.err.println("\nUsage:");
-			parser.printUsage(System.err);
+        try {
+            // parse the arguments.
+            parser.parseArgument(args);
 
-			System.exit(EX_USAGE.getCode());
-		}
+        } catch (CmdLineException e) {
+            System.err.println(e.getMessage());
+            System.err.println("\nUsage:");
+            parser.printUsage(System.err);
 
-	}
+            System.exit(EX_USAGE.getCode());
+        }
 
-	private IClusterService startTaskManager() throws ServiceException {
-		IClusterService taskManager = Managers.getManager(clusterContext);
-		taskManager.start();
-		return taskManager;
-	}
+    }
 
-	private IClusterService startHostRuntime(ClusterContext context, Properties properties) throws ServiceException {
-		HostRuntime hostRuntime = HostRuntimes.createRuntime(context, properties);
-		hostRuntime.start();
-		this.hostRuntimeId = hostRuntime.getId();
-		return hostRuntime;
-	}
+    private IClusterService startTaskManager() throws ServiceException {
+        IClusterService taskManager = Managers.getManager(clusterContext);
+        taskManager.start();
+        return taskManager;
+    }
 
-	private IClusterService startSWRepository() throws ServiceException {
-		SoftwareRepository softwareRepository = SoftwareRepositories.createSWRepository(clusterContext, beenId);
-		softwareRepository.init();
-		softwareRepository.start();
-		return softwareRepository;
-	}
+    private IClusterService startHostRuntime(ClusterContext context, Properties properties) throws ServiceException {
+        HostRuntime hostRuntime = HostRuntimes.createRuntime(context, properties);
+        hostRuntime.start();
+        this.hostRuntimeId = hostRuntime.getId();
+        return hostRuntime;
+    }
 
-	private IClusterService startLogPersister() throws ServiceException {
-		ServiceLogPersister logPersister = ServiceLogPersister.getHandlerInstance(clusterContext, beenId, hostRuntimeId);
-		logPersister.start();
-		return logPersister;
-	}
+    private IClusterService startSWRepository() throws ServiceException {
+        SoftwareRepository softwareRepository = SoftwareRepositories.createSWRepository(clusterContext, beenId);
+        softwareRepository.init();
+        softwareRepository.start();
+        return softwareRepository;
+    }
 
-	private IClusterService startRepository(Storage storage) throws ServiceException {
-		Repository repository = Repository.create(clusterContext, storage);
-		repository.start();
-		return repository;
-	}
+    private IClusterService startLogPersister() throws ServiceException {
+        ServiceLogPersister logPersister = ServiceLogPersister.getHandlerInstance(clusterContext, beenId, hostRuntimeId);
+        logPersister.start();
+        return logPersister;
+    }
 
-	private HazelcastInstance getInstance(final NodeType nodeType, Properties properties) throws ServiceException {
-		Instance.init(nodeType, properties);
-		return Instance.getInstance();
-	}
+    private IClusterService startRepository(Storage storage) throws ServiceException {
+        Repository repository = Repository.create(clusterContext, storage);
+        repository.start();
+        return repository;
+    }
 
-	private Properties loadProperties() {
+    private HazelcastInstance getInstance(final NodeType nodeType, Properties properties) throws ServiceException {
+        Instance.init(nodeType, properties);
+        return Instance.getInstance();
+    }
 
-		if (configFile == null || configFile.isEmpty()) {
-			log.info("No config file or url specified. Will start with default configuration.");
-			return new Properties();
-		}
+    private Properties loadProperties() {
 
-		PropertyLoader loader = null;
+        if (configFile == null || configFile.isEmpty()) {
+            log.info("No config file or url specified. Will start with default configuration.");
+            return new Properties();
+        }
 
-		// try as a file
-		try {
-			Path path = Paths.get(configFile);
-			if (Files.exists(path)) {
-				loader = PropertyLoader.fromPath(path);
-			}
-		} catch (InvalidPathException e) {
-			// quell
-		}
+        PropertyLoader loader = null;
 
-		// try as an URL
-		if (loader == null) {
-			try {
-				URL url = new URL(configFile);
-				loader = PropertyLoader.fromUrl(url);
-			} catch (MalformedURLException e) {
-				// quell
-			}
-		}
+        // try as a file
+        try {
+            Path path = Paths.get(configFile);
+            if (Files.exists(path)) {
+                loader = PropertyLoader.fromPath(path);
+            }
+        } catch (InvalidPathException e) {
+            // quell
+        }
 
-		if (loader == null) {
-			log.error("{} is not a file nor an URL. Aborting.", configFile);
-			EX_USAGE.sysExit();
-			throw new AssertionError(); // make the compiler happy
-		}
+        // try as an URL
+        if (loader == null) {
+            try {
+                URL url = new URL(configFile);
+                loader = PropertyLoader.fromUrl(url);
+            } catch (MalformedURLException e) {
+                // quell
+            }
+        }
 
-		try {
-			Properties properties = loader.load();
-			log.info("Configuration loaded from {}", configFile);
-			return properties;
-		} catch (IOException e) {
-			String msg = String.format("Cannot load properties from %s. Aborting.", configFile);
-			log.error(msg, e);
-			EX_USAGE.sysExit();
-		}
+        if (loader == null) {
+            log.error("{} is not a file nor an URL. Aborting.", configFile);
+            EX_USAGE.sysExit();
+            throw new AssertionError(); // make the compiler happy
+        }
 
-		throw new AssertionError(); // will not get here, make the compiler happy
-	}
+        try {
+            Properties properties = loader.load();
+            log.info("Configuration loaded from {}", configFile);
+            return properties;
+        } catch (IOException e) {
+            String msg = String.format("Cannot load properties from %s. Aborting.", configFile);
+            log.error(msg, e);
+            EX_USAGE.sysExit();
+        }
 
-	@Override
-	public Reaper createReaper() {
-		return new Reaper() {
-			@Override
-			protected void reap() throws InterruptedException {
-				clusterContext.stop();
-			}
-		};
-	}
+        throw new AssertionError(); // will not get here, make the compiler happy
+    }
+
+    @Override
+    public Reaper createReaper() {
+        return new Reaper() {
+            @Override
+            protected void reap() throws InterruptedException {
+                clusterContext.stop();
+            }
+        };
+    }
 }
