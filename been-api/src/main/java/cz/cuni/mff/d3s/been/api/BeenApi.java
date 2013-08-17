@@ -22,13 +22,48 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * User: donarus Date: 4/27/13 Time: 11:40 AM
+ * The BeenApi interface provides access and API to the BEEN cluster.
+ * All client access (web interface, command-line interface) to BEEN should be done
+ * through this interface, which is implement int the {@link BeenApiImpl} class.
+ *
+ * This class serves a facade to the whole cluster and provides querying of
+ * tasks, contexts, benchmark, the state of services and various other components.
+ * Also provides control operations, such as submitting tasks and benchmarks.
+ *
+ * To use this API, instantiate a {@link BeenApiImpl} class, which will connect
+ * to the cluster, then use this instance to communicate with the cluster. All methods
+ * throw {@link BeenApiException} in case of a sudden disconnection or in case of any
+ * internal inconsistency or invalid parameters.
+ *
+ * @author donarus
  */
 public interface BeenApi {
 
+	/**
+	 * Shuts down the connection to the BEEN cluster. After calling this method,
+	 * any further API calls will throw a {@link BeenApiException} exception. You should
+	 * not use this instance of {@link BeenApi} after calling this method.
+	 */
 	public void shutdown();
 
+	/**
+	 * Returns a collection of currently connected cluster members. The item of the
+	 * collection is a {@link Member} class from Hazelcast describing the properties
+	 * of the member.
+	 *
+	 * @return collection of connected cluster members
+	 * @throws BeenApiException in case of an internal exception, see {@link BeenApi} for discussion
+	 */
 	public Collection<Member> getClusterMembers() throws BeenApiException;
+
+	/**
+	 * Returns a list of records describing the current status of various BEEN services.
+	 * This does not return information about core (required) components which always run,
+	 * but only about optional/configurable components (e.g. software repository).
+	 *
+	 * @return list of available {@link ServiceInfo} records
+	 * @throws BeenApiException in case of an internal exception, see {@link BeenApi} for discussion
+	 */
 	public List<ServiceInfo> getClusterServices() throws BeenApiException;
 
 	public Collection<TaskEntry> getTasks() throws BeenApiException;

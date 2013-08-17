@@ -23,7 +23,7 @@ import cz.cuni.mff.d3s.been.core.PropertyReader;
  * Utility class for creating Hazelcast configurations.
  * 
  * @author Martin Sixta
- * @author Radek Mácha
+ * @author Radek Macha
  */
 final class InstanceConfigHelper {
 

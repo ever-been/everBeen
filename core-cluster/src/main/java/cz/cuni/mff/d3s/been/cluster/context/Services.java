@@ -9,7 +9,7 @@ import cz.cuni.mff.d3s.been.swrepository.SWRepositoryServiceInfoConstants;
  * Purpose of this class is to associate methods for cluster-wide services like
  * Software Repository or Results Repository.
  *
- * @author Tadeáš Palusga
+ * @author donarus
  */
 public class Services {
 
