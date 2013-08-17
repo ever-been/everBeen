@@ -66,12 +66,88 @@ public interface BeenApi {
 	 */
 	public List<ServiceInfo> getClusterServices() throws BeenApiException;
 
+	/**
+	 * Returns all tasks that are currently available in the cluster. A task always belongs
+	 * to some task context, but doesn't necessarily belong to a benchmark. Note that finished
+	 * tasks are automatically removed from the cluster after some time (see
+	 * {@link cz.cuni.mff.d3s.been.cluster.context.TaskContextsConfiguration} for
+	 * configuration of this interval). The returned collection is a copy of the map, so after some time
+	 * it might not represent the current state of tasks.
+	 *
+	 * @return a collection of all task entries in the cluster
+	 * @throws BeenApiException in case of an internal exception, see {@link BeenApi} for discussion
+	 */
 	public Collection<TaskEntry> getTasks() throws BeenApiException;
+
+	/**
+	 * Retrieves the current task entry object for the passed task ID. The returned object is a copy
+	 * of the task entry and after some time might not represent the current state of the task.
+	 *
+	 * @param id ID of the task
+	 * @return {@link TaskEntry} object representing the current state of the task or null if there is no
+	 * task with the specified ID
+	 * @throws BeenApiException in case of an internal exception, see {@link BeenApi} for discussion
+	 */
 	public TaskEntry getTask(String id) throws BeenApiException;
+
+	/**
+	 * Returns a collection of all currently available task contexts in the cluster. Note that successfully
+	 * finished task contexts are automatically removed from the Hazelcast map after some time (see
+	 * {@link cz.cuni.mff.d3s.been.cluster.context.TaskContextsConfiguration} for configuration of this
+	 * interval). The returned collection is a copy of the map, so after some time
+	 * it might not represent the current state.
+	 *
+	 * @return a collection of all task context entries in the cluster
+	 * @throws BeenApiException in case of an internal exception, see {@link BeenApi} for discussion
+	 */
 	public Collection<TaskContextEntry> getTaskContexts() throws BeenApiException;
+
+	/**
+	 * Retrieves the current task context entry object for the specified task context ID. The returned
+	 * object is a copy of the entry in the Hazelcast map, and after some time it might not represent
+	 * the current state.
+	 *
+	 * @param id ID of the task context
+	 * @return {@link TaskContextEntry} object representing the current state of the task context or null
+	 * if there is no task context with the specified ID
+	 * @throws BeenApiException in case of an internal exception, see {@link BeenApi} for discussion
+	 */
 	public TaskContextEntry getTaskContext(String id) throws BeenApiException;
+
+	/**
+	 * Returns a collection of all currently available benchmarks in the cluster. Benchmarks are *not*
+	 * automatically removed, they can be deleted only using the {@link #removeBenchmarkEntry} method.
+	 * The returned object is a copy of the entry in the Hazelcast map, and after some time it might not
+	 * represent the current state.
+	 *
+	 * @return {@link BenchmarkEntry} object representing the current state of the benchmark
+	 * @throws BeenApiException in case of an internal exception, see {@link BeenApi} for discussion
+	 */
 	public Collection<BenchmarkEntry> getBenchmarks() throws BeenApiException;
+
+	/**
+	 * Retrieves the current benchmark entry object for the specified benchmark ID. The returned
+	 * object is a copy of the entry in the Hazelcast map, and after some time it might not represent
+	 * the current state.
+	 *
+	 * @param id ID of the benchmark
+	 * @return {@link BenchmarkEntry} object representing the current state of the benchmark or null if
+	 * there is no benchmark with the specified ID
+	 * @throws BeenApiException in case of an internal exception, see {@link BeenApi} for discussion
+	 */
 	public BenchmarkEntry getBenchmark(String id) throws BeenApiException;
+
+	/**
+	 * Returns a collection of all available task contexts in the specified benchmark. Note that task
+	 * contexts are automatically removed from the Hazelcast map after some time (see {@link #getTaskContexts})
+	 * so these removed contexts are not returned in the collection. The returned
+	 * object is a copy of the entry in the Hazelcast map, and after some time it might not represent
+	 * the current state.
+	 *
+	 * @param benchmarkId ID of the benchmark
+	 * @return a collection of available task context entries in the specified benchmark
+	 * @throws BeenApiException in case of an internal exception, see {@link BeenApi} for discussion
+	 */
 	public Collection<TaskContextEntry> getTaskContextsInBenchmark(String benchmarkId) throws BeenApiException;
 	public Collection<TaskEntry> getTasksInTaskContext(String taskContextId) throws BeenApiException;
 
