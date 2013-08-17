@@ -15,10 +15,7 @@
  */
 package cz.cuni.mff.d3s.been.mapstore.mongodb;
 
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.IMap;
-import com.hazelcast.core.MapLoaderLifecycleSupport;
-import com.hazelcast.core.MapStore;
+import com.hazelcast.core.*;
 import com.mongodb.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 public class MongoMapStore implements MapStore, MapLoaderLifecycleSupport {
 
     private static final String FAILED_STORE_MIRROR_MAP_SUFFIX = "STORE_FAILED_MIRROR";
+    private static final String LOADED_LIST = "LOADED_LIST";
 
     private HazelcastInstance hazelcastInstance;
 
@@ -91,7 +89,7 @@ public class MongoMapStore implements MapStore, MapLoaderLifecycleSupport {
                     "Item with key '%s' couldn't be stored in hazelcast persistent mapstore, reason: %s",
                     key.toString(),
                     e.getMessage());
-            logger.warn(message, e);
+             logger.debug(message, e);
             return false;
         }
         return true;
@@ -121,7 +119,7 @@ public class MongoMapStore implements MapStore, MapLoaderLifecycleSupport {
                     "Item with key '%s' couldn't be deleted from hazelcast persistent mapstore, reason: %s",
                     key.toString(),
                     e.getMessage());
-            logger.warn(message, e);
+            logger.debug(message, e);
             return false;
         }
         return true;
@@ -138,50 +136,83 @@ public class MongoMapStore implements MapStore, MapLoaderLifecycleSupport {
     }
 
     public Object load(Object key) {
-        DBObject dbo = new BasicDBObject();
-        dbo.put("_id", key);
-        DBObject obj = coll.findOne(dbo);
-        if (obj == null)
-            return null;
-
         try {
-            Class clazz = Class.forName(obj.get("_class").toString());
-            return converter.toObject(clazz, obj);
-        } catch (ClassNotFoundException e) {
-            logger.warn(e.getMessage(), e);
+            DBObject dbo = new BasicDBObject();
+            dbo.put("_id", key);
+            DBObject obj = coll.findOne(dbo);
+            if (obj == null)
+                return null;
+
+            try {
+                Class clazz = Class.forName(obj.get("_class").toString());
+                return converter.toObject(clazz, obj);
+            } catch (ClassNotFoundException e) {
+                logger.error(e.getMessage(), e);
+            }
+            return null;
+        } catch (Throwable t) {
+
+            t.printStackTrace();
+            return null;
+        }
+    }
+
+    public Map loadAll(Collection keys) {
+        try {
+            Map map = new HashMap();
+            BasicDBList dbo = new BasicDBList();
+            for (Object key : keys) {
+                dbo.add(new BasicDBObject("_id", key));
+            }
+            BasicDBObject dbb = new BasicDBObject("$or", dbo);
+            DBCursor cursor = coll.find(dbb);
+            while (cursor.hasNext()) {
+                try {
+                    DBObject obj = cursor.next();
+                    Class clazz = null;
+                    clazz = Class.forName(obj.get("_class").toString());
+                    map.put(obj.get("_id"), converter.toObject(clazz, obj));
+                } catch (ClassNotFoundException e) {
+                    logger.error(e.getMessage(), e);
+                }
+            }
+            return map;
+        } catch (Throwable t) {
+            logger.warn("Cannot load collection from MongoDB", t);
         }
         return null;
     }
 
-    public Map loadAll(Collection keys) {
-        Map map = new HashMap();
-        BasicDBList dbo = new BasicDBList();
-        for (Object key : keys) {
-            dbo.add(new BasicDBObject("_id", key));
+    public Set loadAllKeys() {
+
+        boolean loaded = false;
+        ILock l = hazelcastInstance.getLock("LOADING_" + mapName);
+        l.lock();
+
+        IList loadedList = hazelcastInstance.getList(LOADED_LIST);
+        if (loadedList.contains(mapName)) {
+            loaded = true;
         }
-        BasicDBObject dbb = new BasicDBObject("$or", dbo);
-        DBCursor cursor = coll.find(dbb);
-        while (cursor.hasNext()) {
+
+        Set keyset = Collections.emptySet();
+
+        if (!loaded) {
             try {
-                DBObject obj = cursor.next();
-                Class clazz = null;
-                clazz = Class.forName(obj.get("_class").toString());
-                map.put(obj.get("_id"), converter.toObject(clazz, obj));
-            } catch (ClassNotFoundException e) {
-                logger.warn(e.getMessage(), e);
+                keyset = new HashSet();
+                BasicDBList dbo = new BasicDBList();
+                dbo.add("_id");
+                DBCursor cursor = coll.find(null, dbo);
+                while (cursor.hasNext()) {
+                    keyset.add(cursor.next().get("_id"));
+                }
+                loadedList.add(mapName);
+            } catch (Throwable t) {
+                keyset = Collections.emptySet();
+                logger.warn("Cannot load keys from MongoDB", t);
             }
         }
-        return map;
-    }
+        l.unlock();
 
-    public Set loadAllKeys() {
-        Set keyset = new HashSet();
-        BasicDBList dbo = new BasicDBList();
-        dbo.add("_id");
-        DBCursor cursor = coll.find(null, dbo);
-        while (cursor.hasNext()) {
-            keyset.add(cursor.next().get("_id"));
-        }
         return keyset;
     }
 
