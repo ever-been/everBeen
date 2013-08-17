@@ -182,69 +182,441 @@ public interface BeenApi {
 	 *           discussion
 	 */
 	public Collection<TaskContextEntry> getTaskContextsInBenchmark(String benchmarkId) throws BeenApiException;
+
+	/**
+	 * Returns a collection of all available tasks in the specified task context.
+	 * Note that tasks are automatically removed from the Hazelcast map after some
+	 * time (see {@link #getTasks}) so these removed tasks are not returned in the
+	 * collection. The returned object is a copy of the entry in the Hazelcast
+	 * map, and after some time it might not represent the current state.
+	 * 
+	 * @param taskContextId
+	 *          ID of the task context
+	 * @return a collection of available task entries in the specified task
+	 *         context
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public Collection<TaskEntry> getTasksInTaskContext(String taskContextId) throws BeenApiException;
 
+	/**
+	 * Stores the specified task descriptor as a template for later reuse. The
+	 * descriptor with be saved under the specified name and BPK identifier and
+	 * subsequent calls to {@link #getTaskDescriptors} will return it along with
+	 * the "regular" task descriptors.
+	 * 
+	 * @param descriptor
+	 *          the task descriptor to save
+	 * @param name
+	 *          the name under which the descriptor should be saved
+	 * @param bpkId
+	 *          the BPK identifier under which the descriptor should be saved
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public
 			void
 			saveNamedTaskDescriptor(TaskDescriptor descriptor, String name, BpkIdentifier bpkId) throws BeenApiException;
+
+	/**
+	 * Stores the specified task context descriptor as a template for later reuse.
+	 * The descriptor with be saved under the specified name and BPK identifier
+	 * and subsequent calls to {@link #getTaskContextDescriptors} will return it
+	 * along with the "regular" task context descriptors.
+	 * 
+	 * @param descriptor
+	 *          the task context descriptor to save
+	 * @param name
+	 *          the name under which the descriptor should be saved
+	 * @param bpkId
+	 *          the BPK identifier under which the descriptor should be saved
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public
 			void
 			saveNamedContextDescriptor(TaskContextDescriptor descriptor, String name, BpkIdentifier bpkId) throws BeenApiException;
+
+	/**
+	 * Lists all saved task descriptors (templates) under the specified BPK
+	 * identifier. The result is a map between names (specified when saving the
+	 * template using {@link #saveNamedTaskDescriptor}) and descriptors.
+	 * 
+	 * @param bpkIdentifier
+	 *          the BPK identifier
+	 * @return a map containing all saved task descriptors under the specified BPK
+	 *         identifier
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public Map<String, TaskDescriptor> getNamedTaskDescriptorsForBpk(BpkIdentifier bpkIdentifier) throws BeenApiException;
+
+	/**
+	 * Lists all saved task context descriptors (templates) under the specified
+	 * BPK identifier. The result is a map between names (specified when saving
+	 * the template using {@link #saveNamedContextDescriptor}) and descriptors.
+	 * 
+	 * @param bpkIdentifier
+	 *          the BPK identifier
+	 * @return a map containing all saved task context descriptors under the
+	 *         specified BPK identifier
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public
 			Map<String, TaskContextDescriptor>
 			getNamedContextDescriptorsForBpk(BpkIdentifier bpkIdentifier) throws BeenApiException;
 
-	public Collection<ServiceLogMessage> getServiceLogsByBeenId(String beenId) throws BeenApiException;
+	/**
+	 * TODO
+	 * 
+	 * @param participantId
+	 * @return
+	 * @throws BeenApiException
+	 */
+	public Collection<ServiceLogMessage> getServiceLogsByBeenId(String participantId) throws BeenApiException;
+
+	/**
+	 * TODO
+	 * 
+	 * @param hostRuntimeId
+	 * @return
+	 * @throws BeenApiException
+	 */
 	public Collection<ServiceLogMessage> getServiceLogsByHostRuntimeId(String hostRuntimeId) throws BeenApiException;
+
+	/**
+	 * TODO
+	 * 
+	 * @param serviceName
+	 * @return
+	 * @throws BeenApiException
+	 */
 	public Collection<ServiceLogMessage> getServiceLogsByServiceName(String serviceName) throws BeenApiException;
 
+	/**
+	 * TODO
+	 * 
+	 * @param date
+	 * @return
+	 * @throws BeenApiException
+	 */
 	public Collection<ServiceLogMessage> getServiceLogsByDate(Date date) throws BeenApiException;
 
+	/**
+	 * TODO
+	 * 
+	 * @param taskId
+	 * @throws BeenApiException
+	 */
 	public void clearPersistenceForTask(String taskId) throws BeenApiException;
+
+	/**
+	 * TODO
+	 * 
+	 * @param contextId
+	 * @throws BeenApiException
+	 */
 	public void clearPersistenceForContext(String contextId) throws BeenApiException;
+
+	/**
+	 * TODO
+	 * 
+	 * @param benchmarkId
+	 * @throws BeenApiException
+	 */
 	public void clearPersistenceForBenchmark(String benchmarkId) throws BeenApiException;
 
+	/**
+	 * TODO
+	 * 
+	 * @param state
+	 * @return
+	 * @throws BeenApiException
+	 */
 	public Collection<String> getTasksWithState(TaskState state) throws BeenApiException;
+
+	/**
+	 * TODO
+	 * 
+	 * @param state
+	 * @param contextId
+	 * @return
+	 * @throws BeenApiException
+	 */
 	public Collection<String> getTasksWithStateFromContext(TaskState state, String contextId) throws BeenApiException;
+
+	/**
+	 * TODO
+	 * 
+	 * @param state
+	 * @param benchmarkId
+	 * @return
+	 * @throws BeenApiException
+	 */
 	public Collection<String> getTasksWithStateFromBenchmark(TaskState state, String benchmarkId) throws BeenApiException;
 
+	/**
+	 * TODO
+	 * 
+	 * @param taskId
+	 * @return
+	 * @throws BeenApiException
+	 */
 	public TaskState getTaskState(String taskId) throws BeenApiException;
+
+	/**
+	 * TODO
+	 * 
+	 * @param contextId
+	 * @return
+	 * @throws BeenApiException
+	 */
 	public Map<String, TaskState> getTaskStatesForContext(String contextId) throws BeenApiException;
+
+	/**
+	 * TODO
+	 * 
+	 * @param benchmarkId
+	 * @return
+	 * @throws BeenApiException
+	 */
 	public Map<String, TaskState> getTaskStatesForBenchmark(String benchmarkId) throws BeenApiException;
 
+	/**
+	 * Submits a new task with the specified task descriptor. This creates a new
+	 * task entry in the Hazelcast map and returns the generated ID of the newly
+	 * submitted task. Calling this method only submits the task (its state is
+	 * {@link TaskState#SUBMITTED}) and returns. There are no guarantees about
+	 * when or if the task will be planned, accepted or run.
+	 * 
+	 * This submits a *single task*, for which a new task context will be created
+	 * (and will contain only this new task). This context will not belong to any
+	 * benchmark.
+	 * 
+	 * @param taskDescriptor
+	 *          the task descriptor of the task
+	 * @return ID of the newly submitted task
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public String submitTask(TaskDescriptor taskDescriptor) throws BeenApiException;
+
+	/**
+	 * Submits a new task context with the specified task context descriptor. This
+	 * creates a new task context entry in the Hazelcast map and returns the
+	 * generated ID of the newly created task context. All the tasks described in
+	 * the descriptor are also created and submitted. Calling this method only
+	 * submits the task context and its tasks and returns immediately. There are
+	 * no guarantees about when or if the tasks will be planned, accepted or run.
+	 * 
+	 * This submits a standalone task context, which will not belong to any
+	 * benchmark.
+	 * 
+	 * @param taskContextDescriptor
+	 *          the task context descriptor to be submitted
+	 * @return ID of the newly created task context
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public String submitTaskContext(TaskContextDescriptor taskContextDescriptor) throws BeenApiException;
+
+	/**
+	 * Submits a new task context with the specified task context descriptor under
+	 * the specified benchmark. This API should not be used directly, because
+	 * submitting new context within a benchmark is done automatically by the
+	 * benchmark manager. See {@link #submitTaskContext} for more info about
+	 * submitting task contexts.
+	 * 
+	 * @param taskContextDescriptor
+	 *          the task context descriptor to be submitted
+	 * @param benchmarkId
+	 *          ID of the benchmark under which the new context should be
+	 *          submitted
+	 * @return ID of the newly created task context
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public
 			String
 			submitTaskContext(TaskContextDescriptor taskContextDescriptor, String benchmarkId) throws BeenApiException;
+
+	/**
+	 * Submits a new benchmark. The specified task descriptor must be a benchmark
+	 * task descriptor, and it will be used as a generator task for the newly
+	 * created benchmark. This will only submit the generator task and return
+	 * immediately, there are no guarantees about when or if the task will be run.
+	 * 
+	 * @param benchmarkTaskDescriptor
+	 *          task descriptor of the generator task
+	 * @return ID of the newly created benchmark
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public String submitBenchmark(TaskDescriptor benchmarkTaskDescriptor) throws BeenApiException;
 
+	/**
+	 * Kills the task with the specified ID. This method only "starts" the killing
+	 * operation and returns immediately. The actual killing will be performed
+	 * later and possibly by a different member of the cluster and there are no
+	 * guarantees about when the task will be really killed.
+	 * 
+	 * @param taskId
+	 *          ID of the task to kill
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public void killTask(String taskId) throws BeenApiException;
+
+	/**
+	 * Kills the task context with the specified ID. This kills all the tasks that
+	 * are contained in the task context. Note that this only "starts" the killing
+	 * and returns immediately. There are no guarantees about when the tasks or
+	 * the whole context will actually be killed.
+	 * 
+	 * @param taskContextId
+	 *          ID of the task context to kill
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public void killTaskContext(String taskContextId) throws BeenApiException;
+
+	/**
+	 * Kills the benchmark with the specified ID. This only kills the currently
+	 * running generator task and disallows further resubmit (effectively
+	 * cancelling the benchmark), but it does not affect any running task contexts
+	 * or the tasks contained within them. Note that this only "starts" the
+	 * killing and returns immediately. There are no guarantees about when the
+	 * generator task will actually be killed.
+	 * 
+	 * @param benchmarkId
+	 *          ID of the benchmark to kill
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public void killBenchmark(String benchmarkId) throws BeenApiException;
 
+	/**
+	 * Removes the task entry with the specified task ID from the Hazelcast map.
+	 * The task must be in a final state (finished or aborted) otherwise a
+	 * {@link BeenApiException} is thrown. If the the task with the specified ID
+	 * does not exist, this method does nothing.
+	 * 
+	 * @param taskId
+	 *          ID of the task entry to remove
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public void removeTaskEntry(String taskId) throws BeenApiException;
+
+	/**
+	 * Removes the task context entry with the specified ID from the Hazelcast
+	 * map. The task context must be in a final state (finished or failed) as well
+	 * as all of its tasks, otherwise a {@link BeenApiException} is thrown. This
+	 * method also removes all of the contained tasks, just as if you called
+	 * {@link #removeTaskEntry} for all tasks within the context.
+	 * 
+	 * @param taskContextId
+	 *          ID of the task context entry to remove
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public void removeTaskContextEntry(String taskContextId) throws BeenApiException;
+
+	/**
+	 * Removes the benchmark entry with the specified ID from the Hazelcast map.
+	 * The benchmark's generator task must be in a final state (finished or
+	 * aborted) or already removed, and all of the task contexts within this
+	 * benchmark must also be in a final state (finished or failed), otherwise a
+	 * {@link BeenApiException} is thrown. Also removes all existing task contexts
+	 * that belong to this benchmark. Also removes all "old generators", which
+	 * have failed and were resubmitted, and the current generator task.
+	 * 
+	 * @param benchmarkId
+	 *          ID of the benchmark entry to remove
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public void removeBenchmarkEntry(String benchmarkId) throws BeenApiException;
 
+	/**
+	 * Deletes a leftover task working directory from the specified runtime. There
+	 * can be some data left e.g. when the host runtime is incorrectly shutdown,
+	 * these directories can be listed through the {@link #getRuntimes} method,
+	 * which returns {@link RuntimeInfo} object, which contains a list called
+	 * {@link RuntimeInfo#taskDirs}. This call implicitly waits up to 30 seconds
+	 * for the operation to finish and return a {@link CommandEntry} object that
+	 * represents the result of the operation.
+	 * 
+	 * @param runtimeId
+	 *          ID of the runtime
+	 * @param taskWrkDir
+	 *          working directory which should be deleted
+	 * @return a {@link CommandEntry} object that represents the result of the
+	 *         operation
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public CommandEntry deleteTaskWrkDirectory(String runtimeId, String taskWrkDir) throws BeenApiException;
 
+	/**
+	 * Returns a list of all available host runtimes in the cluster. The returned
+	 * object is a copy of the entry in the Hazelcast map, and after some time it
+	 * might not represent the current state.
+	 * 
+	 * @return a collection of {@link RuntimeInfo} object representing the states
+	 *         of host runtimes
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public Collection<RuntimeInfo> getRuntimes() throws BeenApiException;
 
 	/**
-	 * Returns Host Runtimes matching a criteria.
-	 * 
-	 * The criteria is specified using XPath and is applied on each and every
-	 * RuntimeInfo.
+	 * Returns host runtimes matching the specified criteria. The criteria is
+	 * specified as an XPath expression and is applied on each {@link RuntimeInfo}
+	 * object representing the current states of host runtimes. This method
+	 * returns a collection of {@link RuntimeInfo} objects that had passed the
+	 * filter (for which the XPath expression returned 'true' or a value that
+	 * evaluates to 'true').
 	 * 
 	 * @param xpath
-	 *          criteria a HostInfo must match
-	 * @return all runtimes matching the criteria
+	 *          criteria a {@link RuntimeInfo} must match
+	 * @return all host runtimes matching the criteria
 	 * @throws BeenApiException
-	 *           if the look-up fails due to connection problems
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
 	 */
 	public Collection<RuntimeInfo> getRuntimes(String xpath) throws BeenApiException;
+
+	/**
+	 * Returns the {@link RuntimeInfo} object representing the host runtime with
+	 * the specified ID.
+	 * 
+	 * @param id
+	 *          ID of the host runtime
+	 * @return a {@link RuntimeInfo} of the host runtime or null if there is no
+	 *         runtime with the specified ID
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public RuntimeInfo getRuntime(String id) throws BeenApiException;
 
 	public Collection<TaskLogMessage> getLogsForTask(String taskId) throws BeenApiException;

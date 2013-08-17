@@ -46,9 +46,12 @@ import cz.cuni.mff.d3s.been.util.JSONUtils;
 import cz.cuni.mff.d3s.been.util.JsonException;
 
 /**
- * User: donarus Date: 4/27/13 Time: 11:50 AM
+ * 
+ * {@link BeenApi} implementation.
+ * 
+ * @author donarus
  */
-public class BeenApiImpl implements BeenApi {
+final class BeenApiImpl implements BeenApi {
 
 	private static Logger log = LoggerFactory.getLogger(BeenApiImpl.class);
 
@@ -707,6 +710,7 @@ public class BeenApiImpl implements BeenApi {
 	public CommandEntry deleteTaskWrkDirectory(final String runtimeId, final String taskWrkDir) throws BeenApiException {
 
 		// FIXME needs refactoring
+		// FIXME nevracet CommandEntry, ale void a vyjimku pri chybe nebo pri timeoutu
 
 		final String errorMsg = String.format(
 				"Failed to delete task working directory '%s' on runtime '%s'",

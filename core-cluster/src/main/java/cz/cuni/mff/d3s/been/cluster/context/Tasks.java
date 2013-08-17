@@ -1,14 +1,10 @@
 package cz.cuni.mff.d3s.been.cluster.context;
 
 import static cz.cuni.mff.d3s.been.core.task.TaskState.*;
-import static cz.cuni.mff.d3s.been.persistence.task.PersistentDescriptors.CONTEXT_DESCRIPTOR;
 
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
-import cz.cuni.mff.d3s.been.core.persistence.TaskEntity;
-import cz.cuni.mff.d3s.been.persistence.DAOException;
-import cz.cuni.mff.d3s.been.persistence.task.PersistentDescriptors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,10 +13,13 @@ import com.hazelcast.core.IMap;
 import com.hazelcast.query.SqlPredicate;
 
 import cz.cuni.mff.d3s.been.cluster.Names;
+import cz.cuni.mff.d3s.been.core.persistence.TaskEntity;
 import cz.cuni.mff.d3s.been.core.protocol.messages.KillTaskMessage;
 import cz.cuni.mff.d3s.been.core.task.TaskEntries;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
+import cz.cuni.mff.d3s.been.persistence.DAOException;
+import cz.cuni.mff.d3s.been.persistence.task.PersistentDescriptors;
 
 /**
  * 
@@ -109,7 +108,7 @@ public class Tasks {
 	 * 
 	 * @return id of the submitted task
 	 */
-	public String submit(TaskEntry taskEntry)  {
+	public String submit(TaskEntry taskEntry) {
 		// TODO
 		TaskEntries.setState(taskEntry, TaskState.SUBMITTED, "Submitted by ...");
 
@@ -122,7 +121,11 @@ public class Tasks {
 	}
 
 	private void persistTaskDescriptor(TaskEntry taskEntry) {
-		final TaskEntity entity = PersistentDescriptors.wrapTaskDescriptor(taskEntry.getTaskDescriptor(), taskEntry.getId(), taskEntry.getTaskContextId(), taskEntry.getBenchmarkId());
+		final TaskEntity entity = PersistentDescriptors.wrapTaskDescriptor(
+				taskEntry.getTaskDescriptor(),
+				taskEntry.getId(),
+				taskEntry.getTaskContextId(),
+				taskEntry.getBenchmarkId());
 		try {
 			clusterCtx.getPersistence().asyncPersist(PersistentDescriptors.TASK_DESCRIPTOR, entity);
 		} catch (DAOException e) {
@@ -214,6 +217,7 @@ public class Tasks {
 				if (state == WAITING) {
 					TaskEntries.setState(taskEntry, ABORTED, "Killed by user");
 					putTask(taskEntry);
+					return;
 				}
 
 			} finally {
@@ -222,7 +226,7 @@ public class Tasks {
 		}
 
 		if ((state == ABORTED) || (state == FINISHED)) {
-			throw new IllegalStateException(String.format("Trying to kill task %s, but it's in state %s.", taskId, state));
+			return;
 		}
 
 		String receiverId = taskEntry.getRuntimeId();
