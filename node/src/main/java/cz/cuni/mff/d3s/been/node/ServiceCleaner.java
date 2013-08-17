@@ -10,7 +10,7 @@ import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.service.ServiceInfo;
 
 /**
- * @author Tadeáš Palusga
+ * @author donarus
  */
 final class ServiceCleaner implements MembershipListener {
 	private ClusterContext clusterContext;

@@ -48,7 +48,7 @@ import cz.cuni.mff.d3s.been.util.ZipUtil;
  * All good names taken, so 'Process' is used.
  * 
  * @author Martin Sixta
- * @author Tadeáš Palusga
+ * @author donarus
  */
 final class ProcessManager implements Service {
 

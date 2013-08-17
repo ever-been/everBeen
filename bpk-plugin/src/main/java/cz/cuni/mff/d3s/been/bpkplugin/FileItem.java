@@ -16,7 +16,7 @@ import cz.cuni.mff.d3s.been.bpk.BpkNames;
  * Represents wildcard or file which will be added into generated BPK bundle
  * into "files" folder.
  * 
- * @author Tadeáš Palusga
+ * @author donarus
  * 
  */
 public final class FileItem {
