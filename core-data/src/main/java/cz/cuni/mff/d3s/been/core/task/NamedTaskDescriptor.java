@@ -1,7 +1,5 @@
 package cz.cuni.mff.d3s.been.core.task;
 
-import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
-
 import java.io.Serializable;
 
 /**
@@ -9,8 +7,8 @@ import java.io.Serializable;
  */
 public class NamedTaskDescriptor extends NamedDescriptor<TaskDescriptor> implements Serializable {
 
-    public NamedTaskDescriptor(String name, String groupId, String bpkId, String version, TaskDescriptor descriptor) {
-        super(name, groupId, bpkId, version, descriptor);
-    }
+	public NamedTaskDescriptor(String name, String groupId, String bpkId, String bpkVersion, TaskDescriptor descriptor) {
+		super(name, groupId, bpkId, bpkVersion, descriptor);
+	}
 
 }
