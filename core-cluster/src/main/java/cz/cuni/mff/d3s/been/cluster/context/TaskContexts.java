@@ -16,7 +16,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static cz.cuni.mff.d3s.been.cluster.Names.BENCHMARKS_CONTEXT_ID;
-import static cz.cuni.mff.d3s.been.persistence.task.PersistentDescriptors.CONTEXT_DESCRIPTOR;
+import static cz.cuni.mff.d3s.been.cluster.context.TaskContextsConfiguration.*;
 
 /**
  * Created with IntelliJ IDEA. User: Kuba Date: 20.04.13 Time: 13:09 To change
@@ -285,8 +285,9 @@ public class TaskContexts {
             }
         }
 
-        int contextTtlSeconds = PropertyReader.system().getInteger("been.context.ttl", 300);
-        int taskTtlSeconds = PropertyReader.system().getInteger("been.task.ttl", 300);
+	    PropertyReader propertyReader = PropertyReader.on(clusterContext.getProperties());
+        int contextTtlSeconds = propertyReader.getInteger(CONTEXT_EVICTION_TTL, DEFAULT_CONTEXT_EVICTION_TTL);
+        int taskTtlSeconds = propertyReader.getInteger(TASK_EVICTION_TTL, DEFAULT_TASK_EVICTION_TTL);
 
         log.info("Removing tasks contained in context {} after {} seconds", taskContextEntry.getId(), taskTtlSeconds);
 

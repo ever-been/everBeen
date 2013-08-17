@@ -90,7 +90,12 @@ public class TaskContextCheckerAction implements TaskAction {
 					finalState = TaskContextState.FAILED;
 				}
 				contextEntry.setContextState(finalState);
-				ctx.getTaskContexts().cleanupTaskContext(contextEntry);
+
+				if (finalState == TaskContextState.FINISHED) {
+					ctx.getTaskContexts().cleanupTaskContext(contextEntry);
+				} else {
+					ctx.getTaskContexts().putContextEntry(contextEntry);
+				}
 			}
 		} finally {
 			contextsMap.unlock(taskContextId); // LOCK END
