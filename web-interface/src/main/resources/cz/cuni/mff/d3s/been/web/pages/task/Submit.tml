@@ -3,45 +3,57 @@
 <html t:type="layout" section="section"
       xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd" xmlns:p="tapestry:parameter">
 
-<h2>Submit new task, context or benchmark</h2>
+    <h2>Submit new task, context or benchmark</h2>
 
-<table class="list">
-<t:loop source="bpks" value="bpk">
-	<tr style="background-color: #eee;">
-		<td>
-			<i class="icon-suitcase"></i>
-			${bpk.bpkId}
-		</td>
-		<td>${bpk.groupId}</td>
-		<td>${bpk.version}</td>
-	</tr>
-	<tr>
-		<td></td>
-		<td colspan="2">
-			<table class="list">
-			<t:loop source="descriptorsInBpk(bpk)" value="descriptor">
-				<tr>
-					<td>
-						<t:if test="descriptor.isTaskDescriptor">
-							<t:if test="taskDescriptorBenchmark(descriptor.taskDescriptor)">
-								<i class="icon-rocket"></i>
-								<p:else>
-									<i class="icon-beaker"></i>
-								</p:else>
-							</t:if>
-							<p:else>
-								<i class="icon-book"></i>
-							</p:else>
-						</t:if>
-					</td>
-					<td style="padding-right: 50px;">${descriptor.name}</td>
-					<td><button type="button" onclick="location.href='${descriptor.submitLink}';">Submit</button></td>
-				</tr>
-			</t:loop>
-			</table>
-		</td>
-	</tr>
-</t:loop>
-</table>
+    <table class="list">
+        <t:loop source="bpks" value="bpk">
+            <tr style="background-color: #eee;">
+                <td>
+                    <i class="icon-suitcase"></i>
+                    ${bpk.bpkId}
+                </td>
+                <td>${bpk.groupId}</td>
+                <td>${bpk.version}</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td colspan="2">
+                    <table class="list">
+                        <t:loop source="descriptorsForBpk(bpk)" value="descriptor">
+                            <tr>
+                                <td>
+                                    <t:if test="descriptor.isTaskDescriptor">
+                                        <t:if test="taskDescriptorBenchmark(descriptor.taskDescriptor)">
+                                            <i class="icon-rocket"></i>
+                                            <p:else>
+                                                <i class="icon-beaker"></i>
+                                            </p:else>
+                                        </t:if>
+                                        <p:else>
+                                            <i class="icon-book"></i>
+                                        </p:else>
+                                    </t:if>
+                                </td>
+                                <td style="padding-right: 50px;">${descriptor.name}</td>
+                                <td>
+                                    <button type="button" class="btn"
+                                            onclick="location.href='${descriptor.submitLink}';">Submit
+                                    </button>
+                                </td>
+                                <td>
+                                    <t:if t:test="descriptor.named">
+                                        <button class="btn" t:type="actionlink" t:id="deleteNamedDescriptor"
+                                                context="[descriptor.name, descriptor.isTaskDescriptor, bpk.groupId, bpk.bpkId, bpk.version]">
+                                            delete
+                                        </button>
+                                    </t:if>
+                                </td>
+                            </tr>
+                        </t:loop>
+                    </table>
+                </td>
+            </tr>
+        </t:loop>
+    </table>
 
 </html>

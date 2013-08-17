@@ -1,22 +1,21 @@
 package cz.cuni.mff.d3s.been.web.pages.task;
 
-import cz.cuni.mff.d3s.been.api.BeenApiException;
-import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
-import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
-import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
-import cz.cuni.mff.d3s.been.core.task.TaskType;
-import cz.cuni.mff.d3s.been.web.components.Layout;
-import cz.cuni.mff.d3s.been.web.pages.DetailPage;
-import cz.cuni.mff.d3s.been.web.pages.Page;
-import org.apache.tapestry5.annotations.InjectPage;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
+
 import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.services.URLEncoder;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Map;
+import cz.cuni.mff.d3s.been.api.BeenApiException;
+import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
+import cz.cuni.mff.d3s.been.bpk.ObjectFactory;
+import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
+import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
+import cz.cuni.mff.d3s.been.core.task.TaskType;
+import cz.cuni.mff.d3s.been.web.components.Layout;
+import cz.cuni.mff.d3s.been.web.pages.Page;
 
 /**
  * User: donarus Date: 4/29/13 Time: 2:14 PM
@@ -46,7 +45,23 @@ public class Submit extends Page {
 	@Inject
 	URLEncoder urlEncoder;
 
-	public Collection<Descriptor> descriptorsInBpk(BpkIdentifier bpk) throws BeenApiException {
+	Object onActionFromDeleteNamedDescriptor(String name, boolean isTaskDescriptor, String groupId, String bpkId,
+			String version) throws BeenApiException {
+		BpkIdentifier bpkIdentifier = new ObjectFactory().createBpkIdentifier();
+		bpkIdentifier.setBpkId(bpkId);
+		bpkIdentifier.setGroupId(groupId);
+		bpkIdentifier.setVersion(version);
+
+		if (isTaskDescriptor) {
+			api.getApi().deleteNamedTaskDescriptor(bpkIdentifier, name);
+		} else {
+			api.getApi().deleteNamedTaskContextDescriptor(bpkIdentifier, name);
+		}
+
+		return Submit.class;
+	}
+
+	public Collection<Descriptor> descriptorsForBpk(BpkIdentifier bpk) throws BeenApiException {
 		Collection<Descriptor> result = new ArrayList<Descriptor>();
 		for (Map.Entry<String, TaskDescriptor> entry : this.api.getApi().getTaskDescriptors(bpk).entrySet()) {
 			String descriptorName = entry.getKey();
@@ -79,7 +94,8 @@ public class Submit extends Page {
 		return result;
 	}
 
-	private void addTcdToResults(Collection<Descriptor> result, String descriptorName, TaskContextDescriptor tcd, String link, boolean named) {
+	private void addTcdToResults(Collection<Descriptor> result, String descriptorName, TaskContextDescriptor tcd,
+			String link, boolean named) {
 		Descriptor d = new Descriptor();
 		d.name = descriptorName;
 		d.isTaskDescriptor = false;
@@ -90,7 +106,8 @@ public class Submit extends Page {
 		result.add(d);
 	}
 
-	private void addTdToResults(Collection<Descriptor> result, String descriptorName, TaskDescriptor td, String s, boolean named) {
+	private void addTdToResults(Collection<Descriptor> result, String descriptorName, TaskDescriptor td, String s,
+			boolean named) {
 		Descriptor d = new Descriptor();
 		d.name = descriptorName;
 		d.isTaskDescriptor = true;
@@ -106,10 +123,7 @@ public class Submit extends Page {
 	}
 
 	private String linkFromBpkIdentifier(BpkIdentifier bpk, String descriptorName) {
-		return urlEncoder.encode(bpk.getGroupId()) + "/"
-						+ urlEncoder.encode(bpk.getBpkId()) + "/"
-						+ urlEncoder.encode(bpk.getVersion()) + "/"
-						+ urlEncoder.encode(descriptorName);
+		return urlEncoder.encode(bpk.getGroupId()) + "/" + urlEncoder.encode(bpk.getBpkId()) + "/" + urlEncoder.encode(bpk.getVersion()) + "/" + urlEncoder.encode(descriptorName);
 	}
 
 }
