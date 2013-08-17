@@ -1,11 +1,18 @@
 package cz.cuni.mff.d3s.been.detectors;
 
 import cz.cuni.mff.d3s.been.core.ri.*;
+import org.apache.commons.collections.EnumerationUtils;
+import org.apache.commons.lang.StringUtils;
+import org.hyperic.sigar.NetInterfaceConfig;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
 import java.lang.reflect.Method;
+import java.net.*;
+import java.net.NetworkInterface;
+import java.util.ArrayList;
+import java.util.Enumeration;
 
 /**
  * @author Kuba Brecka
@@ -44,6 +51,26 @@ public class JavaDetector {
 		for (int i = 0; i < Runtime.getRuntime().availableProcessors(); i++) {
 			Cpu cpu = new Cpu();
 			hw.getCpu().add(cpu);
+		}
+
+		try {
+			Enumeration<NetworkInterface> ifs = NetworkInterface.getNetworkInterfaces();
+
+			for (Object i : EnumerationUtils.toList(ifs)) {
+				NetworkInterface iface = (NetworkInterface) i;
+				cz.cuni.mff.d3s.been.core.ri.NetworkInterface networkInterface = new cz.cuni.mff.d3s.been.core.ri.NetworkInterface();
+				networkInterface.setName(iface.getName());
+				networkInterface.setMtu(iface.getMTU());
+
+				for (Object o : EnumerationUtils.toList(iface.getInetAddresses())) {
+					InetAddress a = (InetAddress) o;
+					networkInterface.getAddress().add(a.getHostAddress());
+				}
+
+				hw.getNetworkInterface().add(networkInterface);
+			}
+		} catch (SocketException e) {
+			// do nothing
 		}
 
 		runtimeInfo.setHardware(hw);
