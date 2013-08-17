@@ -853,8 +853,7 @@ final class BeenApiImpl implements BeenApi {
 		}
 	}
 
-	@Override
-	public QueryAnswer queryPersistence(final Query query) throws BeenApiException {
+	private QueryAnswer queryPersistence(final Query query) throws BeenApiException {
 		return performQuery(query, "Failed to perform persistence query");
 	}
 
