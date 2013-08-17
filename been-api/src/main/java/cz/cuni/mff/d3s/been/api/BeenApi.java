@@ -252,7 +252,11 @@ public interface BeenApi {
 
 	public void disallowResubmitsForBenchmark(String benchmarkId) throws BeenApiException;
 
-	interface LogListener {
+    void deleteNamedContextDescriptor(BpkIdentifier bpkId, String name) throws BeenApiException;
+
+    void deleteNamedTaskContextDescriptor(BpkIdentifier bpkId, String name) throws BeenApiException;
+
+    interface LogListener {
 		public void logAdded(String jsonLog);
 	}
 }
