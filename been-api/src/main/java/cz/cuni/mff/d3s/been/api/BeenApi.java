@@ -508,8 +508,50 @@ public interface BeenApi {
 	 */
 	public void killBenchmark(String benchmarkId) throws BeenApiException;
 
+	/**
+	 * Removes the task entry with the specified task ID from the Hazelcast map.
+	 * The task must be in a final state (finished or aborted) otherwise a
+	 * {@link BeenApiException} is thrown. If the the task with the specified ID
+	 * does not exist, this method does nothing.
+	 * 
+	 * @param taskId
+	 *          ID of the task entry to remove
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public void removeTaskEntry(String taskId) throws BeenApiException;
+
+	/**
+	 * Removes the task context entry with the specified ID from the Hazelcast
+	 * map. The task context must be in a final state (finished or failed) as well
+	 * as all of its tasks, otherwise a {@link BeenApiException} is thrown. This
+	 * method also removes all of the contained tasks, just as if you called
+	 * {@link #removeTaskEntry} for all tasks within the context.
+	 * 
+	 * @param taskContextId
+	 *          ID of the task context entry to remove
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public void removeTaskContextEntry(String taskContextId) throws BeenApiException;
+
+	/**
+	 * Removes the benchmark entry with the specified ID from the Hazelcast map.
+	 * The benchmark's generator task must be in a final state (finished or
+	 * aborted) or already removed, and all of the task contexts within this
+	 * benchmark must also be in a final state (finished or failed), otherwise a
+	 * {@link BeenApiException} is thrown. Also removes all existing task contexts
+	 * that belong to this benchmark. Also removes all "old generators", which
+	 * have failed and were resubmitted, and the current generator task.
+	 * 
+	 * @param benchmarkId
+	 *          ID of the benchmark entry to remove
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public void removeBenchmarkEntry(String benchmarkId) throws BeenApiException;
 
 	public CommandEntry deleteTaskWrkDirectory(String runtimeId, String taskWrkDir) throws BeenApiException;
