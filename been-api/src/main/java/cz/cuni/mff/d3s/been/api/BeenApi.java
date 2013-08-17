@@ -25,17 +25,17 @@ import cz.cuni.mff.d3s.been.persistence.QueryAnswer;
 /**
  * The BeenApi interface provides access and API to the BEEN cluster. All client
  * access (web interface, command-line interface) to BEEN should be done through
- * this interface, which is implement int the {@link BeenApiImpl} class.
+ * this interface.
  * 
  * This class serves a facade to the whole cluster and provides querying of
  * tasks, contexts, benchmark, the state of services and various other
  * components. Also provides control operations, such as submitting tasks and
  * benchmarks.
  * 
- * To use this API, instantiate a {@link BeenApiImpl} class, which will connect
- * to the cluster, then use this instance to communicate with the cluster. All
- * methods throw {@link BeenApiException} in case of a sudden disconnection or
- * in case of any internal inconsistency or invalid parameters.
+ * To use this API, instantiate a {@link BeenApi} instance through
+ * {@link BeenApiFactory}, then use this instance to communicate with the
+ * cluster. All methods throw {@link BeenApiException} in case of a sudden
+ * disconnection or in case of any internal inconsistency or invalid parameters.
  * 
  * @author donarus
  */
