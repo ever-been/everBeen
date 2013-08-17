@@ -298,7 +298,7 @@ public class ProcessManagerContextTest extends Assert {
 	}
 
 	private RuntimeInfo createRuntimeInfo() throws IOException {
-		return new RuntimeInfo().withId(runtimeId).withTasksWorkingDirectory(tmp.newFolder().toString());
+		return new RuntimeInfo().withMaxTasks(15).withId(runtimeId).withTasksWorkingDirectory(tmp.newFolder().toString());
 	}
 
 }

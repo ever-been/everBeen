@@ -13,6 +13,7 @@ import com.hazelcast.query.Predicate;
 
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
+import cz.cuni.mff.d3s.been.core.ri.RuntimeInfos;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskExclusivity;
 
@@ -73,6 +74,15 @@ final class RandomRuntimeSelection implements IRuntimeSelection {
 			if (info.getExclusivity() == null) {
 				// workaround for JAXB not setting default value on elements
 				info.setExclusivity(TaskExclusivity.NON_EXCLUSIVE.toString());
+			}
+
+			// Runtime Overload conditions
+			if (RuntimeInfos.isMaxTasksReached(info)) {
+				return false;
+			}
+
+			if (RuntimeInfos.isMemoryThresholdReached(info)) {
+				return false;
 			}
 
 			TaskExclusivity runtimeExclusivity;

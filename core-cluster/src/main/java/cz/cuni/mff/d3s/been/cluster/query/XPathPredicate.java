@@ -2,17 +2,18 @@ package cz.cuni.mff.d3s.been.cluster.query;
 
 import static cz.cuni.mff.d3s.been.core.task.TaskExclusivity.NON_EXCLUSIVE;
 
+import java.util.List;
+
 import org.apache.commons.jxpath.JXPathContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hazelcast.core.MapEntry;
 import com.hazelcast.query.Predicate;
 
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
+import cz.cuni.mff.d3s.been.core.ri.RuntimeInfos;
 import cz.cuni.mff.d3s.been.core.task.TaskExclusivity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 /**
  * 
@@ -41,6 +42,15 @@ public final class XPathPredicate implements Predicate<String, RuntimeInfo> {
 		if (info.getExclusivity() == null) {
 			// workaround for JAXB not setting default value on elements
 			info.setExclusivity(NON_EXCLUSIVE.toString());
+		}
+
+		// Runtime Overload conditions
+		if (RuntimeInfos.isMaxTasksReached(info)) {
+			return false;
+		}
+
+		if (RuntimeInfos.isMemoryThresholdReached(info)) {
+			return false;
 		}
 
 		TaskExclusivity runtimeExclusivity;
