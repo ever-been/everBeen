@@ -1,7 +1,14 @@
 package cz.cuni.mff.d3s.been.api;
 
+import java.io.InputStream;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 import com.hazelcast.core.EntryListener;
 import com.hazelcast.core.Member;
+
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.core.benchmark.BenchmarkEntry;
 import cz.cuni.mff.d3s.been.core.protocol.command.CommandEntry;
@@ -15,138 +22,164 @@ import cz.cuni.mff.d3s.been.logging.TaskLogMessage;
 import cz.cuni.mff.d3s.been.persistence.Query;
 import cz.cuni.mff.d3s.been.persistence.QueryAnswer;
 
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 /**
- * The BeenApi interface provides access and API to the BEEN cluster.
- * All client access (web interface, command-line interface) to BEEN should be done
- * through this interface, which is implement int the {@link BeenApiImpl} class.
- *
+ * The BeenApi interface provides access and API to the BEEN cluster. All client
+ * access (web interface, command-line interface) to BEEN should be done through
+ * this interface, which is implement int the {@link BeenApiImpl} class.
+ * 
  * This class serves a facade to the whole cluster and provides querying of
- * tasks, contexts, benchmark, the state of services and various other components.
- * Also provides control operations, such as submitting tasks and benchmarks.
- *
+ * tasks, contexts, benchmark, the state of services and various other
+ * components. Also provides control operations, such as submitting tasks and
+ * benchmarks.
+ * 
  * To use this API, instantiate a {@link BeenApiImpl} class, which will connect
- * to the cluster, then use this instance to communicate with the cluster. All methods
- * throw {@link BeenApiException} in case of a sudden disconnection or in case of any
- * internal inconsistency or invalid parameters.
- *
+ * to the cluster, then use this instance to communicate with the cluster. All
+ * methods throw {@link BeenApiException} in case of a sudden disconnection or
+ * in case of any internal inconsistency or invalid parameters.
+ * 
  * @author donarus
  */
 public interface BeenApi {
 
 	/**
 	 * Shuts down the connection to the BEEN cluster. After calling this method,
-	 * any further API calls will throw a {@link BeenApiException} exception. You should
-	 * not use this instance of {@link BeenApi} after calling this method.
+	 * any further API calls will throw a {@link BeenApiException} exception. You
+	 * should not use this instance of {@link BeenApi} after calling this method.
 	 */
 	public void shutdown();
 
 	/**
-	 * Returns a collection of currently connected cluster members. The item of the
-	 * collection is a {@link Member} class from Hazelcast describing the properties
-	 * of the member.
-	 *
+	 * Returns a collection of currently connected cluster members. The item of
+	 * the collection is a {@link Member} class from Hazelcast describing the
+	 * properties of the member.
+	 * 
 	 * @return collection of connected cluster members
-	 * @throws BeenApiException in case of an internal exception, see {@link BeenApi} for discussion
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
 	 */
 	public Collection<Member> getClusterMembers() throws BeenApiException;
 
 	/**
-	 * Returns a list of records describing the current status of various BEEN services.
-	 * This does not return information about core (required) components which always run,
-	 * but only about optional/configurable components (e.g. software repository).
-	 *
+	 * Returns a list of records describing the current status of various BEEN
+	 * services. This does not return information about core (required) components
+	 * which always run, but only about optional/configurable components (e.g.
+	 * software repository).
+	 * 
 	 * @return list of available {@link ServiceInfo} records
-	 * @throws BeenApiException in case of an internal exception, see {@link BeenApi} for discussion
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
 	 */
 	public List<ServiceInfo> getClusterServices() throws BeenApiException;
 
 	/**
-	 * Returns all tasks that are currently available in the cluster. A task always belongs
-	 * to some task context, but doesn't necessarily belong to a benchmark. Note that finished
-	 * tasks are automatically removed from the cluster after some time (see
+	 * Returns all tasks that are currently available in the cluster. A task
+	 * always belongs to some task context, but doesn't necessarily belong to a
+	 * benchmark. Note that finished tasks are automatically removed from the
+	 * cluster after some time (see
 	 * {@link cz.cuni.mff.d3s.been.cluster.context.TaskContextsConfiguration} for
-	 * configuration of this interval). The returned collection is a copy of the map, so after some time
-	 * it might not represent the current state of tasks.
-	 *
+	 * configuration of this interval). The returned collection is a copy of the
+	 * map, so after some time it might not represent the current state of tasks.
+	 * 
 	 * @return a collection of all task entries in the cluster
-	 * @throws BeenApiException in case of an internal exception, see {@link BeenApi} for discussion
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
 	 */
 	public Collection<TaskEntry> getTasks() throws BeenApiException;
 
 	/**
-	 * Retrieves the current task entry object for the passed task ID. The returned object is a copy
-	 * of the task entry and after some time might not represent the current state of the task.
-	 *
-	 * @param id ID of the task
-	 * @return {@link TaskEntry} object representing the current state of the task or null if there is no
-	 * task with the specified ID
-	 * @throws BeenApiException in case of an internal exception, see {@link BeenApi} for discussion
+	 * Retrieves the current task entry object for the passed task ID. The
+	 * returned object is a copy of the task entry and after some time might not
+	 * represent the current state of the task.
+	 * 
+	 * @param id
+	 *          ID of the task
+	 * @return {@link TaskEntry} object representing the current state of the task
+	 *         or null if there is no task with the specified ID
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
 	 */
 	public TaskEntry getTask(String id) throws BeenApiException;
 
 	/**
-	 * Returns a collection of all currently available task contexts in the cluster. Note that successfully
-	 * finished task contexts are automatically removed from the Hazelcast map after some time (see
-	 * {@link cz.cuni.mff.d3s.been.cluster.context.TaskContextsConfiguration} for configuration of this
-	 * interval). The returned collection is a copy of the map, so after some time
-	 * it might not represent the current state.
-	 *
+	 * Returns a collection of all currently available task contexts in the
+	 * cluster. Note that successfully finished task contexts are automatically
+	 * removed from the Hazelcast map after some time (see
+	 * {@link cz.cuni.mff.d3s.been.cluster.context.TaskContextsConfiguration} for
+	 * configuration of this interval). The returned collection is a copy of the
+	 * map, so after some time it might not represent the current state.
+	 * 
 	 * @return a collection of all task context entries in the cluster
-	 * @throws BeenApiException in case of an internal exception, see {@link BeenApi} for discussion
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
 	 */
 	public Collection<TaskContextEntry> getTaskContexts() throws BeenApiException;
 
 	/**
-	 * Retrieves the current task context entry object for the specified task context ID. The returned
-	 * object is a copy of the entry in the Hazelcast map, and after some time it might not represent
-	 * the current state.
-	 *
-	 * @param id ID of the task context
-	 * @return {@link TaskContextEntry} object representing the current state of the task context or null
-	 * if there is no task context with the specified ID
-	 * @throws BeenApiException in case of an internal exception, see {@link BeenApi} for discussion
+	 * Retrieves the current task context entry object for the specified task
+	 * context ID. The returned object is a copy of the entry in the Hazelcast
+	 * map, and after some time it might not represent the current state.
+	 * 
+	 * @param id
+	 *          ID of the task context
+	 * @return {@link TaskContextEntry} object representing the current state of
+	 *         the task context or null if there is no task context with the
+	 *         specified ID
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
 	 */
 	public TaskContextEntry getTaskContext(String id) throws BeenApiException;
 
 	/**
-	 * Returns a collection of all currently available benchmarks in the cluster. Benchmarks are *not*
-	 * automatically removed, they can be deleted only using the {@link #removeBenchmarkEntry} method.
-	 * The returned object is a copy of the entry in the Hazelcast map, and after some time it might not
-	 * represent the current state.
-	 *
-	 * @return {@link BenchmarkEntry} object representing the current state of the benchmark
-	 * @throws BeenApiException in case of an internal exception, see {@link BeenApi} for discussion
+	 * Returns a collection of all currently available benchmarks in the cluster.
+	 * Benchmarks are *not* automatically removed, they can be deleted only using
+	 * the {@link #removeBenchmarkEntry} method. The returned object is a copy of
+	 * the entry in the Hazelcast map, and after some time it might not represent
+	 * the current state.
+	 * 
+	 * @return {@link BenchmarkEntry} object representing the current state of the
+	 *         benchmark
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
 	 */
 	public Collection<BenchmarkEntry> getBenchmarks() throws BeenApiException;
 
 	/**
-	 * Retrieves the current benchmark entry object for the specified benchmark ID. The returned
-	 * object is a copy of the entry in the Hazelcast map, and after some time it might not represent
-	 * the current state.
-	 *
-	 * @param id ID of the benchmark
-	 * @return {@link BenchmarkEntry} object representing the current state of the benchmark or null if
-	 * there is no benchmark with the specified ID
-	 * @throws BeenApiException in case of an internal exception, see {@link BeenApi} for discussion
+	 * Retrieves the current benchmark entry object for the specified benchmark
+	 * ID. The returned object is a copy of the entry in the Hazelcast map, and
+	 * after some time it might not represent the current state.
+	 * 
+	 * @param id
+	 *          ID of the benchmark
+	 * @return {@link BenchmarkEntry} object representing the current state of the
+	 *         benchmark or null if there is no benchmark with the specified ID
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
 	 */
 	public BenchmarkEntry getBenchmark(String id) throws BeenApiException;
 
 	/**
-	 * Returns a collection of all available task contexts in the specified benchmark. Note that task
-	 * contexts are automatically removed from the Hazelcast map after some time (see {@link #getTaskContexts})
-	 * so these removed contexts are not returned in the collection. The returned
-	 * object is a copy of the entry in the Hazelcast map, and after some time it might not represent
-	 * the current state.
-	 *
-	 * @param benchmarkId ID of the benchmark
-	 * @return a collection of available task context entries in the specified benchmark
-	 * @throws BeenApiException in case of an internal exception, see {@link BeenApi} for discussion
+	 * Returns a collection of all available task contexts in the specified
+	 * benchmark. Note that task contexts are automatically removed from the
+	 * Hazelcast map after some time (see {@link #getTaskContexts}) so these
+	 * removed contexts are not returned in the collection. The returned object is
+	 * a copy of the entry in the Hazelcast map, and after some time it might not
+	 * represent the current state.
+	 * 
+	 * @param benchmarkId
+	 *          ID of the benchmark
+	 * @return a collection of available task context entries in the specified
+	 *         benchmark
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
 	 */
 	public Collection<TaskContextEntry> getTaskContextsInBenchmark(String benchmarkId) throws BeenApiException;
 	public Collection<TaskEntry> getTasksInTaskContext(String taskContextId) throws BeenApiException;
@@ -248,15 +281,15 @@ public interface BeenApi {
 
 	public boolean isConnected();
 
-    boolean isSwRepositoryOnline() throws BeenApiException;
+	boolean isSwRepositoryOnline() throws BeenApiException;
 
 	public void disallowResubmitsForBenchmark(String benchmarkId) throws BeenApiException;
 
-    void deleteNamedContextDescriptor(BpkIdentifier bpkId, String name) throws BeenApiException;
+	void deleteNamedTaskDescriptor(BpkIdentifier bpkId, String name) throws BeenApiException;
 
-    void deleteNamedTaskContextDescriptor(BpkIdentifier bpkId, String name) throws BeenApiException;
+	void deleteNamedTaskContextDescriptor(BpkIdentifier bpkId, String name) throws BeenApiException;
 
-    interface LogListener {
+	interface LogListener {
 		public void logAdded(String jsonLog);
 	}
 }

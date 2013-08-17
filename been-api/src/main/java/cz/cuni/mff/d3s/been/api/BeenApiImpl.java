@@ -282,7 +282,7 @@ public class BeenApiImpl implements BeenApi {
 	}
 
 	@Override
-	public void deleteNamedContextDescriptor(final BpkIdentifier bpkId, final String name) throws BeenApiException {
+	public void deleteNamedTaskDescriptor(final BpkIdentifier bpkId, final String name) throws BeenApiException {
 		final String errorMsg = String.format(
 				"Failed to delete named task descriptors with name '%s' for bpk '%s:%s:%s'",
 				name,
