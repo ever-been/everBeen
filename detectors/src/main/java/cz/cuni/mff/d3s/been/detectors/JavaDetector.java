@@ -5,6 +5,7 @@ import cz.cuni.mff.d3s.been.core.ri.*;
 import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
+import java.lang.reflect.Method;
 
 /**
  * @author Kuba Brecka
@@ -37,7 +38,7 @@ public class JavaDetector {
 		Hardware hw = new Hardware();
 
 		Memory mem = new Memory();
-		mem.setRam(Runtime.getRuntime().totalMemory());
+		mem.setRam(getTotalMemoryFromReflection());
 		hw.setMemory(mem);
 
 		for (int i = 0; i < Runtime.getRuntime().availableProcessors(); i++) {
@@ -58,6 +59,38 @@ public class JavaDetector {
 		}
 	}
 
+	private long getTotalMemoryFromReflection()
+	{
+		OperatingSystemMXBean os = ManagementFactory.getOperatingSystemMXBean();
+
+		try {
+			Method a = os.getClass().getMethod("getTotalPhysicalMemorySize");
+			a.setAccessible(true);
+			Object o = a.invoke(os);
+			return (Long) o;
+		} catch (Throwable e) {
+			// do nothing
+		}
+
+		return 0;
+	}
+
+	private long getFreeMemoryFromReflection()
+	{
+		OperatingSystemMXBean os = ManagementFactory.getOperatingSystemMXBean();
+
+		try {
+			Method a = os.getClass().getMethod("getFreePhysicalMemorySize");
+			a.setAccessible(true);
+			Object o = a.invoke(os);
+			return (Long) o;
+		} catch (Throwable e) {
+			// do nothing
+		}
+
+		return 0;
+	}
+
 	public MonitorSample generateSample() {
 
 		OperatingSystemMXBean os = ManagementFactory.getOperatingSystemMXBean();
@@ -66,7 +99,7 @@ public class JavaDetector {
 		LoadAverage la = new LoadAverage();
 		la.setLoad1(os.getSystemLoadAverage());
 		sample.setLoadAverage(la);
-		sample.setFreeMemory(Runtime.getRuntime().freeMemory());
+		sample.setFreeMemory(getFreeMemoryFromReflection());
 
 		return sample;
 	}
