@@ -554,23 +554,69 @@ public interface BeenApi {
 	 */
 	public void removeBenchmarkEntry(String benchmarkId) throws BeenApiException;
 
+	/**
+	 * Deletes a leftover task working directory from the specified runtime. There
+	 * can be some data left e.g. when the host runtime is incorrectly shutdown,
+	 * these directories can be listed through the {@link #getRuntimes} method,
+	 * which returns {@link RuntimeInfo} object, which contains a list called
+	 * {@link RuntimeInfo#taskDirs}. This call implicitly waits up to 30 seconds
+	 * for the operation to finish and return a {@link CommandEntry} object that
+	 * represents the result of the operation.
+	 * 
+	 * @param runtimeId
+	 *          ID of the runtime
+	 * @param taskWrkDir
+	 *          working directory which should be deleted
+	 * @return a {@link CommandEntry} object that represents the result of the
+	 *         operation
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public CommandEntry deleteTaskWrkDirectory(String runtimeId, String taskWrkDir) throws BeenApiException;
 
+	/**
+	 * Returns a list of all available host runtimes in the cluster. The returned
+	 * object is a copy of the entry in the Hazelcast map, and after some time it
+	 * might not represent the current state.
+	 * 
+	 * @return a collection of {@link RuntimeInfo} object representing the states
+	 *         of host runtimes
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public Collection<RuntimeInfo> getRuntimes() throws BeenApiException;
 
 	/**
-	 * Returns Host Runtimes matching a criteria.
-	 * 
-	 * The criteria is specified using XPath and is applied on each and every
-	 * RuntimeInfo.
+	 * Returns host runtimes matching the specified criteria. The criteria is
+	 * specified as an XPath expression and is applied on each {@link RuntimeInfo}
+	 * object representing the current states of host runtimes. This method
+	 * returns a collection of {@link RuntimeInfo} objects that had passed the
+	 * filter (for which the XPath expression returned 'true' or a value that
+	 * evaluates to 'true').
 	 * 
 	 * @param xpath
-	 *          criteria a HostInfo must match
-	 * @return all runtimes matching the criteria
+	 *          criteria a {@link RuntimeInfo} must match
+	 * @return all host runtimes matching the criteria
 	 * @throws BeenApiException
-	 *           if the look-up fails due to connection problems
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
 	 */
 	public Collection<RuntimeInfo> getRuntimes(String xpath) throws BeenApiException;
+
+	/**
+	 * Returns the {@link RuntimeInfo} object representing the host runtime with
+	 * the specified ID.
+	 * 
+	 * @param id
+	 *          ID of the host runtime
+	 * @return a {@link RuntimeInfo} of the host runtime or null if there is no
+	 *         runtime with the specified ID
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public RuntimeInfo getRuntime(String id) throws BeenApiException;
 
 	public Collection<TaskLogMessage> getLogsForTask(String taskId) throws BeenApiException;

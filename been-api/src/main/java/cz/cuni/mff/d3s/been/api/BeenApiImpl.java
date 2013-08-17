@@ -710,6 +710,7 @@ final class BeenApiImpl implements BeenApi {
 	public CommandEntry deleteTaskWrkDirectory(final String runtimeId, final String taskWrkDir) throws BeenApiException {
 
 		// FIXME needs refactoring
+		// FIXME nevracet CommandEntry, ale void a vyjimku pri chybe nebo pri timeoutu
 
 		final String errorMsg = String.format(
 				"Failed to delete task working directory '%s' on runtime '%s'",
