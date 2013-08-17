@@ -46,9 +46,12 @@ import cz.cuni.mff.d3s.been.util.JSONUtils;
 import cz.cuni.mff.d3s.been.util.JsonException;
 
 /**
- * User: donarus Date: 4/27/13 Time: 11:50 AM
+ * 
+ * {@link BeenApi} implementation.
+ * 
+ * @author donarus
  */
-public class BeenApiImpl implements BeenApi {
+final class BeenApiImpl implements BeenApi {
 
 	private static Logger log = LoggerFactory.getLogger(BeenApiImpl.class);
 
