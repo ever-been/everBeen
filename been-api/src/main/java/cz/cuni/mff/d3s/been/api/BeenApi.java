@@ -802,25 +802,115 @@ public interface BeenApi {
 			TaskContextDescriptor
 			getTaskContextDescriptor(BpkIdentifier bpkIdentifier, String descriptorName) throws BeenApiException;
 
+	/**
+	 * Returns a list of all tasks that are currently waiting for a debugger to
+	 * attach. When submitting a task, you can specify in the task descriptor that
+	 * the task is to be debugged. If the debug mode is 'listen', the task will
+	 * wait for the debugger before is it actually run. These tasks are listed
+	 * with this method.
+	 * 
+	 * @return the list of all tasks waiting for a debugger
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public Collection<DebugListItem> getDebugWaitingTasks() throws BeenApiException;
 
+	/**
+	 * Returns a list of all active tasks (those that still exist and that are not
+	 * aborted) from the specified host runtime.
+	 * 
+	 * @param runtimeId
+	 *          the ID of the runtime
+	 * @return list of all active tasks from the specified host runtime
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public Collection<TaskEntry> listActiveTasks(String runtimeId) throws BeenApiException;
 
+	/**
+	 * Lists all pending {@link CommandEntry} objects that represent commands for
+	 * the specified runtime ID.
+	 * 
+	 * @param runtimeId
+	 *          the ID of the runtime
+	 * @return list of available {@link CommandEntry} objects
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public Collection<CommandEntry> listCommandEntries(String runtimeId) throws BeenApiException;
 
+	/**
+	 * Returns a collection of all existing task entries that belong to the
+	 * specified host runtime.
+	 * 
+	 * @param runtimeId
+	 *          the ID of the runtime
+	 * @return list of all available task entries for the specified host runtime
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public Collection<TaskEntry> listTasks(String runtimeId) throws BeenApiException;
 
+	/**
+	 * Checks whether the BEEN API connection is still active or has been lost.
+	 * 
+	 * @return true if the connection is still active, false otherwise
+	 */
 	public boolean isConnected();
 
+	/**
+	 * Checks whether the software repository is running.
+	 * 
+	 * @return true if software repository is running, false otherwise
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	boolean isSwRepositoryOnline() throws BeenApiException;
 
+	/**
+	 * Prevents a benchmark from being resubmitted (when its generator task
+	 * fails). After calling this method, when the generator task of the
+	 * benchmarks fails, the benchmark will be terminated.
+	 * 
+	 * @param benchmarkId
+	 *          the ID of the benchmark
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public void disallowResubmitsForBenchmark(String benchmarkId) throws BeenApiException;
 
+	/**
+	 * Removes the specified named task descriptor (template) with the specified
+	 * BPK identifier.
+	 * 
+	 * @param bpkId
+	 *          the BPK identifier
+	 * @param name
+	 *          the name of the task descriptor to delete
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	void deleteNamedTaskDescriptor(BpkIdentifier bpkId, String name) throws BeenApiException;
 
+	/**
+	 * Removes the specified named task context descriptor (template) with the
+	 * specified BPK identifier.
+	 * 
+	 * @param bpkId
+	 *          the BPK identifier
+	 * @param name
+	 *          the name of the task context descriptor to delete
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	void deleteNamedTaskContextDescriptor(BpkIdentifier bpkId, String name) throws BeenApiException;
 
-	interface LogListener {
-		public void logAdded(String jsonLog);
-	}
 }
