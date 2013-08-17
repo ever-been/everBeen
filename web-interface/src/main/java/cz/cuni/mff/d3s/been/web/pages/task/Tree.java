@@ -22,6 +22,7 @@ import cz.cuni.mff.d3s.been.web.pages.Page;
 @Import(library = { "context:js/task-list.js" })
 public class Tree extends Page {
 
+	private static final int ACTION_WAIT_TIMEOUT = 10;
 	@Property
 	private TaskEntry task;
 
@@ -136,5 +137,41 @@ public class Tree extends Page {
 
 	public boolean isFirstInContext() {
 		return taskIndex == 0;
+	}
+
+	public Object onActionFromKillBenchmark(String benchmarkId) throws BeenApiException, InterruptedException {
+		api.getApi().killBenchmark(benchmarkId);
+		int time = 0;
+		TaskEntry generator = getGenerator(benchmarkId);
+		while (time < ACTION_WAIT_TIMEOUT && generator != null && generator.getState() != TaskState.ABORTED && generator.getState() != TaskState.FINISHED) {
+			Thread.sleep(1000);
+			time++;
+			generator = getGenerator(benchmarkId);
+		}
+		return this;
+	}
+
+	public Object onActionFromRemoveBenchmark(String benchmarkId) throws BeenApiException {
+		this.api.getApi().removeBenchmarkEntry(benchmarkId);
+		return this;
+	}
+
+	public Object onActionFromRemoveAllFinishedBenchmarks() throws BeenApiException {
+		for (BenchmarkEntry benchmarkEntry : this.api.getApi().getBenchmarks()) {
+			TaskEntry generatorTask = this.api.getApi().getTask(benchmarkEntry.getGeneratorId());
+			if (generatorTask.getState() == TaskState.FINISHED) {
+				this.api.getApi().removeBenchmarkEntry(benchmarkEntry.getId());
+			}
+		}
+		return this;
+	}
+
+	// reloads fresh instance from hazelacast cluster.
+	private TaskEntry getGenerator(String benchmarkId) throws BeenApiException {
+		BenchmarkEntry benchmark = api.getApi().getBenchmark(benchmarkId);
+		if (benchmark != null) {
+			return api.getApi().getTask(benchmark.getGeneratorId());
+		}
+		return null;
 	}
 }
