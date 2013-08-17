@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.node;
 
+import static cz.cuni.mff.d3s.been.cluster.Names.*;
 import static cz.cuni.mff.d3s.been.core.StatusCode.*;
 
 import java.io.IOException;
@@ -36,19 +37,6 @@ import cz.cuni.mff.d3s.been.task.Managers;
 
 /**
  * Entry point for BEEN nodes.
- * <p/>
- * Responsibilities of BEEN nodes include: - joining the cluster - scheduling
- * tasks
- * <p/>
- * Possibly, there can be three types of a node: - full: cluster membership +
- * data + event handling - lite: cluster membership + event handling - client:
- * event handling
- * <p/>
- * Clients nodes could be used as "very lite" runtimes. Lite nodes have the
- * overhead of cluster membership, but does not hold/replicate data.
- * <p/>
- * <p/>
- * So far only full node is implemented.
  * 
  * @author Martin Sixta
  */
@@ -137,11 +125,21 @@ public class Runner implements Reapable {
 			log.info("The node is now connected to the cluster");
 		} catch (ServiceException e) {
 			log.error("Failed to initialize cluster instance", e);
-
 		}
 
 		Reaper clusterReaper = new ClusterReaper(instance);
 		this.clusterContext = Instance.createContext();
+
+		if (nodeType == NodeType.DATA) {
+			// must happen as soon as possible, see documentation for MapStore implementation
+			initializeMaps(
+					TASKS_MAP_NAME,
+					TASK_CONTEXTS_MAP_NAME,
+					BENCHMARKS_MAP_NAME,
+					NAMED_TASK_CONTEXT_DESCRIPTORS_MAP_NAME,
+					NAMED_TASK_DESCRIPTORS_MAP_NAME);
+		}
+
 		registerServiceCleaner();
 		try {
 			// standalone services
@@ -180,6 +178,21 @@ public class Runner implements Reapable {
 		clusterReaper.pushTarget(this);
 
 		Runtime.getRuntime().addShutdownHook(clusterReaper);
+	}
+
+	/**
+	 * Will make Hazelcast to "touch" the maps.
+	 * 
+	 * It causes Hazelcast to load data through its MapStore, if used, from a data
+	 * store.
+	 * 
+	 * @param mapNames
+	 *          names of Maps to force to initialize
+	 */
+	private void initializeMaps(String... mapNames) {
+		for (String mapName : mapNames) {
+			clusterContext.getMap(mapName);
+		}
 	}
 
 	private void registerServiceCleaner() {

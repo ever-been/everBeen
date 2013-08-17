@@ -46,9 +46,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import static cz.cuni.mff.d3s.been.persistence.task.PersistentDescriptors.NAMED_CONTEXT_DESCRIPTOR;
-import static cz.cuni.mff.d3s.been.persistence.task.PersistentDescriptors.NAMED_TASK_DESCRIPTOR;
-
 /**
  * User: donarus Date: 4/27/13 Time: 11:50 AM
  */
@@ -265,85 +262,82 @@ public class BeenApiImpl implements BeenApi {
     @Override
     public void
     saveNamedTaskDescriptor(final TaskDescriptor descriptor, final String name, final BpkIdentifier bpkId) throws BeenApiException {
-        final String errorMsg = String.format("Failed to save named task descriptor '%s'", name);
-        final NamedEntity entity = PersistentDescriptors.wrapNamedTaskDescriptor(descriptor, name, bpkId);
-        final EntityID entityId = NAMED_TASK_DESCRIPTOR;
 
-        saveDescriptor(errorMsg, entityId, entity);
+        Map<String, NamedTaskDescriptor> namedTaskDescriptorsMap = clusterContext.getMap(Names.NAMED_TASK_DESCRIPTORS_MAP_NAME);
+
+        String key = String.format("%s_%s_%s__%s", bpkId.getGroupId(), bpkId.getBpkId(), bpkId.getVersion(), name);
+        NamedTaskDescriptor namedDescriptor = new NamedTaskDescriptor(name, bpkId.getGroupId(), bpkId.getBpkId(), bpkId.getVersion(), descriptor);
+        namedTaskDescriptorsMap.put(key, namedDescriptor);
     }
 
     @Override
     public void saveNamedContextDescriptor(final TaskContextDescriptor descriptor, final String name,
                                            final BpkIdentifier bpkId) throws BeenApiException {
-        final String errorMsg = String.format("Failed to save named task context descriptor '%s'", name);
-        final NamedEntity entity = PersistentDescriptors.wrapNamedContextDescriptor(descriptor, name, bpkId);
-        final EntityID entityId = NAMED_CONTEXT_DESCRIPTOR;
+        Map<String, NamedTaskContextDescriptor> namedTaskContextDescriptorsMap = clusterContext.getMap(Names.NAMED_TASK_CONTEXT_DESCRIPTORS_MAP_NAME);
 
-        saveDescriptor(errorMsg, entityId, entity);
-    }
-
-    private void
-    saveDescriptor(final String errorMsg, final EntityID entityId, final Entity entity) throws BeenApiException {
-        checkIsActive(errorMsg);
-
-        try {
-            clusterContext.getPersistence().asyncPersist(entityId, entity);
-        } catch (DAOException e) {
-            throw createPersistenceException(errorMsg, e);
-        } catch (Exception e) {
-            throw createBeenApiException(errorMsg, e);
-        }
+        String key = String.format("%s_%s_%s__%s", bpkId.getGroupId(), bpkId.getBpkId(), bpkId.getVersion(), name);
+        NamedTaskContextDescriptor namedDescriptor = new NamedTaskContextDescriptor(name, bpkId.getGroupId(), bpkId.getBpkId(), bpkId.getVersion(), descriptor);
+        namedTaskContextDescriptorsMap.put(key, namedDescriptor);
     }
 
     @Override
     public Map<String, TaskDescriptor>
     getNamedTaskDescriptorsForBpk(final BpkIdentifier bpkIdentifier) throws BeenApiException {
-        final String errorMsg = String.format(
-                "Failed to load named task descriptors for %s:%s:%s",
-                bpkIdentifier.getGroupId(),
-                bpkIdentifier.getBpkId(),
-                bpkIdentifier.getVersion());
-        checkIsActive(errorMsg);
+        String errorMsg = String.format("Failed to list named task descriptors for bpk '%s:%s:%s'",
+                bpkIdentifier.getGroupId(), bpkIdentifier.getBpkId(), bpkIdentifier.getVersion());
 
-        final Query query = new QueryBuilder().on(NAMED_TASK_DESCRIPTOR)
-		        .with("bpkId.groupId", bpkIdentifier.getGroupId())
-		        .with("bpkId.bpkId", bpkIdentifier.getBpkId())
-		        .with("bpkId.version", bpkIdentifier.getVersion())
-		        .fetch();
-        final QueryAnswer answer = performQuery(query, errorMsg);
+        final SqlPredicate predicate = new SqlPredicate(
+                String.format(
+                        "groupId = '%s' AND bpkId = '%s' and bpkVersion = '%s'",
+                        bpkIdentifier.getGroupId(),
+                        bpkIdentifier.getBpkId(),
+                        bpkIdentifier.getVersion()
+                )
+        );
 
+        Collection<NamedTaskDescriptor> foundDescriptors;
         try {
-            return PersistentDescriptors.unpackNamedTaskDescriptors(answer);
-        } catch (DAOException e) {
-            throw createPersistenceException(errorMsg, e);
+            foundDescriptors = queryHazelcastMap(Names.NAMED_TASK_DESCRIPTORS_MAP_NAME, predicate);
         } catch (Exception e) {
             throw createBeenApiException(errorMsg, e);
         }
+
+        Map<String, TaskDescriptor> namedDescriptors = new HashMap<>();
+        for (NamedTaskDescriptor foundDescriptor : foundDescriptors) {
+            namedDescriptors.put(foundDescriptor.getName(), foundDescriptor.getDescriptor());
+        }
+
+        return namedDescriptors;
     }
 
     @Override
     public Map<String, TaskContextDescriptor>
     getNamedContextDescriptorsForBpk(final BpkIdentifier bpkIdentifier) throws BeenApiException {
-        final String errorMsg = String.format(
-                "Failed to load named task context descriptors for %s:%s:%s",
-                bpkIdentifier.getGroupId(),
-                bpkIdentifier.getBpkId(),
-                bpkIdentifier.getVersion());
+        String errorMsg = String.format("Failed to list named task context descriptors for bpk '%s:%s:%s'",
+                bpkIdentifier.getGroupId(), bpkIdentifier.getBpkId(), bpkIdentifier.getVersion());
 
-        final Query query = new QueryBuilder().on(NAMED_CONTEXT_DESCRIPTOR)
-		        .with("bpkId.groupId", bpkIdentifier.getGroupId())
-		        .with("bpkId.bpkId", bpkIdentifier.getBpkId())
-		        .with("bpkId.version", bpkIdentifier.getVersion())
-		        .fetch();
-        final QueryAnswer answer = performQuery(query, errorMsg);
+        final SqlPredicate predicate = new SqlPredicate(
+                String.format(
+                        "groupId = '%s' AND bpkId = '%s' and bpkVersion = '%s'",
+                        bpkIdentifier.getGroupId(),
+                        bpkIdentifier.getBpkId(),
+                        bpkIdentifier.getVersion()
+                )
+        );
 
+        Collection<NamedTaskContextDescriptor> foundDescriptors;
         try {
-            return PersistentDescriptors.unpackNamedContextDescriptors(answer);
-        } catch (DAOException e) {
-            throw createPersistenceException(errorMsg, e);
+            foundDescriptors = queryHazelcastMap(Names.NAMED_TASK_CONTEXT_DESCRIPTORS_MAP_NAME, predicate);
         } catch (Exception e) {
             throw createBeenApiException(errorMsg, e);
         }
+
+        Map<String, TaskContextDescriptor> namedDescriptors = new HashMap<>();
+        for (NamedTaskContextDescriptor foundDescriptor : foundDescriptors) {
+            namedDescriptors.put(foundDescriptor.getName(), foundDescriptor.getDescriptor());
+        }
+
+        return namedDescriptors;
     }
 
     // FIXME - EntryListener is haazelcast dependency !!!

@@ -15,7 +15,7 @@
   ~ limitations under the License.
   -->
 
-<hazelcast xsi:schemaLocation="http://www.hazelcast.com/schema/config hazelcast-config-2.4.xsd"
+<hazelcast xsi:schemaLocation="http://www.hazelcast.com/schema/config hazelcast-config-2.5.xsd"
 		   xmlns="http://www.hazelcast.com/schema/config"
 		   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<group>
@@ -134,74 +134,6 @@
 		-->
 		<merge-policy>hz.ADD_NEW_ENTRY</merge-policy>
 	</map>
-	<map name="BEEN_MAP_TASKS">
-		<!--
-					Number of backups. If 1 is set as the backup-count for example,
-					then all entries of the map will be copied to another JVM for
-					fail-safety. 0 means no backup.
-				-->
-		<backup-count>1</backup-count>
-		<!--
-					Number of async backups. 0 means no backup.
-				-->
-		<async-backup-count>1</async-backup-count>
-		<!--
-			Maximum number of seconds for each entry to stay in the map. Entries that are
-			older than <time-to-live-seconds> and not updated for <time-to-live-seconds>
-			will get automatically evicted from the map.
-			Any integer between 0 and Integer.MAX_VALUE. 0 means infinite. Default is 0.
-		-->
-		<time-to-live-seconds>0</time-to-live-seconds>
-		<!--
-			Maximum number of seconds for each entry to stay idle in the map. Entries that are
-			idle(not touched) for more than <max-idle-seconds> will get
-			automatically evicted from the map. Entry is touched if get, put or containsKey is called.
-			Any integer between 0 and Integer.MAX_VALUE. 0 means infinite. Default is 0.
-		-->
-		<max-idle-seconds>0</max-idle-seconds>
-		<!--
-					Valid values are:
-					NONE (no eviction),
-					LRU (Least Recently Used),
-					LFU (Least Frequently Used).
-					NONE is the default.
-				-->
-		<eviction-policy>NONE</eviction-policy>
-		<!--
-					Maximum size of the map. When max size is reached,
-					map is evicted based on the policy defined.
-					Any integer between 0 and Integer.MAX_VALUE. 0 means
-					Integer.MAX_VALUE. Default is 0.
-				-->
-		<max-size policy="cluster_wide_map_size">0</max-size>
-		<!--
-					When max. size is reached, specified percentage of
-					the map will be evicted. Any integer between 0 and 100.
-					If 25 is set for example, 25% of the entries will
-					get evicted.
-				-->
-		<eviction-percentage>25</eviction-percentage>
-		<!--
-					While recovering from split-brain (network partitioning),
-					map entries in the small cluster will merge into the bigger cluster
-					based on the policy set here. When an entry merge into the
-					cluster, there might an existing entry with the same key already.
-					Values of these entries might be different for that same key.
-					Which value should be set for the key? Conflict is resolved by
-					the policy set here. Default policy is hz.ADD_NEW_ENTRY
-
-					There are built-in merge policies such as
-					hz.NO_MERGE	  ; no entry will merge.
-					hz.ADD_NEW_ENTRY ; entry will be added if the merging entry's key
-									   doesn't exist in the cluster.
-					hz.HIGHER_HITS   ; entry with the higher hits wins.
-					hz.LATEST_UPDATE ; entry with the latest update wins.
-				-->
-		<merge-policy>hz.ADD_NEW_ENTRY</merge-policy>
-
-		<!-- disable local object caching to avoid synchronization hell -->
-		<cache-value>false</cache-value>
-	</map>
 
 	<map name="BEEN_HOSTRUNTIMES">
 		<!--
@@ -221,23 +153,23 @@
 
 	</map>
 
-    <map name="BEEN_MAP_COMMAND_ENTRIES">
-        <!--
-                    Number of backups. If 1 is set as the backup-count for example,
-                    then all entries of the map will be copied to another JVM for
-                    fail-safety. 0 means no backup.
-                -->
-        <backup-count>1</backup-count>
-        <!--
-                    Number of async backups. 0 means no backup.
-                -->
-        <async-backup-count>1</async-backup-count>
-        <!--
-            Command timeout
-        -->
-        <time-to-live-seconds>300</time-to-live-seconds>
+	<map name="BEEN_MAP_COMMAND_ENTRIES">
+		<!--
+					Number of backups. If 1 is set as the backup-count for example,
+					then all entries of the map will be copied to another JVM for
+					fail-safety. 0 means no backup.
+				-->
+		<backup-count>1</backup-count>
+		<!--
+					Number of async backups. 0 means no backup.
+				-->
+		<async-backup-count>1</async-backup-count>
+		<!--
+			Command timeout
+		-->
+		<time-to-live-seconds>300</time-to-live-seconds>
 
-    </map>
+	</map>
 
 	<!-- Add your own semaphore configurations here:
 		<semaphore name="default">
