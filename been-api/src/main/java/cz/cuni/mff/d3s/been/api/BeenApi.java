@@ -19,8 +19,6 @@ import cz.cuni.mff.d3s.been.debugassistant.DebugListItem;
 import cz.cuni.mff.d3s.been.evaluators.EvaluatorResult;
 import cz.cuni.mff.d3s.been.logging.ServiceLogMessage;
 import cz.cuni.mff.d3s.been.logging.TaskLogMessage;
-import cz.cuni.mff.d3s.been.persistence.Query;
-import cz.cuni.mff.d3s.been.persistence.QueryAnswer;
 
 /**
  * The BeenApi interface provides access and API to the BEEN cluster. All client
@@ -619,31 +617,192 @@ public interface BeenApi {
 	 */
 	public RuntimeInfo getRuntime(String id) throws BeenApiException;
 
+	/**
+	 * Returns a collection of all created task log messages from the task with
+	 * the specified ID. Note that logs can be automatically removed after some
+	 * time.
+	 * 
+	 * @param taskId
+	 *          ID of the task
+	 * @return a collection of all available log message for the specified task
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public Collection<TaskLogMessage> getLogsForTask(String taskId) throws BeenApiException;
+
+	/**
+	 * Adds a global log listener, that will subsequently receive a notification
+	 * about every newly created log message.
+	 * 
+	 * @param listener
+	 *          the log listener to add
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public void addLogListener(EntryListener<String, String> listener) throws BeenApiException;
+
+	/**
+	 * Removes the specified log listener, which will no longer receive log
+	 * messages. If this log listener is not registered, returns silently.
+	 * 
+	 * @param listener
+	 *          the log listener to remove
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public void removeLogListener(EntryListener<String, String> listener) throws BeenApiException;
 
+	/**
+	 * Returns a collection of all available evaluator results. These results are
+	 * created by evaluator tasks and are stored in a single collection in the
+	 * persistence layer.
+	 * 
+	 * @return a collection of all available evaluator results
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public Collection<EvaluatorResult> getEvaluatorResults() throws BeenApiException;
+
+	/**
+	 * Returns a single evaluator result with the specified ID. Throws
+	 * {@link BeenApiException} if there is no such result.
+	 * 
+	 * @param resultId
+	 *          the ID of the result to retrieve
+	 * @return the result with the specified ID
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public EvaluatorResult getEvaluatorResult(String resultId) throws BeenApiException;
+
+	/**
+	 * Permanently deletes the evaluator result with the specified ID. Returns
+	 * silently if there is no such result.
+	 * 
+	 * @param resultId
+	 *          ID of the evaluator result to delete
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public void deleteResult(String resultId) throws BeenApiException;
 
+	/**
+	 * Lists the identifiers of all available BPK packages in the software
+	 * repository. The software repository must be running, otherwise a
+	 * {@link BeenApiException} is thrown. The BPKs can be uploaded into the
+	 * software repository using the {@link #uploadBpk} method.
+	 * 
+	 * @return a collection of all available BPK packages
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public Collection<BpkIdentifier> getBpks() throws BeenApiException;
+
+	/**
+	 * Uploads a new BPK package into the software repository. The passed
+	 * {@link BpkHolder} object specifies the BPK identifier under which the
+	 * package should be stored. If there is already a package with the same
+	 * identifier, is will be overwritten.
+	 * 
+	 * @param bpkFileHolder
+	 *          the object describing the package and holding its data
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public void uploadBpk(BpkHolder bpkFileHolder) throws BeenApiException;
+
+	/**
+	 * Downloads a package with the specified BPK identifier from the software
+	 * repository. If successful, returns a {@link InputStream} object holding the
+	 * stream to the data of the package. If there is no such package with the
+	 * specified BPK identifier, a {@link BeenApiException} is thrown.
+	 * 
+	 * @param bpkIdentifier
+	 *          the BPK identifier of the package
+	 * @return a {@link InputStream} with the data of the package
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public InputStream downloadBpk(BpkIdentifier bpkIdentifier) throws BeenApiException;
 
+	/**
+	 * Retrieves task descriptors contained withing the BPK package with the
+	 * specified BPK identifier. The result is a map from the names of the task
+	 * descriptors (filenames) and the actual task descriptors.
+	 * 
+	 * @param bpkIdentifier
+	 *          the BPK identifier of the package
+	 * @return all available task descriptors within the package
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public Map<String, TaskDescriptor> getTaskDescriptors(BpkIdentifier bpkIdentifier) throws BeenApiException;
+
+	/**
+	 * Retrieves a single task descriptor with the specified name (filename) from
+	 * the specified BPK package. Throws a {@link BeenApiException} if the BPK
+	 * identifier is invalid. Returns null if there is no such descriptor.
+	 * 
+	 * @param bpkIdentifier
+	 *          the BPK identifier of the package
+	 * @param descriptorName
+	 *          the name of the descriptor to retrieve
+	 * @return the task descriptor with the specified name or null if there is no
+	 *         such descriptor
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public TaskDescriptor getTaskDescriptor(BpkIdentifier bpkIdentifier, String descriptorName) throws BeenApiException;
+
+	/**
+	 * Retrieves task context descriptors contained withing the BPK package with
+	 * the specified BPK identifier. The result is a map from the names of the
+	 * task context descriptors (filenames) and the actual task context
+	 * descriptors.
+	 * 
+	 * @param bpkIdentifier
+	 *          the BPK identifier of the package
+	 * @return all available task context descriptors within the package
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public
 			Map<String, TaskContextDescriptor>
 			getTaskContextDescriptors(BpkIdentifier bpkIdentifier) throws BeenApiException;
 
+	/**
+	 * Retrieves a single task context descriptor with the specified name
+	 * (filename) from the specified BPK package. Throws a
+	 * {@link BeenApiException} if the BPK identifier is invalid. Returns null if
+	 * there is no such descriptor.
+	 * 
+	 * @param bpkIdentifier
+	 *          the BPK identifier of the package
+	 * @param descriptorName
+	 *          the name of the descriptor to retrieve
+	 * @return the task context descriptor with the specified name or null if
+	 *         there is no such descriptor
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public
 			TaskContextDescriptor
 			getTaskContextDescriptor(BpkIdentifier bpkIdentifier, String descriptorName) throws BeenApiException;
 
 	public Collection<DebugListItem> getDebugWaitingTasks() throws BeenApiException;
-
-	public QueryAnswer queryPersistence(Query query) throws BeenApiException;
 
 	public Collection<TaskEntry> listActiveTasks(String runtimeId) throws BeenApiException;
 
