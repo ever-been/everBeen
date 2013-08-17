@@ -29,20 +29,10 @@ public final class PersistentDescriptors {
 	 */
 	public static final EntityID TASK_DESCRIPTOR = new EntityID().withKind("descriptor").withGroup("task");
 
-	/*
-	 * Entity ID for named task descriptors
-	 */
-	public static final EntityID NAMED_TASK_DESCRIPTOR = new EntityID().withKind("named-descriptor").withGroup("task");
-
 	/**
 	 * EntityID for context descriptors
 	 */
 	public static final EntityID CONTEXT_DESCRIPTOR = new EntityID().withKind("descriptor").withGroup("context");
-
-	/**
-	 * EntityID for context descriptors
-	 */
-	public static final EntityID NAMED_CONTEXT_DESCRIPTOR = new EntityID().withKind("named-descriptor").withGroup("context");
 
 	/**
 	 * Create a persistent {@link cz.cuni.mff.d3s.been.core.task.TaskDescriptor} wrapper. The descriptor needs to be accompanied by runtime IDs of the task for which this descriptor will be submitted.
@@ -62,23 +52,6 @@ public final class PersistentDescriptors {
 	}
 
 	/**
-	 * Create a named persistent {@link TaskDescriptor} wrapper. The descriptor needs to be accompanied by runtime IDs of the task for which this descriptor will be submitted.
-	 *
-	 * @param td {@link TaskDescriptor} to wrap
-	 * @param name Name with which to save the descriptor
-     * @param bpkId ID of the BPK to associate this descriptor with
-	 *
-	 * @return A persistable {@link NamedEntity} wrapping provided {@link cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor}
-	 */
-	public static NamedEntity wrapNamedTaskDescriptor(TaskDescriptor td, String name, BpkIdentifier bpkId) {
-		final NamedPersistentTaskDescriptor wrap = new NamedPersistentTaskDescriptor();
-		wrap.setDescriptor(td);
-		wrap.setName(name);
-        wrap.setBpkId(bpkId);
-		return wrap;
-	}
-
-	/**
 	 * Create a persistent {@link cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor} wrapper. The descriptor needs to be accompanied by runtime IDs of the task for which this descriptor will be submitted.
 	 *
 	 * @param tcd {@link cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor} to wrap
@@ -92,23 +65,6 @@ public final class PersistentDescriptors {
 		final PersistentContextDescriptor wrap = new PersistentContextDescriptor();
 		wrap.setDescriptor(tcd);
 		setRuntimeIDs(wrap, taskId, contextId, benchmarkId);
-		return wrap;
-	}
-
-	/**
-	 * Create a persistent {@link TaskContextDescriptor} wrapper. The descriptor needs to be accompanied by runtime IDs of the task for which this descriptor will be submitted.
-	 *
-	 * @param tcd {@link TaskContextDescriptor} to wrap
-	 * @param name Name with which to save the descriptor
-     * @param bpkId Identifier of the BPK this named configuration should be associated with
-	 *
-	 * @return A persistable {@link NamedEntity} wrapping provided {@link TaskContextDescriptor}
-	 */
-	public static NamedEntity wrapNamedContextDescriptor(TaskContextDescriptor tcd, String name, BpkIdentifier bpkId) {
-		final NamedPersistentContextDescriptor wrap = new NamedPersistentContextDescriptor();
-		wrap.setDescriptor(tcd);
-		wrap.setName(name);
-        wrap.setBpkId(bpkId);
 		return wrap;
 	}
 
@@ -138,50 +94,6 @@ public final class PersistentDescriptors {
     public static TaskContextDescriptor unpackContextDescriptor(QueryAnswer answer) throws DAOException {
         assertAnswerIsData(answer);
         return extractExactlyOneElement(answer.getData(), PersistentContextDescriptor.class).getDescriptor();
-    }
-
-    /**
-     * Unpack binding map for named task descriptors from a query answer.
-     *
-     * @param answer Answer to unpack
-     *
-     * @return A map of (name, descriptor) entries describing the bindings of named descriptors for given BPK
-     *
-     * @throws DAOException On persistence access failure or unmarshalling error
-     */
-    public static Map<String, TaskDescriptor> unpackNamedTaskDescriptors(QueryAnswer answer) throws DAOException {
-        assertAnswerIsData(answer);
-        final Map<String, TaskDescriptor> map = new HashMap<String, TaskDescriptor>();
-        try {
-	        for (NamedPersistentTaskDescriptor td: jsonUtils.deserialize(answer.getData(), NamedPersistentTaskDescriptor.class)) {
-                map.put(td.getName(), td.getDescriptor());
-	        }
-            return map;
-        } catch (JsonException e) {
-            throw new DAOException("Deserialization failed", e);
-        }
-    }
-
-    /**
-     * Unpack binding map for named context descriptors from a query answer.
-     *
-     * @param answer Answer to unpack
-     *
-     * @return A map of (name, descriptor) entries describing the bindings of named descriptors for given BPK
-     *
-     * @throws DAOException On persistence access failure or unmarshalling error
-     */
-    public static Map<String, TaskContextDescriptor> unpackNamedContextDescriptors(QueryAnswer answer) throws DAOException {
-        assertAnswerIsData(answer);
-        final Map<String, TaskContextDescriptor> map = new HashMap<String, TaskContextDescriptor>();
-        try {
-            for (NamedPersistentContextDescriptor td: jsonUtils.deserialize(answer.getData(), NamedPersistentContextDescriptor.class)) {
-                map.put(td.getName(), td.getDescriptor());
-            }
-            return map;
-        } catch (JsonException e) {
-            throw new DAOException("Deserialization failed", e);
-        }
     }
 
     /**

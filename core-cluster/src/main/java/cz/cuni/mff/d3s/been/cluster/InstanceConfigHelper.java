@@ -138,6 +138,8 @@ final class InstanceConfigHelper {
 		MapConfig tasksMap = new MapConfig(Names.TASKS_MAP_NAME);
 		MapConfig contextsMap = new MapConfig(Names.TASK_CONTEXTS_MAP_NAME);
 		MapConfig benchmarksMap = new MapConfig(Names.BENCHMARKS_MAP_NAME);
+		MapConfig namedTaskDescriptorsMap = new MapConfig(Names.NAMED_TASK_DESCRIPTORS_MAP_NAME);
+		MapConfig namedTaskContextDescriptorsMap = new MapConfig(Names.NAMED_TASK_CONTEXT_DESCRIPTORS_MAP_NAME);
 
 		final int backupCount = propReader.getInteger(BACKUP_COUNT, DEFAULT_BACKUP_COUNT);
 
@@ -177,10 +179,13 @@ final class InstanceConfigHelper {
 			tasksMap.setMapStoreConfig(mapStoreConfig);
 			contextsMap.setMapStoreConfig(mapStoreConfig);
 			benchmarksMap.setMapStoreConfig(mapStoreConfig);
+			namedTaskDescriptorsMap.setMapStoreConfig(mapStoreConfig);
+			namedTaskContextDescriptorsMap.setMapStoreConfig(mapStoreConfig);
 
 		}
 
-		config.addMapConfig(tasksMap).addMapConfig(contextsMap).addMapConfig(benchmarksMap);
+		config.addMapConfig(tasksMap).addMapConfig(contextsMap).addMapConfig(benchmarksMap).addMapConfig(
+				namedTaskDescriptorsMap).addMapConfig(namedTaskContextDescriptorsMap);
 
 	}
 
