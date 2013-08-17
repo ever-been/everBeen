@@ -464,8 +464,48 @@ public interface BeenApi {
 	 */
 	public String submitBenchmark(TaskDescriptor benchmarkTaskDescriptor) throws BeenApiException;
 
+	/**
+	 * Kills the task with the specified ID. This method only "starts" the killing
+	 * operation and returns immediately. The actual killing will be performed
+	 * later and possibly by a different member of the cluster and there are no
+	 * guarantees about when the task will be really killed.
+	 * 
+	 * @param taskId
+	 *          ID of the task to kill
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public void killTask(String taskId) throws BeenApiException;
+
+	/**
+	 * Kills the task context with the specified ID. This kills all the tasks that
+	 * are contained in the task context. Note that this only "starts" the killing
+	 * and returns immediately. There are no guarantees about when the tasks or
+	 * the whole context will actually be killed.
+	 * 
+	 * @param taskContextId
+	 *          ID of the task context to kill
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public void killTaskContext(String taskContextId) throws BeenApiException;
+
+	/**
+	 * Kills the benchmark with the specified ID. This only kills the currently
+	 * running generator task and disallows further resubmit (effectively
+	 * cancelling the benchmark), but it does not affect any running task contexts
+	 * or the tasks contained within them. Note that this only "starts" the
+	 * killing and returns immediately. There are no guarantees about when the
+	 * generator task will actually be killed.
+	 * 
+	 * @param benchmarkId
+	 *          ID of the benchmark to kill
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	public void killBenchmark(String benchmarkId) throws BeenApiException;
 
 	public void removeTaskEntry(String taskId) throws BeenApiException;
