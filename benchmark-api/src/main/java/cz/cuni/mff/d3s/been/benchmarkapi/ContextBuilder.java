@@ -20,7 +20,10 @@ public final class ContextBuilder {
 	private TaskContextDescriptor descriptor;
 
 	/**
-	 * Private constructor
+	 * Private constructor.
+	 * 
+	 * @param contextDescriptor
+	 *          the context descriptor to use
 	 */
 	private ContextBuilder(TaskContextDescriptor contextDescriptor) {
 		this.descriptor = contextDescriptor;
@@ -211,6 +214,8 @@ public final class ContextBuilder {
 
 	/**
 	 * Returns the TaskContextDescriptor this class was used to build.
+	 * 
+	 * @return the resulting context descriptor
 	 */
 	public TaskContextDescriptor build() {
 		return descriptor;
@@ -237,6 +242,7 @@ public final class ContextBuilder {
 	 *          TaskContextDescriptor
 	 * @return builder which is initialized from the resource
 	 * @throws BenchmarkException
+	 *           when an error has occurred during the creation of the descriptor
 	 */
 	public static
 			ContextBuilder
@@ -262,10 +268,22 @@ public final class ContextBuilder {
 		}
 	}
 
+	/**
+	 * Adds a task into the current context descriptor.
+	 * 
+	 * @param task
+	 *          the task to add
+	 * @return true if the task was successfully added
+	 */
 	private boolean addTask(Task task) {
 		return descriptor.getTask().contains(task) || descriptor.getTask().add(task);
 	}
 
+	/**
+	 * Creates a new empty task that can be added into the context.
+	 * 
+	 * @return a new empty task
+	 */
 	private Task newEmptyTask() {
 		return new Task().withDescriptor(new Descriptor()).withProperties(new Properties());
 	}
