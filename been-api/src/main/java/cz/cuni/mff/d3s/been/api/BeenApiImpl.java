@@ -1274,7 +1274,9 @@ final class BeenApiImpl implements BeenApi {
 	 * @throws BeenApiException
 	 *           when something other goes wrong while retrieving query answer
 	 */
-	private QueryAnswer performQuery(final Query query, final String errorMsg) throws BeenApiException {
+	private
+			QueryAnswer
+			performQuery(final Query query, final String errorMsg) throws BeenApiException, ClusterConnectionUnavailableException, PersistenceException {
 		checkIsActive(errorMsg);
 
 		final QueryAnswer answer;
