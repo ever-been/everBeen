@@ -1,39 +1,60 @@
 package cz.cuni.mff.d3s.been.cluster.context;
 
-import com.hazelcast.core.EntryEvent;
-import com.hazelcast.core.EntryListener;
-import com.hazelcast.core.IMap;
-import com.hazelcast.core.IQueue;
-import cz.cuni.mff.d3s.been.cluster.Names;
-import cz.cuni.mff.d3s.been.core.PropertyReader;
-import cz.cuni.mff.d3s.been.core.persistence.Entity;
-import cz.cuni.mff.d3s.been.core.persistence.EntityCarrier;
-import cz.cuni.mff.d3s.been.core.persistence.EntityID;
-import cz.cuni.mff.d3s.been.persistence.*;
-import cz.cuni.mff.d3s.been.util.JSONUtils;
-import cz.cuni.mff.d3s.been.util.JsonException;
+import static cz.cuni.mff.d3s.been.cluster.ClusterPersistenceConfiguration.*;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import static cz.cuni.mff.d3s.been.cluster.ClusterPersistenceConfiguration.*;
+import com.hazelcast.core.EntryEvent;
+import com.hazelcast.core.EntryListener;
+import com.hazelcast.core.IMap;
+import com.hazelcast.core.IQueue;
+
+import cz.cuni.mff.d3s.been.cluster.Names;
+import cz.cuni.mff.d3s.been.core.PropertyReader;
+import cz.cuni.mff.d3s.been.core.persistence.Entity;
+import cz.cuni.mff.d3s.been.core.persistence.EntityCarrier;
+import cz.cuni.mff.d3s.been.core.persistence.EntityID;
+import cz.cuni.mff.d3s.been.persistence.DAOException;
+import cz.cuni.mff.d3s.been.persistence.Query;
+import cz.cuni.mff.d3s.been.persistence.QueryAnswer;
+import cz.cuni.mff.d3s.been.persistence.QueryAnswerFactory;
+import cz.cuni.mff.d3s.been.util.JSONUtils;
+import cz.cuni.mff.d3s.been.util.JsonException;
 
 /**
  * Cluster-based operations related to object persistence and retrieval
- *
+ * 
  * @author darklight
  */
 public class Persistence {
 
+	/** timeout for persistence queries in seconds */
 	private final Long queryTimeout;
+
+	/** timeout for query processing in seconds */
 	private final Long queryProcessingTimeout;
 
+	/** asynchronous queue for persistence entities */
 	private final IQueue<EntityCarrier> asyncPersistence;
+
+	/** queue for persistence queries */
 	private final IQueue<Query> queryQueue;
+
+	/** map for persistence query answers */
 	private final IMap<String, QueryAnswer> queryAnswerMap;
+
+	/** utility class for (de)serialization */
 	private final JSONUtils jsonUtils;
 
+	/**
+	 * Package private constructor, creates a new instance that uses the specified
+	 * BEEN cluster context.
+	 * 
+	 * @param ctx
+	 *          the cluster context to use
+	 */
 	Persistence(ClusterContext ctx) {
 		final PropertyReader propertyReader = PropertyReader.on(ctx.getProperties());
 		this.queryTimeout = propertyReader.getLong(QUERY_TIMEOUT, DEFAULT_QUERY_TIMEOUT);
@@ -46,13 +67,18 @@ public class Persistence {
 	}
 
 	/**
-	 * Query the persistence layer for a set of matching results. Wait for the results to be available.
-	 *
-	 * @param query Query to execute
-	 *
-	 * @return A {@link QueryAnswer} object representing the {@link Query}'s outcome
-	 *
-	 * @throws DAOException When the wait for the query outcome is interrupted or when provided query fails to serialize
+	 * Query the persistence layer for a set of matching results. Wait for the
+	 * results to be available.
+	 * 
+	 * @param query
+	 *          Query to execute
+	 * 
+	 * @return A {@link QueryAnswer} object representing the {@link Query}'s
+	 *         outcome
+	 * 
+	 * @throws DAOException
+	 *           When the wait for the query outcome is interrupted or when
+	 *           provided query fails to serialize
 	 */
 	public final QueryAnswer query(Query query) throws DAOException {
 		final BlockingQueue<String> answerReadyNotifier = new LinkedBlockingQueue<String>();
@@ -81,11 +107,14 @@ public class Persistence {
 
 	/**
 	 * Asynchronously persist an object
-	 *
-	 * @param entityID ID of the targeted entity (determines targeted collection)
-	 * @param entity Persistable object to save
-	 *
-	 * @throws DAOException When the persistence attempt is thwarted
+	 * 
+	 * @param entityID
+	 *          ID of the targeted entity (determines targeted collection)
+	 * @param entity
+	 *          Persistable object to save
+	 * 
+	 * @throws DAOException
+	 *           When the persistence attempt is thwarted
 	 */
 	public final void asyncPersist(EntityID entityID, Entity entity) throws DAOException {
 		try {
@@ -98,12 +127,22 @@ public class Persistence {
 		}
 	}
 
+	/**
+	 * A helper class that implement a Hazelcast entry listener for notifications
+	 * about when an answers to a persistence query is available.
+	 */
 	private class MapEntryReadyHook implements EntryListener<String, QueryAnswer> {
 		/**
 		 * Queue that notifies the waiting thread that its value is in the map
 		 */
 		private final BlockingQueue<String> notifier;
 
+		/**
+		 * Creates a new instance with the specified notifier.
+		 * 
+		 * @param notifier
+		 *          the notifier to use
+		 */
 		MapEntryReadyHook(BlockingQueue<String> notifier) {
 			this.notifier = notifier;
 		}
@@ -114,15 +153,13 @@ public class Persistence {
 		}
 
 		@Override
-		public void entryUpdated(EntryEvent<String, QueryAnswer> event) {
-		}
+		public void entryUpdated(EntryEvent<String, QueryAnswer> event) {}
 
 		@Override
-		public void entryEvicted(EntryEvent<String, QueryAnswer> event) {
-		}
+		public void entryEvicted(EntryEvent<String, QueryAnswer> event) {}
 
 		@Override
-		public void entryRemoved(EntryEvent<String, QueryAnswer> event) {
-		}
+		public void entryRemoved(EntryEvent<String, QueryAnswer> event) {}
 	}
+
 }

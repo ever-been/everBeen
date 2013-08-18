@@ -8,12 +8,22 @@ import cz.cuni.mff.d3s.been.cluster.Names;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 
 /**
+ * Utility class for operations related to host runtimes.
+ * 
  * @author Martin Sixta
  */
 public class Runtimes {
 
+	/** BEEN cluster connection */
 	private ClusterContext clusterCtx;
 
+	/**
+	 * Package private constructor, creates a new instance that uses the specified
+	 * BEEN cluster context.
+	 * 
+	 * @param clusterCtx
+	 *          the cluster context to use
+	 */
 	Runtimes(ClusterContext clusterCtx) {
 		// package private visibility prevents out-of-package instantiation
 		this.clusterCtx = clusterCtx;
@@ -31,6 +41,8 @@ public class Runtimes {
 	}
 
 	/**
+	 * @param key
+	 *          the ID of the host runtime to retrieve
 	 * @return clone of {@link RuntimeInfo} registered in cluster. <br/>
 	 * 
 	 *         <b>Warning!</b> modifying the returned value does not change the
@@ -44,6 +56,7 @@ public class Runtimes {
 	 * Stores given {@link RuntimeInfo} in cluster.
 	 * 
 	 * @param runtimeInfo
+	 *          the host runtime information to store
 	 */
 	public void storeRuntimeInfo(RuntimeInfo runtimeInfo) {
 		getRuntimeMap().put(runtimeInfo.getId(), runtimeInfo);
@@ -53,16 +66,17 @@ public class Runtimes {
 	 * Removes stored {@link RuntimeInfo} identified by given id from cluster.
 	 * 
 	 * @param id
+	 *          the ID of the host runtime to remove
 	 */
 	public void removeRuntimeInfo(String id) {
 		getRuntimeMap().remove(id);
 	}
 
-    /**
-     * @return modifiable map of all registered Host Runtimes.
-     */
-    public IMap<String, RuntimeInfo> getRuntimeMap() {
-        return clusterCtx.getMap(Names.HOSTRUNTIMES_MAP_NAME);
-    }
+	/**
+	 * @return modifiable map of all registered Host Runtimes.
+	 */
+	public IMap<String, RuntimeInfo> getRuntimeMap() {
+		return clusterCtx.getMap(Names.HOSTRUNTIMES_MAP_NAME);
+	}
 
 }
