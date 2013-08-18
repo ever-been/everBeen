@@ -8,7 +8,6 @@ import java.io.InputStream;
  * A BEEN software package.
  * 
  * @author darklight
- * 
  */
 public interface Bpk {
 	/**
@@ -22,8 +21,9 @@ public interface Bpk {
 	 * Open a stream to the package's content. The user is responsible for closing
 	 * it.
 	 * 
-	 * @return
+	 * @return the stream representing the package content
 	 * @throws IOException
+	 *           when an I/O error occurs
 	 */
 	InputStream getInputStream() throws IOException;
 

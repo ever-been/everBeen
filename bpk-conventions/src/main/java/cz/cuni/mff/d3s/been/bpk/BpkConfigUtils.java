@@ -25,6 +25,8 @@ import org.xml.sax.SAXException;
  * @author Martin Sixta
  */
 public class BpkConfigUtils {
+
+	/** slf4j logger */
 	private static final Logger log = LoggerFactory.getLogger(BpkConfigUtils.class);
 
 	/**
@@ -116,8 +118,10 @@ public class BpkConfigUtils {
 	 * Parses BpkConfiguration from an InputStream.
 	 * 
 	 * @param input
-	 * @return
+	 *          the input stream to parse
+	 * @return the parsed BPK configuration
 	 * @throws BpkConfigurationException
+	 *           when the input is invalid or an I/O error occurs
 	 */
 	public static BpkConfiguration fromXml(InputStream input) throws BpkConfigurationException {
 		try {
@@ -138,8 +142,10 @@ public class BpkConfigUtils {
 	 * Parses BpkConfiguration from a File.
 	 * 
 	 * @param input
-	 * @return
+	 *          the input file to parse
+	 * @return the parsed BPK configuration
 	 * @throws BpkConfigurationException
+	 *           when the input is invalid or an I/O error occurs
 	 */
 	public static BpkConfiguration fromXml(File input) throws BpkConfigurationException {
 		try {
@@ -158,10 +164,13 @@ public class BpkConfigUtils {
 	 * Parses BpkConfiguration from a Path.
 	 * 
 	 * @param input
-	 * @return
+	 *          the path to the input file to parse
+	 * @return parsed BPK configuration
 	 * @throws BpkConfigurationException
+	 *           when the input is invalid or an I/O error occurs
 	 */
 	public static BpkConfiguration fromXml(Path input) throws BpkConfigurationException {
 		return fromXml(input.toFile());
 	}
+
 }
