@@ -106,13 +106,7 @@ public class Runner implements Reapable {
 			EX_USAGE.sysExit();
 		}
 
-		this.runtimeId = UUID.randomUUID();
-		try {
-			this.beenId = InetAddress.getLocalHost().getHostName() + "--" + runtimeId.toString();
-		} catch (UnknownHostException e) {
-			log.error("Cannot determine local hostname, will terminate.", e);
-			EX_NETWORK_ERROR.sysExit();
-		}
+		initIds();
 
 		Properties properties = loadProperties();
 
@@ -125,13 +119,14 @@ public class Runner implements Reapable {
 			log.info("The node is now connected to the cluster");
 		} catch (ServiceException e) {
 			log.error("Failed to initialize cluster instance", e);
+			EX_COMPONENT_FAILED.sysExit();
 		}
 
 		Reaper clusterReaper = new ClusterReaper(instance);
 		this.clusterContext = Instance.createContext();
 
 		if (nodeType == NodeType.DATA) {
-			// must happen as soon as possible, see documentation for MapStore implementation
+			// must happen as soon as possible, see documentation for BEEN MapStore implementation
 			initializeMaps(
 					TASKS_MAP_NAME,
 					TASK_CONTEXTS_MAP_NAME,
@@ -236,6 +231,16 @@ public class Runner implements Reapable {
 
 	}
 
+	private void initIds() {
+		this.runtimeId = UUID.randomUUID();
+		try {
+			this.beenId = InetAddress.getLocalHost().getHostName() + "--" + runtimeId.toString();
+		} catch (UnknownHostException e) {
+			log.error("Cannot determine local hostname, will terminate.", e);
+			EX_NETWORK_ERROR.sysExit();
+		}
+	}
+
 	private IClusterService startTaskManager() throws ServiceException {
 		IClusterService taskManager = Managers.getManager(clusterContext);
 		taskManager.start();
@@ -257,8 +262,10 @@ public class Runner implements Reapable {
 	}
 
 	private IClusterService startLogPersister() throws ServiceException {
+		log.info("Starting log persister");
 		ServiceLogPersister logPersister = ServiceLogPersister.getHandlerInstance(clusterContext, beenId, hostRuntimeId);
 		logPersister.start();
+		log.info("Log persister started");
 		return logPersister;
 	}
 

@@ -159,40 +159,6 @@ public class ClusterConfiguration extends BeenServiceConfiguration {
 	/** Default value for {@link #MAP_STORE_WRITE_DELAY}. */
 	public static final int DEFAULT_MAP_STORE_WRITE_DALAY = 0;
 
-	/**
-	 * Property name of the username to use for
-	 * {@link com.hazelcast.core.MapStore} connection
-	 */
-	public static final String MAP_STORE_DB_USERNAME = "been.cluster.mapstore.db.username";
-	/** Default value for {@link #MAP_STORE_DB_USERNAME}. */
-	public static final String DEFAULT_MAP_STORE_DB_USERNAME = null;
-
-	/**
-	 * Property name of the password to use for
-	 * {@link com.hazelcast.core.MapStore} connection
-	 */
-	public static final String MAP_STORE_DB_PASSWORD = "been.cluster.mapstore.db.password";
-
-	/** Default value for {@link #MAP_STORE_DB_PASSWORD}. */
-	public static final String DEFAULT_MAP_STORE_DB_PASSWORD = null;
-
-	/**
-	 * Property name for the {@link com.hazelcast.core.MapStore} hostname (full
-	 * connection string including port). If no port is specified, default port is
-	 * used.
-	 */
-	public static final String MAP_STORE_DB_HOSTNAME = "been.cluster.mapstore.db.hostname";
-	/** Default value for {@link #MAP_STORE_DB_HOSTNAME}. */
-	public static final String DEFAULT_MAP_STORE_DB_HOSTNAME = "localhost";
-
-	/**
-	 * Property name for the name of the {@link com.hazelcast.core.MapStore}
-	 * database instance to use.
-	 */
-	public static final String MAP_STORE_DB_NAME = "been.cluster.mapstore.db.dbname";
-	/** Default value for {@link #MAP_STORE_DB_NAME}. */
-	public static final String DEFAULT_MAP_STORE_DB_NAME = "BEEN";
-
 	/** Type of the Hazelcast join method. */
 	static enum JOIN_TYPE {
 		MULTICAST, TCP

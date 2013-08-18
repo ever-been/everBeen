@@ -12,21 +12,44 @@ import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.socketworks.twoway.Replies;
 import cz.cuni.mff.d3s.been.socketworks.twoway.Reply;
+import cz.cuni.mff.d3s.been.socketworks.twoway.Request;
 import cz.cuni.mff.d3s.been.task.checkpoints.CheckpointRequest;
 
 /**
+ * An {@link Action} that handles a request for waiting until a task has
+ * finished.
+ * 
  * @author Martin Sixta
  */
 final class TaskStatusWaitAction implements Action {
-	private final CheckpointRequest request;
+
+	/** the request to handle */
+	private final Request request;
+
+	/** BEEN cluster instance */
 	private final ClusterContext ctx;
+
+	/** a blocking queue that is used for waiting */
 	BlockingQueue<Reply> queue = new LinkedBlockingQueue<>();
 
+	/**
+	 * Default constructor, creates the action with the specified request and
+	 * cluster context.
+	 * 
+	 * @param request
+	 *          the request to handle
+	 * @param ctx
+	 *          the cluster context
+	 */
 	public TaskStatusWaitAction(CheckpointRequest request, ClusterContext ctx) {
 		this.request = request;
 		this.ctx = ctx;
 	}
 
+	/**
+	 * A helper class which implements a listener for a specified Hazelcast map
+	 * entry and adds it into the blocking queue when the event occurs.
+	 */
 	class TaskWaiter implements EntryListener<String, TaskEntry> {
 
 		@Override
@@ -49,11 +72,23 @@ final class TaskStatusWaitAction implements Action {
 			addFailure("REMOVED");
 		}
 
+		/**
+		 * Creates a positive reply and add the task entry into the blocking queue.
+		 * 
+		 * @param entry
+		 *          the task entry
+		 */
 		private void add(TaskEntry entry) {
 			Reply reply = createOkReply(entry);
 			queue.add(reply);
 		}
 
+		/**
+		 * Creates a failure reply and add the task entry into the blocking queue.
+		 * 
+		 * @param msg
+		 *          the message of the error
+		 */
 		private void addFailure(String msg) {
 			Reply reply = Replies.createErrorReply(msg);
 			queue.add(reply);
@@ -97,6 +132,13 @@ final class TaskStatusWaitAction implements Action {
 		return reply;
 	}
 
+	/**
+	 * Creates a positive reply with the specified task entry.
+	 * 
+	 * @param entry
+	 *          the task entry
+	 * @return a new positive reply
+	 */
 	private Reply createOkReply(TaskEntry entry) {
 		return Replies.createOkReply(entry.getState().toString());
 	}

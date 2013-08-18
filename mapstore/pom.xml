@@ -9,33 +9,16 @@
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>mongodb-mapstore</artifactId>
+	<artifactId>mapstore</artifactId>
 	<version>3.0.0</version>
 
 	<dependencies>
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
-			<artifactId>mapstore</artifactId>
+			<artifactId>core-utils</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
-
-		<dependency>
-			<groupId>com.hazelcast</groupId>
-			<artifactId>hazelcast</artifactId>
-			<version>${hazelcast.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.mongodb</groupId>
-			<artifactId>mongo-java-driver</artifactId>
-			<version>${mongo.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-mongodb</artifactId>
-			<version>1.2.3.RELEASE</version>
-		</dependency>
 	</dependencies>
+
 
 </project>

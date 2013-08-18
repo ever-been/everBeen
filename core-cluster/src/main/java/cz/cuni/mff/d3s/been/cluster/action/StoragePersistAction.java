@@ -1,5 +1,11 @@
 package cz.cuni.mff.d3s.been.cluster.action;
 
+import java.io.ByteArrayInputStream;
+
+import javax.xml.bind.JAXBException;
+
+import org.xml.sax.SAXException;
+
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.benchmark.BenchmarkEntry;
 import cz.cuni.mff.d3s.been.core.benchmark.Storage;
@@ -9,20 +15,30 @@ import cz.cuni.mff.d3s.been.core.jaxb.XSD;
 import cz.cuni.mff.d3s.been.socketworks.twoway.Replies;
 import cz.cuni.mff.d3s.been.socketworks.twoway.Reply;
 import cz.cuni.mff.d3s.been.socketworks.twoway.Request;
-import org.xml.sax.SAXException;
-
-import javax.xml.bind.JAXBException;
-import java.io.ByteArrayInputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
+ * An {@link Action} that handles a request for persisting the benchmark
+ * key-value storage.
+ * 
  * @author Kuba Brecka
  */
 public class StoragePersistAction implements Action {
+
+	/** the request to handle */
 	private final Request request;
+
+	/** BEEN cluster instance */
 	private final ClusterContext ctx;
 
+	/**
+	 * Default constructor, creates the action with the specified request and
+	 * cluster context.
+	 * 
+	 * @param request
+	 *          the request to handle
+	 * @param ctx
+	 *          the cluster context
+	 */
 	public StoragePersistAction(Request request, ClusterContext ctx) {
 		this.request = request;
 		this.ctx = ctx;
@@ -40,6 +56,13 @@ public class StoragePersistAction implements Action {
 		return Replies.createOkReply("");
 	}
 
+	/**
+	 * Deserializes the key-value storage from an XML string.
+	 * 
+	 * @param xml
+	 *          the XML string to deserialize
+	 * @return the deserialized key-value storage
+	 */
 	public static Storage storageFromXml(String xml) {
 		Storage s;
 		try {
@@ -51,4 +74,5 @@ public class StoragePersistAction implements Action {
 
 		return s;
 	}
+
 }
