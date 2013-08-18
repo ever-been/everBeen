@@ -3,7 +3,6 @@ package cz.cuni.mff.d3s.been.cluster.context;
 import static cz.cuni.mff.d3s.been.core.task.TaskState.*;
 
 import java.util.Collection;
-import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,27 +75,7 @@ public class Tasks {
 	 * @return old value of the entry
 	 */
 	public TaskEntry putTask(TaskEntry taskEntry) {
-		return putTask(taskEntry, 1, TimeUnit.DAYS);
-	}
-
-	/**
-	 * Stores task entry in the cluster with time-to-live. After ttl expires the
-	 * entry is evicted from the map. Task's id is used as the key.
-	 * 
-	 * WARNING: don't use unless you know what are you doing
-	 * 
-	 * 
-	 * @param entry
-	 *          entry to be stored
-	 * @param ttl
-	 *          time-to-live of the entry
-	 * @param timeUnit
-	 *          time unit of ttl
-	 * 
-	 * @return old value of the entry
-	 */
-	public TaskEntry putTask(TaskEntry entry, long ttl, TimeUnit timeUnit) {
-		return getTasksMap().put(entry.getId(), entry, ttl, timeUnit);
+		return getTasksMap().put(taskEntry.getId(), taskEntry);
 	}
 
 	/**

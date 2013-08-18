@@ -1,10 +1,8 @@
 package cz.cuni.mff.d3s.been.cluster.context;
 
 import static cz.cuni.mff.d3s.been.cluster.Names.BENCHMARKS_CONTEXT_ID;
-import static cz.cuni.mff.d3s.been.cluster.context.TaskContextsConfiguration.*;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +11,6 @@ import com.hazelcast.core.IMap;
 import com.hazelcast.core.Instance;
 
 import cz.cuni.mff.d3s.been.cluster.Names;
-import cz.cuni.mff.d3s.been.core.PropertyReader;
 import cz.cuni.mff.d3s.been.core.persistence.TaskEntity;
 import cz.cuni.mff.d3s.been.core.task.*;
 import cz.cuni.mff.d3s.been.persistence.DAOException;
@@ -44,10 +41,6 @@ public class TaskContexts {
 
 	public Collection<TaskContextEntry> getTaskContexts() {
 		return getTaskContextsMap().values();
-	}
-
-	public TaskContextEntry putTaskContext(TaskContextEntry entry, long ttl, TimeUnit timeUnit) {
-		return getTaskContextsMap().put(entry.getId(), entry, ttl, timeUnit);
 	}
 
 	public void putContextEntry(TaskContextEntry entry) {
@@ -272,8 +265,8 @@ public class TaskContexts {
 	}
 
 	/**
-	 * Destroys allocated cluster-wide instances (checkpoint map, latches) for a
-	 * given TaskContextEntry.
+	 * Destroys allocated cluster-wide instances (checkpoint map and latches) for
+	 * a given TaskContextEntry.
 	 * 
 	 * @param taskContextEntry
 	 *          entry to clean up
@@ -292,21 +285,6 @@ public class TaskContexts {
 				instance.destroy();
 			}
 		}
-
-		PropertyReader propertyReader = PropertyReader.on(clusterContext.getProperties());
-		int contextTtlSeconds = propertyReader.getInteger(CONTEXT_EVICTION_TTL, DEFAULT_CONTEXT_EVICTION_TTL);
-		int taskTtlSeconds = propertyReader.getInteger(TASK_EVICTION_TTL, DEFAULT_TASK_EVICTION_TTL);
-
-		log.info("Removing tasks contained in context {} after {} seconds", taskContextEntry.getId(), taskTtlSeconds);
-
-		for (String taskId : taskContextEntry.getContainedTask()) {
-			TaskEntry taskEntry = clusterContext.getTasks().getTask(taskId);
-			clusterContext.getTasks().putTask(taskEntry, taskTtlSeconds, TimeUnit.SECONDS);
-		}
-
-		log.info("Removing task context entry {} after {} seconds", taskContextEntry.getId(), contextTtlSeconds);
-
-		putTaskContext(taskContextEntry, contextTtlSeconds, TimeUnit.SECONDS);
 	}
 
 	/**

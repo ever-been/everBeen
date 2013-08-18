@@ -74,11 +74,8 @@ public interface BeenApi {
 	/**
 	 * Returns all tasks that are currently available in the cluster. A task
 	 * always belongs to some task context, but doesn't necessarily belong to a
-	 * benchmark. Note that finished tasks are automatically removed from the
-	 * cluster after some time (see
-	 * {@link cz.cuni.mff.d3s.been.cluster.context.TaskContextsConfiguration} for
-	 * configuration of this interval). The returned collection is a copy of the
-	 * map, so after some time it might not represent the current state of tasks.
+	 * benchmark. The returned collection is a copy of the map, so after some time
+	 * it might not represent the current state of tasks.
 	 * 
 	 * @return a collection of all task entries in the cluster
 	 * @throws BeenApiException
@@ -104,11 +101,8 @@ public interface BeenApi {
 
 	/**
 	 * Returns a collection of all currently available task contexts in the
-	 * cluster. Note that successfully finished task contexts are automatically
-	 * removed from the Hazelcast map after some time (see
-	 * {@link cz.cuni.mff.d3s.been.cluster.context.TaskContextsConfiguration} for
-	 * configuration of this interval). The returned collection is a copy of the
-	 * map, so after some time it might not represent the current state.
+	 * cluster. The returned collection is a copy of the map, so after some time
+	 * it might not represent the current state.
 	 * 
 	 * @return a collection of all task context entries in the cluster
 	 * @throws BeenApiException
