@@ -21,18 +21,25 @@ import cz.cuni.mff.d3s.been.persistence.DAOException;
 import cz.cuni.mff.d3s.been.persistence.task.PersistentDescriptors;
 
 /**
- * 
  * Utility class for BEEN tasks stored in Hazelcast map.
- * 
  * 
  * @author Martin Sixta
  */
 public class Tasks {
 
+	/** slf4j logger */
 	private static final Logger log = LoggerFactory.getLogger(Tasks.class);
 
+	/** BEEN cluster connection */
 	private ClusterContext clusterCtx;
 
+	/**
+	 * Package private constructor, creates a new instance that uses the specified
+	 * BEEN cluster context.
+	 * 
+	 * @param clusterCtx
+	 *          the cluster context to use
+	 */
 	Tasks(ClusterContext clusterCtx) {
 		// package private visibility prevents out-of-package instantiation
 		this.clusterCtx = clusterCtx;
@@ -47,10 +54,23 @@ public class Tasks {
 		return clusterCtx.getMap(Names.TASKS_MAP_NAME);
 	}
 
+	/**
+	 * Returns all currently available tasks in the Hazelcast tasks map.
+	 * 
+	 * @return all task entries
+	 */
 	public Collection<TaskEntry> getTasks() {
 		return getTasksMap().values();
 	}
 
+	/**
+	 * Returns all currently available tasks form the Hazelcast map that are in
+	 * the specified state.
+	 * 
+	 * @param state
+	 *          state of the tasks to retrieve
+	 * @return tasks with the specified state
+	 */
 	public Collection<TaskEntry> getTasks(TaskState state) {
 		SqlPredicate predicate = new SqlPredicate("state = '" + state.toString() + "'");
 		return getTasksMap().values(predicate);
@@ -99,6 +119,12 @@ public class Tasks {
 
 	}
 
+	/**
+	 * Stores the specified task descriptor into the persistence layer.
+	 * 
+	 * @param taskEntry
+	 *          the task entry of the submitted context
+	 */
 	private void persistTaskDescriptor(TaskEntry taskEntry) {
 		final TaskEntity entity = PersistentDescriptors.wrapTaskDescriptor(
 				taskEntry.getTaskDescriptor(),
@@ -125,20 +151,25 @@ public class Tasks {
 	}
 
 	/**
-	 * 
-	 * Warning: lock, transaction
+	 * Checks whether the passed task entry is equal to the value stored in the
+	 * Hazelcast map of task entries.
 	 * 
 	 * @param entry
-	 * @return
+	 *          the task entry to check
+	 * @return true if they are equal, false otherwise
 	 */
+	// TODO: Warning: lock, transaction
 	public boolean isClusterEqual(TaskEntry entry) {
 		TaskEntry copy = getTask(entry.getId());
 		return entry.equals(copy);
 	}
 
 	/**
+	 * Throws an exception if the passed task entry is different from the current
+	 * value stored in the Hazelcast map of tasks.
 	 * 
 	 * @param entry
+	 *          the task entry to check
 	 */
 	public void assertClusterEqual(TaskEntry entry) {
 		if (!isClusterEqual(entry)) {
@@ -212,4 +243,5 @@ public class Tasks {
 		KillTaskMessage killMessage = new KillTaskMessage(receiverId, "killed by user", taskId);
 		clusterCtx.getTopics().publishInGlobalTopic(killMessage);
 	}
+
 }
