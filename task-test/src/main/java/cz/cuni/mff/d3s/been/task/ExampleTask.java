@@ -1,22 +1,22 @@
 package cz.cuni.mff.d3s.been.task;
 
+import static org.junit.Assert.assertEquals;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 
-import cz.cuni.mff.d3s.been.persistence.Query;
-import cz.cuni.mff.d3s.been.persistence.QueryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.d3s.been.core.persistence.EntityID;
 import cz.cuni.mff.d3s.been.persistence.DAOException;
-import cz.cuni.mff.d3s.been.taskapi.Task;
+import cz.cuni.mff.d3s.been.persistence.Query;
+import cz.cuni.mff.d3s.been.persistence.QueryBuilder;
 import cz.cuni.mff.d3s.been.taskapi.ResultPersister;
-
-import static org.junit.Assert.assertEquals;
+import cz.cuni.mff.d3s.been.taskapi.Task;
 
 /**
  * @author Martin Sixta
@@ -39,7 +39,8 @@ public class ExampleTask extends Task {
 		byte[] message = "HELLO WORLD".getBytes();
 		while (true) {
 			Date now = new Date();
-			if (now.getTime() - start.getTime() > 1000) break; // run for 1 second
+			if (now.getTime() - start.getTime() > 1000)
+				break; // run for 1 second
 
 			message = md.digest(message);
 			count++;
@@ -68,7 +69,9 @@ public class ExampleTask extends Task {
 		eid.setGroup("example-md5");
 
 		try {
-			final Collection<ExampleResult> myResults = results.query(new QueryBuilder().on(eid).with("taskId", getId()).fetch(), ExampleResult.class);
+			final Collection<ExampleResult> myResults = results.query(
+					new QueryBuilder().on(eid).with("taskId", getId()).fetch(),
+					ExampleResult.class);
 			log.info("Picked up result {}", myResults);
 			return myResults.size();
 		} catch (DAOException e) {
@@ -92,7 +95,7 @@ public class ExampleTask extends Task {
 			result3 = results.createResult(ExampleTestableResult.class);
 
 			result1.init("res1", 1, 1.0f);
-			result2.init("res2" ,2, 2.0f);
+			result2.init("res2", 2, 2.0f);
 			result3.init("res3", 3, 3.0f);
 		} catch (DAOException e) {
 			throw new AssertionError("Result testing sample creation failed", e);
@@ -128,7 +131,9 @@ public class ExampleTask extends Task {
 		}
 
 		try {
-			final Collection<ExampleTestableResult> intervalResults = results.query(intervalQueryInt, ExampleTestableResult.class);
+			final Collection<ExampleTestableResult> intervalResults = results.query(
+					intervalQueryInt,
+					ExampleTestableResult.class);
 			assertEquals(1, intervalResults.size());
 			assertEquals(Integer.valueOf(2), intervalResults.iterator().next().getTestInt());
 		} catch (DAOException e) {
@@ -162,6 +167,9 @@ public class ExampleTask extends Task {
 
 	@Override
 	public void run(String[] args) {
+
+		System.out.println("STANDARD OUTPUT (System.out.println...) MESSAGE");
+		System.err.println("ERROR OUTPUT (System.err.println...) MESSAGE");
 		log.info("ExampleTask just started.");
 		log.info("I am task from iteration {}", this.getProperty("iteration"));
 		performHeavyCalculations();
@@ -170,8 +178,7 @@ public class ExampleTask extends Task {
 		log.info("Result stored.");
 		try {
 			Thread.sleep(3000);
-		} catch (InterruptedException e){
-		}
+		} catch (InterruptedException e) {}
 		final int resCount1 = pickupResult();
 		log.info("Result retrieved");
 
