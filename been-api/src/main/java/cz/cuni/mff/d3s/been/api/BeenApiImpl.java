@@ -46,24 +46,49 @@ import cz.cuni.mff.d3s.been.util.JSONUtils;
 import cz.cuni.mff.d3s.been.util.JsonException;
 
 /**
- * 
- * {@link BeenApi} implementation.
+ * The implementation of the {@link BeenApi} interface. To instantiate this
+ * class, use {@link BeenApiFactory}.
  * 
  * @author donarus
  */
 final class BeenApiImpl implements BeenApi {
 
+	/** class slf4j logger */
 	private static Logger log = LoggerFactory.getLogger(BeenApiImpl.class);
 
+	/** BEEN cluster context instance */
 	private final ClusterContext clusterContext;
 
+	/** JSON utility instance for serialization/deserialization */
 	private final JSONUtils jsonUtils = JSONUtils.newInstance();
 
+	/**
+	 * Default constructor, which connects to the BEEN cluster as a native
+	 * Hazelcast client using the specified connection credentials. There must
+	 * already be some running BEEN node in full mode.
+	 * 
+	 * @param host
+	 *          IP address or hostname of a running node
+	 * @param port
+	 *          port of a running Hazelcast instance of the node
+	 * @param groupName
+	 *          Hazelcast group name
+	 * @param groupPassword
+	 *          Hazelcast group password
+	 */
 	public BeenApiImpl(final String host, final int port, final String groupName, final String groupPassword) {
 		Instance.newNativeInstance(host, port, groupName, groupPassword);
 		clusterContext = Instance.createContext();
 	}
 
+	/**
+	 * {@link BeenApiImpl} constructor that reuses an already existing
+	 * {@link ClusterContext} instance. The passed cluster context must be already
+	 * connected to the BEEN cluster.
+	 * 
+	 * @param clusterContext
+	 *          the cluster context to reuse
+	 */
 	public BeenApiImpl(final ClusterContext clusterContext) {
 		this.clusterContext = clusterContext;
 	}
@@ -853,6 +878,18 @@ final class BeenApiImpl implements BeenApi {
 		}
 	}
 
+	/**
+	 * Performs a general query (e.g. fetch, delete, ...) in the persistence layer
+	 * and returns a {@link QueryAnswer} object that represent the query result
+	 * and the returned data (if there are any).
+	 * 
+	 * @param query
+	 *          the query to execute
+	 * @return the query answer
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
 	private QueryAnswer queryPersistence(final Query query) throws BeenApiException {
 		return performQuery(query, "Failed to perform persistence query");
 	}
@@ -905,17 +942,24 @@ final class BeenApiImpl implements BeenApi {
 		}
 	}
 
+	/**
+	 * Performs a general Hazelcast predicate query on the specified map. This
+	 * evaluates the predicate in a distributed manner and returns the map entries
+	 * that matched the query (for which the predicate returned true).
+	 * 
+	 * @param mapName
+	 *          the name of the map to query
+	 * @param queryPredicate
+	 *          the query to execute
+	 * @param <T>
+	 *          type of map entries
+	 * @return the collection of matching map entries
+	 */
 	private <T> Collection<T> queryHazelcastMap(final String mapName, final SqlPredicate queryPredicate) {
 		final IMap<?, T> map = clusterContext.getMap(mapName);
 		return map.values(queryPredicate);
 	}
 
-	/**
-	 * @param participantId
-	 *          id of cluster participant
-	 * @return
-	 * @throws BeenApiException
-	 */
 	@Override
 	public Collection<ServiceLogMessage> getServiceLogsByBeenId(final String participantId) throws BeenApiException {
 		final String errorMsg = String.format(
@@ -984,6 +1028,19 @@ final class BeenApiImpl implements BeenApi {
 		}
 	}
 
+	/**
+	 * Checks whether the current cluster context is still active and connected.
+	 * If yes, this method simply returns, if no, it throws a
+	 * {@link ClusterConnectionUnavailableException} exception with the specified
+	 * exception message.
+	 * 
+	 * @param format
+	 *          the format of the exception message
+	 * @param args
+	 *          arguments of the exception message
+	 * @throws ClusterConnectionUnavailableException
+	 *           when the connection is unavailable
+	 */
 	private void checkIsActive(final String format, final String... args) throws ClusterConnectionUnavailableException {
 		final String message = String.format(format, args);
 
@@ -1232,6 +1289,18 @@ final class BeenApiImpl implements BeenApi {
 		return answer;
 	}
 
+	/**
+	 * Creates and returns an instance of {@link SwRepoClient} that serves as a
+	 * client for the software repository. The repository must be running, or else
+	 * a {@link BeenApiException} is thrown with the specified message.
+	 * 
+	 * @param errorMsg
+	 *          the message of the exception
+	 * @return a client for the software repository
+	 * @throws BeenApiException
+	 *           when the software repository is unavailable or another internal
+	 *           exception occurs
+	 */
 	private SwRepoClient getSwRepoClient(final String errorMsg) throws BeenApiException {
 		final ServiceInfo swInfo;
 		try {
@@ -1255,29 +1324,83 @@ final class BeenApiImpl implements BeenApi {
 		}
 	}
 
+	/**
+	 * Creates a persistence exception with the specified message and cause.
+	 * 
+	 * @param errorMsg
+	 *          message of the exception
+	 * @param cause
+	 *          cause of the exception
+	 * @return a new exception object
+	 */
 	private PersistenceException createPersistenceException(final String errorMsg, Exception cause) {
 		final String msg = String.format("%s. Reason: %s", errorMsg, cause.getMessage());
 		return new PersistenceException(msg, cause);
 	}
 
+	/**
+	 * Creates a persistence exception with the specified message and reason.
+	 * 
+	 * @param errorMsg
+	 *          message of the exception
+	 * @param reason
+	 *          reason of the exception
+	 * @return a new exception object
+	 */
 	private PersistenceException createPersistenceException(final String errorMsg, final String reason) {
 		final String msg = String.format("%s. Reason: %s", errorMsg, reason);
 		return new PersistenceException(msg);
 	}
 
+	/**
+	 * Creates an exception which signals that the software repository is
+	 * unavailable.
+	 * 
+	 * @param errorMsg
+	 *          message of the exception
+	 * @return a new exception object
+	 */
 	private SoftwareRepositoryUnavailableException createSoftwareRepositoryUnavailableException(final String errorMsg) {
 		final String msg = String.format("%s. Reason: Software repository is not available", errorMsg);
 		return new SoftwareRepositoryUnavailableException(msg);
 	}
 
+	/**
+	 * Creates a general BEEN exception with the specified message and cause.
+	 * 
+	 * @param errorMsg
+	 *          message of the exception
+	 * @param e
+	 *          cause of the exception
+	 * @return a new exception object
+	 */
 	private BeenApiException createBeenApiException(final String errorMsg, final Exception e) {
 		return new BeenApiException(String.format("%s. Reason: %s", errorMsg, e.getMessage()), e);
 	}
 
+	/**
+	 * Creates a persistence exception with the specified message and reason.
+	 * 
+	 * @param errorMsg
+	 *          message of the exception
+	 * @param reason
+	 *          reason of the exception
+	 * @return a new exception object
+	 */
 	private BeenApiException createBeenApiException(final String errorMsg, final String reason) {
 		return new BeenApiException(String.format("%s. Reason: %s", errorMsg, reason));
 	}
 
+	/**
+	 * Creates a string representation of the BPK identifier and name of a
+	 * descriptor.
+	 * 
+	 * @param bpkId
+	 *          BPK identifier
+	 * @param name
+	 *          name of the descriptor
+	 * @return string representation of the parameters
+	 */
 	private String createNamedDescriptorKey(BpkIdentifier bpkId, String name) {
 		return String.format("%s_%s_%s__%s", bpkId.getGroupId(), bpkId.getBpkId(), bpkId.getVersion(), name);
 	}
