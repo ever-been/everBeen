@@ -3,7 +3,7 @@ package cz.cuni.mff.d3s.been.api;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 
 /**
- * Factory for {@link BeenApi}
+ * Factory for {@link BeenApi}.
  * 
  * @author Martin Sixta
  */
@@ -11,7 +11,6 @@ public final class BeenApiFactory {
 
 	/**
 	 * Creates {@link BeenApi} as client connection to the cluster.
-	 * 
 	 * 
 	 * @param host
 	 *          Hazelcast host to connect to
@@ -28,13 +27,14 @@ public final class BeenApiFactory {
 	}
 
 	/**
-	 * 
-	 * Creates {@link BeenApi} from existing {@link ClusterContext}
+	 * Creates {@link BeenApi} from existing {@link ClusterContext}.
 	 * 
 	 * @param clusterContext
 	 *          Connection to the cluster return BeenApi implementation
+	 * @return a new {@link BeenApi} object
 	 */
 	public static BeenApi fromContext(final ClusterContext clusterContext) {
 		return new BeenApiImpl(clusterContext);
 	}
+
 }
