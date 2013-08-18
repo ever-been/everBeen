@@ -271,118 +271,176 @@ public interface BeenApi {
 			getNamedContextDescriptorsForBpk(BpkIdentifier bpkIdentifier) throws BeenApiException;
 
 	/**
-	 * TODO
+	 * Retrieves all service logs that were created by the specified cluster
+	 * participant. The participant ID represent a specific BEEN component.
 	 * 
 	 * @param participantId
-	 * @return
+	 *          ID of the cluster participant from which logs should be retrieved.
+	 * @return a collection of all service logs that match the criteria
 	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
 	 */
 	public Collection<ServiceLogMessage> getServiceLogsByBeenId(String participantId) throws BeenApiException;
 
 	/**
-	 * TODO
+	 * Retrieves all service logs that were created by the specified host runtime.
 	 * 
 	 * @param hostRuntimeId
-	 * @return
+	 *          ID of the host runtime from which logs should be retrieved
+	 * @return a collection of all service logs that match the criteria
 	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
 	 */
 	public Collection<ServiceLogMessage> getServiceLogsByHostRuntimeId(String hostRuntimeId) throws BeenApiException;
 
 	/**
-	 * TODO
+	 * Retrieves all service logs that were created by the specified service.
 	 * 
 	 * @param serviceName
-	 * @return
+	 *          name of the service from which logs should be retrieved
+	 * @return a collection of all service logs that match the criteria
 	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
 	 */
 	public Collection<ServiceLogMessage> getServiceLogsByServiceName(String serviceName) throws BeenApiException;
 
 	/**
-	 * TODO
+	 * Retrieves all service logs from all host runtimes and all BEEN components
+	 * that had been created on the day specified by the passed date.
 	 * 
 	 * @param date
-	 * @return
+	 *          specified a day from which logs should be retrieved
+	 * @return a collection of all service logs that match the criteria
 	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
 	 */
 	public Collection<ServiceLogMessage> getServiceLogsByDate(Date date) throws BeenApiException;
 
 	/**
-	 * TODO
+	 * Removes all leftover data from the specified task from the persistence
+	 * layer.
 	 * 
 	 * @param taskId
+	 *          ID of the task to clear
 	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
 	 */
 	public void clearPersistenceForTask(String taskId) throws BeenApiException;
 
 	/**
-	 * TODO
+	 * Removes all leftover data from the specified task context from the
+	 * persistence layer.
 	 * 
 	 * @param contextId
+	 *          ID of the task context to clear
 	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
 	 */
 	public void clearPersistenceForContext(String contextId) throws BeenApiException;
 
 	/**
-	 * TODO
+	 * Removes all leftover data from the specified benchmark from the persistence
+	 * layer.
 	 * 
 	 * @param benchmarkId
+	 *          ID of the benchmark to clear
 	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
 	 */
 	public void clearPersistenceForBenchmark(String benchmarkId) throws BeenApiException;
 
 	/**
-	 * TODO
+	 * Retrieves task IDs that had finished with the specified state. This method
+	 * retrieves its data from the persistence layer.
 	 * 
 	 * @param state
-	 * @return
+	 *          which task state should be retrieved
+	 * @return a collection of task IDs that match the criteria
 	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
 	 */
 	public Collection<String> getTasksWithState(TaskState state) throws BeenApiException;
 
 	/**
-	 * TODO
+	 * Retrieves task IDs that had finished with the specified state within the
+	 * specified task context. This method retrieves its data from the persistence
+	 * layer.
 	 * 
 	 * @param state
+	 *          which task state should be retrieved
 	 * @param contextId
-	 * @return
+	 *          ID of the task context
+	 * @return a collection of task IDs that match the criteria
 	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
 	 */
 	public Collection<String> getTasksWithStateFromContext(TaskState state, String contextId) throws BeenApiException;
 
 	/**
-	 * TODO
+	 * Retrieves task IDs that had finished with the specified state within the
+	 * specified benchmark. This method retrieves its data from the persistence
+	 * layer.
 	 * 
 	 * @param state
+	 *          which task state should be retrieved
 	 * @param benchmarkId
-	 * @return
+	 *          ID of the benchmark
+	 * @return a collection of task IDs that match the criteria
 	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
 	 */
 	public Collection<String> getTasksWithStateFromBenchmark(TaskState state, String benchmarkId) throws BeenApiException;
 
 	/**
-	 * TODO
+	 * Retrieves the state of a finished (or failed) task from the persistence
+	 * layer for the specified task.
 	 * 
 	 * @param taskId
-	 * @return
+	 *          ID of the task
+	 * @return the state of the task
 	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
 	 */
 	public TaskState getTaskState(String taskId) throws BeenApiException;
 
 	/**
-	 * TODO
+	 * Lists the states of all finished and failed tasks that had run within the
+	 * specified task context. This method retrieves its data from the persistence
+	 * layer and returns a map between task IDs and its corresponding
+	 * {@link TaskState} objects.
 	 * 
 	 * @param contextId
-	 * @return
+	 *          ID of the task context
+	 * @return a map between task IDs and {@link TaskState} objects
 	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
 	 */
 	public Map<String, TaskState> getTaskStatesForContext(String contextId) throws BeenApiException;
 
 	/**
-	 * TODO
+	 * Lists the states of all finished and failed tasks that had run within the
+	 * specified benchmark. This method retrieves its data from the persistence
+	 * layer and returns a map between task IDs and its corresponding
+	 * {@link TaskState} objects.
 	 * 
 	 * @param benchmarkId
-	 * @return
+	 *          ID of the benchmark
+	 * @return a map between task IDs and {@link TaskState} objects
 	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
 	 */
 	public Map<String, TaskState> getTaskStatesForBenchmark(String benchmarkId) throws BeenApiException;
 
