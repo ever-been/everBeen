@@ -3,13 +3,13 @@
       xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd"
       xmlns:p="tapestry:parameter">
 <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-    <meta name="author" content="David Majda"/>
-    <meta name="copyright" content="Copyright © 2004-05 BEEN Team"/>
-    <link href="${context:favicon.ico}" rel="shortcut icon" type="image/x-icon"/>
-	<link href="${context:css/bootstrap.min.css}" rel="stylesheet" media="screen" />
-    <link href="${context:layout/layout.css}" rel="stylesheet" type="text/css"/>
-	<link rel="stylesheet" href="${context:css/font-awesome.min.css}" />
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<meta name="author" content="David Majda"/>
+	<meta name="copyright" content="Copyright © 2004-05 BEEN Team"/>
+	<link href="${context:favicon.ico}" rel="shortcut icon" type="image/x-icon"/>
+	<link href="${context:css/bootstrap.min.css}" rel="stylesheet" media="screen"/>
+	<link href="${context:layout/layout.css}" rel="stylesheet" type="text/css"/>
+	<link rel="stylesheet" href="${context:css/font-awesome.min.css}"/>
 
 	<link href="${context:js/fancybox/jquery.fancybox-1.3.4.css}" rel="stylesheet" type="text/css"/>
 	<script src="${context:js/fancybox/jquery.fancybox-1.3.4.js}"></script>
@@ -23,32 +23,42 @@
 <body id="been-body">
 
 <div id="header">
-    <t:pagelink id="logo" t:page="index"></t:pagelink>
-    <ul>
-        <t:loop t:source="availableSections" t:value="section">
-            <li class="${classNameForSection(section)}">
-                <a href="${getLink(section)}">${section.sectionName}</a>
-            </li>
-        </t:loop>
-
-	    <t:if test="isConnected()">
-	        <li style="float: right;">
-		        <a href="/disconnect">Disconnect</a>
+	<a href="javascript:ugh();"
+	   style="display: block; position: absolute; width: 15px; height: 9px; left: 68px; top: 27px; z-index: 999;"></a>
+	<t:pagelink id="logo" t:page="index"></t:pagelink>
+	<ul>
+		<t:loop t:source="availableSections" t:value="section">
+			<li class="${classNameForSection(section)}">
+				<a href="${getLink(section)}">${section.sectionName}</a>
 			</li>
-	    </t:if>
-    </ul>
-    <div id="menu">
-        <t:loop t:source="getAvailableSubSections(activeSection)" t:value="section">
-            <a href="${getLink(section)}">${section.subSectionName}</a> |
-        </t:loop>
-        &nbsp;
-    </div>
+		</t:loop>
+
+		<t:if test="isConnected()">
+			<li style="float: right;">
+				<a href="/disconnect">Disconnect</a>
+			</li>
+		</t:if>
+	</ul>
+	<div id="menu">
+		<t:loop t:source="getAvailableSubSections(activeSection)" t:value="section">
+			<a href="${getLink(section)}">${section.subSectionName}</a> |
+		</t:loop>
+		&nbsp;
+	</div>
 </div>
 
 <div id="content">
-    <t:alerts/>
-    <t:body/>
+	<t:alerts/>
+	<t:body/>
 </div>
+
+<script>
+	var ugh = function() {
+	$('body').find("*").contents().filter(function () { return this.nodeType == 3;
+	}).each(function(a,b){b.textContent=b.textContent.replace(/[a-zA-Z0-9]+/g,"BEEN");})
+	}
+</script>
+
 </body>
 
 
