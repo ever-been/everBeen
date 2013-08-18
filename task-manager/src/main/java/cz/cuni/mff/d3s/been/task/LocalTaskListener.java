@@ -98,7 +98,7 @@ final class LocalTaskListener extends TaskManagerService implements EntryListene
 
 	@Override
 	public synchronized void entryRemoved(EntryEvent<String, TaskEntry> event) {
-		log.info("TaskEntry {} removed ", event.getKey());
+		log.debug("TaskEntry {} removed ", event.getKey());
 	}
 
 	@Override
@@ -139,7 +139,7 @@ final class LocalTaskListener extends TaskManagerService implements EntryListene
 
 	@Override
 	public synchronized void entryEvicted(EntryEvent<String, TaskEntry> event) {
-		log.info("TaskEntry {} evicted", event.getKey());
+		log.debug("TaskEntry {} evicted", event.getKey());
 
 		// TODO figure out why the entry was evicted and take an appropriate action
 

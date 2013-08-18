@@ -169,6 +169,7 @@
 				<module>service-logger-handler</module>
 				<module>service-logger</module>
 				<module>logback-appender</module>
+				<module>mapstore</module>
 				<module>mongodb-mapstore</module>
 			</modules>
 		</profile>

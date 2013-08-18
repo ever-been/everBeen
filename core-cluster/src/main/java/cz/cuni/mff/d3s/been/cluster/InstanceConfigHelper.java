@@ -4,6 +4,7 @@ import static cz.cuni.mff.d3s.been.cluster.ClusterClientConfiguration.*;
 import static cz.cuni.mff.d3s.been.cluster.ClusterConfiguration.*;
 import static cz.cuni.mff.d3s.been.cluster.ClusterConfiguration.LOGGING_TYPE.NONE;
 import static cz.cuni.mff.d3s.been.cluster.ClusterConfiguration.LOGGING_TYPE.SLF4J;
+import static cz.cuni.mff.d3s.been.mapstore.MapStoreConfiguration.*;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 import java.io.IOException;
@@ -171,10 +172,10 @@ final class InstanceConfigHelper {
 				password = "";
 			}
 
-			mapStoreConfig.setProperty("username", username);
-			mapStoreConfig.setProperty("password", password);
-			mapStoreConfig.setProperty("hostname", hostname);
-			mapStoreConfig.setProperty("dbname", dbname);
+			mapStoreConfig.setProperty(MAP_STORE_DB_USERNAME, username);
+			mapStoreConfig.setProperty(MAP_STORE_DB_PASSWORD, password);
+			mapStoreConfig.setProperty(MAP_STORE_DB_HOSTNAME, hostname);
+			mapStoreConfig.setProperty(MAP_STORE_DB_NAME, dbname);
 
 			tasksMap.setMapStoreConfig(mapStoreConfig);
 			contextsMap.setMapStoreConfig(mapStoreConfig);
