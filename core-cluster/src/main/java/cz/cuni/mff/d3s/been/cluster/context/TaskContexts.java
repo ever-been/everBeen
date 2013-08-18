@@ -285,6 +285,8 @@ public class TaskContexts {
 				instance.destroy();
 			}
 		}
+
+		putContextEntry(taskContextEntry);
 	}
 
 	/**
