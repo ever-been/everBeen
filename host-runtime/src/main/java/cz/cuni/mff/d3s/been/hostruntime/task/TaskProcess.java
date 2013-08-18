@@ -1,6 +1,7 @@
 package cz.cuni.mff.d3s.been.hostruntime.task;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
@@ -9,7 +10,8 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.exec.*;
-import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.d3s.been.bpk.ArtifactIdentifier;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
@@ -21,6 +23,11 @@ import cz.cuni.mff.d3s.been.hostruntime.TaskException;
  * 
  */
 public class TaskProcess implements AutoCloseable {
+
+	/**
+	 * Logger
+	 */
+	private static final Logger log = LoggerFactory.getLogger(TaskProcess.class);
 
 	/** magic constant which is used to set process timeout to infinite */
 	public static final long NO_TIMEOUT = ExecuteWatchdog.INFINITE_TIMEOUT;
@@ -51,6 +58,8 @@ public class TaskProcess implements AutoCloseable {
 
 	/** tells if manual shutdown has been requested */
 	private boolean killed;
+	private OutputStream stdOutOutputStream;
+	private OutputStream stdErrOutputStream;
 
 	/**
 	 * Creates new task process.
@@ -63,8 +72,13 @@ public class TaskProcess implements AutoCloseable {
 	 *          environment variables for process to be set
 	 * @param artifactDownloader
 	 */
-	public TaskProcess(CmdLineBuilder cmdLineBuilder, Path wrkDir, Map<String, String> environment, ExecuteStreamHandler streamHandler, DependencyDownloader artifactDownloader)
-			throws TaskException {
+	public TaskProcess(
+			CmdLineBuilder cmdLineBuilder,
+			Path wrkDir,
+			Map<String, String> environment,
+			OutputStream stdOutOutputStream,
+			OutputStream stdErrOutputStream,
+			DependencyDownloader artifactDownloader) throws TaskException {
 		this.artifactDependencies = artifactDownloader.getArtifactDependencies();
 		this.bkpDependencies = artifactDownloader.getBkpDependencies();
 		this.cmd = cmdLineBuilder.build();
@@ -73,7 +87,9 @@ public class TaskProcess implements AutoCloseable {
 			wrkDir.toFile().mkdirs();
 		}
 		this.environment = environment;
-		this.streamHandler = streamHandler;
+		this.stdOutOutputStream = stdOutOutputStream;
+		this.stdErrOutputStream = stdErrOutputStream;
+		this.streamHandler = new PumpStreamHandler(stdOutOutputStream, stdErrOutputStream);
 		this.watchdog = new ExecuteWatchdog(NO_TIMEOUT);
 	}
 
@@ -164,6 +180,22 @@ public class TaskProcess implements AutoCloseable {
 		if (!this.killed) {
 			watchdog.destroyProcess();
 		}
+
+		this.streamHandler.stop();
+
+		try {
+			stdOutOutputStream.close();
+		} catch (IOException e) {
+			String msg = "Unable to close output stream with stdout redirection";
+			log.warn(msg, e);
+		}
+
+		try {
+			stdErrOutputStream.close();
+		} catch (IOException e) {
+			String msg = "Unable to close output stream with stderr redirection";
+			log.warn(msg, e);
+		}
 	}
 
 	public boolean isDebugListeningMode() {
@@ -193,8 +225,7 @@ public class TaskProcess implements AutoCloseable {
 	 *          timeout in seconds
 	 */
 	public void setTimeout(long timeout) {
-		timeoutInMillis = timeout <= 0 ? NO_TIMEOUT
-				: TimeUnit.SECONDS.toMillis(timeout);
+		timeoutInMillis = timeout <= 0 ? NO_TIMEOUT : TimeUnit.SECONDS.toMillis(timeout);
 		this.watchdog = new ExecuteWatchdog(timeoutInMillis);
 	}
 

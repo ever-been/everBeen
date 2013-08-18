@@ -4,15 +4,15 @@ import static cz.cuni.mff.d3s.been.cluster.Names.ACTION_QUEUE_NAME;
 import static cz.cuni.mff.d3s.been.core.TaskPropertyNames.*;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.commons.exec.ExecuteStreamHandler;
-import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +58,10 @@ final class ProcessManager implements Service {
 	 * Logger
 	 */
 	private static final Logger log = LoggerFactory.getLogger(ProcessManager.class);
+
+	private static final String STD_ERR_REDIRECT_FILENAME = "stderr.log";
+
+	private static final String STD_OUT_REDIRECT_FILENAME = "stdout.log";
 
 	/**
 	 * Host Runtime info
@@ -244,6 +248,7 @@ final class ProcessManager implements Service {
 		tasks.updateTaskDirs();
 
 		try (TaskProcess process = createTaskProcess(taskEntry, taskDir)) {
+
 			tasks.addTask(id, process);
 
 			if (process.isDebugListeningMode()) {
@@ -317,13 +322,22 @@ final class ProcessManager implements Service {
 		// create dependency downloader
 		DependencyDownloader dependencyDownloader = DependencyDownloaderFactory.create(runtime);
 
-		// create output handler
-		ExecuteStreamHandler streamHandler = createStreamHandler(taskEntry);
+		// create streams to redirect stdout and stderr to
+		OutputStream stdOutFileOutputStream = new FileOutputStream(new File(taskDirectory, STD_OUT_REDIRECT_FILENAME));
+		OutputStream stdErrFileOutputStream = new FileOutputStream(new File(taskDirectory, STD_ERR_REDIRECT_FILENAME));
+
+		// let the compiler optimize this out
+		String taskId = taskEntry.getId();
+		String contextId = taskEntry.getTaskContextId();
+		String benchmarkId = taskEntry.getBenchmarkId();
+
+		TaskStdInOutHandler stdOutHandler = new TaskStdInOutHandler(taskId, contextId, benchmarkId, "stdout", stdOutFileOutputStream);
+		TaskStdInOutHandler stdErrHandler = new TaskStdInOutHandler(taskId, contextId, benchmarkId, "stderr", stdErrFileOutputStream);
 
 		// create environment properties
 		Map<String, String> environment = createEnvironmentProperties(taskEntry);
 
-		TaskProcess taskProcess = new TaskProcess(cmdLineBuilder, taskWrkDir, environment, streamHandler, dependencyDownloader);
+		TaskProcess taskProcess = new TaskProcess(cmdLineBuilder, taskWrkDir, environment, stdOutHandler, stdErrHandler, dependencyDownloader);
 
 		long timeout = determineTimeout(taskDescriptor);
 
@@ -348,19 +362,6 @@ final class ProcessManager implements Service {
 
 	private long determineTimeout(TaskDescriptor td) {
 		return td.isSetFailurePolicy() ? td.getFailurePolicy().getTimeoutRun() : TaskProcess.NO_TIMEOUT;
-	}
-
-	private ExecuteStreamHandler createStreamHandler(TaskEntry entry) {
-		// let the compiler optimize this out
-		String taskId = entry.getId();
-		String contextId = entry.getTaskContextId();
-		String benchmarkId = entry.getBenchmarkId();
-
-		TaskStdInOutHandler stdOutHandler = new TaskStdInOutHandler(taskId, contextId, benchmarkId, "stdout");
-		TaskStdInOutHandler stdErrHandler = new TaskStdInOutHandler(taskId, contextId, benchmarkId, "stderr");
-
-		return new PumpStreamHandler(stdOutHandler, stdErrHandler);
-
 	}
 
 	private Map<String, String> createEnvironmentProperties(TaskEntry taskEntry) {

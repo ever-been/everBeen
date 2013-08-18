@@ -2,14 +2,17 @@ package cz.cuni.mff.d3s.been.hostruntime.task;
 
 import static cz.cuni.mff.d3s.been.socketworks.NamedSockets.TASK_LOG_0MQ;
 
-import cz.cuni.mff.d3s.been.logging.TaskLogMessage;
+import java.io.IOException;
+import java.io.OutputStream;
+
 import org.apache.commons.exec.LogOutputStream;
 
-import cz.cuni.mff.d3s.been.logging.LogMessage;
 import cz.cuni.mff.d3s.been.core.TaskMessageType;
+import cz.cuni.mff.d3s.been.logging.LogMessage;
+import cz.cuni.mff.d3s.been.logging.TaskLogMessage;
+import cz.cuni.mff.d3s.been.mq.MessageQueues;
 import cz.cuni.mff.d3s.been.util.JSONUtils;
 import cz.cuni.mff.d3s.been.util.JsonException;
-import cz.cuni.mff.d3s.been.mq.MessageQueues;
 
 /**
  * 
@@ -25,6 +28,7 @@ import cz.cuni.mff.d3s.been.mq.MessageQueues;
  * @author Martin Sixta
  */
 public class TaskStdInOutHandler extends LogOutputStream {
+	public static final char UNIX_LINE_SEPARATOR = '\n';
 	private final String taskId;
 	private final String contextId;
 	private final String benchmarkId;
@@ -32,18 +36,30 @@ public class TaskStdInOutHandler extends LogOutputStream {
 
 	private final MessageQueues messageQueues;
 	private final JSONUtils jsonUtils;
+	private final OutputStream secondRedirectOutputStream;
 
-	public TaskStdInOutHandler(String taskId, String contextId, String benchmarkId, String name) {
+	public TaskStdInOutHandler(
+			String taskId,
+			String contextId,
+			String benchmarkId,
+			String name,
+			OutputStream secondRedirectOutputStream) {
 		this.taskId = taskId;
 		this.contextId = contextId;
 		this.benchmarkId = benchmarkId;
 		this.name = name;
 		this.messageQueues = MessageQueues.getInstance();
 		this.jsonUtils = JSONUtils.newInstance();
+		this.secondRedirectOutputStream = secondRedirectOutputStream;
 	}
 
 	@Override
 	protected void processLine(String line, int level) {
+		try {
+			secondRedirectOutputStream.write((line + UNIX_LINE_SEPARATOR).getBytes());
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
 		// Fabricate a log message
 
 		// Send it
@@ -68,4 +84,9 @@ public class TaskStdInOutHandler extends LogOutputStream {
 		return String.format("%s#%s", TaskMessageType.LOG_MESSAGE.toString(), json);
 	}
 
+	@Override
+	public void close() throws IOException {
+		super.close();
+		secondRedirectOutputStream.close();
+	}
 }

@@ -1,6 +1,8 @@
 package cz.cuni.mff.d3s.been.hostruntime.task;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.OutputStream;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -41,6 +43,20 @@ public class TaskProcessTest extends Assert {
 	"	}" + //
 	"}";
 
+	private String sourceWithStdOutWrite = //
+	"public class Main {" + //
+	"	public static void main(String[] args) throws InterruptedException {" + //
+	"		System.out.println(\"STD OUT WRITE EXAMPLE\");" + //
+	"	}" + //
+	"}";
+
+	private String sourceWithStdErrWrite = //
+	"public class Main {" + //
+	"	public static void main(String[] args) throws InterruptedException {" + //
+	"		System.err.println(\"STD ERR WRITE EXAMPLE\");" + //
+	"	}" + //
+	"}";
+
 	private String sourceDoingNothing = //
 	"public class Main {" + //
 	"	public static void main(String[] args) throws InterruptedException {" + //
@@ -61,6 +77,12 @@ public class TaskProcessTest extends Assert {
 
 	private Path wrkDirPath;
 
+	@Mock
+	private OutputStream fakeStdOutOutputStream;
+
+	@Mock
+	private OutputStream fakeStdErrOutputStream;
+
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
@@ -72,8 +94,7 @@ public class TaskProcessTest extends Assert {
 	public void testExceptionIsThrownWhenProcessEndsWithErrorExitCode() throws Exception {
 		setUpCmdLineBuilder(sourceWithBadExitCode);
 		Map<String, String> environment = new HashMap<>();
-		ExecuteStreamHandler streamhandler = new PumpStreamHandler();
-		TaskProcess process = new TaskProcess(cmdLineBuilder, workingDirectory.toPath(), environment, streamhandler, dependencyDownloader);
+		TaskProcess process = new TaskProcess(cmdLineBuilder, workingDirectory.toPath(), environment, fakeStdOutOutputStream, fakeStdErrOutputStream, dependencyDownloader);
 
 		process.start();
 	}
@@ -82,8 +103,7 @@ public class TaskProcessTest extends Assert {
 	public void testExceptionIsThrownWhenInvalidCommandLineProvided() throws Exception {
 		Mockito.when(cmdLineBuilder.build()).thenReturn(new TaskCommandLine("q w e r t y"));
 		Map<String, String> environment = new HashMap<>();
-		ExecuteStreamHandler streamhandler = new PumpStreamHandler();
-		final TaskProcess process = new TaskProcess(cmdLineBuilder, wrkDirPath, environment, streamhandler, dependencyDownloader);
+		final TaskProcess process = new TaskProcess(cmdLineBuilder, wrkDirPath, environment, fakeStdOutOutputStream, fakeStdErrOutputStream, dependencyDownloader);
 
 		process.start();
 	}
@@ -92,8 +112,7 @@ public class TaskProcessTest extends Assert {
 	public void testExceptionIsThrownOnTimeoutExceeded() throws Exception {
 		setUpCmdLineBuilderWithExecTime(sourceWithTimeoutAsFirstArg, 10);
 		Map<String, String> environment = new HashMap<>();
-		ExecuteStreamHandler streamhandler = new PumpStreamHandler();
-		TaskProcess process = new TaskProcess(cmdLineBuilder, wrkDirPath, environment, streamhandler, dependencyDownloader);
+		TaskProcess process = new TaskProcess(cmdLineBuilder, wrkDirPath, environment, fakeStdOutOutputStream, fakeStdErrOutputStream, dependencyDownloader);
 		process.setTimeout(1);
 
 		process.start();
@@ -103,8 +122,7 @@ public class TaskProcessTest extends Assert {
 	public void testCorrectExitCodeIsReturned() throws Exception {
 		setUpCmdLineBuilder(sourceDoingNothing);
 		Map<String, String> environment = new HashMap<>();
-		ExecuteStreamHandler streamhandler = new PumpStreamHandler();
-		final TaskProcess process = new TaskProcess(cmdLineBuilder, wrkDirPath, environment, streamhandler, dependencyDownloader);
+		final TaskProcess process = new TaskProcess(cmdLineBuilder, wrkDirPath, environment, fakeStdOutOutputStream, fakeStdErrOutputStream, dependencyDownloader);
 
 		assertEquals(0, process.start());
 	}
@@ -113,11 +131,34 @@ public class TaskProcessTest extends Assert {
 	public void testTaskSuccessfullyFinishedBeforeTimeout() throws Exception {
 		setUpCmdLineBuilderWithExecTime(sourceWithTimeoutAsFirstArg, 0);
 		Map<String, String> environment = new HashMap<>();
-		ExecuteStreamHandler streamhandler = new PumpStreamHandler();
-		TaskProcess process = new TaskProcess(cmdLineBuilder, wrkDirPath, environment, streamhandler, dependencyDownloader);
+		TaskProcess process = new TaskProcess(cmdLineBuilder, wrkDirPath, environment, fakeStdOutOutputStream, fakeStdErrOutputStream, dependencyDownloader);
 		process.setTimeout(2);
 
 		process.start();
+	}
+
+	@Test
+	public void testTaskHandlesStdOutput() throws Exception {
+		setUpCmdLineBuilderWithExecTime(sourceWithStdOutWrite, 0);
+		Map<String, String> environment = new HashMap<>();
+		ByteArrayOutputStream fakeStdOutOutputStream = new ByteArrayOutputStream();
+		TaskProcess process = new TaskProcess(cmdLineBuilder, wrkDirPath, environment, fakeStdOutOutputStream, fakeStdErrOutputStream, dependencyDownloader);
+		process.setTimeout(2);
+
+		process.start();
+		assertEquals("STD OUT WRITE EXAMPLE\n", new String(fakeStdOutOutputStream.toByteArray()));
+	}
+
+	@Test
+	public void testTaskHandlesErrOutput() throws Exception {
+		setUpCmdLineBuilderWithExecTime(sourceWithStdErrWrite, 0);
+		Map<String, String> environment = new HashMap<>();
+		ByteArrayOutputStream fakeStdErrOutputStream = new ByteArrayOutputStream();
+		TaskProcess process = new TaskProcess(cmdLineBuilder, wrkDirPath, environment, fakeStdOutOutputStream, fakeStdErrOutputStream, dependencyDownloader);
+		process.setTimeout(2);
+
+		process.start();
+		assertEquals("STD ERR WRITE EXAMPLE\n", new String(fakeStdErrOutputStream.toByteArray()));
 	}
 
 	@Test(timeout = 15000)
@@ -125,7 +166,7 @@ public class TaskProcessTest extends Assert {
 		setUpCmdLineBuilderWithExecTime(sourceWithTimeoutAsFirstArg, 10000);
 		Map<String, String> environment = new HashMap<>();
 		ExecuteStreamHandler streamhandler = new PumpStreamHandler();
-		final TaskProcess process = new TaskProcess(cmdLineBuilder, wrkDirPath, environment, streamhandler, dependencyDownloader);
+		final TaskProcess process = new TaskProcess(cmdLineBuilder, wrkDirPath, environment, fakeStdOutOutputStream, fakeStdErrOutputStream, dependencyDownloader);
 
 		Thread t = new Thread() {
 			@Override
