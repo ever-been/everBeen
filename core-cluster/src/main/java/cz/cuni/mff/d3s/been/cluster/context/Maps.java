@@ -1,28 +1,34 @@
 package cz.cuni.mff.d3s.been.cluster.context;
 
-import com.hazelcast.core.IMap;
-import com.hazelcast.core.Instance;
-
 import java.util.Collection;
 import java.util.LinkedList;
 
+import com.hazelcast.core.IMap;
+import com.hazelcast.core.Instance;
+
 /**
- * 
- * Utility class for often map related functions.
+ * Utility class for often-used map related functions.
  * 
  * @author Martin Sixta
  */
 public class Maps {
 
+	/** the connection to the BEEN cluster */
 	private final ClusterContext clusterCtx;
 
+	/**
+	 * Package private constructor, create a new instance that uses the specified
+	 * BEEN cluster context.
+	 * 
+	 * @param clusterCtx
+	 *          the cluster context to use
+	 */
 	Maps(ClusterContext clusterCtx) {
 		// package private visibility prevents out-of-package instantiation
 		this.clusterCtx = clusterCtx;
 	}
 
 	/**
-	 * 
 	 * Returns collection of all values in a map.
 	 * 
 	 * Use with care, such a map can be big.
