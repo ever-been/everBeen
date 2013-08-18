@@ -17,32 +17,67 @@ import cz.cuni.mff.d3s.been.persistence.DAOException;
 import cz.cuni.mff.d3s.been.persistence.task.PersistentDescriptors;
 
 /**
- * Created with IntelliJ IDEA. User: Kuba Date: 20.04.13 Time: 13:09 To change
- * this template use File | Settings | File Templates.
+ * Utility class for operations related to task contexts.
+ * 
+ * @author Kuba Brecka
  */
 public class TaskContexts {
 
+	/** slf4j logger */
 	private static final Logger log = LoggerFactory.getLogger(TaskContexts.class);
 
+	/** BEEN cluster connection */
 	private ClusterContext clusterContext;
 
+	/**
+	 * Package private constructor, creates a new instance that uses the specified
+	 * BEEN cluster context.
+	 * 
+	 * @param clusterContext
+	 *          the cluster context to use
+	 */
 	TaskContexts(ClusterContext clusterContext) {
 		// package private visibility prevents out-of-package instantiation
 		this.clusterContext = clusterContext;
 	}
 
+	/**
+	 * Returns the map which holds task context entries.
+	 * 
+	 * @return the task contexts map
+	 */
 	public IMap<String, TaskContextEntry> getTaskContextsMap() {
 		return clusterContext.getMap(Names.TASK_CONTEXTS_MAP_NAME);
 	}
 
+	/**
+	 * Returns a task context with the specified ID.
+	 * 
+	 * @param id
+	 *          ID of the task context to retrieve
+	 * @return the task context entry with the specified ID or null if no such
+	 *         task context exists
+	 */
 	public TaskContextEntry getTaskContext(String id) {
 		return getTaskContextsMap().get(id);
 	}
 
+	/**
+	 * Returns a collection of all available task contexts in the Hazelcast map.
+	 * 
+	 * @return all task contexts
+	 */
 	public Collection<TaskContextEntry> getTaskContexts() {
 		return getTaskContextsMap().values();
 	}
 
+	/**
+	 * Puts/updates the entry about the specified task context in the Hazelcast
+	 * map.
+	 * 
+	 * @param entry
+	 *          the task context entry to put
+	 */
 	public void putContextEntry(TaskContextEntry entry) {
 		getTaskContextsMap().put(entry.getId(), entry);
 	}
@@ -55,6 +90,8 @@ public class TaskContexts {
 	 * 
 	 * @param descriptor
 	 *          descriptor of a context
+	 * @param benchmarkId
+	 *          ID of the benchmark under which the task context should be created
 	 * @return id of the submitted context
 	 */
 	public String submit(TaskContextDescriptor descriptor, String benchmarkId) {
@@ -76,6 +113,16 @@ public class TaskContexts {
 		return contextEntry.getId();
 	}
 
+	/**
+	 * Stores the specified context descriptor into the persistence layer.
+	 * 
+	 * @param descriptor
+	 *          the descriptor to persist
+	 * @param benchmarkId
+	 *          the benchmark ID under which the descriptor was submitted
+	 * @param contextEntry
+	 *          the task context entry of the submitted context
+	 */
 	private void persistContextDescriptor(TaskContextDescriptor descriptor, String benchmarkId,
 			TaskContextEntry contextEntry) {
 		final TaskEntity entity = PersistentDescriptors.wrapContextDescriptor(
@@ -92,6 +139,13 @@ public class TaskContexts {
 		}
 	}
 
+	/**
+	 * Performs various sanity checks of the task context entry and throws an
+	 * exception when an invalid state is found.
+	 * 
+	 * @param contextEntry
+	 *          the task context entry to check
+	 */
 	private void checkContextBeforeSubmit(TaskContextEntry contextEntry) {
 		TaskContextDescriptor descriptor = contextEntry.getTaskContextDescriptor();
 
@@ -128,6 +182,15 @@ public class TaskContexts {
 
 	}
 
+	/**
+	 * Submits a single task descriptor in a new task context. Since all tasks
+	 * must belong to some task context, this is the preferred way to submit
+	 * single tasks.
+	 * 
+	 * @param taskDescriptor
+	 *          the task descriptor to submit
+	 * @return the ID of the newly created task context
+	 */
 	public String submitTaskInNewContext(TaskDescriptor taskDescriptor) {
 		if (taskDescriptor.getType() != TaskType.TASK) {
 			throw new IllegalArgumentException("TaskDescriptor's type is not task.");
@@ -144,6 +207,20 @@ public class TaskContexts {
 		return submit(contextDescriptor, null);
 	}
 
+	/**
+	 * Submits a benchmark with the specified task descriptor describing the
+	 * benchmark generator task. This method can also be used for resubmitting a
+	 * generator task. When resubmitting, specify a 'benchmarkId' parameter and
+	 * set it to the ID of the benchmark for which the generator is being
+	 * resubmitted. When submitting a new benchmark, set the 'benchmarkId' to the
+	 * newly created benchmark entry.
+	 * 
+	 * @param benchmarkTaskDescriptor
+	 *          generator task descriptor
+	 * @param benchmarkId
+	 *          the ID of the benchmark
+	 * @return the ID of the newly submitted task
+	 */
 	public String submitBenchmarkTask(TaskDescriptor benchmarkTaskDescriptor, String benchmarkId) {
 		if (benchmarkTaskDescriptor.getType() != TaskType.BENCHMARK) {
 			throw new IllegalArgumentException("TaskDescriptor's type is not benchmark.");
@@ -157,6 +234,16 @@ public class TaskContexts {
 		return taskEntry.getId();
 	}
 
+	/**
+	 * Creates a collection of task entries from the descriptor in the specified
+	 * task context entry. This method will parse the context descriptor and
+	 * create tasks from the templates and put these tasks into the Hazelcast map.
+	 * 
+	 * @param taskContextEntry
+	 *          the task context entry from which the task entries should be
+	 *          created
+	 * @return a collection of the newly creates tasks
+	 */
 	private Collection<TaskEntry> getTaskEntries(TaskContextEntry taskContextEntry) {
 		TaskContextDescriptor descriptor = taskContextEntry.getTaskContextDescriptor();
 		String contextId = taskContextEntry.getId();
@@ -198,6 +285,13 @@ public class TaskContexts {
 
 	}
 
+	/**
+	 * Runs the specified context. This will submit all the contained tasks and
+	 * set the state of the task context to running.
+	 * 
+	 * @param contextId
+	 *          the ID of the context to run
+	 */
 	public void runContext(String contextId) {
 		TaskContextEntry contextEntry = getTaskContext(contextId);
 		if (contextEntry == null) {
@@ -220,6 +314,17 @@ public class TaskContexts {
 
 	}
 
+	/**
+	 * Propagates properties set in the context descriptor to the individual task.
+	 * 
+	 * @param descriptor
+	 *          the context descriptor from which the properties should be
+	 *          extracted
+	 * @param task
+	 *          the task entry in the context descriptor
+	 * @param td
+	 *          the task descriptor into which the properties should be set
+	 */
 	private void setTaskProperties(TaskContextDescriptor descriptor, Task task, TaskDescriptor td) {
 		HashMap<String, String> properties = new HashMap<>();
 
@@ -254,6 +359,15 @@ public class TaskContexts {
 		}
 	}
 
+	/**
+	 * Clones a task template from a context descriptor.
+	 * 
+	 * @param descriptor
+	 *          the context descriptor
+	 * @param templateName
+	 *          the name of the template that should be cloned
+	 * @return the cloned task descriptor
+	 */
 	private TaskDescriptor cloneTemplateWithName(TaskContextDescriptor descriptor, String templateName) {
 		for (Template t : descriptor.getTemplates().getTemplate()) {
 			if (t.getName().equals(templateName)) {
@@ -317,6 +431,13 @@ public class TaskContexts {
 		}
 	}
 
+	/**
+	 * Returns a list of all available tasks in the specified task context.
+	 * 
+	 * @param taskContextId
+	 *          the ID of the task context
+	 * @return collection of task entries within the context
+	 */
 	public Collection<TaskEntry> getTasksInTaskContext(String taskContextId) {
 		TaskContextEntry taskContextEntry = getTaskContext(taskContextId);
 
@@ -331,6 +452,15 @@ public class TaskContexts {
 		return result;
 	}
 
+	/**
+	 * Kills the specified context (i.e. kills all the contained tasks). This
+	 * method only submits the "killing" operation and returns immediately. There
+	 * is no guarantee about when the tasks or the context will actually be
+	 * killed.
+	 * 
+	 * @param taskContextId
+	 *          the ID of the task context to kill
+	 */
 	public void kill(String taskContextId) {
 		TaskContextEntry taskContextEntry = getTaskContext(taskContextId);
 		TaskContextState state = taskContextEntry.getContextState();
@@ -347,10 +477,6 @@ public class TaskContexts {
 		for (String taskId : containedTasks) {
 			clusterContext.getTasks().kill(taskId);
 		}
-	}
-
-	private TaskEntry getTask(String taskId) {
-		return clusterContext.getTasks().getTask(taskId);
 	}
 
 }
