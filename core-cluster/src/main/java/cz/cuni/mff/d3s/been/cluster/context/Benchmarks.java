@@ -6,10 +6,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.UUID;
 
-import cz.cuni.mff.d3s.been.core.benchmark.ResubmitHistory;
-import cz.cuni.mff.d3s.been.core.benchmark.ResubmitHistoryItem;
-import cz.cuni.mff.d3s.been.core.protocol.Context;
-import cz.cuni.mff.d3s.been.core.protocol.messages.KillTaskMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,6 +14,8 @@ import com.hazelcast.query.SqlPredicate;
 
 import cz.cuni.mff.d3s.been.cluster.Names;
 import cz.cuni.mff.d3s.been.core.benchmark.BenchmarkEntry;
+import cz.cuni.mff.d3s.been.core.benchmark.ResubmitHistory;
+import cz.cuni.mff.d3s.been.core.benchmark.ResubmitHistoryItem;
 import cz.cuni.mff.d3s.been.core.benchmark.Storage;
 import cz.cuni.mff.d3s.been.core.task.*;
 
@@ -33,6 +31,7 @@ import cz.cuni.mff.d3s.been.core.task.*;
  */
 public class Benchmarks {
 
+	/** slf4j logger */
 	private static final Logger log = LoggerFactory.getLogger(Benchmarks.class);
 
 	/** Connection to the cluster */
@@ -41,7 +40,12 @@ public class Benchmarks {
 	/** Tasks context */
 	private final TaskContexts taskContexts;
 
-	/** Package private constructor */
+	/**
+	 * Package private constructor.
+	 * 
+	 * @param clusterContext
+	 *          the BEEN cluster context
+	 */
 	Benchmarks(ClusterContext clusterContext) {
 		this.clusterContext = clusterContext;
 		this.taskContexts = clusterContext.getTaskContexts();
@@ -257,7 +261,8 @@ public class Benchmarks {
 	 * belong to this benchmark. Also removes all "old generators", which have
 	 * failed and were resubmitted.
 	 * 
-	 * @param benchmarkId ID of the benchmark to remove
+	 * @param benchmarkId
+	 *          ID of the benchmark to remove
 	 */
 	public void remove(String benchmarkId) {
 		BenchmarkEntry benchmarkEntry = get(benchmarkId);
@@ -302,10 +307,12 @@ public class Benchmarks {
 
 	/**
 	 * Issues a "kill task" message for the benchmark generator. This message will
-	 * be delivered to the appropriate host runtime, which will try to kill the generator
-	 * of the benchmark. Running contexts and tasks of the benchmark are *not* affected.
-	 *
-	 * @param benchmarkId ID of the benchmark to kill
+	 * be delivered to the appropriate host runtime, which will try to kill the
+	 * generator of the benchmark. Running contexts and tasks of the benchmark are
+	 * *not* affected.
+	 * 
+	 * @param benchmarkId
+	 *          ID of the benchmark to kill
 	 */
 	public void kill(String benchmarkId) {
 		IMap<String, BenchmarkEntry> benchmarksMap = getBenchmarksMap();
@@ -323,7 +330,8 @@ public class Benchmarks {
 			if (generatorEntry.getState() == TaskState.FINISHED || generatorEntry.getState() == TaskState.ABORTED) {
 				throw new IllegalStateException(String.format(
 						"Trying to kill benchmark %s, but it's generator is in state %s.",
-						benchmarkId, generatorEntry.getState()));
+						benchmarkId,
+						generatorEntry.getState()));
 			}
 
 			benchmarkEntry.setAllowResubmit(false);
@@ -336,6 +344,16 @@ public class Benchmarks {
 
 	}
 
+	/**
+	 * Disallow any further resubmits for the specified benchmark. This means that
+	 * when the generator task fails, the whole benchmark will be terminated.
+	 * Currently running generator is not affected.
+	 * 
+	 * This method locks the benchmark entry before applying the setting.
+	 * 
+	 * @param benchmarkId
+	 *          ID of the benchmark for which resubmits should be disallowed
+	 */
 	public void disallowResubmits(String benchmarkId) {
 		IMap<String, BenchmarkEntry> benchmarksMap = getBenchmarksMap();
 		benchmarksMap.lock(benchmarkId);
@@ -347,4 +365,5 @@ public class Benchmarks {
 			benchmarksMap.unlock(benchmarkId);
 		}
 	}
+
 }
