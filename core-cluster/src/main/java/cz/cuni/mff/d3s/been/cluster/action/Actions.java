@@ -1,18 +1,31 @@
 package cz.cuni.mff.d3s.been.cluster.action;
 
-import cz.cuni.mff.d3s.been.task.checkpoints.CheckpointRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
-import cz.cuni.mff.d3s.been.socketworks.twoway.Request;
+import cz.cuni.mff.d3s.been.task.checkpoints.CheckpointRequest;
 
 /**
+ * Utility class for creating an {@link Action} from a task request.
+ * 
  * @author Martin Sixta
  */
 public class Actions {
+
+	/** slf4j logger */
 	private static final Logger log = LoggerFactory.getLogger(Actions.class);
 
+	/**
+	 * Creates an {@link Action} from the specified request.
+	 * 
+	 * @param request
+	 *          the task/benchmark request
+	 * @param ctx
+	 *          the cluster context instance under which the action is to be
+	 *          performed
+	 * @return the newly created action that will handle the request
+	 */
 	public static Action createAction(CheckpointRequest request, ClusterContext ctx) {
 
 		switch (request.getType()) {
@@ -50,11 +63,30 @@ public class Actions {
 		}
 	}
 
+	/**
+	 * Returns the string representation of a latch for latch-related requests.
+	 * The string is later used as the name of the key in the corresponding
+	 * Hazelcast map.
+	 * 
+	 * @param request
+	 *          the request to process
+	 * @return the string representation of the latch
+	 */
 	public static String latchNameForRequest(CheckpointRequest request) {
 		return "latch_" + request.getTaskContextId() + "_" + request.getSelector();
 	}
 
+	/**
+	 * Returns the string representation of the checkpoints Hazelcast map for the
+	 * specified request. All tasks from a task context share the same checkpoints
+	 * map.
+	 * 
+	 * @param request
+	 *          the request to process
+	 * @return the name of the Hazelcast map for checkpoints
+	 */
 	public static String checkpointMapNameForRequest(CheckpointRequest request) {
 		return "checkpointmap_" + request.getTaskContextId();
 	}
+
 }
