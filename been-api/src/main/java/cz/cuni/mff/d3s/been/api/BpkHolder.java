@@ -1,21 +1,37 @@
 package cz.cuni.mff.d3s.been.api;
 
-import cz.cuni.mff.d3s.been.bpk.BpkConfigurationException;
-import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
-
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 
+import cz.cuni.mff.d3s.been.bpk.BpkConfigurationException;
+import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
+
 /**
- * Created with IntelliJ IDEA.
- * User: donarus
- * Date: 7/31/13
- * Time: 2:24 PM
- * To change this template use File | Settings | File Templates.
+ * A class that represents a BPK file and that can retrieve its BPK identifier
+ * from its data file.
+ * 
+ * @author donarus
  */
 public interface BpkHolder extends AutoCloseable {
-    BpkIdentifier getBpkIdentifier() throws BpkConfigurationException, IOException;
 
-    InputStream getInputStream() throws IOException;
+	/**
+	 * Retrieves the BPK identifier from the file that this objects represents.
+	 * 
+	 * @return the BPK identifier of the BPK package
+	 * @throws BpkConfigurationException
+	 *           when the configuration in the BPK file is invalid
+	 * @throws IOException
+	 *           when the file cannot be read or an I/O error occurs
+	 */
+	BpkIdentifier getBpkIdentifier() throws BpkConfigurationException, IOException;
+
+	/**
+	 * Returns an {@link InputStream} object with the data of the BPK file.
+	 * 
+	 * @return an input stream with the data of the BPK file
+	 * @throws IOException
+	 *           when the file cannot be read or an I/O error occurs
+	 */
+	InputStream getInputStream() throws IOException;
+
 }

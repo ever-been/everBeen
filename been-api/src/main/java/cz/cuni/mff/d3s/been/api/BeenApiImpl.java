@@ -1236,6 +1236,9 @@ final class BeenApiImpl implements BeenApi {
 	 *          The {@link QueryAnswer} you got as a response to this query
 	 * @param entityClass
 	 *          Class of the entity to unmarshall
+	 * @param <T>
+	 *          the type of the entity
+	 * @return unpacked answer
 	 * @throws DAOException
 	 *           When there is no data in the answer
 	 */
@@ -1267,6 +1270,7 @@ final class BeenApiImpl implements BeenApi {
 	 * @throws PersistenceException
 	 *           when retrieved query answer is invalid or with status other than
 	 *           OK
+	 * @return query answer
 	 * @throws BeenApiException
 	 *           when something other goes wrong while retrieving query answer
 	 */

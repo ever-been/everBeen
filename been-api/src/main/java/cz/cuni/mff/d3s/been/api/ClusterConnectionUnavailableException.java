@@ -1,21 +1,43 @@
 package cz.cuni.mff.d3s.been.api;
 
 /**
- * User: donarus
- * Date: 4/27/13
- * Time: 11:54 AM
+ * This exception indicates that the connection to the BEEN cluster has been
+ * lost.
+ * 
+ * @author donarus
  */
 public class ClusterConnectionUnavailableException extends BeenApiException {
 
-    public ClusterConnectionUnavailableException(String message) {
-        super(message);
-    }
+	/**
+	 * Constructs a new exception with the specified detail message.
+	 * 
+	 * @param message
+	 *          the detail message
+	 */
+	public ClusterConnectionUnavailableException(String message) {
+		super(message);
+	}
 
-    public ClusterConnectionUnavailableException(String message, Throwable cause) {
-        super(message, cause);
-    }
+	/**
+	 * Constructs a new exception with the specified detail message and cause.
+	 * 
+	 * @param message
+	 *          the detail message
+	 * @param cause
+	 *          cause of the exception
+	 */
+	public ClusterConnectionUnavailableException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    public ClusterConnectionUnavailableException(Throwable cause) {
-        super(cause);
-    }
+	/**
+	 * Constructs a new exception with the specified {@link Throwable} as a cause.
+	 * 
+	 * @param cause
+	 *          cause of the exception
+	 */
+	public ClusterConnectionUnavailableException(Throwable cause) {
+		super(cause);
+	}
+
 }
