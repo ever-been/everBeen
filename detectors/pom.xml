@@ -12,17 +12,6 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<build>
-		<resources>
-			<resource>
-				<directory>META-INF/services</directory>
-				<targetPath>META-INF/services</targetPath>
-				<includes>
-					<include>*</include>
-				</includes>
-			</resource>
-		</resources>
-	</build>
 
 	<dependencies>
 		<dependency>

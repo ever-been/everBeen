@@ -11,24 +11,6 @@
 		<version>3.0.0</version>
 	</parent>
 
-	<build>
-		<resources>
-			<resource>
-				<directory>META-INF/services</directory>
-				<targetPath>META-INF/services</targetPath>
-				<includes>
-					<include>*</include>
-				</includes>
-			</resource>
-			<resource>
-				<directory>src/main/resources</directory>
-				<includes>
-					<include>*</include>
-				</includes>
-			</resource>
-		</resources>
-	</build>
-
 
 	<dependencies>
 		<dependency>

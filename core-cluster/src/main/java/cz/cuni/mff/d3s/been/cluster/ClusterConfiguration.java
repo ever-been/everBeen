@@ -159,7 +159,7 @@ public class ClusterConfiguration implements BeenServiceConfiguration {
 	public static final String MAP_STORE_WRITE_DELAY = "been.cluster.mapstore.write.delay";
 
 	/** Default value for {@link #MAP_STORE_WRITE_DELAY}. */
-	public static final int DEFAULT_MAP_STORE_WRITE_DALAY = 0;
+	public static final int DEFAULT_MAP_STORE_WRITE_DELAY = 0;
 
 	/** Type of the Hazelcast join method. */
 	static enum JOIN_TYPE {

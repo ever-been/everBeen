@@ -152,7 +152,7 @@ final class InstanceConfigHelper {
 
 		if (propReader.getBoolean(USE_MAP_STORE, DEFAULT_USE_MAP_STORE)) {
 			String factoryClassName = propReader.getString(MAP_STORE_FACTORY, DEFAULT_MAP_STORE_FACTORY);
-			int writeDelay = propReader.getInteger(MAP_STORE_WRITE_DELAY, DEFAULT_MAP_STORE_WRITE_DALAY);
+			int writeDelay = propReader.getInteger(MAP_STORE_WRITE_DELAY, DEFAULT_MAP_STORE_WRITE_DELAY);
 
 			MapStoreConfig mapStoreConfig = new MapStoreConfig();
 
