@@ -43,20 +43,20 @@ public interface SwRepoClient {
 	 *
 	 * @param artifactIdentifier  Identifier for the stored artifact
 	 * @param artifactInputStream Input stream with the Artifact data
-	 * @return <code>true</code> if the Artifact was successfully stored,
-	 *         <code>false</code> otherwise
+	 * @throws SwRepositoryClientException if upload failed from some reason.
+     *         Reason can be found in reason description of throws exception.
 	 */
-	public boolean putArtifact(ArtifactIdentifier artifactIdentifier, InputStream artifactInputStream);
+	public void putArtifact(ArtifactIdentifier artifactIdentifier, InputStream artifactInputStream) throws SwRepositoryClientException;
 
 	/**
 	 * Store a BEEN package from the input stream.
 	 *
 	 * @param bpkIdentifier  Identifier for the stored artifact
 	 * @param bpkInputStream Input stream with the BPK data
-	 * @return <code>true</code> if the Bpk was successfully stored,
-	 *         <code>false</code> otherwise
-	 */
-	public boolean putBpk(BpkIdentifier bpkIdentifier, InputStream bpkInputStream);
+     * @throws SwRepositoryClientException if upload failed from some reason.
+     *         Reason can be found in reason description of throws exception.
+     */
+	public void putBpk(BpkIdentifier bpkIdentifier, InputStream bpkInputStream) throws SwRepositoryClientException;
 
 	/**
 	 * List all uploaded BPK packages.

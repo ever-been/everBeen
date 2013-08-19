@@ -40,9 +40,9 @@ import cz.cuni.mff.d3s.been.core.jaxb.ConvertorException;
 import cz.cuni.mff.d3s.been.core.jaxb.XSD;
 import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
+import cz.cuni.mff.d3s.been.datastore.*;
 import cz.cuni.mff.d3s.been.util.JSONUtils;
 import cz.cuni.mff.d3s.been.util.JsonException;
-import cz.cuni.mff.d3s.been.datastore.*;
 
 class HttpSwRepoClient implements SwRepoClient {
 
@@ -92,14 +92,15 @@ class HttpSwRepoClient implements SwRepoClient {
 	// API IMPLEMENTATION METHODS
 	// --------------------------------------
 	@Override
-	public boolean putArtifact(ArtifactIdentifier artifactIdentifier, InputStream artifactInputStream) {
+	public void putArtifact(ArtifactIdentifier artifactIdentifier, InputStream artifactInputStream) throws SwRepositoryClientException {
 		if (artifactIdentifier == null) {
-			log.error("Failed to upload Artifact {} - artifact meta-info was null.", artifactIdentifier);
-			return false;
+			String msg = "Failed to upload Artifact - artifact meta-info was null.";
+			log.error(msg);
+			throw new SwRepositoryClientException(msg);
 		}
 
 		Header header = new Header(ARTIFACT_IDENTIFIER_HEADER_NAME, artifactIdentifier);
-		return doPutStream(ARTIFACT_URI, artifactInputStream, header);
+		doPutStream(ARTIFACT_URI, artifactInputStream, header);
 	}
 
 	@Override
@@ -127,14 +128,15 @@ class HttpSwRepoClient implements SwRepoClient {
 	}
 
 	@Override
-	public boolean putBpk(BpkIdentifier bpkMetaInfo, InputStream bpkInputStream) {
+	public void putBpk(BpkIdentifier bpkMetaInfo, InputStream bpkInputStream) throws SwRepositoryClientException {
 		if (bpkMetaInfo == null) {
-			log.error("Failed to upload BPK {} - package meta-info was null.", bpkMetaInfo);
-			return false;
+			String msg = "Failed to upload BPK - package meta-info was null.";
+			log.error(msg);
+			throw new SwRepositoryClientException(msg);
 		}
 
 		Header header = new Header(BPK_IDENTIFIER_HEADER_NAME, bpkMetaInfo);
-		return doPutStream(BPK_URI, bpkInputStream, header);
+		doPutStream(BPK_URI, bpkInputStream, header);
 	}
 
 	@Override
@@ -379,21 +381,31 @@ class HttpSwRepoClient implements SwRepoClient {
 	 *          stream which will be added to body message
 	 * @param headers
 	 *          request headers
-	 * @return true if PUT request returned status code OK [200-299], false
-	 *         otherwise
+	 * @throws SwRepositoryClientException
+	 *           if PUT operation cannot be performed from some reason. Reason can be one of following;
+	 *           <ul>
+	 *           <li>'objectStreamToPut' is null</li>
+	 *           <li>PUT request URI was not correctly synthesized</li>
+	 *           <li>Request headers was could not correctly serialized</li>
+	 *           <li>http protocol error or connection reset</li>
+	 *           <li>response status was not of type 2xx</li>
+	 *           </ul>
 	 */
-	private boolean doPutStream(String abstractUri, InputStream objectStreamToPut, Header... headers) {
+	private void doPutStream(String abstractUri, InputStream objectStreamToPut, Header... headers) throws SwRepositoryClientException {
+
 		if (objectStreamToPut == null) {
-			log.error("Failed to PUT item to software repository - object given to send was null");
-			return false;
+			String msg = "Failed to PUT item to software repository - object given to send was null";
+			log.error(msg);
+			throw new SwRepositoryClientException(msg);
 		}
 
 		String uri;
 		try {
 			uri = createRepoUri() + abstractUri;
 		} catch (URISyntaxException e) {
-			log.error("Failed to PUT item to software repository - unable to synthesize PUT request URI", e);
-			return false;
+			String msg = "Failed to PUT item to software repository - unable to synthesize PUT request URI";
+			log.error(msg, e);
+			throw new SwRepositoryClientException(msg, e);
 		}
 
 		HttpPut request = new HttpPut(uri);
@@ -403,8 +415,9 @@ class HttpSwRepoClient implements SwRepoClient {
 				request.addHeader(header.key, jsonUtils.serialize(header.value));
 			}
 		} catch (JsonException e) {
-			log.error("Failed to PUT item to software repository - cannot serialize request header object to json string", e);
-			return false;
+			String msg = "Failed to PUT item to software repository - cannot serialize request header object to json string";
+			log.error(msg, e);
+			throw new SwRepositoryClientException(msg, e);
 		}
 
 		InputStreamEntity sentEntity = new InputStreamEntity(objectStreamToPut, -1);
@@ -416,20 +429,21 @@ class HttpSwRepoClient implements SwRepoClient {
 		try {
 			response = httpCli.execute(request);
 		} catch (ClientProtocolException e) {
-			log.error("Failed to PUT item to software repository - http protocol error", e);
-			return false;
+			String msg = "Failed to PUT item to software repository - http protocol error";
+			log.error(msg, e);
+			throw new SwRepositoryClientException(msg, e);
 		} catch (IOException e) {
-			log.error("Failed to PUT item to software repository - I/O error or connection re-set", e);
-			return false;
+			String msg = "Failed to PUT item to software repository - I/O error or connection re-set";
+			log.error(msg, e);
+			throw new SwRepositoryClientException(msg, e);
 		}
 
 		if ((response.getStatusLine().getStatusCode() / 100) != 2) {
-			log.error(
-					"Failed to PUT item to software repository - server error: '{}'",
+			String msg = String.format(
+					"Failed to PUT item to software repository - server error: '%s'",
 					response.getStatusLine().getReasonPhrase());
-			return false;
-		} else {
-			return true;
+			log.error(msg);
+			throw new SwRepositoryClientException(msg);
 		}
 	}
 

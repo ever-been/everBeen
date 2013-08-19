@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Random;
 
+import cz.cuni.mff.d3s.been.swrepoclient.SwRepositoryClientException;
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.artifact.Artifact;
 import org.codehaus.plexus.util.FileUtils;
@@ -194,8 +195,8 @@ public class TestSoftwareRepositoryTransportByHTTP extends Assert {
 	}
 
 	@Test
-	public void testUploadBpk() throws IOException {
-		assertTrue(client.putBpk(bpkId, new FileInputStream(randomContentFile)));
+	public void testUploadBpk() throws Exception {
+		client.putBpk(bpkId, new FileInputStream(randomContentFile));
 		assertFilePresent(
 				SERVER_PERSISTENCE_ROOT_FOLDER,
 				String.format("%s-%s.bpk", bpkId.getBpkId(), bpkId.getVersion()),
@@ -206,21 +207,25 @@ public class TestSoftwareRepositoryTransportByHTTP extends Assert {
 				bpkId.getVersion());
 	}
 
-	@Test
-	public void testUploadBpk_duplicateEntry() throws IOException {
-		assertTrue(client.putBpk(bpkId, new FileInputStream(randomContentFile)));
-		assertFalse(client.putBpk(bpkId, new FileInputStream(randomContentFile)));
+    @Test (expected = SwRepositoryClientException.class)
+	public void testUploadBpk_duplicateEntry() throws Exception {
+        try {
+		    client.putBpk(bpkId, new FileInputStream(randomContentFile));
+        } catch (Exception e) {
+            fail("unexpected exception");
+        }
+		client.putBpk(bpkId, new FileInputStream(randomContentFile));
 	}
 
-	@Test
-	public void testUploadBpk_badIdentifier()throws IOException {
+    @Test (expected = SwRepositoryClientException.class)
+	public void testUploadBpk_badIdentifier()throws Exception {
 		bpkId.setBpkId(null);
-		assertFalse(client.putBpk(bpkId, new FileInputStream(randomContentFile)));
+		client.putBpk(bpkId, new FileInputStream(randomContentFile));
 	}
 
-	@Test
-	public void testUploadBpk_serverDown()throws IOException {
-		assertFalse(client.putBpk(bpkId, new FileInputStream(randomContentFile)));
+	@Test (expected = SwRepositoryClientException.class)
+	public void testUploadBpk_serverDown()throws Exception {
+		client.putBpk(bpkId, new FileInputStream(randomContentFile));
 	}
 
 	// test delete bpk that exists
@@ -400,7 +405,7 @@ public class TestSoftwareRepositoryTransportByHTTP extends Assert {
 	}
 
 	@Test
-	public void testUploadArtifact() throws IOException {
+	public void testUploadArtifact() throws Exception {
 		client.putArtifact(artifactId, new FileInputStream(randomContentFile));
 		File serverItem = getFileFromPathAndName(
 				SERVER_PERSISTENCE_ROOT_FOLDER,
@@ -419,16 +424,23 @@ public class TestSoftwareRepositoryTransportByHTTP extends Assert {
 				FileUtils.fileRead(serverItem));
 	}
 
-	@Test
+	@Test (expected = SwRepositoryClientException.class)
 	public void testUploadArtifact_serverDown() throws Exception  {
-		assertFalse(client.putArtifact(artifactId, new FileInputStream(randomContentFile)));
+        client.putArtifact(artifactId, new FileInputStream(randomContentFile));
 	}
 
-	@Test
+    /* will be useful to assertFalse once the behavior has changed to the desired version
+	@Test (expected = SwRepositoryClientException.class)
 	public void testUploadArtifact_duplicateEntry() throws Exception  {
-		assertTrue(client.putArtifact(artifactId, new FileInputStream(randomContentFile)));
-		assertTrue(client.putArtifact(artifactId, new FileInputStream(randomContentFile))); // will be changed to assertFalse once the behavior has changed to the desired version
-	}
+        try {
+            client.putArtifact(artifactId, new FileInputStream(randomContentFile));
+        } catch (Exception e) {
+            fail("unexpected exception");
+        }
+
+        client.putArtifact(artifactId, new FileInputStream(randomContentFile));
+
+	}  */
 
 	/**
 	 * Assert that a file can be found in the server persistence and that its
