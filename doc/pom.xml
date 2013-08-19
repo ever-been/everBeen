@@ -1,0 +1,58 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>doc</artifactId>
+	<packaging>jar</packaging>
+
+	<parent>
+		<groupId>cz.cuni.mff.d3s.been</groupId>
+		<artifactId>been</artifactId>
+		<version>3.0.0</version>
+	</parent>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.doxia</groupId>
+				<artifactId>doxia-maven-plugin</artifactId>
+				<version>${doxia-maven-plugin.version}</version>
+
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.maven.doxia</groupId>
+						<artifactId>doxia-module-markdown</artifactId>
+						<version>${doxia-module-markdown.version}</version>
+					</dependency>
+				</dependencies>
+
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>render-books</goal>
+						</goals>
+					</execution>
+				</executions>
+
+				<configuration>
+					<books>
+						<book>
+							<directory>src/books/doc</directory>
+							<descriptor>src/books/doc.xml</descriptor>
+							<formats>
+								<format>
+									<id>pdf</id>
+								</format>
+							</formats>
+						</book>
+					</books>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

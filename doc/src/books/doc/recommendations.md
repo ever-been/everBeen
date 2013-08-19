@@ -1,0 +1,1 @@
+## EverBEEN best practices
