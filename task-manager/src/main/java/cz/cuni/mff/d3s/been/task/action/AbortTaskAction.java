@@ -14,7 +14,7 @@ import cz.cuni.mff.d3s.been.core.task.TaskState;
 /**
  * @author Martin Sixta
  */
-public class AbortTaskAction implements TaskAction {
+final class AbortTaskAction implements TaskAction {
 	/** logging */
 	private static Logger log = LoggerFactory.getLogger(AbortTaskAction.class);
 
@@ -38,7 +38,7 @@ public class AbortTaskAction implements TaskAction {
 	 * @param msg
 	 *          why the task was aborted
 	 */
-	public AbortTaskAction(ClusterContext ctx, TaskEntry entry, String msg) {
+	public AbortTaskAction(final ClusterContext ctx, final TaskEntry entry, final String msg) {
 		this.entry = entry;
 		this.msg = msg;
 		this.tasks = ctx.getTasks();

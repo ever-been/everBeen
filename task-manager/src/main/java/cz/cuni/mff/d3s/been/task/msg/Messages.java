@@ -3,6 +3,9 @@ package cz.cuni.mff.d3s.been.task.msg;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 
 /**
+ * Factory for {@link TaskMessage}s.
+ * 
+ * 
  * @author Martin Sixta
  */
 public class Messages {

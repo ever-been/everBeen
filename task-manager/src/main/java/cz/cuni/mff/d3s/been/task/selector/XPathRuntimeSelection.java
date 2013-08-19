@@ -14,6 +14,8 @@ import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskExclusivity;
 
 /**
+ * Finds a free Host Runtime for a task based on an xpath selector
+ * 
  * @author Martin Sixta
  */
 final class XPathRuntimeSelection implements IRuntimeSelection {

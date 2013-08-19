@@ -2,10 +2,12 @@ package cz.cuni.mff.d3s.been.task.msg;
 
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
-import cz.cuni.mff.d3s.been.task.action.ChangeOwnerTaskAction;
+import cz.cuni.mff.d3s.been.task.action.Actions;
 import cz.cuni.mff.d3s.been.task.action.TaskAction;
 
 /**
+ * Message which changes a task owner.
+ * 
  * @author Martin Sixta
  */
 final class NewOwnerTaskMessage extends AbstractEntryTaskMessage {
@@ -16,6 +18,6 @@ final class NewOwnerTaskMessage extends AbstractEntryTaskMessage {
 
 	@Override
 	public TaskAction createAction(ClusterContext ctx) {
-		return new ChangeOwnerTaskAction(ctx, getEntry());
+		return Actions.createChangeOwnerTaskAction(ctx, getEntry());
 	}
 }

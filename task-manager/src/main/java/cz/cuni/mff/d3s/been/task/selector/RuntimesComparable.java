@@ -5,7 +5,6 @@ import java.util.Comparator;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 
 /**
- * 
  * Compares Runtimes according scheduling needs.
  * 
  * This version takes into account only number of running tasks.

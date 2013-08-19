@@ -1,17 +1,18 @@
 package cz.cuni.mff.d3s.been.task.msg;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
 import cz.cuni.mff.d3s.been.core.task.TaskType;
-import cz.cuni.mff.d3s.been.task.action.ResubmitBenchmarkAction;
-import cz.cuni.mff.d3s.been.task.action.ScheduleTaskAction;
+import cz.cuni.mff.d3s.been.task.action.Actions;
 import cz.cuni.mff.d3s.been.task.action.TaskAction;
-import cz.cuni.mff.d3s.been.task.action.TaskContextCheckerAction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
+ * Messages which handles changes of task states.
+ * 
  * @author Martin Sixta
  */
 final class TaskChangedMessage extends AbstractEntryTaskMessage {
@@ -27,18 +28,18 @@ final class TaskChangedMessage extends AbstractEntryTaskMessage {
 		TaskState state = this.getEntry().getState();
 
 		if (state == TaskState.SUBMITTED || state == TaskState.WAITING)
-			return new ScheduleTaskAction(ctx, getEntry());
+			return Actions.createScheduleTaskAction(ctx, getEntry());
 
 		if (this.getEntry().getTaskDescriptor().getType() == TaskType.BENCHMARK) {
 			if (state == TaskState.ABORTED) {
 				// a benchmark generator task has failed
 				log.info("BENCHMARK GENERATOR TASK ID {} FAILED", this.getEntry().getId());
-				return new ResubmitBenchmarkAction(ctx, getEntry());
+				return Actions.createResubmitBenchmarkAction(ctx, getEntry());
 			}
 		}
 
 		if (state == TaskState.FINISHED || state == TaskState.ABORTED) {
-			return new TaskContextCheckerAction(ctx, getEntry());
+			return Actions.createTaskContextCheckerAction(ctx, getEntry());
 		}
 
 		return null;

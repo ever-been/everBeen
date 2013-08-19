@@ -149,7 +149,7 @@ final class LocalKeyScanner extends TaskManagerService {
 			return;
 		}
 
-		if (!TMUtils.isOwner(entry, nodeId)) {
+		if (!TaskManagerUtils.isOwner(entry, nodeId)) {
 			log.debug("Will take over the task {}", entry.getId());
 			TaskMessage msg = Messages.createNewTaskOwnerMessage(entry);
 			sender.send(msg);

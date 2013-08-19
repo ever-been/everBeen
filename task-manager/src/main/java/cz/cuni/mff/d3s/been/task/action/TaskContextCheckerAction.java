@@ -18,7 +18,7 @@ import cz.cuni.mff.d3s.been.core.task.TaskState;
 /**
  * @author Kuba Brecka
  */
-public class TaskContextCheckerAction implements TaskAction {
+final class TaskContextCheckerAction implements TaskAction {
 	/** logging */
 	private static final Logger log = LoggerFactory.getLogger(TaskContextCheckerAction.class);
 

@@ -1,9 +1,13 @@
 package cz.cuni.mff.d3s.been.task.msg;
 
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
+import cz.cuni.mff.d3s.been.task.action.Actions;
 import cz.cuni.mff.d3s.been.task.action.TaskAction;
 
 /**
+ * 
+ * Message which handles new task contexts.
+ * 
  * @author Martin Sixta
  */
 final class RunContextMessage implements TaskMessage {
@@ -16,6 +20,6 @@ final class RunContextMessage implements TaskMessage {
 
 	@Override
 	public TaskAction createAction(ClusterContext ctx) {
-		return null;
+		return Actions.createRunContextAction(ctx, contextId);
 	}
 }

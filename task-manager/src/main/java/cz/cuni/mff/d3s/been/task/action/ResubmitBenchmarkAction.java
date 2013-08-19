@@ -1,6 +1,12 @@
 package cz.cuni.mff.d3s.been.task.action;
 
+import static cz.cuni.mff.d3s.been.task.action.ResubmitActionConfiguration.DEFAULT_MAXIMUM_ALLOWED_RESUBMITS;
+import static cz.cuni.mff.d3s.been.task.action.ResubmitActionConfiguration.MAXIMUM_ALLOWED_RESUBMITS;
+
+import java.util.List;
+
 import com.hazelcast.core.IMap;
+
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.PropertyReader;
 import cz.cuni.mff.d3s.been.core.benchmark.BenchmarkEntry;
@@ -8,14 +14,10 @@ import cz.cuni.mff.d3s.been.core.benchmark.ResubmitHistoryItem;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
 
-import java.util.List;
-
-import static cz.cuni.mff.d3s.been.task.action.ResubmitActionConfiguration.*;
-
 /**
  * @author Kuba Brecka
  */
-public class ResubmitBenchmarkAction implements TaskAction {
+final class ResubmitBenchmarkAction implements TaskAction {
 	private final ClusterContext ctx;
 	private final TaskEntry entry;
 
@@ -35,7 +37,7 @@ public class ResubmitBenchmarkAction implements TaskAction {
 			String generatorId = benchmarkEntry.getGeneratorId();
 			TaskEntry generatorTask = ctx.getTasks().getTask(generatorId);
 
-			if (! benchmarkEntry.isAllowResubmit()) {
+			if (!benchmarkEntry.isAllowResubmit()) {
 				return;
 			}
 

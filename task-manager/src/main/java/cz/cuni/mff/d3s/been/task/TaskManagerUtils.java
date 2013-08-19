@@ -8,7 +8,7 @@ import cz.cuni.mff.d3s.been.core.task.TaskEntry;
  * 
  * @author Martin Sixta
  */
-final class TMUtils {
+final class TaskManagerUtils {
 	/**
 	 * Decides if an entry is owned by a node.
 	 * 

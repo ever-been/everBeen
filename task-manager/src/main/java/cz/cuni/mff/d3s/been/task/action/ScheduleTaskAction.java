@@ -5,12 +5,12 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 import java.util.concurrent.TimeoutException;
 
-import cz.cuni.mff.d3s.been.cluster.NodeType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hazelcast.core.IMap;
 
+import cz.cuni.mff.d3s.been.cluster.NodeType;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.cluster.context.Tasks;
 import cz.cuni.mff.d3s.been.core.protocol.messages.RunTaskMessage;
@@ -30,7 +30,7 @@ import cz.cuni.mff.d3s.been.task.selector.RuntimeSelectors;
  * 
  * @author Martin Sixta
  */
-public final class ScheduleTaskAction implements TaskAction {
+final class ScheduleTaskAction implements TaskAction {
 
 	/** default lock timeout value */
 	private static final int LOCK_TIMEOUT = 60;
@@ -58,10 +58,13 @@ public final class ScheduleTaskAction implements TaskAction {
 	 * @param entry
 	 *          task to schedule
 	 */
-	public ScheduleTaskAction(ClusterContext ctx, TaskEntry entry) {
-        if (ctx.getInstanceType() != NodeType.DATA) {
-            throw new AssertionError(String.format("%s must not be used on node of type %s", getClass().getName(), ctx.getInstanceType()));
-        }
+	public ScheduleTaskAction(final ClusterContext ctx, final TaskEntry entry) {
+		if (ctx.getInstanceType() != NodeType.DATA) {
+			throw new AssertionError(String.format(
+					"%s must not be used on node of type %s",
+					getClass().getName(),
+					ctx.getInstanceType()));
+		}
 		this.ctx = ctx;
 		this.entry = entry;
 		this.tasks = ctx.getTasks();
@@ -73,7 +76,7 @@ public final class ScheduleTaskAction implements TaskAction {
 
 		final String id = entry.getId();
 
-        // we are sure that the node is of type DATA (see constructor assertion)
+		// we are sure that the node is of type DATA (see constructor assertion)
 		final String nodeId = ctx.getCluster().getLocalMember().getUuid(); // cluster id of this member
 
 		log.debug("Received new task to schedule {}", id);

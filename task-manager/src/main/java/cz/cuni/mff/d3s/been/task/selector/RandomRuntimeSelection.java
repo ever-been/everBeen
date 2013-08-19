@@ -6,7 +6,6 @@ import static cz.cuni.mff.d3s.been.core.task.TaskExclusivity.NON_EXCLUSIVE;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 import com.hazelcast.core.MapEntry;
 import com.hazelcast.query.Predicate;
@@ -18,18 +17,20 @@ import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskExclusivity;
 
 /**
+ * Finds a free Host Runtime for a task.
+ * 
+ * This selector randomly chooses a Host Runtime.
+ * 
  * @author Martin Sixta
  */
 final class RandomRuntimeSelection implements IRuntimeSelection {
 
-	private final Random rnd;
 	private ClusterContext clusterCtx;
 	private final TaskEntry entry;
 
 	public RandomRuntimeSelection(final ClusterContext clusterCtx, final TaskEntry entry) {
 		this.clusterCtx = clusterCtx;
 		this.entry = entry;
-		rnd = new Random();
 	}
 
 	@Override
