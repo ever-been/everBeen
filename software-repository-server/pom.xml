@@ -108,5 +108,14 @@
 				</executions>
 			</plugin>
 		</plugins>
+		<resources>
+			<resource>
+				<directory>META-INF/services</directory>
+				<targetPath>META-INF/services</targetPath>
+				<includes>
+					<include>*</include>
+				</includes>
+			</resource>
+		</resources>
 	</build>
 </project>

@@ -12,6 +12,18 @@
 	<artifactId>mapstore</artifactId>
 	<version>3.0.0</version>
 
+	<build>
+		<resources>
+			<resource>
+				<directory>META-INF/services</directory>
+				<targetPath>META-INF/services</targetPath>
+				<includes>
+					<include>*</include>
+				</includes>
+			</resource>
+		</resources>
+	</build>
+
 	<dependencies>
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>

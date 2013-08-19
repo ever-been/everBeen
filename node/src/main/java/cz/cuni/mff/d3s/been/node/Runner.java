@@ -4,6 +4,7 @@ import static cz.cuni.mff.d3s.been.cluster.Names.*;
 import static cz.cuni.mff.d3s.been.core.StatusCode.*;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -12,8 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Properties;
-import java.util.UUID;
+import java.util.*;
 
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import com.hazelcast.core.HazelcastInstance;
 
+import cz.cuni.mff.d3s.been.BeenServiceConfiguration;
 import cz.cuni.mff.d3s.been.cluster.*;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.hostruntime.HostRuntime;
@@ -57,6 +58,9 @@ public class Runner implements Reapable {
 
 	@Option(name = "-cf", aliases = { "--config-file" }, usage = "Path or URL to BEEN config file.")
 	private String configFile;
+
+	@Option(name = "-dc", aliases = { "--dump-config" }, usage = "Whether to print runtime configuration and exit")
+	private boolean dumpConfig;
 
 	@Option(name = "-r", aliases = { "--host-runtime" }, usage = "Whether to run Host runtime on this node")
 	private boolean runHostRuntime = false;
@@ -101,14 +105,19 @@ public class Runner implements Reapable {
 
 		parseCmdLineArguments(args);
 
+		Properties properties = loadProperties();
+
+		if (dumpConfig) {
+			printBeenConfiguration(properties);
+			EX_OK.sysExit();
+		}
+
 		if (printHelp) {
 			printUsage();
 			EX_USAGE.sysExit();
 		}
 
 		initIds();
-
-		Properties properties = loadProperties();
 
 		HazelcastInstance instance = null;
 
@@ -336,5 +345,52 @@ public class Runner implements Reapable {
 				clusterContext.stop();
 			}
 		};
+	}
+
+	private void printBeenConfiguration(final Properties properties) {
+
+		final ServiceLoader<BeenServiceConfiguration> configs = ServiceLoader.load(BeenServiceConfiguration.class);
+
+		for (BeenServiceConfiguration config : configs) {
+			Class<?> klazz = config.getClass();
+
+			System.out.println(klazz.getName());
+
+			Map<String, Object> configMap = new HashMap<>();
+
+			Map<String, Object> defaultValues = new HashMap<>();
+			Map<String, String> propertyNames = new HashMap<>();
+
+			for (Field field : klazz.getDeclaredFields()) {
+				final String name = field.getName();
+
+				if (name.startsWith("DEFAULT_")) {
+					try {
+						defaultValues.put(name.substring("DEFAULT_".length()), field.get(config));
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					}
+				} else {
+					try {
+						propertyNames.put(name, field.get(config).toString());
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+
+			for (Map.Entry<String, String> entry : propertyNames.entrySet()) {
+				String name = entry.getValue();
+				Object value = defaultValues.get(entry.getKey());
+
+				if (properties.containsKey(name)) {
+					System.out.printf("!\t%s=%s%n", entry.getValue(), value);
+				} else {
+					System.out.printf("\t%s=%s%n", entry.getValue(), value);
+				}
+
+			}
+
+		}
 	}
 }

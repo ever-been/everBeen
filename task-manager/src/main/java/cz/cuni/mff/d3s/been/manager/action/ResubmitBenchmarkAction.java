@@ -1,7 +1,7 @@
 package cz.cuni.mff.d3s.been.manager.action;
 
-import static cz.cuni.mff.d3s.been.manager.action.ResubmitActionConfiguration.DEFAULT_MAXIMUM_ALLOWED_RESUBMITS;
-import static cz.cuni.mff.d3s.been.manager.action.ResubmitActionConfiguration.MAXIMUM_ALLOWED_RESUBMITS;
+import static cz.cuni.mff.d3s.been.manager.TaskManagerConfiguration.DEFAULT_MAXIMUM_ALLOWED_RESUBMITS;
+import static cz.cuni.mff.d3s.been.manager.TaskManagerConfiguration.MAXIMUM_ALLOWED_RESUBMITS;
 
 import java.util.List;
 

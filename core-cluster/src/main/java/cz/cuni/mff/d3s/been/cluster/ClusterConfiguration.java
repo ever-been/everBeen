@@ -10,8 +10,7 @@ import cz.cuni.mff.d3s.been.BeenServiceConfiguration;
  * 
  * @author darklight
  */
-public class ClusterConfiguration extends BeenServiceConfiguration {
-	private ClusterConfiguration() {}
+public class ClusterConfiguration implements BeenServiceConfiguration {
 
 	/**
 	 * Property for the group BEEN's underlying Hazelcast cluster will use to
@@ -19,7 +18,7 @@ public class ClusterConfiguration extends BeenServiceConfiguration {
 	 * CLUSTER WILL SHATTER.
 	 */
 	public static final String GROUP = "been.cluster.group";
-	/** By default, BEEN will join in group '{@value #DEFAULT_GROUP}' */
+	/** By default, BEEN will join in group <code>DEFAULT_GROUP</code> */
 	public static final String DEFAULT_GROUP = "dev";
 
 	/**
@@ -30,7 +29,7 @@ public class ClusterConfiguration extends BeenServiceConfiguration {
 	public static final String PASSWORD = "been.cluster.password";
 	/**
 	 * The default group access password for the BEEN cluster is '
-	 * {@value #DEFAULT_PASSWORD}'
+	 * <code>DEFAULT_PASSWORD</code>
 	 */
 	public static final String DEFAULT_PASSWORD = "dev-pass";
 
@@ -55,7 +54,7 @@ public class ClusterConfiguration extends BeenServiceConfiguration {
 
 	/** Property name for the default BEEN cluster listening port */
 	public static final String PORT = "been.cluster.port";
-	/** Default BEEN cluster listening port is '{@value #DEFAULT_PORT}' */
+	/** Default BEEN cluster listening port is <code>DEFAULT_PORT</code> */
 	public static final Integer DEFAULT_PORT = 5701;
 
 	/**
@@ -84,7 +83,7 @@ public class ClusterConfiguration extends BeenServiceConfiguration {
 	public static final String JOIN = "been.cluster.join";
 	/**
 	 * By default, BEEN will try to join Hazelcast instances by
-	 * {@value #DEFAULT_JOIN}
+	 * <code>DEFAULT_JOIN</code>
 	 */
 	public static final String DEFAULT_JOIN = "multicast";
 
@@ -92,7 +91,7 @@ public class ClusterConfiguration extends BeenServiceConfiguration {
 	public static final String MULTICAST_PORT = "been.cluster.multicast.port";
 	/**
 	 * By default, BEEN will try to join underlying Hazelcast cluster on port '
-	 * {@value #DEFAULT_MULTICAST_PORT}'
+	 * <code>DEFAULT_MULTICAST_PORT</code>
 	 */
 	public static final Integer DEFAULT_MULTICAST_PORT = 54327;
 
@@ -100,7 +99,7 @@ public class ClusterConfiguration extends BeenServiceConfiguration {
 	public static final String MULTICAST_GROUP = "been.cluster.multicast.group";
 	/**
 	 * By default, BEEN will attempt to join underlying Hazelcast cluster in group
-	 * '{@value #DEFAULT_MULTICAST_GROUP}'
+	 * <code>DEFAULT_MULTICAST_GROUP</code>
 	 */
 	public static final String DEFAULT_MULTICAST_GROUP = "224.2.2.3";
 
@@ -110,7 +109,10 @@ public class ClusterConfiguration extends BeenServiceConfiguration {
 	 * Hazelcast cluster will attempt to contact when joining the cluster
 	 */
 	public static final String TCP_MEMBERS = "been.cluster.tcp.members";
-	/** By default, these members will be contacted: {@value #DEFAULT_TCP_MEMBERS} */
+	/**
+	 * By default, these members will be contacted:
+	 * <code>DEFAULT_TCP_MEMBERS</code>
+	 */
 	public static final String DEFAULT_TCP_MEMBERS = "localhost:5701";
 
 	/**

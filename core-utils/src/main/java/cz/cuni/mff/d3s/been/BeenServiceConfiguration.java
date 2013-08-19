@@ -1,9 +1,8 @@
 package cz.cuni.mff.d3s.been;
 
 /**
- * A common parent for all BEEN service configurations
- *
+ * A service loader handle for all BEEN configuration classes
+ * 
  * @author darklight
  */
-public abstract class BeenServiceConfiguration {
-}
+public interface BeenServiceConfiguration {}

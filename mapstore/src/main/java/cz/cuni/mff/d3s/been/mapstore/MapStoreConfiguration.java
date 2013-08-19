@@ -7,7 +7,7 @@ import cz.cuni.mff.d3s.been.BeenServiceConfiguration;
  * 
  * @author Martin Sixta
  */
-public class MapStoreConfiguration extends BeenServiceConfiguration {
+public class MapStoreConfiguration implements BeenServiceConfiguration {
 
 	/**
 	 * Property name of the username to use for

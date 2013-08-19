@@ -7,7 +7,6 @@ import static cz.cuni.mff.d3s.been.cluster.ClusterConfiguration.LOGGING_TYPE.SLF
 import static cz.cuni.mff.d3s.been.mapstore.MapStoreConfiguration.*;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.URL;
 import java.util.LinkedList;
@@ -122,7 +121,7 @@ final class InstanceConfigHelper {
 
 			// create default config
 			config = new UrlXmlConfig(url);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			String msg = String.format("Cannot read Hazelcast's default configuration %s", CONFIG_RESOURCE);
 			throw new ServiceException(msg, e);
 		}
