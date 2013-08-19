@@ -93,6 +93,7 @@ public class ServiceLogPersister implements IClusterService {
 		persisterThread.setStop();
 
 		try {
+			persisterThread.interrupt();
 			persisterThread.join(TimeUnit.SECONDS.toMillis(30));
 		} catch (InterruptedException e) {
 			// not much we can do at this point
