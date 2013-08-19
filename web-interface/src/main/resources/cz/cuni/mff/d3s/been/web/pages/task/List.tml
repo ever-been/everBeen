@@ -3,79 +3,88 @@
 <html t:type="layout" section="section"
       xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd" xmlns:p="tapestry:parameter">
 
-<h2>All Tasks</h2>
+    <h2>All Tasks</h2>
 
-<table class="list wide" id="tasklist">
-	<thead>
-	<tr>
-		<th>Context ID</th>
-		<th>Task ID</th>
-		<th>Type</th>
-		<th>Name</th>
-		<th>State</th>
-		<th>Runtime ID</th>
-		<th>Benchmark ID</th>
-		<th>Last changed</th>
-	</tr>
-	</thead>
+    <table class="list wide" id="tasklist">
+        <thead>
+            <tr>
+                <th>Context ID</th>
+                <th>Task ID</th>
+                <th>Type</th>
+                <th>Name</th>
+                <th>State</th>
+                <th>Runtime ID</th>
+                <th>Benchmark ID</th>
+                <th>Last changed</th>
+            </tr>
+        </thead>
 
-	<t:loop source="contexts" value="context">
-		<t:loop source="context" value="task" index="taskIndex">
-			<tr class="data">
-				<td>
-					<i class="icon-book"></i>&nbsp;
-					<a href="/context/detail/${task.taskContextId}"><t:output format="idFormat" value="task.taskContextId" /></a>
-				</td>
-				<td>
-					<i class="icon-beaker"></i>&nbsp;
-					<a href="/task/detail/${task.id}"><t:output format="idFormat" value="task.id" /></a>
-				</td>
-				<td>${task.taskDescriptor.type}</td>
-				<td>${task.taskDescriptor.name}</td>
-				<td>
-					<t:outputRaw value="taskStateWithIcon(task.state)"/>
-				</td>
-				<td>
-					<i class="icon-laptop"></i>&nbsp;
-					<a href="/runtime/detail/${task.runtimeId}"><t:output format="idFormat" value="task.runtimeId" /></a>
-				</td>
-				<td>
-					<t:if test="task.benchmarkId">
-						<i class="icon-rocket"></i>&nbsp;
-						<a href="/benchmark/detail/${task.benchmarkId}"><t:output format="idFormat" value="task.benchmarkId" /></a>
-					</t:if>
-				</td>
-				<td>
-					${taskLastChanged(task)}
-				</td>
-			</tr>
-		</t:loop>
+        <t:loop source="contexts" value="context">
+            <t:loop source="context" value="task" index="taskIndex">
+                <tr class="data">
+                    <td>
+                        <i class="icon-book"></i>&nbsp;
+                        <a href="/context/detail/${task.taskContextId}">
+                            <t:output format="idFormat" value="task.taskContextId"/>
+                        </a>
+                    </td>
+                    <td>
+                        <i class="icon-beaker"></i>&nbsp;
+                        <a href="/task/detail/${task.id}">
+                            <t:output format="idFormat" value="task.id"/>
+                        </a>
+                    </td>
+                    <td>${task.taskDescriptor.type}</td>
+                    <td>${task.taskDescriptor.name}</td>
+                    <td>
+                        <t:task.stateIcon taskState="task.state"/>
+                    </td>
+                    <td>
+                        <i class="icon-laptop"></i>&nbsp;
+                        <a href="/runtime/detail/${task.runtimeId}">
+                            <t:output format="idFormat" value="task.runtimeId"/>
+                        </a>
+                    </td>
+                    <td>
+                        <t:if test="task.benchmarkId">
+                            <i class="icon-rocket"></i>&nbsp;
+                            <a href="/benchmark/detail/${task.benchmarkId}">
+                                <t:output format="idFormat" value="task.benchmarkId"/>
+                            </a>
+                        </t:if>
+                    </td>
+                    <td>
+                        ${taskLastChanged(task)}
+                    </td>
+                </tr>
+            </t:loop>
 
-		<p:empty>
-			<tr>
-				<td colspan="8">
-					<i class="icon-info-sign"></i> There are no tasks.
-				</td>
-			</tr>
-		</p:empty>
-	</t:loop>
-</table>
+            <p:empty>
+                <tr>
+                    <td colspan="8">
+                        <i class="icon-info-sign"></i>
+                        There are no tasks.
+                    </td>
+                </tr>
+            </p:empty>
+        </t:loop>
+    </table>
 
-<!-- TODO -->
-<script src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script>
-<script>
-	$(document).ready(function() {
-		if ($("#tasklist tr.data").size()) {
-			$('#tasklist').dataTable( {
-				"bPaginate": false,
-				"bLengthChange": false,
-				"bFilter": false,
-				"bSort": true,
-				"bInfo": false,
-				"bAutoWidth": false
-			});
-		};
-	});
-</script>
+    <!-- TODO -->
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script>
+    <script>
+        $(document).ready(function() {
+        if ($("#tasklist tr.data").size()) {
+        $('#tasklist').dataTable( {
+        "bPaginate": false,
+        "bLengthChange": false,
+        "bFilter": false,
+        "bSort": true,
+        "bInfo": false,
+        "bAutoWidth": false
+        });
+        };
+        });
+    </script>
 
 </html>

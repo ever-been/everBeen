@@ -3,56 +3,61 @@
 <html t:type="layout" section="section"
       xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd" xmlns:p="tapestry:parameter">
 
-<h2>All Task Contexts</h2>
+    <h2>All Task Contexts</h2>
 
-<table class="list wide" id="taskcontextlist">
-	<thead>
-	<tr>
-		<th>Context ID</th>
-		<th>Name</th>
-		<th>State</th>
-		<th>Benchmark ID</th>
-		<th>Contained Tasks</th>
-		<th>Lingering</th>
-	</tr>
-	</thead>
+    <table class="list wide" id="taskcontextlist">
+        <thead>
+            <tr>
+                <th>Context ID</th>
+                <th>Name</th>
+                <th>State</th>
+                <th>Benchmark ID</th>
+                <th>Contained Tasks</th>
+                <th>Lingering</th>
+            </tr>
+        </thead>
 
-	<t:loop source="contexts" value="context">
-		<tr class="data">
-			<td>
-				<i class="icon-book"></i>&nbsp;
-				<a href="/context/detail/${context.id}"><t:output format="idFormat" value="context.id" /></a>
-			</td>
-			<td>
-				<t:if test="context.taskContextDescriptor">
-					${context.taskContextDescriptor.name}
-				</t:if>
-			</td>
-			<td>
-				<t:outputRaw value="contextStateWithIcon(context.contextState)"/>
-			</td>
-			<td>
-				<t:if test="context.benchmarkId">
-					<i class="icon-rocket"></i>&nbsp;
-					<a href="/benchmark/detail/${context.benchmarkId}"><t:output format="idFormat" value="context.benchmarkId" /></a>
-				</t:if>
-			</td>
-			<td>
-				${context.containedTask.size()}
-			</td>
-			<td>
-				${context.lingering}
-			</td>
-		</tr>
+        <t:loop source="contexts" value="context">
+            <tr class="data">
+                <td>
+                    <i class="icon-book"></i>&nbsp;
+                    <a href="/context/detail/${context.id}">
+                        <t:output format="idFormat" value="context.id"/>
+                    </a>
+                </td>
+                <td>
+                    <t:if test="context.taskContextDescriptor">
+                        ${context.taskContextDescriptor.name}
+                    </t:if>
+                </td>
+                <td>
+                    <t:task.stateIcon taskContextState="context.contextState"/>
+                </td>
+                <td>
+                    <t:if test="context.benchmarkId">
+                        <i class="icon-rocket"></i>&nbsp;
+                        <a href="/benchmark/detail/${context.benchmarkId}">
+                            <t:output format="idFormat" value="context.benchmarkId"/>
+                        </a>
+                    </t:if>
+                </td>
+                <td>
+                    ${context.containedTask.size()}
+                </td>
+                <td>
+                    ${context.lingering}
+                </td>
+            </tr>
 
-		<p:empty>
-			<tr>
-				<td colspan="8">
-					<i class="icon-info-sign"></i> There are no task contexts.
-				</td>
-			</tr>
-		</p:empty>
-	</t:loop>
-</table>
+            <p:empty>
+                <tr>
+                    <td colspan="8">
+                        <i class="icon-info-sign"></i>
+                        There are no task contexts.
+                    </td>
+                </tr>
+            </p:empty>
+        </t:loop>
+    </table>
 
 </html>

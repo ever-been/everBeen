@@ -1,6 +1,7 @@
 package cz.cuni.mff.d3s.been.web.pages.task;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import org.apache.tapestry5.annotations.Import;
 import org.apache.tapestry5.annotations.Property;
@@ -12,6 +13,9 @@ import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
 import cz.cuni.mff.d3s.been.web.components.Layout;
+import cz.cuni.mff.d3s.been.web.model.BenchmarkSupport;
+import cz.cuni.mff.d3s.been.web.model.TaskContextSupport;
+import cz.cuni.mff.d3s.been.web.model.TaskSupport;
 import cz.cuni.mff.d3s.been.web.pages.Page;
 
 /**
@@ -22,7 +26,6 @@ import cz.cuni.mff.d3s.been.web.pages.Page;
 @Import(library = { "context:js/task-list.js" })
 public class Tree extends Page {
 
-	private static final int ACTION_WAIT_TIMEOUT = 10;
 	@Property
 	private TaskEntry task;
 
@@ -32,146 +35,83 @@ public class Tree extends Page {
 	@Property
 	private BenchmarkEntry benchmark;
 
-	public boolean isSwRepositoryOnline() throws BeenApiException {
-		return this.api.getApi().isSwRepositoryOnline();
-	}
-
-	public Collection<BenchmarkEntry> getBenchmarks() throws BeenApiException {
-		return this.api.getApi().getBenchmarks();
-
-	}
-
-	public Collection<TaskContextEntry> contextsForBenchmark(String benchmarkId) throws BeenApiException {
-		Collection<TaskContextEntry> contexts = this.api.getApi().getTaskContextsInBenchmark(benchmarkId);
-		ArrayList<TaskContextEntry> arrayList = new ArrayList<>(contexts);
-		Collections.sort(arrayList, new Comparator<TaskContextEntry>() {
-			@Override
-			public int compare(TaskContextEntry o1, TaskContextEntry o2) {
-				return Long.compare(o2.getCreated(), o1.getCreated());
-			}
-		});
-		return arrayList;
-	}
-
-	public Collection<TaskEntry> tasksForContext(String contextId) throws BeenApiException {
-		return this.api.getApi().getTasksInTaskContext(contextId);
-	}
-
-	public String benchmarkName(String benchmarkId) throws BeenApiException {
-		String generatorId = this.api.getApi().getBenchmark(benchmarkId).getGeneratorId();
-		TaskEntry taskEntry = this.api.getApi().getTask(generatorId);
-		if (taskEntry == null)
-			return "";
-		return taskEntry.getTaskDescriptor().getName();
-	}
-
-	public TaskState benchmarkState(String benchmarkId) throws BeenApiException {
-		String generatorId = this.api.getApi().getBenchmark(benchmarkId).getGeneratorId();
-		TaskEntry taskEntry = this.api.getApi().getTask(generatorId);
-		if (taskEntry == null)
-			return null;
-		return taskEntry.getState();
-	}
-
 	@Property
 	private ArrayList<TaskEntry> orphanedContext;
 
 	@Property
 	private int taskIndex;
 
+	public Collection<BenchmarkEntry> getBenchmarks() throws BeenApiException {
+		return getApi().getBenchmarks();
+	}
+
+	public Collection<TaskContextEntry> contextsForBenchmark(String benchmarkId) throws BeenApiException {
+		return new BenchmarkSupport(getApi()).getContextsForBenchmark(benchmarkId);
+	}
+
+	public Collection<TaskEntry> tasksForContext(String contextId) throws BeenApiException {
+		return getApi().getTasksInTaskContext(contextId);
+	}
+
+	public String benchmarkName(String benchmarkId) throws BeenApiException {
+		return new BenchmarkSupport(getApi()).getBenchmarkName(benchmarkId);
+	}
+
+	public TaskState benchmarkState(String benchmarkId) throws BeenApiException {
+		return new BenchmarkSupport(getApi()).getBenchmarkState(benchmarkId);
+	}
+
 	public ArrayList<ArrayList<TaskEntry>> getOrphanedContexts() throws BeenApiException {
-		Collection<TaskEntry> allTasks = this.api.getApi().getTasks();
-		Collection<String> tasksInTree = getTaskIdsFromTree();
-		Collection<String> generatorTasks = getGeneratorTaskIds();
-
-		ArrayList<TaskEntry> taskEntries = new ArrayList<>(allTasks);
-		Collections.sort(taskEntries, new Comparator<TaskEntry>() {
-			@Override
-			public int compare(TaskEntry o1, TaskEntry o2) {
-				int order = o1.getTaskContextId().compareTo(o2.getTaskContextId());
-				if (order == 0)
-					order = o1.getId().compareTo(o2.getId());
-				return order;
-			}
-		});
-
-		Map<String, ArrayList<TaskEntry>> tasksByContexts = new LinkedHashMap<>();
-
-		for (TaskEntry taskEntry : taskEntries) {
-			if (tasksInTree.contains(taskEntry.getId())) {
-				continue;
-			}
-
-			if (generatorTasks.contains(taskEntry.getId())) {
-				continue;
-			}
-
-			String contextId = taskEntry.getTaskContextId();
-			if (!tasksByContexts.containsKey(contextId))
-				tasksByContexts.put(contextId, new ArrayList<TaskEntry>());
-			tasksByContexts.get(contextId).add(taskEntry);
-		}
-
-		return new ArrayList<>(tasksByContexts.values());
+		return new TaskContextSupport(getApi()).getOrphanedContexts();
 	}
 
-	private Collection<String> getGeneratorTaskIds() throws BeenApiException {
-		ArrayList<String> result = new ArrayList<>();
-		for (BenchmarkEntry benchmarkEntry : this.getBenchmarks()) {
-			result.add(benchmarkEntry.getGeneratorId());
-		}
-		return result;
-	}
-
-	private Collection<String> getTaskIdsFromTree() throws BeenApiException {
-		ArrayList<String> result = new ArrayList<>();
-		for (BenchmarkEntry benchmarkEntry : getBenchmarks()) {
-			for (TaskContextEntry taskContextEntry : contextsForBenchmark(benchmarkEntry.getId())) {
-				for (TaskEntry taskEntry : tasksForContext(taskContextEntry.getId())) {
-					result.add(taskEntry.getId());
-				}
-			}
-		}
-		return result;
-	}
-
-	public boolean isFirstInContext() {
-		return taskIndex == 0;
-	}
-
-	public Object onActionFromKillBenchmark(String benchmarkId) throws BeenApiException, InterruptedException {
-		api.getApi().killBenchmark(benchmarkId);
-		int time = 0;
-		TaskEntry generator = getGenerator(benchmarkId);
-		while (time < ACTION_WAIT_TIMEOUT && generator != null && generator.getState() != TaskState.ABORTED && generator.getState() != TaskState.FINISHED) {
-			Thread.sleep(1000);
-			time++;
-			generator = getGenerator(benchmarkId);
-		}
+	public Object onKillBenchmark(String benchmarkId) throws BeenApiException, InterruptedException {
+		new BenchmarkSupport(getApi()).killBenchmark(benchmarkId);
 		return this;
 	}
 
-	public Object onActionFromRemoveBenchmark(String benchmarkId) throws BeenApiException {
-		this.api.getApi().removeBenchmarkEntry(benchmarkId);
+	public Object onKillContext(String contextId) throws BeenApiException, InterruptedException {
+		new TaskContextSupport(getApi()).killTaskContext(contextId);
 		return this;
 	}
 
-	public Object onActionFromRemoveAllFinishedBenchmarks() throws BeenApiException {
-		for (BenchmarkEntry benchmarkEntry : this.api.getApi().getBenchmarks()) {
-			TaskEntry generatorTask = this.api.getApi().getTask(benchmarkEntry.getGeneratorId());
-			if (generatorTask.getState() == TaskState.FINISHED) {
-				this.api.getApi().removeBenchmarkEntry(benchmarkEntry.getId());
-			}
-		}
+	public Object onRemoveBenchmark(String benchmarkId) throws BeenApiException {
+		new BenchmarkSupport(getApi()).removeKilledBenchmark(benchmarkId);
 		return this;
 	}
 
-	// reloads fresh instance from hazelacast cluster.
-	private TaskEntry getGenerator(String benchmarkId) throws BeenApiException {
-		BenchmarkEntry benchmark = api.getApi().getBenchmark(benchmarkId);
-		if (benchmark != null) {
-			return api.getApi().getTask(benchmark.getGeneratorId());
-		}
-		return null;
+	public Object onRemoveContext(String contextId) throws BeenApiException {
+		new TaskContextSupport(getApi()).removeKilledTaskContext(contextId);
+		return this;
 	}
+
+	public Object onRemoveFinishedBenchmarks() throws BeenApiException {
+		new BenchmarkSupport(getApi()).removedFinishedBenchmarks();
+		return this;
+	}
+
+	public TaskContextEntry getTaskContextWithId(String contextId) throws BeenApiException {
+		return api.getApi().getTaskContext(contextId);
+	}
+
+	public boolean isContextRemovable(String contextId) throws BeenApiException {
+		return new TaskContextSupport(getApi()).isContextRemovable(contextId);
+	}
+
+	public boolean isBenchmarkRemovable(String benchmarkId) throws BeenApiException {
+		return new BenchmarkSupport(getApi()).isBenchmarkRemovable(benchmarkId);
+	}
+
+	public boolean isBenchmarkInFinalState(String benchmarkId) throws BeenApiException {
+		return new BenchmarkSupport(getApi()).isBenchmarkInFinalState(benchmarkId);
+	}
+
+	public boolean isTaskContextInFinalState(String taskContextId) throws BeenApiException {
+		return new TaskContextSupport(getApi()).isTaskContextInFinalState(taskContextId);
+	}
+
+	public boolean isTaskInFinalState(String taskId) throws BeenApiException {
+		return new TaskSupport(getApi()).isTaskInFinalState(taskId);
+	}
+
 }

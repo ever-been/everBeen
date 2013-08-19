@@ -8,16 +8,19 @@
         Task context ${taskContextId} was not found
         <p:else>
             <div style="float: right; text-align: right;">
-                <t:if test="taskContextInFinalState(context.id)">
-                    <button class="btn btn-warning"
-                            onclick="if (window.confirm('Are you sure?')) location.href='/context/remove/${context.id}'; return false;">
-                        Remove context
-                    </button>
+                <t:if test="isTaskContextInFinalState(context.id)">
+                    <t:if test="isContextRemovable(context.id)">
+                        <t:eventLink class="btn btn-mini btn-warning" t:event="removeContext"
+                                     t:context="context.id"
+                                     onclick="if (window.confirm('Are you sure?')) location.href=jQuery(this).attr('href'); return false;">
+                            Remove
+                        </t:eventLink>
+                    </t:if>
                     <p:else>
-                        <button class="btn btn-danger"
-                                onclick="if (window.confirm('Are you sure?')) location.href='/context/kill/${context.id}'; return false;">
-                            Kill context
-                        </button>
+                        <t:eventLink class="btn btn-mini btn-danger" t:event="killContext" t:context="context.id"
+                                     onclick="if (window.confirm('Are you sure?')) location.href=jQuery(this).attr('href'); return false;">
+                            Kill
+                        </t:eventLink>
                     </p:else>
                 </t:if>
             </div>
@@ -34,7 +37,7 @@
                 </dd>
                 <dt>State:</dt>
                 <dd>
-                    <t:outputRaw value="contextStateWithIcon(context.contextState)"/>
+                    <t:task.stateIcon taskContextState="context.contextState"/>
                 </dd>
 
                 <dt>Benchmark ID:</dt>
@@ -75,7 +78,7 @@
                                 </td>
                                 <td>${taskEntryWithId(taskId)?.taskDescriptor.name}</td>
                                 <td>
-                                    <t:outputRaw value="taskStateWithIcon(taskEntryWithId(taskId)?.state)"/>
+                                    <t:task.stateIcon taskState="taskEntryWithId(taskId)?.state"/>
                                 </td>
                             </tr>
                         </t:loop>

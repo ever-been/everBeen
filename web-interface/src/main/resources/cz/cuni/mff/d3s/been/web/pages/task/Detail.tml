@@ -18,7 +18,7 @@
                 </button>
                 <br/>
                 <br/>
-                <t:if test="taskInFinalState(task.id)">
+                <t:if test="isTaskInFinalState(task.id)">
                     <button class="btn btn-warning"
                             onclick="if (window.confirm('Are you sure?')) location.href='/task/remove/${task.id}'; return false;">
                         Remove task
@@ -45,7 +45,7 @@
 
                 <dt>State:</dt>
                 <dd>
-                    <t:outputRaw value="taskStateWithIcon(task.state)"/>
+                    <t:task.stateIcon taskState="task.state"/>
                 </dd>
                 <dt>Type:</dt>
                 <dd>${task.taskDescriptor.type}</dd>
@@ -61,12 +61,12 @@
 
                 <dt>Runtime ID:</dt>
                 <dd>
-                	<t:if test="task.runtimeId">
-						<i class="icon-laptop"></i>&nbsp;
-						<a href="/runtime/detail/${task.runtimeId}">
-							<t:output format="idFormat" value="task.runtimeId"/>
-						</a>
-					</t:if>
+                    <t:if test="task.runtimeId">
+                        <i class="icon-laptop"></i>&nbsp;
+                        <a href="/runtime/detail/${task.runtimeId}">
+                            <t:output format="idFormat" value="task.runtimeId"/>
+                        </a>
+                    </t:if>
                 </dd>
 
                 <dt>Task Context ID:</dt>

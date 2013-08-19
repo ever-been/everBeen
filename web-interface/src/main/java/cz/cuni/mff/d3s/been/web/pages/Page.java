@@ -1,11 +1,12 @@
 package cz.cuni.mff.d3s.been.web.pages;
 
-import cz.cuni.mff.d3s.been.api.BeenApiException;
-import cz.cuni.mff.d3s.been.api.ClusterConnectionUnavailableException;
-import cz.cuni.mff.d3s.been.core.benchmark.BenchmarkEntry;
-import cz.cuni.mff.d3s.been.logging.LogMessage;
-import cz.cuni.mff.d3s.been.core.task.*;
-import cz.cuni.mff.d3s.been.web.services.BeenApiService;
+import static cz.cuni.mff.d3s.been.web.components.Layout.Section;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.text.*;
+import java.util.Date;
+
 import org.apache.tapestry5.annotations.Environmental;
 import org.apache.tapestry5.annotations.Import;
 import org.apache.tapestry5.annotations.Property;
@@ -14,184 +15,131 @@ import org.apache.tapestry5.services.PageRenderLinkSource;
 import org.apache.tapestry5.services.javascript.JavaScriptSupport;
 import org.slf4j.Logger;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.text.*;
-import java.util.Collection;
-import java.util.Date;
-
-import static cz.cuni.mff.d3s.been.web.components.Layout.Section;
+import cz.cuni.mff.d3s.been.api.BeenApi;
+import cz.cuni.mff.d3s.been.api.BeenApiException;
+import cz.cuni.mff.d3s.been.api.ClusterConnectionUnavailableException;
+import cz.cuni.mff.d3s.been.core.task.*;
+import cz.cuni.mff.d3s.been.web.services.BeenApiService;
 
 /**
  * User: donarus Date: 4/27/13 Time: 1:05 PM
  */
-@Import(library = {"context:js/bootstrap.js"})
+@Import(library = { "context:js/bootstrap.js" })
 public abstract class Page {
 
-    @Inject
-    @Property
-    protected BeenApiService api;
+	@Inject
+	@Property
+	protected BeenApiService api;
 
-    @Inject
-    protected Logger log;
+	@Inject
+	protected Logger log;
 
-    @Inject
-    private PageRenderLinkSource pageRenderLinkSource;
-    @Environmental
-    private JavaScriptSupport javaScriptSupport;
+	@Inject
+	private PageRenderLinkSource pageRenderLinkSource;
+	@Environmental
+	private JavaScriptSupport javaScriptSupport;
 
-    public void setupRender() {
-        javaScriptSupport.addScript("$(document).on('hover', '.show_tooltip', \n" +
-                " function(){\n " +
-                "   $(this).tooltip('show');\n" +
-                "   $(this).removeClass('show_tooltip');\n" +
-                " });\n");
-    }
+	public void setupRender() {
+		javaScriptSupport.addScript("$(document).on('hover', '.show_tooltip', \n" + " function(){\n " + "   $(this).tooltip('show');\n" + "   $(this).removeClass('show_tooltip');\n" + " });\n");
+	}
 
-    public Section getSection() {
+	public Section getSection() {
 
-        Navigation sectionAnnotation = this.getClass().getAnnotation(Navigation.class);
-        if (sectionAnnotation != null) {
-            return sectionAnnotation.section();
-        }
-        return null;
-    }
+		Navigation sectionAnnotation = this.getClass().getAnnotation(Navigation.class);
+		if (sectionAnnotation != null) {
+			return sectionAnnotation.section();
+		}
+		return null;
+	}
 
-    Object onActivate() {
-        if (!api.isConnected()) {
-            log.info("Been Api is not connected. Redirecting to Connect page.");
-            return Connect.class;
-        }
-        return null;
-    }
+	Object onActivate() {
+		if (!api.isConnected()) {
+			log.info("Been Api is not connected. Redirecting to Connect page.");
+			return Connect.class;
+		}
+		return null;
+	}
 
-    /**
-     * User: donarus Date: 4/28/13 Time: 1:40 PM
-     */
-
-    @Retention(RetentionPolicy.RUNTIME)
-    public static @interface Navigation {
-        public Section section();
-    }
-
-    public String getRuntimeLink(String runtimeId) {
-        return pageRenderLinkSource.createPageRenderLinkWithContext(cz.cuni.mff.d3s.been.web.pages.runtime.Detail.class, runtimeId).toString();
-    }
-
-	/*
-        Common formatters.
+	/**
+	 * User: donarus Date: 4/28/13 Time: 1:40 PM
 	 */
 
-    public Format getLoadFormat() {
-        return new DecimalFormat("#.##");
-    }
+	@Retention(RetentionPolicy.RUNTIME)
+	public static @interface Navigation {
+		public Section section();
+	}
 
-    public Format getCpuUsageFormat() {
-        return new Format() {
-            @Override
-            public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
-                double d = ((double) obj) * 100.0;
-                return new StringBuffer(String.format("%.1f", d));
-            }
+	public String getRuntimeLink(String runtimeId) {
+		return pageRenderLinkSource.createPageRenderLinkWithContext(
+				cz.cuni.mff.d3s.been.web.pages.runtime.Detail.class,
+				runtimeId).toString();
+	}
 
-            @Override
-            public Object parseObject(String source, ParsePosition pos) {
-                return null;
-            }
-        };
-    }
+	/*
+	      Common formatters.
+	 */
 
-    public Format getIdFormat() {
-        return new Format() {
-            @Override
-            public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
-                return new StringBuffer(((String) obj).substring(0, 8));
-            }
+	public Format getLoadFormat() {
+		return new DecimalFormat("#.##");
+	}
 
-            @Override
-            public Object parseObject(String source, ParsePosition pos) {
-                return null;
-            }
-        };
-    }
+	public Format getCpuUsageFormat() {
+		return new Format() {
+			@Override
+			public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
+				double d = ((double) obj) * 100.0;
+				return new StringBuffer(String.format("%.1f", d));
+			}
 
-    public boolean taskRunning(TaskEntry taskEntry) {
-        return taskEntry.getState() == TaskState.RUNNING;
-    }
+			@Override
+			public Object parseObject(String source, ParsePosition pos) {
+				return null;
+			}
+		};
+	}
 
-    public boolean taskFinished(TaskEntry taskEntry) {
-        return taskEntry.getState() == TaskState.FINISHED;
-    }
+	public Format getIdFormat() {
+		return new Format() {
+			@Override
+			public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
+				return new StringBuffer(((String) obj).substring(0, 8));
+			}
 
-    public boolean taskWaiting(TaskEntry taskEntry) {
-        return taskEntry.getState() == TaskState.WAITING;
-    }
+			@Override
+			public Object parseObject(String source, ParsePosition pos) {
+				return null;
+			}
+		};
+	}
 
-    public boolean taskBenchmark(TaskEntry taskEntry) {
-        return taskEntry.getTaskDescriptor().getType() == TaskType.BENCHMARK;
-    }
+	public boolean taskRunning(TaskEntry taskEntry) {
+		return taskEntry.getState() == TaskState.RUNNING;
+	}
 
-    public boolean taskDescriptorBenchmark(TaskDescriptor taskDescriptor) {
-        return taskDescriptor.getType() == TaskType.BENCHMARK;
-    }
+	public boolean taskFinished(TaskEntry taskEntry) {
+		return taskEntry.getState() == TaskState.FINISHED;
+	}
 
-    public String taskStateWithIcon(TaskState state) {
-        String s;
-        if (state == TaskState.RUNNING)
-            s = "<i class=\"icon-play\" style=\"color: green;\"></i>";
-        else if (state == TaskState.FINISHED)
-            s = "<i class=\"icon-stop\" style=\"color: gray;\"></i>";
-        else if (state == TaskState.WAITING)
-            s = "<i class=\"icon-pause\" style=\"color: #eeaa00;\"></i>";
-        else
-            s = "<i class=\"icon-warning-sign\" style=\"color: red;\"></i>";
+	public boolean taskWaiting(TaskEntry taskEntry) {
+		return taskEntry.getState() == TaskState.WAITING;
+	}
 
-        return s + " " + state;
-    }
+	public boolean taskBenchmark(TaskEntry taskEntry) {
+		return taskEntry.getTaskDescriptor().getType() == TaskType.BENCHMARK;
+	}
 
-    public String contextStateWithIcon(TaskContextState state) {
-        String s;
-        if (state == TaskContextState.RUNNING)
-            s = "<i class=\"icon-play\" style=\"color: green;\"></i>";
-        else if (state == TaskContextState.FINISHED)
-            s = "<i class=\"icon-stop\" style=\"color: gray;\"></i>";
-        else if (state == TaskContextState.WAITING)
-            s = "<i class=\"icon-pause\" style=\"color: #eeaa00;\"></i>";
-        else
-            s = "<i class=\"icon-warning-sign\" style=\"color: red;\"></i>";
-
-		return s + " " + state;
+	public boolean taskDescriptorBenchmark(TaskDescriptor taskDescriptor) {
+		return taskDescriptor.getType() == TaskType.BENCHMARK;
 	}
 
 	public Date taskLastChanged(TaskEntry taskEntry) {
 		java.util.List<StateChangeEntry> logEntries = taskEntry.getStateChangeLog().getLogEntries();
-		if (logEntries.size() == 0) return null;
+		if (logEntries.size() == 0)
+			return null;
 		StateChangeEntry entry = logEntries.get(0);
-		if (entry.getTimestamp() == 0) return null;
+		if (entry.getTimestamp() == 0)
+			return null;
 		return new Date(entry.getTimestamp());
-	}
-
-	public boolean benchmarkInFinalState(String benchmarkId) throws BeenApiException {
-		String generatorId = this.api.getApi().getBenchmark(benchmarkId).getGeneratorId();
-		TaskEntry taskEntry = this.api.getApi().getTask(generatorId);
-		if (taskEntry == null) return true;
-		TaskState state = taskEntry.getState();
-
-		return state == TaskState.ABORTED || state == TaskState.FINISHED;
-	}
-
-	public boolean taskInFinalState(String taskId) throws BeenApiException {
-		TaskEntry taskEntry = this.api.getApi().getTask(taskId);
-		TaskState state = taskEntry.getState();
-
-		return state == TaskState.ABORTED || state == TaskState.FINISHED;
-	}
-
-	public boolean taskContextInFinalState(String contextId) throws BeenApiException {
-		TaskContextEntry taskContextEntry = this.api.getApi().getTaskContext(contextId);
-		TaskContextState state = taskContextEntry.getContextState();
-
-		return state == TaskContextState.FAILED || state == TaskContextState.FINISHED;
 	}
 
 	public String timestampToString(long timestamp) {
@@ -207,31 +155,34 @@ public abstract class Page {
 	}
 
 	public String logLevelToString(int logLevel) {
-		if (logLevel == 1) return "TRACE";
-		if (logLevel == 2) return "DEBUG";
-		if (logLevel == 3) return "INFO";
-		if (logLevel == 4) return "WARN";
-		if (logLevel == 5) return "ERROR";
+		if (logLevel == 1)
+			return "TRACE";
+		if (logLevel == 2)
+			return "DEBUG";
+		if (logLevel == 3)
+			return "INFO";
+		if (logLevel == 4)
+			return "WARN";
+		if (logLevel == 5)
+			return "ERROR";
 		return Integer.toString(logLevel);
 	}
 
 	// stolen from http://stackoverflow.com/questions/3263892/format-file-size-as-mb-gb-etc
 	public String bytesReadable(long size) {
-		if(size <= 0) return "0";
+		if (size <= 0)
+			return "0";
 		final String[] units = new String[] { "B", "KB", "MB", "GB", "TB" };
-		int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
-		return new DecimalFormat("#,##0.#").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
+		int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
+		return new DecimalFormat("#,##0.#").format(size / Math.pow(1024, digitGroups)) + " " + units[digitGroups];
 	}
 
-	public boolean isBenchmarkRemovable(BenchmarkEntry entry) throws BeenApiException {
-		Collection<TaskContextEntry> contexts = this.api.getApi().getTaskContextsInBenchmark(entry.getId());
-		for (TaskContextEntry context : contexts) {
-			if (context.getContextState() != TaskContextState.FINISHED && context.getContextState() != TaskContextState.FAILED) {
-				return false;
-			}
-		}
+	public boolean isSwRepositoryOnline() throws BeenApiException {
+		return this.api.getApi().isSwRepositoryOnline();
+	}
 
-		return true;
+	protected BeenApi getApi() throws ClusterConnectionUnavailableException {
+		return this.api.getApi();
 	}
 
 }
