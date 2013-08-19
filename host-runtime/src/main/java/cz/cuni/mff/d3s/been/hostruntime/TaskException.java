@@ -10,12 +10,10 @@ public class TaskException extends Exception {
 
 	private int exitValue = -1;
 
-	/** {@inheritDoc} */
 	public TaskException() {
 		super();
 	}
 
-	/** {@inheritDoc} */
 	public TaskException(String message) {
 		super(message);
 	}
@@ -25,7 +23,6 @@ public class TaskException extends Exception {
 		this.exitValue = exitValue;
 	}
 
-	/** {@inheritDoc} */
 	public TaskException(String message, Throwable cause) {
 		super(message, cause);
 	}
@@ -35,12 +32,10 @@ public class TaskException extends Exception {
 		this.exitValue = exitValue;
 	}
 
-	/** {@inheritDoc} */
 	public TaskException(Throwable cause) {
 		super(cause);
 	}
 
-	/** {@inheritDoc} */
 	protected TaskException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
 		super(message, cause, enableSuppression, writableStackTrace);
 	}

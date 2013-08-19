@@ -4,26 +4,23 @@ package cz.cuni.mff.d3s.been.manager.selector;
  * @author Martin Sixta
  */
 public class NoRuntimeFoundException extends Exception {
-	/** {@inheritDoc} */
+
 	public NoRuntimeFoundException() {
 		super();
 	}
-	/** {@inheritDoc} */
+
 	public NoRuntimeFoundException(String message) {
 		super(message);
 	}
 
-	/** {@inheritDoc} */
 	public NoRuntimeFoundException(String message, Throwable cause) {
 		super(message, cause);
 	}
 
-	/** {@inheritDoc} */
 	public NoRuntimeFoundException(Throwable cause) {
 		super(cause);
 	}
 
-	/** {@inheritDoc} */
 	protected NoRuntimeFoundException(
 			String message,
 			Throwable cause,

@@ -14,30 +14,18 @@ class ConfigurationException extends Exception {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public ConfigurationException() {
 		super();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public ConfigurationException(Throwable cause) {
 		super(cause);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public ConfigurationException(String message) {
 		super(message);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public ConfigurationException(String message, Throwable cause) {
 		super(message, cause);
 	}
