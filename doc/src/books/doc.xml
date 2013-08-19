@@ -1,0 +1,115 @@
+<book xmlns="http://maven.apache.org/BOOK/1.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/BOOK/1.0.0 http://maven.apache.org/xsd/book-1.0.0.xsd">
+
+	<id>doc</id>
+	<title>EverBEEN documentation</title>
+	<author>BYYN TYYM</author>
+
+	<chapters>
+		<chapter>
+			<id>intro</id>
+			<title>Introduction to EverBEEN</title>
+
+			<sections>
+				<section>
+					<id>foreword</id>
+				</section>
+
+				<section>
+					<id>study</id>
+				</section>
+
+				<section>
+					<id>audience</id>
+				</section>
+
+				<section>
+					<id>history</id>
+				</section>
+
+				<section>
+					<id>pgoals</id>
+				</section>
+			</sections>
+		</chapter>
+
+		<chapter>
+			<id>user</id>
+			<title>EverBEEN user guide</title>
+
+			<sections>
+				<section>
+					<id>requirements</id>
+				</section>
+
+				<section>
+					<id>deployment</id>
+				</section>
+
+				<section>
+					<id>controls</id>
+				</section>
+
+				<section>
+					<id>taskapi</id>
+				</section>
+
+				<section>
+					<id>swrepo</id>
+				</section>
+
+				<section>
+					<id>persistence</id>
+				</section>
+
+				<section>
+					<id>configuration</id>
+				</section>
+
+				<section>
+					<id>recommendations</id>
+				</section>
+			</sections>
+		</chapter>
+
+		<chapter>
+			<id>developer</id>
+			<title>EverBEEN developer documentation</title>
+
+			<sections>
+				<section>
+					<id>dgoals</id>
+				</section>
+
+				<section>
+					<id>timeline</id>
+				</section>
+
+				<section>
+					<id>architecture</id>
+				</section>
+
+				<section>
+					<id>modular</id>
+				</section>
+
+				<section>
+					<id>technologies</id>
+				</section>
+
+				<section>
+					<id>features</id>
+				</section>
+
+				<section>
+					<id>limitations</id>
+				</section>
+
+				<section>
+					<id>javadoc</id>
+				</section>
+			</sections>
+		</chapter>
+	</chapters>
+</book>
