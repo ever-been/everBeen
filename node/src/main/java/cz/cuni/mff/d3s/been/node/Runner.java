@@ -28,12 +28,12 @@ import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.hostruntime.HostRuntime;
 import cz.cuni.mff.d3s.been.hostruntime.HostRuntimes;
 import cz.cuni.mff.d3s.been.logging.ServiceLogPersister;
+import cz.cuni.mff.d3s.been.manager.Managers;
 import cz.cuni.mff.d3s.been.repository.Repository;
 import cz.cuni.mff.d3s.been.storage.Storage;
 import cz.cuni.mff.d3s.been.storage.StorageBuilderFactory;
 import cz.cuni.mff.d3s.been.swrepository.SoftwareRepositories;
 import cz.cuni.mff.d3s.been.swrepository.SoftwareRepository;
-import cz.cuni.mff.d3s.been.task.Managers;
 
 /**
  * Entry point for BEEN nodes.
