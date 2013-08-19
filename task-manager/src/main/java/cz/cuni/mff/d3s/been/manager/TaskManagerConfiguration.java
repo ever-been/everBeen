@@ -9,7 +9,7 @@ import cz.cuni.mff.d3s.been.BeenServiceConfiguration;
  * 
  * @author Martin Sixta
  */
-final class TaskManagerConfiguration extends BeenServiceConfiguration {
+public final class TaskManagerConfiguration implements BeenServiceConfiguration {
 	/**
 	 * The period in seconds with which the {@link LocalKeyScanner} is scheduled.
 	 * 
@@ -33,5 +33,16 @@ final class TaskManagerConfiguration extends BeenServiceConfiguration {
 	 * {@link TaskManagerConfiguration#SCANNER_INITIAL_DELAY} in seconds.
 	 */
 	public static int DEFAULT_SCANNER_INITIAL_DELAY = DEFAULT_SCANNER_PERIOD / 2;
+
+	/**
+	 * The maximum number of benchmark generator resubmits before aborting the
+	 * whole benchmark.
+	 */
+	public static final String MAXIMUM_ALLOWED_RESUBMITS = "been.cluster.resubmit.maximum-allowed";
+	/**
+	 * The default maximum number of resubmits is '
+	 * <code>DEFAULT_MAXIMUM_ALLOWED_RESUBMITS</code>'.
+	 */
+	public static final Integer DEFAULT_MAXIMUM_ALLOWED_RESUBMITS = 10;
 
 }
