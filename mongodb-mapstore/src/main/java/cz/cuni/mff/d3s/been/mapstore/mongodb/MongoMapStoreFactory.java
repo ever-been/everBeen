@@ -58,7 +58,7 @@ public class MongoMapStoreFactory implements MapStoreFactory {
 			final DB db = mongoClient.getDB(dbname);
 
 			if (username != null && !username.isEmpty() && password != null) {
-				if (db.authenticate(username, password.toCharArray())) {
+				if (!db.authenticate(username, password.toCharArray())) {
 					throw new RuntimeException("Failed to authenticate against MapStore database");
 				}
 			}
