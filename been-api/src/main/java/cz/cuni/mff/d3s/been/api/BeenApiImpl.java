@@ -42,6 +42,7 @@ import cz.cuni.mff.d3s.been.persistence.task.PersistentTaskState;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
 import cz.cuni.mff.d3s.been.swrepository.SWRepositoryServiceInfoConstants;
+import cz.cuni.mff.d3s.been.swrepository.Versions;
 import cz.cuni.mff.d3s.been.util.JSONUtils;
 import cz.cuni.mff.d3s.been.util.JsonException;
 
@@ -551,6 +552,17 @@ final class BeenApiImpl implements BeenApi {
 		final String errorMsg = String.format("Failed to upload bpk '%s:%s:%s'", groupId, bpkId, version);
 
 		checkIsActive(errorMsg);
+
+		if (!version.endsWith(Versions.SNAPSHOT_SUFFIX)) {
+			for (BpkIdentifier existingBpk : getBpks()) {
+				if (existingBpk.getBpkId().equals(bpkId) && existingBpk.getGroupId().equals(groupId) && existingBpk.getVersion().equals(
+						version)) {
+					throw createBeenApiException(
+							errorMsg,
+							"Bpk with same identifiers already exists in repository and its version is not '*-SNAPSHOT'. Reupload is not supported.");
+				}
+			}
+		}
 
 		final SwRepoClient client = getSwRepoClient(errorMsg);
 		try {
