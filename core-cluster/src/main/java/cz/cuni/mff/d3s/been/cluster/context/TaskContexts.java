@@ -386,7 +386,7 @@ public class TaskContexts {
 	 *          entry to clean up
 	 */
 	public void cleanupTaskContext(TaskContextEntry taskContextEntry) {
-		log.info("Destroying cluster instances for task context {}", taskContextEntry.getId());
+		log.debug("Destroying cluster instances for task context {}", taskContextEntry.getId());
 
 		// destroy the checkpoint map
 		clusterContext.getMap("checkpointmap_" + taskContextEntry.getId()).destroy();
