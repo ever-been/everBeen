@@ -67,7 +67,7 @@ public class SoftwareRepository implements IClusterService {
 
 
         info = new ServiceInfo(SERVICE_NAME, beenId);
-        final String hostName = httpServer.getHost().getHostName();
+        final String hostName = httpServer.getHost().getHostAddress();
         final int port = httpServer.getPort();
         info.setParam(PARAM_HOST_NAME, hostName);
         info.setParam(PARAM_PORT, port);
