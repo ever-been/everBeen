@@ -8,7 +8,7 @@ import cz.cuni.mff.d3s.been.task.action.TaskAction;
 /**
  * @author Martin Sixta
  */
-public class AbortTaskMessage extends AbstractEntryTaskMessage {
+final class AbortTaskMessage extends AbstractEntryTaskMessage {
 	private final String msg;
 	public AbortTaskMessage(TaskEntry entry, String reasonFormat, Object... args) {
 		super(entry);

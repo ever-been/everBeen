@@ -29,4 +29,8 @@ public class Messages {
 	public static TaskMessage createCheckSchedulabilityMessage(TaskEntry entry) {
 		return new CheckSchedulabilityMessage(entry);
 	}
+
+	public static TaskMessage createAbortTaskMessage(TaskEntry entry, String reasonFormat, Object... args) {
+		return new AbortTaskMessage(entry, reasonFormat, args);
+	}
 }

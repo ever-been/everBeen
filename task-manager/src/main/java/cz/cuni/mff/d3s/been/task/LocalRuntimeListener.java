@@ -18,7 +18,6 @@ import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.mq.IMessageSender;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
-import cz.cuni.mff.d3s.been.task.msg.AbortTaskMessage;
 import cz.cuni.mff.d3s.been.task.msg.Messages;
 import cz.cuni.mff.d3s.been.task.msg.TaskMessage;
 
@@ -92,7 +91,7 @@ final class LocalRuntimeListener extends TaskManagerService implements EntryList
 
 		for (TaskEntry entry : tasks) {
 			try {
-				sender.send(new AbortTaskMessage(entry, "Host Runtime Failed"));
+				sender.send(Messages.createAbortTaskMessage(entry, "Host Runtime Failed"));
 			} catch (MessagingException e) {
 				String msg = String.format("Cannot send message to '%s'", sender.getConnection());
 				log.error(msg, e);

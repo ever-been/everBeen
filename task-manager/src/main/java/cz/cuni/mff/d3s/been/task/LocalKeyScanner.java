@@ -1,20 +1,22 @@
 package cz.cuni.mff.d3s.been.task;
 
+import static cz.cuni.mff.d3s.been.core.task.TaskState.*;
 import static cz.cuni.mff.d3s.been.task.TaskManagerConfiguration.*;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import cz.cuni.mff.d3s.been.cluster.NodeType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hazelcast.core.IMap;
 
+import cz.cuni.mff.d3s.been.cluster.NodeType;
 import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.PropertyReader;
+import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
 import cz.cuni.mff.d3s.been.mq.IMessageSender;
@@ -57,9 +59,11 @@ final class LocalKeyScanner extends TaskManagerService {
 	 *          connection to the cluster
 	 */
 	public LocalKeyScanner(ClusterContext clusterCtx) {
-        if (clusterCtx.getInstanceType() != NodeType.DATA) {
-            throw new AssertionError(String.format("Cannot start LocalKeyScanned on node of type %s", clusterCtx.getInstanceType()));
-        }
+		if (clusterCtx.getInstanceType() != NodeType.DATA) {
+			throw new AssertionError(String.format(
+					"Cannot start LocalKeyScanned on node of type %s",
+					clusterCtx.getInstanceType()));
+		}
 		this.clusterCtx = clusterCtx;
 		this.nodeId = clusterCtx.getCluster().getLocalMember().getUuid();
 		this.runnable = new LocalKeyScannerRunnable();
@@ -90,6 +94,11 @@ final class LocalKeyScanner extends TaskManagerService {
 	private void doRun() throws Exception {
 		IMap<String, TaskEntry> map = clusterCtx.getTasks().getTasksMap();
 
+		Set<String> runtimeIds = new HashSet<>();
+		for (RuntimeInfo info : clusterCtx.getRuntimes().getRuntimes()) {
+			runtimeIds.add(info.getId());
+		}
+
 		for (String taskId : map.localKeySet()) {
 			TaskEntry entry = map.get(taskId);
 
@@ -98,7 +107,7 @@ final class LocalKeyScanner extends TaskManagerService {
 			}
 
 			try {
-				checkEntry(entry);
+				checkEntry(runtimeIds, entry);
 			} catch (Exception e) {
 				log.error("Error when checking TaskEntry " + taskId, e);
 			}
@@ -114,11 +123,26 @@ final class LocalKeyScanner extends TaskManagerService {
 	 * @throws Exception
 	 *           when it rains
 	 */
-	private void checkEntry(TaskEntry entry) throws Exception {
+	private void checkEntry(final Set<String> runtimesIds, final TaskEntry entry) throws Exception {
 
 		log.debug("TaskEntry ID: {}, status: {}", entry.getId(), entry.getState().toString());
 
-		if (entry.getState() == TaskState.WAITING) {
+		final TaskState state = entry.getState();
+
+		boolean isWaiting = state == WAITING;
+		boolean isDone = (state == ABORTED || state == FINISHED);
+		boolean isRuntimeOffline = !runtimesIds.contains(entry.getRuntimeId());
+
+		// Failed Host Runtime
+		if (!isDone && isRuntimeOffline) {
+			String logMsg = String.format("Will abort task %s because of its Host Runtime failed", entry.getId());
+			log.debug(logMsg);
+
+			sender.send(Messages.createAbortTaskMessage(entry, logMsg));
+			return;
+		}
+
+		if (isWaiting) {
 			log.debug("Will try to schedule WAITING task {}", entry.getState());
 			TaskMessage msg = Messages.createCheckSchedulabilityMessage(entry);
 			sender.send(msg);
