@@ -12,6 +12,7 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
+
 	<dependencies>
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
@@ -35,6 +36,12 @@
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>${commons-io.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<version>${commons-collections.version}</version>
 		</dependency>
 
 		<dependency>

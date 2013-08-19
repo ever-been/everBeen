@@ -1,14 +1,9 @@
 package cz.cuni.mff.d3s.been.cluster.context;
 
 import static cz.cuni.mff.d3s.been.core.task.TaskState.*;
-import static cz.cuni.mff.d3s.been.persistence.task.PersistentDescriptors.CONTEXT_DESCRIPTOR;
 
 import java.util.Collection;
-import java.util.concurrent.TimeUnit;
 
-import cz.cuni.mff.d3s.been.core.persistence.TaskEntity;
-import cz.cuni.mff.d3s.been.persistence.DAOException;
-import cz.cuni.mff.d3s.been.persistence.task.PersistentDescriptors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,24 +12,34 @@ import com.hazelcast.core.IMap;
 import com.hazelcast.query.SqlPredicate;
 
 import cz.cuni.mff.d3s.been.cluster.Names;
+import cz.cuni.mff.d3s.been.core.persistence.TaskEntity;
 import cz.cuni.mff.d3s.been.core.protocol.messages.KillTaskMessage;
 import cz.cuni.mff.d3s.been.core.task.TaskEntries;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
+import cz.cuni.mff.d3s.been.persistence.DAOException;
+import cz.cuni.mff.d3s.been.persistence.task.PersistentDescriptors;
 
 /**
- * 
  * Utility class for BEEN tasks stored in Hazelcast map.
- * 
  * 
  * @author Martin Sixta
  */
 public class Tasks {
 
+	/** slf4j logger */
 	private static final Logger log = LoggerFactory.getLogger(Tasks.class);
 
+	/** BEEN cluster connection */
 	private ClusterContext clusterCtx;
 
+	/**
+	 * Package private constructor, creates a new instance that uses the specified
+	 * BEEN cluster context.
+	 * 
+	 * @param clusterCtx
+	 *          the cluster context to use
+	 */
 	Tasks(ClusterContext clusterCtx) {
 		// package private visibility prevents out-of-package instantiation
 		this.clusterCtx = clusterCtx;
@@ -49,10 +54,23 @@ public class Tasks {
 		return clusterCtx.getMap(Names.TASKS_MAP_NAME);
 	}
 
+	/**
+	 * Returns all currently available tasks in the Hazelcast tasks map.
+	 * 
+	 * @return all task entries
+	 */
 	public Collection<TaskEntry> getTasks() {
 		return getTasksMap().values();
 	}
 
+	/**
+	 * Returns all currently available tasks form the Hazelcast map that are in
+	 * the specified state.
+	 * 
+	 * @param state
+	 *          state of the tasks to retrieve
+	 * @return tasks with the specified state
+	 */
 	public Collection<TaskEntry> getTasks(TaskState state) {
 		SqlPredicate predicate = new SqlPredicate("state = '" + state.toString() + "'");
 		return getTasksMap().values(predicate);
@@ -77,27 +95,7 @@ public class Tasks {
 	 * @return old value of the entry
 	 */
 	public TaskEntry putTask(TaskEntry taskEntry) {
-		return putTask(taskEntry, 1, TimeUnit.DAYS);
-	}
-
-	/**
-	 * Stores task entry in the cluster with time-to-live. After ttl expires the
-	 * entry is evicted from the map. Task's id is used as the key.
-	 * 
-	 * WARNING: don't use unless you know what are you doing
-	 * 
-	 * 
-	 * @param entry
-	 *          entry to be stored
-	 * @param ttl
-	 *          time-to-live of the entry
-	 * @param timeUnit
-	 *          time unit of ttl
-	 * 
-	 * @return old value of the entry
-	 */
-	public TaskEntry putTask(TaskEntry entry, long ttl, TimeUnit timeUnit) {
-		return getTasksMap().put(entry.getId(), entry, ttl, timeUnit);
+		return getTasksMap().put(taskEntry.getId(), taskEntry);
 	}
 
 	/**
@@ -109,7 +107,7 @@ public class Tasks {
 	 * 
 	 * @return id of the submitted task
 	 */
-	public String submit(TaskEntry taskEntry)  {
+	public String submit(TaskEntry taskEntry) {
 		// TODO
 		TaskEntries.setState(taskEntry, TaskState.SUBMITTED, "Submitted by ...");
 
@@ -121,8 +119,18 @@ public class Tasks {
 
 	}
 
+	/**
+	 * Stores the specified task descriptor into the persistence layer.
+	 * 
+	 * @param taskEntry
+	 *          the task entry of the submitted context
+	 */
 	private void persistTaskDescriptor(TaskEntry taskEntry) {
-		final TaskEntity entity = PersistentDescriptors.wrapTaskDescriptor(taskEntry.getTaskDescriptor(), taskEntry.getId(), taskEntry.getTaskContextId(), taskEntry.getBenchmarkId());
+		final TaskEntity entity = PersistentDescriptors.wrapTaskDescriptor(
+				taskEntry.getTaskDescriptor(),
+				taskEntry.getId(),
+				taskEntry.getTaskContextId(),
+				taskEntry.getBenchmarkId());
 		try {
 			clusterCtx.getPersistence().asyncPersist(PersistentDescriptors.TASK_DESCRIPTOR, entity);
 		} catch (DAOException e) {
@@ -143,20 +151,25 @@ public class Tasks {
 	}
 
 	/**
-	 * 
-	 * Warning: lock, transaction
+	 * Checks whether the passed task entry is equal to the value stored in the
+	 * Hazelcast map of task entries.
 	 * 
 	 * @param entry
-	 * @return
+	 *          the task entry to check
+	 * @return true if they are equal, false otherwise
 	 */
+	// TODO: Warning: lock, transaction
 	public boolean isClusterEqual(TaskEntry entry) {
 		TaskEntry copy = getTask(entry.getId());
 		return entry.equals(copy);
 	}
 
 	/**
+	 * Throws an exception if the passed task entry is different from the current
+	 * value stored in the Hazelcast map of tasks.
 	 * 
 	 * @param entry
+	 *          the task entry to check
 	 */
 	public void assertClusterEqual(TaskEntry entry) {
 		if (!isClusterEqual(entry)) {
@@ -214,6 +227,7 @@ public class Tasks {
 				if (state == WAITING) {
 					TaskEntries.setState(taskEntry, ABORTED, "Killed by user");
 					putTask(taskEntry);
+					return;
 				}
 
 			} finally {
@@ -222,11 +236,12 @@ public class Tasks {
 		}
 
 		if ((state == ABORTED) || (state == FINISHED)) {
-			throw new IllegalStateException(String.format("Trying to kill task %s, but it's in state %s.", taskId, state));
+			return;
 		}
 
 		String receiverId = taskEntry.getRuntimeId();
 		KillTaskMessage killMessage = new KillTaskMessage(receiverId, "killed by user", taskId);
 		clusterCtx.getTopics().publishInGlobalTopic(killMessage);
 	}
+
 }

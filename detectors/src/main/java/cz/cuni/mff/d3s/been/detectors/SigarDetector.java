@@ -120,7 +120,7 @@ public class SigarDetector {
 				networkInterface.setHwaddr(c.getHwaddr());
 				networkInterface.setType(c.getType());
 				networkInterface.setMtu(c.getMtu());
-				networkInterface.setAddress(c.getAddress());
+				networkInterface.getAddress().add(c.getAddress());
 				networkInterface.setNetmask(c.getNetmask());
 				networkInterface.setBroadcast(c.getBroadcast());
 

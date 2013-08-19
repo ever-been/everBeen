@@ -1,10 +1,18 @@
 package cz.cuni.mff.d3s.been.detectors;
 
 import cz.cuni.mff.d3s.been.core.ri.*;
+import org.apache.commons.collections.EnumerationUtils;
+import org.apache.commons.lang.StringUtils;
+import org.hyperic.sigar.NetInterfaceConfig;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
+import java.lang.reflect.Method;
+import java.net.*;
+import java.net.NetworkInterface;
+import java.util.ArrayList;
+import java.util.Enumeration;
 
 /**
  * @author Kuba Brecka
@@ -37,12 +45,32 @@ public class JavaDetector {
 		Hardware hw = new Hardware();
 
 		Memory mem = new Memory();
-		mem.setRam(Runtime.getRuntime().totalMemory());
+		mem.setRam(getTotalMemoryFromReflection());
 		hw.setMemory(mem);
 
 		for (int i = 0; i < Runtime.getRuntime().availableProcessors(); i++) {
 			Cpu cpu = new Cpu();
 			hw.getCpu().add(cpu);
+		}
+
+		try {
+			Enumeration<NetworkInterface> ifs = NetworkInterface.getNetworkInterfaces();
+
+			for (Object i : EnumerationUtils.toList(ifs)) {
+				NetworkInterface iface = (NetworkInterface) i;
+				cz.cuni.mff.d3s.been.core.ri.NetworkInterface networkInterface = new cz.cuni.mff.d3s.been.core.ri.NetworkInterface();
+				networkInterface.setName(iface.getName());
+				networkInterface.setMtu(iface.getMTU());
+
+				for (Object o : EnumerationUtils.toList(iface.getInetAddresses())) {
+					InetAddress a = (InetAddress) o;
+					networkInterface.getAddress().add(a.getHostAddress());
+				}
+
+				hw.getNetworkInterface().add(networkInterface);
+			}
+		} catch (SocketException e) {
+			// do nothing
 		}
 
 		runtimeInfo.setHardware(hw);
@@ -58,6 +86,38 @@ public class JavaDetector {
 		}
 	}
 
+	private long getTotalMemoryFromReflection()
+	{
+		OperatingSystemMXBean os = ManagementFactory.getOperatingSystemMXBean();
+
+		try {
+			Method a = os.getClass().getMethod("getTotalPhysicalMemorySize");
+			a.setAccessible(true);
+			Object o = a.invoke(os);
+			return (Long) o;
+		} catch (Throwable e) {
+			// do nothing
+		}
+
+		return 0;
+	}
+
+	private long getFreeMemoryFromReflection()
+	{
+		OperatingSystemMXBean os = ManagementFactory.getOperatingSystemMXBean();
+
+		try {
+			Method a = os.getClass().getMethod("getFreePhysicalMemorySize");
+			a.setAccessible(true);
+			Object o = a.invoke(os);
+			return (Long) o;
+		} catch (Throwable e) {
+			// do nothing
+		}
+
+		return 0;
+	}
+
 	public MonitorSample generateSample() {
 
 		OperatingSystemMXBean os = ManagementFactory.getOperatingSystemMXBean();
@@ -66,7 +126,7 @@ public class JavaDetector {
 		LoadAverage la = new LoadAverage();
 		la.setLoad1(os.getSystemLoadAverage());
 		sample.setLoadAverage(la);
-		sample.setFreeMemory(Runtime.getRuntime().freeMemory());
+		sample.setFreeMemory(getFreeMemoryFromReflection());
 
 		return sample;
 	}

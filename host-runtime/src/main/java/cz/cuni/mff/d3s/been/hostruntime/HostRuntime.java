@@ -36,7 +36,7 @@ import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
  * supporting communication between tasks and results repository, allowing
  * logging).
  * 
- * @author Tadeáš Palusga
+ * @author donarus
  * 
  */
 public final class HostRuntime implements IClusterService {

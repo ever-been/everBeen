@@ -52,6 +52,9 @@
                                     </t:loop>
                                 </t:block>
                             </dd>
+                           	<dd>
+                           		Maximum number of tasks: ${runtime.getMaxTasks()}
+                           	</dd>
                         </dl>
 
                         <dl class="dl-horizontal">

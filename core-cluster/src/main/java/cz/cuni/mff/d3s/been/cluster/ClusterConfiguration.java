@@ -10,8 +10,7 @@ import cz.cuni.mff.d3s.been.BeenServiceConfiguration;
  * 
  * @author darklight
  */
-public class ClusterConfiguration extends BeenServiceConfiguration {
-	private ClusterConfiguration() {}
+public class ClusterConfiguration implements BeenServiceConfiguration {
 
 	/**
 	 * Property for the group BEEN's underlying Hazelcast cluster will use to
@@ -19,7 +18,7 @@ public class ClusterConfiguration extends BeenServiceConfiguration {
 	 * CLUSTER WILL SHATTER.
 	 */
 	public static final String GROUP = "been.cluster.group";
-	/** By default, BEEN will join in group '{@value #DEFAULT_GROUP}' */
+	/** By default, BEEN will join in group <code>DEFAULT_GROUP</code> */
 	public static final String DEFAULT_GROUP = "dev";
 
 	/**
@@ -30,7 +29,7 @@ public class ClusterConfiguration extends BeenServiceConfiguration {
 	public static final String PASSWORD = "been.cluster.password";
 	/**
 	 * The default group access password for the BEEN cluster is '
-	 * {@value #DEFAULT_PASSWORD}'
+	 * <code>DEFAULT_PASSWORD</code>
 	 */
 	public static final String DEFAULT_PASSWORD = "dev-pass";
 
@@ -55,7 +54,7 @@ public class ClusterConfiguration extends BeenServiceConfiguration {
 
 	/** Property name for the default BEEN cluster listening port */
 	public static final String PORT = "been.cluster.port";
-	/** Default BEEN cluster listening port is '{@value #DEFAULT_PORT}' */
+	/** Default BEEN cluster listening port is <code>DEFAULT_PORT</code> */
 	public static final Integer DEFAULT_PORT = 5701;
 
 	/**
@@ -84,7 +83,7 @@ public class ClusterConfiguration extends BeenServiceConfiguration {
 	public static final String JOIN = "been.cluster.join";
 	/**
 	 * By default, BEEN will try to join Hazelcast instances by
-	 * {@value #DEFAULT_JOIN}
+	 * <code>DEFAULT_JOIN</code>
 	 */
 	public static final String DEFAULT_JOIN = "multicast";
 
@@ -92,7 +91,7 @@ public class ClusterConfiguration extends BeenServiceConfiguration {
 	public static final String MULTICAST_PORT = "been.cluster.multicast.port";
 	/**
 	 * By default, BEEN will try to join underlying Hazelcast cluster on port '
-	 * {@value #DEFAULT_MULTICAST_PORT}'
+	 * <code>DEFAULT_MULTICAST_PORT</code>
 	 */
 	public static final Integer DEFAULT_MULTICAST_PORT = 54327;
 
@@ -100,7 +99,7 @@ public class ClusterConfiguration extends BeenServiceConfiguration {
 	public static final String MULTICAST_GROUP = "been.cluster.multicast.group";
 	/**
 	 * By default, BEEN will attempt to join underlying Hazelcast cluster in group
-	 * '{@value #DEFAULT_MULTICAST_GROUP}'
+	 * <code>DEFAULT_MULTICAST_GROUP</code>
 	 */
 	public static final String DEFAULT_MULTICAST_GROUP = "224.2.2.3";
 
@@ -110,7 +109,10 @@ public class ClusterConfiguration extends BeenServiceConfiguration {
 	 * Hazelcast cluster will attempt to contact when joining the cluster
 	 */
 	public static final String TCP_MEMBERS = "been.cluster.tcp.members";
-	/** By default, these members will be contacted: {@value #DEFAULT_TCP_MEMBERS} */
+	/**
+	 * By default, these members will be contacted:
+	 * <code>DEFAULT_TCP_MEMBERS</code>
+	 */
 	public static final String DEFAULT_TCP_MEMBERS = "localhost:5701";
 
 	/**
@@ -120,6 +122,44 @@ public class ClusterConfiguration extends BeenServiceConfiguration {
 	public static final String LOGGING = "been.cluster.logging";
 	/** By default, Hazelcast logging is <code>OFF</code> */
 	public static final Boolean DEFAULT_LOGGING = FALSE;
+
+	/**
+	 * Property which indicates how many backups the cluster should keep.
+	 */
+	public static final String BACKUP_COUNT = "been.cluster.backup.count";
+
+	/** Default value for {@link #BACKUP_COUNT} */
+	public static final int DEFAULT_BACKUP_COUNT = 1;
+
+	/**
+	 * Property which indicates whether to use {@link com.hazelcast.core.MapStore}
+	 * to persist Hazelcast runtime information.
+	 */
+	public static final String USE_MAP_STORE = "been.cluster.mapstore.use";
+
+	/** Default value for {@link #USE_MAP_STORE} */
+	public static final boolean DEFAULT_USE_MAP_STORE = true;
+
+	/**
+	 * Property with the name of {@link com.hazelcast.core.MapStore} to use to
+	 * persist information about Hazelcast runtime (tasks, contexts, benchmarks)
+	 */
+	public static final String MAP_STORE_FACTORY = "been.cluster.mapstore.factory";
+
+	/** Default value for {@link #MAP_STORE_FACTORY} */
+	public static final String DEFAULT_MAP_STORE_FACTORY = "cz.cuni.mff.d3s.been.mapstore.mongodb.MongoMapStoreFactory";
+
+	/**
+	 * Number of seconds to delay to call the MapStore.store(key, value). If the
+	 * value is zero then it is write-through so MapStore.store(key, value) will
+	 * be called as soon as the entry is updated. Otherwise it is write-behind so
+	 * updates will be stored after write-delay-seconds value by calling
+	 * Hazelcast.storeAll(map). Default value is 0.
+	 */
+	public static final String MAP_STORE_WRITE_DELAY = "been.cluster.mapstore.write.delay";
+
+	/** Default value for {@link #MAP_STORE_WRITE_DELAY}. */
+	public static final int DEFAULT_MAP_STORE_WRITE_DELAY = 0;
 
 	/** Type of the Hazelcast join method. */
 	static enum JOIN_TYPE {

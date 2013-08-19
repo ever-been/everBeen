@@ -19,21 +19,43 @@ import cz.cuni.mff.d3s.been.socketworks.twoway.Reply;
 import cz.cuni.mff.d3s.been.socketworks.twoway.Request;
 
 /**
+ * An {@link Action} that handles a request for waiting until a specified task
+ * context is finished.
+ * 
  * @author Kuba Brecka
  */
 public class ContextWaitAction implements Action {
 
+	/** slf4j logger */
 	private static final Logger log = LoggerFactory.getLogger(ContextWaitAction.class);
 
+	/** the request to handle */
 	private final Request request;
+
+	/** BEEN cluster instance */
 	private final ClusterContext ctx;
+
+	/** a blocking queue which is used for the waiting operation */
 	BlockingQueue<TaskContextEntry> queue = new LinkedBlockingQueue<>();
 
+	/**
+	 * Default constructor, creates the action with the specified request and
+	 * cluster context.
+	 * 
+	 * @param request
+	 *          the request to handle
+	 * @param ctx
+	 *          the cluster context
+	 */
 	public ContextWaitAction(Request request, ClusterContext ctx) {
 		this.request = request;
 		this.ctx = ctx;
 	}
 
+	/**
+	 * A helper class which implements a listener for a specified Hazelcast map
+	 * entry and adds it into the blocking queue when the event occurs.
+	 */
 	class MapWaiter implements EntryListener<String, TaskContextEntry> {
 
 		@Override
@@ -107,8 +129,16 @@ public class ContextWaitAction implements Action {
 		return reply;
 	}
 
+	/**
+	 * Checks whether the task context is already finished (or failed) or not.
+	 * 
+	 * @param entry
+	 *          the task context entry to check
+	 * @return true if the task context is finished or failed, false otherwise
+	 */
 	// TODO move to an utility class
 	private boolean isContextDone(TaskContextEntry entry) {
 		return entry.getContextState() == TaskContextState.FINISHED || entry.getContextState() == TaskContextState.FAILED;
 	}
+
 }

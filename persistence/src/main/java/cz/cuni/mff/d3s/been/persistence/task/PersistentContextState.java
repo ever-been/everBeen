@@ -5,7 +5,7 @@ import cz.cuni.mff.d3s.been.core.task.TaskContextState;
 
 /**
  * A persistent wrapper for the final state of a context
- *
+ * 
  * @author darklight
  */
 public class PersistentContextState extends Entity {
@@ -13,6 +13,10 @@ public class PersistentContextState extends Entity {
 	private TaskContextState contextState;
 	private String contextId;
 	private String benchmarkId;
+
+	public PersistentContextState() {
+		created = System.currentTimeMillis();
+	}
 
 	public TaskContextState getContextState() {
 		return contextState;

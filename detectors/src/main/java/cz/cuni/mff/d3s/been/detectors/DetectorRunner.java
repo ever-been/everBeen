@@ -41,8 +41,12 @@ public class DetectorRunner {
 
 		// try some XPaths
 		JXPathContext context = JXPathContext.newContext(ri);
-		System.out.println(context.getValue("//cpu/vendor"));
-		System.out.println(context.getValue("//networkInterface[1]/mtu"));
+		try {
+			System.out.println(context.getValue("//cpu/vendor"));
+			System.out.println(context.getValue("//networkInterface[1]/mtu"));
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 
 		// try the monitor
 		for (int i = 0; i < 10; i++) {

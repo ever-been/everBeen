@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.ri.MonitorSample;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
+import cz.cuni.mff.d3s.been.core.ri.RuntimeInfos;
 import cz.cuni.mff.d3s.been.core.task.TaskExclusivity;
 import cz.cuni.mff.d3s.been.debugassistant.DebugAssistant;
 import cz.cuni.mff.d3s.been.hostruntime.task.TaskHandle;
@@ -77,7 +78,7 @@ final class ProcessManagerContext {
 	 */
 	synchronized void tryAcceptTask(TaskHandle taskHandle) throws IllegalStateException {
 
-		//tryCheckLoad();
+		tryCheckLoad();
 
 		TaskExclusivity prevExclusivity = currentExclusivity;
 		String prevExclusiveId = currentExclusiveId;
@@ -110,19 +111,13 @@ final class ProcessManagerContext {
 	 *           if a limit is reached
 	 */
 	private void tryCheckLoad() throws IllegalStateException {
-		if (getTasksCount() >= hostInfo.getTaskCount()) {
+		if (RuntimeInfos.isMaxTasksReached(hostInfo)) {
 			throw new IllegalStateException("Maximum number of tasks reached");
 		}
 
-		final Runtime runtime = Runtime.getRuntime();
-
-		final long totalMemory = runtime.totalMemory();
-		final long freeMemory = runtime.freeMemory();
-
-		if ((freeMemory / totalMemory) * 100 >= hostInfo.getMemoryThreshold()) {
+		if (RuntimeInfos.isMemoryThresholdReached(hostInfo)) {
 			throw new IllegalStateException("Memory threshold reached");
 		}
-
 	}
 
 	/**

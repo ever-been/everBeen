@@ -132,13 +132,12 @@ public final class Instance {
 	public static synchronized void shutdown() {
 		if (!isConnected()) {
 			log.warn("Connection to the cluster already closed");
+            hazelcastInstance = null;
 			return;
 		}
 
 		getInstance().getLifecycleService().shutdown();
-
 		hazelcastInstance = null;
-		nodeType = null;
 	}
 
 	private static HazelcastInstance createNativeInstance(Properties userProperties) throws ServiceException {

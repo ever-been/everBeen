@@ -11,6 +11,15 @@ import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
  */
 public class BpkResolver {
 
+	/**
+	 * Reads the BPK configuration from the specified file.
+	 * 
+	 * @param bpkFile
+	 *          the file to parse
+	 * @return parsed BPK configuration
+	 * @throws BpkConfigurationException
+	 *           when the input is invalid or an I/O error occurs
+	 */
 	public static BpkConfiguration resolve(File bpkFile) throws BpkConfigurationException {
 		try (FileInputStream fis = new FileInputStream(bpkFile)) {
 			return resolve(fis);
@@ -19,10 +28,28 @@ public class BpkResolver {
 		}
 	}
 
+	/**
+	 * Reads the BPK configuration from the specified file.
+	 * 
+	 * @param bpkPath
+	 *          the path to the file to parse
+	 * @return parsed BPK configuration
+	 * @throws BpkConfigurationException
+	 *           when the input is invalid or an I/O error occurs
+	 */
 	public static BpkConfiguration resolve(Path bpkPath) throws BpkConfigurationException {
 		return resolve(bpkPath.toFile());
 	}
 
+	/**
+	 * Reads the BPK configuration from the specified input stream.
+	 * 
+	 * @param bpkIs
+	 *          the input stream to parse
+	 * @return parsed BPK configuration
+	 * @throws BpkConfigurationException
+	 *           when the input is invalid or an I/O error occurs
+	 */
 	public static BpkConfiguration resolve(InputStream bpkIs) throws BpkConfigurationException {
 		BpkConfiguration config = null;
 		try (ZipArchiveInputStream bpkZipStream = new ZipArchiveInputStream(new BufferedInputStream(bpkIs))) {
@@ -42,4 +69,5 @@ public class BpkResolver {
 			return config;
 		}
 	}
+
 }

@@ -1,8 +1,10 @@
 package cz.cuni.mff.d3s.been.node;
 
+import static cz.cuni.mff.d3s.been.cluster.Names.*;
 import static cz.cuni.mff.d3s.been.core.StatusCode.*;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -11,8 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Properties;
-import java.util.UUID;
+import java.util.*;
 
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -22,33 +23,21 @@ import org.slf4j.LoggerFactory;
 
 import com.hazelcast.core.HazelcastInstance;
 
+import cz.cuni.mff.d3s.been.BeenServiceConfiguration;
 import cz.cuni.mff.d3s.been.cluster.*;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.hostruntime.HostRuntime;
 import cz.cuni.mff.d3s.been.hostruntime.HostRuntimes;
 import cz.cuni.mff.d3s.been.logging.ServiceLogPersister;
+import cz.cuni.mff.d3s.been.manager.Managers;
 import cz.cuni.mff.d3s.been.repository.Repository;
 import cz.cuni.mff.d3s.been.storage.Storage;
 import cz.cuni.mff.d3s.been.storage.StorageBuilderFactory;
 import cz.cuni.mff.d3s.been.swrepository.SoftwareRepositories;
 import cz.cuni.mff.d3s.been.swrepository.SoftwareRepository;
-import cz.cuni.mff.d3s.been.task.Managers;
 
 /**
  * Entry point for BEEN nodes.
- * <p/>
- * Responsibilities of BEEN nodes include: - joining the cluster - scheduling
- * tasks
- * <p/>
- * Possibly, there can be three types of a node: - full: cluster membership +
- * data + event handling - lite: cluster membership + event handling - client:
- * event handling
- * <p/>
- * Clients nodes could be used as "very lite" runtimes. Lite nodes have the
- * overhead of cluster membership, but does not hold/replicate data.
- * <p/>
- * <p/>
- * So far only full node is implemented.
  * 
  * @author Martin Sixta
  */
@@ -69,6 +58,9 @@ public class Runner implements Reapable {
 
 	@Option(name = "-cf", aliases = { "--config-file" }, usage = "Path or URL to BEEN config file.")
 	private String configFile;
+
+	@Option(name = "-dc", aliases = { "--dump-config" }, usage = "Whether to print runtime configuration and exit")
+	private boolean dumpConfig;
 
 	@Option(name = "-r", aliases = { "--host-runtime" }, usage = "Whether to run Host runtime on this node")
 	private boolean runHostRuntime = false;
@@ -113,20 +105,19 @@ public class Runner implements Reapable {
 
 		parseCmdLineArguments(args);
 
+		Properties properties = loadProperties();
+
+		if (dumpConfig) {
+			printBeenConfiguration(properties);
+			EX_OK.sysExit();
+		}
+
 		if (printHelp) {
 			printUsage();
 			EX_USAGE.sysExit();
 		}
 
-		this.runtimeId = UUID.randomUUID();
-		try {
-			this.beenId = InetAddress.getLocalHost().getHostName() + "--" + runtimeId.toString();
-		} catch (UnknownHostException e) {
-			log.error("Cannot determine local hostname, will terminate.", e);
-			EX_NETWORK_ERROR.sysExit();
-		}
-
-		Properties properties = loadProperties();
+		initIds();
 
 		HazelcastInstance instance = null;
 
@@ -137,11 +128,22 @@ public class Runner implements Reapable {
 			log.info("The node is now connected to the cluster");
 		} catch (ServiceException e) {
 			log.error("Failed to initialize cluster instance", e);
-
+			EX_COMPONENT_FAILED.sysExit();
 		}
 
 		Reaper clusterReaper = new ClusterReaper(instance);
 		this.clusterContext = Instance.createContext();
+
+		if (nodeType == NodeType.DATA) {
+			// must happen as soon as possible, see documentation for BEEN MapStore implementation
+			initializeMaps(
+					TASKS_MAP_NAME,
+					TASK_CONTEXTS_MAP_NAME,
+					BENCHMARKS_MAP_NAME,
+					NAMED_TASK_CONTEXT_DESCRIPTORS_MAP_NAME,
+					NAMED_TASK_DESCRIPTORS_MAP_NAME);
+		}
+
 		registerServiceCleaner();
 		try {
 			// standalone services
@@ -180,6 +182,21 @@ public class Runner implements Reapable {
 		clusterReaper.pushTarget(this);
 
 		Runtime.getRuntime().addShutdownHook(clusterReaper);
+	}
+
+	/**
+	 * Will make Hazelcast to "touch" the maps.
+	 * 
+	 * It causes Hazelcast to load data through its MapStore, if used, from a data
+	 * store.
+	 * 
+	 * @param mapNames
+	 *          names of Maps to force to initialize
+	 */
+	private void initializeMaps(String... mapNames) {
+		for (String mapName : mapNames) {
+			clusterContext.getMap(mapName);
+		}
 	}
 
 	private void registerServiceCleaner() {
@@ -223,6 +240,16 @@ public class Runner implements Reapable {
 
 	}
 
+	private void initIds() {
+		this.runtimeId = UUID.randomUUID();
+		try {
+			this.beenId = InetAddress.getLocalHost().getHostName() + "--" + runtimeId.toString();
+		} catch (UnknownHostException e) {
+			log.error("Cannot determine local hostname, will terminate.", e);
+			EX_NETWORK_ERROR.sysExit();
+		}
+	}
+
 	private IClusterService startTaskManager() throws ServiceException {
 		IClusterService taskManager = Managers.getManager(clusterContext);
 		taskManager.start();
@@ -244,8 +271,10 @@ public class Runner implements Reapable {
 	}
 
 	private IClusterService startLogPersister() throws ServiceException {
+		log.info("Starting log persister");
 		ServiceLogPersister logPersister = ServiceLogPersister.getHandlerInstance(clusterContext, beenId, hostRuntimeId);
 		logPersister.start();
+		log.info("Log persister started");
 		return logPersister;
 	}
 
@@ -316,5 +345,52 @@ public class Runner implements Reapable {
 				clusterContext.stop();
 			}
 		};
+	}
+
+	private void printBeenConfiguration(final Properties properties) {
+
+		final ServiceLoader<BeenServiceConfiguration> configs = ServiceLoader.load(BeenServiceConfiguration.class);
+
+		for (BeenServiceConfiguration config : configs) {
+			Class<?> klazz = config.getClass();
+
+			System.out.println(klazz.getName());
+
+			Map<String, Object> configMap = new HashMap<>();
+
+			Map<String, Object> defaultValues = new HashMap<>();
+			Map<String, String> propertyNames = new HashMap<>();
+
+			for (Field field : klazz.getDeclaredFields()) {
+				final String name = field.getName();
+
+				if (name.startsWith("DEFAULT_")) {
+					try {
+						defaultValues.put(name.substring("DEFAULT_".length()), field.get(config));
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					}
+				} else {
+					try {
+						propertyNames.put(name, field.get(config).toString());
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+
+			for (Map.Entry<String, String> entry : propertyNames.entrySet()) {
+				String name = entry.getValue();
+				Object value = defaultValues.get(entry.getKey());
+
+				if (properties.containsKey(name)) {
+					System.out.printf("!\t%s=%s%n", entry.getValue(), value);
+				} else {
+					System.out.printf("\t%s=%s%n", entry.getValue(), value);
+				}
+
+			}
+
+		}
 	}
 }

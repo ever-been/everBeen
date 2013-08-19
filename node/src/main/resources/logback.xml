@@ -1,4 +1,4 @@
-<configuration>
+<configuration debug="false">
 
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
@@ -8,24 +8,14 @@
 		</encoder>
 	</appender>
 
-    <appender name="CLUSTER" class="cz.cuni.mff.d3s.been.logging.BeenAppender">
-        <encoder>
-            <pattern>
-                %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
-            </pattern>
-        </encoder>
-    </appender>
+	<appender name="CLUSTER" class="cz.cuni.mff.d3s.been.logging.BeenAppender">
+		<!-- encoder no applicable -->
+	</appender>
 
-	<logger name="org.apache.http" level="WARN"/>
-	<logger name="cz.cuni.mff.d3s.been.task.LocalKeyScanner" level="WARN"/>
-	<logger name="cz.cuni.mff.d3s.been.hostruntime.task.TaskHandle" level="DEBUG"/>
-
-	<!-- if set to DEBUG prints log messages from tasks on hostruntimes -->
-	<logger name="cz.cuni.mff.d3s.been.hostruntime.tasklogs.TaskLogHandler" level="DEBUG"/>
 
 	<root level="INFO">
 		<appender-ref ref="STDOUT"/>
-        <appender-ref ref="CLUSTER"/>
+		<appender-ref ref="CLUSTER"/>
 	</root>
 
 </configuration>

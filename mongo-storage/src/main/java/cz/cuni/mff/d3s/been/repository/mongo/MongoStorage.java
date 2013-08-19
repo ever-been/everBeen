@@ -1,7 +1,10 @@
 package cz.cuni.mff.d3s.been.repository.mongo;
 
 import java.net.UnknownHostException;
-import java.util.*;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.mongodb.*;
 import com.mongodb.util.JSON;
@@ -10,8 +13,6 @@ import cz.cuni.mff.d3s.been.core.persistence.EntityCarrier;
 import cz.cuni.mff.d3s.been.core.persistence.EntityID;
 import cz.cuni.mff.d3s.been.persistence.*;
 import cz.cuni.mff.d3s.been.storage.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A MongoDB adapter for BEEN result persistence layer.
@@ -106,7 +107,10 @@ public final class MongoStorage implements Storage {
 						wr.getError()));
 			}
 		} catch (MongoException e) {
-			throw new DAOException(String.format("Failed to store persistent object (%s, %s)", entityId.toString(), entityJSON), e);
+			throw new DAOException(String.format(
+					"Failed to store persistent object (%s, %s)",
+					entityId.toString(),
+					entityJSON), e);
 		}
 	}
 
@@ -135,7 +139,6 @@ public final class MongoStorage implements Storage {
 			log.error("Unsupported query '{}'", query, e);
 			return QueryAnswerFactory.badQuery();
 		}
-
 
 		final QueryExecutor queryExecutor;
 		try {
@@ -167,7 +170,7 @@ public final class MongoStorage implements Storage {
 	public boolean isConnected() {
 		try {
 			CommandResult cr = db.getStats();
-			log.info("MongoDB connected with stats {}", cr.toString());
+			log.debug("MongoDB connected with stats {}", cr.toString());
 			return true;
 		} catch (MongoException e) {
 			if (e instanceof MongoException.Network) {

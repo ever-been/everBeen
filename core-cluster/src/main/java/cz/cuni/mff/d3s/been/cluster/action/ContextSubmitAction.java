@@ -4,26 +4,43 @@ import java.io.ByteArrayInputStream;
 
 import javax.xml.bind.JAXBException;
 
-import com.hazelcast.core.IMap;
-import cz.cuni.mff.d3s.been.core.benchmark.BenchmarkEntry;
-import cz.cuni.mff.d3s.been.socketworks.twoway.Replies;
-import cz.cuni.mff.d3s.been.socketworks.twoway.Reply;
-import cz.cuni.mff.d3s.been.socketworks.twoway.Request;
 import org.xml.sax.SAXException;
 
+import com.hazelcast.core.IMap;
+
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
+import cz.cuni.mff.d3s.been.core.benchmark.BenchmarkEntry;
 import cz.cuni.mff.d3s.been.core.jaxb.BindingParser;
 import cz.cuni.mff.d3s.been.core.jaxb.ConvertorException;
 import cz.cuni.mff.d3s.been.core.jaxb.XSD;
 import cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor;
+import cz.cuni.mff.d3s.been.socketworks.twoway.Replies;
+import cz.cuni.mff.d3s.been.socketworks.twoway.Reply;
+import cz.cuni.mff.d3s.been.socketworks.twoway.Request;
 
 /**
+ * An {@link Action} that handles a request for submitting a new task context
+ * within a benchmark.
+ * 
  * @author Kuba Brecka
  */
 public class ContextSubmitAction implements Action {
+
+	/** the request to handle */
 	private final Request request;
+
+	/** BEEN cluster instance */
 	private final ClusterContext ctx;
 
+	/**
+	 * Default constructor, creates the action with the specified request and
+	 * cluster context.
+	 * 
+	 * @param request
+	 *          the request to handle
+	 * @param ctx
+	 *          the cluster context
+	 */
 	public ContextSubmitAction(Request request, ClusterContext ctx) {
 		this.request = request;
 		this.ctx = ctx;
@@ -44,7 +61,7 @@ public class ContextSubmitAction implements Action {
 
 		String taskContextEntryId = ctx.getTaskContexts().submit(taskContextDescriptor, benchmarkId);
 
-		IMap<String,BenchmarkEntry> benchmarksMap = ctx.getBenchmarks().getBenchmarksMap();
+		IMap<String, BenchmarkEntry> benchmarksMap = ctx.getBenchmarks().getBenchmarksMap();
 		benchmarksMap.lock(benchmarkId);
 		try {
 			BenchmarkEntry entry = benchmarksMap.get(benchmarkId);
@@ -56,4 +73,5 @@ public class ContextSubmitAction implements Action {
 
 		return Replies.createOkReply(taskContextEntryId);
 	}
+
 }

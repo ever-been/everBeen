@@ -25,7 +25,11 @@ public class Names {
 	 * In the map with this name should be stored information about all Tasks
 	 * (including their actual state).
 	 */
-	public static final String TASKS_MAP_NAME = "BEEN_MAP_TASKS";
+    public static final String TASKS_MAP_NAME = "BEEN_MAP_TASKS";
+
+    public static final String NAMED_TASK_DESCRIPTORS_MAP_NAME = "BEEN_MAP_NAMED_TASK_DESCRIPTORS";
+
+    public static final String NAMED_TASK_CONTEXT_DESCRIPTORS_MAP_NAME = "BEEN_MAP_NAMED_TASK_CONTEXT_DESCRIPTORS";
 
 	/**
 	 * Map storing current task contexts.

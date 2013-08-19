@@ -1,20 +1,21 @@
 package cz.cuni.mff.d3s.been.repository.janitor;
 
+import static cz.cuni.mff.d3s.been.repository.janitor.PersistenceJanitorConfiguration.*;
+
+import java.util.concurrent.TimeUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.core.PropertyReader;
 import cz.cuni.mff.d3s.been.persistence.task.PersistentContextState;
 import cz.cuni.mff.d3s.been.persistence.task.PersistentTaskState;
 import cz.cuni.mff.d3s.been.storage.Storage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.concurrent.TimeUnit;
-
-import static cz.cuni.mff.d3s.been.repository.janitor.PersistenceJanitorConfiguration.*;
 
 /**
  * A keeper thread that runs persistence cleanup every once in a while
- *
+ * 
  * @author darklight
  */
 public class Janitor extends Thread {
@@ -43,18 +44,26 @@ public class Janitor extends Thread {
 
 	/**
 	 * Create a persistence janitor over a {@link Storage} instance
-	 *
-	 * @param ctx Context the janitor runs in
-	 * @param storage Storage to keep clean
-	 *
+	 * 
+	 * @param ctx
+	 *          Context the janitor runs in
+	 * @param storage
+	 *          Storage to keep clean
+	 * 
 	 * @return A new Janitor instance
 	 */
 	public static Janitor create(ClusterContext ctx, Storage storage) {
 		final PropertyReader propertyReader = PropertyReader.on(ctx.getProperties());
 
-		final Long failedLongevity = TimeUnit.HOURS.toMillis(propertyReader.getLong(FAILED_LONGEVITY, DEFAULT_FAILED_LONGEVITY));
-		final Long finishedLongevity = TimeUnit.HOURS.toMillis(propertyReader.getLong(FINISHED_LONGEVITY, DEFAULT_FINISHED_LONGEVITY));
-		final Long wakeUpInterval = TimeUnit.SECONDS.toMillis(propertyReader.getLong(WAKEUP_INTERVAL, DEFAULT_WAKEUP_INTERVAL));
+		final Long failedLongevity = TimeUnit.HOURS.toMillis(propertyReader.getLong(
+				FAILED_LONGEVITY,
+				DEFAULT_FAILED_LONGEVITY));
+		final Long finishedLongevity = TimeUnit.HOURS.toMillis(propertyReader.getLong(
+				FINISHED_LONGEVITY,
+				DEFAULT_FINISHED_LONGEVITY));
+		final Long wakeUpInterval = TimeUnit.MINUTES.toMillis(propertyReader.getLong(
+				WAKEUP_INTERVAL,
+				DEFAULT_WAKEUP_INTERVAL));
 
 		return new Janitor(storage, failedLongevity, finishedLongevity, wakeUpInterval);
 	}
@@ -69,7 +78,7 @@ public class Janitor extends Thread {
 	}
 
 	private void doRun() throws Throwable {
-		log.info("Starting persistence janitor component");
+		log.debug("Starting persistence janitor component");
 		while (!Thread.currentThread().isInterrupted()) {
 			try {
 				Thread.sleep(wakeUpInterval);
@@ -83,11 +92,11 @@ public class Janitor extends Thread {
 				continue;
 			}
 
-			log.info("Commencing janitor sweep");
+			log.debug("Commencing janitor sweep");
 			doSweep();
-			log.info("Janitor sweep done");
+			log.debug("Janitor sweep done");
 		}
-		log.info("Exiting persistence janitor component");
+		log.debug("Exiting persistence janitor component");
 	}
 
 	private void doSweep() {

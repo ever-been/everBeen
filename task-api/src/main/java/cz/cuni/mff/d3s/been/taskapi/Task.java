@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Properties;
 
 /**
- * @author Kuba Břečka
+ * @author Kuba Brecka
  */
 public abstract class Task {
 
