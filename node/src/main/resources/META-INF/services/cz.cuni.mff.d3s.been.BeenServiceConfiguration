@@ -1,3 +1,5 @@
+#Because we use the assembly plug-in for maven, all implementations must
+#be listed here and not in modules. The plugin would overwrite the files
 cz.cuni.mff.d3s.been.cluster.ClusterConfiguration
 cz.cuni.mff.d3s.been.cluster.ClusterClientConfiguration
 cz.cuni.mff.d3s.been.cluster.ClusterPersistenceConfiguration

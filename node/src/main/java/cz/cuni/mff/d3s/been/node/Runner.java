@@ -347,7 +347,15 @@ public class Runner implements Reapable {
 		};
 	}
 
+	/**
+	 * Prints runtime configuration of BEEN.
+	 * 
+	 * @param properties
+	 *          user specified properties
+	 */
 	private void printBeenConfiguration(final Properties properties) {
+
+		final String DEFAULT_VALUE_PREFIX = "DEFAULT_"; // by convention
 
 		final ServiceLoader<BeenServiceConfiguration> configs = ServiceLoader.load(BeenServiceConfiguration.class);
 
@@ -356,26 +364,23 @@ public class Runner implements Reapable {
 
 			System.out.println(klazz.getName());
 
-			Map<String, Object> configMap = new HashMap<>();
-
 			Map<String, Object> defaultValues = new HashMap<>();
 			Map<String, String> propertyNames = new HashMap<>();
 
 			for (Field field : klazz.getDeclaredFields()) {
 				final String name = field.getName();
 
-				if (name.startsWith("DEFAULT_")) {
-					try {
-						defaultValues.put(name.substring("DEFAULT_".length()), field.get(config));
-					} catch (IllegalAccessException e) {
-						e.printStackTrace();
-					}
-				} else {
-					try {
+				try {
+					if (name.startsWith(DEFAULT_VALUE_PREFIX)) {
+						String propertyName = name.substring(DEFAULT_VALUE_PREFIX.length());
+						defaultValues.put(propertyName, field.get(config));
+					} else {
 						propertyNames.put(name, field.get(config).toString());
-					} catch (IllegalAccessException e) {
-						e.printStackTrace();
 					}
+
+				} catch (IllegalAccessException e) {
+					String msg = String.format("Cannot get value for '%s'", name);
+					log.error(msg, e);
 				}
 			}
 
