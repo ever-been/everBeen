@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.ioc.annotations.Inject;
-import org.apache.tapestry5.services.URLEncoder;
+import org.apache.tapestry5.services.PageRenderLinkSource;
 
 import cz.cuni.mff.d3s.been.api.BeenApiException;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
@@ -26,104 +26,131 @@ public class Submit extends Page {
 	@Property
 	BpkIdentifier bpk;
 
-	public Collection<BpkIdentifier> getBpks() throws BeenApiException {
-		return this.api.getApi().getBpks();
-	}
-
-	public class Descriptor {
-		public boolean named = false;
-		public String name;
-		public boolean isTaskDescriptor;
-		public TaskDescriptor taskDescriptor;
-		public TaskContextDescriptor taskContextDescriptor;
-		public String submitLink;
-	}
-
 	@Property
 	Descriptor descriptor;
 
 	@Inject
-	URLEncoder urlEncoder;
+	private PageRenderLinkSource pageRenderLinkSource;
 
-	Object onActionFromDeleteNamedDescriptor(String name, boolean isTaskDescriptor, String groupId, String bpkId,
-			String version) throws BeenApiException {
-		BpkIdentifier bpkIdentifier = new ObjectFactory().createBpkIdentifier();
-		bpkIdentifier.setBpkId(bpkId);
-		bpkIdentifier.setGroupId(groupId);
-		bpkIdentifier.setVersion(version);
+	public Collection<BpkIdentifier> getBpks() throws BeenApiException {
+		return getApi().getBpks();
+	}
 
-		if (isTaskDescriptor) {
-			api.getApi().deleteNamedTaskDescriptor(bpkIdentifier, name);
-		} else {
-			api.getApi().deleteNamedTaskContextDescriptor(bpkIdentifier, name);
-		}
+	Object onDeleteNamedTaskDescriptor(String name, String groupId, String bpkId, String version) throws BeenApiException {
+		BpkIdentifier bpkIdentifier = new ObjectFactory().createBpkIdentifier().withBpkId(bpkId).withGroupId(groupId).withVersion(
+				version);
+
+		getApi().deleteNamedTaskDescriptor(bpkIdentifier, name);
+
+		return Submit.class;
+	}
+
+			Object
+			onDeleteNamedTaskContextDescriptor(String name, String groupId, String bpkId, String version) throws BeenApiException {
+		BpkIdentifier bpkIdentifier = new ObjectFactory().createBpkIdentifier().withBpkId(bpkId).withGroupId(groupId).withVersion(
+				version);
+
+		getApi().deleteNamedTaskContextDescriptor(bpkIdentifier, name);
 
 		return Submit.class;
 	}
 
 	public Collection<Descriptor> descriptorsForBpk(BpkIdentifier bpk) throws BeenApiException {
-		Collection<Descriptor> result = new ArrayList<Descriptor>();
-		for (Map.Entry<String, TaskDescriptor> entry : this.api.getApi().getTaskDescriptors(bpk).entrySet()) {
-			String descriptorName = entry.getKey();
-			TaskDescriptor td = entry.getValue();
-			String link = linkFromBpkIdentifier(bpk, descriptorName);
-			addTdToResults(result, descriptorName, td, link, false);
-		}
+		Collection<Descriptor> result = new ArrayList<>();
 
-		for (Map.Entry<String, TaskDescriptor> entry : this.api.getApi().getNamedTaskDescriptorsForBpk(bpk).entrySet()) {
-			String descriptorName = entry.getKey();
-			TaskDescriptor td = entry.getValue();
-			String link = linkFromBpkIdentifier(bpk, descriptorName);
-			addTdToResults(result, descriptorName, td, link, true);
-		}
-
-		for (Map.Entry<String, TaskContextDescriptor> entry : this.api.getApi().getTaskContextDescriptors(bpk).entrySet()) {
-			String descriptorName = entry.getKey();
-			TaskContextDescriptor tcd = entry.getValue();
-			String link = linkFromBpkIdentifier(bpk, descriptorName);
-			addTcdToResults(result, descriptorName, tcd, link, false);
-		}
-
-		for (Map.Entry<String, TaskContextDescriptor> entry : this.api.getApi().getNamedContextDescriptorsForBpk(bpk).entrySet()) {
-			String descriptorName = entry.getKey();
-			TaskContextDescriptor tcd = entry.getValue();
-			String link = linkFromBpkIdentifier(bpk, descriptorName);
-			addTcdToResults(result, descriptorName, tcd, link, true);
-		}
+		result.addAll(createTaskDescriptorWrappers(bpk));
+		result.addAll(createTaskContextDescriptorWrappers(bpk));
 
 		return result;
 	}
 
-	private void addTcdToResults(Collection<Descriptor> result, String descriptorName, TaskContextDescriptor tcd,
-			String link, boolean named) {
-		Descriptor d = new Descriptor();
-		d.name = descriptorName;
-		d.isTaskDescriptor = false;
-		d.taskContextDescriptor = tcd;
-		d.named = named;
+	private Collection<Descriptor> createTaskDescriptorWrappers(BpkIdentifier bpk) throws BeenApiException {
+		Collection<Descriptor> descriptors = new ArrayList();
 
-		d.submitLink = "/task/submittaskcontextdescriptor/" + link;
-		result.add(d);
+		descriptors.addAll(createTaskDescriptorWrappers(getApi().getTaskDescriptors(bpk).entrySet(), bpk, false));
+		descriptors.addAll(createTaskDescriptorWrappers(getApi().getNamedTaskDescriptorsForBpk(bpk).entrySet(), bpk, true));
+
+		return descriptors;
 	}
 
-	private void addTdToResults(Collection<Descriptor> result, String descriptorName, TaskDescriptor td, String s,
-			boolean named) {
-		Descriptor d = new Descriptor();
-		d.name = descriptorName;
-		d.isTaskDescriptor = true;
-		d.taskDescriptor = td;
-		d.named = named;
+	private Collection<Descriptor> createTaskContextDescriptorWrappers(BpkIdentifier bpk) throws BeenApiException {
+		Collection<Descriptor> descriptors = new ArrayList();
 
-		if (td.getType() == TaskType.TASK) {
-			d.submitLink = "/task/submittaskdescriptor/" + s;
-		} else if (td.getType() == TaskType.BENCHMARK) {
-			d.submitLink = "/task/submitbenchmarkdescriptor/" + s;
+		descriptors.addAll(createTaskContextDescriptorWrappers(
+				getApi().getTaskContextDescriptors(bpk).entrySet(),
+				bpk,
+				false));
+		descriptors.addAll(createTaskContextDescriptorWrappers(
+				getApi().getNamedContextDescriptorsForBpk(bpk).entrySet(),
+				bpk,
+				true));
+
+		return descriptors;
+	}
+
+	private Collection<Descriptor> createTaskDescriptorWrappers(Collection<Map.Entry<String, TaskDescriptor>> entries,
+			BpkIdentifier bpk, boolean named) throws BeenApiException {
+		Collection<Descriptor> descriptors = new ArrayList();
+		for (Map.Entry<String, TaskDescriptor> entry : entries) {
+			String descriptorName = entry.getKey();
+			TaskDescriptor td = entry.getValue();
+			Object[] linkEventContext = new Object[] { bpk.getGroupId(), bpk.getBpkId(), bpk.getVersion(), descriptorName };
+
+			String submitLink = null;
+			if (td.getType() == TaskType.TASK) {
+				submitLink = createLink(SubmitTaskDescriptor.class, linkEventContext);
+			} else if (td.getType() == TaskType.BENCHMARK) {
+				submitLink = createLink(SubmitBenchmarkDescriptor.class, linkEventContext);
+			}
+
+			descriptors.add(new Descriptor(td, submitLink, descriptorName, named));
 		}
-		result.add(d);
+		return descriptors;
 	}
 
-	private String linkFromBpkIdentifier(BpkIdentifier bpk, String descriptorName) {
-		return urlEncoder.encode(bpk.getGroupId()) + "/" + urlEncoder.encode(bpk.getBpkId()) + "/" + urlEncoder.encode(bpk.getVersion()) + "/" + urlEncoder.encode(descriptorName);
+	private
+			Collection<Descriptor>
+			createTaskContextDescriptorWrappers(Collection<Map.Entry<String, TaskContextDescriptor>> entries,
+					BpkIdentifier bpk, boolean named) throws BeenApiException {
+		Collection<Descriptor> descriptors = new ArrayList();
+		for (Map.Entry<String, TaskContextDescriptor> entry : entries) {
+			String descriptorName = entry.getKey();
+			TaskContextDescriptor tcd = entry.getValue();
+			Object[] linkEventContext = new Object[] { bpk.getGroupId(), bpk.getBpkId(), bpk.getVersion(), descriptorName };
+			String submitLink = createLink(SubmitTaskContextDescriptor.class, linkEventContext);
+			descriptors.add(new Descriptor(tcd, submitLink, descriptorName, named));
+		}
+		return descriptors;
+	}
+
+	private String createLink(Class<?> pageClass, Object[] linkEventContext) {
+		return pageRenderLinkSource.createPageRenderLinkWithContext(pageClass, linkEventContext).toAbsoluteURI().toString();
+	}
+
+	// ******************************
+	// Displayable descriptor wrapper
+	// ******************************
+
+	public class Descriptor {
+		public String name;
+		public TaskDescriptor taskDescriptor;
+		public TaskContextDescriptor taskContextDescriptor;
+		public String submitLink;
+		public boolean isNamed;
+
+		public Descriptor(TaskDescriptor taskDescriptor, String submitLink, String name, boolean named) {
+			this.taskDescriptor = taskDescriptor;
+			this.submitLink = submitLink;
+			this.name = name;
+			this.isNamed = named;
+		}
+
+		public Descriptor(TaskContextDescriptor taskContextDescriptor, String submitLink, String name, boolean named) {
+			this.taskContextDescriptor = taskContextDescriptor;
+			this.submitLink = submitLink;
+			this.name = name;
+			this.isNamed = named;
+		}
 	}
 
 }

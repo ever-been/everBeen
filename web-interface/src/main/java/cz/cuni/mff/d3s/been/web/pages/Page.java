@@ -37,6 +37,7 @@ public abstract class Page {
 
 	@Inject
 	private PageRenderLinkSource pageRenderLinkSource;
+
 	@Environmental
 	private JavaScriptSupport javaScriptSupport;
 

@@ -5,14 +5,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cz.cuni.mff.d3s.been.api.BeenApiException;
-import cz.cuni.mff.d3s.been.core.task.ModeEnum;
 import org.apache.tapestry5.annotations.Component;
 import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.annotations.SessionState;
 import org.apache.tapestry5.corelib.components.Form;
 
+import cz.cuni.mff.d3s.been.api.BeenApiException;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
+import cz.cuni.mff.d3s.been.core.task.ModeEnum;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.web.components.Layout;
 import cz.cuni.mff.d3s.been.web.model.ConversationHolder;
@@ -121,7 +121,6 @@ public class SubmitTaskDescriptor extends Page {
 		}
 
 		if (!conversationHolder.contains(conversationId)) {
-			// FIXME .. inform user in proper way?
 			return Index.class;
 		} else {
 			taskDescriptor = (TaskDescriptor) conversationHolder.get(conversationId).get(KEY_TASK_DESCRIPTOR);
@@ -158,14 +157,11 @@ public class SubmitTaskDescriptor extends Page {
 	@SuppressWarnings("unused")
 	Object onActivate(String groupId, String bpkId, String version, String descriptorName) throws BeenApiException {
 		// load correct task descriptor
-		BpkIdentifier bpkIdentifier = new BpkIdentifier();
-		bpkIdentifier.setGroupId(groupId);
-		bpkIdentifier.setBpkId(bpkId);
-		bpkIdentifier.setVersion(version);
-		this.taskDescriptor = this.api.getApi().getTaskDescriptor(bpkIdentifier, descriptorName);
+		BpkIdentifier bpkIdentifier = new BpkIdentifier().withGroupId(groupId).withBpkId(bpkId).withVersion(version);
+		this.taskDescriptor = getApi().getTaskDescriptor(bpkIdentifier, descriptorName);
 
 		if (this.taskDescriptor == null) {
-			this.taskDescriptor = this.api.getApi().getNamedTaskDescriptorsForBpk(bpkIdentifier).get(descriptorName);
+			this.taskDescriptor = getApi().getNamedTaskDescriptorsForBpk(bpkIdentifier).get(descriptorName);
 		}
 
 		args = new ArrayList<>();
@@ -198,24 +194,21 @@ public class SubmitTaskDescriptor extends Page {
 	// -----------------------------
 
 	/**
-	 * To be overloaded from SubmitBenchmarkDescriptor.
-	 * 
-	 * @param taskDescriptor
-	 *          task descriptor to submit
-	 */
-	protected void submitTaskDescriptor(TaskDescriptor taskDescriptor) throws BeenApiException {
-		this.api.getApi().submitTask(taskDescriptor);
-	}
-
-	/**
 	 * This handler is called when users click on form SUBMIT button. Submits task
 	 * to BEEN cluster using {@link cz.cuni.mff.d3s.been.api.BeenApi}
 	 * 
 	 * @return redirect to {@link Overview} page
 	 */
-	@SuppressWarnings("unused")
 	Object onSubmitFromSubmitTaskForm() throws BeenApiException {
+		prepareTaskBeforeSubmit(taskDescriptor, args, opts);
+		if (save) {
+			saveTaskDescriptor(taskDescriptor, saveName);
+		}
+		submitTaskDescriptor(taskDescriptor);
+		return Overview.class;
+	}
 
+	private void prepareTaskBeforeSubmit(TaskDescriptor taskDescriptor, List<KeyValuePair> args, List<KeyValuePair> opts) {
 		args.remove(null);
 		taskDescriptor.getArguments().getArgument().clear();
 		taskDescriptor.getJava().getJavaOptions().getJavaOption().clear();
@@ -230,27 +223,25 @@ public class SubmitTaskDescriptor extends Page {
 			}
 		}
 
-        if (taskDescriptor.getDebug().getMode() == ModeEnum.NONE) {
-            taskDescriptor.getDebug().setSuspend(false);
-        }
-
-		if (save) {
-			BpkIdentifier bpkIdentifier = new BpkIdentifier();
-			bpkIdentifier.setGroupId(taskDescriptor.getGroupId());
-			bpkIdentifier.setBpkId(taskDescriptor.getBpkId());
-			bpkIdentifier.setVersion(taskDescriptor.getVersion());
-			this.api.getApi().saveNamedTaskDescriptor(taskDescriptor, this.saveName, bpkIdentifier);
+		if (taskDescriptor.getDebug().getMode() == ModeEnum.NONE) {
+			taskDescriptor.getDebug().setSuspend(false);
 		}
+	}
 
+	private void saveTaskDescriptor(TaskDescriptor taskDescriptor, String saveName) throws BeenApiException {
+		BpkIdentifier bpkIdentifier = new BpkIdentifier().withGroupId(taskDescriptor.getGroupId()).withBpkId(
+                taskDescriptor.getBpkId()).withVersion(taskDescriptor.getVersion());
+		getApi().saveNamedTaskDescriptor(taskDescriptor, saveName, bpkIdentifier);
+	}
+
+	protected void submitTaskDescriptor(TaskDescriptor taskDescriptor) throws BeenApiException {
 		// try to execute the filter to see if it is syntactically correct
 		String xpath = taskDescriptor.getHostRuntimes().getXpath();
 		if (xpath != null && !xpath.isEmpty()) {
-			this.api.getApi().getRuntimes(taskDescriptor.getHostRuntimes().getXpath());
+			getApi().getRuntimes(taskDescriptor.getHostRuntimes().getXpath());
 		}
 
-		submitTaskDescriptor(taskDescriptor);
-
-		return Overview.class;
+		getApi().submitTask(taskDescriptor);
 	}
 
 }
