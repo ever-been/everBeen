@@ -64,6 +64,16 @@ public class Tasks {
 	}
 
 	/**
+	 * Returns all tasks currently linked to a Host Runtime.
+	 * 
+	 * @return all task entries
+	 */
+	public Collection<TaskEntry> getTasksOnRuntime(final String runtimeId) {
+		SqlPredicate predicate = new SqlPredicate("runtimeId = '" + runtimeId + "'");
+		return getTasksMap().values(predicate);
+	}
+
+	/**
 	 * Returns all currently available tasks form the Hazelcast map that are in
 	 * the specified state.
 	 * 

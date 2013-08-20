@@ -13,10 +13,6 @@ public class Messages {
 		return new RunContextMessage(contextId);
 	}
 
-	public static TaskMessage createNewTaskOwnerMessage(TaskEntry entry) {
-		return new NewOwnerTaskMessage(entry);
-	}
-
 	public static TaskMessage createTaskChangedMessage(TaskEntry entry) {
 		return new TaskChangedMessage(entry);
 	}

@@ -153,6 +153,20 @@ final class BeenApiImpl implements BeenApi {
 	}
 
 	@Override
+	public Collection<TaskEntry> getTasksOnRuntime(String runtimeId) throws BeenApiException {
+		final String errorMsg = "Failed to list task entries on a Host Runtime " + runtimeId;
+
+		checkIsActive(errorMsg);
+
+		try {
+			return clusterContext.getTasks().getTasksOnRuntime(runtimeId);
+		} catch (Exception e) {
+			throw createBeenApiException(errorMsg, e);
+		}
+
+	}
+
+	@Override
 	public TaskEntry getTask(final String taskId) throws BeenApiException {
 		final String errorMsg = String.format("Failed to get task with id '%s'", taskId);
 

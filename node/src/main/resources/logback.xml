@@ -13,6 +13,16 @@
 	</appender>
 
 
+	<!-- Too much logging on DEBUG, set it to WARN -->
+	<logger name="org.apache.http" level="WARN"/>
+
+	<!-- Task Manager -->
+	<logger name="cz.cuni.mff.d3s.been.manager" level="INFO"/>
+
+	<!-- Task logs on a Host Runtime -->
+	<logger name="cz.cuni.mff.d3s.been.hostruntime.tasklogs.TaskLogHandler" level="INFO"/>
+
+
 	<root level="INFO">
 		<appender-ref ref="STDOUT"/>
 		<appender-ref ref="CLUSTER"/>

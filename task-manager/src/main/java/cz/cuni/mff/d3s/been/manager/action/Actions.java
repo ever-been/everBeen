@@ -40,19 +40,6 @@ public class Actions {
 	 *          {@link TaskEntry} of a task to change owner of
 	 * @return action which will change owner of the task
 	 */
-	public static TaskAction createChangeOwnerTaskAction(final ClusterContext ctx, final TaskEntry entry) {
-		return new ChangeOwnerTaskAction(ctx, entry);
-	}
-
-	/**
-	 * Creates actions which changes owner of the task.
-	 * 
-	 * @param ctx
-	 *          connection to the cluster
-	 * @param entry
-	 *          {@link TaskEntry} of a task to change owner of
-	 * @return action which will change owner of the task
-	 */
 	public static TaskAction createScheduleTaskAction(final ClusterContext ctx, final TaskEntry entry) {
 		return new ScheduleTaskAction(ctx, entry);
 	}

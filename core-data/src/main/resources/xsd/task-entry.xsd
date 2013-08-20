@@ -15,7 +15,6 @@
 
 	<xs:element name="id" type="xs:string"/>
 	<xs:element name="taskContextId" type="xs:string"/>
-	<xs:element name="ownerId" type="xs:string"/>
 	<xs:element name="runtimeId" type="xs:string"/>
 	<xs:element name="state" type="xs:string"/>
 
@@ -43,7 +42,6 @@
 		<xs:complexType>
 			<xs:all>
 				<xs:element ref="taskentry:id" minOccurs="1" maxOccurs="1"/>
-				<xs:element ref="taskentry:ownerId" minOccurs="0" maxOccurs="1"/>
 				<xs:element ref="taskentry:runtimeId" minOccurs="0" maxOccurs="1"/>
 				<xs:element ref="taskentry:taskContextId" minOccurs="1" maxOccurs="1"/>
 				<xs:element ref="taskentry:state" minOccurs="1" maxOccurs="1"/>
@@ -61,6 +59,7 @@
 				</xs:element>
 			</xs:all>
 			<xs:attribute name="benchmarkId" type="xs:string" use="optional" default=""/>
+			<xs:attribute name="loadedFromPersistence" type="xs:boolean" default="false"/>
 		</xs:complexType>
 	</xs:element>
 

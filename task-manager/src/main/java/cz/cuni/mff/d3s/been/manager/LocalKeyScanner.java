@@ -129,13 +129,34 @@ final class LocalKeyScanner extends TaskManagerService {
 
 		final TaskState state = entry.getState();
 
-		boolean isWaiting = state == WAITING;
+		boolean isWaiting = (state == WAITING);
 		boolean isDone = (state == ABORTED || state == FINISHED);
+		boolean isScheduled = (state == SCHEDULED);
+		boolean isRunning = (state == RUNNING);
 		boolean isRuntimeOffline = !runtimesIds.contains(entry.getRuntimeId());
+		boolean isFromPersistence = entry.isLoadedFromPersistence();
 
-		// Failed Host Runtime
-		if (!isDone && isRuntimeOffline) {
-			String logMsg = String.format("Will abort task %s because of its Host Runtime failed", entry.getId());
+		// Cluster restart
+		if (!isDone && isRuntimeOffline && isFromPersistence) {
+			String logMsg = String.format("Will abort task '%s' because of cluster restart", entry.getId());
+			log.debug(logMsg);
+
+			sender.send(Messages.createAbortTaskMessage(entry, logMsg));
+			return;
+		}
+
+		// Failed Host Runtime of a scheduled task
+		if (isScheduled && isRuntimeOffline) {
+			String logMsg = String.format("Will reschedule '%s' because of Host Runtime failure", entry.getId());
+			log.debug(logMsg);
+
+			sender.send(Messages.createScheduleTaskMessage(entry));
+			return;
+		}
+
+		// Failed Host Runtime of a running task
+		if (isRunning && isRuntimeOffline) {
+			String logMsg = String.format("Will abort '%s' because of Host Runtime failure", entry.getId());
 			log.debug(logMsg);
 
 			sender.send(Messages.createAbortTaskMessage(entry, logMsg));
@@ -149,11 +170,6 @@ final class LocalKeyScanner extends TaskManagerService {
 			return;
 		}
 
-		if (!TaskManagerUtils.isOwner(entry, nodeId)) {
-			log.debug("Will take over the task {}", entry.getId());
-			TaskMessage msg = Messages.createNewTaskOwnerMessage(entry);
-			sender.send(msg);
-		}
 	}
 
 	@Override

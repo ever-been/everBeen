@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import com.hazelcast.core.IMap;
 
-import cz.cuni.mff.d3s.been.cluster.NodeType;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.cluster.context.Tasks;
 import cz.cuni.mff.d3s.been.core.protocol.messages.RunTaskMessage;
@@ -59,12 +58,6 @@ final class ScheduleTaskAction implements TaskAction {
 	 *          task to schedule
 	 */
 	public ScheduleTaskAction(final ClusterContext ctx, final TaskEntry entry) {
-		if (ctx.getInstanceType() != NodeType.DATA) {
-			throw new AssertionError(String.format(
-					"%s must not be used on node of type %s",
-					getClass().getName(),
-					ctx.getInstanceType()));
-		}
 		this.ctx = ctx;
 		this.entry = entry;
 		this.tasks = ctx.getTasks();
@@ -81,8 +74,6 @@ final class ScheduleTaskAction implements TaskAction {
 
 		log.debug("Received new task to schedule {}", id);
 
-		// TODO check task dependencies
-
 		try {
 
 			// 1) Find suitable Host Runtime
@@ -98,9 +89,6 @@ final class ScheduleTaskAction implements TaskAction {
 			}
 
 			// 3) change the entry
-
-			// Claim ownership of the node
-			entry.setOwnerId(nodeId);
 
 			// Update content of the entry
 			TaskEntries.setState(entry, SCHEDULED, "Task scheduled on %s", receiverId);

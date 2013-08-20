@@ -24,12 +24,13 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 
 import com.hazelcast.core.*;
 import com.mongodb.*;
+import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 
 /**
  * Implementation of {@link MapStore} for MongoDB.
  * 
  * The implementation is based on hazelcast-spring with modification for the
- * BEEN project. Licence honered.
+ * BEEN project. Licence honored.
  * 
  */
 public class MongoMapStore implements MapStore, MapLoaderLifecycleSupport {
@@ -105,7 +106,13 @@ public class MongoMapStore implements MapStore, MapLoaderLifecycleSupport {
 
 			try {
 				Class clazz = Class.forName(obj.get("_class").toString());
-				return converter.toObject(clazz, obj);
+				Object object = converter.toObject(clazz, obj);
+
+				if (object instanceof TaskEntry) {
+					setLoadedFromMapStore((TaskEntry) object);
+				}
+
+				return object;
 			} catch (ClassNotFoundException e) {
 				log.error(e.getMessage(), e);
 			}
@@ -132,7 +139,14 @@ public class MongoMapStore implements MapStore, MapLoaderLifecycleSupport {
 					DBObject obj = cursor.next();
 					Class clazz = null;
 					clazz = Class.forName(obj.get("_class").toString());
-					map.put(obj.get("_id"), converter.toObject(clazz, obj));
+
+					Object object = converter.toObject(clazz, obj);
+
+					if (object instanceof TaskEntry) {
+						setLoadedFromMapStore((TaskEntry) object);
+					}
+
+					map.put(obj.get("_id"), object);
 				} catch (ClassNotFoundException e) {
 					log.error(e.getMessage(), e);
 				}
@@ -241,5 +255,9 @@ public class MongoMapStore implements MapStore, MapLoaderLifecycleSupport {
 			return false;
 		}
 		return true;
+	}
+
+	private void setLoadedFromMapStore(final TaskEntry entry) {
+		entry.setLoadedFromPersistence(true);
 	}
 }

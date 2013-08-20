@@ -48,7 +48,7 @@ final class AbortTaskAction implements TaskAction {
 	public void execute() throws TaskActionException {
 		final String id = entry.getId();
 
-		log.info("Will abort task: {}, reason: {}", id, msg);
+		log.debug("Will abort task: {}, reason: {}", id, msg);
 		map.lock(id);
 
 		try {

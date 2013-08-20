@@ -85,6 +85,21 @@ public interface BeenApi {
 	public Collection<TaskEntry> getTasks() throws BeenApiException;
 
 	/**
+	 * Returns all tasks that are currently linked to a Host Runtime. A task
+	 * always belongs to some task context, but doesn't necessarily belong to a
+	 * benchmark. The returned collection is a copy of the map, so after some time
+	 * it might not represent the current state of tasks.
+	 * 
+	 * @param runtimeId
+	 *          ID of a Host Runtime
+	 * @return a collection of all task entries linked to the Host Runtime
+	 * @throws BeenApiException
+	 *           in case of an internal exception, see {@link BeenApi} for
+	 *           discussion
+	 */
+	public Collection<TaskEntry> getTasksOnRuntime(final String runtimeId) throws BeenApiException;
+
+	/**
 	 * Retrieves the current task entry object for the passed task ID. The
 	 * returned object is a copy of the task entry and after some time might not
 	 * represent the current state of the task.

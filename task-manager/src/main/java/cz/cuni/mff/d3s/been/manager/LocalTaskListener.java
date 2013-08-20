@@ -140,9 +140,6 @@ final class LocalTaskListener extends TaskManagerService implements EntryListene
 	@Override
 	public synchronized void entryEvicted(EntryEvent<String, TaskEntry> event) {
 		log.debug("TaskEntry {} evicted", event.getKey());
-
-		// TODO figure out why the entry was evicted and take an appropriate action
-
 	}
 
 	/**

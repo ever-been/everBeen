@@ -52,7 +52,7 @@ public class TaskEntries {
 		entry.setTaskContextId(taskContextId);
 		entry.setTaskDescriptor(taskDescriptor);
 
-		// do not set ownerId and runtimeId
+		// do not set runtimeId
 
 		return entry;
 	}
