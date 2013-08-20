@@ -119,7 +119,7 @@
                                     </td>
                                     <td>${task.taskDescriptor.name}</td>
                                     <td>
-                                        <t:task.stateIcon taskState="task.state"/>
+                                        <t:task.stateIcon taskState="task.state"/> ${task.state}
                                     </td>
                                 </tr>
                             </t:loop>

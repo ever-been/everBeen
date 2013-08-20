@@ -175,7 +175,7 @@
         </t:loop>
     </table>
 
-    <h2 style="clear: both; padding: 40px 0 0 0;">Orphaned tasks</h2>
+    <h2 style="clear: both; padding: 40px 0 0 0;">Orphaned tasks and contexts</h2>
 
     <table class="list wide">
         <thead>
@@ -233,7 +233,7 @@
                     </td>
                     <td>${task.taskDescriptor.name}</td>
                     <td>
-                        <t:task.stateIcon value="task.state"/>
+                        <t:task.stateIcon taskState="task.state"/>
                     </td>
                 </tr>
             </t:loop>
