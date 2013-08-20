@@ -58,7 +58,7 @@
 
             <div class="control-group" t:type="loop" index="loopIndex"
                  source="taskDescriptor.properties.property">
-                <t:label class="control-label" for="propValue">
+                <t:label class="control-label" for="propValue" t:title="${taskDescriptor.properties.property.get(loopIndex).description}">
                     ${taskDescriptor.properties.property.get(loopIndex).name}
                 </t:label>
 
