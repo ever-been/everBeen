@@ -28,11 +28,18 @@
 						<artifactId>doxia-module-markdown</artifactId>
 						<version>${doxia-module-markdown.version}</version>
 					</dependency>
+
+					<dependency>
+						<groupId>org.apache.maven.shared</groupId>
+						<artifactId>maven-doxia-tools</artifactId>
+						<version>${maven-doxia-tools.version}</version>
+					</dependency>
 				</dependencies>
 
 				<executions>
 					<execution>
 						<phase>package</phase>
+						<id>book</id>
 						<goals>
 							<goal>render-books</goal>
 						</goals>
@@ -42,8 +49,8 @@
 				<configuration>
 					<books>
 						<book>
-							<directory>src/books/doc</directory>
-							<descriptor>src/books/doc.xml</descriptor>
+							<directory>src/book/markdown</directory>
+							<descriptor>src/book.xml</descriptor>
 							<formats>
 								<format>
 									<id>pdf</id>

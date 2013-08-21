@@ -4,7 +4,7 @@
 
 	<id>doc</id>
 	<title>EverBEEN documentation</title>
-	<author>BYYN TYYM</author>
+	<author>Martin Sixta, Tadeas Palusga, Jakub Brecka, Radek Macha</author>
 
 	<chapters>
 		<chapter>
@@ -88,6 +88,14 @@
 
 				<section>
 					<id>architecture</id>
+				</section>
+
+				<section>
+					<id>services</id>
+				</section>
+
+				<section>
+					<id>mapstore</id>
 				</section>
 
 				<section>
