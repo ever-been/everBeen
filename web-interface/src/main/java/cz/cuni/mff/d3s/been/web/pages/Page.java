@@ -6,6 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.text.*;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.tapestry5.annotations.Environmental;
 import org.apache.tapestry5.annotations.Import;
@@ -36,6 +37,7 @@ public abstract class Page {
 
 	@Inject
 	private PageRenderLinkSource pageRenderLinkSource;
+
 	@Environmental
 	private JavaScriptSupport javaScriptSupport;
 
@@ -151,7 +153,7 @@ public abstract class Page {
 	}
 
 	public String nanotimeToString(long nanotime) {
-		return timestampToString(nanotime / 1_000_000);
+		return timestampToString(TimeUnit.NANOSECONDS.toMillis(nanotime));
 	}
 
 	public String logLevelToString(int logLevel) {

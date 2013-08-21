@@ -28,7 +28,7 @@ public class Detail extends DetailPage {
 
 	public TaskEntry getTask() throws BeenApiException {
 		if (this.task == null) {
-			this.task = api.getApi().getTask(itemId);
+			this.task = getApi().getTask(itemId);
 		}
 		return task;
 	}
@@ -52,6 +52,16 @@ public class Detail extends DetailPage {
 
 	public boolean isTaskInFinalState(String taskId) throws BeenApiException {
 		return new TaskSupport(getApi()).isTaskInFinalState(taskId);
+	}
+
+	Object onKillTask(String taskId) throws BeenApiException, InterruptedException {
+		new TaskSupport(getApi()).killTask(taskId);
+		return this;
+	}
+
+	Object onRemoveTask(String taskId) throws BeenApiException, InterruptedException {
+		new TaskSupport(getApi()).removeKilledTask(taskId);
+		return Tree.class;
 	}
 
 }

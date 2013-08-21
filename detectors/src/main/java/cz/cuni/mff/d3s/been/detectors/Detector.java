@@ -16,28 +16,28 @@ public class Detector {
 		javaDetector = new JavaDetector();
 	}
 
-    public void detectAll(RuntimeInfo runtimeInfo) {
-	    // detect Java
-	    runtimeInfo.setJava(javaDetector.detectJava());
+	public void detectAll(RuntimeInfo runtimeInfo) {
+		// detect Java
+		runtimeInfo.setJava(javaDetector.detectJava());
 
-	    if (! nativeDetector.isSigarAvailable()) {
-		    javaDetector.detectOperatingSystem(runtimeInfo);
-		    javaDetector.detectHardware(runtimeInfo);
-		    javaDetector.detectFilesystems(runtimeInfo);
-		    return;
-	    }
+		if (!nativeDetector.isSigarAvailable()) {
+			javaDetector.detectOperatingSystem(runtimeInfo);
+			javaDetector.detectHardware(runtimeInfo);
+			javaDetector.detectFilesystems(runtimeInfo);
+			return;
+		}
 
-	    // detect hardware
-	    runtimeInfo.setHardware(nativeDetector.detectHardware());
+		// detect hardware
+		runtimeInfo.setHardware(nativeDetector.detectHardware());
 
-        // detect OS
-        runtimeInfo.setOperatingSystem(nativeDetector.detectOperatingSystem());
+		// detect OS
+		runtimeInfo.setOperatingSystem(nativeDetector.detectOperatingSystem());
 
 		// detect filesystems
 		for (Filesystem fs : nativeDetector.detectFilesystems()) {
 			runtimeInfo.getFilesystem().add(fs);
 		}
-    }
+	}
 
 	private MonitorSample lastSample;
 
@@ -56,7 +56,7 @@ public class Detector {
 
 		lastSample = newSample;
 
-		sample.setTimestamp(System.nanoTime());
+		sample.setTimestamp(System.currentTimeMillis());
 		return sample;
 	}
 
@@ -71,7 +71,8 @@ public class Detector {
 
 		// network
 		int networkCount = newSample.getInterfaces().size();
-		if (oldSample != null) networkCount = Math.min(networkCount, oldSample.getInterfaces().size());
+		if (oldSample != null)
+			networkCount = Math.min(networkCount, oldSample.getInterfaces().size());
 		for (int i = 0; i < networkCount; i++) {
 			NetworkSample n1 = newSample.getInterfaces().get(i);
 			NetworkSample diffSample = new NetworkSample();
@@ -88,7 +89,8 @@ public class Detector {
 
 		// filesystems
 		int fileSystemCount = newSample.getFilesystems().size();
-		if (oldSample != null) fileSystemCount = Math.min(fileSystemCount, oldSample.getFilesystems().size());
+		if (oldSample != null)
+			fileSystemCount = Math.min(fileSystemCount, oldSample.getFilesystems().size());
 		for (int i = 0; i < fileSystemCount; i++) {
 			FilesystemSample f1 = newSample.getFilesystems().get(i);
 			FilesystemSample diffSample = new FilesystemSample();
