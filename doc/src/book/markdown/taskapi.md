@@ -2,6 +2,7 @@
 * how to write a task
 * * logging
 * * using the persistence layer to store results
+* * AQL (description of the abstract querying language API)
 * how to write an evaluator
 * * retrieving results (for query creation, forward link to 'persistence.md')
 * * where to submit evaluation results (and supported MIME types)
