@@ -38,7 +38,7 @@ public final class TaskManagerConfiguration implements BeenServiceConfiguration 
 	 * The maximum number of benchmark generator resubmits before aborting the
 	 * whole benchmark.
 	 */
-	public static final String MAXIMUM_ALLOWED_RESUBMITS = "been.cluster.resubmit.maximum-allowed";
+	public static final String MAXIMUM_ALLOWED_RESUBMITS = "been.tm.benchmark.resubmit.maximum-allowed";
 	/**
 	 * The default maximum number of resubmits is '
 	 * <code>DEFAULT_MAXIMUM_ALLOWED_RESUBMITS</code>'.
