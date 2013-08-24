@@ -4,7 +4,7 @@
 * how it only helps when you want to run tasks
 * why does it make sense to run nodes without it
 
-### <a id="devel.services.taskmanger">Task Manager</a>
+### <a id="devel.services.taskmanager">Task Manager</a>
 The Task Manager is at the heart of the EverBEEN framework, its responsibilities include:
 
 * task scheduling
@@ -33,7 +33,7 @@ of the BEEN framework.
 The implementation of the Task Manager is heavily dependant on [Hazelcast](#devel.techno.hazelcast)
 distributed data structures and its semantics, especially the `com.hazelcast.core.IMap`.
 
-#### <a id="devel.services.taskmanger.workflow">Workflow</a>
+#### <a id="devel.services.taskmanager.workflow">Workflow</a>
 The basic event-based workflow
 
  1. Receiving asynchronous Hazelcast event
@@ -108,7 +108,7 @@ the framework can re-schedule the task on a different Host Runtime.
 
 
 A problem can arise from re-scheduling an incorrectly written benchmark which fails
-too often. There is a [configuration option](#user.configuration.taskmanger) which
+too often. There is a [configuration option](#user.configuration.taskmanager) which
 controls how many re-submits to allow for a benchmark task.
 
 Future implementation could deploy different heuristics to detect defective benchmark
@@ -134,7 +134,7 @@ that the context can not be scheduled at the moment, which is difficult because 
 distributed nature of scheduling. Any information gathered might be obsolete by the time
 its read).
 
-#### <a id="devel.services.taskmanger.errors">Handling exceptional events</a>
+#### <a id="devel.services.taskmanager.errors">Handling exceptional events</a>
 
 The current Hazelcast implementation (as of version 2.6) has one limitation.
 When a key [migrates](http://hazelcast.com/docs/2.5/manual/single_html/#InternalsDistributedMap)
@@ -157,14 +157,14 @@ In the case of cluster restart there might be stale tasks which does not run any
 the state loaded from the [MapStore](#devel.services.mapstore) is inconsistent. Such
 situation will be recognized and corrected by the scan.
 
-#### <a id="devel.services.taskmanger.events">Hazelcast events</a>
+#### <a id="devel.services.taskmanager.events">Hazelcast events</a>
 These are main sources of cluter-wide events, received from Hazelcast:
 
 * Task Events - `cz.cuni.mff.d3s.been.manager.LocalTaskListener`
 * Host Runtime events - `cz.cuni.mff.d3s.been.manager.LocalRuntimeListener`
 * Contexts events - `cz.cuni.mff.d3s.been.manager.LocalContextListener`
 
-#### <a id="devel.services.taskmanger.messages">Task Manger messages</a>
+#### <a id="devel.services.taskmanager.messages">Task Manger messages</a>
 Main interface `cz.cuni.mff.d3s.been.manager.msg.TaskMessage`, messages are
 created through the `cz.cuni.mff.d3s.been.manager.msg.Messages` factory.
 
@@ -178,7 +178,7 @@ Overview of main messages:
 Detailed description is part of the source code nad Javadoc.
 
 
-#### <a id="devel.services.taskmanger.actions">Task Manager actions</a>
+#### <a id="devel.services.taskmanager.actions">Task Manager actions</a>
 Main interface `cz.cuni.mff.d3s.been.manager.action.TaskAction`, actions are
 created through the `cz.cuni.mff.d3s.been.manager.action.Action` factory.
 
@@ -191,6 +191,9 @@ Overview of actions
 
 Detailed description is part of the source code nad Javadoc.
 
+#### <a id="devel.services.taskmanager.locking">Locking</a>
+
+<!-- TODO -->
 
 ### <a id="devel.services.swrepo">Software Repository</a>
 
@@ -203,7 +206,7 @@ Detailed description is part of the source code nad Javadoc.
 * async persist queue
 * abstract query machinery (query queue handling, effective querying without user type knowledge)
 
-### <a id="devel.services.mapstore">Map Store</a>
+### Map Store {#devel.services.mapstore}
 
 The MapStore allows the EverBEEN to persist runtime information, which can
 be restored after restart or crash of the framework.
