@@ -12,12 +12,4 @@ public final class SoftwareRepositoryConfiguration implements BeenServiceConfigu
 	/** Default Software Repository listening port is 8000 */
 	public static final int DEFAULT_PORT = 8000;
 
-	public static final String SERVICE_DETECTION_PERIOD = "swrepository.serviceInfoDetectionPeriod";
-	/** in seconds */
-	public static final int DEFAULT_SERVICE_DETECTION_PERIOD = 30;
-
-	public static final String SERVICE_TIMEOUT = "swrepository.serviceInfoTimeout";
-	/** in seconds */
-	public static final int DEFAULT_SERVICE_TIMEOUT = 45;
-
 }

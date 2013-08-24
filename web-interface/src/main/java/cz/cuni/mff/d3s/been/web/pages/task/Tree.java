@@ -61,6 +61,10 @@ public class Tree extends Page {
 		return new BenchmarkSupport(getApi()).getBenchmarkState(benchmarkId);
 	}
 
+	public TaskEntry benchmarkGenerator(String benchmarkId) throws BeenApiException {
+		return getApi().getTask(benchmark.getGeneratorId());
+	}
+
 	public ArrayList<ArrayList<TaskEntry>> getOrphanedContexts() throws BeenApiException {
 		return new TaskContextSupport(getApi()).getOrphanedContexts();
 	}

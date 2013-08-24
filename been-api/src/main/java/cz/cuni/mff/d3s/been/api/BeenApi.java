@@ -577,7 +577,8 @@ public interface BeenApi {
 	 * Removes the task entry with the specified task ID from the Hazelcast map.
 	 * The task must be in a final state (finished or aborted) otherwise a
 	 * {@link BeenApiException} is thrown. If the the task with the specified ID
-	 * does not exist, this method does nothing.
+	 * does not exist, this method does nothing. Also cleans up persistent
+	 * repository from all entities related to removed task.
 	 * 
 	 * @param taskId
 	 *          ID of the task entry to remove
@@ -592,7 +593,9 @@ public interface BeenApi {
 	 * map. The task context must be in a final state (finished or failed) as well
 	 * as all of its tasks, otherwise a {@link BeenApiException} is thrown. This
 	 * method also removes all of the contained tasks, just as if you called
-	 * {@link #removeTaskEntry} for all tasks within the context.
+	 * {@link #removeTaskEntry} for all tasks within the context. Also removes
+	 * context task entries and cleans up persistent repository from all entities
+	 * related to removed tasks/contexts.
 	 * 
 	 * @param taskContextId
 	 *          ID of the task context entry to remove
@@ -609,7 +612,10 @@ public interface BeenApi {
 	 * benchmark must also be in a final state (finished or failed), otherwise a
 	 * {@link BeenApiException} is thrown. Also removes all existing task contexts
 	 * that belong to this benchmark. Also removes all "old generators", which
-	 * have failed and were resubmitted, and the current generator task.
+	 * have failed and were resubmitted, and the current generator task. Also
+	 * removes generator task from the Hazelcast map and cleans up persistent
+	 * repository from benchmark and generator related entries.
+	 * 
 	 * 
 	 * @param benchmarkId
 	 *          ID of the benchmark entry to remove
@@ -692,6 +698,7 @@ public interface BeenApi {
 	 * @param taskId
 	 *          ID of the task
 	 * @return a collection of all available log message for the specified task
+	 *         sorted by date
 	 * @throws BeenApiException
 	 *           in case of an internal exception, see {@link BeenApi} for
 	 *           discussion
