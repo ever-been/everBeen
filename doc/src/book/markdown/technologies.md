@@ -15,7 +15,7 @@ The reasoning why we chose this or that tech is already done in the decision tim
 
 * (cool skins, save time)
 
-### <a id="devel.techno.hazelcast">Hazelcast</a>
+### Hazelcast {#devel.techno.hazelcast}
 ### <a id="devel.techno.zmq">0MQ</a>
 
 

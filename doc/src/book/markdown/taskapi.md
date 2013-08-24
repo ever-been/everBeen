@@ -1,14 +1,6 @@
 ## Task and Benchmark API
-* how to write a task
-* * logging
-* * using the persistence layer to store results
-* * AQL (description of the abstract querying language API)
-* how to write an evaluator
-* * retrieving results (for query creation, forward link to 'persistence.md')
-* * where to submit evaluation results (and supported MIME types)
-* how to write a benchmark
-* * how it's similar to a task
-* * creating & modifying contexts
+
+TODO: AQL (description of the abstract querying language API)
 
 One of the main goals of the current BEEN project was making the task API as simple as possible and to minimize the amount of work needed to create the whole benchmark. This was of the biggest problems with the previous BEEN versions as writing a complete and efficient benchmark required a tremendous amount of time both to study the provided API with the related Java classes and to implement the benchmark itself.
 
@@ -64,7 +56,33 @@ This specifies that the package should publish a single descriptor named `NginxB
 
 There are two types of descriptors, task descriptors and task context descriptors. Note that benchmarks don't have a special descriptor format, instead you only provide a task descriptor for a generator task of the benchmark. These descriptors are written in XML and they must conform to the supplied XSD definitions (`task-descriptor.xsd` and `task-context-descriptor.xsd`).
 
-XXX TODO
+The recommended naming practice is to name your task descriptors with the filename ending with `.td.xml` and your task context descriptors ending with `.tcd.xml`.
+
+A simple task descriptor for a single task can look like this:
+
+	<?xml version="1.0"?>
+	<taskDescriptor xmlns="http://been.d3s.mff.cuni.cz/task-descriptor"
+					groupId="my.sample.benchmark" bpkId="hello-world" version="3.0.0-SNAPSHOT"
+					name="hello-world-task" type="task">
+		<java>
+			<mainClass>my.sample.benchmark.HelloWorldTask</mainClass>
+		</java>
+	</taskDescriptor>
+
+This specifies the main class and package that should be used to run the task. Apart from this, you can specify what parameters the task should receive and their default values:
+
+	<properties>
+		<property name="key">value</property>
+	</properties>
+
+These properties will be presented to the user in the web interface before submitting the task and the user can modify them. Next, you can specify command line arguments passed to Java:
+
+	<arguments>
+		<argument>-Xms4m</argument>
+		<argument>-Xmx8m</argument>
+	</arguments>
+
+For debugging purposes, you can specify the `<debug>` element which will enable remote debugging when running the task. With the `<hostRuntimes>` element you can filter on which host runtimes can the task be run. The value of this setting is an XPath expression.
 
 ### Task API
 
@@ -101,7 +119,9 @@ BEEN provides several APIs for user-written tasks:
 
 ### Task Properties
 
-XXX TODO
+Every tasks has a key-value property storage. These properties can be set from various places: From the XML descriptor, from the user when submitting, inherited from a task context, set from a benchmark when it generates a task context. To access these values, you can use the `getProperty` method of the `Task` class:
+
+
 
 ### Persisting Results
 
