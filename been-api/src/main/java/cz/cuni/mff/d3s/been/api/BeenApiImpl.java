@@ -736,6 +736,7 @@ final class BeenApiImpl implements BeenApi {
 
 		try {
 			clusterContext.getTasks().remove(taskId);
+			clearPersistenceForTask(taskId);
 		} catch (Exception e) {
 			throw createBeenApiException(errorMsg, e);
 		}
@@ -746,6 +747,7 @@ final class BeenApiImpl implements BeenApi {
 			List<String> containedTask = taskContext.getContainedTask();
 			if (containedTask.size() == 1) { // just one task in task context
 				removeTaskContextEntry(task.getTaskContextId());
+				clusterContext.getTaskContexts().remove(task.getTaskContextId());
 			} else {
 				// more tasks in task context
 				boolean removable = true;
@@ -755,7 +757,8 @@ final class BeenApiImpl implements BeenApi {
 					}
 				}
 				if (removable) {
-					removeTaskContextEntry(task.getTaskContextId());
+					clusterContext.getTaskContexts().remove(task.getTaskContextId());
+					clearPersistenceForContext(task.getTaskContextId());
 				}
 			}
 
@@ -771,7 +774,12 @@ final class BeenApiImpl implements BeenApi {
 		checkIsActive(errorMsg);
 
 		try {
+			TaskContextEntry taskContextEntry = getTaskContext(taskContextId);
 			clusterContext.getTaskContexts().remove(taskContextId);
+			clearPersistenceForContext(taskContextId);
+			for (String taskId : taskContextEntry.getContainedTask()) {
+				clearPersistenceForTask(taskId);
+			}
 		} catch (Exception e) {
 			throw createBeenApiException(errorMsg, e);
 		}
@@ -784,7 +792,15 @@ final class BeenApiImpl implements BeenApi {
 		checkIsActive(errorMsg);
 
 		try {
+			BenchmarkEntry benchmarkEntry = getBenchmark(benchmarkId);
 			clusterContext.getBenchmarks().remove(benchmarkId);
+
+			// additional cleanup
+			removeTaskEntry(benchmarkEntry.getGeneratorId());
+
+			// cleanup persistence
+			clearPersistenceForTask(benchmarkEntry.getGeneratorId());
+			clearPersistenceForBenchmark(benchmarkId);
 		} catch (Exception e) {
 			throw createBeenApiException(errorMsg, e);
 		}
