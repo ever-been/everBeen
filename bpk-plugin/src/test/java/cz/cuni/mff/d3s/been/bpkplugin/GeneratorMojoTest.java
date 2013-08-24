@@ -52,10 +52,10 @@ public class GeneratorMojoTest extends Assert {
 		mojo.packageJarFile = new File("");
 		mojo.version = "version";
 		mojo.bpkDependencies = new ArrayList<>();
-        mojo.binary = new File("");
-        mojo.mainClass = "mainClass";
-        mojo.taskDescriptors = new File[] {};
-        mojo.taskContextDescriptors = new File[] {};
+		mojo.binary = new File("");
+		mojo.mainClass = "mainClass";
+		mojo.taskDescriptors = new File[] {};
+		mojo.taskContextDescriptors = new File[] {};
 
 		Configuration cfg = mojo.getConfiguration();
 
@@ -66,12 +66,11 @@ public class GeneratorMojoTest extends Assert {
 		assertSame(mojo.finalName, cfg.finalName);
 		assertSame(mojo.groupId, cfg.groupId);
 		assertSame(mojo.packageJarFile, cfg.packageJarFile);
-		assertSame(mojo.mainClass, cfg.mainClass);
 		assertSame(mojo.binary, cfg.binary);
-        assertSame(mojo.version, cfg.version);
-        assertSame(mojo.bpkDependencies, cfg.bpkDependencies);
-        assertSame(mojo.taskDescriptors, cfg.taskDescriptors);
-        assertSame(mojo.taskContextDescriptors, cfg.taskContextDescriptors);
+		assertSame(mojo.version, cfg.version);
+		assertSame(mojo.bpkDependencies, cfg.bpkDependencies);
+		assertSame(mojo.taskDescriptors, cfg.taskDescriptors);
+		assertSame(mojo.taskContextDescriptors, cfg.taskContextDescriptors);
 	}
 
 }
