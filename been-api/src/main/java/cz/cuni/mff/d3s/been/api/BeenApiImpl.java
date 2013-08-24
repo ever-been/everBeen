@@ -485,7 +485,15 @@ final class BeenApiImpl implements BeenApi {
 		final QueryAnswer answer = performQuery(query, errorMsg);
 
 		try {
-			return unpackDataAnswer(query, answer, TaskLogMessage.class);
+			List<TaskLogMessage> logs = new ArrayList<>(unpackDataAnswer(query, answer, TaskLogMessage.class));
+			Comparator<TaskLogMessage> comparator = new Comparator<TaskLogMessage>() {
+				@Override
+				public int compare(TaskLogMessage o1, TaskLogMessage o2) {
+					return new Long(o1.getCreated()).compareTo(o2.getCreated());
+				}
+			};
+			Collections.sort(logs, comparator);
+			return logs;
 		} catch (DAOException e) {
 			throw createBeenApiException(errorMsg, e);
 		}

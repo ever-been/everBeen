@@ -692,6 +692,7 @@ public interface BeenApi {
 	 * @param taskId
 	 *          ID of the task
 	 * @return a collection of all available log message for the specified task
+	 *         sorted by date
 	 * @throws BeenApiException
 	 *           in case of an internal exception, see {@link BeenApi} for
 	 *           discussion
