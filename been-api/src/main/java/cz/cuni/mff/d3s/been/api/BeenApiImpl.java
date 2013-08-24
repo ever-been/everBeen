@@ -724,8 +724,33 @@ final class BeenApiImpl implements BeenApi {
 
 		checkIsActive(errorMsg);
 
+		TaskEntry task = getTask(taskId);
+
 		try {
 			clusterContext.getTasks().remove(taskId);
+		} catch (Exception e) {
+			throw createBeenApiException(errorMsg, e);
+		}
+
+		// check if task was last not null task of the context in the map
+		try {
+			TaskContextEntry taskContext = getTaskContext(task.getTaskContextId());
+			List<String> containedTask = taskContext.getContainedTask();
+			if (containedTask.size() == 1) { // just one task in task context
+				removeTaskContextEntry(task.getTaskContextId());
+			} else {
+				// more tasks in task context
+				boolean removable = true;
+				for (String containedTaskId : containedTask) {
+					if (getTask(containedTaskId) != null) {
+						removable = false;
+					}
+				}
+				if (removable) {
+					removeTaskContextEntry(task.getTaskContextId());
+				}
+			}
+
 		} catch (Exception e) {
 			throw createBeenApiException(errorMsg, e);
 		}
