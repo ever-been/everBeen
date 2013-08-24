@@ -24,33 +24,14 @@ public class UnmarshalTest extends Assert {
 		BpkConfiguration config = BpkResolver.resolve(bpkFile);
 
 		JavaRuntime javaRuntime = (JavaRuntime) config.getRuntime();
-		assertEquals("cz.cuni.mff.d3s.been.MakeTea", javaRuntime.getMainClass());
 		assertEquals("task-test-3.0.0.jar", javaRuntime.getJarFile());
 		assertEquals(7, javaRuntime.getBpkArtifacts().getArtifact().size());
 	}
 
-	@Test(expected=BpkConfigurationException.class)
-	public void testExceptionThrownOnMissingMainClassInConfigXml() throws Exception {
-		File bpkFile = zip("config_no-main-class.xml");
-
-		BpkConfiguration config = BpkResolver.resolve(bpkFile);
-
-		JavaRuntime javaRuntime = (JavaRuntime) config.getRuntime();
-		assertEquals("cz.cuni.mff.d3s.been.MakeTea", javaRuntime.getMainClass());
-		assertEquals("task-test-3.0.0.jar", javaRuntime.getJarFile());
-		assertEquals(7, javaRuntime.getBpkArtifacts().getArtifact().size());
-	}
-
-	@Test(expected=BpkConfigurationException.class)
+	@Test(expected = BpkConfigurationException.class)
 	public void testExceptionThrownOnMissingJarFileInConfigXml() throws Exception {
 		File bpkFile = zip("config_no-jar-file.xml");
-
-		BpkConfiguration config = BpkResolver.resolve(bpkFile);
-
-		JavaRuntime javaRuntime = (JavaRuntime) config.getRuntime();
-		assertEquals("cz.cuni.mff.d3s.been.MakeTea", javaRuntime.getMainClass());
-		assertEquals("task-test-3.0.0.jar", javaRuntime.getJarFile());
-		assertEquals(7, javaRuntime.getBpkArtifacts().getArtifact().size());
+		BpkResolver.resolve(bpkFile);
 	}
 
 	public File zip(String resourceName) throws Exception {
