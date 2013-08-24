@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>doc</artifactId>
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
 
 	<parent>
 		<groupId>cz.cuni.mff.d3s.been</groupId>

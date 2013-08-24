@@ -1,6 +1,5 @@
-<book xmlns="http://maven.apache.org/BOOK/1.0.0"
-	  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	  xsi:schemaLocation="http://maven.apache.org/BOOK/1.0.0 http://maven.apache.org/xsd/book-1.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<book>
 
 	<id>doc</id>
 	<title>EverBEEN documentation</title>

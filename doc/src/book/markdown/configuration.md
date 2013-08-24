@@ -31,6 +31,12 @@
 ####<a id="user.configuration.objectrepo">Cluster Persistence Configuration</a>
 	been.cluster.persistence.query-processing-timeout=5
 	been.cluster.persistence.query-timeout=10
+
+####<a id="user.configuration.objectrepo.janitor">Persistence Janitor Configuration</a>
+	been.repository.janitor.finished-longevity=96
+	been.repository.janitor.failed-longevity=48
+	been.repository.janitor.cleanup-interval=10
+
 #### <a id="user.configuration.monitoring">Monitoring Configuration</a>
 	been.monitoring.interval=5000
 #### <a id="user.configuration.hostruntime">Host Runtime Configuration</a>
