@@ -17,14 +17,17 @@ Main characteristic:
 
 * event-driven
 * distributed
-* redundant (default configuration)
+* redundant (in default configuration)
 
 #### <a id="devel.services.taskmanager.distributed">Distributed approach to scheduling</a>
-The main characteristics of the Task Manger is that the computation is event-driven
-and distributed among the *DATA* (TODO link to explanation) nodes. The biggest implication
+The most important characteristic of the Task Manger is that the computation is event-driven
+and distributed among the *DATA* <!-- TODO link to types --> nodes. The implication
 from such approach is that there is no central authority, bottleneck or single point
-of failure. If a data node disconnects (i.e. crashes) its responsibilities,along with
+of failure. If a data node disconnects (or crashes) its responsibilities,along with
 data, are transparently taken over by the rest of the cluster.
+
+Distributed architecture is the major difference from previous versions
+of the BEEN framework.
 
 #### <a id="devel.services.taskmanager.implementation">Implementation</a>
 The implementation of the Task Manager is heavily dependant on [Hazelcast](#devel.techno.hazelcast)
@@ -34,7 +37,7 @@ distributed data structures and its semantics, especially the `com.hazelcast.cor
 The basic event-based workflow
 
  1. Receiving asynchronous Hazelcast event
- 2. Generating appropriate message depicting the event
+ 2. Generating appropriate message describing the event
  3. Generating appropriate action from the message
  4. Executing the action
 
@@ -48,15 +51,145 @@ but is not responsibility of the Task Manager developer).
 
 #### <a id="devel.services.taskmanager.ownership">Data ownership</a>
 An important notion to remember is that an instance of the Task Manager handles
-only entries which it owns, whenever possible (i.e. task entries). So it means
-that most operation are local with with regard to data ownership. This is highly
-desirable for the Task Manger to scale.
+only entries which it owns, whenever possible (e.g. task entries). Ownership of data
+means that it is stored in local memory and the node is responsible for it.
+The design of Task Manager takes advantage of the locality and most operations
+are local with regard to data ownership. This is highly desirable for the Task Manger to scale.
+
+#### <a id="devel.services.taskmanager.structures">Main distributed structures</a>
+
+* BEEN_MAP_TASKS - map containing runtime task information
+* BEEN_MAP_TASK_CONTEXTS - map containing runtime context information
+* BEEN_MAP_BENCHMARKS - map containing runtime context information
+
+These distributed data structures are also backed by the [MapStore](#devel.services.mapstore)
+(if enabled).
 
 #### <a id="devel.services.taskmanager.tasks">Task scheduling</a>
+<!-- TODO reference task states -->
 
-#### <a id="devel.services.taskmanager.contexts">Context Scheduling</a>
+The Task Manager is responsible for scheduling tasks - finding a Host Runtime
+on which the task can run. Description of possible restrictions can be found at
+[Host Runtime] <!-- TODO should point to user documentation for Host Runtime? -->.
+
+A [distributed query](http://hazelcast.com/docs/2.6/manual/single_html/#MapQuery)
+is used to find suitable Host Runtimes, spreading the load among `DATA` nodes.
+
+An appropriate Host Runtime is also chosen based on Host Runtime utilization, less
+overloaded Host Runtimes are preferred. Among equal hosts a Host Runtime is chosen
+randomly.
+
+The lifecycle of a task is commenced by inserting a `cz.cuni.mff.d3s.been.core.task.TaskEntry`
+into the task map with a random UUID as the key and in the SUBMITTED state <!-- TODO link -->.
+Inserting a new entry to the map causes an event which is handled by the owner
+of the key - the Task Manager responsible for the key. The event is
+converted to the `cz.cuni.mff.d3s.been.manager.msg.NewTaskMessage` and sent
+to the processing thread. The handling logic is separated in order not to block
+the Hazelcast service threads. In this regard handling of messages is serialized on the particular
+node. The message then generates `cz.cuni.mff.d3s.been.manager.action.ScheduleTaskAction`
+which is responsible for figuring out what to do. Several things might happen
+
+* the task cannot be run because it's waiting on another task, the state is changed to WAITING
+* the task cannot be run because there is no suitable Host Runtime for it, the state is changed to WAITING
+* the task can be scheduled on a chosen Host Runtime, the state is changed to SCHEDULED and the runtime is notified.
+
+If the task is scheduled, the chosen Host Runtime is responsible for the task until it finishes or fails.
+
+WAITING tasks are still responsibility of the Task Manager which can try
+to reschedule when an event happen, e.g.:
+
+ * another tasks is removed from a Host Runtime
+ * a new Host Runtime is connected
 
 #### <a id="devel.services.taskmanager.benchmarks">Benchmark Scheduling</a>
+Benchmark tasks are scheduled the same way as other tasks. The main difference is
+that if a benchmark task fails (i.e. Host Runtime failure, but also programming error)
+the framework can re-schedule the task on a different Host Runtime.
+
+
+A problem can arise from re-scheduling an incorrectly written benchmark which fails
+too often. There is a [configuration option](#user.configuration.taskmanger) which
+controls how many re-submits to allow for a benchmark task.
+
+Future implementation could deploy different heuristics to detect defective benchmark
+tasks, such as failure-rate.
+
+
+#### <a id="devel.services.taskmanager.contexts">Context Handling</a>
+
+Contexts are not scheduled as an entity on Host Runtimes as they are containers
+for related tasks. The Task Manager handles detection of contexts state changes.
+The state of a contexts is decided from the states of its tasks.
+
+<!-- TODO this should (also) be in user documentation? -->
+Task context states:
+
+ * WAITING - for future use
+ * RUNNING - contained tasks are running, scheduled or waiting to be scheduled
+ * FINISHED - all contained tasks finished without an error
+ * FAILED - at least one task from the context failed
+
+Future improvements may include heuristics for scheduling contexts as an entity (i.e. detection
+that the context can not be scheduled at the moment, which is difficult because of the
+distributed nature of scheduling. Any information gathered might be obsolete by the time
+its read).
+
+#### <a id="devel.services.taskmanger.errors">Handling exceptional events</a>
+
+The current Hazelcast implementation (as of version 2.6) has one limitation.
+When a key [migrates](http://hazelcast.com/docs/2.5/manual/single_html/#InternalsDistributedMap)
+the new owner does not receive any event (`com.hazelcast.partition.MigrationListener` is not much useful
+in this regard since it does not contain enough information). This might be a problem if e.g.
+a node crashes and an event of type "new task added" is lost. To mitigate the problem
+the Task Manager periodically scans (`cz.cuni.mff.d3s.been.manager.LocalKeyScanner`) its *local
+keys* looking for irregularities. If it finds one it creates a message to fix it.
+
+There are several situations this might happen:
+
+* Host Runtime failure
+* key migration
+* cluster restart
+
+Note that this is a safe net - most of the time the framework will receive an event
+on which it can react appropriately (e.g. Host Runtime failed).
+
+In the case of cluster restart there might be stale tasks which does not run anymore, but
+the state loaded from the [MapStore](#devel.services.mapstore) is inconsistent. Such
+situation will be recognized and corrected by the scan.
+
+#### <a id="devel.services.taskmanger.events">Hazelcast events</a>
+These are main sources of cluter-wide events, received from Hazelcast:
+
+* Task Events - `cz.cuni.mff.d3s.been.manager.LocalTaskListener`
+* Host Runtime events - `cz.cuni.mff.d3s.been.manager.LocalRuntimeListener`
+* Contexts events - `cz.cuni.mff.d3s.been.manager.LocalContextListener`
+
+#### <a id="devel.services.taskmanger.messages">Task Manger messages</a>
+Main interface `cz.cuni.mff.d3s.been.manager.msg.TaskMessage`, messages are
+created through the `cz.cuni.mff.d3s.been.manager.msg.Messages` factory.
+
+Overview of main messages:
+
+* `AbortTaskMessage`
+* `ScheduleTaskMessage`
+* `CheckSchedulabilityMessage`
+* `RunContextMessage`
+
+Detailed description is part of the source code nad Javadoc.
+
+
+#### <a id="devel.services.taskmanger.actions">Task Manager actions</a>
+Main interface `cz.cuni.mff.d3s.been.manager.action.TaskAction`, actions are
+created through the `cz.cuni.mff.d3s.been.manager.action.Action` factory.
+
+Overview of actions
+
+* `AbortTaskAction`
+* `ScheduleTaskAction`
+* `RunContextAction`
+* `NullAction`
+
+Detailed description is part of the source code nad Javadoc.
 
 
 ### <a id="devel.services.swrepo">Software Repository</a>
@@ -70,7 +203,7 @@ desirable for the Task Manger to scale.
 * async persist queue
 * abstract query machinery (query queue handling, effective querying without user type knowledge)
 
-### <a id="devel.services.mapstore">Map Store - persistence of EverBEEN runtime information</a>
+### <a id="devel.services.mapstore">Map Store</a>
 
 The MapStore allows the EverBEEN to persist runtime information, which can
 be restored after restart or crash of the framework.
