@@ -8,8 +8,7 @@ import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.bpk.JavaRuntime;
 
 /**
- * Created with IntelliJ IDEA. User: donarus Date: 4/21/13 Time: 5:47 PM To
- * change this template use File | Settings | File Templates.
+ * @author donarus
  */
 public class JVMDependencyDownloader implements DependencyDownloader {
 
