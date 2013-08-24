@@ -129,4 +129,16 @@ public final class BenchmarkSupport {
 		return state == TaskState.ABORTED || state == TaskState.FINISHED;
 	}
 
+	public boolean hasBenchmarkHaveFailedContexts(String benchmarkId) throws BeenApiException {
+		Collection<TaskContextEntry> contexts = getContextsForBenchmark(benchmarkId);
+
+		for (TaskContextEntry taskContextEntry : contexts) {
+			if (taskContextEntry.getContextState() != TaskContextState.FINISHED) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 }

@@ -20,6 +20,40 @@
             Remove finished benchmarks
         </t:eventLink>
     </div>
+    <script>
+        var finishedTasksHidden = false;
+
+        function showOrHideTasks() {
+        if (finishedTasksHidden) {
+        jQuery('.FINISHED_true').show();
+        finishedTasksHidden = false;
+        jQuery('#displayFinishedTasksInfo').text('Displaying all tasks');
+        } else {
+        jQuery('.FINISHED_true').hide();
+        finishedTasksHidden = true;
+        jQuery('#displayFinishedTasksInfo').text('Displaying only unfinished tasks');
+        }
+        }
+
+        jQuery(document).ready(function() {
+        $('#displayFinishedTasksCheckbox').prop('checked', false);
+        showOrHideTasks();
+
+        jQuery('#displayFinishedTasksCheckbox').click(function() {
+        showOrHideTasks();
+        });
+        });
+
+    </script>
+
+    <div style="float: left; text-align: left;">
+        <label class="checkbox">
+            <input type="checkbox" id="displayFinishedTasksCheckbox"/>
+            Show finished tasks
+            <p id="displayFinishedTasksInfo"/>
+        </label>
+    </div>
+
 
     <table class="list">
         <thead>
@@ -36,10 +70,9 @@
 
         <t:loop source="benchmarks" value="benchmark">
             <tr style="background-color: #eee;">
-
                 <td>
                     <t:if test="isBenchmarkInFinalState(benchmark.id)">
-                        <t:if test="isBenchmarkRemovable(benchmark)">
+                        <t:if test="isBenchmarkRemovable(benchmark.id)">
                             <t:eventLink class="btn btn-mini btn-warning" t:event="removeBenchmark"
                                          t:context="benchmark.id"
                                          onclick="if (window.confirm('Are you sure?')) location.href=jQuery(this).attr('href'); return false;">
@@ -91,7 +124,7 @@
                 <td></td>
                 <td colspan="6">
                     <table>
-                        <tr>
+                        <tr class="FINISHED_${isBenchmarkWithoutFailedContexts(benchmark.id)}">
                             <th></th>
                             <th>Context ID</th>
                             <th>Name</th>
@@ -100,7 +133,7 @@
                             <th></th>
                         </tr>
                         <t:loop source="contextsForBenchmark(benchmark.id)" value="context">
-                            <tr>
+                            <tr class="FINISHED_${isTaskContextFinished(context.id)}">
                                 <td>
                                     <t:if test="isTaskContextInFinalState(context.id)">
                                         <t:if test="isContextRemovable(context.id)">

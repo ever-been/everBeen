@@ -10,7 +10,7 @@
 
             <div style="float: right; text-align: right;">
                 <t:if test="isBenchmarkInFinalState(benchmark.id)">
-                    <t:if test="isBenchmarkRemovable(benchmark)">
+                    <t:if test="isBenchmarkRemovable(benchmark.id)">
                         <t:eventLink class="btn btn-mini btn-warning" t:event="removeBenchmark" t:context="benchmark.id"
                                      onclick="if (window.confirm('Are you sure?')) location.href=jQuery(this).attr('href'); return false;">
                             Remove

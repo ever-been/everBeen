@@ -110,6 +110,14 @@ public class Tree extends Page {
 		return new BenchmarkSupport(getApi()).isBenchmarkInFinalState(benchmarkId);
 	}
 
+	public boolean isTaskContextFinished(String contextId) throws BeenApiException {
+		return new TaskContextSupport(getApi()).isContextFinished(contextId);
+	}
+
+	public boolean isBenchmarkWithoutFailedContexts(String benchmarkId) throws BeenApiException {
+		return !(new BenchmarkSupport(getApi()).hasBenchmarkHaveFailedContexts(benchmarkId));
+	}
+
 	public boolean isTaskContextInFinalState(String taskContextId) throws BeenApiException {
 		return new TaskContextSupport(getApi()).isTaskContextInFinalState(taskContextId);
 	}

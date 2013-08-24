@@ -741,6 +741,11 @@ final class BeenApiImpl implements BeenApi {
 			throw createBeenApiException(errorMsg, e);
 		}
 
+		// we don't want to remove benchmarks context id
+		if (task.getTaskContextId().equals(Names.BENCHMARKS_CONTEXT_ID)) {
+			return;
+		}
+
 		// check if task was last not null task of the context in the map
 		try {
 			TaskContextEntry taskContext = getTaskContext(task.getTaskContextId());
@@ -794,9 +799,6 @@ final class BeenApiImpl implements BeenApi {
 		try {
 			BenchmarkEntry benchmarkEntry = getBenchmark(benchmarkId);
 			clusterContext.getBenchmarks().remove(benchmarkId);
-
-			// additional cleanup
-			removeTaskEntry(benchmarkEntry.getGeneratorId());
 
 			// cleanup persistence
 			clearPersistenceForTask(benchmarkEntry.getGeneratorId());
