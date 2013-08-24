@@ -41,5 +41,5 @@ public class MapStoreConfiguration implements BeenServiceConfiguration {
 	 */
 	public static final String MAP_STORE_DB_NAME = "been.cluster.mapstore.db.dbname";
 	/** Default value for {@link #MAP_STORE_DB_NAME}. */
-	public static final String DEFAULT_MAP_STORE_DB_NAME = "BEEN";
+	public static final String DEFAULT_MAP_STORE_DB_NAME = "BEEN_MAPSTORE";
 }
