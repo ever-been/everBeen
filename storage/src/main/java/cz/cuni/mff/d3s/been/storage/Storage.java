@@ -18,9 +18,12 @@ import cz.cuni.mff.d3s.been.core.persistence.Entity;
 public interface Storage extends Service {
 
 	/**
-	 * @return Create a {@link cz.cuni.mff.d3s.been.persistence.SuccessAction} which denotes what is to be done
-	 *         with an {@link EntityCarrier} when it is decided that it should be
-	 *         stored.
+	 * Create a {@link cz.cuni.mff.d3s.been.persistence.SuccessAction} which denotes what is to be done
+	 * with an {@link EntityCarrier} when it is decided that it should be stored.
+	 *
+	 * The created action is assumed to create the {@link #store(cz.cuni.mff.d3s.been.core.persistence.EntityID, String)} method internally to enact the persistence.
+	 *
+	 * @return The persist action
 	 */
 	SuccessAction<EntityCarrier> createPersistAction();
 
@@ -40,7 +43,7 @@ public interface Storage extends Service {
 	void store(EntityID entityId, String JSON) throws DAOException;
 
 	/**
-	 * Query the persistence, returning JSON representations of matching objects.
+	 * Query the persistence, returning an answer describing the query outcome.
 	 *
 	 * @param query Query to execute
 	 *
@@ -58,7 +61,7 @@ public interface Storage extends Service {
 	/**
 	 * Check the storage for idleness/business.
 	 *
-	 * @return
+	 * @return <code>true</code> if the storage is idle; <code>false</code> if it's busy
 	 */
 	boolean isIdle();
 }
