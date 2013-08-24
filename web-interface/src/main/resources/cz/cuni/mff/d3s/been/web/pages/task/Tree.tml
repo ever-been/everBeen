@@ -67,9 +67,14 @@
                 </td>
                 <td>
                     <i class="icon-beaker"></i>&nbsp;
-                    <a href="/task/detail/${benchmark.generatorId}">
-                        <t:output format="idFormat" value="benchmark.generatorId"/>
-                    </a>
+                    <t:if t:test="benchmarkGenerator(benchmark)">
+                        <a href="/task/detail/${benchmark.generatorId}">
+                            <t:output format="idFormat" value="benchmark.generatorId"/>
+                        </a>
+                        <p:else>
+                            deleted
+                        </p:else>
+                    </t:if>
                 </td>
                 <td>
                     <t:task.stateIcon t:taskState="benchmarkState(benchmark.id)"/>

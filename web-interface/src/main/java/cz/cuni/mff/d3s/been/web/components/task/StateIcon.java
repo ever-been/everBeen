@@ -31,11 +31,12 @@ public class StateIcon {
 	@Inject
 	private Block stateWarningBlock;
 
+	@Inject
+	private Block stateNotAvailableBlock;
+
 	@SetupRender
 	void setupRender() throws Exception {
-		if (taskState == null && taskContextState == null) {
-			throw new Exception("taskState nor taskContextState defined");
-		} else if (taskState != null && taskContextState != null) {
+		if (taskState != null && taskContextState != null) {
 			throw new Exception("Defined both taskState and taskContextState. Only one of them allowed.");
 		}
 	}
@@ -43,8 +44,11 @@ public class StateIcon {
 	public Block getSelected() {
 		if (taskState != null) {
 			return getCorrectTaskBlock();
-		} else {
+		} else if (taskContextState != null) {
 			return getCorrectTaskContextBlock();
+		} else {
+			// both taskState and taskContextState are null
+			return stateNotAvailableBlock;
 		}
 	}
 
