@@ -105,4 +105,10 @@ public final class TaskContextSupport {
 		}
 		return result;
 	}
+
+	public boolean isContextFinished(String contextId) throws BeenApiException {
+		TaskContextEntry taskContextEntry = this.api.getTaskContext(contextId);
+		TaskContextState state = taskContextEntry.getContextState();
+		return state == TaskContextState.FINISHED;
+	}
 }

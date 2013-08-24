@@ -13,6 +13,9 @@ import cz.cuni.mff.d3s.been.core.task.TaskState;
  */
 public class StateIcon {
 
+	@Parameter(required = false)
+	private boolean hideStateDescription = false;
+
 	@Parameter
 	private TaskState taskState;
 
@@ -29,10 +32,13 @@ public class StateIcon {
 	private Block stateFinishedBlock;
 
 	@Inject
-	private Block stateWarningBlock;
+	private Block stateScheduledBlock;
 
 	@Inject
-	private Block stateNotAvailableBlock;
+	private Block stateAbortedBlock;
+
+	@Inject
+	private Block stateOtherBlock;
 
 	@SetupRender
 	void setupRender() throws Exception {
@@ -48,7 +54,7 @@ public class StateIcon {
 			return getCorrectTaskContextBlock();
 		} else {
 			// both taskState and taskContextState are null
-			return stateNotAvailableBlock;
+			return stateOtherBlock;
 		}
 	}
 
@@ -60,8 +66,12 @@ public class StateIcon {
 				return stateFinishedBlock;
 			case WAITING:
 				return stateWaitingBlock;
+			case SCHEDULED:
+				return stateScheduledBlock;
+			case ABORTED:
+				return stateAbortedBlock;
 			default:
-				return stateWarningBlock;
+				return stateOtherBlock;
 		}
 	}
 
@@ -73,9 +83,23 @@ public class StateIcon {
 				return stateFinishedBlock;
 			case WAITING:
 				return stateWaitingBlock;
+			case FAILED:
+				return stateAbortedBlock;
 			default:
-				return stateWarningBlock;
+				return stateOtherBlock;
 		}
 	}
 
+	public String getStateName() {
+		if (hideStateDescription) {
+			return "";
+		} else {
+			if (taskState == null && taskContextState == null) {
+				return "&nbsp;N/A&nbsp;&nbsp;";
+			} else if (taskState != null) {
+				return "&nbsp;" + taskState.name() + "&nbsp;&nbsp;";
+			} else
+				return "&nbsp;" + taskContextState.name() + "&nbsp;&nbsp;";
+		}
+	}
 }

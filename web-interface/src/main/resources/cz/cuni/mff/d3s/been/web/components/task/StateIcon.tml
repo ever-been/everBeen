@@ -5,24 +5,34 @@
     <t:delegate t:to="selected"/>
 
     <t:block t:id="stateRunningBlock">
-        <i class="icon-play" style="color: green"></i>&nbsp;RUNNING&nbsp;&nbsp;
+        <i class="icon-play" style="color: green"></i>
+        <t:outputraw t:value="${stateName}"/>
     </t:block>
 
     <t:block t:id="stateFinishedBlock">
-        <i class="icon-stop" style="color: gray"></i>&nbsp;FINISHED&nbsp;&nbsp;
+        <i class="icon-stop" style="color: gray"></i>
+        <t:outputraw t:value="${stateName}"/>
 
     </t:block>
 
     <t:block t:id="stateWaitingBlock">
-        <i class="icon-pause" style="color: #eeaa00"></i>&nbsp;WAITING&nbsp;&nbsp;
-
+        <i class="icon-pause" style="color: #eeaa00"></i>
+        <t:outputraw t:value="${stateName}"/>
     </t:block>
 
-    <t:block t:id="stateWarningBlock">
-        <i class="icon-warning-sign" style="color: red"></i>&nbsp;FAILED&nbsp;&nbsp;
+    <t:block t:id="stateScheduledBlock">
+        <i class="icon-download" style="color: green"></i>
+        <t:outputraw t:value="${stateName}"/>
     </t:block>
 
-    <t:block t:id="stateNotAvailableBlock">
-        <i class="icon-eye-close" style="color: red"></i>&nbsp;N/A&nbsp;&nbsp;
+    <t:block t:id="stateAbortedBlock">
+        <i class="icon-warning-sign" style="color: red"></i>
+        <t:outputraw t:value="${stateName}"/>
     </t:block>
+
+    <t:block t:id="stateOtherBlock">
+        <i class="icon-eye-close" style="color: #eeaa00"></i>
+        <t:outputraw t:value="${stateName}"/>
+    </t:block>
+
 </t:container>

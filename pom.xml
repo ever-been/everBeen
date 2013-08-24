@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project
-	xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+		xmlns="http://maven.apache.org/POM/4.0.0"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -61,9 +61,6 @@
 		<maven-project-info-reports-plugin.version>2.7</maven-project-info-reports-plugin.version>
 		<maven-resources-plugin.version>2.6</maven-resources-plugin.version>
 		<versions-maven-plugin.version>2.0</versions-maven-plugin.version>
-		<doxia-maven-plugin.version>1.1.4</doxia-maven-plugin.version>
-		<doxia-module-markdown.version>1.4</doxia-module-markdown.version>
-		<maven-doxia-tools.version>1.4</maven-doxia-tools.version>
 
 
 		<!-- SOURCE LEVEL CONTROL -->
@@ -195,7 +192,6 @@
 				<module>mapstore</module>
 				<module>mongodb-mapstore</module>
 				<module>bpk-conventions</module>
-				<module>doc</module>
 			</modules>
 		</profile>
 
@@ -227,14 +223,6 @@
 			<modules>
 				<module>web-interface</module>
 				<module>web-interface-standalone</module>
-			</modules>
-		</profile>
-
-		<profile>
-			<id>doc</id>
-
-			<modules>
-				<module>doc</module>
 			</modules>
 		</profile>
 	</profiles>
