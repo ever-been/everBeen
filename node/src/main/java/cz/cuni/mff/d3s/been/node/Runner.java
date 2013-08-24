@@ -279,7 +279,7 @@ public class Runner implements Reapable {
 	}
 
 	private IClusterService startRepository(Storage storage) throws ServiceException {
-		Repository repository = Repository.create(clusterContext, storage);
+		Repository repository = Repository.create(clusterContext, storage, beenId);
 		repository.start();
 		return repository;
 	}
