@@ -16,6 +16,7 @@
 
 	<xsl:template match="section">
 		cat src/book/markdown/<xsl:value-of select="id"/>.md
+		echo
 	</xsl:template>
 
 	<xsl:template match="book">
