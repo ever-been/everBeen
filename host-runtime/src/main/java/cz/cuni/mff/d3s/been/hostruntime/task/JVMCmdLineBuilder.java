@@ -120,7 +120,7 @@ class JVMCmdLineBuilder implements CmdLineBuilder {
 			cmdLine.addArgument(TASK_RUNNER_CLASS);
 		}
 
-		String finalMainClass = getFinalMainClass(java, runtime.getMainClass());
+		String finalMainClass = java.getMainClass();
 		cmdLine.addArgument(finalMainClass);
 
 	}
@@ -134,16 +134,6 @@ class JVMCmdLineBuilder implements CmdLineBuilder {
 			return true; // default to true
 		}
 
-	}
-
-	private String getFinalMainClass(Java java, String bpkMainClass) {
-		boolean isOverridden = java != null && java.isSetMainClass();
-
-		if (isOverridden) {
-			return java.getMainClass();
-		} else {
-			return bpkMainClass;
-		}
 	}
 
 	/**

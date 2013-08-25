@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <ns2:bpkConfiguration xmlns:ns2="http://been.d3s.mff.cuni.cz/bpk/config">
-	<ns2:metaInf>
-		<groupId>cz.cuni.mff.d3s.been</groupId>
-		<bpkId>task-test</bpkId>
-		<version>3.0.0</version>
-	</ns2:metaInf>
-	<ns2:runtime xsi:type="ns2:JavaRuntime" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-		<ns2:bpkArtifacts />
-		<mainClass>cz.cuni.mff.d3s.been.MakeTea</mainClass>
-	</ns2:runtime>
+    <ns2:metaInf>
+        <groupId>cz.cuni.mff.d3s.been</groupId>
+        <bpkId>task-test</bpkId>
+        <version>3.0.0</version>
+    </ns2:metaInf>
+    <ns2:runtime xsi:type="ns2:JavaRuntime" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <ns2:bpkArtifacts/>
+    </ns2:runtime>
 </ns2:bpkConfiguration>

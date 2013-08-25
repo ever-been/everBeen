@@ -44,6 +44,5 @@
             </artifact>
         </ns2:bpkArtifacts>
         <jarFile>task-test-3.0.0.jar</jarFile>
-		<mainClass>cz.cuni.mff.d3s.been.MakeTea</mainClass>
     </ns2:runtime>
 </ns2:bpkConfiguration>

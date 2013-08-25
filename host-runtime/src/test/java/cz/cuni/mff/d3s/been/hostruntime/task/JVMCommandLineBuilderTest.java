@@ -39,11 +39,10 @@ public class JVMCommandLineBuilderTest extends Assert {
 
 		JavaRuntime runtime = new JavaRuntime();
 		runtime.setJarFile("jarfile");
-		runtime.setMainClass("mainclass");
 
 		CommandLine cmdLine = new JVMCmdLineBuilder(taskDir, td, runtime).build();
 
-		assertEquals(9, cmdLine.getArguments().length);
+		assertEquals(8, cmdLine.getArguments().length);
 
 		assertEquals("java", cmdLine.getExecutable());
 		assertEquals("-cp", cmdLine.getArguments()[0]);
@@ -54,9 +53,8 @@ public class JVMCommandLineBuilderTest extends Assert {
 		assertEquals("opt2", cmdLine.getArguments()[3]);
 		assertEquals("-agentlib:jdwp=transport=dt_socket,server=n,address=host:124,suspend=n", cmdLine.getArguments()[4]);
 		assertEquals(TASK_RUNNER_CLASS, cmdLine.getArguments()[5]);
-		assertEquals("mainclass", cmdLine.getArguments()[6]);
-		assertEquals("arg1", cmdLine.getArguments()[7]);
-		assertEquals("arg2", cmdLine.getArguments()[8]);
+		assertEquals("arg1", cmdLine.getArguments()[6]);
+		assertEquals("arg2", cmdLine.getArguments()[7]);
 	}
 
 	@Test
@@ -77,11 +75,14 @@ public class JVMCommandLineBuilderTest extends Assert {
 		String arg2 = "arg2";
 		TaskDescriptor td = new TaskDescriptor();
 		td.setArguments(createArgs(arg1, arg2));
+		td.setJava(new Java());
+		td.getJava().setMainClass("mainClass");
 		CommandLine cmdLine = new JVMCmdLineBuilder(taskDir, td, runtime).build();
 
 		assertEquals(TASK_RUNNER_CLASS, cmdLine.getArguments()[2]);
-		assertEquals(arg1, cmdLine.getArguments()[3]);
-		assertEquals(arg2, cmdLine.getArguments()[4]);
+		assertEquals("mainClass", cmdLine.getArguments()[3]);
+		assertEquals(arg1, cmdLine.getArguments()[4]);
+		assertEquals(arg2, cmdLine.getArguments()[5]);
 	}
 
 	@Test
@@ -90,11 +91,15 @@ public class JVMCommandLineBuilderTest extends Assert {
 		String host = "host";
 		int port = 12345;
 		TaskDescriptor td = new TaskDescriptor();
+		td.setJava(new Java());
+		td.getJava().setMainClass("mainClass");
 		td.setDebug(createDebug(mode, host, port));
 
 		TaskCommandLine cmdLine = new JVMCmdLineBuilder(taskDir, td, runtime).build();
 
-		assertEquals("-agentlib:jdwp=transport=dt_socket,server=n,address=" + host + ":" + port + ",suspend=n", cmdLine.getArguments()[2]);
+		assertEquals(
+				"-agentlib:jdwp=transport=dt_socket,server=n,address=" + host + ":" + port + ",suspend=n",
+				cmdLine.getArguments()[2]);
 		assertFalse(cmdLine.isDebugListeningMode());
 		assertEquals(0, cmdLine.getDebugPort());
 	}
@@ -105,11 +110,15 @@ public class JVMCommandLineBuilderTest extends Assert {
 		String host = "host";
 		int port = 12345;
 		TaskDescriptor td = new TaskDescriptor();
+		td.setJava(new Java());
+		td.getJava().setMainClass("mainClass");
 		td.setDebug(createDebug(mode, host, port));
 
 		TaskCommandLine cmdLine = new JVMCmdLineBuilder(taskDir, td, runtime).build();
 
-		assertEquals("-agentlib:jdwp=transport=dt_socket,server=y,address=" + port + ",suspend=n", cmdLine.getArguments()[2]);
+		assertEquals(
+				"-agentlib:jdwp=transport=dt_socket,server=y,address=" + port + ",suspend=n",
+				cmdLine.getArguments()[2]);
 
 		assertTrue(cmdLine.isDebugListeningMode());
 		assertTrue(cmdLine.getDebugPort() > 0);
@@ -121,11 +130,13 @@ public class JVMCommandLineBuilderTest extends Assert {
 		String host = "host";
 		int port = 12345;
 		TaskDescriptor td = new TaskDescriptor();
+		td.setJava(new Java());
+		td.getJava().setMainClass("mainClass");
 		td.setDebug(createDebug(mode, host, port));
 
 		TaskCommandLine cmdLine = new JVMCmdLineBuilder(taskDir, td, runtime).build();
 
-		assertEquals(3, cmdLine.getArguments().length);
+		assertEquals(4, cmdLine.getArguments().length);
 		assertFalse(cmdLine.isDebugListeningMode());
 		assertEquals(0, cmdLine.getDebugPort());
 	}

@@ -20,17 +20,16 @@ public class Configuration {
 	public String bpkId;
 	public String version;
 	public String finalName;
-	public String mainClass;
 	public File binary;
 	public File buildDirectory;
 	public File packageJarFile;
 	public Collection<FileItem> filesToArchive;
 	public Collection<Artifact> artifacts;
 	public Collection<BpkIdentifier> bpkDependencies;
-    public File[] taskDescriptors;
-    public File[] taskContextDescriptors;
+	public File[] taskDescriptors;
+	public File[] taskContextDescriptors;
 
-    @Override
+	@Override
 	public String toString() {
 		return ReflectionToStringBuilder.toString(this);
 	}

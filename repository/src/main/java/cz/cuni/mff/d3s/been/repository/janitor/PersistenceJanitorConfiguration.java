@@ -31,7 +31,7 @@ public class PersistenceJanitorConfiguration implements BeenServiceConfiguration
 	 */
 	public static final Long DEFAULT_FINISHED_LONGEVITY = 96l;
 
-	/** Number of seconds between janitor cleanup checks */
+	/** Number of minutes between janitor cleanup checks */
 	public static final String WAKEUP_INTERVAL = "been.repository.janitor.cleanup-interval";
 	/**
 	 * By default, the persistence janitor will wake up every

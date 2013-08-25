@@ -3,17 +3,16 @@ package cz.cuni.mff.d3s.been.bpkplugin;
 import static cz.cuni.mff.d3s.been.bpk.BpkNames.FILES_DIR;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import cz.cuni.mff.d3s.been.util.FileToArchive;
-import cz.cuni.mff.d3s.been.util.ItemToArchive;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.logging.Log;
 
 import cz.cuni.mff.d3s.been.bpk.*;
+import cz.cuni.mff.d3s.been.util.FileToArchive;
+import cz.cuni.mff.d3s.been.util.ItemToArchive;
 
 /**
  * 
@@ -23,7 +22,7 @@ import cz.cuni.mff.d3s.been.bpk.*;
 class JavaGenerator extends GeneratorImpl {
 
 	public JavaGenerator(Log log) {
-        super(log);
+		super(log);
 	}
 
 	@Override
@@ -33,19 +32,9 @@ class JavaGenerator extends GeneratorImpl {
 		if (config.packageJarFile == null) {
 			result.append("parameter 'packageJarFile' must not be null \n");
 		} else if (!config.packageJarFile.exists()) {
-			result.append(String.format("file '%s' specified in parameter 'packageJarFile' does not exists \n", config.packageJarFile));
-		}
-
-		try {
-			config.mainClass = (config.mainClass == null
-					? MainClassExtractor.getMainClass(config.packageJarFile.toPath())
-					: config.mainClass);
-		} catch (IOException e) {
-			throw new ConfigurationException(String.format("Invalid configuration: ", e.getMessage()), e);
-		}
-
-		if (config.mainClass == null) {
-			result.append("parameter 'mainClass' must not be null \n");
+			result.append(String.format(
+					"file '%s' specified in parameter 'packageJarFile' does not exists \n",
+					config.packageJarFile));
 		}
 
 		if (config.filesToArchive == null) {
@@ -82,8 +71,7 @@ class JavaGenerator extends GeneratorImpl {
 		return itemsToArchive;
 	}
 
-	private Collection<? extends ItemToArchive> getOtherFilesToArchive(
-			Configuration config) {
+	private Collection<? extends ItemToArchive> getOtherFilesToArchive(Configuration config) {
 		List<ItemToArchive> itemsToArchive = new ArrayList<ItemToArchive>();
 		for (FileItem fileItem : config.filesToArchive) {
 			itemsToArchive.addAll(fileItem.getFilesToArchive());
@@ -119,7 +107,6 @@ class JavaGenerator extends GeneratorImpl {
 		JavaRuntime runtime = new ObjectFactory().createJavaRuntime();
 
 		runtime.setJarFile(config.packageJarFile.getName());
-		runtime.setMainClass(config.mainClass);
 		runtime.setBpkArtifacts(createBpkArtifacts(config));
 
 		return runtime;

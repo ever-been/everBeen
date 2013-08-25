@@ -158,7 +158,6 @@ public class GeneratorMojo extends AbstractMojo {
 		configuration.buildDirectory = buildDirectory;
 		configuration.finalName = finalName;
 		configuration.packageJarFile = packageJarFile;
-		configuration.mainClass = mainClass;
 		configuration.taskDescriptors = taskDescriptors == null ? new File[] {} : taskDescriptors;
 		configuration.taskContextDescriptors = taskContextDescriptors == null ? new File[] {} : taskContextDescriptors;
 
