@@ -25,29 +25,10 @@
 
 
 	<dependencies>
-		<!-- CLUSTER DEPENDENCIES -->
-		<dependency>
-			<groupId>cz.cuni.mff.d3s.been</groupId>
-			<artifactId>core-cluster</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
+		<!-- EverBEEN dependencies -->
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
 			<artifactId>core-data</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>cz.cuni.mff.d3s.been</groupId>
-			<artifactId>core-utils</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
-		<!-- OTHER BEEN DEPENDENCIES -->
-		<dependency>
-			<groupId>cz.cuni.mff.d3s.been</groupId>
-			<artifactId>results</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
