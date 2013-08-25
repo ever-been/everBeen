@@ -166,6 +166,7 @@
 				<module>detectors</module>
 				<module>task-manager</module>
 				<module>node</module>
+				<module>node-deploy</module>
 				<module>client-submitter</module>
 				<module>client-shell</module>
 				<module>host-runtime</module>
