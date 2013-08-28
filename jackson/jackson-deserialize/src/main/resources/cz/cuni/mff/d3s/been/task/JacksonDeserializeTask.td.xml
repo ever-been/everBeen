@@ -1,6 +1,0 @@
-<?xml version="1.0"?>
-<taskDescriptor xmlns="http://been.d3s.mff.cuni.cz/taskmanager/td"
-				groupId="cz.cuni.mff.d3s.been.jackson" bpkId="deserialize" version="0.0.1-SNAPSHOT"
-				name="jackson-deserialize">
-	<hostRuntimes />
-</taskDescriptor>

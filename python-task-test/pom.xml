@@ -10,7 +10,7 @@
 	<parent>
 		<groupId>cz.cuni.mff.d3s.been</groupId>
 		<artifactId>been</artifactId>
-		<version>3.0.0</version>
+		<version>3.0.0-SNAPSHOT</version>
 	</parent>
 
 	<build>
@@ -18,7 +18,7 @@
 			<plugin>
 				<groupId>cz.cuni.mff.d3s.been</groupId>
 				<artifactId>bpk-plugin</artifactId>
-				<version>3.0.0</version>
+				<version>3.0.0-SNAPSHOT</version>
 				<executions>
 					<execution>
 						<goals>
