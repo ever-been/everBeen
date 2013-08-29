@@ -11,8 +11,7 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
-import cz.cuni.mff.d3s.been.core.PropertyReader;
-import cz.cuni.mff.d3s.been.mq.MessagingException;
+import cz.cuni.mff.d3s.been.util.PropertyReader;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

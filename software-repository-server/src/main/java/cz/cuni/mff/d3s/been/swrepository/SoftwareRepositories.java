@@ -3,7 +3,7 @@ package cz.cuni.mff.d3s.been.swrepository;
 import java.net.InetSocketAddress;
 import java.util.Properties;
 
-import cz.cuni.mff.d3s.been.core.PropertyReader;
+import cz.cuni.mff.d3s.been.util.PropertyReader;
 import cz.cuni.mff.d3s.been.datastore.SoftwareStoreBuilderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

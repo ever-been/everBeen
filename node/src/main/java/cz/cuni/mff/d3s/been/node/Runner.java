@@ -30,7 +30,7 @@ import cz.cuni.mff.d3s.been.hostruntime.HostRuntime;
 import cz.cuni.mff.d3s.been.hostruntime.HostRuntimes;
 import cz.cuni.mff.d3s.been.logging.ServiceLogPersister;
 import cz.cuni.mff.d3s.been.manager.Managers;
-import cz.cuni.mff.d3s.been.repository.Repository;
+import cz.cuni.mff.d3s.been.objectrepository.ObjectRepository;
 import cz.cuni.mff.d3s.been.storage.Storage;
 import cz.cuni.mff.d3s.been.storage.StorageBuilderFactory;
 import cz.cuni.mff.d3s.been.swrepository.SoftwareRepositories;
@@ -279,9 +279,9 @@ public class Runner implements Reapable {
 	}
 
 	private IClusterService startRepository(Storage storage) throws ServiceException {
-		Repository repository = Repository.create(clusterContext, storage, beenId);
-		repository.start();
-		return repository;
+		ObjectRepository objectRepository = ObjectRepository.create(clusterContext, storage, beenId);
+		objectRepository.start();
+		return objectRepository;
 	}
 
 	private HazelcastInstance getInstance(final NodeType nodeType, Properties properties) throws ServiceException {

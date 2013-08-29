@@ -26,6 +26,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>xsd-catalog-resolver</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.jvnet.jaxb2_commons</groupId>
 			<artifactId>jaxb2-basics</artifactId>
 			<version>${jvnetbasics.version}</version>

@@ -52,12 +52,12 @@ class HttpSwRepoClient implements SwRepoClient {
 	private static final Logger log = LoggerFactory.getLogger(HttpSwRepoClient.class);
 
 	/**
-	 * Hostname where the software repository resides
+	 * Hostname where the software objectrepository resides
 	 */
 	private final String hostname;
 
 	/**
-	 * Port on which the software repository listens
+	 * Port on which the software objectrepository listens
 	 */
 	private final Integer port;
 
@@ -72,12 +72,12 @@ class HttpSwRepoClient implements SwRepoClient {
 	private final JSONUtils jsonUtils;
 
 	/**
-	 * Constructs new software repository client
+	 * Constructs new software objectrepository client
 	 * 
 	 * @param hostname
-	 *          hostname on which the software repository is running
+	 *          hostname on which the software objectrepository is running
 	 * @param port
-	 *          port on which the software repository is running
+	 *          port on which the software objectrepository is running
 	 * @param softwareCache
 	 *          initialized software cache
 	 */
@@ -201,9 +201,9 @@ class HttpSwRepoClient implements SwRepoClient {
 	// =====================================
 
 	/**
-	 * Synthesize the URI of the software repository from internals
+	 * Synthesize the URI of the software objectrepository from internals
 	 * 
-	 * @return the URI of the repository
+	 * @return the URI of the objectrepository
 	 * @throws URISyntaxException
 	 *           When some of the internals are malformed
 	 */
@@ -216,7 +216,7 @@ class HttpSwRepoClient implements SwRepoClient {
 	}
 
 	/**
-	 * Ask the repository for a Maven artifact by HTTP
+	 * Ask the objectrepository for a Maven artifact by HTTP
 	 */
 	private Artifact getArtifactByHTTP(ArtifactIdentifier artifactIdentifier) {
 		Header header = new Header(ARTIFACT_IDENTIFIER_HEADER_NAME, artifactIdentifier);
@@ -245,7 +245,7 @@ class HttpSwRepoClient implements SwRepoClient {
 	}
 
 	/**
-	 * Ask the repository for a BPK by HTTP
+	 * Ask the objectrepository for a BPK by HTTP
 	 */
 	private Bpk getBpkByHTTP(BpkIdentifier bpkIdentifier) {
 		Header header = new Header(BPK_IDENTIFIER_HEADER_NAME, bpkIdentifier);
@@ -274,7 +274,7 @@ class HttpSwRepoClient implements SwRepoClient {
 	}
 
 	/**
-	 * Do GET request on software repository server and return deserialized object
+	 * Do GET request on software objectrepository server and return deserialized object
 	 * of given type..
 	 * 
 	 * @param abstractUri
@@ -311,7 +311,7 @@ class HttpSwRepoClient implements SwRepoClient {
 	}
 
 	/**
-	 * Do GET request on software repository server and return response input
+	 * Do GET request on software objectrepository server and return response input
 	 * stream
 	 * 
 	 * @param abstractUri

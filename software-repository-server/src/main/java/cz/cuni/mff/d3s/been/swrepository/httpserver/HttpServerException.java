@@ -3,7 +3,7 @@ package cz.cuni.mff.d3s.been.swrepository.httpserver;
 import cz.cuni.mff.d3s.been.cluster.ServiceException;
 
 /**
- * An exception thrown by the software repository HTTP server
+ * An exception thrown by the software objectrepository HTTP server
  * 
  * @author donarus
  * 

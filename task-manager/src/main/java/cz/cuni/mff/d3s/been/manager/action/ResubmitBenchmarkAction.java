@@ -8,7 +8,7 @@ import java.util.List;
 import com.hazelcast.core.IMap;
 
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
-import cz.cuni.mff.d3s.been.core.PropertyReader;
+import cz.cuni.mff.d3s.been.util.PropertyReader;
 import cz.cuni.mff.d3s.been.core.benchmark.BenchmarkEntry;
 import cz.cuni.mff.d3s.been.core.benchmark.ResubmitHistoryItem;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;

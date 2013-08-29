@@ -1374,14 +1374,14 @@ final class BeenApiImpl implements BeenApi {
 
 	/**
 	 * Creates and returns an instance of {@link SwRepoClient} that serves as a
-	 * client for the software repository. The repository must be running, or else
+	 * client for the software objectrepository. The objectrepository must be running, or else
 	 * a {@link BeenApiException} is thrown with the specified message.
 	 * 
 	 * @param errorMsg
 	 *          the message of the exception
-	 * @return a client for the software repository
+	 * @return a client for the software objectrepository
 	 * @throws BeenApiException
-	 *           when the software repository is unavailable or another internal
+	 *           when the software objectrepository is unavailable or another internal
 	 *           exception occurs
 	 */
 	private SwRepoClient getSwRepoClient(final String errorMsg) throws BeenApiException {
@@ -1436,7 +1436,7 @@ final class BeenApiImpl implements BeenApi {
 	}
 
 	/**
-	 * Creates an exception which signals that the software repository is
+	 * Creates an exception which signals that the software objectrepository is
 	 * unavailable.
 	 * 
 	 * @param errorMsg

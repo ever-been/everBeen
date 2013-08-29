@@ -37,7 +37,7 @@ public class DebugAssistantRunner {
 	private String groupPassword = "dev-pass";
 
 	/**
-	 * Run a software repository node from command-line.
+	 * Run a software objectrepository node from command-line.
 	 *
 	 * @param args
 	 *          None recognized

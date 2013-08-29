@@ -1,6 +1,6 @@
 package cz.cuni.mff.d3s.been.taskapi;
 
-import cz.cuni.mff.d3s.been.core.PropertyReader;
+import cz.cuni.mff.d3s.been.util.PropertyReader;
 import cz.cuni.mff.d3s.been.core.StatusCode;
 import cz.cuni.mff.d3s.been.core.TaskMessageType;
 import cz.cuni.mff.d3s.been.core.TaskPropertyNames;

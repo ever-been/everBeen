@@ -1,7 +1,7 @@
 package cz.cuni.mff.d3s.been.api;
 
 /**
- * This exception indicates that the software repository is not running or is
+ * This exception indicates that the software objectrepository is not running or is
  * not available.
  * 
  * @author donarus
