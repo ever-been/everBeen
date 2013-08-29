@@ -10,7 +10,7 @@ import cz.cuni.mff.d3s.been.bpk.ArtifactIdentifier;
  */
 public interface ArtifactStore {
 	/**
-	 * Retrieve a Maven artifact from the repository
+	 * Retrieve a Maven artifact from the objectrepository
 	 * 
 	 * @param artifactIdentifier
 	 *          Full identifier of the Maven artifact
@@ -20,7 +20,7 @@ public interface ArtifactStore {
 	StoreReader getArtifactReader(ArtifactIdentifier artifactIdentifier);
 
 	/**
-	 * Store a Maven artifact into the repository.
+	 * Store a Maven artifact into the objectrepository.
 	 * 
 	 * @param artifactIdentifier
 	 *          Full identifier of the maven artifact

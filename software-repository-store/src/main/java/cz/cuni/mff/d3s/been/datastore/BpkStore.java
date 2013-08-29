@@ -20,7 +20,7 @@ import javax.xml.bind.JAXBException;
  */
 public interface BpkStore {
 	/**
-	 * Retrieve a BPK from the repository.
+	 * Retrieve a BPK from the objectrepository.
 	 *
 	 * @param bpkIdentifier
 	 *          Unique identifier for the retrieved BPK
@@ -41,7 +41,7 @@ public interface BpkStore {
 	StorePersister getBpkPersister(BpkIdentifier bpkIdentifier);
 
 	/**
-	 * Return a list of available BPKs in the repository.
+	 * Return a list of available BPKs in the objectrepository.
 	 *
 	 * @return List of BpkIdentifier objects
 	 */

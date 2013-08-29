@@ -1,7 +1,7 @@
 package cz.cuni.mff.d3s.been.swrepository;
 
 /**
- * An exception indicating a problem with BEEN software repository.
+ * An exception indicating a problem with BEEN software objectrepository.
  * 
  * @author darklight
  *

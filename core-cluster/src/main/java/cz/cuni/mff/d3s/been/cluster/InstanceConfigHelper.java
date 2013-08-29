@@ -17,7 +17,7 @@ import com.hazelcast.client.AddressHelper;
 import com.hazelcast.client.ClientConfig;
 import com.hazelcast.config.*;
 import com.hazelcast.nio.Address;
-import cz.cuni.mff.d3s.been.core.PropertyReader;
+import cz.cuni.mff.d3s.been.util.PropertyReader;
 
 /**
  * Utility class for creating Hazelcast configurations.

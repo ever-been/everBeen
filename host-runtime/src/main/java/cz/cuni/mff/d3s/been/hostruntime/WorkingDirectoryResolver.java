@@ -1,12 +1,10 @@
 package cz.cuni.mff.d3s.been.hostruntime;
 
-import cz.cuni.mff.d3s.been.core.PropertyReader;
+import cz.cuni.mff.d3s.been.util.PropertyReader;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.comparator.NameFileComparator;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 
 import static cz.cuni.mff.d3s.been.hostruntime.HostRuntimeConfiguration.*;

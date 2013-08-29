@@ -31,7 +31,7 @@ import cz.cuni.mff.d3s.been.swrepository.httpserver.HttpServer;
 import cz.cuni.mff.d3s.been.swrepository.httpserver.HttpServerException;
 
 /**
- * A simulation of actual software repository use-cases. Consists in running a
+ * A simulation of actual software objectrepository use-cases. Consists in running a
  * {@link SoftwareRepository} server and launching clients against it, testing
  * whether the right responses and files are obtained.
  * 
@@ -114,7 +114,7 @@ public class TestSoftwareRepositoryTransportByHTTP extends Assert {
 	private static final File CLIENT_PERSISTENCE_ROOT_FOLDER = new File(".swcache");
     /** Software package store */
 	private final SoftwareStore dataStore;
-    /** Software repository client factory */
+    /** Software objectrepository client factory */
 	private final SwRepoClientFactory clientFactory;
 
 	public TestSoftwareRepositoryTransportByHTTP() {

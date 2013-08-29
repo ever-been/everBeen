@@ -14,7 +14,7 @@ import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 
 /**
- * A client to the software repository, this object servers to retrieve BEEN
+ * A client to the software objectrepository, this object servers to retrieve BEEN
  * packages and Maven artifacts.
  *
  * @author darklight

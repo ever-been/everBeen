@@ -46,7 +46,7 @@ public class HostRuntimeTest extends Assert {
 		//				taskEntry.setTaskDescriptor(new TaskDescriptor());
 		//				when(taskUtils.getTask(taskId)).thenReturn(taskEntry);
 		//		
-		//				// then, we need to construct sw repository. first, we need to find host:port
+		//				// then, we need to construct sw objectrepository. first, we need to find host:port
 		//				SWRepositoryInfo swRepInfo = new SWRepositoryInfo();
 		//				swRepInfo.setHost("host");
 		//				swRepInfo.setHttpServerPort(123456789);
