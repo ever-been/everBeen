@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<taskDescriptor xmlns="http://been.d3s.mff.cuni.cz/taskmanager/td"
-				groupId="cz.cuni.mff.d3s.been" bpkId="python-task-test" version="3.0.0"
-				name="logging">
-</taskDescriptor>
