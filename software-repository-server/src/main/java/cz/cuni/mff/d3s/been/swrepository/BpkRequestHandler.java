@@ -9,8 +9,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.bind.JAXBException;
-
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.entity.InputStreamEntity;
@@ -19,16 +17,14 @@ import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.apache.http.protocol.HttpRequestHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xml.sax.SAXException;
 
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
-import cz.cuni.mff.d3s.been.core.jaxb.ConvertorException;
-import cz.cuni.mff.d3s.been.util.JSONUtils;
-import cz.cuni.mff.d3s.been.util.JsonException;
 import cz.cuni.mff.d3s.been.datastore.BpkStore;
 import cz.cuni.mff.d3s.been.datastore.StorePersister;
 import cz.cuni.mff.d3s.been.datastore.StoreReader;
 import cz.cuni.mff.d3s.been.swrepository.httpserver.SkeletalRequestHandler;
+import cz.cuni.mff.d3s.been.util.JSONUtils;
+import cz.cuni.mff.d3s.been.util.JsonException;
 
 /**
  * {@link HttpRequestHandler} for BPK requests.
@@ -142,7 +138,7 @@ public class BpkRequestHandler extends SkeletalRequestHandler {
 		final Map<String, String> descriptors;
 		try {
 			descriptors = store.getTaskDescriptors(bpkIdentifier);
-		} catch (IOException | JAXBException | SAXException | ConvertorException e) {
+		} catch (IOException e) {
 			replyBadRequest(
 					request,
 					response,
@@ -190,7 +186,7 @@ public class BpkRequestHandler extends SkeletalRequestHandler {
 		final Map<String, String> descriptors;
 		try {
 			descriptors = store.getTaskContextDescriptors(bpkIdentifier);
-		} catch (IOException | JAXBException | SAXException | ConvertorException e) {
+		} catch (IOException e) {
 			replyBadRequest(
 					request,
 					response,

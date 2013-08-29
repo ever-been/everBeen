@@ -13,19 +13,15 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import javax.xml.bind.JAXBException;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xml.sax.SAXException;
 
 import cz.cuni.mff.d3s.been.bpk.ArtifactIdentifier;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.bpk.BpkNames;
 import cz.cuni.mff.d3s.been.core.PropertyReader;
-import cz.cuni.mff.d3s.been.core.jaxb.ConvertorException;
 import cz.cuni.mff.d3s.been.datastore.SoftwareStore;
 import cz.cuni.mff.d3s.been.datastore.StorePersister;
 import cz.cuni.mff.d3s.been.datastore.StoreReader;
@@ -234,9 +230,7 @@ final class FSBasedStore implements SoftwareStore {
 	}
 
 	@Override
-	public
-			Map<String, String>
-			getTaskDescriptors(BpkIdentifier bpkIdentifier) throws IOException, JAXBException, SAXException, ConvertorException {
+	public Map<String, String> getTaskDescriptors(BpkIdentifier bpkIdentifier) throws IOException {
 		File bpkFile = getBpkItem(bpkIdentifier);
 
 		Map<String, String> descriptors = new HashMap<>();
@@ -256,9 +250,7 @@ final class FSBasedStore implements SoftwareStore {
 	}
 
 	@Override
-	public
-			Map<String, String>
-			getTaskContextDescriptors(BpkIdentifier bpkIdentifier) throws IOException, JAXBException, SAXException, ConvertorException {
+	public Map<String, String> getTaskContextDescriptors(BpkIdentifier bpkIdentifier) throws IOException {
 		File bpkFile = getBpkItem(bpkIdentifier);
 
 		Map<String, String> descriptors = new HashMap<>();
