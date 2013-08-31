@@ -112,6 +112,28 @@ class TrashDumper {
 		}
 	}
 
+	/**
+	 * Clean up after EverBEEN service logs.
+	 *
+	 * Deletes logs from EverBEEN cluster nodes
+	 *
+	 * @param before Log messages with timestamp older than this value will be deleted
+	 */
+	public void cleanupServiceLogs(Long before) {
+		storage.query(new QueryBuilder().on(SERVICE_LOG.getId()).with("created").below(before).delete());
+	}
+
+	/**
+	 * Cleanup host load monitor samples
+	 *
+	 * Deletes load samples measured on host runtime nodes
+	 *
+	 * @param before Load samples with timestamp older than this value will be deleted
+	 */
+	public void cleanupLoadSamples(Long before) {
+		storage.query(new QueryBuilder().on(LOAD_SAMPLE.getId()).with("created").below(before).delete());
+	}
+
 	private boolean cleanupTaskLogs(String taskId) {
 		return storage.query(new QueryBuilder().on(LOG.getId()).with("taskId", taskId).delete()).getStatus().isOk();
 	}

@@ -12,15 +12,28 @@ enum CleanupEntities {
 	CONFIGURATION("configuration"),
 	RESULT("result"),
 	EVALUATION("evaluation"),
-	OUTCOME("outcome");
+	OUTCOME("outcome"),
+	LOAD_SAMPLE("log", "monitoring"),
+	SERVICE_LOG("log", "service");
 
 	private final String kind;
+	private final String group;
 
-	CleanupEntities(String kind) {
+	private CleanupEntities(String kind) {
 		this.kind = kind;
+		this.group = null;
+	}
+
+	private CleanupEntities(String kind, String group) {
+		this.kind = kind;
+		this.group = group;
 	}
 
 	public EntityID getId() {
-		return new EntityID().withKind(kind);
+		if (this.group == null) {
+			return new EntityID().withKind(kind);
+		} else {
+			return new EntityID().withKind(kind).withGroup(group);
+		}
 	}
 }
