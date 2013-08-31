@@ -396,9 +396,7 @@ public class Runner implements Reapable {
 
 			}
 
-			System.out.println();
-			System.out.println();
-			System.out.println();
+			System.out.printf("%n%n%n");
 
 		}
 	}
