@@ -43,14 +43,14 @@ public final class ObjectRepository implements IClusterService {
 	}
 
 	/**
-	 * Build a objectrepository over a ready (but not running) persistence layer
+	 * Build an object repository over a ready (but not running) persistence layer
 	 * 
 	 * @param ctx
 	 *          Cluster context to work in (provides shared queues to work with)
 	 * @param storage
 	 *          Persistence layer to use
 	 * 
-	 * @return The objectrepository
+	 * @return The object repository
 	 */
 	public static ObjectRepository create(ClusterContext ctx, Storage storage, String beenId) {
 		return new ObjectRepository(ctx, storage, beenId);
@@ -60,7 +60,7 @@ public final class ObjectRepository implements IClusterService {
 	public void start() throws ServiceException {
 		log.info("Starting ObjectRepository...");
 		if (storage == null) {
-			throw new ServiceException("Cannot start a objectrepository over a null Storage");
+			throw new ServiceException("Cannot start an object repository over a null Storage");
 		}
 
 		// create sub-services
@@ -75,7 +75,7 @@ public final class ObjectRepository implements IClusterService {
 		janitor.start();
 
 		info = new ServiceInfo(SERVICE_NAME, beenId);
-		info.setServiceInfo("Object objectrepository running");
+		info.setServiceInfo("ObjectRepository running");
 		info.setServiceState(ServiceState.OK);
 		info.setHazelcastUuid(ctx.getInstanceType() != NodeType.NATIVE ? ctx.getCluster().getLocalMember().getUuid() : null);
 
@@ -118,7 +118,7 @@ public final class ObjectRepository implements IClusterService {
 			ctx.removeServiceInfo(info);
 		} catch (IllegalStateException e) {
 			// unregistering over a Hazelcast instance that is no longer active
-			log.warn("Failed to unhook SoftwareRepository from the cluster. SoftwareRepository info is likely to linger.", e);
+			log.warn("Failed to unhook ObjectRepository from the cluster. ObjectRepository info is likely to linger.", e);
 		}
 
 		log.info("ObjectRepository stopped.");

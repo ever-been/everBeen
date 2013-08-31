@@ -1,5 +1,6 @@
 package cz.cuni.mff.d3s.been.objectrepository;
 
+import cz.cuni.mff.d3s.been.cluster.ClusterPersistenceConfiguration;
 import cz.cuni.mff.d3s.been.cluster.Names;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.util.PropertyReader;
@@ -9,6 +10,7 @@ import cz.cuni.mff.d3s.been.storage.Storage;
 
 import java.util.concurrent.TimeUnit;
 
+import static cz.cuni.mff.d3s.been.cluster.ClusterPersistenceConfiguration.*;
 import static cz.cuni.mff.d3s.been.objectrepository.ObjectRepositoryConfiguration.*;
 
 /**
@@ -33,8 +35,11 @@ public class QueryQueueDrain extends QueueDrain<Query> {
 		final PropertyReader propertyReader = PropertyReader.on(ctx.getProperties());
 		final Float failRateThreshold = propertyReader.getFloat(FAIL_RATE_BEFORE_SUSPEND, DEFAULT_FAIL_RATE_BEFORE_SUSPEND);
 		final Long suspendTimeOnHighFailRate = TimeUnit.SECONDS.toMillis(propertyReader.getLong(SUSPENSION_TIME, DEFAULT_SUSPENSION_TIME));
+		final Long queryTimeout = TimeUnit.SECONDS.toMillis(propertyReader.getLong(QUERY_TIMEOUT, DEFAULT_QUERY_TIMEOUT));
+		final Long queryProcTimeout = TimeUnit.SECONDS.toMillis(propertyReader.getLong(QUERY_PROCESSING_TIMEOUT, DEFAULT_QUERY_PROCESSING_TIMEOUT));
+		final Long maxTotalQueryTimeout = queryTimeout + queryProcTimeout;
 
-		final SuccessAction<Query> action = new AnswerQueryAction(storage, ctx.getMap(Names.PERSISTENCE_QUERY_ANSWERS_MAP_NAME));
+		final SuccessAction<Query> action = new AnswerQueryAction(storage, ctx.getMap(Names.PERSISTENCE_QUERY_ANSWERS_MAP_NAME), maxTotalQueryTimeout);
 		return new QueryQueueDrain(ctx, action, failRateThreshold, suspendTimeOnHighFailRate);
 	}
 }
