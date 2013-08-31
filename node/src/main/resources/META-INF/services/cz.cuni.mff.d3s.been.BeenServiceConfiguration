@@ -6,8 +6,8 @@ cz.cuni.mff.d3s.been.cluster.ClusterPersistenceConfiguration
 cz.cuni.mff.d3s.been.detectors.MonitoringConfiguration
 cz.cuni.mff.d3s.been.hostruntime.HostRuntimeConfiguration
 cz.cuni.mff.d3s.been.mapstore.MapStoreConfiguration
-cz.cuni.mff.d3s.been.repository.mongo.MongoStorageConfiguration
-cz.cuni.mff.d3s.been.repository.janitor.PersistenceJanitorConfiguration
+cz.cuni.mff.d3s.been.objectrepository.mongo.MongoStorageConfiguration
+cz.cuni.mff.d3s.been.objectrepository.janitor.PersistenceJanitorConfiguration
 cz.cuni.mff.d3s.been.swrepository.FSBasedStoreConfiguration
 cz.cuni.mff.d3s.been.manager.TaskManagerConfiguration
 cz.cuni.mff.d3s.been.swrepository.SoftwareRepositoryConfiguration

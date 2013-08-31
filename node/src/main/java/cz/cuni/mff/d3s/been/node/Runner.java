@@ -362,7 +362,7 @@ public class Runner implements Reapable {
 		for (BeenServiceConfiguration config : configs) {
 			Class<?> klazz = config.getClass();
 
-			System.out.println(klazz.getName());
+			System.out.printf("#%n# %s%n#%n%n", klazz.getSimpleName());
 
 			Map<String, Object> defaultValues = new HashMap<>();
 			Map<String, String> propertyNames = new HashMap<>();
@@ -389,12 +389,16 @@ public class Runner implements Reapable {
 				Object value = defaultValues.get(entry.getKey());
 
 				if (properties.containsKey(name)) {
-					System.out.printf("!\t%s=%s%n", entry.getValue(), value);
+					System.out.printf("%s=%s%n", entry.getValue(), value);
 				} else {
-					System.out.printf("\t%s=%s%n", entry.getValue(), value);
+					System.out.printf("# %s=%s%n", entry.getValue(), value);
 				}
 
 			}
+
+			System.out.println();
+			System.out.println();
+			System.out.println();
 
 		}
 	}
