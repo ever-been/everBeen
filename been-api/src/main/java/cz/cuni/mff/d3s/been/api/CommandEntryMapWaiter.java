@@ -17,7 +17,7 @@ import cz.cuni.mff.d3s.been.core.protocol.command.CommandEntry;
 final class CommandEntryMapWaiter implements EntryListener<Long, CommandEntry> {
 
 	/** the queue into which the event should be added */
-	private Queue queue;
+	private final Queue queue;
 
 	/**
 	 * Default constructor, creates an instance with the specified queue.

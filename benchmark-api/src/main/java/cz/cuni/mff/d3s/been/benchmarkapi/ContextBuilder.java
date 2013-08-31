@@ -115,8 +115,6 @@ public final class ContextBuilder {
 	 *           when no template with <code>templateName</code> exists
 	 */
 	public Task addTask(final String name, final String templateName) throws BenchmarkException {
-		Template template = getTemplate(templateName);
-
 		Task task = newEmptyTask().withName(name);
 		task.getDescriptor().setFromTemplate(templateName);
 
@@ -257,7 +255,7 @@ public final class ContextBuilder {
 
 		try {
 
-			TaskContextDescriptor contextDescriptor = null;
+			TaskContextDescriptor contextDescriptor;
 
 			BindingParser<TaskContextDescriptor> bindingComposer = TASK_CONTEXT_DESCRIPTOR.createParser(TaskContextDescriptor.class);
 			contextDescriptor = bindingComposer.parse(inputStream);

@@ -87,8 +87,8 @@ public class BenchmarkRequestor {
 	 *           when the descriptor is invalid or not serializable
 	 */
 	public static String taskContextToXml(TaskContextDescriptor entry) throws IllegalArgumentException {
-		BindingComposer<TaskContextDescriptor> composer = null;
-		StringWriter writer = null;
+		BindingComposer<TaskContextDescriptor> composer;
+		StringWriter writer;
 		try {
 			composer = XSD.TASK_CONTEXT_DESCRIPTOR.createComposer(TaskContextDescriptor.class);
 			writer = new StringWriter();
@@ -117,8 +117,8 @@ public class BenchmarkRequestor {
 			s.getStorageItem().add(i);
 		}
 
-		BindingComposer<Storage> composer = null;
-		StringWriter writer = null;
+		BindingComposer<Storage> composer;
+		StringWriter writer;
 		try {
 			composer = XSD.STORAGE.createComposer(Storage.class);
 			writer = new StringWriter();

@@ -34,7 +34,7 @@ public class BpkStreamHolder implements BpkHolder {
 	 * @throws BpkConfigurationException
 	 *           when the configuration in the BPK file is invalid
 	 */
-	public BpkStreamHolder(InputStream inputStream) throws IOException, BpkConfigurationException {
+	public BpkStreamHolder(InputStream inputStream) throws IOException {
 		if (bpkFile == null) {
 			bpkFile = File.createTempFile("tmp", "bpk");
 			FileOutputStream fos = new FileOutputStream(bpkFile);

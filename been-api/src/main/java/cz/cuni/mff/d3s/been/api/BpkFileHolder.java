@@ -18,7 +18,7 @@ import cz.cuni.mff.d3s.been.bpk.MetaInf;
 public class BpkFileHolder implements BpkHolder {
 
 	/** A file representing the BPK package */
-	private File bpkFile;
+	private final File bpkFile;
 
 	/** The BPK identifier of the package */
 	private BpkIdentifier bpkIdentifier;
@@ -29,12 +29,8 @@ public class BpkFileHolder implements BpkHolder {
 	 * 
 	 * @param bpkFile
 	 *          the file with the BPK package
-	 * @throws IOException
-	 *           when the file cannot be read or an I/O error occurs
-	 * @throws BpkConfigurationException
-	 *           when the configuration in the BPK file is invalid
 	 */
-	public BpkFileHolder(File bpkFile) throws IOException, BpkConfigurationException {
+	public BpkFileHolder(File bpkFile) {
 		this.bpkFile = bpkFile;
 	}
 

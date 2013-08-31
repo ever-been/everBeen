@@ -32,7 +32,7 @@ public class BpkConfigUtils {
 	/**
 	 * Where the XSD file for BpkConfiguration is located relative to resources.
 	 */
-	public static String SCHEMA_RESOURCE_FILE = "bpk-config.xsd";
+	public static final String SCHEMA_RESOURCE_FILE = "bpk-config.xsd";
 
 	/**
 	 * JAXBContext for BpkConfiguration. Don't use directly, use getContext()

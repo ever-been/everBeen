@@ -235,7 +235,7 @@ public abstract class Benchmark extends Task {
 		}
 
 		while (true) {
-			TaskContextDescriptor taskContextDescriptor = null;
+			TaskContextDescriptor taskContextDescriptor;
 			try {
 				taskContextDescriptor = generateTaskContext();
 
@@ -283,7 +283,7 @@ public abstract class Benchmark extends Task {
 		try {
 			InputStream inputStream = this.getClass().getResourceAsStream(resourceName);
 
-			TaskContextDescriptor taskContextDescriptor = null;
+			TaskContextDescriptor taskContextDescriptor;
 
 			BindingParser<TaskContextDescriptor> bindingComposer = XSD.TASK_CONTEXT_DESCRIPTOR.createParser(TaskContextDescriptor.class);
 			taskContextDescriptor = bindingComposer.parse(inputStream);

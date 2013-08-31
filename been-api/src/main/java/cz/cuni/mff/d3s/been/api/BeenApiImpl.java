@@ -55,7 +55,7 @@ import cz.cuni.mff.d3s.been.util.JsonException;
 final class BeenApiImpl implements BeenApi {
 
 	/** class slf4j logger */
-	private static Logger log = LoggerFactory.getLogger(BeenApiImpl.class);
+	private static final Logger log = LoggerFactory.getLogger(BeenApiImpl.class);
 
 	/** BEEN cluster context instance */
 	private final ClusterContext clusterContext;
@@ -812,7 +812,7 @@ final class BeenApiImpl implements BeenApi {
 	public CommandEntry deleteTaskWrkDirectory(final String runtimeId, final String taskWrkDir) throws BeenApiException {
 
 		// FIXME needs refactoring
-		// FIXME nevracet CommandEntry, ale void a vyjimku pri chybe nebo pri timeoutu
+		// FIXME do not return CommandEntry, but return void and throw exception on error or timeout
 
 		final String errorMsg = String.format(
 				"Failed to delete task working directory '%s' on runtime '%s'",
@@ -1351,9 +1351,7 @@ final class BeenApiImpl implements BeenApi {
 	 * @throws BeenApiException
 	 *           when something other goes wrong while retrieving query answer
 	 */
-	private
-			QueryAnswer
-			performQuery(final Query query, final String errorMsg) throws BeenApiException, ClusterConnectionUnavailableException, PersistenceException {
+	private QueryAnswer performQuery(final Query query, final String errorMsg) throws BeenApiException {
 		checkIsActive(errorMsg);
 
 		final QueryAnswer answer;

@@ -17,26 +17,4 @@ public class CommandTimeoutException extends BeenApiException {
 		super(message);
 	}
 
-	/**
-	 * Constructs a new exception with the specified detail message and cause.
-	 * 
-	 * @param message
-	 *          the detail message
-	 * @param cause
-	 *          cause of the exception
-	 */
-	public CommandTimeoutException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
-	/**
-	 * Constructs a new exception with the specified {@link Throwable} as a cause.
-	 * 
-	 * @param cause
-	 *          cause of the exception
-	 */
-	public CommandTimeoutException(Throwable cause) {
-		super(cause);
-	}
-
 }
