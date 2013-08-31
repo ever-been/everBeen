@@ -30,14 +30,25 @@ public interface SwRepoClient {
 	public Artifact getArtifact(ArtifactIdentifier artifactIdentifier);
 
 	/**
-	 * Retrieve a BEEN software package (BPK)
+	 * Retrieve a BEEN software package (BPK).
 	 * 
-	 * @param bpkMetaInfo
+	 * @param bpkIdentifier
 	 *          A fully qualified identifier of the BEEN package
 	 *          <p/>
 	 *          The BPK, or <code>null</code> if it could not be retrieved
 	 */
-	public Bpk getBpk(BpkIdentifier bpkMetaInfo);
+	public Bpk getBpk(BpkIdentifier bpkIdentifier);
+
+	/**
+	 * Retrieve a BEEN software package (BPK). This method should not use any
+	 * local cache.
+	 * 
+	 * @param bpkIdentifier
+	 *          A fully qualified identifier of the BEEN package
+	 *          <p/>
+	 *          The BPK, or <code>null</code> if it could not be retrieved
+	 */
+	public Bpk getBpkNoCache(BpkIdentifier bpkIdentifier);
 
 	/**
 	 * Store a Maven artifact

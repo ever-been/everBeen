@@ -130,6 +130,28 @@ class HttpSwRepoClient implements SwRepoClient {
 	}
 
 	@Override
+	public Bpk getBpkNoCache(final BpkIdentifier bpkIdentifier) {
+		Header header = new Header(BPK_IDENTIFIER_HEADER_NAME, bpkIdentifier);
+
+		final InputStream is = doGetInputStream(BPK_URI, header);
+		if (is == null) {
+			return null;
+		}
+
+		return new Bpk() {
+			@Override
+			public BpkIdentifier getBpkIdentifier() {
+				return bpkIdentifier;
+			}
+
+			@Override
+			public InputStream getInputStream() throws IOException {
+				return is;
+			}
+		};
+	}
+
+	@Override
 	public void putBpk(BpkIdentifier bpkMetaInfo, InputStream bpkInputStream) throws SwRepositoryClientException {
 		if (bpkMetaInfo == null) {
 			String msg = "Failed to upload BPK - package meta-info was null.";

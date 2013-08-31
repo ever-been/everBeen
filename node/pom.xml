@@ -61,7 +61,7 @@
 
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
-			<artifactId>repository</artifactId>
+			<artifactId>object-repository</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 
