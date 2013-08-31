@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
-import cz.cuni.mff.d3s.been.cluster.NodeType;
 import cz.cuni.mff.d3s.been.cluster.Reaper;
 import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
@@ -25,7 +24,7 @@ final class ClusterManager implements IClusterService {
 	private final MembershipListener membershipListener;
 	private final ClientListener clientListener;
 	private final ClusterContext clusterCtx;
-	LocalKeyScanner keyScanner; // used only in DATA members
+	private LocalKeyScanner keyScanner;
 
 	private final MessageQueues messageQueues = MessageQueues.getInstance();
 
@@ -52,6 +51,7 @@ final class ClusterManager implements IClusterService {
 		}
 
 		taskMessageProcessor = new TaskMessageProcessor(clusterCtx);
+		keyScanner = new LocalKeyScanner(clusterCtx);
 
 		taskMessageProcessor.start();
 		localRuntimeListener.start();
@@ -59,21 +59,16 @@ final class ClusterManager implements IClusterService {
 		localContextListener.start();
 		membershipListener.start();
 		clientListener.start();
-		if (clusterCtx.getInstanceType() == NodeType.DATA) {
-			// keyScanner on Lite member is nonsense .. lite member hasno data
-			// keyScanner on Native instance is invalid .. native instance is not member
-			keyScanner = new LocalKeyScanner(clusterCtx);
-			keyScanner.start();
-		}
+		keyScanner.start();
+
 		log.info("Task Manager started.");
 	}
 
 	@Override
 	public void stop() {
 		log.info("Stopping Task Manager...");
-		if (keyScanner != null) {
-			keyScanner.stop();
-		}
+		keyScanner.stop();
+
 		clientListener.stop();
 		localRuntimeListener.stop();
 		localContextListener.stop();

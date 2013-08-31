@@ -12,16 +12,15 @@ import org.slf4j.LoggerFactory;
 
 import com.hazelcast.core.IMap;
 
-import cz.cuni.mff.d3s.been.cluster.NodeType;
 import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
-import cz.cuni.mff.d3s.been.util.PropertyReader;
 import cz.cuni.mff.d3s.been.core.ri.RuntimeInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
 import cz.cuni.mff.d3s.been.manager.msg.Messages;
 import cz.cuni.mff.d3s.been.manager.msg.TaskMessage;
 import cz.cuni.mff.d3s.been.mq.IMessageSender;
+import cz.cuni.mff.d3s.been.util.PropertyReader;
 
 /**
  * 
@@ -59,11 +58,6 @@ final class LocalKeyScanner extends TaskManagerService {
 	 *          connection to the cluster
 	 */
 	public LocalKeyScanner(ClusterContext clusterCtx) {
-		if (clusterCtx.getInstanceType() != NodeType.DATA) {
-			throw new AssertionError(String.format(
-					"Cannot start LocalKeyScanned on node of type %s",
-					clusterCtx.getInstanceType()));
-		}
 		this.clusterCtx = clusterCtx;
 		this.nodeId = clusterCtx.getCluster().getLocalMember().getUuid();
 		this.runnable = new LocalKeyScannerRunnable();

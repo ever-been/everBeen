@@ -69,9 +69,6 @@ final class ScheduleTaskAction implements TaskAction {
 
 		final String id = entry.getId();
 
-		// we are sure that the node is of type DATA (see constructor assertion)
-		final String nodeId = ctx.getCluster().getLocalMember().getUuid(); // cluster id of this member
-
 		log.debug("Received new task to schedule {}", id);
 
 		try {
