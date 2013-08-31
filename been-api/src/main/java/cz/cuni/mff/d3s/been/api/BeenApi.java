@@ -62,7 +62,7 @@ public interface BeenApi {
 	 * Returns a list of records describing the current status of various BEEN
 	 * services. This does not return information about core (required) components
 	 * which always run, but only about optional/configurable components (e.g.
-	 * software objectrepository).
+	 * software repository).
 	 * 
 	 * @return list of available {@link ServiceInfo} records
 	 * @throws BeenApiException
@@ -578,7 +578,7 @@ public interface BeenApi {
 	 * The task must be in a final state (finished or aborted) otherwise a
 	 * {@link BeenApiException} is thrown. If the the task with the specified ID
 	 * does not exist, this method does nothing. Also cleans up persistent
-	 * objectrepository from all entities related to removed task.
+	 * repository from all entities related to removed task.
 	 * 
 	 * @param taskId
 	 *          ID of the task entry to remove
@@ -594,7 +594,7 @@ public interface BeenApi {
 	 * as all of its tasks, otherwise a {@link BeenApiException} is thrown. This
 	 * method also removes all of the contained tasks, just as if you called
 	 * {@link #removeTaskEntry} for all tasks within the context. Also removes
-	 * context task entries and cleans up persistent objectrepository from all entities
+	 * context task entries and cleans up persistent repository from all entities
 	 * related to removed tasks/contexts.
 	 * 
 	 * @param taskContextId
@@ -614,7 +614,7 @@ public interface BeenApi {
 	 * that belong to this benchmark. Also removes all "old generators", which
 	 * have failed and were resubmitted, and the current generator task. Also
 	 * removes generator task from the Hazelcast map and cleans up persistent
-	 * objectrepository from benchmark and generator related entries.
+	 * repository from benchmark and generator related entries.
 	 * 
 	 * 
 	 * @param benchmarkId
@@ -768,9 +768,9 @@ public interface BeenApi {
 
 	/**
 	 * Lists the identifiers of all available BPK packages in the software
-	 * objectrepository. The software objectrepository must be running, otherwise a
+	 * repository. The software repository must be running, otherwise a
 	 * {@link BeenApiException} is thrown. The BPKs can be uploaded into the
-	 * software objectrepository using the {@link #uploadBpk} method.
+	 * software repository using the {@link #uploadBpk} method.
 	 * 
 	 * @return a collection of all available BPK packages
 	 * @throws BeenApiException
@@ -780,7 +780,7 @@ public interface BeenApi {
 	public Collection<BpkIdentifier> getBpks() throws BeenApiException;
 
 	/**
-	 * Uploads a new BPK package into the software objectrepository. The passed
+	 * Uploads a new BPK package into the software repository. The passed
 	 * {@link BpkHolder} object specifies the BPK identifier under which the
 	 * package should be stored. If there is already a package with the same
 	 * identifier, is will be overwritten.
@@ -795,7 +795,7 @@ public interface BeenApi {
 
 	/**
 	 * Downloads a package with the specified BPK identifier from the software
-	 * objectrepository. If successful, returns a {@link InputStream} object holding the
+	 * repository. If successful, returns a {@link InputStream} object holding the
 	 * stream to the data of the package. If there is no such package with the
 	 * specified BPK identifier, a {@link BeenApiException} is thrown.
 	 * 
@@ -937,9 +937,9 @@ public interface BeenApi {
 	public boolean isConnected();
 
 	/**
-	 * Checks whether the software objectrepository is running.
+	 * Checks whether the software repository is running.
 	 * 
-	 * @return true if software objectrepository is running, false otherwise
+	 * @return true if software repository is running, false otherwise
 	 * @throws BeenApiException
 	 *           in case of an internal exception, see {@link BeenApi} for
 	 *           discussion

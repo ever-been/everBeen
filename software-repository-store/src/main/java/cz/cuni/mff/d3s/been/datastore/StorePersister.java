@@ -1,6 +1,5 @@
 package cz.cuni.mff.d3s.been.datastore;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -21,9 +20,6 @@ public interface StorePersister {
 	 * 
 	 * @return <code>true</code> whenever the operation results in a success,
 	 *         <code>false</code> on failure
-	 * 
-	 * @throws IOException
-	 *           When R/W operation fails
 	 */
-	boolean dump(InputStream content) throws IOException;
+	boolean dump(InputStream content);
 }

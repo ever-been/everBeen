@@ -1,17 +1,12 @@
 package cz.cuni.mff.d3s.been.swrepository;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.d3s.been.datastore.StorePersister;
-import cz.cuni.mff.d3s.been.util.CopyStream;
 
 /**
  * 
@@ -47,21 +42,15 @@ public class FSBasedStorePersister implements StorePersister {
 			try {
 				storedFile.createNewFile();
 			} catch (IOException e) {
-				log.error(
-						"Could not create file to hold entity {}: I/O error {}",
-						entityId,
-						e.getMessage());
+				log.error("Could not create file to hold entity {}: I/O error {}", entityId, e.getMessage());
 				return false;
 			}
 		}
-		OutputStream os = null;
+		OutputStream os;
 		try {
 			os = new FileOutputStream(storedFile);
 		} catch (IOException e) {
-			log.error(
-					"Failed to persist entity {}: I/O error {}",
-					entityId,
-					e.getMessage());
+			log.error("Failed to persist entity {}: I/O error {}", entityId, e.getMessage());
 			return false;
 		}
 

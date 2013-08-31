@@ -13,7 +13,6 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import cz.cuni.mff.d3s.been.util.PropertyReader;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -25,6 +24,7 @@ import cz.cuni.mff.d3s.been.bpk.BpkNames;
 import cz.cuni.mff.d3s.been.datastore.SoftwareStore;
 import cz.cuni.mff.d3s.been.datastore.StorePersister;
 import cz.cuni.mff.d3s.been.datastore.StoreReader;
+import cz.cuni.mff.d3s.been.util.PropertyReader;
 
 /**
  * @author darklight
@@ -53,7 +53,7 @@ final class FSBasedStore implements SoftwareStore {
 		final PropertyReader propReader = PropertyReader.on(properties);
 
 		final String rootDir = propReader.getString(CACHE_FS_ROOT, DEFAULT_CACHE_FS_ROOT);
-		final Long cacheSizeString = propReader.getLong(SWCACHE_MAX_SIZE, DEFAULT_SWCACHE_MAX_SIZE);
+		// final Long cacheSizeString = propReader.getLong(SWCACHE_MAX_SIZE, DEFAULT_SWCACHE_MAX_SIZE);
 
 		// TODO infer a cache size control mechanism
 		return new FSBasedStore(rootDir);
@@ -94,11 +94,7 @@ final class FSBasedStore implements SoftwareStore {
 	@Override
 	public boolean exists(BpkIdentifier bpkIdentifier) {
 		File item = getBpkItem(bpkIdentifier);
-		if (item == null || !item.exists()) {
-			return false;
-		} else {
-			return true;
-		}
+		return (item != null && item.exists());
 	}
 
 	@Override
@@ -154,10 +150,9 @@ final class FSBasedStore implements SoftwareStore {
 			log.error("Null or incomplete BPK identifier {}", bpkIdentifier);
 			return null;
 		}
-		final List<String> pathItems = new LinkedList<String>();
-		for (String grpIdPart : bpkIdentifier.getGroupId().split("\\.")) {
-			pathItems.add(grpIdPart);
-		};
+		final List<String> pathItems = new LinkedList();
+		pathItems.addAll(Arrays.asList(bpkIdentifier.getGroupId().split("\\.")));
+
 		pathItems.add(bpkIdentifier.getBpkId());
 		pathItems.add(bpkIdentifier.getVersion());
 
@@ -179,7 +174,7 @@ final class FSBasedStore implements SoftwareStore {
 		if (artifactIdentifier == null || artifactIdentifier.getGroupId() == null || artifactIdentifier.getArtifactId() == null || artifactIdentifier.getVersion() == null) {
 			log.error("Null or incomplete Artifact identifier {}", artifactIdentifier);
 			return null;
-		};
+		}
 		final List<String> pathItems = new ArrayList<>(Arrays.asList(artifactIdentifier.getGroupId().split("\\.")));
 		pathItems.add(artifactIdentifier.getArtifactId());
 		pathItems.add(artifactIdentifier.getVersion());
@@ -211,7 +206,7 @@ final class FSBasedStore implements SoftwareStore {
 		"([a-zA-Z0-9-._]+)\\.bpk"; // file name
 
 		Pattern pattern = Pattern.compile(regexp);
-		List<BpkIdentifier> result = new ArrayList<BpkIdentifier>();
+		List<BpkIdentifier> result = new ArrayList();
 
 		for (File f : FileUtils.listFiles(bpkFSRoot, new String[] { "bpk" }, true)) {
 			String path = f.getPath();

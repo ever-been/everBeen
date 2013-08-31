@@ -33,8 +33,8 @@ import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
  * Host runtime is responsible for launching new tasks triggered by appropriate
  * message. It is also responsible for operating with already running tasks on
  * parent machine. Operation are as follows: killing tasks, allowing and
- * supporting communication between tasks and results objectrepository, allowing
- * logging).
+ * supporting communication between tasks and results object repository,
+ * allowing logging).
  * 
  * @author donarus
  * 

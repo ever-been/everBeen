@@ -1,25 +1,22 @@
 package cz.cuni.mff.d3s.been.debugassistant;
 
-import cz.cuni.mff.d3s.been.cluster.ClusterConfiguration;
+import java.util.Collection;
+import java.util.Properties;
+
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
-import com.hazelcast.core.HazelcastInstance;
-import cz.cuni.mff.d3s.been.cluster.Instance;
-import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Properties;
+import com.hazelcast.core.HazelcastInstance;
+
+import cz.cuni.mff.d3s.been.cluster.Instance;
+import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Kuba
- * Date: 25.03.13
- * Time: 14:20
- * To change this template use File | Settings | File Templates.
+ * Created with IntelliJ IDEA. User: Kuba Date: 25.03.13 Time: 14:20 To change
+ * this template use File | Settings | File Templates.
  */
 public class DebugAssistantRunner {
 	private static final Logger log = LoggerFactory.getLogger(DebugAssistantRunner.class);
@@ -37,8 +34,8 @@ public class DebugAssistantRunner {
 	private String groupPassword = "dev-pass";
 
 	/**
-	 * Run a software objectrepository node from command-line.
-	 *
+	 * Run a software repository node from command-line.
+	 * 
 	 * @param args
 	 *          None recognized
 	 */

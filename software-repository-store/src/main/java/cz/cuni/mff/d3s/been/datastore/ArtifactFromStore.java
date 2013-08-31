@@ -86,34 +86,25 @@ public class ArtifactFromStore implements Artifact {
 
 	@Override
 	public File getFile() {
-		File tmpFile = null;
+		File tmpFile;
 		try {
 			tmpFile = File.createTempFile("artifactFromStore", identifier.toString());
 		} catch (IOException e) {
-			log.error(
-					"Could not create buffer file for Artifact {} - {}",
-					identifier.toString(),
-					e.getMessage());
+			log.error("Could not create buffer file for Artifact {} - {}", identifier.toString(), e.getMessage());
 			return null;
 		}
-		FileOutputStream tempFileOs = null;
+		FileOutputStream tempFileOs;
 		try {
 			tempFileOs = new FileOutputStream(tmpFile);
 		} catch (IOException e) {
-			log.error(
-					"Could not open file \"{}\" for writing - {}.",
-					tmpFile.getAbsolutePath(),
-					e.getMessage());
+			log.error("Could not open file \"{}\" for writing - {}.", tmpFile.getAbsolutePath(), e.getMessage());
 			return null;
 		}
-		InputStream contentIs = null;
+		InputStream contentIs;
 		try {
 			contentIs = reader.getContentStream();
 		} catch (IOException e) {
-			log.error(
-					"Failed to retrieve source stream for Artifact {} - {}",
-					identifier.toString(),
-					e.getMessage());
+			log.error("Failed to retrieve source stream for Artifact {} - {}", identifier.toString(), e.getMessage());
 			IOUtils.closeQuietly(tempFileOs);
 			return null;
 		}

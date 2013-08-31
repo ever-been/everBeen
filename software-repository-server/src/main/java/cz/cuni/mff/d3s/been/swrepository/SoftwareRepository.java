@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.d3s.been.cluster.*;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
-import cz.cuni.mff.d3s.been.util.PropertyReader;
 import cz.cuni.mff.d3s.been.core.service.ServiceInfo;
 import cz.cuni.mff.d3s.been.core.service.ServiceState;
 import cz.cuni.mff.d3s.been.datastore.SoftwareStore;
@@ -31,17 +30,13 @@ public class SoftwareRepository implements IClusterService {
 	private ServiceInfo info;
 	private final ClusterContext clusterCtx;
 
-	private final PropertyReader propertyReader;
-
 	SoftwareRepository(ClusterContext clusterCtx, String beenId) {
 		this.clusterCtx = clusterCtx;
 		this.beenId = beenId;
-
-		this.propertyReader = PropertyReader.on(clusterCtx.getProperties());
 	}
 
 	/**
-	 * Initialize the objectrepository. HTTP server and data store must be set.
+	 * Initialize the repository. HTTP server and data store must be set.
 	 */
 	public void init() {
 		BpkRequestHandler bpkRequestHandler = new BpkRequestHandler(softwareStore);

@@ -71,13 +71,12 @@ public class BpkRequestHandler extends SkeletalRequestHandler {
 
 		response.setStatusCode(400);
 		log.error("Unknown request");
-		return;
 	}
 
 	private void handleListBpks(HttpResponse response) {
 		List<BpkIdentifier> list = store.listBpks();
 
-		StringEntity entity = null;
+		StringEntity entity;
 		try {
 			String jsonString = jsonUtils.serialize(list);
 			entity = new StringEntity(jsonString);
@@ -94,11 +93,11 @@ public class BpkRequestHandler extends SkeletalRequestHandler {
 	}
 
 	private void handleGetSingleBpk(HttpRequest request, HttpResponse response) {
-		BpkIdentifier bpkIdentifier = null;
+		BpkIdentifier bpkIdentifier;
 		try {
-			bpkIdentifier = jsonUtils.<BpkIdentifier> deserialize(
-					request.getFirstHeader(BPK_IDENTIFIER_HEADER_NAME).getValue(),
-					BpkIdentifier.class);
+			bpkIdentifier = jsonUtils.deserialize(
+                    request.getFirstHeader(BPK_IDENTIFIER_HEADER_NAME).getValue(),
+                    BpkIdentifier.class);
 		} catch (JsonException e) {
 			response.setStatusCode(400);
 			log.error("Could not read BPK identifier from request.");
@@ -108,7 +107,6 @@ public class BpkRequestHandler extends SkeletalRequestHandler {
 		final StoreReader bpkReader = store.getBpkReader(bpkIdentifier);
 		if (bpkReader == null) {
 			replyBadRequest(
-					request,
 					response,
 					String.format("Could not retrieve reader for BPK identifier %s", bpkIdentifier.toString()));
 			return;
@@ -124,11 +122,11 @@ public class BpkRequestHandler extends SkeletalRequestHandler {
 	}
 
 	private void handleListTaskDescriptors(HttpRequest request, HttpResponse response) {
-		BpkIdentifier bpkIdentifier = null;
+		BpkIdentifier bpkIdentifier;
 		try {
-			bpkIdentifier = jsonUtils.<BpkIdentifier> deserialize(
-					request.getFirstHeader(BPK_IDENTIFIER_HEADER_NAME).getValue(),
-					BpkIdentifier.class);
+			bpkIdentifier = jsonUtils.deserialize(
+                    request.getFirstHeader(BPK_IDENTIFIER_HEADER_NAME).getValue(),
+                    BpkIdentifier.class);
 		} catch (JsonException e) {
 			response.setStatusCode(400);
 			log.error("Could not read BPK identifier from request.");
@@ -140,7 +138,6 @@ public class BpkRequestHandler extends SkeletalRequestHandler {
 			descriptors = store.getTaskDescriptors(bpkIdentifier);
 		} catch (IOException e) {
 			replyBadRequest(
-					request,
 					response,
 					String.format("Could not convert Task Descriptors from XMLs in BPK file %s", bpkIdentifier.toString()));
 			return;
@@ -148,13 +145,12 @@ public class BpkRequestHandler extends SkeletalRequestHandler {
 
 		if (descriptors == null) {
 			replyBadRequest(
-					request,
 					response,
 					String.format("Could not retrieve descriptors reader for BPK identifier %s", bpkIdentifier.toString()));
 			return;
 		}
 
-		StringEntity entity = null;
+		StringEntity entity;
 		try {
 			String jsonString = jsonUtils.serialize(descriptors);
 			entity = new StringEntity(jsonString);
@@ -172,9 +168,9 @@ public class BpkRequestHandler extends SkeletalRequestHandler {
 	}
 
 	private void handleListTaskContextDescriptors(HttpRequest request, HttpResponse response) {
-		BpkIdentifier bpkIdentifier = null;
+		BpkIdentifier bpkIdentifier;
 		try {
-			bpkIdentifier = jsonUtils.<BpkIdentifier> deserialize(
+			bpkIdentifier = jsonUtils.deserialize(
 					request.getFirstHeader(BPK_IDENTIFIER_HEADER_NAME).getValue(),
 					BpkIdentifier.class);
 		} catch (JsonException e) {
@@ -188,7 +184,6 @@ public class BpkRequestHandler extends SkeletalRequestHandler {
 			descriptors = store.getTaskContextDescriptors(bpkIdentifier);
 		} catch (IOException e) {
 			replyBadRequest(
-					request,
 					response,
 					String.format("Could not convert Task Context Descriptors from XMLs in BPK file %s", bpkIdentifier.toString()));
 			return;
@@ -196,13 +191,12 @@ public class BpkRequestHandler extends SkeletalRequestHandler {
 
 		if (descriptors == null) {
 			replyBadRequest(
-					request,
 					response,
 					String.format("Could not retrieve descriptors reader for BPK identifier %s", bpkIdentifier.toString()));
 			return;
 		}
 
-		StringEntity entity = null;
+		StringEntity entity;
 		try {
 			String jsonString = jsonUtils.serialize(descriptors);
 			entity = new StringEntity(jsonString);
@@ -227,7 +221,7 @@ public class BpkRequestHandler extends SkeletalRequestHandler {
 					"Put request %s invalid, because it doesn't contain an entity.",
 					request.toString());
 			log.error(errorMessage);
-			replyBadRequest(request, response, errorMessage);
+			replyBadRequest(response, errorMessage);
 			return;
 		}
 
@@ -239,7 +233,7 @@ public class BpkRequestHandler extends SkeletalRequestHandler {
 		} catch (JsonException e) {
 			final String errorMessage = String.format("could not read BPK identifier from request %s.", request.toString());
 			log.error(errorMessage);
-			replyBadRequest(request, response, errorMessage);
+			replyBadRequest(response, errorMessage);
 			return;
 		}
 
@@ -249,7 +243,7 @@ public class BpkRequestHandler extends SkeletalRequestHandler {
 						"could not upload BPK '%s' - BPK already exists and only *-SNAPSHOT versions are allowed to be reuploaded.",
 						request.toString());
 				log.error(errorMessage);
-				replyBadRequest(request, response, errorMessage);
+				replyBadRequest(response, errorMessage);
 				return;
 			}
 		}
@@ -259,7 +253,7 @@ public class BpkRequestHandler extends SkeletalRequestHandler {
 			if (bpkPersister == null) {
 				final String errorMessage = String.format("Could not retrieve persister for BPK %s", bpkIdentifier.toString());
 				log.error(errorMessage);
-				replyBadRequest(request, response, errorMessage);
+				replyBadRequest(response, errorMessage);
 				return;
 			}
 			final InputStream requestFile = put.getEntity().getContent();

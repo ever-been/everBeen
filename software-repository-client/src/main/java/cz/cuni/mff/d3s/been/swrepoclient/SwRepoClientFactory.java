@@ -4,7 +4,7 @@ import cz.cuni.mff.d3s.been.datastore.SoftwareStore;
 
 public class SwRepoClientFactory {
 
-	final SoftwareStore softwareCache;
+	private final SoftwareStore softwareCache;
 
 	public SwRepoClientFactory(SoftwareStore softwareCache) {
 		this.softwareCache = softwareCache;

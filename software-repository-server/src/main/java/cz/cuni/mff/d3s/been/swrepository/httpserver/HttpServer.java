@@ -2,7 +2,6 @@ package cz.cuni.mff.d3s.been.swrepository.httpserver;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 
 import org.apache.http.impl.DefaultConnectionReuseStrategy;
 import org.apache.http.impl.DefaultHttpResponseFactory;
@@ -23,9 +22,7 @@ import org.slf4j.LoggerFactory;
  */
 public class HttpServer {
 
-	/** Class logger */
 	private static final Logger log = LoggerFactory.getLogger(HttpServer.class);
-	static final int MAX_CONNECTIONS = 50;
 
 	private final InetSocketAddress sockAddr;
 	private final HttpRequestHandlerRegistry handlerResolver;
@@ -40,7 +37,7 @@ public class HttpServer {
 	 *          Socket on which the server listens
 	 */
 	public HttpServer(InetSocketAddress sockAddr) {
-        this.sockAddr = sockAddr;
+		this.sockAddr = sockAddr;
 		this.handlerResolver = new HttpRequestHandlerRegistry();
 		this.params = new BasicHttpParams();
 	}
@@ -84,20 +81,9 @@ public class HttpServer {
 
 	/**
 	 * Stop the server (stop listeners)..
-	 * 
-	 * @throws HttpServerException
 	 */
 	public void stop() {
 		listenerThread.interrupt();
-	}
-
-	/**
-	 * Get the server's HTTP params
-	 * 
-	 * @return The params
-	 */
-	public HttpParams getParams() {
-		return params;
 	}
 
 	/**

@@ -1,6 +1,5 @@
 package cz.cuni.mff.d3s.been.bpk;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -26,16 +25,4 @@ public interface Bpk {
 	 *           when an I/O error occurs
 	 */
 	InputStream getInputStream() throws IOException;
-
-	/**
-	 * Get a file handle to the package's content.
-	 * 
-	 * @return A temporary defensive copy of the package's content, within a
-	 *         {@link java.io.File}
-	 * 
-	 * @deprecated Too much defensive copying involved in {@link java.io.File}
-	 *             operations + abstractions go to hell
-	 */
-	@Deprecated
-	File getFile();
 }

@@ -13,12 +13,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.d3s.been.bpk.ArtifactIdentifier;
-import cz.cuni.mff.d3s.been.util.JSONUtils;
-import cz.cuni.mff.d3s.been.util.JsonException;
 import cz.cuni.mff.d3s.been.datastore.ArtifactStore;
 import cz.cuni.mff.d3s.been.datastore.StorePersister;
 import cz.cuni.mff.d3s.been.datastore.StoreReader;
 import cz.cuni.mff.d3s.been.swrepository.httpserver.SkeletalRequestHandler;
+import cz.cuni.mff.d3s.been.util.JSONUtils;
+import cz.cuni.mff.d3s.been.util.JsonException;
 
 /**
  * A request handler that deals with artifact requests.
@@ -47,9 +47,9 @@ public class ArtifactRequestHandler extends SkeletalRequestHandler {
 
 	@Override
 	public void handleGet(HttpRequest request, HttpResponse response) {
-		ArtifactIdentifier artifactIdentifier = null;
+		ArtifactIdentifier artifactIdentifier;
 		try {
-			artifactIdentifier = jsonUtils.<ArtifactIdentifier> deserialize(
+			artifactIdentifier = jsonUtils.deserialize(
 					request.getFirstHeader(ARTIFACT_IDENTIFIER_HEADER_NAME).getValue(),
 					ArtifactIdentifier.class);
 		} catch (JsonException e) {
@@ -61,7 +61,6 @@ public class ArtifactRequestHandler extends SkeletalRequestHandler {
 		final StoreReader artifactReader = store.getArtifactReader(artifactIdentifier);
 		if (artifactReader == null) {
 			replyBadRequest(
-					request,
 					response,
 					String.format("Could not retrieve reader for artifact identifier %s", artifactIdentifier.toString()));
 			return;
@@ -84,7 +83,7 @@ public class ArtifactRequestHandler extends SkeletalRequestHandler {
 					"Put request %s invalid, because it doesn't contain an entity.",
 					request.toString());
 			log.error(errorMessage);
-			replyBadRequest(request, response, errorMessage);
+			replyBadRequest(response, errorMessage);
 			return;
 		}
 
@@ -98,7 +97,7 @@ public class ArtifactRequestHandler extends SkeletalRequestHandler {
 					"could not read artifact identifier from request %s.",
 					request.toString());
 			log.error(errorMessage);
-			replyBadRequest(request, response, errorMessage);
+			replyBadRequest(response, errorMessage);
 			return;
 		}
 
@@ -109,7 +108,7 @@ public class ArtifactRequestHandler extends SkeletalRequestHandler {
 						"Could not retrieve persister for artifact %s",
 						artifactIdentifier.toString());
 				log.error(errorMessage);
-				replyBadRequest(request, response, errorMessage);
+				replyBadRequest(response, errorMessage);
 				return;
 			}
 			final InputStream requestFile = put.getEntity().getContent();

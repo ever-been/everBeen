@@ -7,12 +7,8 @@ import java.net.ServerSocket;
 import java.net.UnknownHostException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Properties;
-import java.util.Random;
+import java.util.*;
 
-import cz.cuni.mff.d3s.been.swrepoclient.SwRepositoryClientException;
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.artifact.Artifact;
 import org.codehaus.plexus.util.FileUtils;
@@ -27,11 +23,12 @@ import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.datastore.SoftwareStore;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClient;
 import cz.cuni.mff.d3s.been.swrepoclient.SwRepoClientFactory;
+import cz.cuni.mff.d3s.been.swrepoclient.SwRepositoryClientException;
 import cz.cuni.mff.d3s.been.swrepository.httpserver.HttpServer;
 import cz.cuni.mff.d3s.been.swrepository.httpserver.HttpServerException;
 
 /**
- * A simulation of actual software objectrepository use-cases. Consists in running a
+ * A simulation of actual software repository use-cases. Consists in running a
  * {@link SoftwareRepository} server and launching clients against it, testing
  * whether the right responses and files are obtained.
  * 
@@ -59,8 +56,7 @@ public class TestSoftwareRepositoryTransportByHTTP extends Assert {
 
 		private void startServer() throws IOException, HttpServerException {
 			// find a random free socket
-			ServerSocket probeSocket = null;
-			probeSocket = new ServerSocket(0);
+			ServerSocket probeSocket = new ServerSocket(0);
 
 			final int port = probeSocket.getLocalPort();
 			final InetAddress addr = probeSocket.getInetAddress();
@@ -68,9 +64,7 @@ public class TestSoftwareRepositoryTransportByHTTP extends Assert {
 			server = new HttpServer(new InetSocketAddress(addr, port));
 			SoftwareStore dataStore = FSBasedStore.createServer(new Properties());
 			server.getResolver().register("/bpk*", new BpkRequestHandler(dataStore));
-			server.getResolver().register(
-					"/artifact*",
-					new ArtifactRequestHandler(dataStore));
+			server.getResolver().register("/artifact*", new ArtifactRequestHandler(dataStore));
 			server.start();
 			rule.host = server.getHost().getHostName();
 			rule.port = server.getPort();
@@ -97,8 +91,7 @@ public class TestSoftwareRepositoryTransportByHTTP extends Assert {
 
 		@Override
 		public Statement apply(Statement base, Description description) {
-			if (description.getMethodName() != null && description.getMethodName().endsWith(
-					"_serverDown")) {
+			if (description.getMethodName() != null && description.getMethodName().endsWith("_serverDown")) {
 				host = "localhost";
 				port = 0; // markup for random free port allocation
 				return base;
@@ -112,9 +105,9 @@ public class TestSoftwareRepositoryTransportByHTTP extends Assert {
 	private static final File SERVER_PERSISTENCE_ROOT_FOLDER = new File(".swrepository");
 	/** Root folder of the client's persistence. */
 	private static final File CLIENT_PERSISTENCE_ROOT_FOLDER = new File(".swcache");
-    /** Software package store */
+	/** Software package store */
 	private final SoftwareStore dataStore;
-    /** Software objectrepository client factory */
+	/** software repository client factory */
 	private final SwRepoClientFactory clientFactory;
 
 	public TestSoftwareRepositoryTransportByHTTP() {
@@ -138,9 +131,7 @@ public class TestSoftwareRepositoryTransportByHTTP extends Assert {
 	 */
 	@Before
 	public void fillFields() throws IOException {
-		randomContentFile = File.createTempFile(
-				"testSwRepoTraffic",
-				"randomContent");
+		randomContentFile = File.createTempFile("testSwRepoTraffic", "randomContent");
 		FileWriter fw = new FileWriter(randomContentFile);
 		Random random = new Random(System.currentTimeMillis());
 		for (int i = 0; i < 1024; ++i) {
@@ -163,9 +154,7 @@ public class TestSoftwareRepositoryTransportByHTTP extends Assert {
 	@Before
 	public void setUpClient() throws UnknownHostException {
 		// assuming JUnit4 runner executes @Rules before @Before methods
-		client = clientFactory.getClient(
-				serverAllocatorRule.getHost(),
-				serverAllocatorRule.getPort());
+		client = clientFactory.getClient(serverAllocatorRule.getHost(), serverAllocatorRule.getPort());
 	}
 
 	/**
@@ -207,24 +196,24 @@ public class TestSoftwareRepositoryTransportByHTTP extends Assert {
 				bpkId.getVersion());
 	}
 
-    @Test (expected = SwRepositoryClientException.class)
+	@Test(expected = SwRepositoryClientException.class)
 	public void testUploadBpk_duplicateEntry() throws Exception {
-        try {
-		    client.putBpk(bpkId, new FileInputStream(randomContentFile));
-        } catch (Exception e) {
-            fail("unexpected exception");
-        }
+		try {
+			client.putBpk(bpkId, new FileInputStream(randomContentFile));
+		} catch (Exception e) {
+			fail("unexpected exception");
+		}
 		client.putBpk(bpkId, new FileInputStream(randomContentFile));
 	}
 
-    @Test (expected = SwRepositoryClientException.class)
-	public void testUploadBpk_badIdentifier()throws Exception {
+	@Test(expected = SwRepositoryClientException.class)
+	public void testUploadBpk_badIdentifier() throws Exception {
 		bpkId.setBpkId(null);
 		client.putBpk(bpkId, new FileInputStream(randomContentFile));
 	}
 
-	@Test (expected = SwRepositoryClientException.class)
-	public void testUploadBpk_serverDown()throws Exception {
+	@Test(expected = SwRepositoryClientException.class)
+	public void testUploadBpk_serverDown() throws Exception {
 		client.putBpk(bpkId, new FileInputStream(randomContentFile));
 	}
 
@@ -318,19 +307,14 @@ public class TestSoftwareRepositoryTransportByHTTP extends Assert {
 				bpkId.getVersion());
 		assertNotNull(fileInCache);
 		assertTrue(fileInCache.exists());
-		assertEquals(
-				IOUtils.toString(bpkFileStream),
-				FileUtils.fileRead(fileInCache));
+		assertEquals(IOUtils.toString(bpkFileStream), FileUtils.fileRead(fileInCache));
 	}
 
 	@Test
 	public void testDownloadArtifact() throws IOException {
 		File serverFile = getFileFromPathAndName(
 				SERVER_PERSISTENCE_ROOT_FOLDER,
-				String.format(
-						"%s-%s.jar",
-						artifactId.getArtifactId(),
-						artifactId.getVersion()),
+				String.format("%s-%s.jar", artifactId.getArtifactId(), artifactId.getVersion()),
 				"artifacts",
 				artifactId.getGroupId(),
 				artifactId.getArtifactId(),
@@ -344,9 +328,7 @@ public class TestSoftwareRepositoryTransportByHTTP extends Assert {
 		Artifact artifact = client.getArtifact(artifactId);
 		assertNotNull(artifact);
 		assertFalse(artifact.getFile().equals(serverFile));
-		assertEquals(
-				FileUtils.fileRead(serverFile),
-				FileUtils.fileRead(artifact.getFile()));
+		assertEquals(FileUtils.fileRead(serverFile), FileUtils.fileRead(artifact.getFile()));
 	}
 
 	@Test
@@ -359,10 +341,7 @@ public class TestSoftwareRepositoryTransportByHTTP extends Assert {
 	public void testDownloadArtifact_serverDown() throws IOException {
 		File serverFile = getFileFromPathAndName(
 				SERVER_PERSISTENCE_ROOT_FOLDER,
-				String.format(
-						"%s-%s.jar",
-						artifactId.getArtifactId(),
-						artifactId.getVersion()),
+				String.format("%s-%s.jar", artifactId.getArtifactId(), artifactId.getVersion()),
 				"artifacts",
 				artifactId.getGroupId(),
 				artifactId.getArtifactId(),
@@ -381,10 +360,7 @@ public class TestSoftwareRepositoryTransportByHTTP extends Assert {
 	public void testDownloadArtifactInCache_serverDown() throws IOException {
 		File cacheFile = getFileFromPathAndName(
 				CLIENT_PERSISTENCE_ROOT_FOLDER,
-				String.format(
-						"%s-%s.jar",
-						artifactId.getArtifactId(),
-						artifactId.getVersion()),
+				String.format("%s-%s.jar", artifactId.getArtifactId(), artifactId.getVersion()),
 				"artifacts",
 				artifactId.getGroupId(),
 				artifactId.getArtifactId(),
@@ -399,9 +375,7 @@ public class TestSoftwareRepositoryTransportByHTTP extends Assert {
 		assertNotNull(artifact);
 		assertNotNull(artifact.getFile());
 		assertTrue(artifact.getFile().exists());
-		assertEquals(
-				FileUtils.fileRead(cacheFile),
-				FileUtils.fileRead(artifact.getFile()));
+		assertEquals(FileUtils.fileRead(cacheFile), FileUtils.fileRead(artifact.getFile()));
 	}
 
 	@Test
@@ -409,36 +383,31 @@ public class TestSoftwareRepositoryTransportByHTTP extends Assert {
 		client.putArtifact(artifactId, new FileInputStream(randomContentFile));
 		File serverItem = getFileFromPathAndName(
 				SERVER_PERSISTENCE_ROOT_FOLDER,
-				String.format(
-						"%s-%s.jar",
-						artifactId.getArtifactId(),
-						artifactId.getVersion()),
+				String.format("%s-%s.jar", artifactId.getArtifactId(), artifactId.getVersion()),
 				"artifacts",
 				artifactId.getGroupId(),
 				artifactId.getArtifactId(),
 				artifactId.getVersion());
 		assertNotNull(serverItem);
 		assertTrue(serverItem.exists());
-		assertEquals(
-				FileUtils.fileRead(randomContentFile),
-				FileUtils.fileRead(serverItem));
+		assertEquals(FileUtils.fileRead(randomContentFile), FileUtils.fileRead(serverItem));
 	}
 
-	@Test (expected = SwRepositoryClientException.class)
-	public void testUploadArtifact_serverDown() throws Exception  {
-        client.putArtifact(artifactId, new FileInputStream(randomContentFile));
+	@Test(expected = SwRepositoryClientException.class)
+	public void testUploadArtifact_serverDown() throws Exception {
+		client.putArtifact(artifactId, new FileInputStream(randomContentFile));
 	}
 
-    /* will be useful to assertFalse once the behavior has changed to the desired version
+	/* will be useful to assertFalse once the behavior has changed to the desired version
 	@Test (expected = SwRepositoryClientException.class)
 	public void testUploadArtifact_duplicateEntry() throws Exception  {
-        try {
-            client.putArtifact(artifactId, new FileInputStream(randomContentFile));
-        } catch (Exception e) {
-            fail("unexpected exception");
-        }
+	    try {
+	        client.putArtifact(artifactId, new FileInputStream(randomContentFile));
+	    } catch (Exception e) {
+	        fail("unexpected exception");
+	    }
 
-        client.putArtifact(artifactId, new FileInputStream(randomContentFile));
+	    client.putArtifact(artifactId, new FileInputStream(randomContentFile));
 
 	}  */
 
@@ -464,21 +433,9 @@ public class TestSoftwareRepositoryTransportByHTTP extends Assert {
 	 * @throws IOException
 	 *           On reference or actual file read error
 	 */
-	public void assertFilePresent(
-			File root,
-			String fileName,
-			String storeName,
-			File referenceFile,
-			String groupId,
-			String itemId,
-			String itemVersion) throws IOException {
-		final File file = getFileFromPathAndName(
-				root,
-				fileName,
-				storeName,
-				groupId,
-				itemId,
-				itemVersion);
+	public void assertFilePresent(File root, String fileName, String storeName, File referenceFile, String groupId,
+			String itemId, String itemVersion) throws IOException {
+		final File file = getFileFromPathAndName(root, fileName, storeName, groupId, itemId, itemVersion);
 		assertTrue(file.exists());
 		final String actualFileContent = FileUtils.fileRead(referenceFile);
 		final String referenceFileContent = FileUtils.fileRead(file);
@@ -500,34 +457,18 @@ public class TestSoftwareRepositoryTransportByHTTP extends Assert {
 	 * @param itemVersion
 	 *          itemVersion of tested file
 	 */
-	public void assertFileAbsent(
-			File root,
-			String fileName,
-			String storeName,
-			String groupId,
-			String itemId,
+	public void assertFileAbsent(File root, String fileName, String storeName, String groupId, String itemId,
 			String itemVersion) {
-		final File file = getFileFromPathAndName(
-				root,
-				fileName,
-				storeName,
-				groupId,
-				itemId,
-				itemVersion);
+		final File file = getFileFromPathAndName(root, fileName, storeName, groupId, itemId, itemVersion);
 		assertFalse(file.exists());
 	}
-	private File getFileFromPathAndName(
-			File root,
-			String fileName,
-			String storeName,
-			String groupId,
-			String itemId,
+	private File getFileFromPathAndName(File root, String fileName, String storeName, String groupId, String itemId,
 			String itemVersion) {
 
-		List<String> pathItemList = new LinkedList<String>();
-		for (String grpIdPart : groupId.split("\\.")) {
-			pathItemList.add(grpIdPart);
-		}
+		List<String> pathItemList = new LinkedList();
+
+		pathItemList.addAll(Arrays.asList(groupId.split("\\.")));
+
 		pathItemList.add(itemId);
 		pathItemList.add(itemVersion);
 		Path path = FileSystems.getDefault().getPath(

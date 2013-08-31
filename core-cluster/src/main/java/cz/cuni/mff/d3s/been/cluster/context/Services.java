@@ -31,7 +31,7 @@ public class Services {
 
 	/**
 	 * @return {@link ServiceInfo} of registered Repository or null if Software
-	 *         objectrepository has not been registered yes.
+	 *         repository has not been registered yes.
 	 */
 	public ServiceInfo getSWRepositoryInfo() {
 		Object swRepObject = getServicesMap().get(SWRepositoryServiceInfoConstants.SERVICE_NAME);
@@ -67,7 +67,7 @@ public class Services {
 	}
 
 	/**
-	 * Removes the entry about software objectrepository from the map that holds
+	 * Removes the entry about software repository from the map that holds
 	 * information about BEEN services.
 	 */
 	public void removeSoftwareRepositoryInfo() {

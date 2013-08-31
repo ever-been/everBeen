@@ -52,12 +52,12 @@ class HttpSwRepoClient implements SwRepoClient {
 	private static final Logger log = LoggerFactory.getLogger(HttpSwRepoClient.class);
 
 	/**
-	 * Hostname where the software objectrepository resides
+	 * Hostname where the software repository resides
 	 */
 	private final String hostname;
 
 	/**
-	 * Port on which the software objectrepository listens
+	 * Port on which the software repository listens
 	 */
 	private final Integer port;
 
@@ -72,12 +72,12 @@ class HttpSwRepoClient implements SwRepoClient {
 	private final JSONUtils jsonUtils;
 
 	/**
-	 * Constructs new software objectrepository client
+	 * Constructs new software repository client
 	 * 
 	 * @param hostname
-	 *          hostname on which the software objectrepository is running
+	 *          hostname on which the software repository is running
 	 * @param port
-	 *          port on which the software objectrepository is running
+	 *          port on which the software repository is running
 	 * @param softwareCache
 	 *          initialized software cache
 	 */
@@ -92,7 +92,9 @@ class HttpSwRepoClient implements SwRepoClient {
 	// API IMPLEMENTATION METHODS
 	// --------------------------------------
 	@Override
-	public void putArtifact(ArtifactIdentifier artifactIdentifier, InputStream artifactInputStream) throws SwRepositoryClientException {
+	public
+			void
+			putArtifact(ArtifactIdentifier artifactIdentifier, InputStream artifactInputStream) throws SwRepositoryClientException {
 		if (artifactIdentifier == null) {
 			String msg = "Failed to upload Artifact - artifact meta-info was null.";
 			log.error(msg);
@@ -157,7 +159,7 @@ class HttpSwRepoClient implements SwRepoClient {
 		Map<String, TaskContextDescriptor> convertedDescriptors = new HashMap<>();
 		if (jsonDescriptors != null) {
 			for (Map.Entry<String, String> entry : jsonDescriptors.entrySet()) {
-				BindingParser<TaskContextDescriptor> parser = null;
+				BindingParser<TaskContextDescriptor> parser;
 				try {
 					parser = XSD.TASK_CONTEXT_DESCRIPTOR.createParser(TaskContextDescriptor.class);
 					convertedDescriptors.put(entry.getKey(), parser.parse(new ByteArrayInputStream(entry.getValue().getBytes())));
@@ -183,7 +185,7 @@ class HttpSwRepoClient implements SwRepoClient {
 		Map<String, TaskDescriptor> convertedDescriptors = new HashMap<>();
 		if (jsonDescriptors != null) {
 			for (Map.Entry<String, String> entry : jsonDescriptors.entrySet()) {
-				BindingParser<TaskDescriptor> parser = null;
+				BindingParser<TaskDescriptor> parser;
 				try {
 					parser = XSD.TASK_DESCRIPTOR.createParser(TaskDescriptor.class);
 					convertedDescriptors.put(entry.getKey(), parser.parse(new ByteArrayInputStream(entry.getValue().getBytes())));
@@ -201,9 +203,9 @@ class HttpSwRepoClient implements SwRepoClient {
 	// =====================================
 
 	/**
-	 * Synthesize the URI of the software objectrepository from internals
+	 * Synthesize the URI of the software repository from internals
 	 * 
-	 * @return the URI of the objectrepository
+	 * @return the URI of the repository
 	 * @throws URISyntaxException
 	 *           When some of the internals are malformed
 	 */
@@ -216,7 +218,9 @@ class HttpSwRepoClient implements SwRepoClient {
 	}
 
 	/**
-	 * Ask the objectrepository for a Maven artifact by HTTP
+	 * Ask the repository for a Maven artifact by HTTP
+	 * 
+	 * @return found artifact or null when artifact was not found
 	 */
 	private Artifact getArtifactByHTTP(ArtifactIdentifier artifactIdentifier) {
 		Header header = new Header(ARTIFACT_IDENTIFIER_HEADER_NAME, artifactIdentifier);
@@ -229,9 +233,6 @@ class HttpSwRepoClient implements SwRepoClient {
 		StorePersister sp = softwareCache.getArtifactPersister(artifactIdentifier);
 		try {
 			sp.dump(is);
-		} catch (IOException e) {
-			log.error("Failed to cache Artifact {} locally - {}", artifactIdentifier.toString(), e.getMessage());
-			return null;
 		} finally {
 			IOUtils.closeQuietly(is);
 		}
@@ -245,7 +246,7 @@ class HttpSwRepoClient implements SwRepoClient {
 	}
 
 	/**
-	 * Ask the objectrepository for a BPK by HTTP
+	 * Ask the repository for a BPK by HTTP
 	 */
 	private Bpk getBpkByHTTP(BpkIdentifier bpkIdentifier) {
 		Header header = new Header(BPK_IDENTIFIER_HEADER_NAME, bpkIdentifier);
@@ -258,9 +259,6 @@ class HttpSwRepoClient implements SwRepoClient {
 		StorePersister sp = softwareCache.getBpkPersister(bpkIdentifier);
 		try {
 			sp.dump(is);
-		} catch (IOException e) {
-			log.error("Failed to cache BPK {} locally - {}", bpkIdentifier.toString(), e.getMessage());
-			return null;
 		} finally {
 			IOUtils.closeQuietly(is);
 		}
@@ -274,7 +272,7 @@ class HttpSwRepoClient implements SwRepoClient {
 	}
 
 	/**
-	 * Do GET request on software objectrepository server and return deserialized object
+	 * Do GET request on software repository server and return deserialized object
 	 * of given type..
 	 * 
 	 * @param abstractUri
@@ -311,7 +309,7 @@ class HttpSwRepoClient implements SwRepoClient {
 	}
 
 	/**
-	 * Do GET request on software objectrepository server and return response input
+	 * Do GET request on software repository server and return response input
 	 * stream
 	 * 
 	 * @param abstractUri
@@ -373,7 +371,7 @@ class HttpSwRepoClient implements SwRepoClient {
 	}
 
 	/**
-	 * Do PUT request with given objectstream as body message.
+	 * Do PUT request with given object stream as body message.
 	 * 
 	 * @param abstractUri
 	 *          abstract part of uri for get request
@@ -382,7 +380,8 @@ class HttpSwRepoClient implements SwRepoClient {
 	 * @param headers
 	 *          request headers
 	 * @throws SwRepositoryClientException
-	 *           if PUT operation cannot be performed from some reason. Reason can be one of following;
+	 *           if PUT operation cannot be performed from some reason. Reason can
+	 *           be one of following;
 	 *           <ul>
 	 *           <li>'objectStreamToPut' is null</li>
 	 *           <li>PUT request URI was not correctly synthesized</li>
@@ -391,7 +390,9 @@ class HttpSwRepoClient implements SwRepoClient {
 	 *           <li>response status was not of type 2xx</li>
 	 *           </ul>
 	 */
-	private void doPutStream(String abstractUri, InputStream objectStreamToPut, Header... headers) throws SwRepositoryClientException {
+	private
+			void
+			doPutStream(String abstractUri, InputStream objectStreamToPut, Header... headers) throws SwRepositoryClientException {
 
 		if (objectStreamToPut == null) {
 			String msg = "Failed to PUT item to software repository - object given to send was null";
@@ -451,8 +452,8 @@ class HttpSwRepoClient implements SwRepoClient {
 	 * Internal representation of http header.
 	 */
 	private static final class Header {
-		public String key;
-		public Object value;
+		public final String key;
+		public final Object value;
 
 		public Header(String key, Object value) {
 			this.key = key;
