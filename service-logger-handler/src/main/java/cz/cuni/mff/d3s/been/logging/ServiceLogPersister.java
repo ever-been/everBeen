@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.hazelcast.core.IQueue;
 
+import com.hazelcast.core.RuntimeInterruptedException;
 import cz.cuni.mff.d3s.been.BeenPackageIdentifier;
 import cz.cuni.mff.d3s.been.cluster.IClusterService;
 import cz.cuni.mff.d3s.been.cluster.Names;
@@ -183,7 +184,7 @@ public class ServiceLogPersister implements IClusterService {
 			try {
 				logPersistence.put(new EntityCarrier().withId(Entities.LOG_SERVICE.getId()).withData(
 						jsonUtils.serialize(serviceMessage)));
-			} catch (InterruptedException e) {
+			} catch (InterruptedException | RuntimeInterruptedException e) {
 				System.err.println(String.format(
 						"Cannot log following message to cluster: threads handling distributed data structures were unexpectedly interrupted.\n%s",
 						polledMsg.toString()));
