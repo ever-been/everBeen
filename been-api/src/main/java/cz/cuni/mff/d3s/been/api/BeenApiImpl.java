@@ -605,7 +605,7 @@ final class BeenApiImpl implements BeenApi {
 
 		final SwRepoClient client = getSwRepoClient(errorMsg);
 		try {
-			return client.getBpk(bpkIdentifier).getInputStream();
+			return client.getBpkNoCache(bpkIdentifier).getInputStream();
 		} catch (Exception e) {
 			throw createBeenApiException(errorMsg, e);
 		}
