@@ -16,7 +16,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
-			<artifactId>core-utils</artifactId>
+			<artifactId>util</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 	</dependencies>

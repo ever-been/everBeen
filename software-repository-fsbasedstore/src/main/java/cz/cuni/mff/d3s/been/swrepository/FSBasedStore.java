@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import cz.cuni.mff.d3s.been.util.PropertyReader;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -21,7 +22,6 @@ import org.slf4j.LoggerFactory;
 import cz.cuni.mff.d3s.been.bpk.ArtifactIdentifier;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.bpk.BpkNames;
-import cz.cuni.mff.d3s.been.core.PropertyReader;
 import cz.cuni.mff.d3s.been.datastore.SoftwareStore;
 import cz.cuni.mff.d3s.been.datastore.StorePersister;
 import cz.cuni.mff.d3s.been.datastore.StoreReader;
