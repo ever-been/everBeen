@@ -1,17 +1,17 @@
 package cz.cuni.mff.d3s.been.taskapi;
 
-import cz.cuni.mff.d3s.been.util.PropertyReader;
-import cz.cuni.mff.d3s.been.core.StatusCode;
-import cz.cuni.mff.d3s.been.core.TaskMessageType;
-import cz.cuni.mff.d3s.been.core.TaskPropertyNames;
-import cz.cuni.mff.d3s.been.core.persistence.EntityID;
-import cz.cuni.mff.d3s.been.mq.MessagingException;
-import cz.cuni.mff.d3s.been.persistence.DAOException;
-import cz.cuni.mff.d3s.been.results.Result;
+import java.util.Properties;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Properties;
+import cz.cuni.mff.d3s.been.core.StatusCode;
+import cz.cuni.mff.d3s.been.core.TaskMessageType;
+import cz.cuni.mff.d3s.been.core.TaskPropertyNames;
+import cz.cuni.mff.d3s.been.mq.MessagingException;
+import cz.cuni.mff.d3s.been.persistence.DAOException;
+import cz.cuni.mff.d3s.been.results.Result;
+import cz.cuni.mff.d3s.been.util.PropertyReader;
 
 /**
  * @author Kuba Brecka
@@ -27,7 +27,7 @@ public abstract class Task {
 
 	/**
 	 * Returns ID of the running task.
-	 *
+	 * 
 	 * @return ID of the running task
 	 */
 	public String getId() {
@@ -36,7 +36,7 @@ public abstract class Task {
 
 	/**
 	 * Returns context ID the running task is associated with.
-	 *
+	 * 
 	 * @return context ID associated with the running task
 	 */
 	public String getContextId() {
@@ -45,7 +45,7 @@ public abstract class Task {
 
 	/**
 	 * Returns benchmark ID of the running task.
-	 *
+	 * 
 	 * @return benchmark ID of the running task
 	 */
 	public String getBenchmarkId() {
@@ -54,8 +54,9 @@ public abstract class Task {
 
 	/**
 	 * Returns system property associated with the running task.
-	 *
-	 * @param propertyName name of the property
+	 * 
+	 * @param propertyName
+	 *          name of the property
 	 * @return value associated with the name
 	 */
 	public String getProperty(String propertyName) {
@@ -65,7 +66,7 @@ public abstract class Task {
 	/**
 	 * Creates a {@link PropertyReader} from environment properties of the
 	 * {@link Task} which are passed to it by it's Host Runtime
-	 *
+	 * 
 	 * @return {@link PropertyReader} initialized from environment properties of
 	 *         the {@link Task}
 	 */
@@ -79,8 +80,9 @@ public abstract class Task {
 
 	/**
 	 * Returns system property associated with the running task or default value
-	 *
-	 * @param propertyName name of the property
+	 * 
+	 * @param propertyName
+	 *          name of the property
 	 * @return value associated with the name or the default value when the
 	 *         property is not set
 	 */
@@ -97,10 +99,13 @@ public abstract class Task {
 	 * Stores a {@link Result} on behalf of the Task.
 	 * <p/>
 	 * taskId, contextId and contextId will be filled in to the result.
-	 *
-	 * @param result Result to persist
-	 * @param group  Group of the result
-	 * @throws DAOException when result cannot be persisted
+	 * 
+	 * @param result
+	 *          Result to persist
+	 * @param group
+	 *          Group of the result
+	 * @throws DAOException
+	 *           when result cannot be persisted
 	 */
 	public void store(final Result result, final String group) throws DAOException {
 		long time = System.currentTimeMillis();
@@ -118,7 +123,7 @@ public abstract class Task {
 	/**
 	 * The method which sets up task's environment and calls
 	 * {@link #run(String[])}.
-	 *
+	 * 
 	 * @param args
 	 */
 	public int doMain(String[] args) {
@@ -156,7 +161,7 @@ public abstract class Task {
 		try {
 			Messages.send(String.format("%s#%s", TaskMessageType.TASK_RUNNING, id));
 		} catch (MessagingException e) {
-			// message passing does not work, try it with stderr ...
+			// message passing does not work, log it with stderr ...
 			System.err.println("Cannot send \"i'm running\" message");
 		}
 	}
@@ -171,8 +176,7 @@ public abstract class Task {
 		try {
 			Messages.terminate();
 		} catch (MessagingException e) {
-			// TODO consider System.err instead, since this probably means that the log pipe is broken 
-			log.error("Failed to release Messaging");
+			System.err.println("Failed to release Messaging");
 		}
 	}
 }

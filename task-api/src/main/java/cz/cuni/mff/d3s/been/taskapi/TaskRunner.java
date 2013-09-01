@@ -15,7 +15,7 @@ import java.util.Arrays;
  * 
  * @author Martin Sixta
  */
-public class TaskRunner {
+public final class TaskRunner {
 	public static void main(String[] args) {
 		if (args.length < 1) {
 			System.err.println("Name of the class to run is expected.");

@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 /**
  * @author Kuba Brecka
  */
-public class TaskLoggerFactory implements ILoggerFactory {
+public final class TaskLoggerFactory implements ILoggerFactory {
 
 	@Override
 	public Logger getLogger(String name) {
