@@ -41,9 +41,11 @@
                 <t:pageLink t:page="result/download" t:context="result.id" class="btn">download</t:pageLink>
             </td>
             <td>
-                <t:pageLink t:page="result/delete" t:context="result.id" class="btn btn-danger"
-                            onclick="return window.confirm('Are you sure?');">delete
-                </t:pageLink>
+                <t:eventLink class="btn btn-danger" t:event="deleteResult"
+                             t:context="result.id"
+                             onclick="if (window.confirm('Are you sure?')) location.href=jQuery(this).attr('href'); return false;">
+                    Delete
+                </t:eventLink>
             </td>
 
             <p:empty>

@@ -9,6 +9,7 @@ import cz.cuni.mff.d3s.been.api.BeenApiException;
 import cz.cuni.mff.d3s.been.evaluators.EvaluatorResult;
 import cz.cuni.mff.d3s.been.persistence.DAOException;
 import cz.cuni.mff.d3s.been.web.components.Layout;
+import cz.cuni.mff.d3s.been.web.model.ResultSupport;
 import cz.cuni.mff.d3s.been.web.pages.Page;
 
 /**
@@ -37,6 +38,11 @@ public class Detail extends Page {
 
 	Link getResultIframeUrl() {
 		return pageRenderLinkSource.createPageRenderLinkWithContext(Raw.class, resultId);
+	}
+
+	Object onDeleteResult(String resultId) throws BeenApiException, InterruptedException {
+		new ResultSupport(getApi()).deleteResult(resultId);
+		return List.class;
 	}
 
 }
