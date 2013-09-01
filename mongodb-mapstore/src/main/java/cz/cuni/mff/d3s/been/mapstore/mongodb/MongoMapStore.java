@@ -16,6 +16,8 @@
 package cz.cuni.mff.d3s.been.mapstore.mongodb;
 
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -35,18 +37,31 @@ import cz.cuni.mff.d3s.been.core.task.TaskEntry;
  */
 public class MongoMapStore implements MapStore, MapLoaderLifecycleSupport {
 
-	private static final String FAILED_STORE_MIRROR_MAP_SUFFIX = "STORE_FAILED_MIRROR";
+	protected static final Logger log = LoggerFactory.getLogger(MongoMapStore.class);
+
+	private static final String FAILED_STORE_MIRROR_MAP_SUFFIX = "FAILOVER";
+
+	// name of the Hazelcast List where are stored all names of already loaded maps
 	private static final String LOADED_LIST = "LOADED_LIST";
+
+	// TODO - consider configurable delay and period
+	private static final long FLUSH_INITIAL_DELAY_SECONDS = 180;
+	private static final long FLUSH_PERIOD_SECONDS = 180;
 
 	private HazelcastInstance hazelcastInstance;
 
+	// name of the map which is covered by this mapstore
 	private String mapName;
+
+	// name of the failover map for map covered by this mapstore
 	private String failedStoreMapName;
+
 	private MongoDBConverter converter;
 	private DBCollection coll;
 	private MongoTemplate mongoTemplate;
 
-	protected static final Logger log = LoggerFactory.getLogger(MongoMapStore.class);
+	// tells us if map covered by this mapstore has been already loaded into memory
+	private volatile boolean mapIsLoaded;
 
 	public MongoMapStore(MongoTemplate mongoTemplate) {
 		this.mongoTemplate = mongoTemplate;
@@ -56,18 +71,14 @@ public class MongoMapStore implements MapStore, MapLoaderLifecycleSupport {
 		return hazelcastInstance.getMap(failedStoreMapName);
 	}
 
+	private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
 	@Override
 	public void store(Object key, Object value) {
-		IMap failedStoreMap = getFailedStoreMap();
 		if (!storePersistent(key, value)) {
-			failedStoreMap.put(key, value);
+			getFailedStoreMap().put(key, value);
 		} else {
-			if (failedStoreMap.size() > 0) {
-				if (failedStoreMap.lockMap(5, TimeUnit.SECONDS)) {
-					resolveFailedObjects(failedStoreMap);
-					failedStoreMap.unlockMap();
-				}
-			}
+			resolveFailedObjects();
 		}
 	}
 
@@ -76,6 +87,7 @@ public class MongoMapStore implements MapStore, MapLoaderLifecycleSupport {
 		for (Object key : map.keySet()) {
 			store(key, map.get(key));
 		}
+		resolveFailedObjects();
 	}
 
 	@Override
@@ -154,6 +166,8 @@ public class MongoMapStore implements MapStore, MapLoaderLifecycleSupport {
 			return map;
 		} catch (Throwable t) {
 			log.warn("Cannot load collection from MongoDB", t);
+		} finally {
+			mapIsLoaded = true;
 		}
 		return null;
 	}
@@ -203,10 +217,17 @@ public class MongoMapStore implements MapStore, MapLoaderLifecycleSupport {
 		this.hazelcastInstance = hazelcastInstance;
 		this.coll = mongoTemplate.getCollection(this.mapName);
 		this.converter = new SpringMongoDBConverter(mongoTemplate);
+
+		scheduleFailoverMapFlusher();
 	}
 
 	@Override
-	public void destroy() {}
+	public void destroy() {
+		// the last attempt to save the cluster from this mapstore. If this is the last node in the cluster and
+		// failover map is not empty, cluster will be in inconsistent state after restart - maybe recoverable,
+		// maybe not.
+		resolveFailedObjects();
+	}
 
 	private boolean deletePersistent(Object key) {
 		try {
@@ -224,21 +245,44 @@ public class MongoMapStore implements MapStore, MapLoaderLifecycleSupport {
 		return true;
 	}
 
-	private void resolveFailedObjects(IMap failedStoreMap) {
-		for (Object failedKey : failedStoreMap.keySet()) {
-			Object failedValue = failedStoreMap.get(failedKey);
-			if (failedValue == null) {
-				if (deletePersistent(failedKey)) {
-					break;
+	private synchronized void resolveFailedObjects() {
+		IMap failedStoreMap = getFailedStoreMap();
+
+		if (failedStoreMap.size() > 0 && failedStoreMap.lockMap(5, TimeUnit.SECONDS)) {
+			try {
+				for (Object failedKey : failedStoreMap.keySet()) {
+					Object failedValue = failedStoreMap.get(failedKey);
+					if (failedValue == null) {
+						if (deletePersistent(failedKey)) {
+							break;
+						}
+						failedStoreMap.remove(failedKey);
+					} else {
+						if (storePersistent(failedKey, failedValue)) {
+							break;
+						}
+						failedStoreMap.remove(failedKey);
+					}
 				}
-				failedStoreMap.remove(failedKey);
-			} else {
-				if (storePersistent(failedKey, failedValue)) {
-					break;
-				}
-				failedStoreMap.remove(failedKey);
+			} finally {
+				failedStoreMap.unlockMap();
 			}
 		}
+	}
+
+	private void scheduleFailoverMapFlusher() {
+		final Runnable flusher = new Runnable() {
+			public void run() {
+				if (mapIsLoaded) {
+					try {
+						resolveFailedObjects();
+					} catch (Exception e) {
+						log.error(String.format("Periodic flushing of map '%s' failed", mapName), e);
+					}
+				}
+			}
+		};
+		scheduler.scheduleAtFixedRate(flusher, FLUSH_INITIAL_DELAY_SECONDS, FLUSH_PERIOD_SECONDS, TimeUnit.SECONDS);
 	}
 
 	private boolean storePersistent(Object key, Object value) {
