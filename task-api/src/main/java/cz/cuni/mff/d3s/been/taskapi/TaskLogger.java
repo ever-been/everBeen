@@ -17,7 +17,7 @@ import cz.cuni.mff.d3s.been.util.JsonException;
  * @author Kuba Brecka
  * @author Martin Sixta
  */
-class TaskLogger extends TaskLoggerBase {
+final class TaskLogger extends TaskLoggerBase {
 
 	private static final LogLevel DEFAULT_LOG_LEVEL = LogLevel.INFO;
 
@@ -78,7 +78,6 @@ class TaskLogger extends TaskLoggerBase {
 		}
 
 		try {
-			// TODO magic string
 			String msg = String.format("%s#%s", LOG_MESSAGE.toString(), serializedMsg);
 			Messages.send(msg);
 		} catch (Exception e) {
@@ -89,7 +88,8 @@ class TaskLogger extends TaskLoggerBase {
 
 	private String createJsonLogMessage(int level, String message, Throwable t) throws JsonException {
 
-		TaskLogMessage logMsg = new TaskLogMessage().withMessage(new LogMessage(name, level, message).withThreadName().withThrowable(t));
+		TaskLogMessage logMsg = new TaskLogMessage().withMessage(new LogMessage(name, level, message).withThreadName().withThrowable(
+				t));
 		logMsg.withTaskId(taskId).withContextId(contextId).withBenchmarkId(benchmarkId);
 
 		return jsonUtils.serialize(logMsg);

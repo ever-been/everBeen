@@ -16,7 +16,7 @@ import cz.cuni.mff.d3s.been.socketworks.NamedSockets;
  * 
  * @author Martin Sixta
  */
-public final class Messages {
+final class Messages {
 
 	private static IMessageQueue<String> taskMessageQueue = null;
 	private static IMessageSender<String> defaultSender = null;
@@ -24,10 +24,11 @@ public final class Messages {
 	/**
 	 * Creates independent sender. Such a sender can be used in a different thread
 	 * for a task with such needs.
-	 *
+	 * 
 	 * @return The sender
-     *
-	 * @throws MessagingException When the sender cannot be created (queue reference broken)
+	 * 
+	 * @throws MessagingException
+	 *           When the sender cannot be created (queue reference broken)
 	 */
 	public static synchronized IMessageSender<String> createHRSender() throws MessagingException {
 		if (taskMessageQueue == null) {
@@ -55,9 +56,11 @@ public final class Messages {
 	 * The method is synchronized, if you send a lot messages consider creating a
 	 * sender with {@link #createHRSender()}.
 	 * 
-	 * @param msg Message to send
-     *
-	 * @throws MessagingException On transport error when sending
+	 * @param msg
+	 *          Message to send
+	 * 
+	 * @throws MessagingException
+	 *           On transport error when sending
 	 */
 	public static synchronized void send(String msg) throws MessagingException {
 		if (defaultSender == null) {
