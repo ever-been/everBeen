@@ -190,11 +190,5 @@
 			<name>EverBEEN snapshot artifactory</name>
 			<url>http://everbeen.cz/artifactory/libs-snapshot-local</url>
 		</repository>
-
-		<repository>
-			<id>everbeen.cz-release</id>
-			<name>EverBEEN release artifactory</name>
-			<url>http://everbeen.cz/artifactory/libs-release-local</url>
-		</repository>
 	</distributionManagement>
 </project>
