@@ -5,11 +5,11 @@ package cz.cuni.mff.d3s.been.persistence;
  *
  * @author darklight
  */
-public class AttributeFilterBuilder {
-	private final QueryBuilder queryBuilder;
+public class AttributeFilterBuilder<T extends QueryBuilderBase> {
+	private final T queryBuilder;
 	private final String attributeName;
 
-	AttributeFilterBuilder(QueryBuilder queryBuilder, String attributeName) {
+	AttributeFilterBuilder(T queryBuilder, String attributeName) {
 		this.queryBuilder = queryBuilder;
 		this.attributeName = attributeName;
 	}
@@ -21,7 +21,7 @@ public class AttributeFilterBuilder {
 	 *
 	 * @return The query builder, with added selector
 	 */
-	public QueryBuilder equal(Object value) {
+	public T equal(Object value) {
 		queryBuilder.selectors.put(attributeName, createEqFilter(value));
 		return queryBuilder;
 	}
@@ -33,7 +33,7 @@ public class AttributeFilterBuilder {
 	 *
 	 * @return The query builder, with added selector
 	 */
-	public QueryBuilder differentFrom(Object value) {
+	public T differentFrom(Object value) {
 		queryBuilder.selectors.put(attributeName, createNotEqFilter(value));
 		return queryBuilder;
 	}
@@ -45,7 +45,7 @@ public class AttributeFilterBuilder {
 	 *
 	 * @return The query builder, with added selector
 	 */
-	public QueryBuilder like(String pattern) {
+	public T like(String pattern) {
 		queryBuilder.selectors.put(attributeName, createPatternFilter(pattern));
 		return queryBuilder;
 	}
@@ -57,7 +57,7 @@ public class AttributeFilterBuilder {
 	 *
 	 * @return The query builder, with added selector
 	 */
-	public QueryBuilder above(Object value) {
+	public T above(Object value) {
 		queryBuilder.selectors.put(attributeName, createIntervalFilter(value, null));
 		return queryBuilder;
 	}
@@ -69,7 +69,7 @@ public class AttributeFilterBuilder {
 	 *
 	 * @return The query builder, with added selector
 	 */
-	public QueryBuilder below(Object value) {
+	public T below(Object value) {
 		queryBuilder.selectors.put(attributeName, createIntervalFilter(null, value));
 		return queryBuilder;
 	}
@@ -82,7 +82,7 @@ public class AttributeFilterBuilder {
 	 *
 	 * @return The query builder, with added selector
 	 */
-	public QueryBuilder between(Object lowBound, Object highBound) {
+	public T between(Object lowBound, Object highBound) {
 		queryBuilder.selectors.put(attributeName, createIntervalFilter(lowBound, highBound));
 		return queryBuilder;
 	}

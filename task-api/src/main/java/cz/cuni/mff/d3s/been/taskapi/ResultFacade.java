@@ -2,7 +2,6 @@ package cz.cuni.mff.d3s.been.taskapi;
 
 import java.util.Collection;
 
-import cz.cuni.mff.d3s.been.core.persistence.EntityID;
 import cz.cuni.mff.d3s.been.persistence.DAOException;
 import cz.cuni.mff.d3s.been.persistence.Query;
 import cz.cuni.mff.d3s.been.results.Result;
@@ -26,34 +25,31 @@ public interface ResultFacade {
 
 	/**
 	 * Create a result persister bound to a specific entity (determines target
-	 * collection)
+	 * collection in database)
 	 * 
-	 * @param entityId
-	 *          Id of the entity to bind to
-	 * 
+	 * @param group Name of the result group to store to
+	 *
 	 * @return The persister
 	 * 
 	 * @throws DAOException
 	 *           If the persister cannot be created
 	 */
-	ResultPersister createResultPersister(EntityID entityId) throws DAOException;
+	Persister createResultPersister(String group) throws DAOException;
 
 	/**
 	 * Persist a single result. Note that a persister is internally created for
 	 * this action. If you want to store multiple results into the same target
-	 * collection, use
-	 * {@link #createResultPersister(cz.cuni.mff.d3s.been.core.persistence.EntityID)}
+	 * collection, use {@link #createResultPersister(java.lang.String)}
 	 * first and then use the persister object for storage.
 	 * 
 	 * @param result
 	 *          Result to store
-	 * @param entityId
-	 *          ID of the result entity (determines target collection)
-	 * 
+	 * @param group Name of the result group to store to
+	 *
 	 * @throws DAOException
 	 *           If the result cannot be stored
 	 */
-	void persistResult(Result result, EntityID entityId) throws DAOException;
+	void persistResult(Result result, String group) throws DAOException;
 
 	/**
 	 * Retrieve results based on the id of targeted entity and a selector (query).
@@ -73,6 +69,8 @@ public interface ResultFacade {
 	/**
 	 * Delete some results. Actually, don't do this, it won't save you from the
 	 * raptors.
+	 *
+	 * Note: the funny comments and the commented-out method are still here because deleting from tasks is prohibited.
 	 * 
 	 * @param deleteQuery
 	 *          Delete some results. Or something...
