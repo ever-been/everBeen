@@ -37,7 +37,7 @@
 
                 <t:if test="isConnected()">
                     <li style="float: right;">
-                        <t:pageLink t:context="disconnect">Disconnect</t:pageLink>
+                        <t:pageLink t:page="disconnect">Disconnect</t:pageLink>
                     </li>
                 </t:if>
             </ul>
