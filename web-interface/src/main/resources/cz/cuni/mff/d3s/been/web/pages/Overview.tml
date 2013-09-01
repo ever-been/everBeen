@@ -36,9 +36,9 @@
                             <i class="icon-laptop"></i>
                         </td>
                         <td>
-                            <t:pageLink t:page="runtime/detail" t:context="runtime.id">
+                            <a href="${getRuntimeDetailLink(runtime.id)}">
                                 <t:output format="idFormat" value="runtime.id"/>
-                            </t:pageLink>
+                            </a>
                         </td>
                         <td>${runtime.host}:${runtime.port}</td>
                         <td>${runtime.operatingSystem.name} (${runtime.operatingSystem.arch})</td>
@@ -49,15 +49,15 @@
                         <td>
                             <t:if test="isRuntimeFullExclusive()">
                                 task:
-                                <t:pageLink t:page="task/detail" t:context="runtime.exclusiveId">
+                                <a href="${getTaskDetailLink(runtime.exclusiveId)}">
                                     <t:output format="idFormat" value="runtime.exclusiveId"/>
-                                </t:pageLink>
+                                </a>
                                 <p:else>
                                     <t:if test="isRuntimeContextExclusive()">
                                         context:
-                                        <t:pageLink t:page="context/detail" t:context="runtime.exclusiveId">
+                                        <a href="${getContextDetailLink(runtime.exclusiveId)}">
                                             <t:output format="idFormat" value="runtime.exclusiveId"/>
-                                        </t:pageLink>
+                                        </a>
                                         <p:else>
                                             &mdash;
                                         </p:else>
@@ -99,9 +99,9 @@
                                 <tr>
                                     <td>
                                         <t:if test="isFirstInContext()">
-                                            <t:pageLink t:page="context/detail" t:context="task.taskContextId">
+                                            <a href="${getContextDetailLink(task.taskContextId)}">
                                                 <t:output format="idFormat" value="task.taskContextId"/>
-                                            </t:pageLink>
+                                            </a>
                                         </t:if>
                                     </td>
                                     <td>
@@ -112,10 +112,18 @@
                                             </p:else>
                                         </t:if>
                                     </td>
+
                                     <td>
-                                        <t:pageLink t:page="task/detail" t:context="task.id">
-                                            <t:output format="idFormat" value="task.id"/>
-                                        </t:pageLink>
+                                        <t:if test="taskBenchmark(task)">
+                                            <a href="${getBenchmarkDetailLink(task.benchmarkId)}">
+                                                <t:output format="idFormat" value="task.benchmarkId"/>
+                                            </a>
+                                            <p:else>
+                                                <a href="${getTaskDetailLink(task.id)}">
+                                                    <t:output format="idFormat" value="task.id"/>
+                                                </a>
+                                            </p:else>
+                                        </t:if>
                                     </td>
                                     <td>${task.taskDescriptor.name}</td>
                                     <td>

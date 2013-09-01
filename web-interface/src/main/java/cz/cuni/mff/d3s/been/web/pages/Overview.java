@@ -2,11 +2,11 @@ package cz.cuni.mff.d3s.been.web.pages;
 
 import java.util.*;
 
-import javax.inject.Inject;
-
 import org.apache.tapestry5.Block;
 import org.apache.tapestry5.annotations.Import;
 import org.apache.tapestry5.annotations.Property;
+import org.apache.tapestry5.ioc.annotations.Inject;
+import org.apache.tapestry5.services.Request;
 import org.apache.tapestry5.services.ajax.AjaxResponseRenderer;
 import org.apache.tapestry5.services.ajax.JavaScriptCallback;
 import org.apache.tapestry5.services.javascript.JavaScriptSupport;
@@ -53,6 +53,21 @@ public class Overview extends Page {
 
 	@Property
 	private int taskIndex;
+
+	private static String contextPath;
+
+	@Inject
+	private Request request;
+
+	public Object onActivate() {
+		if (contextPath == null) {
+			contextPath = request.getContextPath();
+			if (contextPath.startsWith("/") || contextPath.startsWith("\\")) {
+				contextPath = contextPath.substring(1);
+			}
+		}
+		return super.onActivate();
+	}
 
 	public Block onRuntimesUpdated(final Collection<RuntimeInfo> message) {
 		runtimes = message;
@@ -136,5 +151,21 @@ public class Overview extends Page {
 
 	public boolean isRuntimeContextExclusive() {
 		return TaskExclusivity.valueOf(runtime.getExclusivity()) == TaskExclusivity.CONTEXT_EXCLUSIVE;
+	}
+
+	public String getContextDetailLink(String contextId) {
+		return contextPath + "context/detail/" + contextId;
+	}
+
+	public String getTaskDetailLink(String taskId) {
+		return contextPath + "/task/detail/" + taskId;
+	}
+
+	public String getBenchmarkDetailLink(String benchmarkId) {
+		return contextPath + "/benchmark/detail/" + benchmarkId;
+	}
+
+	public String getRuntimeDetailLink(String runtimeId) {
+		return contextPath + "/runtime/detail/" + runtimeId;
 	}
 }
