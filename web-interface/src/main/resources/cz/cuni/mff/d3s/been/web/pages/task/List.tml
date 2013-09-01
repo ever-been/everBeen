@@ -24,15 +24,15 @@
                 <tr class="data">
                     <td>
                         <i class="icon-book"></i>&nbsp;
-                        <a href="/context/detail/${task.taskContextId}">
+                        <t:pageLink t:page="context/detail" t:context="task.taskContextId">
                             <t:output format="idFormat" value="task.taskContextId"/>
-                        </a>
+                        </t:pageLink>
                     </td>
                     <td>
                         <i class="icon-beaker"></i>&nbsp;
-                        <a href="/task/detail/${task.id}">
+                        <t:pageLink t:page="task/detail" t:context="task.id">
                             <t:output format="idFormat" value="task.id"/>
-                        </a>
+                        </t:pageLink>
                     </td>
                     <td>${task.taskDescriptor.type}</td>
                     <td>${task.taskDescriptor.name}</td>
@@ -41,16 +41,16 @@
                     </td>
                     <td>
                         <i class="icon-laptop"></i>&nbsp;
-                        <a href="/runtime/detail/${task.runtimeId}">
+                        <t:pageLink t:page="runtime/detail" t:context="task.runtimeId">
                             <t:output format="idFormat" value="task.runtimeId"/>
-                        </a>
+                        </t:pageLink>
                     </td>
                     <td>
                         <t:if test="task.benchmarkId">
                             <i class="icon-rocket"></i>&nbsp;
-                            <a href="/benchmark/detail/${task.benchmarkId}">
+                            <t:pageLink t:page="benchmark/detail" t:context="task.benchmarkId">
                                 <t:output format="idFormat" value="task.benchmarkId"/>
-                            </a>
+                            </t:pageLink>
                         </t:if>
                     </td>
                     <td>
@@ -70,8 +70,6 @@
         </t:loop>
     </table>
 
-    <!-- TODO -->
-    <script src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script>
     <script>
         $(document).ready(function() {
         if ($("#tasklist tr.data").size()) {

@@ -9,6 +9,7 @@ import java.util.*;
 
 import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.ioc.annotations.Inject;
+import org.apache.tapestry5.services.PageRenderLinkSource;
 import org.apache.tapestry5.services.Request;
 
 import cz.cuni.mff.d3s.been.api.BeenApiException;
@@ -38,18 +39,13 @@ public class List extends Page {
 
 	private Map<RuntimeInfo, java.util.List<String>> oldWrkDirs = new HashMap<>();
 
-	public String getCurrentFilter() {
-		String filter = request.getParameter("filter");
-		if (filter == null)
-			return "";
-		return filter;
-	}
+	@Property
+	private String filter;
 
 	@Property
-	Collection<RuntimeInfo> runtimes;
+	private Collection<RuntimeInfo> runtimes;
 
 	public void onActivate() throws BeenApiException {
-		String filter = request.getParameter("filter");
 		if (filter == null || filter.isEmpty()) {
 			runtimes = this.api.getApi().getRuntimes();
 		} else {
@@ -64,6 +60,16 @@ public class List extends Page {
 				}
 			}
 		}
+	}
+	public void onActivate(String filter) throws BeenApiException {
+		this.filter = filter;
+	}
+
+	@Inject
+	private PageRenderLinkSource pageRenderLinkSource;
+
+	public Object onActionFromFilterForm() {
+		return pageRenderLinkSource.createPageRenderLinkWithContext(List.class, filter);
 	}
 
 	public String getRowClass(RuntimeInfo runtime) throws BeenApiException {

@@ -8,14 +8,14 @@
         Task ${itemId} was not found
         <p:else>
             <div style="float: right; text-align: right;">
-                <button class="btn btn-success" onclick="location.href='/task/logs/${task.id}'; return false;">Show task
+                <t:pageLink class="btn btn-success" t:page="task/logs" t:context="task.id">Show task
                     logs
-                </button>
+                </t:pageLink>
                 <br/>
                 <br/>
-                <button class="btn btn-success" onclick="location.href='/task/history/${task.id}'; return false;">State
+                <t:pageLink class="btn btn-success" t:page="task/history" t:context="task.id">State
                     change history
-                </button>
+                </t:pageLink>
                 <br/>
                 <br/>
                 <t:if test="isTaskInFinalState(task.id)">
@@ -63,27 +63,27 @@
                 <dd>
                     <t:if test="task.runtimeId">
                         <i class="icon-laptop"></i>&nbsp;
-                        <a href="/runtime/detail/${task.runtimeId}">
+                        <t:pageLink t:page="runtime/detail" t:context="task.runtimeId">
                             <t:output format="idFormat" value="task.runtimeId"/>
-                        </a>
+                        </t:pageLink>
                     </t:if>
                 </dd>
 
                 <dt>Task Context ID:</dt>
                 <dd>
                     <i class="icon-book"></i>&nbsp;
-                    <a href="/context/detail/${task.taskContextId}">
+                    <t:pageLink t:page="context/detail" t:context="task.taskContextId">
                         <t:output format="idFormat" value="task.taskContextId"/>
-                    </a>
+                    </t:pageLink>
                 </dd>
 
                 <dt>Benchmark ID:</dt>
                 <dd>
                     <t:if test="task.benchmarkId">
                         <i class="icon-rocket"></i>&nbsp;
-                        <a href="/benchmark/detail/${task.benchmarkId}">
+                        <t:pageLink t:page="benchmark/detail" t:context="task.benchmarkId">
                             <t:output format="idFormat" value="task.benchmarkId"/>
-                        </a>
+                        </t:pageLink>
                     </t:if>
                 </dd>
             </dl>

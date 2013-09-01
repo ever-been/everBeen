@@ -41,9 +41,9 @@
                 <dt>Generator task:</dt>
                 <dd>
                     <i class="icon-beaker"></i>&nbsp;
-                    <a href="/task/detail/${benchmark.generatorId}">
+                    <t:pageLink t:page="task/detail" t:context="${benchmark.generatorId}">
                         <t:output format="idFormat" value="benchmark.generatorId"/>
-                    </a>
+                    </t:pageLink>
                 </dd>
                 <dt>State:</dt>
                 <dd>
@@ -71,7 +71,9 @@
                     ${benchmark.allowResubmit}
                     <t:if test="benchmark.allowResubmit">
                         &nbsp;
-                        <a href="/benchmark/disallowresubmits/${benchmark.id}" class="btn btn-mini">disallow</a>
+                        <t:pageLink t:page="benchmark/disallowresubmits" t:context="${benchmark.id}"
+                                    class="btn btn-mini">disallow
+                        </t:pageLink>
                     </t:if>
                 </dd>
 
@@ -92,9 +94,9 @@
                         <t:loop source="contexts" value="context">
                             <tr>
                                 <td><i class="icon-book"></i>&nbsp;
-                                    <a href="/context/detail/${context.id}">
+                                    <t:pageLink t:page="context/detail" t:context="${context.id}">
                                         <t:output format="idFormat" value="context.id"/>
-                                    </a>
+                                    </t:pageLink>
                                 </td>
                                 <td>${context.taskContextDescriptor?.name}</td>
                                 <td>

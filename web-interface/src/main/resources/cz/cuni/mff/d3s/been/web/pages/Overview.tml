@@ -36,7 +36,7 @@
                             <i class="icon-laptop"></i>
                         </td>
                         <td>
-                            <a href="/runtime/detail/${runtime.id}">
+                            <a href="${getRuntimeDetailLink(runtime.id)}">
                                 <t:output format="idFormat" value="runtime.id"/>
                             </a>
                         </td>
@@ -49,13 +49,13 @@
                         <td>
                             <t:if test="isRuntimeFullExclusive()">
                                 task:
-                                <a href="/task/detail/${runtime.exclusiveId}">
+                                <a href="${getTaskDetailLink(runtime.exclusiveId)}">
                                     <t:output format="idFormat" value="runtime.exclusiveId"/>
                                 </a>
                                 <p:else>
                                     <t:if test="isRuntimeContextExclusive()">
                                         context:
-                                        <a href="/context/detail/${runtime.exclusiveId}">
+                                        <a href="${getContextDetailLink(runtime.exclusiveId)}">
                                             <t:output format="idFormat" value="runtime.exclusiveId"/>
                                         </a>
                                         <p:else>
@@ -99,7 +99,7 @@
                                 <tr>
                                     <td>
                                         <t:if test="isFirstInContext()">
-                                            <a href="/context/detail/${task.taskContextId}">
+                                            <a href="${getContextDetailLink(task.taskContextId)}">
                                                 <t:output format="idFormat" value="task.taskContextId"/>
                                             </a>
                                         </t:if>
@@ -112,10 +112,18 @@
                                             </p:else>
                                         </t:if>
                                     </td>
+
                                     <td>
-                                        <a href="/task/detail/${task.id}">
-                                            <t:output format="idFormat" value="task.id"/>
-                                        </a>
+                                        <t:if test="taskBenchmark(task)">
+                                            <a href="${getBenchmarkDetailLink(task.benchmarkId)}">
+                                                <t:output format="idFormat" value="task.benchmarkId"/>
+                                            </a>
+                                            <p:else>
+                                                <a href="${getTaskDetailLink(task.id)}">
+                                                    <t:output format="idFormat" value="task.id"/>
+                                                </a>
+                                            </p:else>
+                                        </t:if>
                                     </td>
                                     <td>${task.taskDescriptor.name}</td>
                                     <td>

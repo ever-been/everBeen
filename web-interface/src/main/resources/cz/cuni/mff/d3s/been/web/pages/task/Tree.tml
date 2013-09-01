@@ -7,8 +7,8 @@
 
     <div style="float: right; text-align: right;">
         <t:if t:test="swRepositoryOnline">
-            <button class="btn btn-primary" onclick="location.href='/task/submit'; return false;">Submit new item
-            </button>
+            <t:pageLink class="btn btn-primary" t:page="task/submit">Submit new item
+            </t:pageLink>
             <p:else>
                 <span class="text-warning">Software repository disconnected. Can't submit any new item.</span>
             </p:else>
@@ -91,9 +91,9 @@
                 </td>
                 <td>
                     <i class="icon-rocket"></i>&nbsp;
-                    <a href="/benchmark/detail/${benchmark.id}">
+                    <t:pageLink t:page="benchmark/detail" t:context="benchmark.id">
                         <t:output format="idFormat" value="benchmark.id"/>
-                    </a>
+                    </t:pageLink>
                 </td>
                 <td>
                     ${benchmarkName(benchmark.id)}
@@ -101,9 +101,9 @@
                 <td>
                     <i class="icon-beaker"></i>&nbsp;
                     <t:if t:test="benchmarkGenerator(benchmark)">
-                        <a href="/task/detail/${benchmark.generatorId}">
+                        <t:pageLink t:page="task/detail" t:context="benchmark.generatorId">
                             <t:output format="idFormat" value="benchmark.generatorId"/>
-                        </a>
+                        </t:pageLink>
                         <p:else>
                             deleted
                         </p:else>
@@ -155,9 +155,9 @@
                                 </td>
                                 <td>
                                     <i class="icon-book"></i>&nbsp;
-                                    <a href="/context/detail/${context.id}">
+                                    <t:pageLink t:page="context/detail" t:context="context.id">
                                         <t:output format="idFormat" value="context.id"/>
-                                    </a>
+                                    </t:pageLink>
                                 </td>
                                 <td>
                                     ${context.taskContextDescriptor.name}
@@ -177,9 +177,9 @@
                                         <t:loop source="tasksForContext(context.id)" value="task">
                                             <tr>
                                                 <td><i class="icon-beaker"></i>&nbsp;
-                                                    <a href="/task/detail/${task.id}">
+                                                    <t:pageLink t:page="task/detail" t:context="task.id">
                                                         <t:output format="idFormat" value="task.id"/>
-                                                    </a>
+                                                    </t:pageLink>
                                                 </td>
                                                 <td>${task.taskDescriptor.name}</td>
                                                 <td>
@@ -252,9 +252,9 @@
                     <td>
                         <t:if t:negate="true" test="taskIndex">
                             <i class="icon-book"></i>&nbsp;
-                            <a href="/context/detail/${task.taskContextId}">
+                            <t:pageLink t:page="context/detail" t:context="task.taskContextId">
                                 <t:output format="idFormat" value="task.taskContextId"/>
-                            </a>
+                            </t:pageLink>
                         </t:if>
                     </td>
                     <td>
@@ -265,9 +265,9 @@
                             </p:else>
                         </t:if>
                         &nbsp;
-                        <a href="/task/detail/${task.id}">
+                        <t:pageLink t:page="task/detail" t:context="task.id">
                             <t:output format="idFormat" value="task.id"/>
-                        </a>
+                        </t:pageLink>
                     </td>
                     <td>${task.taskDescriptor.name}</td>
                     <td>

@@ -3,47 +3,50 @@
 <html t:type="layout" section="section"
       xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd" xmlns:p="tapestry:parameter">
 
-<h2>Logs for task ${task.id}</h2>
+    <h2>Logs for task ${task.id}</h2>
 
-<table class="list logs" style="font-family: Courier; font-size: 11px;">
-	<thead>
-	<tr>
-		<th>Date</th>
-		<th>Task</th>
-		<th>Level</th>
-		<th>Class</th>
-		<th>Thread</th>
-		<th>Message</th>
-		<th>Error trace</th>
-	</tr>
-	</thead>
+    <table class="list logs" style="font-family: Courier; font-size: 11px;">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Task</th>
+                <th>Level</th>
+                <th>Class</th>
+                <th>Thread</th>
+                <th>Message</th>
+                <th>Error trace</th>
+            </tr>
+        </thead>
 
-	<t:loop source="logs" value="log">
-		<tr class="data loglevel-${log.message.level}" data-json="${jsonTaskLog(log)}">
-			<td>${timestampToString(log.created)}</td>
-			<td>
-				<i class="icon-beaker"></i>&nbsp;
-				<a href="/task/detail/${log.taskId}"><t:output format="idFormat" value="log.taskId" /></a>
-			</td>
-			<td>${logLevelToString(log.message.level)}</td>
-			<td>${shortClass(log.message)}</td>
-			<td>${log.message.threadName}</td>
-			<td>${shortLogMessage(log.message)}</td>
-			<td>
-				<t:if test="log.message.errorTrace">
-					<i class="icon-exclamation-sign"></i>
-				</t:if>
-			</td>
-		</tr>
+        <t:loop source="logs" value="log">
+            <tr class="data loglevel-${log.message.level}" data-json="${jsonTaskLog(log)}">
+                <td>${timestampToString(log.created)}</td>
+                <td>
+                    <i class="icon-beaker"></i>&nbsp;
+                    <t:pageLink t:page="task/detail" t:context="log.taskId}">
+                        <t:output format="idFormat" value="log.taskId"/>
+                    </t:pageLink>
+                </td>
+                <td>${logLevelToString(log.message.level)}</td>
+                <td>${shortClass(log.message)}</td>
+                <td>${log.message.threadName}</td>
+                <td>${shortLogMessage(log.message)}</td>
+                <td>
+                    <t:if test="log.message.errorTrace">
+                        <i class="icon-exclamation-sign"></i>
+                    </t:if>
+                </td>
+            </tr>
 
-		<p:empty>
-			<tr>
-				<td colspan="7">
-					<i class="icon-info-sign"></i> There are no logs.
-				</td>
-			</tr>
-		</p:empty>
-	</t:loop>
-</table>
+            <p:empty>
+                <tr>
+                    <td colspan="7">
+                        <i class="icon-info-sign"></i>
+                        There are no logs.
+                    </td>
+                </tr>
+            </p:empty>
+        </t:loop>
+    </table>
 
 </html>
