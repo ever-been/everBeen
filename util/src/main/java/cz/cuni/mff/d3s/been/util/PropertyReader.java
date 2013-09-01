@@ -67,13 +67,16 @@ public class PropertyReader {
 	 * @return Integer value of wanted property
 	 */
 	public Integer getInteger(String name, Integer defaultValue) {
-		final String propertyValue = properties.getProperty(name);
-		if (propertyValue == null)
+		final String propString= properties.getProperty(name);
+		if (propString == null) {
 			return defaultValue;
+		}
+		final String trimmedPropString = propString.trim();
+
 		try {
-			return Integer.parseInt(propertyValue);
+			return Integer.parseInt(trimmedPropString);
 		} catch (NumberFormatException e) {
-			log.warn("Cannot convert value '{}' of property '{}' to Integer", propertyValue, name, e);
+			log.warn("Cannot convert value '{}' of property '{}' to Integer", trimmedPropString, name, e);
 		}
 		return defaultValue; // return default value if anything goes wrong
 	}
@@ -99,10 +102,12 @@ public class PropertyReader {
 		if (propString == null) {
 			return defaultValue;
 		}
+		final String trimmedPropString = propString.trim();
+
 		try {
-			return Long.parseLong(propString);
+			return Long.parseLong(trimmedPropString);
 		} catch (NumberFormatException e) {
-			log.warn("Cannot convert value '{}' of property '{}' to Long");
+			log.warn("Cannot convert value '{}' of property '{}' to Long", trimmedPropString, name);
 		}
 		return defaultValue;
 	}
@@ -128,10 +133,12 @@ public class PropertyReader {
 		if (propString == null) {
 			return defaultValue;
 		}
+		final String trimmedPropString = propString.trim();
+
 		try {
-			return Float.parseFloat(propString);
+			return Float.parseFloat(trimmedPropString);
 		} catch (NumberFormatException e) {
-			log.warn("Cannot convert value '{}' of property '{}' to Float");
+			log.warn("Cannot convert value '{}' of property '{}' to Float", trimmedPropString, name);
 		}
 		return defaultValue;
 	}
@@ -157,15 +164,16 @@ public class PropertyReader {
 		if (propString == null) {
 			return defaultValue;
 		}
+		final String trimmedPropString = propString.trim();
 
 		// we are parsing it explicitly instead of Boolean.parseBoolean to log warning in case
 		// the string contains nonsense
-		if (propString.equalsIgnoreCase("true")) {
+		if (trimmedPropString.equalsIgnoreCase("true")) {
 			return true;
-		} else if (propString.equalsIgnoreCase("false")) {
+		} else if (trimmedPropString.equalsIgnoreCase("false")) {
 			return false;
 		} else {
-			log.warn("Cannot convert value '{}' of property '{}' to Boolean");
+			log.warn("Cannot convert value '{}' of property '{}' to Boolean", trimmedPropString, name);
 			return defaultValue;
 		}
 	}
