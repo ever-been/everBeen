@@ -5,12 +5,12 @@
 
     <h2>Packages Available in Software Repository</h2>
     <t:if t:negate="true" t:test="swRepositoryOnline">
-        You can't list packages because software repository is disconnected. Connect software repository and try it again.
+        You can't list packages because software repository is disconnected. Connect software repository and try it
+        again.
         <p:else>
             <div style="float: right; text-align: right;">
-                <button class="btn btn-primary" onclick="location.href='/bpkpackage/upload'; return false;">Upload new
-                    package
-                </button>
+                <t:pageLink class="btn btn-primary" t:page="bpkpackage/upload">Upload new package
+                </t:pageLink>
             </div>
 
             <table class="list wide">
@@ -29,9 +29,9 @@
                         <td>${pkg.bpkId}</td>
                         <td>${pkg.version}</td>
                         <td>
-                            <a href="/bpkpackage/download/${pkg.groupId}/${pkg.bpkId}/${pkg.version}"
-                               class="btn btn-small">download
-                            </a>
+                            <t:pageLink t:page="bpkpackage/download" t:context="[pkg.groupId, pkg.bpkId, pkg.version]"
+                                        class="btn btn-small">download
+                            </t:pageLink>
                         </td>
                     </tr>
 

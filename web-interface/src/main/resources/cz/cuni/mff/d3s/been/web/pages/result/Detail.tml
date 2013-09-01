@@ -9,14 +9,14 @@
 
         <p:else>
             <div style="float: right; text-align: right;">
-                <button class="btn btn-success" onclick="location.href='/result/download/${result.id}'; return false;">
+                <t:pageLink class="btn btn-success" t:page="result/download" t:context="result.id">
                     Download
-                </button>
+                </t:pageLink>
                 <br/>
                 <br/>
-                <a href="/result/delete/${result.id}" class="btn btn-danger"
-                   onclick="return window.confirm('Are you sure?');">Delete
-                </a>
+                <t:pageLink t:page="result/delete" t:context="result.id" class="btn btn-danger"
+                            onclick="return window.confirm('Are you sure?');">Delete
+                </t:pageLink>
             </div>
 
             <dl class="dl-horizontal">
@@ -32,9 +32,9 @@
                 <dd>
                     <t:if test="result.benchmarkId">
                         <i class="icon-rocket"></i>&nbsp;
-                        <a href="/benchmark/detail/${result.benchmarkId}">
+                        <t:pageLink t:page="benchmark/detail" t:context="result.benchmarkId">
                             <t:output format="idFormat" value="result.benchmarkId"/>
-                        </a>
+                        </t:pageLink>
                     </t:if>
                 </dd>
                 <dt>Filename:</dt>
@@ -47,7 +47,7 @@
                 </dd>
             </dl>
 
-            <iframe src="/result/raw/${result.id}" style="width: 100%; height: 600px; border: 2px solid gray;"></iframe>
+            <iframe src="${resultIframeUrl}" style="width: 100%; height: 600px; border: 2px solid gray;"></iframe>
 
 
         </p:else>

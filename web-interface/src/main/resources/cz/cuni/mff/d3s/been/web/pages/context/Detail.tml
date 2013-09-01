@@ -44,9 +44,9 @@
                 <dd>
                     <t:if test="context.benchmarkId">
                         <i class="icon-rocket"></i>&nbsp;
-                        <a href="/benchmark/detail/${context.benchmarkId}">
+                        <t:pageLink t:page="benchmark/detail" t:context="context.benchmarkId">
                             <t:output format="idFormat" value="context.benchmarkId"/>
-                        </a>
+                        </t:pageLink>
                     </t:if>
                 </dd>
             </dl>
@@ -72,9 +72,9 @@
                         <t:loop source="taskIds" value="taskId">
                             <tr>
                                 <td><i class="icon-beaker"></i>&nbsp;
-                                    <a href="/task/detail/${taskId}">
+                                    <t:pageLink t:page="task/detail" t:context="${taskId}">
                                         <t:output format="idFormat" value="taskId"/>
-                                    </a>
+                                    </t:pageLink>
                                 </td>
                                 <td>${taskEntryWithId(taskId)?.taskDescriptor.name}</td>
                                 <td>

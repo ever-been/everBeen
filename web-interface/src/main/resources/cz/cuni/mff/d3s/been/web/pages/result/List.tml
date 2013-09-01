@@ -3,54 +3,58 @@
 <html t:type="layout" section="section"
       xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd" xmlns:p="tapestry:parameter">
 
-<h2>Evaluator results</h2>
+    <h2>Evaluator results</h2>
 
-<table class="list wide">
-	<thead>
-	<tr>
-		<th>Result ID</th>
-		<th>Benchmark ID</th>
-		<th>Timestamp</th>
-		<th>Filename</th>
-		<th>MIME type</th>
-		<th></th>
-		<th></th>
-		<th></th>
-	</tr>
-	</thead>
+    <table class="list wide">
+        <thead>
+            <tr>
+                <th>Result ID</th>
+                <th>Benchmark ID</th>
+                <th>Timestamp</th>
+                <th>Filename</th>
+                <th>MIME type</th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
 
-	<tr t:type="loop" source="results" value="result">
-		<td>${result.id}</td>
-		<td>
-			<t:if test="result.benchmarkId">
-				<i class="icon-rocket"></i>&nbsp;
-				<a href="/benchmark/detail/${result.benchmarkId}"><t:output format="idFormat" value="result.benchmarkId" /></a>
-			</t:if>
-		</td>
-		<td>${timestampToString(result.timestamp)}</td>
-		<td>${result.filename}</td>
-		<td>${result.mimetype}</td>
-		<td>
-			<t:if test="mimeTypeSupported(result.mimetype)">
-				<a href="/result/detail/${result.id}" class="btn">show</a>
-			</t:if>
-		</td>
-		<td>
-			<a href="/result/download/${result.id}" class="btn">download</a>
-		</td>
-		<td>
-			<a href="/result/delete/${result.id}" class="btn btn-danger" onclick="return window.confirm('Are you sure?');">delete</a>
-		</td>
+        <tr t:type="loop" source="results" value="result">
+            <td>${result.id}</td>
+            <td>
+                <t:if test="result.benchmarkId">
+                    <i class="icon-rocket"></i>&nbsp;
+                    <t:pageLink t:page="benchmark/detail" t:context="result.benchmarkId">
+                        <t:output format="idFormat" value="result.benchmarkId"/>
+                    </t:pageLink>
+                </t:if>
+            </td>
+            <td>${timestampToString(result.timestamp)}</td>
+            <td>${result.filename}</td>
+            <td>${result.mimetype}</td>
+            <td>
+                <t:if test="mimeTypeSupported(result.mimetype)">
+                    <t:pageLink t:page="result/detail" t:context="result.id" class="btn">show</t:pageLink>
+                </t:if>
+            </td>
+            <td>
+                <t:pageLink t:page="result/download" t:context="result.id" class="btn">download</t:pageLink>
+            </td>
+            <td>
+                <t:pageLink t:page="result/delete" t:context="result.id" class="btn btn-danger"
+                            onclick="return window.confirm('Are you sure?');">delete
+                </t:pageLink>
+            </td>
 
-		<p:empty>
-			<tr>
-				<td colspan="6">
-					<i class="icon-info-sign"></i>
-					There are no results.
-				</td>
-			</tr>
-		</p:empty>
-	</tr>
-</table>
+            <p:empty>
+                <tr>
+                    <td colspan="6">
+                        <i class="icon-info-sign"></i>
+                        There are no results.
+                    </td>
+                </tr>
+            </p:empty>
+        </tr>
+    </table>
 
 </html>
