@@ -99,15 +99,13 @@ public abstract class Task {
 	 * taskId, contextId and contextId will be filled in to the result.
 	 *
 	 * @param result Result to persist
-	 * @param kind   Kind of the result
 	 * @param group  Group of the result
 	 * @throws DAOException when result cannot be persisted
 	 */
-	public void store(final Result result, final String kind, final String group) throws DAOException {
-		final EntityID entityID = new EntityID().withKind(kind).withGroup(group);
+	public void store(final Result result, final String group) throws DAOException {
 		long time = System.currentTimeMillis();
 		result.withTaskId(getId()).withContextId(getContextId()).withBenchmarkId(getBenchmarkId()).withCreated(time);
-		results.persistResult(result, entityID);
+		results.persistResult(result, group);
 	}
 
 	/**

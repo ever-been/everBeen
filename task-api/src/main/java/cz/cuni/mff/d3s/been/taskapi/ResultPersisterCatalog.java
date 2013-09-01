@@ -1,7 +1,7 @@
 package cz.cuni.mff.d3s.been.taskapi;
 
 /**
- * A registry that serves for unhooking released {@link ResultPersister} instances.
+ * A registry that serves for unhooking released {@link Persister} instances.
  */
 interface ResultPersisterCatalog {
 
@@ -10,5 +10,5 @@ interface ResultPersisterCatalog {
 	 *
 	 * @param persister Persister to release
 	 */
-	void unhook(ResultPersister persister);
+	void unhook(Persister persister);
 }

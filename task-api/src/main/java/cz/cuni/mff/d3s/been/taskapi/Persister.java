@@ -6,7 +6,7 @@ import cz.cuni.mff.d3s.been.results.Result;
 /**
  * Persister unit for results
  */
-public interface ResultPersister extends AutoCloseable {
+public interface Persister extends AutoCloseable {
 
 	/**
 	 * Persist a result

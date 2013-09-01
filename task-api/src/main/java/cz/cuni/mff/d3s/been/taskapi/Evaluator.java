@@ -44,7 +44,7 @@ public abstract class Evaluator extends Task {
 
 		final EntityID evaluatorId = Entities.RESULT_EVALUATOR.getId();
 
-		try (final ResultPersister rp = results.createResultPersister(evaluatorId)) {
+		try (final Persister rp = ((JSONResultFacade) results).createPersister(evaluatorId)) {
 			rp.persist(evaluatorResult);
 		}
 	}

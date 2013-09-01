@@ -26,14 +26,14 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 
 	private static final Logger log = LoggerFactory.getLogger(JSONResultFacade.class);
 
-	/** Whether this instance has been cleaned-up */
-	private boolean isPurged = false;
-
 	private final ObjectMapper om;
 	private final QuerySerializer querySerializer;
 	private final JSONUtils jsonUtils;
 	private final IMessageQueue<String> queue;
-	private final Collection<ResultPersister> allocatedPersisters;
+	private final Collection<Persister> allocatedPersisters;
+
+	/** Whether this instance has been cleaned-up */
+	private boolean isPurged = false;
 	String taskId, contextId, benchmarkId;
 
 	private JSONResultFacade(IMessageQueue<String> queue) {
@@ -70,7 +70,7 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 	}
 
 	@Override
-	public synchronized void persistResult(Result result, EntityID entityId) throws DAOException {
+	public synchronized void persistResult(Result result, String group) throws DAOException {
 		if (result == null) {
 			throw new DAOException("Cannot serialize a null object.");
 		}
@@ -82,7 +82,7 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 			throw new DAOException(String.format("Unable to serialize Result %s to JSON.", result.toString()), e);
 		}
 		ec = new EntityCarrier();
-		ec.setEntityId(entityId);
+		ec.setEntityId(new EntityID().withKind("result").withGroup(group));
 		ec.setEntityJSON(serializedResult);
 		log.trace("Facade serialized a result into >>{}<<", serializedResult);
 
@@ -189,13 +189,18 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 	}
 
 	@Override
-	public synchronized ResultPersister createResultPersister(EntityID entityId) throws DAOException {
+	public synchronized Persister createResultPersister(String group) throws DAOException {
+		final EntityID eid = new EntityID().withKind("result").withGroup(group);
+		return createPersister(eid);
+	}
+
+	synchronized Persister createPersister(EntityID entityID) throws DAOException {
 		if (isPurged) {
 			throw new DAOException("Result Facade is already purged!");
 		}
 
 		try {
-			final JSONResultPersister persister = new JSONResultPersister(entityId, queue.createSender(), this);
+			final JSONPersister persister = new JSONPersister(entityID, queue.createSender(), this);
 			allocatedPersisters.add(persister);
 			return persister;
 		} catch (MessagingException e) {
@@ -205,7 +210,7 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 	}
 
 	@Override
-	public synchronized void unhook(ResultPersister persister) {
+	public synchronized void unhook(Persister persister) {
 		if (allocatedPersisters.contains(persister)) {
 			allocatedPersisters.remove(persister);
 		}
@@ -215,9 +220,9 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 	synchronized void purge() {
 		isPurged = true;
 
-		Collection<ResultPersister> copy = new ArrayList<>(allocatedPersisters);
+		Collection<Persister> copy = new ArrayList<>(allocatedPersisters);
 
-		for (ResultPersister persister : copy) {
+		for (Persister persister : copy) {
 			log.warn("Persister {} was not closed, purging automatically", persister.toString());
 			persister.close();
 		}
@@ -251,7 +256,7 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 	 * 
 	 * @author darklight
 	 */
-	private class JSONResultPersister implements ResultPersister {
+	private class JSONPersister implements Persister {
 
 		private final EntityID entityId;
 		private final IMessageSender<String> sender;
@@ -267,7 +272,7 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 		 * @param unhookCatalog
 		 *          Catalog to use for uregistering once this persister is closed
 		 */
-		JSONResultPersister(EntityID entityId, IMessageSender<String> sender, ResultPersisterCatalog unhookCatalog) {
+		JSONPersister(EntityID entityId, IMessageSender<String> sender, ResultPersisterCatalog unhookCatalog) {
 			this.entityId = entityId;
 			this.sender = sender;
 			this.unhookCatalog = unhookCatalog;
