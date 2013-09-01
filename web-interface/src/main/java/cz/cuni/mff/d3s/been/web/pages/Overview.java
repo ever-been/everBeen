@@ -62,8 +62,8 @@ public class Overview extends Page {
 	public Object onActivate() {
 		if (contextPath == null) {
 			contextPath = request.getContextPath();
-			if (contextPath.startsWith("/") || contextPath.startsWith("\\")) {
-				contextPath = contextPath.substring(1);
+			if (contextPath.endsWith("/") || contextPath.endsWith("\\")) {
+				contextPath = contextPath.substring(0, contextPath.length() - 1);
 			}
 		}
 		return super.onActivate();
