@@ -23,7 +23,7 @@
                 <td>${timestampToString(log.created)}</td>
                 <td>
                     <i class="icon-beaker"></i>&nbsp;
-                    <t:pageLink t:page="task/detail" t:context="log.taskId}">
+                    <t:pageLink t:page="task/detail" t:context="log.taskId">
                         <t:output format="idFormat" value="log.taskId"/>
                     </t:pageLink>
                 </td>
