@@ -44,8 +44,9 @@ public class MongoMapStore implements MapStore, MapLoaderLifecycleSupport {
 	// name of the Hazelcast List where are stored all names of already loaded maps
 	private static final String LOADED_LIST = "LOADED_LIST";
 
-	private static final int FLUSH_INITIAL_DELAY = 30;
-	private static final int FLUSH_PERIOD = 30;
+	// TODO - consider configurable delay and period
+	private static final long FLUSH_INITIAL_DELAY_SECONDS = 180;
+	private static final long FLUSH_PERIOD_SECONDS = 180;
 
 	private HazelcastInstance hazelcastInstance;
 
@@ -86,6 +87,7 @@ public class MongoMapStore implements MapStore, MapLoaderLifecycleSupport {
 		for (Object key : map.keySet()) {
 			store(key, map.get(key));
 		}
+		resolveFailedObjects();
 	}
 
 	@Override
@@ -220,7 +222,12 @@ public class MongoMapStore implements MapStore, MapLoaderLifecycleSupport {
 	}
 
 	@Override
-	public void destroy() {}
+	public void destroy() {
+		// the last attempt to save the cluster from this mapstore. If this is the last node in the cluster and
+		// failover map is not empty, cluster will be in inconsistent state after restart - maybe recoverable,
+		// maybe not.
+		resolveFailedObjects();
+	}
 
 	private boolean deletePersistent(Object key) {
 		try {
@@ -275,7 +282,7 @@ public class MongoMapStore implements MapStore, MapLoaderLifecycleSupport {
 				}
 			}
 		};
-		scheduler.scheduleAtFixedRate(flusher, FLUSH_INITIAL_DELAY, FLUSH_PERIOD, TimeUnit.SECONDS);
+		scheduler.scheduleAtFixedRate(flusher, FLUSH_INITIAL_DELAY_SECONDS, FLUSH_PERIOD_SECONDS, TimeUnit.SECONDS);
 	}
 
 	private boolean storePersistent(Object key, Object value) {
