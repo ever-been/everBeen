@@ -67,8 +67,11 @@ public class MongoMapStore implements MapStore, MapLoaderLifecycleSupport {
 		this.mongoTemplate = mongoTemplate;
 	}
 
+
+    private IMap failedStoreMap;
+
 	public IMap getFailedStoreMap() {
-		return hazelcastInstance.getMap(failedStoreMapName);
+		return failedStoreMap;
 	}
 
 	private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
@@ -214,6 +217,7 @@ public class MongoMapStore implements MapStore, MapLoaderLifecycleSupport {
 			this.mapName = mapName;
 		}
 		this.failedStoreMapName = String.format("%s_%s", this.mapName, FAILED_STORE_MIRROR_MAP_SUFFIX);
+        this.failedStoreMap = hazelcastInstance.getMap(failedStoreMapName);
 		this.hazelcastInstance = hazelcastInstance;
 		this.coll = mongoTemplate.getCollection(this.mapName);
 		this.converter = new SpringMongoDBConverter(mongoTemplate);
