@@ -4,7 +4,6 @@ import static cz.cuni.mff.d3s.been.cluster.Names.ACTION_QUEUE_NAME;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -143,8 +142,6 @@ public final class HostRuntime implements IClusterService {
 	}
 
 	private void startMonitoring() {
-		Path monitoringLogPath = FileSystems.getDefault().getPath(hostRuntimeInfo.getWorkingDirectory(), "monitoring.log");
-
 		monitoring = new Monitoring(clusterContext.getProperties());
 		try {
 			monitoring.addListener(ResendMonitoringListener.create(MessageQueues.getInstance().createSender(ACTION_QUEUE_NAME)));
@@ -153,7 +150,7 @@ public final class HostRuntime implements IClusterService {
 			throw new RuntimeException("Cannot request message.", e);
 		}
 
-		monitoring.startMonitoring(monitoringLogPath);
+		monitoring.startMonitoring();
 	}
 
 	private void prepareFiles(String workingDirName, String tasksWorkingDirName) throws IOException {
