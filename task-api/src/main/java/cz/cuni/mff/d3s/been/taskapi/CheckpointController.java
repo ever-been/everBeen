@@ -2,7 +2,6 @@ package cz.cuni.mff.d3s.been.taskapi;
 
 import java.util.concurrent.TimeoutException;
 
-import cz.cuni.mff.d3s.been.util.JsonException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +14,7 @@ import cz.cuni.mff.d3s.been.socketworks.twoway.RequestException;
 import cz.cuni.mff.d3s.been.socketworks.twoway.Requestor;
 import cz.cuni.mff.d3s.been.task.checkpoints.CheckpointRequest;
 import cz.cuni.mff.d3s.been.task.checkpoints.CheckpointRequestType;
+import cz.cuni.mff.d3s.been.util.JsonException;
 
 /**
  * Sends checkpoint requests of tasks to its Host Runtime.
@@ -89,7 +89,7 @@ public class CheckpointController implements AutoCloseable {
 
 	/**
 	 * Sets value of a checkpoint.
-	 *
+	 * 
 	 * @param checkPointName
 	 *          name of the check point to set
 	 * @param value
@@ -109,9 +109,10 @@ public class CheckpointController implements AutoCloseable {
 
 	/**
 	 * Send a premade {@link CheckpointRequest}
-	 *
-	 * @param request Request to send
-	 *
+	 * 
+	 * @param request
+	 *          Request to send
+	 * 
 	 * @return The reply, or <code>null</code> if anything goes awry
 	 */
 	public Reply request(CheckpointRequest request) {
@@ -120,7 +121,7 @@ public class CheckpointController implements AutoCloseable {
 
 	/**
 	 * Retrieves value of a check point.
-	 *
+	 * 
 	 * @param name
 	 *          name of the check point
 	 * @return value of the check point
@@ -133,7 +134,7 @@ public class CheckpointController implements AutoCloseable {
 
 		if (reply.getReplyType() != ReplyType.OK) {
 			log.error(reply.getValue());
-			throw new RuntimeException("Address set failed");
+			throw new RequestException("Address set failed");
 		}
 
 		return reply.getValue();
@@ -142,7 +143,7 @@ public class CheckpointController implements AutoCloseable {
 	/**
 	 * Waits for a check point with timeout. The method will return once the
 	 * checkpoint has a value or the request timeouts.
-	 *
+	 * 
 	 * @param name
 	 * @param timeout
 	 *          timeout in seconds
@@ -170,7 +171,7 @@ public class CheckpointController implements AutoCloseable {
 
 	/**
 	 * Waits until a check point is set.
-	 *
+	 * 
 	 * @param name
 	 *          name of the check point
 	 * @return
@@ -188,7 +189,7 @@ public class CheckpointController implements AutoCloseable {
 
 	/**
 	 * Waits for count down of a Latch with timeout.
-	 *
+	 * 
 	 * @param name
 	 *          name of the latch
 	 * @param timeout
@@ -214,7 +215,7 @@ public class CheckpointController implements AutoCloseable {
 
 	/**
 	 * Waits for count down of a Latch.
-	 *
+	 * 
 	 * @param name
 	 *          name of the latch
 	 * @throws RequestException
@@ -231,7 +232,7 @@ public class CheckpointController implements AutoCloseable {
 
 	/**
 	 * Counts down a Latch.
-	 *
+	 * 
 	 * @param name
 	 *          name of the latch
 	 * @throws RequestException
@@ -242,7 +243,7 @@ public class CheckpointController implements AutoCloseable {
 		Reply reply = send(request);
 
 		if (reply.getReplyType() != ReplyType.OK) {
-			throw new RuntimeException(String.format("Count down of %s failed", name));
+			throw new RequestException(String.format("Count down of %s failed", name));
 		}
 	}
 
@@ -252,7 +253,7 @@ public class CheckpointController implements AutoCloseable {
 	 * The desired value must be set before any attempt to count it down.
 	 * <p/>
 	 * The count down can be reset but only if the value reaches zero.
-	 *
+	 * 
 	 * @param name
 	 *          name of the latch
 	 * @param count
@@ -274,7 +275,7 @@ public class CheckpointController implements AutoCloseable {
 	 * Sends an arbitrary request, waits for reply.
 	 * <p/>
 	 * The call will block until the request is handled by the Host Runtime.
-	 *
+	 * 
 	 * @param request
 	 *          a request
 	 * @return reply for the request
