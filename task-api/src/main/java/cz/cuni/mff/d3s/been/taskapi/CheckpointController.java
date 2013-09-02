@@ -103,7 +103,7 @@ public class CheckpointController implements AutoCloseable {
 
 		// TODO handle error reply better
 		if (reply.getReplyType() != ReplyType.OK) {
-			throw new RuntimeException("Address set failed");
+			throw new RequestException("Address set failed");
 		}
 	}
 
@@ -162,7 +162,7 @@ public class CheckpointController implements AutoCloseable {
 			if (value.equals("TIMEOUT")) {
 				throw new TimeoutException(String.format("Wait for %s timed out", name));
 			} else {
-				throw new RuntimeException(String.format("Wait for %s failed", name));
+				throw new RequestException(String.format("Wait for %s failed", name));
 			}
 		}
 
@@ -208,7 +208,7 @@ public class CheckpointController implements AutoCloseable {
 			if (value.equals("TIMEOUT")) {
 				throw new TimeoutException(String.format("Wait for %s count down timed out", name));
 			} else {
-				throw new RuntimeException(String.format("Wait for %s count down failed", name));
+				throw new RequestException(String.format("Wait for %s count down failed", name));
 			}
 		}
 	}
