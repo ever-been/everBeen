@@ -29,7 +29,9 @@ class NativeCmdLineBuilder implements CmdLineBuilder {
 	 *          name of the executable file relative to task home directory
 	 *          (parameter taskDir)
 	 * @param taskDescriptor
+	 *          associated TaskDescriptor
 	 * @param taskDir
+	 *          Task's working directory
 	 */
 	public NativeCmdLineBuilder(String executableFileName, File taskDir, TaskDescriptor taskDescriptor) {
 		this.executableFileName = executableFileName;

@@ -71,6 +71,7 @@ public class TaskProcess implements AutoCloseable {
 	 * @param environment
 	 *          environment variables for process to be set
 	 * @param artifactDownloader
+	 *          Artifact downloader
 	 */
 	public TaskProcess(
 			CmdLineBuilder cmdLineBuilder,

@@ -88,7 +88,9 @@ class JVMCmdLineBuilder implements CmdLineBuilder {
 	 *          task home directory - from this directory is determined library
 	 *          directory ({@link BpkNames#LIB_DIR})
 	 * @param taskDescriptor
+	 *          associated TaskDescriptor
 	 * @param runtime
+	 *          Java runtime definition
 	 */
 	public JVMCmdLineBuilder(File taskDir, TaskDescriptor taskDescriptor, JavaRuntime runtime) {
 		this.taskDescriptor = taskDescriptor;
@@ -182,6 +184,7 @@ class JVMCmdLineBuilder implements CmdLineBuilder {
 	 * about debug argument.)
 	 * 
 	 * @param cmdLine
+	 *          Task's command line
 	 * @throws TaskException
 	 */
 	private void addDebugParameters(TaskCommandLine cmdLine) throws TaskException {
@@ -265,7 +268,7 @@ class JVMCmdLineBuilder implements CmdLineBuilder {
 	/**
 	 * Tells if debugging section is defined (beware: defined != enabled)
 	 * 
-	 * @return
+	 * @return whether the debug section is defined
 	 */
 	private boolean isDebugSectionDefinedInTaskDescriptor() {
 		return taskDescriptor.isSetDebug();

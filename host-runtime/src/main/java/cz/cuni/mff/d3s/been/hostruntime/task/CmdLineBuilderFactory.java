@@ -25,7 +25,9 @@ public final class CmdLineBuilderFactory {
 	 * {@link NativeRuntime} -&gt; {@link NativeCmdLineBuilder}
 	 * 
 	 * @param runtime
+	 *          BPK runtime definition
 	 * @param taskDescriptor
+	 *          associated TaskDescriptor
 	 * @param taskDir
 	 *          task home directory
 	 * 
@@ -34,8 +36,9 @@ public final class CmdLineBuilderFactory {
 	 *           if {@link CmdLineBuilder} implementation for given runtime not
 	 *           defined
 	 */
-	public static CmdLineBuilder create(BpkRuntime runtime,
-			TaskDescriptor taskDescriptor, File taskDir) throws TaskException {
+	public static
+			CmdLineBuilder
+			create(BpkRuntime runtime, TaskDescriptor taskDescriptor, File taskDir) throws TaskException {
 		if (runtime instanceof JavaRuntime) {
 			return new JVMCmdLineBuilder(taskDir, taskDescriptor, ((JavaRuntime) runtime));
 		} else if (runtime instanceof NativeRuntime) {

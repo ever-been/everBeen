@@ -12,9 +12,8 @@ import cz.cuni.mff.d3s.been.hostruntime.TaskException;
 public class DependencyDownloaderFactory {
 
 	/**
-	 * Selects and creates correct
-	 * {@link DependencyDownloader}
-	 * implementation based on runtime type.<br>
+	 * Selects and creates correct {@link DependencyDownloader} implementation
+	 * based on runtime type.<br>
 	 * <br>
 	 * {@link cz.cuni.mff.d3s.been.bpk.JavaRuntime} -&gt;
 	 * {@link JVMDependencyDownloader}<br>
@@ -22,14 +21,12 @@ public class DependencyDownloaderFactory {
 	 * {@link NativeDependencyDownloader}
 	 * 
 	 * @param runtime
+	 *          BPK runtime definition
 	 * 
-	 * @return correct
-	 *         {@link DependencyDownloader}
-	 *         implementation
+	 * @return correct {@link DependencyDownloader} implementation
 	 * @throws cz.cuni.mff.d3s.been.hostruntime.TaskException
-	 *           if
-	 *           {@link DependencyDownloader}
-	 *           implementation for given runtime not defined
+	 *           if {@link DependencyDownloader} implementation for given runtime
+	 *           not defined
 	 */
 	public static DependencyDownloader create(BpkRuntime runtime) throws TaskException {
 		if (runtime instanceof JavaRuntime) {
