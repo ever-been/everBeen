@@ -26,6 +26,12 @@ public class TcpMessageSender implements IMessageSender<String> {
 	 */
 	private final String connection;
 
+	/**
+	 * Create a message sender
+	 *
+	 * @param context Context to create the sender in
+	 * @param connection Connection string (schema://host:port)
+	 */
 	public TcpMessageSender(ZMQContext context, String connection) {
 		this.context = context;
 		this.connection = connection;

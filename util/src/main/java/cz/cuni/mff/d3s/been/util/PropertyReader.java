@@ -30,6 +30,13 @@ public class PropertyReader {
 		return sysprops;
 	}
 
+	/**
+	 * Create a property reader over a pre-defined set of properties
+	 *
+	 * @param properties {@link Properties} to read
+	 *
+	 * @return The property reader
+	 */
 	public static PropertyReader on(Properties properties) {
 		return new PropertyReader(properties);
 	}

@@ -77,8 +77,9 @@ public final class BenchmarkSupport {
 	/**
 	 * This method collects task contexts contained in benchmark
 	 * 
-	 * @param benchmarkId
-	 * @return collected contexts
+	 * @param benchmarkId ID of the benchmark for which the contexts should be retrieved
+	 *
+	 * @return Collected contexts
 	 * 
 	 * @throws BeenApiException
 	 */

@@ -69,6 +69,11 @@ public final class Context implements ZMQContext {
 		}
 	}
 
+	/**
+	 * Get a counted reference to the 0MQ context
+	 *
+	 * @return The reference
+	 */
 	public synchronized static ZMQContext getReference() {
 		if (zctx == null) {
 			zctx = ZMQ.context(ZMQ_IO_THREADS);

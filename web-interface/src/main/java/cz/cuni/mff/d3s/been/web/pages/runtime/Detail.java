@@ -205,7 +205,7 @@ public class Detail extends Page {
      * Return value will be added to all links to this page rendered on this page. See official
      * tapestry documentation for more info about conventions.
      *
-     * @returm id of displayed runtime
+     * @return ID of displayed runtime
      */
     Object onPassivate() {
         return runtimeId;
@@ -307,7 +307,8 @@ public class Detail extends Page {
 
     /**
      * Collects history of command entries for underlying runtime.
-     * @return
+	 *
+     * @return The command history, in the form of a collection of command entries
      */
     public Collection<CommandEntry> getCommandEntries() throws BeenApiException {
         return api.getApi().listCommandEntries(runtime.getId());
@@ -315,7 +316,8 @@ public class Detail extends Page {
 
     /**
      * Collect information about tasks on this runtime.
-     * @return
+	 *
+     * @return The collection of task entries, representing the current state of tasks on this Host Runtime
      */
     public Collection<TaskEntry> getTasks() throws BeenApiException {
         return api.getApi().listTasks(runtime.getId());

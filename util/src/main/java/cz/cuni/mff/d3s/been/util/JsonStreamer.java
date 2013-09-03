@@ -29,11 +29,15 @@ public class JsonStreamer {
 	/** logging */
 	private static final Logger log = LoggerFactory.getLogger(JsonStreamer.class);
 
-	/** factory */
+	/** Factory */
 	private final JsonFactory jsonFactory;
 
 	/** Registered handlers */
 	private final Map<String, JsonKeyHandler> handlers;
+
+	/**
+	 * Create a JSON streamer
+	 */
 	public JsonStreamer() {
 		this.jsonFactory = new JsonFactory();
 		this.handlers = new HashMap<>();
@@ -65,10 +69,11 @@ public class JsonStreamer {
 
 	/**
 	 * 
-	 * Parses a JSON String and calls registered handlers.
+	 * Parses a JSON String and calls registered handlers on matched JSON fragments.
 	 * 
-	 * @param json
-	 * @throws JsonException
+	 * @param json JSON to process
+	 *
+	 * @throws JsonException On failure to create a JSON parser
 	 */
 	public void process(final String json) throws JsonException {
 		if (handlers.size() == 0) {

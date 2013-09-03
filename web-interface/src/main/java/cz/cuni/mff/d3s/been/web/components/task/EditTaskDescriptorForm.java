@@ -201,7 +201,7 @@ public class EditTaskDescriptorForm extends Component {
     /**
      * Creates new empty argument which will be added to indexed argument list.
      *
-     * @return
+     * @return The argument
      */
     Object onAddRowFromArgumentList() {
         System.out.println(_index);
@@ -214,7 +214,7 @@ public class EditTaskDescriptorForm extends Component {
      * Removes indexed argument from argument list ('remove' is not the really exact description.
      * Instead of direct removing from list is option with given index(kvp.key) set to null)
      *
-     * @param kvp item to be removed
+     * @param kvp Key-Value pair to be removed
      */
     void onRemoveRowFromArgumentList(KeyValuePair kvp) {
         getArgs().set(kvp.key, new KeyValuePair(getArgs().size(), null));
@@ -223,7 +223,7 @@ public class EditTaskDescriptorForm extends Component {
     /**
      * Creates new empty java option which will be added to indexed java option list.
      *
-     * @return
+     * @return The option
      */
     Object onAddRowFromJavaOptList() {
         KeyValuePair opt = new KeyValuePair(getOpts().size(), "");
@@ -236,7 +236,7 @@ public class EditTaskDescriptorForm extends Component {
      * description. Instead of direct removing from list is argument with given index(kvp.key)
      * set to null)
      *
-     * @param kvp item to be removed
+     * @param kvp Key-Value pair to be removed
      */
     void onRemoveRowFromJavaOptList(KeyValuePair kvp) {
         getOpts().set(kvp.key, new KeyValuePair(getOpts().size(), null));
@@ -250,7 +250,7 @@ public class EditTaskDescriptorForm extends Component {
     /**
      * Collects possible values for TaskExclusivity select box
      *
-     * @return
+     * @return Possible task exclusivity values
      */
     public TaskExclusivity[] getAvailableExclusivities() {
         return TaskExclusivity.values();

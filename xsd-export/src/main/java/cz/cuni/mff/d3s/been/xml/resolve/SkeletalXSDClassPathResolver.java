@@ -10,6 +10,9 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+/**
+ * Default implementation of the {@link XSDClassPathResolver}. Generally, it will suffice to create an empty override in the package in which the desired <em>XSD</em>s reside
+ */
 public abstract class SkeletalXSDClassPathResolver implements XSDClassPathResolver {
 
 	private static final Pattern BEEN_XSD_PUBLIC_ID = Pattern.compile("http://been.d3s.mff.cuni.cz/([a-zA-Z][a-zA-Z0-9-]*)");

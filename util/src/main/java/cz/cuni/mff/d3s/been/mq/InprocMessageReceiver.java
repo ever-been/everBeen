@@ -61,8 +61,8 @@ final class InprocMessageReceiver<T extends Serializable> implements IMessageRec
 	 * The receiver is not bind to its queue and call to {@link #bind()} is
 	 * required before receiving any messages.
 	 * 
-	 * @param context
-	 * @param queue
+	 * @param context Context to create the receiver in
+	 * @param queue Queue the receiver will listen on
 	 */
 
 	public InprocMessageReceiver(final ZMQContext context, final String queue) {

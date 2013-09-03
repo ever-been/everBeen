@@ -59,6 +59,11 @@ public class TcpMessageReceiver implements IMessageReceiver<String> {
 		}
 	}
 
+	/**
+	 * Bind this receiver for listening
+	 *
+	 * @throws MessagingException If the receiver cannot be bound
+	 */
 	public void bind() throws MessagingException {
 		if (isConnected()) {
 			return; // already connected
@@ -92,6 +97,11 @@ public class TcpMessageReceiver implements IMessageReceiver<String> {
 
 	}
 
+	/**
+	 * Create a {@link TcpMessageSender} for this receiver
+	 *
+	 * @return The sender
+	 */
 	public TcpMessageSender createSender() {
 		return new TcpMessageSender(context, String.format("%s:%d", connection, port));
 	}

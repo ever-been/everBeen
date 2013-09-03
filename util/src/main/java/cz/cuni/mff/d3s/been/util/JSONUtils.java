@@ -11,6 +11,9 @@ import org.codehaus.jackson.map.SerializationConfig;
 import org.codehaus.jackson.map.introspect.VisibilityChecker;
 import org.codehaus.jackson.type.TypeReference;
 
+/**
+ * A utility class for JSON serialization and de-serialization
+ */
 public class JSONUtils {
 
 	private final ObjectMapper om;
@@ -42,6 +45,15 @@ public class JSONUtils {
 		return new JSONUtils(om);
 	}
 
+	/**
+	 * Serialize an object into JSON
+	 *
+	 * @param obj Object to serialize
+	 *
+	 * @return JSON representation of provided object
+	 *
+	 * @throws JsonException If the object cannot be serialized
+	 */
 	public String serialize(Object obj) throws JsonException {
 		try {
 			return om.writeValueAsString(obj);
@@ -50,6 +62,17 @@ public class JSONUtils {
 		}
 	}
 
+	/**
+	 * Deserialize an object from JSON
+	 *
+	 * @param json JSON to interpret
+	 * @param to Class of the deserialized object
+	 * @param <T> Type of the deserialized object
+	 *
+	 * @return The deserialized object
+	 *
+	 * @throws JsonException If the JSON cannot be mapped to provided class
+	 */
 	public <T> T deserialize(String json, Class<T> to) throws JsonException {
 		try {
 			return om.readValue(json, to);
@@ -58,6 +81,17 @@ public class JSONUtils {
 		}
 	}
 
+	/**
+	 * Deserialize an object from JSON
+	 *
+	 * @param json JSON to interpret
+	 * @param type Reference to deserialized object's type
+	 * @param <T> Type of the deserialized object
+	 *
+	 * @return The deserialized object
+	 *
+	 * @throws JsonException When the JSON cannot be mapped to provided type reference
+	 */
 	public <T> T deserialize(String json, TypeReference<T> type) throws JsonException {
 		try {
 			return om.readValue(json, type);
@@ -66,6 +100,17 @@ public class JSONUtils {
 		}
 	}
 
+	/**
+	 * Deserialize a collection
+	 *
+	 * @param data Data to deserialize
+	 * @param itemType Class of the deserialized objecs
+	 * @param <T> Type of the deserialized objects
+	 *
+	 * @return Deserialized data
+	 *
+	 * @throws JsonException When provided data cannot be mapped to provided type
+	 */
 	public <T> Collection<T> deserialize(Collection<String> data, Class<T> itemType) throws JsonException {
 		final ObjectReader itemReader = om.reader(itemType);
 		final ArrayList<T> deserializedData = new ArrayList<T>(data.size());

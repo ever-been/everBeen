@@ -11,6 +11,7 @@ import java.io.InputStream;
  */
 public interface ItemToArchive {
 
+	/** Size to use if the total length of the stream content is unknown */
     public static final long SIZE_UNKNOWN = -1;
 
     /**

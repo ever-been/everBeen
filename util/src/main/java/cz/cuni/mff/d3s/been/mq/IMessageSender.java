@@ -9,6 +9,7 @@ import cz.cuni.mff.d3s.been.annotation.NotThreadSafe;
  * 
  * @see IMessageReceiver
  * @author Martin Sixta
+ * @param T Type of the messages to process
  */
 @NotThreadSafe
 public interface IMessageSender<T extends Serializable> extends AutoCloseable {

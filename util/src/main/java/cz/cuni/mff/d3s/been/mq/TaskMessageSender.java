@@ -12,6 +12,12 @@ public class TaskMessageSender implements IMessageSender<String> {
 	private final String connection;
 	private ZMQ.Socket socket;
 
+	/**
+	 * Create a sender
+	 *
+	 * @param context Context to create the sender in
+	 * @param connection connection string to send to (schema://host:port)
+	 */
 	public TaskMessageSender(ZMQContext context, String connection) {
 		this.context = context;
 		this.connection = connection;

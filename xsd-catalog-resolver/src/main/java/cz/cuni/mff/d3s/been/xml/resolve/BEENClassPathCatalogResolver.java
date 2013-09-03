@@ -17,6 +17,9 @@ import org.xml.sax.SAXException;
 
 import com.sun.org.apache.xml.internal.resolver.tools.CatalogResolver;
 
+/**
+ * This is the EverBEEN implementation of the catalog resolver, used for cross-jar <em>XSD</em> loading.
+ */
 public class BEENClassPathCatalogResolver extends CatalogResolver {
 
 	private static final String BEEN_URI_BASE = "http://been.d3s.mff.cuni.cz/";
@@ -27,6 +30,9 @@ public class BEENClassPathCatalogResolver extends CatalogResolver {
 	 */
 	private final List<EntityResolver> resolvers;
 
+	/**
+	 * Create an EverBEEN catalog resolver
+	 */
 	public BEENClassPathCatalogResolver() {
 		resolvers = new ArrayList<EntityResolver>();
 		Iterator<XSDClassPathResolver> sl = ServiceLoader.load(XSDClassPathResolver.class).iterator();

@@ -84,11 +84,10 @@ public class MessageQueues {
 	/**
 	 * Creates named tcp message queue.
 	 * 
-	 * @param queueName
-	 *          name of the qeueue
+	 * @param queueName name of the queue
 	 * @return tcp message queue
 	 * @throws MessagingException
-	 *           if the queue cannot be created
+	 *           When the queue already exists or if it cannot be created
 	 */
 	public synchronized IMessageQueue<String> createTcpQueue(String queueName, String hostname) throws MessagingException {
 		if (queues.containsKey(queueName)) {
@@ -111,8 +110,9 @@ public class MessageQueues {
 	 *          name of the queue
 	 * @param <T>
 	 *          type of messages
-	 * @return sender
-	 * @throws MessagingException
+	 * @return sender The sender
+	 *
+	 * @throws MessagingException If the desired queue is not initialized
 	 */
 	public synchronized
 			<T extends Serializable>
@@ -130,11 +130,12 @@ public class MessageQueues {
 	/**
 	 * Returns receiver associated with a named queue.
 	 * 
-	 * @param queueName
-	 *          name of the queue
-	 * @param <T>
-	 * @return receiver
-	 * @throws MessagingException
+	 * @param queueName name of the queue
+	 * @param <T> Type of messages this receiver will be using
+	 *
+	 * @return receiver The receiver
+	 *
+	 * @throws MessagingException When the desired queue is not initialized
 	 */
 	public synchronized
 			<T extends Serializable>
@@ -151,8 +152,9 @@ public class MessageQueues {
 	/**
 	 * Terminates a named queue.
 	 * 
-	 * @param queueName
-	 * @throws MessagingException
+	 * @param queueName Name of the queue to terminate
+	 *
+	 * @throws MessagingException If the desired queue is not initialized
 	 */
 	public synchronized void terminate(String queueName) throws MessagingException {
 		if (!queues.containsKey(queueName)) {
@@ -182,7 +184,7 @@ public class MessageQueues {
 	 *          name of a queue
 	 * @param serializable
 	 *          object to send
-	 * @throws MessagingException
+	 * @throws MessagingException If the desired queue is not initialized
 	 */
 	public synchronized void send(String queueName, Serializable serializable) throws MessagingException {
 		if (!queues.containsKey(queueName)) {

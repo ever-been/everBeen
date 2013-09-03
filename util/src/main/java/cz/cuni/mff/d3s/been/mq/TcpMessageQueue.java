@@ -20,7 +20,7 @@ public class TcpMessageQueue implements IMessageQueue<String> {
 	/**
 	 * Creates a tcp-based queue listening on a host and random port
 	 * 
-	 * @param host
+	 * @param host Host to listen on
 	 */
 	public TcpMessageQueue(String host) {
 		this.context = Context.getReference();

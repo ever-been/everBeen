@@ -34,8 +34,7 @@ public final class Messaging {
 	/**
 	 * Creates connection String a tcp-based queue, random port
 	 * 
-	 * @param queue
-	 *          name of the host to listen on
+	 * @param host name of the host to listen on
 	 * @return connection string which can be used in ZMQ.Socket calls.
 	 */
 	static String createTcpConnection(String host) {

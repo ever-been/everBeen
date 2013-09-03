@@ -8,7 +8,7 @@ import org.xml.sax.EntityResolver;
  * Entity resolver used by custom CatalogResolver. Providers of this interface
  * are scanned whenever a project is used as a JAXB episode.
  * 
- * The intended use-case for implementors is to provide resolution for
+ * The intended use-case for implementers is to provide resolution for
  * package-specific schemas. Effectively, anything that gets resolved by
  * exported implementations will be passed to the CatalogResolver in first order
  * of importance (overrides default behavior).

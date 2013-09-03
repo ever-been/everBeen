@@ -9,7 +9,16 @@ import org.eclipse.jetty.webapp.WebAppContext;
 import java.security.ProtectionDomain;
 import java.net.URL;
 
+/**
+ * Runnable class capable of starting embedded Jetty container for the EverBEEN web interface.
+ */
 public class Starter {
+
+	/**
+	 * Main method of the runnable
+	 *
+	 * @param args Command-line arguments
+	 */
     public static void main(String[] args) {
         Server server = new Server();
         SelectChannelConnector connector = new SelectChannelConnector();
