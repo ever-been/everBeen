@@ -63,6 +63,11 @@ public class MongoMapStore implements MapStore, MapLoaderLifecycleSupport {
 	// tells us if map covered by this mapstore has been already loaded into memory
 	private volatile boolean mapIsLoaded;
 
+	/**
+	 * Create a new MongoDB MapStore
+	 *
+	 * @param mongoTemplate Spring template for MongoDB persistence
+	 */
 	public MongoMapStore(MongoTemplate mongoTemplate) {
 		this.mongoTemplate = mongoTemplate;
 	}
@@ -70,6 +75,11 @@ public class MongoMapStore implements MapStore, MapLoaderLifecycleSupport {
 
     private IMap failedStoreMap;
 
+	/**
+	 * Get failover map in case database is down
+	 *
+	 * @return The failover map
+	 */
 	public IMap getFailedStoreMap() {
 		return failedStoreMap;
 	}
@@ -152,8 +162,7 @@ public class MongoMapStore implements MapStore, MapLoaderLifecycleSupport {
 			while (cursor.hasNext()) {
 				try {
 					DBObject obj = cursor.next();
-					Class clazz = null;
-					clazz = Class.forName(obj.get("_class").toString());
+					Class clazz = Class.forName(obj.get("_class").toString());
 
 					Object object = converter.toObject(clazz, obj);
 

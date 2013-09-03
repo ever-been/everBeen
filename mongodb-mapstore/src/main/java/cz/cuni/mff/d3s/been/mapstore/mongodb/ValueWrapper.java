@@ -15,17 +15,35 @@
  */
 package cz.cuni.mff.d3s.been.mapstore.mongodb;
 
+/**
+ * An object wrapper
+ */
 public class ValueWrapper {
 	private Object value;
 
+	/**
+	 * Create an object wrapper
+	 *
+	 * @param value Value to wrap
+	 */
 	public ValueWrapper(Object value) {
 		this.value = value;
 	}
 
+	/**
+	 * Get wrapped value
+	 *
+	 * @return Value to wrap
+	 */
 	public Object getValue() {
 		return value;
 	}
 
+	/**
+	 * Set the wrapped value
+	 *
+	 * @param value Value to wrap
+	 */
 	public void setValue(Object value) {
 		this.value = value;
 	}

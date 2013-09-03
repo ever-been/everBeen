@@ -27,14 +27,28 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.Mongo;
 
+/**
+ * An implementation of {@link MongoDBConverter} tailored to {@link MongoTemplate}
+ */
 public class SpringMongoDBConverter implements MongoDBConverter {
 
 	private MongoTemplate mongoTemplate;
 
+	/**
+	 * Create a MongoDB converter
+	 *
+	 * @param mongo Mongo connection
+	 * @param dbname Name of database used for mirroring
+	 */
 	public SpringMongoDBConverter(Mongo mongo, String dbname) {
 		this.mongoTemplate = new MongoTemplate(mongo, dbname);
 	}
 
+	/**
+	 * Create a MongoDB converter
+	 *
+	 * @param mongoTemplate Mongo operations template
+	 */
 	public SpringMongoDBConverter(MongoTemplate mongoTemplate) {
 		this.mongoTemplate = mongoTemplate;
 	}
@@ -53,6 +67,13 @@ public class SpringMongoDBConverter implements MongoDBConverter {
 		return mongoTemplate.getConverter().read(clazz, dbObject);
 	}
 
+	/**
+	 * Determine whether a class is of a well-known type
+	 *
+	 * @param clazz Class to inspect
+	 *
+	 * @return <code>true</code> if the class is of a well-known type, <code>false</code> otherwise
+	 */
 	public static boolean isStandardClass(Class clazz) {
 		if (clazz.isAssignableFrom(Date.class)) // standard, pass
 			return true;

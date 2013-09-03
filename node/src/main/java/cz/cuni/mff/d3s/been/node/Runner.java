@@ -93,6 +93,11 @@ public class Runner implements Reapable {
 
 	private ClusterContext clusterContext;
 
+	/**
+	 * Main method
+	 *
+	 * @param args Command-line arguments
+	 */
 	public static void main(String[] args) {
 		new Runner().doMain(args);
 	}
@@ -101,7 +106,7 @@ public class Runner implements Reapable {
 	// MAIN BEEN FUNCTION
 	// ------------------------------------------------------------------------
 
-	public void doMain(final String[] args) {
+	private void doMain(final String[] args) {
 
 		parseCmdLineArguments(args);
 
