@@ -61,10 +61,6 @@ public class TaskDescriptorInitializer {
 			taskDescriptor.getJava().setJavaOptions(new ObjectFactory().createJavaOptions());
 		}
 
-		if (!taskDescriptor.isSetLoadMonitoring()) {
-			taskDescriptor.setLoadMonitoring(new ObjectFactory().createLoadMonitoring());
-		}
-
 		if (!taskDescriptor.isSetExclusive()) {
 			taskDescriptor.setExclusive(DEFAULT_TASK_EXCLUSIVITY);
 		}

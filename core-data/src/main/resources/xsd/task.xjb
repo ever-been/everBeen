@@ -1,18 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bindings
-	xmlns="http://java.sun.com/xml/ns/jaxb"
-	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
-	xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	extensionBindingPrefixes="xjc"
-	version="2.0">
-	
+		xmlns="http://java.sun.com/xml/ns/jaxb"
+		xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		extensionBindingPrefixes="xjc"
+		version="2.0">
+
 	<bindings schemaLocation="task-descriptor.xsd">
 		<schemaBindings>
-			<package name="cz.cuni.mff.d3s.been.core.task" />
+			<package name="cz.cuni.mff.d3s.been.core.task"/>
 		</schemaBindings>
-		
+
+		<bindings node="xs:element[@name='taskDescriptor']">
+			<class>
+				<javadoc>Description of a runnable BEEN task.</javadoc>
+			</class>
+		</bindings>
+
 		<bindings node="xs:simpleType[@name='ExclusiveString']">
-			<typesafeEnumClass name="TaskExclusivity" />
+			<typesafeEnumClass name="TaskExclusivity"/>
 			<bindings node="//xs:enumeration[@value='non-exclusive']">
 				<typesafeEnumMember name="NON_EXCLUSIVE"/>
 			</bindings>
@@ -25,7 +30,7 @@
 		</bindings>
 
 		<bindings node="xs:simpleType[@name='TypeString']">
-			<typesafeEnumClass name="TaskType" />
+			<typesafeEnumClass name="TaskType"/>
 			<bindings node="//xs:enumeration[@value='task']">
 				<typesafeEnumMember name="TASK"/>
 			</bindings>
@@ -34,78 +39,296 @@
 			</bindings>
 		</bindings>
 
-		
+
 		<bindings node="xs:complexType[@name='Property']">
-			<class name="TaskProperty" />
+			<class name="TaskProperty">
+				<javadoc>BEEN Task properties - these properties will be passed to the task in environment properties.
+				</javadoc>
+			</class>
 		</bindings>
-		
+
 		<bindings node="xs:element[@name='property']">
-			<factoryMethod name="taskProperty" />
+			<factoryMethod name="taskProperty"/>
 		</bindings>
-		
+
 		<bindings node="xs:element[@name='properties']">
-			<class name="TaskProperties" />
+			<class name="TaskProperties"/>
 		</bindings>
-		
+
 		<bindings node="xs:element[@name='name']">
-			<factoryMethod name="taskName" />
+			<factoryMethod name="taskName"/>
 		</bindings>
-		
+
 		<bindings node="xs:element[@name='taskDescriptor']//xs:element[@ref='td:description']">
-			<property name="longDescription" />
+			<property name="longDescription">
+				<javadoc>Human readable description of the task</javadoc>
+			</property>
 		</bindings>
+
+		<bindings node="xs:element[@name='taskDescriptor']//xs:element[@ref='td:arguments']">
+			<property>
+				<javadoc>Command line arguments of the task</javadoc>
+			</property>
+		</bindings>
+
+		<bindings node="xs:element[@name='taskDescriptor']//xs:element[@ref='td:java']">
+			<property>
+				<javadoc>Java specific options of the task</javadoc>
+			</property>
+		</bindings>
+
+		<bindings node="xs:element[@name='taskDescriptor']//xs:element[@ref='td:properties']">
+			<property>
+				<javadoc>BEEN Task properties - these properties will be passed to the task in environment properties.
+				</javadoc>
+			</property>
+		</bindings>
+
+		<bindings node="xs:element[@name='taskDescriptor']//xs:element[@ref='td:hostRuntimes']">
+			<property>
+				<javadoc>Selection of acceptable Host Runtimes the task can run on.</javadoc>
+			</property>
+		</bindings>
+
+		<bindings node="xs:element[@name='taskDescriptor']//xs:element[@ref='td:failurePolicy']">
+			<property>
+				<javadoc>Policy for a Host Runtime the task runs on in case it fails or timeouts</javadoc>
+			</property>
+		</bindings>
+
+
+		<bindings node="xs:element[@name='taskDescriptor']//xs:element[@ref='td:debug']">
+			<property>
+				<javadoc>Debug options for the task - currently only applicable to JVM-based tasks</javadoc>
+			</property>
+		</bindings>
+
+		<bindings node="//xs:attribute[@name='type']">
+			<property>
+				<javadoc>Type of the task - task or benchmark</javadoc>
+			</property>
+		</bindings>
+
+		<bindings node="//xs:attribute[@name='exclusive']">
+			<property>
+				<javadoc>Exclusivity of the task - exclusive, non-exclusive or context-exclusive</javadoc>
+			</property>
+		</bindings>
+
+		<!--
+		<bindings node="//xs:attribute[@name='description']">
+			<property>
+				<javadoc>Short description of the task.</javadoc>
+			</property>
+		</bindings>
+
+		<bindings node="//xs:attribute[@name='name']">
+			<property>
+				<javadoc>Name of the task</javadoc>
+			</property>
+		</bindings>
+		-->
+
+		<bindings node="//xs:attribute[@name='groupId']">
+			<property>
+				<javadoc>Group ID of a BPK</javadoc>
+			</property>
+		</bindings>
+
+
+		<bindings node="//xs:attribute[@name='bpkId']">
+			<property>
+				<javadoc>ID of a BPK</javadoc>
+			</property>
+		</bindings>
+
+
+		<bindings node="//xs:attribute[@name='version']">
+			<property>
+				<javadoc>Version of a BPK</javadoc>
+			</property>
+		</bindings>
+
+
 	</bindings>
-	
+
 	<bindings schemaLocation="task-context-descriptor.xsd">
 		<schemaBindings>
-				<package name="cz.cuni.mff.d3s.been.core.task" />
+			<package name="cz.cuni.mff.d3s.been.core.task"/>
 		</schemaBindings>
-		
+
 		<bindings node="xs:element[@name='id']">
-			<factoryMethod name="contextId" />
+			<factoryMethod name="contextId"/>
+			<property>
+				<javadoc>Context ID</javadoc>
+			</property>
 		</bindings>
 
 		<bindings node="xs:element[@name='contextState']">
 			<property name="contextState">
-					<baseType>
-						<javaType
-								name="cz.cuni.mff.d3s.been.core.task.TaskContextState"
-								parseMethod="cz.cuni.mff.d3s.been.core.task.TaskContextState.valueOf"
-								printMethod="String.valueOf"
-								/>
-					</baseType>
-				</property>
+				<baseType>
+					<javaType
+							name="cz.cuni.mff.d3s.been.core.task.TaskContextState"
+							parseMethod="cz.cuni.mff.d3s.been.core.task.TaskContextState.valueOf"
+							printMethod="String.valueOf"
+							/>
+				</baseType>
+			</property>
 		</bindings>
+
+		<bindings node="xs:element[@name='taskContextDescriptor']">
+			<class>
+				<javadoc>Description of a Task Context</javadoc>
+			</class>
+
+		</bindings>
+
+
+		<bindings node="xs:element[@name='taskContextDescriptor']//xs:element[@ref='tcd:contextDescription']">
+			<property>
+				<javadoc>Description of the context.</javadoc>
+			</property>
+		</bindings>
+
+		<bindings node="xs:element[@name='taskContextDescriptor']//xs:element[@ref='tcd:properties']">
+			<property>
+				<javadoc>Properties of the context - values will be propagated to tasks (but task can override the
+					value)
+				</javadoc>
+			</property>
+		</bindings>
+
+		<bindings node="xs:element[@name='taskContextDescriptor']//xs:element[@ref='tcd:task']">
+			<property>
+				<javadoc>Contained tasks of the context.</javadoc>
+			</property>
+		</bindings>
+
+		<bindings node="xs:element[@name='taskContextDescriptor']//xs:element[@ref='tcd:templates']">
+			<property>
+				<javadoc>Task templates.</javadoc>
+			</property>
+		</bindings>
+
+		<bindings node="xs:element[@name='taskContextEntry']">
+			<class>
+				<javadoc>Runtime object of a Task Context</javadoc>
+			</class>
+
+		</bindings>
+
+		<bindings node="xs:element[@name='taskContextEntry']//xs:element[@ref='tcd:contextState']">
+			<property>
+				<javadoc>Current state of the context</javadoc>
+			</property>
+		</bindings>
+
+
+		<bindings node="xs:element[@name='taskContextEntry']//xs:element[@ref='tcd:taskContextDescriptor']">
+			<property>
+				<javadoc>The TaskDescriptor the context was submitted with.</javadoc>
+			</property>
+		</bindings>
+
+
+		<bindings node="xs:element[@name='taskContextEntry']//xs:element[@ref='tcd:containedTask']">
+			<property>
+				<javadoc>IDs of contained tasks.</javadoc>
+			</property>
+		</bindings>
+
 	</bindings>
-	
+
 	<bindings schemaLocation="task-entry.xsd">
 		<schemaBindings>
-			<package name="cz.cuni.mff.d3s.been.core.task" />
+			<package name="cz.cuni.mff.d3s.been.core.task"/>
 		</schemaBindings>
-		
+
 		<bindings node="xs:element[@name='state']">
 			<property name="state">
-					<baseType>
-						<javaType
-								name="cz.cuni.mff.d3s.been.core.task.TaskState"
-								parseMethod="cz.cuni.mff.d3s.been.core.task.TaskState.valueOf"
-								printMethod="String.valueOf"
-								/>
-					</baseType>
-				</property>
+				<baseType>
+					<javaType
+							name="cz.cuni.mff.d3s.been.core.task.TaskState"
+							parseMethod="cz.cuni.mff.d3s.been.core.task.TaskState.valueOf"
+							printMethod="String.valueOf"
+							/>
+				</baseType>
+				<javadoc>Current state of the task.</javadoc>
+			</property>
 		</bindings>
-		
+
 		<bindings node="xs:element[@name='stateChangeLog']//xs:element[@ref='taskentry:stateChangeEntry']">
 			<property name="logEntries">
 				<javadoc>List of log entries.</javadoc>
 			</property>
 		</bindings>
+
+
+		<bindings node="xs:element[@name='taskEntry']">
+			<class>
+				<javadoc>The runtime object of a task.</javadoc>
+			</class>
+		</bindings>
+
+		<bindings node="xs:element[@name='taskEntry']//xs:element[@ref='td:taskDescriptor']">
+			<property>
+				<javadoc>TaskDescriptor the task was submitted with.</javadoc>
+			</property>
+		</bindings>
+
+		<bindings node="xs:element[@name='taskEntry']//xs:element[@ref='taskentry:runtimeId']">
+			<property>
+				<javadoc>ID of a Host Runtime the task is/was running or null if not scheduled yet.</javadoc>
+			</property>
+		</bindings>
+
+
+		<bindings node="xs:element[@name='taskEntry']//xs:element[@ref='taskentry:taskContextId']">
+			<property>
+				<javadoc>ID of the TaskContext the task belongs to.</javadoc>
+			</property>
+		</bindings>
+
+		<bindings node="xs:element[@name='taskEntry']//xs:element[@name='exitCode']">
+			<property>
+				<javadoc>Exit code of the task after it finishes or failes.</javadoc>
+			</property>
+		</bindings>
+
+
+		<bindings node="xs:element[@name='taskEntry']//xs:element[@ref='taskentry:stateChangeLog']">
+			<property>
+				<javadoc>Log with task state changes.</javadoc>
+			</property>
+		</bindings>
+
+
+		<bindings node="xs:element[@name='taskEntry']//xs:element[@name='workingDirectory']">
+			<property>
+				<javadoc>Working directory of the task on a Host Runtime.</javadoc>
+			</property>
+		</bindings>
+
+		<bindings node="xs:element[@name='taskEntry']//xs:attribute[@name='benchmarkId']">
+			<property>
+				<javadoc>ID of a benchmark the task belongs to (if any).</javadoc>
+			</property>
+		</bindings>
+
+
+		<bindings node="xs:element[@name='taskEntry']//xs:attribute[@name='loadedFromPersistence']">
+			<property>
+				<javadoc>Whether the entry was loaded from the MapStore</javadoc>
+			</property>
+		</bindings>
+
+
 	</bindings>
 
 
 	<bindings schemaLocation="benchmark-entry.xsd">
 		<schemaBindings>
-			<package name="cz.cuni.mff.d3s.been.core.benchmark" />
+			<package name="cz.cuni.mff.d3s.been.core.benchmark"/>
 		</schemaBindings>
 
 	</bindings>

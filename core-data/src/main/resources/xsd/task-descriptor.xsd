@@ -2,175 +2,157 @@
 
 <!--suppress XmlUnusedNamespaceDeclaration -->
 <xs:schema
-        targetNamespace="http://been.d3s.mff.cuni.cz/task-descriptor"
-        xmlns:xs="http://www.w3.org/2001/XMLSchema"
-        xmlns:td="http://been.d3s.mff.cuni.cz/task-descriptor"
-        xmlns:common="http://been.d3s.mff.cuni.cz/common"
-        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-        >
+		targetNamespace="http://been.d3s.mff.cuni.cz/task-descriptor"
+		xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		xmlns:td="http://been.d3s.mff.cuni.cz/task-descriptor"
+		xmlns:common="http://been.d3s.mff.cuni.cz/common"
+		xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+		>
 
-    <xs:import namespace="http://been.d3s.mff.cuni.cz/common"/>
+	<xs:import namespace="http://been.d3s.mff.cuni.cz/common"/>
 
-    <xs:simpleType name="ExclusiveString">
-        <xs:restriction base="xs:string">
-            <xs:enumeration value="non-exclusive"/>
-            <xs:enumeration value="context-exclusive"/>
-            <xs:enumeration value="exclusive"/>
-        </xs:restriction>
-    </xs:simpleType>
+	<xs:simpleType name="ExclusiveString">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="non-exclusive"/>
+			<xs:enumeration value="context-exclusive"/>
+			<xs:enumeration value="exclusive"/>
+		</xs:restriction>
+	</xs:simpleType>
 
-    <xs:simpleType name="TypeString">
-        <xs:restriction base="xs:string">
-            <xs:enumeration value="task"/>
-            <xs:enumeration value="benchmark"/>
-        </xs:restriction>
-    </xs:simpleType>
+	<xs:simpleType name="TypeString">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="task"/>
+			<xs:enumeration value="benchmark"/>
+		</xs:restriction>
+	</xs:simpleType>
 
-    <xs:attributeGroup name="taskDescriptorAttrGroup">
-        <xs:attribute name="groupId" type="common:IDStringRelaxed" use="required"/>
-        <xs:attribute name="bpkId" type="common:IDStringRelaxed" use="required"/>
-        <xs:attribute name="version" type="common:IDStringRelaxed" use="required"/>
-        <xs:attribute name="name" type="common:IDStringRelaxed" use="optional" default="_NO_NAME_"/>
-        <xs:attribute name="description" type="xs:string" use="optional" default=""/>
-        <xs:attribute name="exclusive" type="td:ExclusiveString" use="optional" default="non-exclusive"/>
-        <xs:attribute name="type" type="td:TypeString" default="task"/>
-    </xs:attributeGroup>
+	<xs:attributeGroup name="taskDescriptorAttrGroup">
+		<xs:attribute name="groupId" type="common:IDStringRelaxed" use="required"/>
+		<xs:attribute name="bpkId" type="common:IDStringRelaxed" use="required"/>
+		<xs:attribute name="version" type="common:IDStringRelaxed" use="required"/>
+		<xs:attribute name="name" type="common:IDStringRelaxed" use="optional" default="_NO_NAME_"/>
+		<xs:attribute name="description" type="xs:string" use="optional" default=""/>
+		<xs:attribute name="exclusive" type="td:ExclusiveString" use="optional" default="non-exclusive"/>
+		<xs:attribute name="type" type="td:TypeString" default="task"/>
+	</xs:attributeGroup>
 
-    <xs:element name="argument" type="xs:string"/>
+	<xs:element name="argument" type="xs:string"/>
 
-    <xs:complexType name="Arguments">
-        <xs:sequence>
-            <xs:element ref="td:argument" minOccurs="0" maxOccurs="unbounded"/>
-            <!-- From zero. -->
-        </xs:sequence>
-    </xs:complexType>
+	<xs:complexType name="Arguments">
+		<xs:sequence>
+			<xs:element ref="td:argument" minOccurs="0" maxOccurs="unbounded"/>
+			<!-- From zero. -->
+		</xs:sequence>
+	</xs:complexType>
 
-    <xs:element name="arguments" type="td:Arguments"/>
+	<xs:element name="arguments" type="td:Arguments"/>
 
-    <xs:element name="javaOption" type="xs:string"/>
+	<xs:element name="javaOption" type="xs:string"/>
 
-    <xs:complexType name="JavaOptions">
-        <xs:sequence>
-            <xs:element ref="td:javaOption" minOccurs="0" maxOccurs="unbounded"/>
-            <!-- From zero. -->
-        </xs:sequence>
-    </xs:complexType>
+	<xs:complexType name="JavaOptions">
+		<xs:sequence>
+			<xs:element ref="td:javaOption" minOccurs="0" maxOccurs="unbounded"/>
+			<!-- From zero. -->
+		</xs:sequence>
+	</xs:complexType>
 
-    <xs:element name="javaOptions" type="td:JavaOptions"/>
-    <xs:element name="useTaskRunner" type="xs:boolean" default="true"/>
-    <xs:element name="mainClass" type="xs:string"/>
+	<xs:element name="javaOptions" type="td:JavaOptions"/>
+	<xs:element name="useTaskRunner" type="xs:boolean" default="true"/>
+	<xs:element name="mainClass" type="xs:string"/>
 
-    <xs:complexType name="Java">
-        <xs:all>
-            <xs:element ref="td:useTaskRunner" minOccurs="0" maxOccurs="1"/>
-            <xs:element ref="td:mainClass" minOccurs="1" maxOccurs="1"/>
-            <xs:element ref="td:javaOptions" minOccurs="0" maxOccurs="1"/>
-        </xs:all>
-    </xs:complexType>
+	<xs:complexType name="Java">
+		<xs:all>
+			<xs:element ref="td:useTaskRunner" minOccurs="0" maxOccurs="1"/>
+			<xs:element ref="td:mainClass" minOccurs="1" maxOccurs="1"/>
+			<xs:element ref="td:javaOptions" minOccurs="0" maxOccurs="1"/>
+		</xs:all>
+	</xs:complexType>
 
-    <xs:element name="java" type="td:Java"/>
+	<xs:element name="java" type="td:Java"/>
 
-    <xs:attributeGroup name="taskPropertyAttrGroup">
-        <xs:attribute name="key" type="xs:string" use="required"/>
-        <xs:attribute name="value" type="xs:string" use="optional" default=""/>
-    </xs:attributeGroup>
+	<xs:attributeGroup name="taskPropertyAttrGroup">
+		<xs:attribute name="key" type="xs:string" use="required"/>
+		<xs:attribute name="value" type="xs:string" use="optional" default=""/>
+	</xs:attributeGroup>
 
-    <xs:complexType name="Property">
-        <xs:simpleContent>
-            <xs:extension base="xs:string">
-                <xs:attribute name="name" type="xs:string" use="required"/>
-                <xs:attribute name="description" type="xs:string" default=""/>
-            </xs:extension>
-        </xs:simpleContent>
-    </xs:complexType>
+	<xs:complexType name="Property">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="name" type="xs:string" use="required"/>
+				<xs:attribute name="description" type="xs:string" default=""/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
 
-    <xs:element name="property" type="td:Property"/>
-    <xs:element name="properties">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element ref="td:property" minOccurs="0" maxOccurs="unbounded"/>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
+	<xs:element name="property" type="td:Property"/>
+	<xs:element name="properties">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="td:property" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
 
-    <xs:element name="asTask" type="common:IDStringRelaxed"/>
-    <xs:element name="name" type="common:IDStringRelaxed"/>
-    <xs:element name="xpath" type="xs:string"/>
+	<xs:element name="asTask" type="common:IDStringRelaxed"/>
+	<xs:element name="name" type="common:IDStringRelaxed"/>
+	<xs:element name="xpath" type="xs:string"/>
 
 
-    <xs:complexType name="HostRuntimes">
-        <xs:sequence>
-            <xs:element ref="td:xpath" minOccurs="0" maxOccurs="1"/>
-            <!--
-            <xs:element ref="td:asTask" minOccurs="0" maxOccurs="1"/>
-            <xs:element ref="td:name" minOccurs="0" maxOccurs="unbounded"/>
-            -->
-        </xs:sequence>
-    </xs:complexType>
+	<xs:complexType name="HostRuntimes">
+		<xs:sequence>
+			<xs:element ref="td:xpath" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
 
-    <xs:element name="hostRuntimes" type="td:HostRuntimes"/>
+	<xs:element name="hostRuntimes" type="td:HostRuntimes"/>
 
-    <xs:attributeGroup name="failurePolicyAttrGroup">
-        <xs:attribute name="restartMax" type="common:nonnegativeInt" use="optional" default="0"/>
-        <xs:attribute name="timeoutRun" type="common:nonnegativeLong" use="optional" default="0"/>
-        <!-- 0 == not restricted. -->
-    </xs:attributeGroup>
+	<xs:attributeGroup name="failurePolicyAttrGroup">
+		<xs:attribute name="restartMax" type="common:nonnegativeInt" use="optional" default="0"/>
+		<xs:attribute name="timeoutRun" type="common:nonnegativeLong" use="optional" default="0"/>
+		<!-- 0 == not restricted. -->
+	</xs:attributeGroup>
 
-    <xs:complexType name="FailurePolicy">
-        <xs:attributeGroup ref="td:failurePolicyAttrGroup"/>
-    </xs:complexType>
+	<xs:complexType name="FailurePolicy">
+		<xs:attributeGroup ref="td:failurePolicyAttrGroup"/>
+	</xs:complexType>
 
-    <xs:element name="failurePolicy" type="td:FailurePolicy"/>
+	<xs:element name="failurePolicy" type="td:FailurePolicy"/>
 
-    <xs:attributeGroup name="loadMonitoringAttrGroup">
-        <xs:attribute name="detailedLoad" type="xs:boolean" use="optional" default="false"/>
-        <xs:attribute name="detailedLoadInterval" type="common:nonnegativeLong" use="optional" default="0"/>
-        <!-- 0 == use default. -->
-        <xs:attribute name="loadUnits" type="common:nonnegativeInt" use="optional" default="128"/>
-    </xs:attributeGroup>
+	<xs:simpleType name="ModeEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="none"/>
+			<xs:enumeration value="connect"/>
+			<xs:enumeration value="listen"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="mode" type="td:ModeEnum"/>
+	<xs:element name="host" type="xs:string"/>
+	<xs:element name="port" type="xs:int"/>
+	<xs:element name="suspend" type="xs:boolean"/>
+	<xs:complexType name="Debug">
+		<xs:sequence>
+			<xs:element ref="td:mode" minOccurs="1" maxOccurs="1"/>
+			<xs:element ref="td:host" minOccurs="1" maxOccurs="1"/>
+			<xs:element ref="td:port" minOccurs="1" maxOccurs="1"/>
+			<xs:element ref="td:suspend" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="debug" type="td:Debug"/>
 
-    <xs:complexType name="LoadMonitoring">
-        <xs:attributeGroup ref="td:loadMonitoringAttrGroup"/>
-    </xs:complexType>
+	<xs:element name="description" type="xs:string"/>
 
-    <xs:element name="loadMonitoring" type="td:LoadMonitoring"/>
-
-    <xs:simpleType name="ModeEnum">
-        <xs:restriction base="xs:string">
-            <xs:enumeration value="none"/>
-            <xs:enumeration value="connect"/>
-            <xs:enumeration value="listen"/>
-        </xs:restriction>
-    </xs:simpleType>
-    <xs:element name="mode" type="td:ModeEnum"/>
-    <xs:element name="host" type="xs:string"/>
-    <xs:element name="port" type="xs:int"/>
-    <xs:element name="suspend" type="xs:boolean"/>
-    <xs:complexType name="Debug">
-        <xs:sequence>
-            <xs:element ref="td:mode" minOccurs="1" maxOccurs="1"/>
-            <xs:element ref="td:host" minOccurs="1" maxOccurs="1"/>
-            <xs:element ref="td:port" minOccurs="1" maxOccurs="1"/>
-            <xs:element ref="td:suspend" minOccurs="1" maxOccurs="1"/>
-        </xs:sequence>
-    </xs:complexType>
-    <xs:element name="debug" type="td:Debug"/>
-
-    <xs:element name="description" type="xs:string"/>
-
-    <xs:element name="taskDescriptor">
-        <xs:complexType>
-            <xs:all>
-                <xs:element ref="td:description" minOccurs="0" maxOccurs="1"/>
-                <xs:element ref="td:arguments" minOccurs="0" maxOccurs="1"/>
-                <xs:element ref="td:java" minOccurs="0" maxOccurs="1"/>
-                <xs:element ref="td:properties" minOccurs="0" maxOccurs="1"/>
-                <xs:element ref="td:hostRuntimes" minOccurs="0" maxOccurs="1"/>
-                <xs:element ref="td:failurePolicy" minOccurs="0" maxOccurs="1"/>
-                <xs:element ref="td:loadMonitoring" minOccurs="0" maxOccurs="1"/>
-                <xs:element ref="td:debug" minOccurs="0" maxOccurs="1"/>
-            </xs:all>
-            <xs:attributeGroup ref="td:taskDescriptorAttrGroup"/>
-        </xs:complexType>
-    </xs:element>
+	<xs:element name="taskDescriptor">
+		<xs:complexType>
+			<xs:all>
+				<xs:element ref="td:description" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="td:arguments" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="td:java" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="td:properties" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="td:hostRuntimes" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="td:failurePolicy" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="td:debug" minOccurs="0" maxOccurs="1"/>
+			</xs:all>
+			<xs:attributeGroup ref="td:taskDescriptorAttrGroup"/>
+		</xs:complexType>
+	</xs:element>
 </xs:schema>

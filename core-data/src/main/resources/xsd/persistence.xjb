@@ -10,13 +10,13 @@
 			<package name="cz.cuni.mff.d3s.been.core.persistence"/>
 		</schemaBindings>
 
-        <bindings node="xs:complexType[@name='Entity']">
-            <bindings node="xs:sequence">
-                <bindings node="xs:element[@name='created']">
-                    <property generateIsSetMethod="false"/>
-                </bindings>
-            </bindings>
-        </bindings>
+		<bindings node="xs:complexType[@name='Entity']">
+			<bindings node="xs:sequence">
+				<bindings node="xs:element[@name='created']">
+					<property generateIsSetMethod="false"/>
+				</bindings>
+			</bindings>
+		</bindings>
 
 		<bindings node="xs:complexType[@name='TaskEntity']">
 			<bindings node="xs:complexContent/xs:extension/xs:sequence">
@@ -35,13 +35,20 @@
 		</bindings>
 
 		<bindings node="xs:complexType[@name='EntityID']">
+			<class>
+				<javadoc>Identification of a result entity.</javadoc>
+			</class>
 			<bindings node="xs:all">
 				<bindings node="xs:element[@name='kind']">
-					<property generateIsSetMethod="false"/>
+					<property generateIsSetMethod="false">
+						<javadoc>The kind of the result.</javadoc>
+					</property>
 				</bindings>
 
 				<bindings node="xs:element[@name='group']">
-					<property generateIsSetMethod="false"/>
+					<property generateIsSetMethod="false">
+						<javadoc>The group of the result.</javadoc>
+					</property>
 				</bindings>
 			</bindings>
 		</bindings>
