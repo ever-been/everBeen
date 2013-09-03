@@ -12,7 +12,6 @@ import com.hazelcast.core.IMap;
 import com.hazelcast.core.IQueue;
 
 import cz.cuni.mff.d3s.been.cluster.Names;
-import cz.cuni.mff.d3s.been.util.PropertyReader;
 import cz.cuni.mff.d3s.been.core.persistence.Entity;
 import cz.cuni.mff.d3s.been.core.persistence.EntityCarrier;
 import cz.cuni.mff.d3s.been.core.persistence.EntityID;
@@ -22,6 +21,7 @@ import cz.cuni.mff.d3s.been.persistence.QueryAnswer;
 import cz.cuni.mff.d3s.been.persistence.QueryAnswerFactory;
 import cz.cuni.mff.d3s.been.util.JSONUtils;
 import cz.cuni.mff.d3s.been.util.JsonException;
+import cz.cuni.mff.d3s.been.util.PropertyReader;
 
 /**
  * Cluster-based operations related to object persistence and retrieval
@@ -81,7 +81,7 @@ public class Persistence {
 	 *           provided query fails to serialize
 	 */
 	public final QueryAnswer query(Query query) throws DAOException {
-		final BlockingQueue<String> answerReadyNotifier = new LinkedBlockingQueue<String>();
+		final BlockingQueue<String> answerReadyNotifier = new LinkedBlockingQueue<>();
 		final MapEntryReadyHook hook = new MapEntryReadyHook(answerReadyNotifier);
 		queryAnswerMap.addEntryListener(hook, query.getId(), false);
 		try {

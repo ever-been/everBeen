@@ -1,5 +1,7 @@
 package cz.cuni.mff.d3s.been.hostruntime;
 
+import static cz.cuni.mff.d3s.been.cluster.Names.ACTION_QUEUE_NAME;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -7,16 +9,14 @@ import com.hazelcast.core.ITopic;
 import com.hazelcast.core.Message;
 import com.hazelcast.core.MessageListener;
 
+import cz.cuni.mff.d3s.been.cluster.Names;
 import cz.cuni.mff.d3s.been.cluster.Service;
 import cz.cuni.mff.d3s.been.cluster.ServiceException;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
-import cz.cuni.mff.d3s.been.core.protocol.Context;
 import cz.cuni.mff.d3s.been.core.protocol.messages.BaseMessage;
 import cz.cuni.mff.d3s.been.mq.IMessageSender;
 import cz.cuni.mff.d3s.been.mq.MessageQueues;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
-
-import static cz.cuni.mff.d3s.been.cluster.Names.ACTION_QUEUE_NAME;
 
 final class HostRuntimeMessageListener implements MessageListener<BaseMessage>, Service {
 
@@ -39,7 +39,7 @@ final class HostRuntimeMessageListener implements MessageListener<BaseMessage>, 
 		this.ctx = ctx;
 		this.nodeId = nodeId;
 
-		globalTopic = ctx.getTopic(Context.GLOBAL_TOPIC.getName());
+		globalTopic = ctx.getTopic(Names.BEEN_GLOBAL_TOPIC);
 	}
 
 	@Override

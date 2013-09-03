@@ -57,7 +57,7 @@ public final class ContextBuilder {
 	 * @param name
 	 *          name of the property which will be available to the whole context
 	 * @param value
-	 *          value corresponding to the given property with <code>name</code>
+	 *          value corresponding to the given property with {@code name}
 	 *          available to the whole context
 	 */
 	public void setProperty(final String name, final String value) {
@@ -112,7 +112,7 @@ public final class ContextBuilder {
 	 *          name of the template the task should use as its base
 	 * @return initialized and linked task for further customization
 	 * @throws BenchmarkException
-	 *           when no template with <code>templateName</code> exists
+	 *           when no template with {@code templateName} exists
 	 */
 	public Task addTask(final String name, final String templateName) throws BenchmarkException {
 		Task task = newEmptyTask().withName(name);
@@ -146,13 +146,13 @@ public final class ContextBuilder {
 	}
 
 	/**
-	 * Returns template with <code>templateName</code>.
+	 * Returns template with {@code templateName}.
 	 * 
 	 * @param templateName
 	 *          name of the template to look for
-	 * @return the template with <code>templateName</code>
+	 * @return the template with {@code templateName}
 	 * @throws BenchmarkException
-	 *           when no template with <code>templateName</code> exits
+	 *           when no template with {@code templateName} exits
 	 */
 	public Template getTemplate(String templateName) throws BenchmarkException {
 		for (Template template : descriptor.getTemplates().getTemplate()) {
@@ -178,7 +178,7 @@ public final class ContextBuilder {
 	 *          expression which selects Host Runtimes the task can run on
 	 * 
 	 * @throws BenchmarkException
-	 *           when no template with <code>templateName</code> exits
+	 *           when no template with {@code templateName} exits
 	 */
 	public void setSelector(final String templateName, final String selector) throws BenchmarkException {
 		Template template = getTemplate(templateName);
@@ -199,11 +199,11 @@ public final class ContextBuilder {
 	 * Sets tasks exclusivity for a template.
 	 * 
 	 * @param templateName
-	 *          name of the template to set the <code>exclusivity</code> on
+	 *          name of the template to set the {@code exclusivity} on
 	 * @param exclusivity
 	 *          exclusivity of all tasks created from the template
 	 * @throws BenchmarkException
-	 *           when no template with <code>templateName</code> exits
+	 *           when no template with {@code templateName} exits
 	 */
 	public void setExclusivity(final String templateName, final TaskExclusivity exclusivity) throws BenchmarkException {
 		Template template = getTemplate(templateName);

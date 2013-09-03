@@ -11,6 +11,9 @@ import cz.cuni.mff.d3s.been.core.ri.MonitorSample;
 import cz.cuni.mff.d3s.been.util.PropertyReader;
 
 /**
+ * 
+ * Periodic monitoring sample generator.
+ * 
  * @author Kuba Brecka
  */
 public class Monitoring {
@@ -23,6 +26,12 @@ public class Monitoring {
 
 	private Set<MonitoringListener> listeners = new HashSet();
 
+	/**
+	 * Creates new Monitoring sample generator.
+	 * 
+	 * @param properties
+	 *          monitoring settings
+	 */
 	public Monitoring(Properties properties) {
 		PropertyReader propertyReader = PropertyReader.on(properties);
 		Integer interval = propertyReader.getInteger(
@@ -31,11 +40,20 @@ public class Monitoring {
 		setMonitoringInterval(interval);
 	}
 
+	/**
+	 * Adds monitoring listener.
+	 * 
+	 * Every time a sample is generated, the event will be propagated to all
+	 * listeners.
+	 * 
+	 * @param listener
+	 *          the listener to add
+	 */
 	public void addListener(MonitoringListener listener) {
 		listeners.add(listener);
 	}
 
-	public void setMonitoringInterval(int milliseconds) {
+	private void setMonitoringInterval(int milliseconds) {
 		if (milliseconds < 10) {
 			milliseconds = 10;
 		}
@@ -43,6 +61,9 @@ public class Monitoring {
 		monitorInterval = milliseconds;
 	}
 
+	/**
+	 * Starts periodically generating monitoring samples.
+	 */
 	public synchronized void startMonitoring() {
 
 		if (monitoringRunning)
@@ -82,6 +103,9 @@ public class Monitoring {
 		monitoringThread.start();
 	}
 
+	/**
+	 * Stops generation of monitoring samples.
+	 */
 	public synchronized void stopMonitoring() {
 		monitoringRunning = false;
 		monitoringThread.interrupt();

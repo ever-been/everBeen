@@ -13,7 +13,7 @@ public class ClusterPersistenceConfiguration implements BeenServiceConfiguration
 	public static final String QUERY_TIMEOUT = "been.cluster.persistence.query-timeout";
 	/**
 	 * By default, the timeout before a query is evicted is
-	 * <code>DEFAULT_QUERY_TIMEOUT</code>seconds
+	 * {@code DEFAULT_QUERY_TIMEOUT}seconds
 	 */
 	public static final Long DEFAULT_QUERY_TIMEOUT = 10l;
 
@@ -25,7 +25,7 @@ public class ClusterPersistenceConfiguration implements BeenServiceConfiguration
 	public static final String QUERY_PROCESSING_TIMEOUT = "been.cluster.persistence.query-processing-timeout";
 	/**
 	 * By default, the timeout before a query is deemed failed is
-	 * <code>DEFAULT_QUERY_PROCESSING_TIMEOUT</code>seconds
+	 * {@code DEFAULT_QUERY_PROCESSING_TIMEOUT}seconds
 	 */
 	public static final Long DEFAULT_QUERY_PROCESSING_TIMEOUT = 5l;
 }

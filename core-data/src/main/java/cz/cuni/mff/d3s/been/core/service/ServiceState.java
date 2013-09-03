@@ -5,10 +5,13 @@ package cz.cuni.mff.d3s.been.core.service;
  */
 public enum ServiceState {
 
-    OK,
+	/** OK state. */
+	OK,
 
-    WARN,
+	/** WARN state/ */
+	WARN,
 
-    ERROR
+	/** ERROR state. */
+	ERROR
 
 }

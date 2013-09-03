@@ -50,8 +50,14 @@ final class InstanceConfigHelper {
 	 */
 	private final PropertyReader propReader;
 
-	/** Creates the helper class */
-	private InstanceConfigHelper(final Properties userProperties) throws ServiceException {
+	/**
+	 * Creates the helper class.
+	 * 
+	 * @param userProperties
+	 *          user properties
+	 * 
+	 */
+	private InstanceConfigHelper(final Properties userProperties) {
 		this.propReader = PropertyReader.on(userProperties);
 	}
 
@@ -134,6 +140,12 @@ final class InstanceConfigHelper {
 		return config;
 	}
 
+	/**
+	 * Sets Maps properties
+	 * 
+	 * @param config
+	 *          Hazelcast config
+	 */
 	private void setMapConfig(final Config config) {
 		MapConfig tasksMap = new MapConfig(Names.TASKS_MAP_NAME);
 		MapConfig contextsMap = new MapConfig(Names.TASK_CONTEXTS_MAP_NAME);
@@ -221,7 +233,9 @@ final class InstanceConfigHelper {
 	 * about each other.
 	 * 
 	 * @return Hazelcast {@link Join} configuration.
+	 * 
 	 * @throws ServiceException
+	 *           when config cannot be created
 	 */
 	private Join createJoinConfig() throws ServiceException {
 		final Join join = new Join();
@@ -322,7 +336,7 @@ final class InstanceConfigHelper {
 	 * @param peersList
 	 *          List of peers separated by
 	 *          {@link InstanceConfigHelper#VALUE_SEPARATOR}
-	 * @return List of peers from the <code>peersList</code>
+	 * @return List of peers from the {@code peersList}
 	 */
 	private List<InetSocketAddress> getPeers(final String peersList) {
 		List<InetSocketAddress> peers = new LinkedList<>();

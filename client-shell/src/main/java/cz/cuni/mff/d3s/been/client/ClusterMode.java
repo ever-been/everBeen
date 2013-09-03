@@ -25,6 +25,9 @@ import cz.cuni.mff.d3s.been.util.JsonException;
 
 /**
  * @author Martin Sixta
+ * 
+ *         WARNING: this code is in incubator phase
+ * 
  */
 class ClusterMode extends AbstractMode {
 
@@ -33,7 +36,7 @@ class ClusterMode extends AbstractMode {
 	private final JSONUtils jsonUtils;
 
 	private enum Action {
-		HELP, TASKS, TASKCONTEXTS, RUNTIMES, BENCHMARKS, BREAK, INSTANCES, BPKS, LOGS, DEBUG;
+		HELP, TASKS, TASKCONTEXTS, RUNTIMES, BENCHMARKS, BREAK, INSTANCES, BPKS, LOGS, DEBUG
 	}
 
 	private static String[] getActionStrings() {
@@ -124,7 +127,7 @@ class ClusterMode extends AbstractMode {
 	private void handleLogs(String[] args) throws DAOException, BeenApiException {
 
 		if (args.length == 2) {
-			Collection<TaskLogMessage> logs = null;
+			Collection<TaskLogMessage> logs;
 			logs = api.getLogsForTask(args[1]);
 			for (TaskLogMessage msg : logs) {
 				try {

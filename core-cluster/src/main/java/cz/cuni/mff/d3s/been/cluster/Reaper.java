@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class Reaper extends Thread {
 
+	/** logging. */
 	private final Logger log;
 
 	/**
@@ -22,15 +23,16 @@ public abstract class Reaper extends Thread {
 	 */
 	private final Stack<Reapable> subServices;
 
+	/** Creates a Reaper */
 	public Reaper() {
 		super();
-		subServices = new Stack<Reapable>();
+		subServices = new Stack<>();
 		log = LoggerFactory.getLogger(getClass());
 	}
 
 	@Override
 	public final void run() {
-        setName(getClass().getSimpleName());
+		setName(getClass().getSimpleName());
 		super.run();
 		try {
 			log.debug("Reaper is on the move.");
@@ -67,7 +69,13 @@ public abstract class Reaper extends Thread {
 	 */
 	protected void shutdown() throws InterruptedException {};
 
-	private final void reap(Reapable target) {
+	/**
+	 * Reaps a target
+	 * 
+	 * @param target
+	 *          target to reap
+	 */
+	private void reap(Reapable target) {
 		final Reaper reaper = target.createReaper();
 		reaper.start();
 		try {
@@ -75,6 +83,12 @@ public abstract class Reaper extends Thread {
 		} catch (InterruptedException e) {}
 	}
 
+	/**
+	 * Adds target to be reaped while shutting down.
+	 * 
+	 * @param target
+	 *          the target to add
+	 */
 	public void pushTarget(Reapable target) {
 		subServices.push(target);
 	}

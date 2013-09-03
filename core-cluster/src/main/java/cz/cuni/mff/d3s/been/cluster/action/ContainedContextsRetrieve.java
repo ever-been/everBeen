@@ -49,7 +49,7 @@ public class ContainedContextsRetrieve implements Action {
 			info.items.add(i);
 		}
 
-		String s = null;
+		String s;
 		try {
 			s = JSONUtils.newInstance().serialize(info);
 		} catch (JsonException e) {

@@ -212,7 +212,7 @@ public abstract class Benchmark extends Task {
 	 * @throws JsonException
 	 *           when the requestor returns an unparsable response
 	 */
-	private void processContexts() throws TimeoutException, JsonException {
+	private void processContexts() throws TimeoutException, JsonException, BenchmarkException {
 		try {
 			this.storage = benchmarkRequestor.storageRetrieve(getBenchmarkId());
 		} catch (TimeoutException e) {
@@ -224,44 +224,33 @@ public abstract class Benchmark extends Task {
 
 			String taskContextId = benchmarkRunningContext();
 			if (taskContextId != null) {
-				try {
-					TaskContextState state = benchmarkRequestor.contextWait(taskContextId);
-					log.trace("Task context '{}' finished with state {}.", taskContextId, state);
-					this.onTaskContextFinished(taskContextId, state);
-				} catch (TimeoutException e) {
-					throw new RuntimeException(e.getMessage(), e);
-				}
+				TaskContextState state = benchmarkRequestor.contextWait(taskContextId);
+				log.trace("Task context '{}' finished with state {}.", taskContextId, state);
+				this.onTaskContextFinished(taskContextId, state);
 			}
 		}
 
 		while (true) {
 			TaskContextDescriptor taskContextDescriptor;
-			try {
-				taskContextDescriptor = generateTaskContext();
 
-				if (taskContextDescriptor == null) {
-					return;
-				}
-			} catch (BenchmarkException e) {
-				throw new RuntimeException("Cannot generate task context.", e);
+			taskContextDescriptor = generateTaskContext();
+
+			if (taskContextDescriptor == null) {
+				return;
 			}
 
-			try {
-				// First save the local storage, before submitting the context
-				benchmarkRequestor.storagePersist(getBenchmarkId(), storage);
+			// First save the local storage, before submitting the context
+			benchmarkRequestor.storagePersist(getBenchmarkId(), storage);
 
-				log.trace("Submitting task context descriptor.");
-				String taskContextId = benchmarkRequestor.contextSubmit(taskContextDescriptor, getBenchmarkId());
-				log.trace("Task context descriptor with ID '{}' submitted", taskContextId);
+			log.trace("Submitting task context descriptor.");
+			String taskContextId = benchmarkRequestor.contextSubmit(taskContextDescriptor, getBenchmarkId());
+			log.trace("Task context descriptor with ID '{}' submitted", taskContextId);
 
-				TaskContextState state = benchmarkRequestor.contextWait(taskContextId);
-				log.trace("Task context '{}' finished with state {}.", taskContextId, state);
+			TaskContextState state = benchmarkRequestor.contextWait(taskContextId);
+			log.trace("Task context '{}' finished with state {}.", taskContextId, state);
 
-				this.onTaskContextFinished(taskContextId, state);
-			} catch (TimeoutException e) {
-				throw new RuntimeException(e.getMessage(), e);
-				// TODO this must be handled with greater care!
-			}
+			this.onTaskContextFinished(taskContextId, state);
+
 		}
 	}
 

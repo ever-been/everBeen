@@ -31,8 +31,6 @@ public class BpkStreamHolder implements BpkHolder {
 	 *          the input stream with the BPK data
 	 * @throws IOException
 	 *           when the file cannot be read or an I/O error occurs
-	 * @throws BpkConfigurationException
-	 *           when the configuration in the BPK file is invalid
 	 */
 	public BpkStreamHolder(InputStream inputStream) throws IOException {
 		if (bpkFile == null) {

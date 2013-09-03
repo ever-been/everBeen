@@ -29,6 +29,16 @@ public final class XPathPredicate implements Predicate<String, RuntimeInfo> {
 	private final TaskExclusivity taskExclusivity;
 	private final String contextId;
 
+	/**
+	 * Creates new XPathPredicate
+	 * 
+	 * @param contextId
+	 *          ID of the context to take into account while filtering
+	 * @param xpath
+	 *          XPath expression to filter out Host Runtimes
+	 * @param taskExclusivity
+	 *          requested exclusivity of the task
+	 */
 	public XPathPredicate(String contextId, String xpath, TaskExclusivity taskExclusivity) {
 		this.contextId = contextId;
 		this.xpath = xpath;

@@ -8,7 +8,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import cz.cuni.mff.d3s.been.core.ri.OperatingSystem;
 import org.apache.commons.io.IOUtils;
 import org.hyperic.jni.ArchLoader;
 import org.hyperic.jni.ArchNotSupportedException;
@@ -16,8 +15,12 @@ import org.hyperic.sigar.*;
 
 import cz.cuni.mff.d3s.been.core.ri.*;
 import cz.cuni.mff.d3s.been.core.ri.Cpu;
+import cz.cuni.mff.d3s.been.core.ri.OperatingSystem;
 
 /**
+ * 
+ * Native detector.
+ * 
  * @author Kuba Brecka
  */
 public class SigarDetector {
@@ -77,6 +80,11 @@ public class SigarDetector {
 		}
 	}
 
+	/**
+	 * Whether the native detector is available for the current platform.
+	 * 
+	 * @return Whether the native detector is available for the current platform.
+	 */
 	public boolean isSigarAvailable() {
 		try {
 			loadSigar();
@@ -87,6 +95,11 @@ public class SigarDetector {
 		return !sigarUnavailable;
 	}
 
+	/**
+	 * Detects hardware info
+	 * 
+	 * @return hardware info
+	 */
 	public Hardware detectHardware() {
 		try {
 			loadSigar();
@@ -133,13 +146,19 @@ public class SigarDetector {
 		}
 	}
 
+	/**
+	 * Detects operating system info.
+	 * 
+	 * @return operating system info.
+	 */
 	public OperatingSystem detectOperatingSystem() {
 		OperatingSystem os = new OperatingSystem();
 
 		try {
 			loadSigar();
 
-			if (sigar == null) return os;
+			if (sigar == null)
+				return os;
 
 			org.hyperic.sigar.OperatingSystem sys = org.hyperic.sigar.OperatingSystem.getInstance();
 			os.setName(sys.getName());
@@ -156,6 +175,11 @@ public class SigarDetector {
 		return os;
 	}
 
+	/**
+	 * Detects file system info
+	 * 
+	 * @return file system info
+	 */
 	public List<Filesystem> detectFilesystems() {
 		ArrayList<Filesystem> fslist = new ArrayList<>();
 
@@ -182,6 +206,7 @@ public class SigarDetector {
 		return fslist;
 	}
 
+	/** Generates monitoring sample */
 	public MonitorSample generateSample() {
 		MonitorSample sample = new MonitorSample();
 		sample.setLoadAverage(new LoadAverage());

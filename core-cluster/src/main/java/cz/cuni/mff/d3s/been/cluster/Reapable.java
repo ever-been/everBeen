@@ -1,5 +1,8 @@
 package cz.cuni.mff.d3s.been.cluster;
 
+/**
+ * Shutdown hook support.
+ */
 public interface Reapable {
 	/**
 	 * Create a reaper thread that manages resource release for this service in

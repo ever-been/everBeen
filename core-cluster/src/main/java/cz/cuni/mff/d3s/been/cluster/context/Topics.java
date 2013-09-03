@@ -2,7 +2,7 @@ package cz.cuni.mff.d3s.been.cluster.context;
 
 import com.hazelcast.core.ITopic;
 import com.hazelcast.core.MessageListener;
-import cz.cuni.mff.d3s.been.core.protocol.Context;
+import cz.cuni.mff.d3s.been.cluster.Names;
 
 /**
  * Utility class for topics-related handling.
@@ -65,7 +65,7 @@ public class Topics {
 	 *          type of the topic items
 	 */
 	public <E> void publishInGlobalTopic(E message) {
-		publish(Context.GLOBAL_TOPIC.getName(), message);
+		publish(Names.BEEN_GLOBAL_TOPIC, message);
 	}
 
 	/**

@@ -1,24 +1,26 @@
 package cz.cuni.mff.d3s.been.client;
 
-import cz.cuni.mff.d3s.been.api.BeenApiException;
-import cz.cuni.mff.d3s.been.persistence.DAOException;
-import jline.console.ConsoleReader;
-import jline.console.completer.Completer;
-import jline.console.completer.StringsCompleter;
-
 import java.io.PrintWriter;
 import java.util.LinkedList;
 import java.util.List;
 
+import jline.console.ConsoleReader;
+import jline.console.completer.Completer;
+import jline.console.completer.StringsCompleter;
+import cz.cuni.mff.d3s.been.api.BeenApiException;
+import cz.cuni.mff.d3s.been.persistence.DAOException;
+
 /**
  * @author Martin Sixta
+ * 
+ *         WARNING: this code is in incubator phase
+ * 
  */
 abstract class AbstractMode implements IMode {
 	protected String prompt;
 	protected String[] actions;
 	protected ConsoleReader reader;
 	protected PrintWriter out;
-
 
 	@Override
 	public String getPrompt() {
@@ -44,14 +46,12 @@ abstract class AbstractMode implements IMode {
 
 		out = new PrintWriter(reader.getOutput());
 
-		for (Completer completer: reader.getCompleters()) {
+		for (Completer completer : reader.getCompleters()) {
 			reader.removeCompleter(completer);
 		}
 
-
 		List<Completer> completors = new LinkedList<>();
 		completors.add(new StringsCompleter(actions));
-
 
 		for (Completer c : completors) {
 			reader.addCompleter(c);
@@ -62,8 +62,8 @@ abstract class AbstractMode implements IMode {
 
 	@Override
 	public IMode takeAction(String[] args) throws DAOException, BeenApiException {
-		for(String arg: args) {
-		   out.println(arg);
+		for (String arg : args) {
+			out.println(arg);
 		}
 
 		return this;

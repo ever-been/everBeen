@@ -11,6 +11,8 @@ public class RuntimeInfos {
 	 * 
 	 * Returns total system memory in bytes.
 	 * 
+	 * @param info
+	 *          the RuntimeInfo to get the value from
 	 * @return total system memory in bytes
 	 */
 	public static long getTotalMemory(final RuntimeInfo info) {
@@ -18,7 +20,10 @@ public class RuntimeInfos {
 	}
 
 	/**
-	 * Returns free system memory
+	 * Returns free system memory.
+	 * 
+	 * @param info
+	 *          the RuntimeInfo to get the value from
 	 * 
 	 * @return free system memory bytes or 0 if free memory cannot be detected
 	 */
@@ -30,6 +35,14 @@ public class RuntimeInfos {
 		return sample.getFreeMemory();
 	}
 
+	/**
+	 * Whether the memory threshold was reached.
+	 * 
+	 * @param info
+	 *          the RuntimeInfo to get the value from
+	 * 
+	 * @return Whether the memory threshold was reached.
+	 */
 	public static boolean isMemoryThresholdReached(final RuntimeInfo info) {
 		long freeMemory = getFreeMemory(info);
 
@@ -47,6 +60,13 @@ public class RuntimeInfos {
 
 	}
 
+	/**
+	 * Returns whether maximum tasks count was reached.
+	 * 
+	 * @param info
+	 *          the RuntimeInfo to get the value from
+	 * @return true if maximum tasks count was reached.
+	 */
 	public static boolean isMaxTasksReached(final RuntimeInfo info) {
 		return (info.getTaskCount() >= info.getMaxTasks());
 	}

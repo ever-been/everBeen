@@ -1,8 +1,6 @@
 package cz.cuni.mff.d3s.been.cluster;
 
-import static cz.cuni.mff.d3s.been.cluster.ClusterClientConfiguration.DEFAULT_MEMBERS;
-import static cz.cuni.mff.d3s.been.cluster.ClusterClientConfiguration.DEFAULT_TIMEOUT;
-import static cz.cuni.mff.d3s.been.cluster.ClusterClientConfiguration.MEMBERS;
+import static cz.cuni.mff.d3s.been.cluster.ClusterClientConfiguration.*;
 import static cz.cuni.mff.d3s.been.cluster.ClusterConfiguration.*;
 import static cz.cuni.mff.d3s.been.cluster.InstanceConfigHelper.PROPERTY_HAZELCAST_PREFER_IPV4_STACK;
 
@@ -40,9 +38,7 @@ public class InstanceTest extends Assert {
 	}
 
 	@Test
-	public
-			void
-			testCreateDefaultClientConfig() throws ServiceException, URISyntaxException {
+	public void testCreateDefaultClientConfig() throws ServiceException, URISyntaxException {
 
 		ClientConfig clientConfig = InstanceConfigHelper.createClientConfig(userProperties);
 
@@ -83,9 +79,7 @@ public class InstanceTest extends Assert {
 	}
 
 	@Test
-	public
-			void
-			testCreateDefaultMemberConfig() throws ServiceException, URISyntaxException {
+	public void testCreateDefaultMemberConfig() throws ServiceException, URISyntaxException {
 		Config config = InstanceConfigHelper.createMemberConfig(userProperties);
 
 		NetworkConfig networkConfig = config.getNetworkConfig();
@@ -99,14 +93,12 @@ public class InstanceTest extends Assert {
 		MulticastConfig multicastConfig = join.getMulticastConfig();
 
 		assertEquals(DEFAULT_MULTICAST_GROUP, multicastConfig.getMulticastGroup());
-		assertEquals(DEFAULT_MULTICAST_PORT,Integer.valueOf(multicastConfig.getMulticastPort()));
+		assertEquals(DEFAULT_MULTICAST_PORT, Integer.valueOf(multicastConfig.getMulticastPort()));
 
 	}
 
 	@Test
-	public
-			void
-			testCreateMemberConfigWithInterfaces() throws ServiceException, URISyntaxException {
+	public void testCreateMemberConfigWithInterfaces() throws ServiceException, URISyntaxException {
 		final String expectedInterface = "10.1.1.1-2";
 		userProperties.setProperty(INTERFACES, "10.1.1.1-2");
 
@@ -122,9 +114,7 @@ public class InstanceTest extends Assert {
 	}
 
 	@Test
-	public
-			void
-			testCreateMemberConfigEnableIPv6() throws ServiceException, URISyntaxException {
+	public void testCreateMemberConfigEnableIPv6() throws ServiceException, URISyntaxException {
 		userProperties.setProperty(PREFER_IPV4, "false");
 
 		Config config = InstanceConfigHelper.createMemberConfig(userProperties);
@@ -133,9 +123,7 @@ public class InstanceTest extends Assert {
 	}
 
 	@Test
-	public
-			void
-			testCreateMemberConfigWithMulticastOptions() throws ServiceException, URISyntaxException {
+	public void testCreateMemberConfigWithMulticastOptions() throws ServiceException, URISyntaxException {
 		int port = 1111;
 		String group = "224.2.2.1";
 
@@ -159,16 +147,11 @@ public class InstanceTest extends Assert {
 
 	@Test
 	public void testCreateMemberConfigWithTcp() throws ServiceException, URISyntaxException, UnknownHostException {
-		int port = 1111;
 
 		Address member1 = new Address("192.168.1.1", 5555);
 		Address member2 = new Address("192.168.1.10", 5701);
 
-		String memberList = String.format(
-				"%s:%d;%s",
-				member1.getHost(),
-				member1.getPort(),
-				member2.getHost());
+		String memberList = String.format("%s:%d;%s", member1.getHost(), member1.getPort(), member2.getHost());
 
 		userProperties.setProperty(JOIN, "tcp");
 		userProperties.setProperty(TCP_MEMBERS, memberList);

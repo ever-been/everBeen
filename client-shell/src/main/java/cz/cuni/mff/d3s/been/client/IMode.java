@@ -1,11 +1,14 @@
 package cz.cuni.mff.d3s.been.client;
 
+import jline.console.ConsoleReader;
 import cz.cuni.mff.d3s.been.api.BeenApiException;
 import cz.cuni.mff.d3s.been.persistence.DAOException;
-import jline.console.ConsoleReader;
 
 /**
  * @author Martin Sixta
+ * 
+ *         WARNING: this code is in incubator phase
+ * 
  */
 interface IMode {
 

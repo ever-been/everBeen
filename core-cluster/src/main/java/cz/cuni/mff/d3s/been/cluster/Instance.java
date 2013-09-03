@@ -1,8 +1,11 @@
 package cz.cuni.mff.d3s.been.cluster;
 
+import static cz.cuni.mff.d3s.been.cluster.ClusterClientConfiguration.MEMBERS;
+import static cz.cuni.mff.d3s.been.cluster.ClusterConfiguration.GROUP;
+import static cz.cuni.mff.d3s.been.cluster.ClusterConfiguration.PASSWORD;
+
 import java.util.Properties;
 
-import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,10 +14,7 @@ import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.config.Config;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
-
-import static cz.cuni.mff.d3s.been.cluster.ClusterClientConfiguration.MEMBERS;
-import static cz.cuni.mff.d3s.been.cluster.ClusterConfiguration.GROUP;
-import static cz.cuni.mff.d3s.been.cluster.ClusterConfiguration.PASSWORD;
+import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 
 /**
  * Singleton for the HazelcastInstance object.
@@ -35,11 +35,12 @@ public final class Instance {
 
 	/** The singleton Hazelcast instance */
 	private static HazelcastInstance hazelcastInstance = null;
+
+	/** Instance properties */
 	private static Properties properties = null;
 
 	/** Type of the instance */
 	private static NodeType nodeType = null;
-
 
 	/**
 	 * Path to the default Hazelcast configuration resource.
@@ -87,6 +88,11 @@ public final class Instance {
 	 *          type of the node to be initialized
 	 * @param userProperties
 	 *          configuration, can be null
+	 * 
+	 * @throws IllegalStateException
+	 *           when the node is already connected
+	 * @throws ServiceException
+	 *           when the node cannot connect
 	 */
 	public static synchronized
 			void
@@ -99,15 +105,38 @@ public final class Instance {
 		nodeType = type;
 	}
 
-	public static ClusterContext createContext() {
+	/**
+	 * Creates {@link ClusterContext} for this node.
+	 * 
+	 * @return Cluster context for this node
+	 * 
+	 * @throws IllegalStateException
+	 *           when the node is not connected
+	 */
+	public static ClusterContext createContext() throws IllegalStateException {
 		if (!isConnected()) {
 			throw new IllegalStateException("The node is not connected yet");
 		}
 		return new ClusterContext(hazelcastInstance, properties);
 	}
 
+	/**
+	 * Creates native HazelcastInstance instance.
+	 * 
+	 * @param host
+	 *          host to connect to
+	 * @param port
+	 *          port of the host to connect to
+	 * @param groupName
+	 *          Hazelcast group name
+	 * @param groupPassword
+	 *          Hazelcast group password
+	 * @return HazelcastInstance with specified connection arguments
+	 * @throws RuntimeException
+	 *           when the node cannot connect
+	 */
 	public static synchronized HazelcastInstance newNativeInstance(String host, int port, String groupName,
-			String groupPassword) {
+			String groupPassword) throws RuntimeException {
 		if (isConnected()) {
 			throw new RuntimeException("Already connected");
 		}
@@ -132,7 +161,7 @@ public final class Instance {
 	public static synchronized void shutdown() {
 		if (!isConnected()) {
 			log.warn("Connection to the cluster already closed");
-            hazelcastInstance = null;
+			hazelcastInstance = null;
 			return;
 		}
 
@@ -140,6 +169,15 @@ public final class Instance {
 		hazelcastInstance = null;
 	}
 
+	/**
+	 * Creates native HazelcastInstance.
+	 * 
+	 * @param userProperties
+	 *          properties to be used while connecting
+	 * @return connected native Hazelcast instance
+	 * @throws ServiceException
+	 *           when connection cannot be established.
+	 */
 	private static HazelcastInstance createNativeInstance(Properties userProperties) throws ServiceException {
 
 		ClientConfig clientConfig = InstanceConfigHelper.createClientConfig(userProperties);
@@ -148,6 +186,15 @@ public final class Instance {
 
 	}
 
+	/**
+	 * Creates data HazelcastInstance.
+	 * 
+	 * @param userProperties
+	 *          properties to be used while connecting
+	 * @return connected data Hazelcast instance
+	 * @throws ServiceException
+	 *           when connection cannot be established.
+	 */
 	private static HazelcastInstance createDataInstance(Properties userProperties) throws ServiceException {
 
 		Config config = InstanceConfigHelper.createMemberConfig(userProperties);
@@ -155,6 +202,17 @@ public final class Instance {
 		return Hazelcast.newHazelcastInstance(config);
 	}
 
+	/**
+	 * Joins this node to the cluster.
+	 * 
+	 * @param type
+	 *          type of the node
+	 * @param userProperties
+	 *          properties to be used
+	 * @return connected node
+	 * @throws ServiceException
+	 *           when node cannot join
+	 */
 	private static HazelcastInstance join(NodeType type, Properties userProperties) throws ServiceException {
 		switch (type) {
 			case DATA:
@@ -168,14 +226,19 @@ public final class Instance {
 		}
 	}
 
+	/**
+	 * Whether the node is connected to the cluster
+	 * 
+	 * @return true of connected, false otherwise
+	 */
 	private static boolean isConnected() {
-        if (hazelcastInstance != null) {
-            if (hazelcastInstance instanceof HazelcastClient) {
-                return ((HazelcastClient) hazelcastInstance).isActive();
-            }
-            return true;
-        }
-        return false;
+		if (hazelcastInstance != null) {
+			if (hazelcastInstance instanceof HazelcastClient) {
+				return ((HazelcastClient) hazelcastInstance).isActive();
+			}
+			return true;
+		}
+		return false;
 	}
 
 }

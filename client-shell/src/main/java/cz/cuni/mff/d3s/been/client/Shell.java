@@ -16,6 +16,9 @@ import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 
 /**
  * @author Martin Sixta
+ * 
+ *         WARNING: this code is in incubator phase
+ * 
  */
 public class Shell {
 	@Option(name = "-cf", aliases = { "--config-file" }, usage = "Path to BEEN config file.")
