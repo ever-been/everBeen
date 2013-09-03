@@ -3,6 +3,8 @@ package cz.cuni.mff.d3s.been.persistence;
 /**
  * A fluent builder for {@link AttributeFilter} objects
  *
+ * @param <T> Type of the {@link QueryBuilderBase} extension that requested this builder
+ *
  * @author darklight
  */
 public class AttributeFilterBuilder<T extends QueryBuilderBase> {

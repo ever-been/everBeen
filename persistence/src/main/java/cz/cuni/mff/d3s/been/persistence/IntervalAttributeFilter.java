@@ -16,8 +16,10 @@ import static cz.cuni.mff.d3s.been.persistence.FilterValues.LOW_BOUND;
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
 public class IntervalAttributeFilter extends SkeletalAttributeFilter {
 
+	/**
+	 * Create an interval attribute filter
+	 */
 	public IntervalAttributeFilter() {
-
 	}
 
 	IntervalAttributeFilter(Object lowBound, Object highBound) {

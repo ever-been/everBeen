@@ -8,5 +8,11 @@ import java.io.Serializable;
  * @author darklight
  */
 public interface AttributeFilter extends Serializable {
+
+	/**
+	 * Get the type of this attribute filter
+	 *
+	 * @return The type
+	 */
 	AttributeFilterType getType();
 }

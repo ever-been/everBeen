@@ -1,17 +1,19 @@
 package cz.cuni.mff.d3s.been.persistence;
 
-import cz.cuni.mff.d3s.been.core.persistence.EntityID;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 /**
+ * A builder for result queries
+ *
  * @author darklight
  */
 public class ResultQueryBuilder extends QueryBuilderBase {
 
+	/**
+	 * Target the query on a result group
+	 *
+	 * @param group Group to target
+	 *
+	 * @return This {@link ResultQueryBuilder}, with altered targeting
+	 */
 	public ResultQueryBuilder on(String group) {
 		this.entityID.setGroup(group);
 		return this;

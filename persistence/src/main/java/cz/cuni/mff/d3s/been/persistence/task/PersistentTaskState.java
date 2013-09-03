@@ -15,6 +15,9 @@ public class PersistentTaskState extends TaskEntity {
 	private String runtimeId;
 	private TaskState taskState;
 
+	/**
+	 * Create a persistent variant of the task state
+	 */
 	public PersistentTaskState() {
 		created = System.currentTimeMillis();
 	}
@@ -51,26 +54,56 @@ public class PersistentTaskState extends TaskEntity {
 		return this;
 	}
 
+	/**
+	 * Get the time at which the task was started
+	 *
+	 * @return The task start timestamp
+	 */
 	public long getTimeStarted() {
 		return timeStarted;
 	}
 
+	/**
+	 * Set the time at which the task was started
+	 *
+	 * @param timeStarted Task start timestamp to set
+	 */
 	public void setTimeStarted(long timeStarted) {
 		this.timeStarted = timeStarted;
 	}
 
+	/**
+	 * Get the time at which the task finished
+	 *
+	 * @return The task finish timestamp
+	 */
 	public long getTimeFinished() {
 		return timeFinished;
 	}
 
+	/**
+	 * Set the time at which the task was finished
+	 *
+	 * @param timeFinished Task finish timestamp to set
+	 */
 	public void setTimeFinished(long timeFinished) {
 		this.timeFinished = timeFinished;
 	}
 
+	/**
+	 * Get the ID of the <em>Host Runtime</em> on which this task was run
+	 *
+	 * @return The <em>Host Runtime</em> ID
+	 */
 	public String getRuntimeId() {
 		return runtimeId;
 	}
 
+	/**
+	 * Set the ID of the <em>Host Runtime</em> on which this task was run
+	 *
+	 * @param runtimeId <em>Host Runtime</em> ID to set
+	 */
 	public void setRuntimeId(String runtimeId) {
 		this.runtimeId = runtimeId;
 	}
