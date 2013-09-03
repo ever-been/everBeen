@@ -99,7 +99,7 @@ public final class CheckpointRequest extends Request {
 	}
 
 	/**
-	 * Deserializes a JSON string into an instance of {@link CheckpointRequest}.
+	 * Deserializes a JSON string into an instance of .
 	 * 
 	 * @param json
 	 *          JSON representation of the request

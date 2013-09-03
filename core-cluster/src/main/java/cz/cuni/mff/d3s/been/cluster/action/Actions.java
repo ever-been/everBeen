@@ -13,7 +13,7 @@ import cz.cuni.mff.d3s.been.task.checkpoints.CheckpointRequest;
  */
 public class Actions {
 
-	/** slf4j logger */
+	/** slf4j logger. */
 	private static final Logger log = LoggerFactory.getLogger(Actions.class);
 
 	/**

@@ -1,5 +1,8 @@
 package cz.cuni.mff.d3s.been.cluster;
 
+/**
+ * Basic interface for a BEEN service.
+ */
 public interface Service {
 
 	/**

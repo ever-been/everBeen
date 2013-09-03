@@ -4,20 +4,23 @@ import java.io.Serializable;
 
 /**
  * Represents message used in communication between services
+ * 
+ * @author Tadeáš Palusga
  */
 @SuppressWarnings("serial")
 public abstract class BaseMessage implements Serializable {
 
-    /**
-     * id of node for which is this message intended
-     */
-    public String recieverId;
+	/**
+	 * id of node for which is this message intended
+	 */
+	public String recieverId;
 
-    /**
-     * @param recieverId id of node for which is this message intended
-     */
-    public BaseMessage(String recieverId) {
-        this.recieverId = recieverId;
-    }
+	/**
+	 * @param recieverId
+	 *          id of node for which is this message intended
+	 */
+	public BaseMessage(String recieverId) {
+		this.recieverId = recieverId;
+	}
 
 }

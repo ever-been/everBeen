@@ -6,8 +6,6 @@ package cz.cuni.mff.d3s.been.cluster;
  */
 public class Names {
 
-
-
 	// MAP NAMES
 	/**
 	 * In the map with this name should be stored information about all registered
@@ -25,11 +23,17 @@ public class Names {
 	 * In the map with this name should be stored information about all Tasks
 	 * (including their actual state).
 	 */
-    public static final String TASKS_MAP_NAME = "BEEN_MAP_TASKS";
+	public static final String TASKS_MAP_NAME = "BEEN_MAP_TASKS";
 
-    public static final String NAMED_TASK_DESCRIPTORS_MAP_NAME = "BEEN_MAP_NAMED_TASK_DESCRIPTORS";
+	/**
+	 * Map that contains named Task Descriptors.
+	 */
+	public static final String NAMED_TASK_DESCRIPTORS_MAP_NAME = "BEEN_MAP_NAMED_TASK_DESCRIPTORS";
 
-    public static final String NAMED_TASK_CONTEXT_DESCRIPTORS_MAP_NAME = "BEEN_MAP_NAMED_TASK_CONTEXT_DESCRIPTORS";
+	/**
+	 * Map that contains named Task Context Descriptors.
+	 */
+	public static final String NAMED_TASK_CONTEXT_DESCRIPTORS_MAP_NAME = "BEEN_MAP_NAMED_TASK_CONTEXT_DESCRIPTORS";
 
 	/**
 	 * Map storing current task contexts.
@@ -61,8 +65,6 @@ public class Names {
 	 */
 	public static final String LOGS_BENCHMARK_MAP_NAME = "been.task.logs.benchmark";
 
-
-
 	// QUEUE NAMES
 
 	/**
@@ -87,5 +89,8 @@ public class Names {
 	 */
 	public static final String BENCHMARKS_CONTEXT_ID = "00000000-0000-dead-1337-c0ffee00babe";
 
-    public static final String BEEN_MAP_COMMAND_ENTRIES = "BEEN_MAP_COMMAND_ENTRIES";
+	public static final String BEEN_MAP_COMMAND_ENTRIES = "BEEN_MAP_COMMAND_ENTRIES";
+
+	/** Name of the global Host Runtime Topic. */
+	public static final String BEEN_GLOBAL_TOPIC = "BEEN_GLOBAL_TOPIC";
 }

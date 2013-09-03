@@ -1,38 +1,52 @@
 package cz.cuni.mff.d3s.been.detectors;
 
-import cz.cuni.mff.d3s.been.core.ri.*;
-import org.apache.commons.collections.EnumerationUtils;
-import org.apache.commons.lang.StringUtils;
-import org.hyperic.sigar.NetInterfaceConfig;
-
 import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
 import java.lang.reflect.Method;
-import java.net.*;
+import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.util.ArrayList;
+import java.net.SocketException;
 import java.util.Enumeration;
 
+import org.apache.commons.collections.EnumerationUtils;
+
+import cz.cuni.mff.d3s.been.core.ri.*;
+
 /**
+ * 
+ * Java based fallback detector.
+ * 
  * @author Kuba Brecka
  */
 public class JavaDetector {
-    public Java detectJava() {
-        Java java = new Java();
 
-        java.setVersion(System.getProperty("java.version"));
-        java.setVendor(System.getProperty("java.vendor"));
-        java.setVersion(System.getProperty("java.version"));
-        java.setRuntimeName(System.getProperty("java.runtime.name"));
-        java.setVMVersion(System.getProperty("java.vm.version"));
-        java.setVMVendor(System.getProperty("java.vm.vendor"));
-        java.setRuntimeVersion(System.getProperty("java.runtime.version"));
-        java.setSpecificationVersion(System.getProperty("java.specification.version"));
+	/**
+	 * Detects all Java related info
+	 * 
+	 * @return Java related info
+	 */
+	public Java detectJava() {
+		Java java = new Java();
 
-        return java;
-    }
+		java.setVersion(System.getProperty("java.version"));
+		java.setVendor(System.getProperty("java.vendor"));
+		java.setVersion(System.getProperty("java.version"));
+		java.setRuntimeName(System.getProperty("java.runtime.name"));
+		java.setVMVersion(System.getProperty("java.vm.version"));
+		java.setVMVendor(System.getProperty("java.vm.vendor"));
+		java.setRuntimeVersion(System.getProperty("java.runtime.version"));
+		java.setSpecificationVersion(System.getProperty("java.specification.version"));
 
+		return java;
+	}
+
+	/**
+	 * Operation system info
+	 * 
+	 * @param runtimeInfo
+	 *          where to fill it out
+	 */
 	public void detectOperatingSystem(RuntimeInfo runtimeInfo) {
 		OperatingSystem os = new OperatingSystem();
 		os.setName(System.getProperty("os.name"));
@@ -41,6 +55,12 @@ public class JavaDetector {
 		runtimeInfo.setOperatingSystem(os);
 	}
 
+	/**
+	 * Hardware info
+	 * 
+	 * @param runtimeInfo
+	 *          where to fill it out
+	 */
 	public void detectHardware(RuntimeInfo runtimeInfo) {
 		Hardware hw = new Hardware();
 
@@ -76,6 +96,12 @@ public class JavaDetector {
 		runtimeInfo.setHardware(hw);
 	}
 
+	/**
+	 * File system info
+	 * 
+	 * @param runtimeInfo
+	 *          where to fill it out
+	 */
 	public void detectFilesystems(RuntimeInfo runtimeInfo) {
 		for (File root : File.listRoots()) {
 			Filesystem f = new Filesystem();
@@ -86,8 +112,7 @@ public class JavaDetector {
 		}
 	}
 
-	private long getTotalMemoryFromReflection()
-	{
+	private long getTotalMemoryFromReflection() {
 		OperatingSystemMXBean os = ManagementFactory.getOperatingSystemMXBean();
 
 		try {
@@ -102,8 +127,7 @@ public class JavaDetector {
 		return 0;
 	}
 
-	private long getFreeMemoryFromReflection()
-	{
+	private long getFreeMemoryFromReflection() {
 		OperatingSystemMXBean os = ManagementFactory.getOperatingSystemMXBean();
 
 		try {
@@ -118,6 +142,11 @@ public class JavaDetector {
 		return 0;
 	}
 
+	/**
+	 * Generates a monitoring sample.
+	 * 
+	 * @return newly generated sample
+	 */
 	public MonitorSample generateSample() {
 
 		OperatingSystemMXBean os = ManagementFactory.getOperatingSystemMXBean();

@@ -17,7 +17,7 @@ public class ClusterClientConfiguration implements BeenServiceConfiguration {
 	public static final String TIMEOUT = "been.cluster.client.timeout";
 	/**
 	 * By default, a native Hazelcast client's session will remain active for
-	 * <code>DEFAULT_TIMEOUT</code> seconds
+	 * {@code DEFAULT_TIMEOUT} seconds
 	 */
 	public static final Integer DEFAULT_TIMEOUT = 120;
 
@@ -28,7 +28,7 @@ public class ClusterClientConfiguration implements BeenServiceConfiguration {
 	public static final String MEMBERS = "been.cluster.client.members";
 	/**
 	 * By default, BEEN will attempt to join these members:
-	 * <code>DEFAULT_MEMBERS</code>
+	 * {@code DEFAULT_MEMBERS}
 	 */
 	public static final String DEFAULT_MEMBERS = "localhost:5701";
 }

@@ -5,8 +5,14 @@ import org.slf4j.LoggerFactory;
 
 import com.hazelcast.core.HazelcastInstance;
 
+/**
+ * Reaper of cluster services.
+ * 
+ * @author Radek Macha
+ */
 public class ClusterReaper extends Reaper {
 
+	/** logging */
 	private static final Logger log = LoggerFactory.getLogger(ClusterReaper.class);
 
 	/** Hazelcast instance to shutdown on signal */
@@ -16,7 +22,8 @@ public class ClusterReaper extends Reaper {
 	 * Create a shutdown hook that correctly shuts down first the
 	 * {@link IClusterService}s, then the {@link HazelcastInstance}.
 	 * 
-	 * @param instance Hazelcast instance to reap
+	 * @param instance
+	 *          Hazelcast instance to reap
 	 */
 	public ClusterReaper(HazelcastInstance instance) {
 		this.instance = instance;

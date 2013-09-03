@@ -4,9 +4,8 @@ import java.lang.annotation.*;
 
 /**
  * 
- * TODO WARNING! The class was stolen from org.apache.httt.annotattion! Licence
- * issues?
- * 
+ * The class was stolen from org.apache.httt.annotattion! Apache licence
+ * applies.
  * 
  * 
  * The class to which this annotation is applied is thread-safe. This means that

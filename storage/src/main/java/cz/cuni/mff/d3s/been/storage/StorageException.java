@@ -27,12 +27,4 @@ public class StorageException extends ServiceException {
 		super(message, cause);
 	}
 
-	public StorageException(
-			String message,
-			Throwable cause,
-			boolean enableSuppression,
-			boolean writableStackTrace) {
-		super(message, cause, enableSuppression, writableStackTrace);
-	}
-
 }

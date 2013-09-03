@@ -3,19 +3,33 @@ package cz.cuni.mff.d3s.been.detectors;
 import cz.cuni.mff.d3s.been.core.ri.*;
 
 /**
+ * 
+ * Sample detector and generator.
+ * 
  * @author Kuba Brecka
  */
-public class Detector {
+public final class Detector {
 
-	SigarDetector nativeDetector;
-	JavaDetector javaDetector;
+	/** native detector. */
+	private SigarDetector nativeDetector;
+	/** fallback Java-based detector. */
+	private JavaDetector javaDetector;
 
+	/**
+	 * Creates new Detector
+	 */
 	public Detector() {
 		// detect HW
 		nativeDetector = new SigarDetector();
 		javaDetector = new JavaDetector();
 	}
 
+	/**
+	 * Detect all possible information available on the Host
+	 * 
+	 * @param runtimeInfo
+	 *          where to fill detected information
+	 */
 	public void detectAll(RuntimeInfo runtimeInfo) {
 		// detect Java
 		runtimeInfo.setJava(javaDetector.detectJava());
@@ -41,6 +55,14 @@ public class Detector {
 
 	private MonitorSample lastSample;
 
+	/**
+	 * Generates new Monitoring sample.
+	 * 
+	 * @param differential
+	 *          whether to calculate difference against previous generated sample
+	 * 
+	 * @return generated monitoring sample
+	 */
 	public MonitorSample generateSample(boolean differential) {
 		MonitorSample newSample;
 		if (nativeDetector.isSigarAvailable()) {

@@ -15,8 +15,9 @@ import cz.cuni.mff.d3s.been.cluster.Instance;
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 
 /**
- * Created with IntelliJ IDEA. User: Kuba Date: 25.03.13 Time: 14:20 To change
- * this template use File | Settings | File Templates.
+ * Debug support for JVM-based tasks - helper which lists listening tasks.
+ * 
+ * @author Kuba Břečka
  */
 public class DebugAssistantRunner {
 	private static final Logger log = LoggerFactory.getLogger(DebugAssistantRunner.class);

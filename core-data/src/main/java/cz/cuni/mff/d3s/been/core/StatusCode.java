@@ -19,20 +19,34 @@ public enum StatusCode {
 	/** A component of this process has failed to run. */
 	EX_COMPONENT_FAILED(128),
 
-    /** Something is wrong with this computer's network configuration */
-    EX_NETWORK_ERROR(129);
+	/** Something is wrong with this computer's network configuration */
+	EX_NETWORK_ERROR(129);
 
 	/** The exit code */
 	private int code;
 
-	StatusCode(int code) {
+	/**
+	 * Creates status code.
+	 * 
+	 * @param code
+	 *          the code associated with the status.
+	 */
+	private StatusCode(int code) {
 		this.code = code;
 	}
 
+	/**
+	 * Returns the code associated with the status.
+	 * 
+	 * @return the code associated with the status
+	 */
 	public int getCode() {
 		return code;
 	}
 
+	/**
+	 * Will exit the JVM with the code associated with the status.
+	 */
 	public void sysExit() {
 		System.exit(code);
 	}

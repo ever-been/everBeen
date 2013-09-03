@@ -17,6 +17,10 @@ import cz.cuni.mff.d3s.been.util.JSONUtils;
 import cz.cuni.mff.d3s.been.util.JsonException;
 
 /**
+ * Test run of the Detector.
+ * 
+ * For testing purposes.
+ * 
  * @author Kuba Brecka
  */
 public class DetectorRunner {

@@ -66,6 +66,9 @@ public class Tasks {
 	/**
 	 * Returns all tasks currently linked to a Host Runtime.
 	 * 
+	 * @param runtimeId
+	 *          ID of a Host Runtime
+	 * 
 	 * @return all task entries
 	 */
 	public Collection<TaskEntry> getTasksOnRuntime(final String runtimeId) {

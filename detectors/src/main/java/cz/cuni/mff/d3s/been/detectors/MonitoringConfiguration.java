@@ -3,6 +3,8 @@ package cz.cuni.mff.d3s.been.detectors;
 import cz.cuni.mff.d3s.been.BeenServiceConfiguration;
 
 /**
+ * Monitoring Configuration
+ * 
  * @author Kuba Brecka
  */
 public class MonitoringConfiguration implements BeenServiceConfiguration {

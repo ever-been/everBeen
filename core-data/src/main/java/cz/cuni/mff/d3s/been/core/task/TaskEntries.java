@@ -34,6 +34,8 @@ public class TaskEntries {
 	 * 
 	 * @param taskDescriptor
 	 *          for which the new entry is created
+	 * @param taskContextId
+	 *          requested context id
 	 * @return initialized entry
 	 */
 	public static TaskEntry create(TaskDescriptor taskDescriptor, String taskContextId) {
@@ -68,8 +70,8 @@ public class TaskEntries {
 	 *           if entry cannot be serialized
 	 */
 	public static String toXml(TaskEntry entry) throws IllegalArgumentException {
-		BindingComposer<TaskEntry> composer = null;
-		StringWriter writer = null;
+		BindingComposer<TaskEntry> composer;
+		StringWriter writer;
 		try {
 			composer = XSD.TASKENTRY.createComposer(TaskEntry.class);
 
@@ -97,7 +99,7 @@ public class TaskEntries {
 	 *          format string with explanation why the change has been made
 	 * @param reasonArgs
 	 *          arguments for the format string
-	 * @throws IllegalArgumentException
+	 * @throws IllegalStateException
 	 *           if the transition to a new state is illegal.
 	 */
 	public static
@@ -121,9 +123,8 @@ public class TaskEntries {
 	 * Returns collection of transition taken by a {@link TaskEntry}.
 	 * 
 	 * @param entry
+	 *          the entry to operate on
 	 * @return mutable list of transitions
-	 * 
-	 *         TODO: sixtm make it imutable/collection
 	 */
 	public static List<StateChangeEntry> getStateChangeEntries(TaskEntry entry) {
 		if (!entry.isSetStateChangeLog()) {
@@ -137,9 +138,12 @@ public class TaskEntries {
 	 * Creates StateChangeEntry.
 	 * 
 	 * @param state
+	 *          requested state
 	 * @param reasonFormat
+	 *          reason format
 	 * @param reasonArgs
-	 * @return
+	 *          reason format arguments
+	 * @return StateChangeEntry
 	 */
 	private static StateChangeEntry createStateChangeEntry(TaskState state, String reasonFormat, Object... reasonArgs) {
 		StateChangeEntry logEntry = TASK.createStateChangeEntry();
