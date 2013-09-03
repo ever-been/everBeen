@@ -5,6 +5,7 @@
 
     <h2>Benchmark &amp; Task Tree</h2>
 
+
     <div style="float: right; text-align: right;">
         <t:if t:test="swRepositoryOnline">
             <t:pageLink class="btn btn-primary" t:page="task/submit">Submit new item
@@ -20,271 +21,279 @@
             Remove finished benchmarks
         </t:eventLink>
     </div>
-    <script>
-        var finishedTasksHidden = false;
-
-        function showOrHideTasks() {
-        if (finishedTasksHidden) {
-        jQuery('.FINISHED_true').show();
-        finishedTasksHidden = false;
-        jQuery('#displayFinishedTasksInfo').text('Displaying all tasks');
-        } else {
-        jQuery('.FINISHED_true').hide();
-        finishedTasksHidden = true;
-        jQuery('#displayFinishedTasksInfo').text('Displaying only unfinished tasks');
-        }
-        }
-
-        jQuery(document).ready(function() {
-        $('#displayFinishedTasksCheckbox').prop('checked', false);
-        showOrHideTasks();
-
-        jQuery('#displayFinishedTasksCheckbox').click(function() {
-        showOrHideTasks();
-        });
-        });
-
-    </script>
-
-    <div style="float: left; text-align: left;">
-        <label class="checkbox">
-            <input type="checkbox" id="displayFinishedTasksCheckbox"/>
-            Show finished tasks
-            <p id="displayFinishedTasksInfo"/>
-        </label>
-    </div>
 
 
-    <table class="list">
-        <thead>
-            <tr>
-                <th></th>
-                <th>Benchmark ID</th>
-                <th>Name</th>
-                <th>Generator task</th>
-                <th>State</th>
-                <th>Generated</th>
-                <th>Resubmits</th>
-            </tr>
-        </thead>
+    <t:progressiveDisplay/>
+    <t:block id="tasksBlock">
+        <script>
+            var finishedTasksHidden = false;
 
-        <t:loop source="benchmarks" value="benchmark">
-            <tr style="background-color: #eee;">
-                <td>
-                    <t:if test="isBenchmarkInFinalState(benchmark.id)">
-                        <t:if test="isBenchmarkRemovable(benchmark.id)">
-                            <t:eventLink class="btn btn-mini btn-warning" t:event="removeBenchmark"
-                                         t:context="benchmark.id"
-                                         onclick="if (window.confirm('Are you sure?')) location.href=jQuery(this).attr('href'); return false;">
-                                Remove
-                            </t:eventLink>
-                        </t:if>
-                        <p:else>
-                            <t:eventLink class="btn btn-mini btn-danger" t:event="killBenchmark"
-                                         t:context="benchmark.id"
-                                         onclick="if (window.confirm('Are you sure?')) location.href=jQuery(this).attr('href'); return false;">
-                                Kill
-                            </t:eventLink>
-                        </p:else>
-                    </t:if>
+            function showOrHideTasks() {
+            if (finishedTasksHidden) {
+            jQuery('.FINISHED_true').show();
+            finishedTasksHidden = false;
+            jQuery('#displayFinishedTasksInfo').text('Displaying all tasks');
+            } else {
+            jQuery('.FINISHED_true').hide();
+            finishedTasksHidden = true;
+            jQuery('#displayFinishedTasksInfo').text('Displaying only unfinished tasks');
+            }
+            }
 
-                </td>
-                <td>
-                    <i class="icon-rocket"></i>&nbsp;
-                    <t:pageLink t:page="benchmark/detail" t:context="benchmark.id">
-                        <t:output format="idFormat" value="benchmark.id"/>
-                    </t:pageLink>
-                </td>
-                <td>
-                    ${benchmarkName(benchmark.id)}
-                </td>
-                <td>
-                    <i class="icon-beaker"></i>&nbsp;
-                    <t:if t:test="benchmarkGenerator(benchmark)">
-                        <t:pageLink t:page="task/detail" t:context="benchmark.generatorId">
-                            <t:output format="idFormat" value="benchmark.generatorId"/>
-                        </t:pageLink>
-                        <p:else>
-                            deleted
-                        </p:else>
-                    </t:if>
-                </td>
-                <td>
-                    <t:task.stateIcon t:taskState="benchmarkState(benchmark.id)"/>
-                </td>
-                <td>
-                    ${benchmark.generatedContextCount}
-                </td>
-                <td>
-                    ${benchmark.resubmitHistory.resubmitHistoryItem.size()}
-                </td>
-            </tr>
+            jQuery(document).ready(function() {
+            $('#displayFinishedTasksCheckbox').prop('checked', false);
+            showOrHideTasks();
 
-            <tr>
-                <td></td>
-                <td colspan="6">
-                    <table>
-                        <tr class="FINISHED_${isBenchmarkWithoutFailedContexts(benchmark.id)}">
-                            <th></th>
-                            <th>Context ID</th>
-                            <th>Name</th>
-                            <th>State</th>
-                            <th>Tasks</th>
-                            <th></th>
-                        </tr>
-                        <t:loop source="contextsForBenchmark(benchmark.id)" value="context">
-                            <tr class="FINISHED_${isTaskContextFinished(context.id)}">
-                                <td>
-                                    <t:if test="isTaskContextInFinalState(context.id)">
-                                        <t:if test="isContextRemovable(context.id)">
-                                            <t:eventLink class="btn btn-mini btn-warning" t:event="removeContext"
-                                                         t:context="context.id"
-                                                         onclick="if (window.confirm('Are you sure?')) location.href=jQuery(this).attr('href'); return false;">
-                                                Remove
-                                            </t:eventLink>
-                                        </t:if>
-                                        <p:else>
-                                            <t:eventLink class="btn btn-mini btn-danger" t:event="killContext"
-                                                         t:context="context.id"
-                                                         onclick="if (window.confirm('Are you sure?')) location.href=jQuery(this).attr('href'); return false;">
-                                                Kill
-                                            </t:eventLink>
-                                        </p:else>
-                                    </t:if>
+            jQuery('#displayFinishedTasksCheckbox').click(function() {
+            showOrHideTasks();
+            });
+            });
 
-                                </td>
-                                <td>
-                                    <i class="icon-book"></i>&nbsp;
-                                    <t:pageLink t:page="context/detail" t:context="context.id">
-                                        <t:output format="idFormat" value="context.id"/>
-                                    </t:pageLink>
-                                </td>
-                                <td>
-                                    ${context.taskContextDescriptor.name}
-                                </td>
-                                <td>
-                                    <t:task.stateIcon taskContextState="context.contextState"/>
-                                </td>
-                                <td>
-                                    <b>${context.containedTask.size()}</b>
-                                    &nbsp;
-                                    <a class="btn btn-mini tasktogglebutton" style="vertical-align: baseline;" href="#">
-                                        <i class="icon-plus"></i>
-                                    </a>
-                                </td>
-                                <td style="display: none;">
-                                    <table class="inner-task-list">
-                                        <t:loop source="tasksForContext(context.id)" value="task">
-                                            <tr>
-                                                <td><i class="icon-beaker"></i>&nbsp;
-                                                    <t:pageLink t:page="task/detail" t:context="task.id">
-                                                        <t:output format="idFormat" value="task.id"/>
-                                                    </t:pageLink>
-                                                </td>
-                                                <td>${task.taskDescriptor.name}</td>
-                                                <td>
-                                                    <t:task.stateIcon taskState="task.state"/>
-                                                </td>
-                                            </tr>
-                                        </t:loop>
-                                    </table>
-                                </td>
-                            </tr>
-                            <p:empty>
-                                <tr>
-                                    <td colspan="4">
-                                        <i class="icon-info-sign"></i>
-                                        There are no task contexts in this benchmark.
-                                    </td>
-                                </tr>
-                            </p:empty>
-                        </t:loop>
-                    </table>
-                </td>
-            </tr>
-            <p:empty>
+        </script>
+
+        <div style="float: left; text-align: left;">
+            <label class="checkbox">
+                <input type="checkbox" id="displayFinishedTasksCheckbox"/>
+                Show finished tasks
+                <p id="displayFinishedTasksInfo"/>
+            </label>
+        </div>
+
+
+        <table class="list">
+            <thead>
                 <tr>
-                    <td colspan="7">
-                        <i class="icon-info-sign"></i>
-                        There are no benchmarks.
-                    </td>
+                    <th></th>
+                    <th>Benchmark ID</th>
+                    <th>Name</th>
+                    <th>Generator task</th>
+                    <th>State</th>
+                    <th>Generated</th>
+                    <th>Resubmits</th>
                 </tr>
-            </p:empty>
-        </t:loop>
-    </table>
+            </thead>
 
-    <h2 style="clear: both; padding: 40px 0 0 0;">Orphaned tasks and contexts</h2>
-
-    <table class="list wide">
-        <thead>
-            <tr>
-                <th></th>
-                <th>Context ID</th>
-                <th>Task ID</th>
-                <th>Name</th>
-                <th>State</th>
-            </tr>
-        </thead>
-
-        <t:loop source="orphanedContexts" value="orphanedContext">
-            <t:loop source="orphanedContext" value="task" index="taskIndex">
-                <tr>
+            <t:loop source="benchmarks" value="benchmark">
+                <tr style="background-color: #eee;">
                     <td>
-                        <t:if t:negate="true" test="taskIndex">
-                            <t:if test="isTaskContextInFinalState(task.taskContextId)">
-                                <t:if test="isContextRemovable(task.taskContextId)">
-                                    <t:eventLink class="btn btn-mini btn-warning" t:event="removeContext"
-                                                 t:context="task.taskContextId"
-                                                 onclick="if (window.confirm('Are you sure?')) location.href=jQuery(this).attr('href'); return false;">
-                                        Remove
-                                    </t:eventLink>
-                                </t:if>
-                                <p:else>
-                                    <t:eventLink class="btn btn-mini btn-danger" t:event="killContext"
-                                                 t:context="task.taskContextId"
-                                                 onclick="if (window.confirm('Are you sure?')) location.href=jQuery(this).attr('href'); return false;">
-                                        Kill
-                                    </t:eventLink>
-                                </p:else>
+                        <t:if test="isBenchmarkInFinalState(benchmark.id)">
+                            <t:if test="isBenchmarkRemovable(benchmark.id)">
+                                <t:eventLink class="btn btn-mini btn-warning" t:event="removeBenchmark"
+                                             t:context="benchmark.id"
+                                             onclick="if (window.confirm('Are you sure?')) location.href=jQuery(this).attr('href'); return false;">
+                                    Remove
+                                </t:eventLink>
                             </t:if>
-                        </t:if>
-                    </td>
-                    <td>
-                        <t:if t:negate="true" test="taskIndex">
-                            <i class="icon-book"></i>&nbsp;
-                            <t:pageLink t:page="context/detail" t:context="task.taskContextId">
-                                <t:output format="idFormat" value="task.taskContextId"/>
-                            </t:pageLink>
-                        </t:if>
-                    </td>
-                    <td>
-                        <t:if test="taskBenchmark(task)">
-                            <i class="icon-rocket"></i>
                             <p:else>
-                                <i class="icon-beaker"></i>
+                                <t:eventLink class="btn btn-mini btn-danger" t:event="killBenchmark"
+                                             t:context="benchmark.id"
+                                             onclick="if (window.confirm('Are you sure?')) location.href=jQuery(this).attr('href'); return false;">
+                                    Kill
+                                </t:eventLink>
                             </p:else>
                         </t:if>
-                        &nbsp;
-                        <t:pageLink t:page="task/detail" t:context="task.id">
-                            <t:output format="idFormat" value="task.id"/>
+
+                    </td>
+                    <td>
+                        <i class="icon-rocket"></i>&nbsp;
+                        <t:pageLink t:page="benchmark/detail" t:context="benchmark.id">
+                            <t:output format="idFormat" value="benchmark.id"/>
                         </t:pageLink>
                     </td>
-                    <td>${task.taskDescriptor.name}</td>
                     <td>
-                        <t:task.stateIcon taskState="task.state"/>
+                        ${benchmarkName(benchmark.id)}
+                    </td>
+                    <td>
+                        <i class="icon-beaker"></i>&nbsp;
+                        <t:if t:test="benchmarkGenerator(benchmark)">
+                            <t:pageLink t:page="task/detail" t:context="benchmark.generatorId">
+                                <t:output format="idFormat" value="benchmark.generatorId"/>
+                            </t:pageLink>
+                            <p:else>
+                                deleted
+                            </p:else>
+                        </t:if>
+                    </td>
+                    <td>
+                        <t:task.stateIcon t:taskState="benchmarkState(benchmark.id)"/>
+                    </td>
+                    <td>
+                        ${benchmark.generatedContextCount}
+                    </td>
+                    <td>
+                        ${benchmark.resubmitHistory.resubmitHistoryItem.size()}
                     </td>
                 </tr>
-            </t:loop>
 
-            <p:empty>
                 <tr>
-                    <td colspan="5">
-                        <i class="icon-info-sign"></i>
-                        There are no orphaned tasks.
+                    <td></td>
+                    <td colspan="6">
+                        <table>
+                            <tr class="FINISHED_${isBenchmarkWithoutFailedContexts(benchmark.id)}">
+                                <th></th>
+                                <th>Context ID</th>
+                                <th>Name</th>
+                                <th>State</th>
+                                <th>Tasks</th>
+                                <th></th>
+                            </tr>
+                            <t:loop source="contextsForBenchmark(benchmark.id)" value="context">
+                                <tr class="FINISHED_${isTaskContextFinished(context.id)}">
+                                    <td>
+                                        <t:if test="isTaskContextInFinalState(context.id)">
+                                            <t:if test="isContextRemovable(context.id)">
+                                                <t:eventLink class="btn btn-mini btn-warning" t:event="removeContext"
+                                                             t:context="context.id"
+                                                             onclick="if (window.confirm('Are you sure?')) location.href=jQuery(this).attr('href'); return false;">
+                                                    Remove
+                                                </t:eventLink>
+                                            </t:if>
+                                            <p:else>
+                                                <t:eventLink class="btn btn-mini btn-danger" t:event="killContext"
+                                                             t:context="context.id"
+                                                             onclick="if (window.confirm('Are you sure?')) location.href=jQuery(this).attr('href'); return false;">
+                                                    Kill
+                                                </t:eventLink>
+                                            </p:else>
+                                        </t:if>
+
+                                    </td>
+                                    <td>
+                                        <i class="icon-book"></i>&nbsp;
+                                        <t:pageLink t:page="context/detail" t:context="context.id">
+                                            <t:output format="idFormat" value="context.id"/>
+                                        </t:pageLink>
+                                    </td>
+                                    <td>
+                                        ${context.taskContextDescriptor.name}
+                                    </td>
+                                    <td>
+                                        <t:task.stateIcon taskContextState="context.contextState"/>
+                                    </td>
+                                    <td>
+                                        <b>${context.containedTask.size()}</b>
+                                        &nbsp;
+                                        <a class="btn btn-mini tasktogglebutton" style="vertical-align: baseline;"
+                                           href="#">
+                                            <i class="icon-plus"></i>
+                                        </a>
+                                    </td>
+                                    <td style="display: none;">
+                                        <table class="inner-task-list">
+                                            <t:loop source="tasksForContext(context.id)" value="task">
+                                                <tr>
+                                                    <td><i class="icon-beaker"></i>&nbsp;
+                                                        <t:pageLink t:page="task/detail" t:context="task.id">
+                                                            <t:output format="idFormat" value="task.id"/>
+                                                        </t:pageLink>
+                                                    </td>
+                                                    <td>${task.taskDescriptor.name}</td>
+                                                    <td>
+                                                        <t:task.stateIcon taskState="task.state"/>
+                                                    </td>
+                                                </tr>
+                                            </t:loop>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <p:empty>
+                                    <tr>
+                                        <td colspan="4">
+                                            <i class="icon-info-sign"></i>
+                                            There are no task contexts in this benchmark.
+                                        </td>
+                                    </tr>
+                                </p:empty>
+                            </t:loop>
+                        </table>
                     </td>
                 </tr>
-            </p:empty>
-        </t:loop>
-    </table>
+                <p:empty>
+                    <tr>
+                        <td colspan="7">
+                            <i class="icon-info-sign"></i>
+                            There are no benchmarks.
+                        </td>
+                    </tr>
+                </p:empty>
+            </t:loop>
+        </table>
+
+        <h2 style="clear: both; padding: 40px 0 0 0;">Orphaned tasks and contexts</h2>
+
+        <table class="list wide">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Context ID</th>
+                    <th>Task ID</th>
+                    <th>Name</th>
+                    <th>State</th>
+                </tr>
+            </thead>
+
+            <t:loop source="orphanedContexts" value="orphanedContext">
+                <t:loop source="orphanedContext" value="task" index="taskIndex">
+                    <tr>
+                        <td>
+                            <t:if t:negate="true" test="taskIndex">
+                                <t:if test="isTaskContextInFinalState(task.taskContextId)">
+                                    <t:if test="isContextRemovable(task.taskContextId)">
+                                        <t:eventLink class="btn btn-mini btn-warning" t:event="removeContext"
+                                                     t:context="task.taskContextId"
+                                                     onclick="if (window.confirm('Are you sure?')) location.href=jQuery(this).attr('href'); return false;">
+                                            Remove
+                                        </t:eventLink>
+                                    </t:if>
+                                    <p:else>
+                                        <t:eventLink class="btn btn-mini btn-danger" t:event="killContext"
+                                                     t:context="task.taskContextId"
+                                                     onclick="if (window.confirm('Are you sure?')) location.href=jQuery(this).attr('href'); return false;">
+                                            Kill
+                                        </t:eventLink>
+                                    </p:else>
+                                </t:if>
+                            </t:if>
+                        </td>
+                        <td>
+                            <t:if t:negate="true" test="taskIndex">
+                                <i class="icon-book"></i>&nbsp;
+                                <t:pageLink t:page="context/detail" t:context="task.taskContextId">
+                                    <t:output format="idFormat" value="task.taskContextId"/>
+                                </t:pageLink>
+                            </t:if>
+                        </td>
+                        <td>
+                            <t:if test="taskBenchmark(task)">
+                                <i class="icon-rocket"></i>
+                                <p:else>
+                                    <i class="icon-beaker"></i>
+                                </p:else>
+                            </t:if>
+                            &nbsp;
+                            <t:pageLink t:page="task/detail" t:context="task.id">
+                                <t:output format="idFormat" value="task.id"/>
+                            </t:pageLink>
+                        </td>
+                        <td>${task.taskDescriptor.name}</td>
+                        <td>
+                            <t:task.stateIcon taskState="task.state"/>
+                        </td>
+                    </tr>
+                </t:loop>
+
+                <p:empty>
+                    <tr>
+                        <td colspan="5">
+                            <i class="icon-info-sign"></i>
+                            There are no orphaned tasks.
+                        </td>
+                    </tr>
+                </p:empty>
+            </t:loop>
+        </table>
+
+
+    </t:block>
 
 </html>

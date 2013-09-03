@@ -59,8 +59,25 @@ public abstract class Task {
 	 *          name of the property
 	 * @return value associated with the name
 	 */
-	public String getProperty(String propertyName) {
+	public String getTaskProperty(String propertyName) {
 		return System.getenv(propertyName);
+	}
+
+	/**
+	 * Returns system property associated with the running task or default value
+	 * 
+	 * @param propertyName
+	 *          name of the property
+	 * @return value associated with the name or the default value when the
+	 *         property is not set
+	 */
+	public String getTaskProperty(String propertyName, String defaultValue) {
+		String propertyValue = System.getenv(propertyName);
+		if (propertyValue == null) {
+			return defaultValue;
+		} else {
+			return propertyValue;
+		}
 	}
 
 	/**
@@ -76,23 +93,6 @@ public abstract class Task {
 
 		return PropertyReader.on(properties);
 
-	}
-
-	/**
-	 * Returns system property associated with the running task or default value
-	 * 
-	 * @param propertyName
-	 *          name of the property
-	 * @return value associated with the name or the default value when the
-	 *         property is not set
-	 */
-	public String getProperty(String propertyName, String defaultValue) {
-		String propertyValue = System.getenv(propertyName);
-		if (propertyValue == null) {
-			return defaultValue;
-		} else {
-			return propertyValue;
-		}
 	}
 
 	/**

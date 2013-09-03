@@ -3,8 +3,12 @@ package cz.cuni.mff.d3s.been.web.pages.task;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.apache.tapestry5.Block;
+import org.apache.tapestry5.EventConstants;
 import org.apache.tapestry5.annotations.Import;
+import org.apache.tapestry5.annotations.OnEvent;
 import org.apache.tapestry5.annotations.Property;
+import org.apache.tapestry5.ioc.annotations.Inject;
 import org.got5.tapestry5.jquery.ImportJQueryUI;
 
 import cz.cuni.mff.d3s.been.api.BeenApiException;
@@ -25,6 +29,14 @@ import cz.cuni.mff.d3s.been.web.pages.Page;
 @ImportJQueryUI
 @Import(library = { "context:js/task-list.js" })
 public class Tree extends Page {
+
+	@Inject
+	private Block tasksBlock;
+
+	@OnEvent(EventConstants.PROGRESSIVE_DISPLAY)
+	public Object returnBlock() throws InterruptedException {
+		return tasksBlock;
+	}
 
 	@Property
 	private TaskEntry task;

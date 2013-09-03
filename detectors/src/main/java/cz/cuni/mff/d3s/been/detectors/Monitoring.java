@@ -1,22 +1,14 @@
 package cz.cuni.mff.d3s.been.detectors;
 
-import static java.nio.file.StandardOpenOption.CREATE;
-import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
-
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
-import cz.cuni.mff.d3s.been.util.PropertyReader;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.d3s.been.core.ri.MonitorSample;
+import cz.cuni.mff.d3s.been.util.PropertyReader;
 
 /**
  * @author Kuba Brecka
@@ -29,11 +21,13 @@ public class Monitoring {
 	private volatile boolean monitoringRunning = false;
 	private Thread monitoringThread;
 
-	private Set<MonitoringListener> listeners = new HashSet<MonitoringListener>();
+	private Set<MonitoringListener> listeners = new HashSet();
 
 	public Monitoring(Properties properties) {
 		PropertyReader propertyReader = PropertyReader.on(properties);
-		Integer interval = propertyReader.getInteger(MonitoringConfiguration.INTERVAL, MonitoringConfiguration.DEFAULT_INTERVAL);
+		Integer interval = propertyReader.getInteger(
+				MonitoringConfiguration.INTERVAL,
+				MonitoringConfiguration.DEFAULT_INTERVAL);
 		setMonitoringInterval(interval);
 	}
 
@@ -41,22 +35,15 @@ public class Monitoring {
 		listeners.add(listener);
 	}
 
-	public void removeListener(MonitoringListener listener) {
-		listeners.remove(listener);
-	}
-
 	public void setMonitoringInterval(int milliseconds) {
-		if (milliseconds < 10)
+		if (milliseconds < 10) {
 			milliseconds = 10;
+		}
 
 		monitorInterval = milliseconds;
 	}
 
-	public int getMonitorInterval() {
-		return monitorInterval;
-	}
-
-	public synchronized void startMonitoring(final Path logPath) {
+	public synchronized void startMonitoring() {
 
 		if (monitoringRunning)
 			return;
@@ -69,13 +56,8 @@ public class Monitoring {
 				Detector detector = new Detector();
 
 				try {
-					OutputStream out = Files.newOutputStream(logPath, CREATE, TRUNCATE_EXISTING);
-					ObjectMapper mapper = new ObjectMapper();
-
 					while (monitoringRunning) {
 						MonitorSample sample = detector.generateSample(true);
-						out.write(mapper.writeValueAsBytes(sample));
-						out.write('\n');
 
 						for (MonitoringListener listener : listeners) {
 							listener.sampleGenerated(sample);
@@ -87,15 +69,13 @@ public class Monitoring {
 							// do nothing
 						}
 					}
-
-					out.close();
-				} catch (IOException e) {
-					log.error("Cannot start monitoring", e);
+				} catch (Exception e) {
+					log.error("Monitoring failed", e);
 				} finally {
-                    for (MonitoringListener listener: listeners) {
-                        listener.close();
-                    }
-                }
+					for (MonitoringListener listener : listeners) {
+						listener.close();
+					}
+				}
 			}
 		};
 

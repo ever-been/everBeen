@@ -55,7 +55,7 @@
             <xs:all>
                 <xs:element ref="tcd:name" minOccurs="1"/>
                 <xs:element ref="tcd:properties" minOccurs="0" maxOccurs="1"/>
-                <xs:element ref="tcd:descriptor" minOccurs="1"/>
+                <xs:element ref="tcd:descriptor" minOccurs="0"/>
             </xs:all>
             <xs:attributeGroup ref="tcd:taskDependencyAttrGroup"/>
         </xs:complexType>
