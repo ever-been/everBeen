@@ -10,7 +10,9 @@ import com.hazelcast.core.ItemListener;
  * 
  * If the number of messages seems too high, this listener allocates new
  * threads. In case the queue was drained, the listener deallocates extra worker threads.
- * 
+ *
+ * @param <T> Type of objects listened to
+ *
  * @author darklight
  * 
  */
@@ -27,6 +29,14 @@ public class ItemCounterListener<T> implements ItemListener<T> {
 	/** Time when the last load balance was performed */
 	private long lastLoadBalanceTimestamp = System.currentTimeMillis();
 
+	/**
+	 * Create an item-counting listener
+	 *
+	 * @param digester Digester to reinforce in case heuristics point to the need of more processing threads
+	 * @param <T> Type of digested items
+	 *
+	 * @return A new item-counting listener
+	 */
     public static <T> ItemCounterListener<T> create(Digester<T> digester) {
         return new ItemCounterListener<T>(digester);
     }

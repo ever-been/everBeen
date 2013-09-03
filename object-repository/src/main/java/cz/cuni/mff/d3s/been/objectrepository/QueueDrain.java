@@ -11,6 +11,8 @@ import cz.cuni.mff.d3s.been.persistence.SuccessAction;
  * A generic drain for a generic distributed queue.
  * 
  * @author darklight
+ *
+ * @param <T> Type of items in the drained queue
  */
 abstract class QueueDrain<T> implements Service {
 

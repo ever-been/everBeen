@@ -5,6 +5,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Fail action on an {@link IQueue}
+ *
+ * @param <T> Type of queue items
+ *
  * @author darklight
  */
 public class QueueFailAction<T> implements FailAction<T> {

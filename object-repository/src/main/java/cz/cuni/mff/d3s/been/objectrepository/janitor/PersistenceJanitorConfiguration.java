@@ -16,8 +16,7 @@ public class PersistenceJanitorConfiguration implements BeenServiceConfiguration
 	public static final String FAILED_LONGEVITY = "been.objectrepository.janitor.failed-longevity";
 
 	/**
-	 * By default, failed objects stay persistent for
-	 * {@value PersistenceJanitorConfiguration#DEFAULT_FAILED_LONGEVITY} hours
+	 * By default, failed objects stay persistent for {@value} hours
 	 */
 	public static final Long DEFAULT_FAILED_LONGEVITY = 96l;
 
@@ -31,7 +30,7 @@ public class PersistenceJanitorConfiguration implements BeenServiceConfiguration
 
 	/**
 	 * By default, meta-info of objects with a <code>finished</code> status will
-	 * stay persistent for {@value PersistenceJanitorConfiguration#DEFAULT_FINISHED_LONGEVITY} hours
+	 * stay persistent for {@value} hours
 	 */
 	public static final Long DEFAULT_FINISHED_LONGEVITY = 168l;
 
@@ -42,7 +41,7 @@ public class PersistenceJanitorConfiguration implements BeenServiceConfiguration
 	public static final String SERVICE_LOGS_LONGEVITY = "been.objectrepository.janitor.service-logs-longevity";
 
 	/**
-	 * By default, service meta-info will stay persistent for {@value PersistenceJanitorConfiguration#DEFAULT_SERVICE_LOGS_LONGEVITY} hours
+	 * By default, service meta-info will stay persistent for {@value} hours
 	 */
 	public static final Long DEFAULT_SERVICE_LOGS_LONGEVITY = 168l;
 
@@ -53,7 +52,7 @@ public class PersistenceJanitorConfiguration implements BeenServiceConfiguration
 	public static final String LOAD_SAMPLE_LONGEVITY = "been.objectrepository.janitor.load-sample-longevity";
 
 	/**
-	 * By default, load monitor samples will stay persistent for {@value PersistenceJanitorConfiguration#DEFAULT_LOAD_SAMPLE_LONGEVITY}
+	 * By default, load monitor samples will stay persistent for {@value}
 	 */
 	public static final Long DEFAULT_LOAD_SAMPLE_LONGEVITY = 168l;
 
@@ -62,8 +61,7 @@ public class PersistenceJanitorConfiguration implements BeenServiceConfiguration
 	/** Number of minutes between janitor cleanup checks */
 	public static final String WAKEUP_INTERVAL = "been.objectrepository.janitor.cleanup-interval";
 	/**
-	 * By default, the persistence janitor will wake up every
-	 * {@value PersistenceJanitorConfiguration#DEFAULT_WAKEUP_INTERVAL} minutes
+	 * By default, the persistence janitor will wake up every {@value} minutes
 	 */
 	public static final Long DEFAULT_WAKEUP_INTERVAL = 10l;
 

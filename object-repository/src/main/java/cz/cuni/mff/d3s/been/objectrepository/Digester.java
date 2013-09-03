@@ -12,6 +12,11 @@ import cz.cuni.mff.d3s.been.cluster.Reapable;
 import cz.cuni.mff.d3s.been.cluster.Reaper;
 import cz.cuni.mff.d3s.been.cluster.Service;
 
+/**
+ * A general shared structure digestion service
+ *
+ * @param <T> Type of digested items
+ */
 public class Digester<T> implements Service, Reapable {
 
 	private static final long POOL_SHUTDOWN_TIMEOUT_MILLIS = 3000;
@@ -37,11 +42,27 @@ public class Digester<T> implements Service, Reapable {
 		this.failRateMonitor = new FailRate();
 	}
 
+	/**
+	 * Create a digester
+	 *
+	 * @param take Blocking take action on targeted shared data structure
+	 * @param poll Non blocking poll action on targeted shared data structure
+	 * @param successAction Action to perform on digested actions
+	 * @param failAction Action to perform on digested actions if success action fails
+	 * @param failRateThreshold Rate of failure at which this digester suspends its digestion attempts temporarily
+	 * @param suspendTimeOnHighFailRate Time (in milliseconds) this digester should suspend for if the fail rate surpasses fail rate threshold
+	 * @param <T> Type of digested items
+	 *
+	 * @return A new digester instance
+	 */
 	public static <T> Digester<T> create(Take<T> take, Poll<T> poll, SuccessAction<T> successAction,
 			FailAction<T> failAction, Float failRateThreshold, Long suspendTimeOnHighFailRate) {
 		return new Digester<T>(take, poll, successAction, failAction, failRateThreshold, suspendTimeOnHighFailRate);
 	}
 
+	/**
+	 * Suggest adding a new ephemerous consumer to this digester's internal thread pool. This doesn't necessarily result in a new thread, because the digester may deem itself unreliable and refuse thread creation.
+	 */
 	public void addNewWorkingThread() {
 		if(failRateMonitor.getFailRate() < failRateThreshold) {
 			pool.execute(new EphemerousConsumer<T>(poll, successAction, failAction, failRateMonitor));

@@ -49,6 +49,7 @@ public final class ObjectRepository implements IClusterService {
 	 *          Cluster context to work in (provides shared queues to work with)
 	 * @param storage
 	 *          Persistence layer to use
+	 * @param beenId ID unique to this JVM
 	 * 
 	 * @return The object repository
 	 */

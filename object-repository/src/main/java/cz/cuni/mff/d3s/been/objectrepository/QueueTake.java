@@ -3,6 +3,10 @@ package cz.cuni.mff.d3s.been.objectrepository;
 import com.hazelcast.core.IQueue;
 
 /**
+ * Take action on an {@link IQueue}
+ *
+ * @param <T> Type of items taken
+ *
  * @author darklight
  */
 public class QueueTake<T> implements Take<T> {

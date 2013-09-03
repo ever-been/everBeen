@@ -4,6 +4,11 @@ import cz.cuni.mff.d3s.been.persistence.SuccessAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A lingering drain thread (doesn't die once drainable objects run out)
+ *
+ * @param <T>
+ */
 public class LingeringConsumer<T> extends Consumer<T> {
 
 	private static final Logger log = LoggerFactory.getLogger(LingeringConsumer.class);
