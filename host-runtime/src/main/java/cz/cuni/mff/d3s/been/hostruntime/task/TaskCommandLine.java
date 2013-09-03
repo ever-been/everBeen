@@ -37,7 +37,7 @@ public class TaskCommandLine extends CommandLine {
 	 * Tells if command line has been created with debug parameter which tells
 	 * that the task should be listening for debug connections.
 	 * 
-	 * @return
+	 * @return whether the task is in listening debug mode
 	 */
 	public boolean isDebugListeningMode() {
 		return debugListeningMode;

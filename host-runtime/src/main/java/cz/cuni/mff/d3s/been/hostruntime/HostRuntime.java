@@ -167,6 +167,7 @@ public final class HostRuntime implements IClusterService {
 	 * Extracts logger and exports logger property setting
 	 * 
 	 * @param workingDir
+	 *          where to put the logger
 	 */
 	private void extractLogger(Path workingDir) {
 

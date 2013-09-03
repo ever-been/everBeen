@@ -65,6 +65,7 @@ final class HostRuntimeMessageListener implements MessageListener<BaseMessage>, 
 	 * processing.
 	 * 
 	 * @param message
+	 *          received message
 	 */
 	@Override
 	public synchronized void onMessage(Message<BaseMessage> message) {
