@@ -123,15 +123,13 @@
 				<artifactId>versions-maven-plugin</artifactId>
 				<version>${versions-maven-plugin.version}</version>
 			</plugin>
-		</plugins>
-	</build>
-
-	<reporting>
-		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>${maven-javadoc-plugin.version}</version>
+				<configuration>					
+					<show>package</show>
+				</configuration>
 			</plugin>
 
 			<plugin>
@@ -139,6 +137,11 @@
 				<artifactId>maven-project-info-reports-plugin</artifactId>
 				<version>${maven-project-info-reports-plugin.version}</version>
 			</plugin>
+		</plugins>
+	</build>
+
+	<reporting>
+		<plugins>
 		</plugins>
 	</reporting>
 
