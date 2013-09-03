@@ -72,7 +72,15 @@ public class TaskProcess implements AutoCloseable {
 	 *          environment variables for process to be set
 	 * @param artifactDownloader
 	 *          Artifact downloader
+	 * @param stdOutOutputStream
+	 *          where to send standard output
+	 * @param stdErrOutputStream
+	 *          where to send standard error
+	 * 
+	 * @throws TaskException
+	 *           when the task process cannot be created
 	 */
+
 	public TaskProcess(
 			CmdLineBuilder cmdLineBuilder,
 			Path wrkDir,
@@ -199,10 +207,20 @@ public class TaskProcess implements AutoCloseable {
 		}
 	}
 
+	/**
+	 * Whether the task listens on debug.
+	 * 
+	 * @return Whether the task listens on debug
+	 */
 	public boolean isDebugListeningMode() {
 		return cmd.isDebugListeningMode();
 	}
 
+	/**
+	 * Returns tasks debug port
+	 * 
+	 * @return tasks debug port
+	 */
 	public int getDebugPort() {
 		return cmd.getDebugPort();
 	}

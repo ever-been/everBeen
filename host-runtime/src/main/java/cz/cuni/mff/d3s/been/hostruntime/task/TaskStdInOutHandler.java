@@ -28,6 +28,10 @@ import cz.cuni.mff.d3s.been.util.JsonException;
  * @author Martin Sixta
  */
 public class TaskStdInOutHandler extends LogOutputStream {
+	/**
+	 * UNIX line separator
+	 */
+
 	public static final char UNIX_LINE_SEPARATOR = '\n';
 	private final String taskId;
 	private final String contextId;
@@ -38,6 +42,20 @@ public class TaskStdInOutHandler extends LogOutputStream {
 	private final JSONUtils jsonUtils;
 	private final OutputStream secondRedirectOutputStream;
 
+	/**
+	 * Creates new TaskStdInOutHandler
+	 * 
+	 * @param taskId
+	 *          ID of tha task
+	 * @param contextId
+	 *          context ID of the task
+	 * @param benchmarkId
+	 *          benchmark ID of the task
+	 * @param name
+	 *          task's name
+	 * @param secondRedirectOutputStream
+	 *          where to redirect output
+	 */
 	public TaskStdInOutHandler(
 			String taskId,
 			String contextId,

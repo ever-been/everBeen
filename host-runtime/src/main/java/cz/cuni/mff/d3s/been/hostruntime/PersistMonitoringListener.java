@@ -10,6 +10,8 @@ import cz.cuni.mff.d3s.been.detectors.MonitoringListener;
 import cz.cuni.mff.d3s.been.persistence.DAOException;
 
 /**
+ * Persister of Monitoring events
+ * 
  * @author Kuba Brecka
  */
 class PersistMonitoringListener implements MonitoringListener {
@@ -19,6 +21,14 @@ class PersistMonitoringListener implements MonitoringListener {
 	private ClusterContext ctx;
 	private HostRuntime runtime;
 
+	/**
+	 * Creates new PersistMonitoringListener/
+	 * 
+	 * @param ctx
+	 *          connection to the cluster
+	 * @param runtime
+	 *          this Host Runtime
+	 */
 	public PersistMonitoringListener(ClusterContext ctx, HostRuntime runtime) {
 		this.ctx = ctx;
 		this.runtime = runtime;
