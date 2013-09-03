@@ -21,6 +21,23 @@ import com.mongodb.DBObject;
  * MongoDB converter.
  */
 public interface MongoDBConverter {
+
+	/**
+	 * Convert from Hazelcast shared object to a MongoDB object
+	 *
+	 * @param obj Object from Hazelcast
+	 *
+	 * @return the MongoDB object
+	 */
 	DBObject toDBObject(Object obj);
+
+	/**
+	 * Convert from MongoDB object to an object shareable in Hazelcast
+	 *
+	 * @param clazz Class resulting shareable object
+	 * @param dbObject MongoDB object to deserialize
+	 *
+	 * @return The shareable object
+	 */
 	Object toObject(Class clazz, DBObject dbObject);
 }
