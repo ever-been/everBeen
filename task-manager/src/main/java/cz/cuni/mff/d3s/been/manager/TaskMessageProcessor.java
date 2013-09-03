@@ -23,6 +23,12 @@ final class TaskMessageProcessor extends Thread {
 
 	private final MessageQueues messageQueues = MessageQueues.getInstance();
 
+	/**
+	 * Creates TaskMessageProcessor.
+	 * 
+	 * @param clusterCtx
+	 *          connection to the cluster
+	 */
 	public TaskMessageProcessor(ClusterContext clusterCtx) {
 		this.clusterCtx = clusterCtx;
 	}

@@ -17,6 +17,7 @@ import cz.cuni.mff.d3s.been.mq.MessagingException;
  */
 abstract class TaskManagerService implements Service {
 
+	/** message queue */
 	protected final MessageQueues mqs = MessageQueues.getInstance();
 
 	/**
@@ -24,6 +25,7 @@ abstract class TaskManagerService implements Service {
 	 * 
 	 * @return Sender bind to the Task Manager's action queue
 	 * @throws ServiceException
+	 *           when a sender cannot be created
 	 */
 	final IMessageSender<TaskMessage> createSender() throws ServiceException {
 		try {

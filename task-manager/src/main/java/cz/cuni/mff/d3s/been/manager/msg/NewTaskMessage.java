@@ -13,6 +13,12 @@ import cz.cuni.mff.d3s.been.manager.action.TaskAction;
  */
 final class NewTaskMessage extends AbstractEntryTaskMessage {
 
+	/**
+	 * Creates NewTaskMessage.
+	 * 
+	 * @param entry
+	 *          targeted entry
+	 */
 	public NewTaskMessage(TaskEntry entry) {
 		super(entry);
 	}

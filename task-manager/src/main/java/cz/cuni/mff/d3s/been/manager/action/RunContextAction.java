@@ -10,8 +10,12 @@ public class RunContextAction implements TaskAction {
 	private final String contextId;
 
 	/**
+	 * Creates RunContextAction.
+	 * 
 	 * @param ctx
+	 *          connection to the cluster
 	 * @param contextId
+	 *          targeted context id
 	 */
 	public RunContextAction(final ClusterContext ctx, final String contextId) {
 		this.ctx = ctx;

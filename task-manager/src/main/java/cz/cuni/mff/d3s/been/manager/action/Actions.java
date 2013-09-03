@@ -11,7 +11,11 @@ import cz.cuni.mff.d3s.been.core.task.TaskEntry;
  */
 public class Actions {
 
-	/** Creates action which does nothing */
+	/**
+	 * Creates action which does nothing.
+	 * 
+	 * @return action which does nothing
+	 */
 	public static TaskAction createNullAction() {
 		return new NullAction();
 	}

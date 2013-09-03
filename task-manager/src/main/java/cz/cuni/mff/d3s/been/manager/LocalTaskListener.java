@@ -46,7 +46,12 @@ final class LocalTaskListener extends TaskManagerService implements EntryListene
 	/** sender of "in-task manager" messages */
 	private IMessageSender<TaskMessage> sender;
 
-	/** Creates LocalTaskListener */
+	/**
+	 * Creates LocalTaskListener
+	 * 
+	 * @param clusterCtx
+	 *          connection to the cluster.
+	 */
 	public LocalTaskListener(ClusterContext clusterCtx) {
 		this.clusterCtx = clusterCtx;
 		taskMap = clusterCtx.getTasks().getTasksMap();

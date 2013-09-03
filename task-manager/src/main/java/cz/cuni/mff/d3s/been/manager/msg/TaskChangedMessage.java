@@ -19,6 +19,12 @@ final class TaskChangedMessage extends AbstractEntryTaskMessage {
 
 	private static final Logger log = LoggerFactory.getLogger(TaskChangedMessage.class);
 
+	/**
+	 * Creates TaskChangedMessage
+	 * 
+	 * @param entry
+	 *          targeted task entry
+	 */
 	public TaskChangedMessage(TaskEntry entry) {
 		super(entry);
 	}

@@ -8,11 +8,11 @@ import java.util.List;
 import com.hazelcast.core.IMap;
 
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
-import cz.cuni.mff.d3s.been.util.PropertyReader;
 import cz.cuni.mff.d3s.been.core.benchmark.BenchmarkEntry;
 import cz.cuni.mff.d3s.been.core.benchmark.ResubmitHistoryItem;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
+import cz.cuni.mff.d3s.been.util.PropertyReader;
 
 /**
  * @author Kuba Brecka
@@ -21,6 +21,14 @@ final class ResubmitBenchmarkAction implements TaskAction {
 	private final ClusterContext ctx;
 	private final TaskEntry entry;
 
+	/**
+	 * Creates ResubmitBenchmarkAction.
+	 * 
+	 * @param ctx
+	 *          connection to the cluster
+	 * @param entry
+	 *          targeted task entry
+	 */
 	public ResubmitBenchmarkAction(ClusterContext ctx, TaskEntry entry) {
 		this.ctx = ctx;
 		this.entry = entry;

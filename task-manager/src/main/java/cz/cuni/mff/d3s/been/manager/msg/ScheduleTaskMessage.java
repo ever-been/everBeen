@@ -13,6 +13,12 @@ import cz.cuni.mff.d3s.been.manager.action.TaskAction;
  */
 final class ScheduleTaskMessage extends AbstractEntryTaskMessage {
 
+	/**
+	 * Creates ScheduleTaskMessage
+	 * 
+	 * @param entry
+	 *          targeted task entry
+	 */
 	public ScheduleTaskMessage(TaskEntry entry) {
 		super(entry);
 	}

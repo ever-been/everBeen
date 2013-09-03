@@ -22,6 +22,14 @@ final class XPathRuntimeSelection implements IRuntimeSelection {
 	private ClusterContext clusterCtx;
 	private final TaskEntry entry;
 
+	/**
+	 * Creates XPathRuntimeSelection
+	 * 
+	 * @param clusterCtx
+	 *          connection to the cluster
+	 * @param entry
+	 *          targeted task entry
+	 */
 	public XPathRuntimeSelection(ClusterContext clusterCtx, final TaskEntry entry) {
 		this.clusterCtx = clusterCtx;
 		this.entry = entry;

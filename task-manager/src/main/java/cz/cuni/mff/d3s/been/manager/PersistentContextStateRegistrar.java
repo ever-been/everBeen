@@ -20,10 +20,26 @@ class PersistentContextStateRegistrar {
 
 	private final ClusterContext ctx;
 
+	/**
+	 * Creates PersistentContextStateRegistrar
+	 * 
+	 * @param ctx
+	 *          connection to the cluster
+	 */
 	PersistentContextStateRegistrar(ClusterContext ctx) {
 		this.ctx = ctx;
 	}
 
+	/**
+	 * Processes context state change.
+	 * 
+	 * @param contextId
+	 *          contextId
+	 * @param benchmarkId
+	 *          benchmarkId
+	 * @param state
+	 *          current state of the context
+	 */
 	public void processContextStateChange(String contextId, String benchmarkId, TaskContextState state) {
 		final PersistentContextState persistentState = new PersistentContextState();
 		persistentState.setContextId(contextId);

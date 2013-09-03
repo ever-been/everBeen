@@ -48,6 +48,12 @@ final class LocalRuntimeListener extends TaskManagerService implements EntryList
 	/** Map with tasks */
 	private final IMap<String, TaskEntry> tasksMap;
 
+	/**
+	 * Creates LocalRuntimeListener.
+	 * 
+	 * @param clusterCtx
+	 *          connection to the cluster
+	 */
 	public LocalRuntimeListener(ClusterContext clusterCtx) {
 
 		this.clusterCtx = clusterCtx;

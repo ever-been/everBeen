@@ -7,14 +7,25 @@ import cz.cuni.mff.d3s.been.core.task.TaskEntry;
  * 
  * @author Martin Sixta
  */
-public abstract class AbstractEntryTaskMessage implements TaskMessage {
+abstract class AbstractEntryTaskMessage implements TaskMessage {
 
 	private TaskEntry entry;
 
-	public AbstractEntryTaskMessage(TaskEntry entry) {
+	/**
+	 * Creates new AbstractEntryTaskMessage
+	 * 
+	 * @param entry
+	 *          targeted entry
+	 */
+	protected AbstractEntryTaskMessage(TaskEntry entry) {
 		this.entry = entry;
 	}
 
+	/**
+	 * Returns the associated entry.
+	 * 
+	 * @return the associated entry
+	 */
 	public TaskEntry getEntry() {
 		return entry;
 	}

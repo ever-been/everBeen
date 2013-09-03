@@ -20,6 +20,12 @@ final class ClientListener extends TaskManagerService implements com.hazelcast.c
 	private ClusterContext clusterCtx;
 	private IMessageSender sender;
 
+	/**
+	 * Creates ClientListener.
+	 * 
+	 * @param clusterCtx
+	 *          connection to the cluster.
+	 */
 	public ClientListener(ClusterContext clusterCtx) {
 		this.clusterCtx = clusterCtx;
 	}

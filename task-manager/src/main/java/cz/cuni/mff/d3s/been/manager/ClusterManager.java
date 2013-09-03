@@ -28,6 +28,12 @@ final class ClusterManager implements IClusterService {
 
 	private final MessageQueues messageQueues = MessageQueues.getInstance();
 
+	/**
+	 * Creates the ClusterManager.
+	 * 
+	 * @param clusterCtx
+	 *          connection to the cluster.
+	 */
 	public ClusterManager(ClusterContext clusterCtx) {
 		this.clusterCtx = clusterCtx;
 

@@ -13,6 +13,12 @@ import cz.cuni.mff.d3s.been.manager.action.TaskAction;
 final class RunContextMessage implements TaskMessage {
 	private final String contextId;
 
+	/**
+	 * Creates RunContextMessage.
+	 * 
+	 * @param contextId
+	 *          targeted context ID
+	 */
 	public RunContextMessage(String contextId) {
 
 		this.contextId = contextId;

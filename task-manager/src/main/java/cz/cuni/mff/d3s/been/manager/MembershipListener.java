@@ -19,6 +19,12 @@ final class MembershipListener extends TaskManagerService implements com.hazelca
 	private ClusterContext clusterCtx;
 	private IMessageSender sender;
 
+	/**
+	 * Creates MembershipListener.
+	 * 
+	 * @param clusterCtx
+	 *          connection to the cluster
+	 */
 	public MembershipListener(ClusterContext clusterCtx) {
 		this.clusterCtx = clusterCtx;
 	}

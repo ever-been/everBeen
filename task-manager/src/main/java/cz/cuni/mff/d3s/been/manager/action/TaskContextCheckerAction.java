@@ -33,6 +33,11 @@ final class TaskContextCheckerAction implements TaskAction {
 
 	/**
 	 * Creates new context checker action.
+	 * 
+	 * @param ctx
+	 *          connection to the cluster
+	 * @param entry
+	 *          targeted task entry
 	 */
 	public TaskContextCheckerAction(ClusterContext ctx, TaskEntry entry) {
 		this.ctx = ctx;

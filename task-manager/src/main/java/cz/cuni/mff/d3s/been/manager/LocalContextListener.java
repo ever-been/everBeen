@@ -17,6 +17,9 @@ import cz.cuni.mff.d3s.been.mq.IMessageSender;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
 
 /**
+ * 
+ * Listener for local context events.
+ * 
  * @author Martin Sixta
  */
 final class LocalContextListener extends TaskManagerService implements EntryListener<String, TaskContextEntry> {
@@ -30,6 +33,12 @@ final class LocalContextListener extends TaskManagerService implements EntryList
 	private final PersistentContextStateRegistrar persistentStateRegistrar;
 	private IMessageSender<TaskMessage> sender;
 
+	/**
+	 * Creates new LocalContextListener.
+	 * 
+	 * @param clusterCtx
+	 *          connection to the cluster
+	 */
 	LocalContextListener(ClusterContext clusterCtx) {
 		this.clusterCtx = clusterCtx;
 		this.contexts = clusterCtx.getTaskContexts();

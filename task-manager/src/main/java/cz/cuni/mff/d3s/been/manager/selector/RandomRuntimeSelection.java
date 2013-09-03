@@ -28,6 +28,14 @@ final class RandomRuntimeSelection implements IRuntimeSelection {
 	private ClusterContext clusterCtx;
 	private final TaskEntry entry;
 
+	/**
+	 * Creates RandomRuntimeSelection.
+	 * 
+	 * @param clusterCtx
+	 *          connection to the cluster
+	 * @param entry
+	 *          targeted task entry
+	 */
 	public RandomRuntimeSelection(final ClusterContext clusterCtx, final TaskEntry entry) {
 		this.clusterCtx = clusterCtx;
 		this.entry = entry;
@@ -59,11 +67,11 @@ final class RandomRuntimeSelection implements IRuntimeSelection {
 	 * 
 	 * @author Martin Sixta
 	 */
-	public static final class ExclusivityPredicate implements Predicate<String, RuntimeInfo> {
+	private static final class ExclusivityPredicate implements Predicate<String, RuntimeInfo> {
 		private final TaskExclusivity taskExclusivity;
 		private final String contextId;
 
-		public ExclusivityPredicate(TaskExclusivity taskExclusivity, String contextId) {
+		ExclusivityPredicate(TaskExclusivity taskExclusivity, String contextId) {
 			this.taskExclusivity = taskExclusivity;
 			this.contextId = contextId;
 		}

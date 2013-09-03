@@ -21,6 +21,12 @@ import cz.cuni.mff.d3s.been.manager.selector.RuntimeSelectors;
 public class CheckSchedulabilityMessage implements TaskMessage {
 	private final TaskEntry entry;
 
+	/**
+	 * Creates new CheckSchedulabilityMessage
+	 * 
+	 * @param entry
+	 *          targeted entry
+	 */
 	public CheckSchedulabilityMessage(TaskEntry entry) {
 		this.entry = entry;
 	}
