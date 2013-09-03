@@ -38,8 +38,6 @@ public class ServiceLogPersister implements IClusterService {
 	 * Create a BEEN service log persister. Once activated, this persister will
 	 * hook up to {@link PersistentServiceLogHandler} instances, making them dump
 	 * logs to the persistence layer.
-	 * 
-	 * @return A new log persister
 	 */
 	ServiceLogPersister() {}
 
@@ -53,6 +51,7 @@ public class ServiceLogPersister implements IClusterService {
 	 *          instance
 	 * @param beenId
 	 *          ID of this BEEN instance
+	 * @param ctx Cluster context of this BEEN instance
 	 * 
 	 * @return The log persister
 	 */
