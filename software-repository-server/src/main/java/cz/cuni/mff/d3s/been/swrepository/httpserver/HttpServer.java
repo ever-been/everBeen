@@ -63,7 +63,7 @@ public class HttpServer {
 	/**
 	 * Run the server (start listening and handling requests)
 	 * 
-	 * @throws HttpServerException
+	 * @throws HttpServerException On HTTP transport failure
 	 */
 	public void start() throws HttpServerException {
 		HttpProcessor httpProc = new BasicHttpProcessor();

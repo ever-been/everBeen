@@ -16,6 +16,12 @@ import java.util.Arrays;
  * @author Martin Sixta
  */
 public final class TaskRunner {
+
+	/**
+	 * The main class for the task process
+	 *
+	 * @param args Task 'command-line' arguments
+	 */
 	public static void main(String[] args) {
 		if (args.length < 1) {
 			System.err.println("Name of the class to run is expected.");
@@ -67,7 +73,8 @@ public final class TaskRunner {
 	 * 
 	 * @param clazz
 	 *          Class to create the object from
-	 * @return
+	 *
+	 * @return Created task instance
 	 */
 	private static Task createTask(Class<?> clazz) {
 		Object obj = null;
@@ -95,8 +102,9 @@ public final class TaskRunner {
 	 * 
 	 * It strips the first arguments which is the class name.
 	 * 
-	 * @param args
-	 * @return
+	 * @param args Arguments suplied to the task runner
+	 *
+	 * @return Arguments for the task
 	 */
 	private static String[] createTaskArgs(String[] args) {
 		assert (args.length >= 1);

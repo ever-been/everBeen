@@ -68,6 +68,8 @@ public abstract class Task {
 	 * 
 	 * @param propertyName
 	 *          name of the property
+	 * @param defaultValue Default value of the property (if the actual value is not found)
+	 *
 	 * @return value associated with the name or the default value when the
 	 *         property is not set
 	 */
@@ -117,6 +119,12 @@ public abstract class Task {
 	 * The method subclasses override to implement task's functionality.
 	 * <p/>
 	 * To execute a task {@link #doMain(String[])} will be called.
+	 *
+	 * @param args Parameters passed to the task
+	 *
+	 * @throws TaskException When the task fails
+	 * @throws MessagingException When messaging with paired host runtime fails
+	 * @throws DAOException When persistent object access fails
 	 */
 	public abstract void run(String[] args) throws TaskException, MessagingException, DAOException;
 
@@ -124,7 +132,9 @@ public abstract class Task {
 	 * The method which sets up task's environment and calls
 	 * {@link #run(String[])}.
 	 * 
-	 * @param args
+	 * @param args Parameters passed to the task
+	 *
+	 * @return Task exit code
 	 */
 	public int doMain(String[] args) {
 		try {

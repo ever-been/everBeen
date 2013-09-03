@@ -36,6 +36,7 @@ public interface SwRepoClient {
 	 *          A fully qualified identifier of the BEEN package
 	 *          <p/>
 	 *          The BPK, or <code>null</code> if it could not be retrieved
+	 * @return The BPK
 	 */
 	public Bpk getBpk(BpkIdentifier bpkIdentifier);
 
@@ -47,6 +48,7 @@ public interface SwRepoClient {
 	 *          A fully qualified identifier of the BEEN package
 	 *          <p/>
 	 *          The BPK, or <code>null</code> if it could not be retrieved
+	 * @return The BPK
 	 */
 	public Bpk getBpkNoCache(BpkIdentifier bpkIdentifier);
 

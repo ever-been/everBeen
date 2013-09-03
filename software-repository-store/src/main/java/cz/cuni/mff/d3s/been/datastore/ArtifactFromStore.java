@@ -21,6 +21,9 @@ import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.d3s.been.bpk.ArtifactIdentifier;
 
+/**
+ * An artifact retrieved from the {@link SoftwareStore}
+ */
 public class ArtifactFromStore implements Artifact {
 
 	private static final Logger log = LoggerFactory.getLogger(ArtifactFromStore.class);
@@ -31,6 +34,12 @@ public class ArtifactFromStore implements Artifact {
 	private final StoreReader reader;
 	private String classifier;
 
+	/**
+	 * Create an artifact from the store
+	 *
+	 * @param identifier Unique identifier of the artifact
+	 * @param reader Reader capable of loading the artifact's content from the store
+	 */
 	public ArtifactFromStore(ArtifactIdentifier identifier, StoreReader reader) {
 		this.identifier = identifier;
 		this.reader = reader;

@@ -1,5 +1,8 @@
 package cz.cuni.mff.d3s.been.swrepository;
 
+/**
+ * Names of package request headers
+ */
 public class HeaderNames {
 
 	/**

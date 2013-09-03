@@ -1,5 +1,8 @@
 package cz.cuni.mff.d3s.been.swrepoclient;
 
+/**
+ * Exception that can arise when the <em>Software Repository Client</em> fails to connect or retrieve requested package
+ */
 public class SwRepositoryClientException extends Exception {
 
 	SwRepositoryClientException() {

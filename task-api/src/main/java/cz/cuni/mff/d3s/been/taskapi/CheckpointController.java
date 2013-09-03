@@ -144,10 +144,12 @@ public class CheckpointController implements AutoCloseable {
 	 * Waits for a check point with timeout. The method will return once the
 	 * checkpoint has a value or the request timeouts.
 	 * 
-	 * @param name
+	 * @param name Name of the checkpoint
 	 * @param timeout
-	 *          timeout in seconds
+	 *          Timeout in seconds
+	 *
 	 * @return value of the check point
+	 *
 	 * @throws RequestException
 	 *           when the request fails
 	 * @throws TimeoutException
@@ -173,8 +175,8 @@ public class CheckpointController implements AutoCloseable {
 	 * Waits until a check point is set.
 	 * 
 	 * @param name
-	 *          name of the check point
-	 * @return
+	 *          Name of the check point
+	 * @return Value of the checkpoint
 	 * @throws RequestException
 	 *           when the request fails
 	 */

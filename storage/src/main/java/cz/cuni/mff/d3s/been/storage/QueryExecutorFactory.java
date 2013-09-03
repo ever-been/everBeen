@@ -16,6 +16,8 @@ public interface QueryExecutorFactory {
 	 * @param redactor Redactor to inspect for query executor creation
 	 *
 	 * @return The {@link QueryExecutor}
+	 *
+	 * @throws DAOException When the executor cannot be created
 	 */
 	QueryExecutor createExecutor(QueryRedactor redactor) throws DAOException;
 }

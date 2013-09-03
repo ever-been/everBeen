@@ -1,5 +1,8 @@
 package cz.cuni.mff.d3s.been.swrepository;
 
+/**
+ * <em>Software Repository</em> URL prefixes for software package requests
+ */
 public class UrlPaths {
 	/**
 	 * abstract part of uri to get/put artifact

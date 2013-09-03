@@ -20,6 +20,8 @@ public interface ResultFacade {
 	 *          Type of the result to create
 	 * 
 	 * @return The result instance, initialized with necessary IDs
+	 *
+	 * @throws DAOException When result creation fails (e.g. no available constructor)
 	 */
 	<T extends Result> T createResult(Class<T> resultClass) throws DAOException;
 
@@ -63,6 +65,8 @@ public interface ResultFacade {
 	 * 
 	 * @return Return a collection of results corresponding (at the given query
 	 *         time) to matching results present in the persistence layer
+	 *
+	 * @throws DAOException When the query fails
 	 */
 	<T extends Result> Collection<T> query(Query fetchQuery, Class<T> resultClass) throws DAOException;
 

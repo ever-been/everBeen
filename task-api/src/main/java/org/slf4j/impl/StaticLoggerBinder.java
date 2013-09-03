@@ -5,17 +5,18 @@ import org.slf4j.ILoggerFactory;
 import org.slf4j.spi.LoggerFactoryBinder;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Kuba
- * Date: 11.03.13
- * Time: 11:43
- * To change this template use File | Settings | File Templates.
+ * This logger binder ensures <em>slf4j</em> loads the EverBEEN implementation of the task logger
  */
 public class StaticLoggerBinder implements LoggerFactoryBinder {
 	private static TaskLoggerFactory factory = new TaskLoggerFactory();
 
 	private static StaticLoggerBinder singleton = new StaticLoggerBinder();
 
+	/**
+	 * Get the logger binder singleton
+	 *
+	 * @return the singleton
+	 */
 	public static StaticLoggerBinder getSingleton() {
 		return singleton;
 	}
