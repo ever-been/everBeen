@@ -8,12 +8,20 @@ import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.bpk.NativeRuntime;
 
 /**
+ * Dependency Downloader for native tasks.
+ * 
  * @author donarus
  */
 public class NativeDependencyDownloader implements DependencyDownloader {
 
 	private NativeRuntime runtime;
 
+	/**
+	 * Creates new NativeDependencyDownloader.
+	 * 
+	 * @param runtime
+	 *          associated native runtime
+	 */
 	public NativeDependencyDownloader(NativeRuntime runtime) {
 		this.runtime = runtime;
 	}

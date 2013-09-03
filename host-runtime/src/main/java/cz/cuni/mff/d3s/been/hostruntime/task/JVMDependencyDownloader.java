@@ -8,12 +8,20 @@ import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.bpk.JavaRuntime;
 
 /**
+ * JVM Dependency downloader
+ * 
  * @author donarus
  */
 public class JVMDependencyDownloader implements DependencyDownloader {
 
 	private JavaRuntime runtime;
 
+	/**
+	 * Creates new JVMDependencyDownloader.
+	 * 
+	 * @param runtime
+	 *          associated Java runtime
+	 */
 	public JVMDependencyDownloader(JavaRuntime runtime) {
 		this.runtime = runtime;
 	}

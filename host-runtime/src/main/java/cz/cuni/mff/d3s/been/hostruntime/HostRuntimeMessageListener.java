@@ -18,6 +18,11 @@ import cz.cuni.mff.d3s.been.mq.IMessageSender;
 import cz.cuni.mff.d3s.been.mq.MessageQueues;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
 
+/**
+ * Listens for Host Runtime messages.
+ * 
+ * @author Martin Sixta
+ */
 final class HostRuntimeMessageListener implements MessageListener<BaseMessage>, Service {
 
 	/** Logging */
@@ -35,6 +40,14 @@ final class HostRuntimeMessageListener implements MessageListener<BaseMessage>, 
 	/** The Hazelcast topic to listen for messages on */
 	final ITopic<BaseMessage> globalTopic;
 
+	/**
+	 * Creates HostRuntimeMessageListener.
+	 * 
+	 * @param ctx
+	 *          connection to the cluster
+	 * @param nodeId
+	 *          this nodes ID
+	 */
 	public HostRuntimeMessageListener(final ClusterContext ctx, final String nodeId) {
 		this.ctx = ctx;
 		this.nodeId = nodeId;

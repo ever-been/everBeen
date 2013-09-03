@@ -7,6 +7,11 @@ import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.socketworks.twoway.ReadReplyHandler;
 import cz.cuni.mff.d3s.been.socketworks.twoway.ReadReplyHandlerFactory;
 
+/**
+ * CheckPoint handler factory.
+ * 
+ * @author Radek Mácha
+ */
 class CheckpointHandlerFactory implements ReadReplyHandlerFactory, HandlerRecycler {
 
 	private final ClusterContext ctx;
@@ -17,6 +22,14 @@ class CheckpointHandlerFactory implements ReadReplyHandlerFactory, HandlerRecycl
 		recyclableHandlers = new LinkedBlockingQueue<ReadReplyHandler>();
 	}
 
+	/**
+	 * 
+	 * Crates CheckPoint factories.
+	 * 
+	 * @param ctx
+	 *          connection to the cluster
+	 * @return CheckPoint factory
+	 */
 	public static CheckpointHandlerFactory create(ClusterContext ctx) {
 		return new CheckpointHandlerFactory(ctx);
 	}

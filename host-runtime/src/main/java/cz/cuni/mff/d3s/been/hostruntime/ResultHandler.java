@@ -18,6 +18,8 @@ import cz.cuni.mff.d3s.been.socketworks.oneway.ReadOnlyHandler;
 
 /**
  * {@link HostRuntime}'s logic of handling
+ * 
+ * @author Radek Macha
  */
 public class ResultHandler implements ReadOnlyHandler {
 	private static final Logger log = LoggerFactory.getLogger(ResultHandler.class);

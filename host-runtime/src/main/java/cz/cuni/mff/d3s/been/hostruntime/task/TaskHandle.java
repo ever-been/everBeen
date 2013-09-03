@@ -1,12 +1,10 @@
 package cz.cuni.mff.d3s.been.hostruntime.task;
 
+import static cz.cuni.mff.d3s.been.core.task.TaskState.*;
+
 import java.util.Collection;
 import java.util.List;
 
-import cz.cuni.mff.d3s.been.core.persistence.Entities;
-import cz.cuni.mff.d3s.been.core.persistence.TaskEntity;
-import cz.cuni.mff.d3s.been.persistence.DAOException;
-import cz.cuni.mff.d3s.been.persistence.task.PersistentTaskState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,10 +12,11 @@ import com.hazelcast.core.IMap;
 
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.cluster.context.Tasks;
+import cz.cuni.mff.d3s.been.core.persistence.Entities;
 import cz.cuni.mff.d3s.been.core.task.*;
 import cz.cuni.mff.d3s.been.debugassistant.DebugAssistant;
-
-import static cz.cuni.mff.d3s.been.core.task.TaskState.*;
+import cz.cuni.mff.d3s.been.persistence.DAOException;
+import cz.cuni.mff.d3s.been.persistence.task.PersistentTaskState;
 
 /**
  * Utility class which encapsulate manipulation of {@link TaskEntry} of a given
@@ -49,9 +48,9 @@ public class TaskHandle {
 	 * Creates new handle.
 	 * 
 	 * @param entry
-	 *		  entry to manipulate upon
+	 *          entry to manipulate upon
 	 * @param ctx
-	 *		  connection to the cluster
+	 *          connection to the cluster
 	 */
 	public TaskHandle(TaskEntry entry, ClusterContext ctx) {
 		this.entry = entry;
@@ -67,6 +66,8 @@ public class TaskHandle {
 	 * 
 	 * The change is cluster visible.
 	 * 
+	 * @throws IllegalStateException
+	 *           when cannot update entry
 	 */
 	public void setAccepted() throws IllegalStateException {
 		updateEntry(ACCEPTED, "Task has been accepted on %s", entry.getRuntimeId());
@@ -79,7 +80,11 @@ public class TaskHandle {
 	 * The change is cluster visible.
 	 * 
 	 * @param process
-	 *		  where to get runtime information to be updated in the entry
+	 *          where to get runtime information to be updated in the entry
+	 * 
+	 * @throws IllegalStateException
+	 *           when cannot update entry
+	 * 
 	 */
 	public void setRunning(TaskProcess process) throws IllegalStateException {
 		entry.setWorkingDirectory(process.getWorkingDirectory());
@@ -93,7 +98,10 @@ public class TaskHandle {
 	 * The change is cluster visible.
 	 * 
 	 * @param exitValue
-	 *		  the exit value of the task
+	 *          the exit value of the task
+	 * 
+	 * @throws IllegalStateException
+	 *           when cannot update entry
 	 */
 	public void setFinished(int exitValue) throws IllegalStateException {
 		entry.setExitCode(exitValue);
@@ -104,7 +112,10 @@ public class TaskHandle {
 	 * Sets state of the entry to ABORTED
 	 * 
 	 * @param message
-	 *		  formatted message of why the change happened
+	 *          formatted message of why the change happened
+	 * 
+	 * @throws IllegalStateException
+	 *           when cannot update entry
 	 */
 	public void setAborted(String message) throws IllegalStateException {
 		updateEntry(TaskState.ABORTED, "%s", message);
@@ -112,11 +123,15 @@ public class TaskHandle {
 
 	/**
 	 * Sets state of the entry to ABORTED
-	 *
+	 * 
 	 * @param message
-	 *		  formatted message of why the change happened
+	 *          formatted message of why the change happened
 	 * @param exitValue
-	 *        exit code of the aborted process
+	 *          exit code of the aborted process
+	 * 
+	 * @throws IllegalStateException
+	 *           when cannot update entry
+	 * 
 	 */
 	public void setAborted(String message, int exitValue) throws IllegalStateException {
 		entry.setExitCode(exitValue);
@@ -131,13 +146,14 @@ public class TaskHandle {
 	 * in this context of execution.
 	 * 
 	 * @param format
-	 *		  formatted message of why the change happened
+	 *          formatted message of why the change happened
 	 * @param args
-	 *		  arguments for the formatted message
+	 *          arguments for the formatted message
 	 * 
-	 * @throws IllegalArgumentException
+	 * @throws IllegalStateException
+	 *           when cannot update entry
 	 */
-	public void reSubmit(String format, Object... args) throws IllegalArgumentException {
+	public void reSubmit(String format, Object... args) throws IllegalStateException {
 		updateEntry(TaskState.SUBMITTED, format, args);
 	}
 
@@ -168,6 +184,11 @@ public class TaskHandle {
 		return entry.getId();
 	}
 
+	/**
+	 * Returns current exclusivity
+	 * 
+	 * @return current exclusivity
+	 */
 	public TaskExclusivity getExclusivity() {
 		return getTaskDescriptor().getExclusive();
 	}
@@ -176,14 +197,14 @@ public class TaskHandle {
 	 * Updates the entry in the cluster.
 	 * 
 	 * @param state
-	 *		  new state of the task
+	 *          new state of the task
 	 * @param format
-	 *		  formatted message of why the change happened
+	 *          formatted message of why the change happened
 	 * @param args
-	 *		  arguments for the formatted message
+	 *          arguments for the formatted message
 	 * 
 	 * @throws IllegalStateException
-	 *		   if the current entry has been concurrently modified
+	 *           if the current entry has been concurrently modified
 	 */
 	private void updateEntry(TaskState state, String format, Object... args) throws IllegalStateException {
 
@@ -239,9 +260,9 @@ public class TaskHandle {
 	 * Checks whether the current entry is still valid.
 	 * 
 	 * @param clusterEntry
-	 *		  entry to compare against
+	 *          entry to compare against
 	 * @return true if the current entry has not been modified from the outside,
-	 *		 false otherwise
+	 *         false otherwise
 	 */
 	private boolean isSame(TaskEntry clusterEntry) {
 		boolean isScheduledHere = entry.getRuntimeId().equals(clusterEntry.getRuntimeId());
@@ -256,9 +277,9 @@ public class TaskHandle {
 	 * Adds necessary debug information to the cluster.
 	 * 
 	 * @param debugPort
-	 *		  debug port
+	 *          debug port
 	 * @param suspended
-	 *		  whether the task has been started suspended
+	 *          whether the task has been started suspended
 	 */
 	public void setDebug(int debugPort, boolean suspended) {
 		DebugAssistant debugAssistant = new DebugAssistant(ctx);
@@ -269,7 +290,7 @@ public class TaskHandle {
 	 * Adds command line arguments information to the entry
 	 * 
 	 * @param taskArguments
-	 *		  task command line arguments
+	 *          task command line arguments
 	 */
 	private void setTaskEntryArgs(Collection<String> taskArguments) {
 		TaskEntry.Args args = new TaskEntry.Args();

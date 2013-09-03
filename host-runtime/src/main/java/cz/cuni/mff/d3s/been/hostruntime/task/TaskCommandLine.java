@@ -4,22 +4,48 @@ import java.io.File;
 
 import org.apache.commons.exec.CommandLine;
 
+/**
+ * 
+ * Task's command line.
+ * 
+ * @author Tadeas Palusga
+ */
 public class TaskCommandLine extends CommandLine {
 
+	/** debug mode */
+	protected boolean debugListeningMode;
+
+	/** debug port */
+	protected int debugPort;
+
+	/** suspended flag */
+	protected boolean suspended = false;
+
+	/**
+	 * Creates new TaskCommandLine for a task.
+	 * 
+	 * @param executable
+	 *          target executable of the task
+	 */
 	public TaskCommandLine(File executable) {
 		super(executable);
 	}
 
+	/**
+	 * Creates new TaskCommandLine for a task.
+	 * 
+	 * @param executable
+	 *          target executable of the task
+	 */
 	public TaskCommandLine(String executable) {
 		super(executable);
 	}
 
-	boolean debugListeningMode;
-
-	int debugPort;
-
-	boolean suspended = false;
-
+	/**
+	 * Whether the task should be suspended on start
+	 * 
+	 * @return true if the task should be suspended on start
+	 */
 	public boolean isSuspended() {
 		return suspended;
 	}

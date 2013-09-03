@@ -1,5 +1,9 @@
 package cz.cuni.mff.d3s.been.hostruntime;
 
+import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import cz.cuni.mff.d3s.been.cluster.context.ClusterContext;
 import cz.cuni.mff.d3s.been.persistence.DAOException;
 import cz.cuni.mff.d3s.been.persistence.Query;
@@ -7,18 +11,10 @@ import cz.cuni.mff.d3s.been.persistence.QuerySerializer;
 import cz.cuni.mff.d3s.been.socketworks.SocketHandlerException;
 import cz.cuni.mff.d3s.been.socketworks.twoway.ReadReplyHandler;
 import cz.cuni.mff.d3s.been.util.JsonException;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ObjectReader;
-import org.codehaus.jackson.map.type.TypeFactory;
-import org.codehaus.jackson.type.JavaType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 /**
  * Handler for queries into persistence layer.
- *
+ * 
  * @author darklight
  */
 public class PersistenceQueryHandler implements ReadReplyHandler {
@@ -30,6 +26,16 @@ public class PersistenceQueryHandler implements ReadReplyHandler {
 	private final QuerySerializer querySerializer;
 	private final HandlerRecycler recycler;
 
+	/**
+	 * Creates new PersistenceQueryHandler.
+	 * 
+	 * @param ctx
+	 *          connection to the cluster
+	 * @param om
+	 *          mapper of objects
+	 * @param recycler
+	 *          recycler of handlers
+	 */
 	PersistenceQueryHandler(ClusterContext ctx, ObjectMapper om, HandlerRecycler recycler) {
 		this.ctx = ctx;
 		this.om = om;

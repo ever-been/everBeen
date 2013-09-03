@@ -11,6 +11,8 @@ import de.flapdoodle.embed.mongo.config.MongodConfig;
 import de.flapdoodle.embed.mongo.distribution.Version;
 
 /**
+ * Stand-alone mongo server.
+ * 
  * @author Martin Sixta
  */
 public class MongoServerStandalone implements Service {

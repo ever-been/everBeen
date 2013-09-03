@@ -17,6 +17,9 @@ package cz.cuni.mff.d3s.been.mapstore.mongodb;
 
 import com.mongodb.DBObject;
 
+/**
+ * MongoDB converter.
+ */
 public interface MongoDBConverter {
 	DBObject toDBObject(Object obj);
 	Object toObject(Class clazz, DBObject dbObject);

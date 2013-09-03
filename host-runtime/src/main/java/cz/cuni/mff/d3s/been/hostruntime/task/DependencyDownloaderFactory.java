@@ -6,8 +6,9 @@ import cz.cuni.mff.d3s.been.bpk.NativeRuntime;
 import cz.cuni.mff.d3s.been.hostruntime.TaskException;
 
 /**
- * Created with IntelliJ IDEA. User: donarus Date: 4/21/13 Time: 5:46 PM To
- * change this template use File | Settings | File Templates.
+ * Factory of DependencyDownloader
+ * 
+ * @author Tadeáš Palusga
  */
 public class DependencyDownloaderFactory {
 
