@@ -18,6 +18,12 @@ class MongoDeleteQueryRedactor extends MongoQueryRedactor {
 
 	private static final String MONGO_SYSTEM_PREFIX = "system.";
 
+	/**
+	 * Creates new MongoDeleteQueryRedactor
+	 * 
+	 * @param entityID
+	 *          target's EntityID
+	 */
 	MongoDeleteQueryRedactor(EntityID entityID) {
 		super(entityID);
 	}
