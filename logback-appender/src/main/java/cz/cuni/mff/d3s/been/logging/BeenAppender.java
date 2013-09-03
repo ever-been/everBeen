@@ -15,6 +15,9 @@ public class BeenAppender extends AppenderBase<ILoggingEvent> {
 	private final LogLevelConverter levelConverter;
 	private final ServiceLogHandler logHandler;
 
+	/**
+	 * Creates new BeenAppender.
+	 */
 	public BeenAppender() {
 		logHandler = ServiceLoader.load(ServiceLogHandler.class).iterator().next();
 		levelConverter = new LogLevelConverter();
