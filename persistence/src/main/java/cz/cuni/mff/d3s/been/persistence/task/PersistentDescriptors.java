@@ -24,7 +24,7 @@ public final class PersistentDescriptors {
 
     private static final JSONUtils jsonUtils = JSONUtils.newInstance();
 
-	/*
+	/**
 	 * Entity ID for task descriptors
 	 */
 	public static final EntityID TASK_DESCRIPTOR = new EntityID().withKind("descriptor").withGroup("task");
@@ -102,6 +102,8 @@ public final class PersistentDescriptors {
      * @param bpkIdentifier BPK identifier to serialize
      *
      * @return A JSON representation of the provided BPK identifier
+	 *
+	 * @throws DAOException When the <em>BPK</em> ID fails to serialize
      */
     public static String serializeBpkId(BpkIdentifier bpkIdentifier) throws DAOException {
         try {

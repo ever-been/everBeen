@@ -109,7 +109,7 @@ public class QueryBuilder extends QueryBuilderBase {
 	 *
 	 * @return A delete query with this builder's current setup
 	 */
-	public Query delete() throws IllegalStateException {
+	public Query delete() {
 		return new DeleteQuery(entityID, selectors);
 	}
 }
