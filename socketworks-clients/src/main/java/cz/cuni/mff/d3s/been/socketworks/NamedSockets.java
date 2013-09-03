@@ -1,10 +1,17 @@
 package cz.cuni.mff.d3s.been.socketworks;
 
 /**
- * Sockets provided by the
+ * Naming conventions for the sockets between <em>task</em> and <em>Host Runtime</em> processes
  */
 public enum NamedSockets {
-	TASK_LOG_0MQ("TaskLogs"), TASK_CHECKPOINT_0MQ("TaskCheckpoints"), TASK_RESULT_PERSIST_0MQ("TaskResults"), TASK_RESULT_QUERY_0MQ("TaskResultQueries");
+	/** Log socket */
+	TASK_LOG_0MQ("TaskLogs"),
+	/** Checkpoint socket */
+	TASK_CHECKPOINT_0MQ("TaskCheckpoints"),
+	/** Result socket */
+	TASK_RESULT_PERSIST_0MQ("TaskResults"),
+	/** Resutl query socket */
+	TASK_RESULT_QUERY_0MQ("TaskResultQueries");
 
 	private final String envVarName;
 

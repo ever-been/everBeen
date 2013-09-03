@@ -50,6 +50,15 @@ public class Requestor {
 		socket.connect(address);
 	}
 
+	/**
+	 * Create a two-way messaging requestor
+	 *
+	 * @param address Address requests will be sent to
+	 *
+	 * @return The requestor
+	 *
+	 * @throws MessagingException When requestor creation fails (e.g. I/O error on connection)
+	 */
 	public static Requestor create(String address) throws MessagingException {
 		final ZMQContext zctx = Context.getReference();
 		return new Requestor(address, zctx, zctx.socket(ZMQ.REQ));
@@ -77,6 +86,8 @@ public class Requestor {
 	 * 
 	 * Must be called to release associated resources. Failing to do so will hand
 	 * the process on exit.
+	 *
+	 * @throws MessagingException On I/O error when closing the requestor
 	 */
 	public void close() throws MessagingException {
 		socket.close();

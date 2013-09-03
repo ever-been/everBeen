@@ -16,17 +16,14 @@ public final class TwoWayMessaging {
      * @param queueName Name of the queue
      * @param handlerFactory Factory for {@link ReadReplyHandler} objects (they will be used to handle messages)
      *
-     * @return
-     * @throws MessagingException
+     * @return The server
+	 *
+     * @throws MessagingException When server creation fails
      */
     public static final QueueGuard createServer(String hostname, String queueName, ReadReplyHandlerFactory handlerFactory) throws MessagingException {
         return ReadReplyGuard.create(hostname, handlerFactory);
     }
 
-    public static final IMessageQueue<String> createClient() {
-        // TODO implement a request socket
-        return null;
-    }
 }
 
 

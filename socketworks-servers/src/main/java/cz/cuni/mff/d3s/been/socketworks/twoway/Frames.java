@@ -5,17 +5,33 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-public class Frames implements Iterable<byte[]> {
+/**
+ * An buffer of byte arrays received in a message
+ */
+class Frames implements Iterable<byte[]> {
 	private final List<byte[]> frames;
 
+	/**
+	 * Create the frame buffer
+	 */
 	Frames() {
 		this.frames = new ArrayList<byte[]>(3);
 	}
 
+	/**
+	 * Create the frame buffer
+	 *
+	 * @return A new frame buffer
+	 */
 	public static Frames create() {
 		return new Frames();
 	}
 
+	/**
+	 * Add a byte array to the buffer
+	 *
+	 * @param frame Array to add
+	 */
 	public void add(byte[] frame) {
 		frames.add(frame);
 	}
