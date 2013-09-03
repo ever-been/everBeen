@@ -112,7 +112,11 @@ final class ScheduleTaskAction implements TaskAction {
 			// will get to it later
 		} finally {
 			if (map.isLocked(id)) {
-				map.unlock(id);
+				try {
+					map.unlock(id);
+				} catch (IllegalMonitorStateException e) {
+					// quell
+				}
 			}
 
 		}
