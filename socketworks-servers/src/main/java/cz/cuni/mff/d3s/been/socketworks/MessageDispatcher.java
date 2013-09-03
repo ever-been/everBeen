@@ -1,19 +1,17 @@
 package cz.cuni.mff.d3s.been.socketworks;
 
-import java.util.Map;
-import java.util.TreeMap;
-
-import com.hazelcast.core.MapEntry;
+import cz.cuni.mff.d3s.been.cluster.Service;
+import cz.cuni.mff.d3s.been.cluster.ServiceException;
+import cz.cuni.mff.d3s.been.mq.MessagingException;
 import cz.cuni.mff.d3s.been.socketworks.oneway.OneWayMessaging;
+import cz.cuni.mff.d3s.been.socketworks.oneway.ReadOnlyHandler;
+import cz.cuni.mff.d3s.been.socketworks.twoway.ReadReplyHandlerFactory;
 import cz.cuni.mff.d3s.been.socketworks.twoway.TwoWayMessaging;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cz.cuni.mff.d3s.been.cluster.Service;
-import cz.cuni.mff.d3s.been.cluster.ServiceException;
-import cz.cuni.mff.d3s.been.mq.MessagingException;
-import cz.cuni.mff.d3s.been.socketworks.oneway.ReadOnlyHandler;
-import cz.cuni.mff.d3s.been.socketworks.twoway.ReadReplyHandlerFactory;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * A message dispatcher intended as high-level abstraction over inter-process
@@ -32,10 +30,24 @@ public class MessageDispatcher implements Service {
 		this.guards = new TreeMap<String, QueueGuard>();
 	}
 
+	/**
+	 * Create a message dispatcher (handles communication channels with task processes)
+	 *
+	 * @param hostname Hostname of this node under which message queues should be accessible from tasks
+	 *
+	 * @return A dispatcher server
+	 */
 	public static MessageDispatcher create(String hostname) {
 		return new MessageDispatcher(hostname);
 	}
 
+	/**
+	 * Get the port a named queue listens on
+	 *
+	 * @param queueName Name of the queue
+	 *
+	 * @return The port the queue listens on
+	 */
 	public Integer getPortForQueue(String queueName) {
 		return guards.get(queueName).getPort();
 	}
@@ -93,7 +105,8 @@ public class MessageDispatcher implements Service {
 
     /**
      * Create a map of current bindings provided by this {@link MessageDispatcher}
-     * @return
+	 *
+     * @return Guard bindings
      */
     public Map<String, String> getBindings() {
         final Map<String,String> bindings = new TreeMap<String,String>();

@@ -8,5 +8,13 @@ import cz.cuni.mff.d3s.been.socketworks.SocketHandlerException;
  * @author darklight
  */
 public interface ReadOnlyHandler {
+
+	/**
+	 * Handle received message
+	 *
+	 * @param message Message to handle
+	 *
+	 * @throws SocketHandlerException When message processing fails, this exception should be thrown
+	 */
 	void handle(String message) throws SocketHandlerException;
 }

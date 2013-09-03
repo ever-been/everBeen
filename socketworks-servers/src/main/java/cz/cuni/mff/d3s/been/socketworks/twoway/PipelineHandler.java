@@ -1,11 +1,14 @@
 package cz.cuni.mff.d3s.been.socketworks.twoway;
 
+import cz.cuni.mff.d3s.been.mq.MessagingException;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import cz.cuni.mff.d3s.been.mq.MessagingException;
-
-public class PipelineHandler implements FrameSink {
+/**
+ * A two-way communication socket-pair poll participant
+ */
+class PipelineHandler implements FrameSink {
 
 	private final ExecutorService exec;
 	private final ReadReplyHandlerFactory factory;
@@ -17,6 +20,14 @@ public class PipelineHandler implements FrameSink {
 		this.forwardMapper = forwardMapper;
 	}
 
+	/**
+	 * Create the pipeline handler
+	 *
+	 * @param factory Handler factory to create handlers on demand
+	 * @param forwardMapper Mapper for frame forwarding
+	 *
+	 * @return The pipeline handler
+	 */
 	public static PipelineHandler create(ReadReplyHandlerFactory factory, FrameForwardMapper forwardMapper) {
 		return new PipelineHandler(factory, forwardMapper);
 	}
