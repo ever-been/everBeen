@@ -55,6 +55,19 @@ public final class MongoStorage implements Storage {
 		this.queryTranslator = new QueryTranslator();
 	}
 
+	/**
+	 * Creates MongoStorage.
+	 * 
+	 * @param hostname
+	 *          DB's hostname
+	 * @param dbname
+	 *          DB's name
+	 * @param opts
+	 *          DB's options
+	 * @return new MongoStorages
+	 * @throws UnknownHostException
+	 *           when the DB cannot be reached
+	 */
 	public static
 			MongoStorage
 			create(String hostname, String dbname, MongoClientOptions opts) throws UnknownHostException {
@@ -62,17 +75,61 @@ public final class MongoStorage implements Storage {
 		return new MongoStorage(client, dbname);
 	}
 
+	/**
+	 * 
+	 * Creates MongoStorage.
+	 * 
+	 * @param seeds
+	 *          list of server addresses to connect to
+	 * @param dbname
+	 *          DB's name
+	 * @param opts
+	 *          DB's options
+	 * @return new MongoStorage
+	 */
 	public static MongoStorage create(List<ServerAddress> seeds, String dbname, MongoClientOptions opts) {
 		final MongoClient client = new MongoClient(seeds, opts);
 		return new MongoStorage(client, dbname);
 	}
 
+	/**
+	 * 
+	 * Creates MongoStorage.
+	 * 
+	 * @param hostname
+	 *          DB's hostname
+	 * @param dbname
+	 *          DB's name
+	 * @param username
+	 *          DB's user
+	 * @param password
+	 *          user's DB password
+	 * @param opts
+	 *          DB's options
+	 * @return new MongoStorage
+	 * @throws UnknownHostException
+	 */
 	public static MongoStorage create(String hostname, String dbname, String username, String password,
 			MongoClientOptions opts) throws UnknownHostException {
 		final MongoClient client = new MongoClient(hostname, opts);
 		return new MongoStorage(client, dbname, username, password);
 	}
 
+	/**
+	 * Creates MongoStorage.
+	 * 
+	 * @param seeds
+	 *          list of server addresses to connect to
+	 * @param dbname
+	 *          DB's name
+	 * @param username
+	 *          DB's user
+	 * @param password
+	 *          user's DB password
+	 * @param opts
+	 *          DB's options
+	 * @return new MongoStorage
+	 */
 	public static MongoStorage create(List<ServerAddress> seeds, String dbname, String username, String password,
 			MongoClientOptions opts) {
 		final MongoClient client = new MongoClient(seeds, opts);
