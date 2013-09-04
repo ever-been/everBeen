@@ -36,7 +36,7 @@ public class Detail extends Page {
 	@Inject
 	private PageRenderLinkSource pageRenderLinkSource;
 
-	Link getResultIframeUrl() {
+	public Link getResultIframeUrl() {
 		return pageRenderLinkSource.createPageRenderLinkWithContext(Raw.class, resultId);
 	}
 
