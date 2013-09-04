@@ -96,6 +96,11 @@ public enum TaskState {
 			return true;
 		}
 
+		// can resubmit on a failed Host Runtime
+		if (this == ACCEPTED && state == SCHEDULED) {
+			return true;
+		}
+
 		return false;
 	}
 }
