@@ -124,6 +124,7 @@ final class LocalKeyScanner extends TaskManagerService {
 		final TaskState state = entry.getState();
 
 		boolean isWaiting = (state == WAITING);
+		boolean isAccepted = (state == ACCEPTED);
 		boolean isDone = (state == ABORTED || state == FINISHED);
 		boolean isScheduled = (state == SCHEDULED);
 		boolean isRunning = (state == RUNNING);
@@ -140,7 +141,7 @@ final class LocalKeyScanner extends TaskManagerService {
 		}
 
 		// Failed Host Runtime of a scheduled task
-		if (isScheduled && isRuntimeOffline) {
+		if ((isScheduled || isAccepted) && isRuntimeOffline) {
 			String logMsg = String.format("Will reschedule '%s' because of Host Runtime failure", entry.getId());
 			log.debug(logMsg);
 
