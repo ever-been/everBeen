@@ -159,9 +159,9 @@
 	</properties>
 
 	<build>
+		<finalName>been-wi</finalName>
 
 		<plugins>
-
 			<plugin>
 				<groupId>org.mortbay.jetty</groupId>
 				<artifactId>jetty-maven-plugin</artifactId>
