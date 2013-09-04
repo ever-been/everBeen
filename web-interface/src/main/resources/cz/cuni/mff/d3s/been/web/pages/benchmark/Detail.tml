@@ -71,9 +71,10 @@
                     ${benchmark.allowResubmit}
                     <t:if test="benchmark.allowResubmit">
                         &nbsp;
-                        <t:pageLink t:page="benchmark/disallowresubmits" t:context="${benchmark.id}"
-                                    class="btn btn-mini">disallow
-                        </t:pageLink>
+
+                        <t:eventLink class="btn btn-mini" t:event="disallowResubmit" t:context="benchmark.id">
+                            disallow
+                        </t:eventLink>
                     </t:if>
                 </dd>
 

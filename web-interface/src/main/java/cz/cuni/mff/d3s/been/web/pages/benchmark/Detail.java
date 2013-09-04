@@ -67,6 +67,11 @@ public class Detail extends Page {
 		return Tree.class;
 	}
 
+	public Object onDisallowResubmit(String benchmarkId) throws BeenApiException {
+		new BenchmarkSupport(api.getApi()).disallowResubmits(benchmarkId);
+		return this;
+	}
+
 	public Object onKillBenchmark(String benchmarkId) throws BeenApiException, InterruptedException {
 		new BenchmarkSupport(api.getApi()).killBenchmark(benchmarkId);
 		return this;
