@@ -12,10 +12,6 @@
 		<version>3.0.0-SNAPSHOT</version>
 	</parent>
 
-	<properties>
-		<distDirName>dist</distDirName>
-	</properties>
-
 	<dependencies>
 		<!-- BEEN DEPENDENCIES -->
 		<dependency>
@@ -33,7 +29,7 @@
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>${maven-assembly-plugin.version}</version>
 				<configuration>
-					<finalName>${distDirName}/bin/been</finalName>
+					<finalName>been</finalName>
 					<archive>
 						<manifest>
 							<mainClass>cz.cuni.mff.d3s.been.node.Runner</mainClass>
