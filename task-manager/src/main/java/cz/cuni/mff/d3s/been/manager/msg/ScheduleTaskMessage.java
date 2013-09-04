@@ -26,7 +26,7 @@ final class ScheduleTaskMessage extends AbstractEntryTaskMessage {
 	@Override
 	public TaskAction createAction(ClusterContext ctx) {
 		TaskState state = this.getEntry().getState();
-		if (state == TaskState.SUBMITTED || state == TaskState.WAITING || state == TaskState.SCHEDULED) {
+		if (state == TaskState.SUBMITTED || state == TaskState.ACCEPTED || state == TaskState.WAITING || state == TaskState.SCHEDULED) {
 			return Actions.createScheduleTaskAction(ctx, getEntry());
 		} else {
 			return Actions.createNullAction();
