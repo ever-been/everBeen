@@ -145,7 +145,7 @@ final class LocalKeyScanner extends TaskManagerService {
 			String logMsg = String.format("Will reschedule '%s' because of Host Runtime failure", entry.getId());
 			log.debug(logMsg);
 
-			sender.send(Messages.createScheduleTaskMessage(entry));
+			sender.send(Messages.createRescheduleTaskMessage(entry));
 			return;
 		}
 

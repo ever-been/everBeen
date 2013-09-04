@@ -54,6 +54,17 @@ public class Messages {
 	}
 
 	/**
+	 * Creates RescheduleTaskMessage implementation.
+	 * 
+	 * @param entry
+	 *          targeted task entry
+	 * @return RescheduleTaskMessage implementation
+	 */
+	public static TaskMessage createRescheduleTaskMessage(TaskEntry entry) {
+		return new RescheduleTaskMessage(entry);
+	}
+
+	/**
 	 * Creates CheckSchedulabilityMessage implementation.
 	 * 
 	 * @param entry
