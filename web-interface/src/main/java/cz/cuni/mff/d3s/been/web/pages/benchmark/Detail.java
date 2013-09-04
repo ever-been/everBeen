@@ -3,6 +3,8 @@ package cz.cuni.mff.d3s.been.web.pages.benchmark;
 import java.util.Collection;
 
 import org.apache.tapestry5.annotations.Property;
+import org.apache.tapestry5.ioc.annotations.Inject;
+import org.apache.tapestry5.services.PageRenderLinkSource;
 
 import cz.cuni.mff.d3s.been.api.BeenApiException;
 import cz.cuni.mff.d3s.been.core.benchmark.BenchmarkEntry;
@@ -22,6 +24,9 @@ import cz.cuni.mff.d3s.been.web.pages.task.Tree;
 public class Detail extends Page {
 
 	private static final int ACTION_WAIT_TIMEOUT = 10;
+
+	@Inject
+	private PageRenderLinkSource pageRenderLinkSource;
 
 	@Property
 	BenchmarkEntry benchmark;
@@ -69,12 +74,12 @@ public class Detail extends Page {
 
 	public Object onDisallowResubmit(String benchmarkId) throws BeenApiException {
 		new BenchmarkSupport(api.getApi()).disallowResubmits(benchmarkId);
-		return this;
+		return pageRenderLinkSource.createPageRenderLinkWithContext(Detail.class, benchmarkId);
 	}
 
 	public Object onKillBenchmark(String benchmarkId) throws BeenApiException, InterruptedException {
 		new BenchmarkSupport(api.getApi()).killBenchmark(benchmarkId);
-		return this;
+		return pageRenderLinkSource.createPageRenderLinkWithContext(Detail.class, benchmarkId);
 	}
 
 	// reloads fresh instance from hazelacast cluster.

@@ -1,6 +1,8 @@
 package cz.cuni.mff.d3s.been.web.pages.task;
 
 import org.apache.tapestry5.annotations.Property;
+import org.apache.tapestry5.ioc.annotations.Inject;
+import org.apache.tapestry5.services.PageRenderLinkSource;
 
 import cz.cuni.mff.d3s.been.api.BeenApiException;
 import cz.cuni.mff.d3s.been.core.task.Debug;
@@ -17,6 +19,9 @@ import cz.cuni.mff.d3s.been.web.pages.Page;
  */
 @Page.Navigation(section = Layout.Section.TASK_DETAIL)
 public class Detail extends DetailPage {
+
+	@Inject
+	private PageRenderLinkSource pageRenderLinkSource;
 
 	@Property
 	private String arg;
@@ -56,7 +61,7 @@ public class Detail extends DetailPage {
 
 	Object onKillTask(String taskId) throws BeenApiException, InterruptedException {
 		new TaskSupport(getApi()).killTask(taskId);
-		return this;
+		return pageRenderLinkSource.createPageRenderLinkWithContext(Detail.class, taskId);
 	}
 
 	Object onRemoveTask(String taskId) throws BeenApiException, InterruptedException {

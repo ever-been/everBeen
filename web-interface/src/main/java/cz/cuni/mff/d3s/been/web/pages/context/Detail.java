@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tapestry5.annotations.Property;
+import org.apache.tapestry5.ioc.annotations.Inject;
+import org.apache.tapestry5.services.PageRenderLinkSource;
 
 import cz.cuni.mff.d3s.been.api.BeenApiException;
 import cz.cuni.mff.d3s.been.core.task.TaskContextEntry;
@@ -12,13 +14,15 @@ import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.web.components.Layout;
 import cz.cuni.mff.d3s.been.web.model.TaskContextSupport;
 import cz.cuni.mff.d3s.been.web.pages.Page;
-import cz.cuni.mff.d3s.been.web.pages.task.Tree;
 
 /**
  * @author Kuba Brecka
  */
 @Page.Navigation(section = Layout.Section.TASK_DETAIL)
 public class Detail extends Page {
+
+	@Inject
+	private PageRenderLinkSource pageRenderLinkSource;
 
 	@Property
 	private TaskContextEntry context;
@@ -67,12 +71,12 @@ public class Detail extends Page {
 
 	public Object onKillContext(String contextId) throws BeenApiException, InterruptedException {
 		new TaskContextSupport(api.getApi()).killTaskContext(contextId);
-		return this;
+		return pageRenderLinkSource.createPageRenderLinkWithContext(Detail.class, contextId);
 	}
 
 	public Object onRemoveContext(String contextId) throws BeenApiException {
 		new TaskContextSupport(api.getApi()).removeKilledTaskContext(contextId);
-		return Tree.class;
+		return pageRenderLinkSource.createPageRenderLinkWithContext(Detail.class, contextId);
 	}
 
 	public boolean isTaskContextInFinalState(String taskContextId) throws BeenApiException {
