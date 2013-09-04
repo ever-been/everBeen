@@ -26,6 +26,7 @@
     <t:progressiveDisplay/>
     <t:block id="tasksBlock">
         <script>
+
             var finishedTasksHidden = false;
 
             function showOrHideTasks() {
@@ -40,7 +41,20 @@
             }
             }
 
-            jQuery(document).ready(function() {
+            $(document).ready(function() {
+            $(".tasktogglebutton").on("click", function(event){
+            var b = $(this);
+            var e = $(this).parent().next();
+            if (e.is(":hidden")) {
+            e.show();
+            b.html("<i class='icon-minus'></i>");
+            } else {
+            e.hide();
+            b.html("<i class='icon-plus'></i>");
+            }
+            return false;
+            });
+
             $('#displayFinishedTasksCheckbox').prop('checked', false);
             showOrHideTasks();
 
@@ -50,7 +64,6 @@
             });
 
         </script>
-
         <div style="float: left; text-align: left;">
             <label class="checkbox">
                 <input type="checkbox" id="displayFinishedTasksCheckbox"/>

@@ -5,7 +5,6 @@ import java.util.Collection;
 
 import org.apache.tapestry5.Block;
 import org.apache.tapestry5.EventConstants;
-import org.apache.tapestry5.annotations.Import;
 import org.apache.tapestry5.annotations.OnEvent;
 import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.ioc.annotations.Inject;
@@ -27,7 +26,6 @@ import cz.cuni.mff.d3s.been.web.pages.Page;
  */
 @Page.Navigation(section = Layout.Section.TASK_TREE)
 @ImportJQueryUI
-@Import(library = { "context:js/task-list.js" })
 public class Tree extends Page {
 
 	@Inject
