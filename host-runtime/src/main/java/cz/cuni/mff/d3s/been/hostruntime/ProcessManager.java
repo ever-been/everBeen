@@ -247,7 +247,8 @@ final class ProcessManager implements Service {
 		File taskDir = createTaskDir(taskEntry);
 		tasks.updateTaskDirs();
 
-		try (TaskProcess process = createTaskProcess(taskEntry, taskDir)) {
+		try {
+			TaskProcess process = createTaskProcess(taskEntry, taskDir);
 
 			tasks.addTask(id, process);
 
@@ -262,6 +263,7 @@ final class ProcessManager implements Service {
 			taskHandle.setFinished(exitValue);
 
 			try {
+				process.close();
 				FileUtils.deleteDirectory(taskDir);
 				tasks.updateTaskDirs();
 			} catch (IOException e) {
@@ -271,7 +273,6 @@ final class ProcessManager implements Service {
 						id);
 				log.warn(msg, e);
 			}
-
 		} catch (TaskException e) {
 			String msg = String.format("Task '%s' has been aborted due to underlying exception.", id);
 			log.error(msg, e);
