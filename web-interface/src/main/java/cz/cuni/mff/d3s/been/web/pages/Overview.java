@@ -154,7 +154,7 @@ public class Overview extends Page {
 	}
 
 	public String getContextDetailLink(String contextId) {
-		return contextPath + "context/detail/" + contextId;
+		return contextPath + "/context/detail/" + contextId;
 	}
 
 	public String getTaskDetailLink(String taskId) {
