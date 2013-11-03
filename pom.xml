@@ -215,15 +215,15 @@
 	</modules>
 
 	<distributionManagement>
-		<snapshotRepository>
+		<repository>
 			<id>everbeen.cz-release</id>
 			<name>EverBEEN release artifactory</name>
 			<url>http://everbeen.cz/artifactory/libs-release-local</url>
-		</snapshotRepository>
-		<repository>
+		</repository>
+		<snapshotRepository>
 			<id>everbeen.cz-snapshot</id>
 			<name>EverBEEN snapshot artifactory</name>
 			<url>http://everbeen.cz/artifactory/libs-snapshot-local</url>
-		</repository>
+		</snapshotRepository>
 	</distributionManagement>
 </project>
