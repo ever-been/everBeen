@@ -217,7 +217,7 @@
 	<distributionManagement>
 		<snapshotRepository>
 			<id>everbeen.cz-release</id>
-			<name>EverBEEN snapshot artifactory</name>
+			<name>EverBEEN release artifactory</name>
 			<url>http://everbeen.cz/artifactory/libs-release-local</url>
 		</snapshotRepository>
 		<repository>
