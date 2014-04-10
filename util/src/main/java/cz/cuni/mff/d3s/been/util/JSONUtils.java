@@ -1,9 +1,12 @@
 package cz.cuni.mff.d3s.been.util;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.JsonToken;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectReader;
@@ -122,6 +125,33 @@ public class JSONUtils {
 			throw new JsonException(String.format("Error when unmarshalling collection of %s", itemType.getSimpleName()), e);
 		}
 		return deserializedData;
+	}
+
+	/**
+	 * Deserialize a batch of JSON object into typed maps, using types described in parameter.
+	 *
+	 * @param serializedObjects JSON to deserialize
+	 * @param typeMap Types of the object's attributes
+	 * @param ignoreBrokenItems Whether items that make the parsing crash should be omitted, rather than interrupting the entire deserialization
+	 *
+	 * @return A collection of maps resulting from the objects' deserialization
+	 *
+	 * @throws JsonException When one of given Strings is not valid JSON or when it doesn't contain correctly typed values
+	 */
+	public Collection<Map<String, Object>> deserialize(Collection<String> serializedObjects, Map<String, Class<?>> typeMap, boolean ignoreBrokenItems) throws JsonException {
+		final JsonToTypedMap jttm = new JsonToTypedMap(typeMap);
+		final List<Map<String, Object>> res = new ArrayList<Map<String, Object>>(serializedObjects.size());
+		for (String so: serializedObjects) {
+			try {
+				res.add(jttm.convert(so));
+			} catch (JsonException e) {
+				// only rethrow this if ignore is not set
+				if (!ignoreBrokenItems) {
+					throw e;
+				}
+			}
+		}
+		return res;
 	}
 
 }

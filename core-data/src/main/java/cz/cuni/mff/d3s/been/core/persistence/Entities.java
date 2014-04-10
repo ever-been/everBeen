@@ -7,6 +7,7 @@ package cz.cuni.mff.d3s.been.core.persistence;
  * @author darklight
  */
 public enum Entities {
+
 	/**
 	 * Service logs.
 	 */

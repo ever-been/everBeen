@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 
+import cz.cuni.mff.d3s.been.util.JsonToTypedMap;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig.Feature;
 import org.slf4j.Logger;
@@ -94,24 +96,18 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 
 	}
 
-	@Override
-	public synchronized
-			<T extends Result>
-			Collection<T>
-			query(Query fetchQuery, Class<T> resultClass) throws DAOException {
-		Requestor requestor = null;
-		String queryString = null;
-		String replyString = null;
-
+	private QueryAnswer performFetchQuery(Query fetchQuery) throws DAOException {
 		QueryChecks.assertIsFetch(fetchQuery);
 		QueryChecks.assertIsResult(fetchQuery);
 
+		final String queryString;
 		try {
 			queryString = querySerializer.serializeQuery(fetchQuery);
 		} catch (JsonException e) {
 			throw new DAOException("Failed to serialize query", e);
 		}
 
+		final Requestor requestor;
 		try {
 			requestor = Requestor.create(NamedSockets.TASK_RESULT_QUERY_0MQ.getConnection());
 		} catch (MessagingException e) {
@@ -119,6 +115,8 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 		}
 
 		log.trace("Querying persistence with {}", queryString);
+
+		final String replyString;
 		try {
 			replyString = requestor.request(queryString);
 		} finally {
@@ -131,19 +129,47 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 		if (replyString == null) {
 			throw new DAOException(String.format("Unknown failure when processing request %s", queryString));
 		}
+
 		log.trace("Persistence replied {}", replyString);
 
+		final QueryAnswer answer;
 		try {
-			final QueryAnswer answer = querySerializer.deserializeAnswer(replyString);
-			if (!answer.isCarryingData()) {
-				throw new DAOException(String.format(
-						"Query returned with no data. Answer status is: '%s'",
-						answer.getStatus().getDescription()));
-			}
+			answer = querySerializer.deserializeAnswer(replyString);
+		} catch (JsonException e) {
+			throw new DAOException(String.format("Failed to split the result of query >>>%s<<< to single objects", fetchQuery.toString()), e);
+		}
+		if (!answer.isCarryingData()) {
+			throw new DAOException(String.format(
+					"Query returned with no data. Answer status is: '%s'",
+					answer.getStatus().getDescription()));
+		}
+		return answer;
+	}
+
+	@Override
+	public synchronized
+			<T extends Result>
+			Collection<T>
+			query(Query fetchQuery, Class<T> resultClass) throws DAOException {
+
+		final QueryAnswer answer = performFetchQuery(fetchQuery);
+		try {
 			return jsonUtils.deserialize(answer.getData(), resultClass);
 		} catch (JsonException e) {
-			throw new DAOException(String.format("Failed to deserialize results matching query %s", queryString), e);
+			throw new DAOException(String.format("Failed to deserialize results matching query %s", fetchQuery.toString()), e);
 		}
+	}
+
+	@Override
+	public Collection<Map<String, Object>> query(Query fetchQuery, Map<String, Class<?>> typeMapping) throws DAOException {
+		final QueryAnswer answer = performFetchQuery(fetchQuery);
+		final Collection<Map<String, Object>> answerObjects = new ArrayList<Map<String, Object>>(answer.getData().size());
+		try {
+			jsonUtils.deserialize(answer.getData(), typeMapping, false);
+		} catch (JsonException e) {
+			throw new DAOException("Cannot deserialize query results", e);
+		}
+		return answerObjects;
 	}
 
 	// @Override

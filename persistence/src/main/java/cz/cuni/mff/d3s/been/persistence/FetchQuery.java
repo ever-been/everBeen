@@ -38,4 +38,16 @@ class FetchQuery extends SkeletalQuery implements Serializable {
 	public Set<String> getMappings() {
 		return mappings;
 	}
+
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder();
+		sb.append("select ");
+		sb.append(mappings.toString());
+		sb.append(" from ");
+		sb.append(getEntityID().toString());
+		sb.append(" where ");
+		sb.append(getSelectors().toString());
+		return sb.toString();
+	}
 }
