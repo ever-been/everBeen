@@ -26,3 +26,4 @@ target
 
 # junk
 .DS_Store
+*.versionsBackup
