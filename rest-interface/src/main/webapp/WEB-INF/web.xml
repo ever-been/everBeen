@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" version="2.4">
+	<display-name>everBeen-REST</display-name>
+	<servlet>
+		<servlet-name>jersey</servlet-name>
+		<servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+		<load-on-startup>1</load-on-startup>
+		<init-param>
+			<param-name>com.sun.jersey.config.property.packages</param-name>
+			<param-value>cz.everbeen.restapi.handlers</param-value>
+		</init-param>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>jersey</servlet-name>
+		<url-pattern>/*</url-pattern>
+	</servlet-mapping>
+
+	<resource-ref>
+		<res-ref-name>everBeen/clusterConfig</res-ref-name>
+		<res-ref-type>cz.everbeen.restapi.model.ClusterConfig</res-ref-type>
+	</resource-ref>
+</web-app>
