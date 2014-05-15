@@ -64,6 +64,11 @@ public class ClusterApiConnection {
 	}
 
 	public ClusterStatus getStatus() {
-		return ClusterStatus.withFlags(getApi().isConnected());
+		try {
+			return ClusterStatus.withFlags(getApi().isConnected());
+		} catch (IllegalStateException ise) {
+			log.info("Failed to connect to cluster", ise);
+			return ClusterStatus.withError(ise);
+		}
 	}
 }

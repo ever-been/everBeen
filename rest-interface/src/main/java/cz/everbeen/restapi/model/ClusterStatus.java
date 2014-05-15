@@ -1,22 +1,41 @@
 package cz.everbeen.restapi.model;
 
+import org.apache.http.annotation.Immutable;
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
+
 /**
+ * Current runtime status of the cluster.
+ *
  * @author darklight
  */
-public class ClusterStatus {
+@Immutable
+public class ClusterStatus implements ModelObject {
 
+	@JsonProperty("connected")
 	private final boolean connected;
+	@JsonProperty("error")
+	private final String error;
 
-	private ClusterStatus(boolean connected) {
+	@JsonCreator
+	public ClusterStatus(@JsonProperty("connected") boolean connected) {
 		this.connected = connected;
+		this.error = null;
+	}
+
+	@JsonCreator
+	public ClusterStatus(
+		@JsonProperty("connected") boolean connected,
+		@JsonProperty("error") String error) {
+		this.connected = connected;
+		this.error = error;
 	}
 
 	public static ClusterStatus withFlags(boolean connected) {
 		return new ClusterStatus(connected);
 	}
 
-	@Override
-	public String toString() {
-		return connected ? "{connected: true}" : "{connected: false}";
+	public static ClusterStatus withError(Throwable error) {
+		return new ClusterStatus(false, error.getMessage());
 	}
 }

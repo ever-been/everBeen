@@ -1,6 +1,8 @@
 package cz.everbeen.restapi.model;
 
 import org.apache.http.annotation.Immutable;
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 import java.util.Map;
 
@@ -10,7 +12,7 @@ import java.util.Map;
  * @author darklight
  */
 @Immutable
-public class ClusterConfig {
+public class ClusterConfig implements ModelObject {
 
 	public static final String JNDI_NAME = "everBeen/clusterConfig";
 
@@ -19,12 +21,22 @@ public class ClusterConfig {
 	private static final String GROUP = "group";
 	private static final String PASS = "pass";
 
+	@JsonProperty("host")
 	private String host;
+	@JsonProperty("port")
 	private Integer port;
+	@JsonProperty("group")
 	private String group;
+	@JsonProperty("pass")
 	private String pass;
 
-	private ClusterConfig(String host, Integer port, String group, String pass) {
+	@JsonCreator
+	public ClusterConfig(
+		@JsonProperty("host") String host,
+		@JsonProperty("port") Integer port,
+		@JsonProperty("group") String group,
+		@JsonProperty("pass") String pass)
+	{
 		this.host = host;
 		this.port = port;
 		this.group = group;
@@ -56,8 +68,4 @@ public class ClusterConfig {
 		return pass;
 	}
 
-	@Override
-	public String toString() {
-		return String.format("{host: %s, port: %d, group: %s, pass: %s}", host, port, group, pass);
-	}
 }

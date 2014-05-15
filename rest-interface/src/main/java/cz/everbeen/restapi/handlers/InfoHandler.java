@@ -1,6 +1,7 @@
 package cz.everbeen.restapi.handlers;
 
 import cz.everbeen.restapi.ClusterApiConnection;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,23 +15,23 @@ import javax.ws.rs.core.MediaType;
  * @author darklight
  */
 @Path("/info")
-public class InfoHandler {
+public class InfoHandler extends Handler {
 
 	private static final Logger log = LoggerFactory.getLogger(InfoHandler.class);
 
-	//private final BeenApi api;
+	private final ObjectMapper om = new ObjectMapper();
 
 	@GET
 	@Path("/config")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getConfig() {
-		return ClusterApiConnection.getInstance().getConfig().toString();
+		return serializeModelObject(ClusterApiConnection.getInstance().getConfig());
 	}
 
 	@GET
 	@Path("/status")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getStatus() {
-		return ClusterApiConnection.getInstance().getStatus().toString();
+		return serializeModelObject(ClusterApiConnection.getInstance().getStatus());
 	}
 }

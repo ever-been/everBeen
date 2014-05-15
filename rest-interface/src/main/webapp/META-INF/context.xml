@@ -3,9 +3,9 @@
 <Resource name="everBeen/clusterConfig"
 		  type="cz.everbeen.restapi.model.ClusterConfig"
 		  factory="cz.everbeen.restapi.ClusterConfigFactory"
-		  host="localhost"
-		  port="5001"
-		  group="dev-group"
+		  host="127.0.0.1"
+		  port="5701"
+		  group="dev"
 		  pass="dev-pass"
 		/>
 </Context>

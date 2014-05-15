@@ -15,7 +15,7 @@ import javax.ws.rs.core.StreamingOutput;
  * @author darklight
  */
 @Path("/bpk")
-public class BPKHandler {
+public class BPKHandler extends Handler {
 
 	private static final Logger log = LoggerFactory.getLogger(BPKHandler.class);
 
