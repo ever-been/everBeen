@@ -1,4 +1,4 @@
-package cz.everbeen.restapi.model;
+package cz.everbeen.restapi.protocol;
 
 import org.apache.http.annotation.Immutable;
 import org.codehaus.jackson.annotate.JsonCreator;
@@ -10,7 +10,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * @author darklight
  */
 @Immutable
-public class ClusterStatus implements ModelObject {
+public class ClusterStatus implements ProtocolObject {
 
 	@JsonProperty("connected")
 	private final boolean connected;

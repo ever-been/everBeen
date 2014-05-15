@@ -2,8 +2,8 @@ package cz.everbeen.restapi;
 
 import cz.cuni.mff.d3s.been.api.BeenApi;
 import cz.cuni.mff.d3s.been.api.BeenApiFactory;
-import cz.everbeen.restapi.model.ClusterConfig;
-import cz.everbeen.restapi.model.ClusterStatus;
+import cz.everbeen.restapi.protocol.ClusterConfig;
+import cz.everbeen.restapi.protocol.ClusterStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

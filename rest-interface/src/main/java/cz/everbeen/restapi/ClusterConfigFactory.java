@@ -1,6 +1,6 @@
 package cz.everbeen.restapi;
 
-import cz.everbeen.restapi.model.ClusterConfig;
+import cz.everbeen.restapi.protocol.ClusterConfig;
 
 import javax.naming.Context;
 import javax.naming.Name;
@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * Factory for the {@link cz.everbeen.restapi.model.ClusterConfig}
+ * Factory for the {@link cz.everbeen.restapi.protocol.ClusterConfig}
  *
  * @author darklight
  */

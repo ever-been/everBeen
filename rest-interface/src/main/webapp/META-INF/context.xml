@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Context path="/been-rest">
 <Resource name="everBeen/clusterConfig"
-		  type="cz.everbeen.restapi.model.ClusterConfig"
+		  type="cz.everbeen.restapi.protocol.ClusterConfig"
 		  factory="cz.everbeen.restapi.ClusterConfigFactory"
 		  host="127.0.0.1"
 		  port="5701"

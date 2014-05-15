@@ -18,6 +18,6 @@
 
 	<resource-ref>
 		<res-ref-name>everBeen/clusterConfig</res-ref-name>
-		<res-ref-type>cz.everbeen.restapi.model.ClusterConfig</res-ref-type>
+		<res-ref-type>cz.everbeen.restapi.protocol.ClusterConfig</res-ref-type>
 	</resource-ref>
 </web-app>

@@ -1,4 +1,4 @@
-package cz.everbeen.restapi.model;
+package cz.everbeen.restapi.protocol;
 
 import org.apache.http.annotation.Immutable;
 import org.codehaus.jackson.annotate.JsonCreator;
@@ -12,7 +12,7 @@ import java.util.Map;
  * @author darklight
  */
 @Immutable
-public class ClusterConfig implements ModelObject {
+public class ClusterConfig implements ProtocolObject {
 
 	public static final String JNDI_NAME = "everBeen/clusterConfig";
 
