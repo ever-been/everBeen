@@ -1,13 +1,16 @@
 package cz.everbeen.restapi.protocol;
 
+import org.codehaus.jackson.annotate.JsonProperty;
+
 /**
  * A failsafe error object for cases when Jackson serialization of protocol objects fail.
  * @author darklight
  */
 public class ErrorObject implements ProtocolObject {
+	@JsonProperty("error")
 	private final String error;
 
-	public ErrorObject(String error) {
+	public ErrorObject(@JsonProperty("error") String error) {
 		this.error = error;
 	}
 
