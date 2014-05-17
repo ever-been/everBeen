@@ -32,8 +32,14 @@ public class ClusterApiConnection {
 	 * Get the {@link cz.cuni.mff.d3s.been.api.BeenApi} instance. Allocate it if necessary.
 	 * @return The {@link cz.cuni.mff.d3s.been.api.BeenApi} instance
 	 */
-	public synchronized BeenApi getApi() {
-		if (api == null) api = BeenApiFactory.connect(config.getHost(), Integer.valueOf(config.getPort()), config.getGroup(), config.getPass());
+	public synchronized BeenApi getApi() throws ClusterConnectionException {
+		if (api == null) {
+			try {
+				api = BeenApiFactory.connect(config.getHost(), Integer.valueOf(config.getPort()), config.getGroup(), config.getPass());
+			} catch (Throwable t) {
+				throw new ClusterConnectionException("Failed to connect REST API to cluster", t);
+			}
+		}
 		return api;
 	}
 
@@ -63,7 +69,11 @@ public class ClusterApiConnection {
 		return config;
 	}
 
-	public ClusterStatus getStatus() {
+	/**
+	 * Get the connection status
+	 * @return The connection status
+	 */
+	public ClusterStatus getStatus() throws ClusterConnectionException {
 		try {
 			return ClusterStatus.withFlags(getApi().isConnected());
 		} catch (IllegalStateException ise) {

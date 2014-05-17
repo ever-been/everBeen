@@ -16,6 +16,22 @@ public class UploadStatus implements ProtocolObject {
 	}
 
 	/**
+	 * Create an OK upload response
+	 * @return The upload status corresponding to 'OK'
+	 */
+	public static UploadStatus ok() {
+		return new UploadStatus(true);
+	}
+
+	/**
+	 * Create a not-OK upload response
+	 * @return The upload status corresponding to 'failed'
+	 */
+	public static UploadStatus fail() {
+		return new UploadStatus(false);
+	}
+
+	/**
 	 * Whether the upload outcome was a success or a fail
 	 * @return <code>true</code> when upload succeeded; <code>false</code> otherwise
 	 */

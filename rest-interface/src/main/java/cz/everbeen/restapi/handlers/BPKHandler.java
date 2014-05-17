@@ -6,12 +6,11 @@ import cz.cuni.mff.d3s.been.api.BpkHolder;
 import cz.cuni.mff.d3s.been.api.BpkStreamHolder;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
+import cz.everbeen.restapi.BeenApiOperation;
 import cz.everbeen.restapi.ClusterApiConnection;
+import cz.everbeen.restapi.ProtocolObjectOperation;
 import cz.everbeen.restapi.model.BPKStreamingOutput;
-import cz.everbeen.restapi.protocol.BpkList;
-import cz.everbeen.restapi.protocol.ErrorObject;
-import cz.everbeen.restapi.protocol.TaskDescriptorList;
-import cz.everbeen.restapi.protocol.UploadStatus;
+import cz.everbeen.restapi.protocol.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,42 +31,52 @@ public class BPKHandler extends Handler {
 
 	private static final Logger log = LoggerFactory.getLogger(BPKHandler.class);
 
-	private final BeenApi beenApi;
-
-	public BPKHandler() {
-		beenApi = ClusterApiConnection.getInstance().getApi();
-		log.info("{} initialized", getClass().getSimpleName());
-	}
-
 	/**
 	 * Get the BPK by its ID
 	 * @return The BPK
 	 */
 	@GET
+	@Path("/{groupId}/{bpkId}/{version}")
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
 	public StreamingOutput getBpk(
-		@QueryParam("groupId") String groupId,
-		@QueryParam("bpkId") String bpkId,
-		@QueryParam("version") String version
+		@QueryParam("groupId") final String groupId,
+		@QueryParam("bpkId") final String bpkId,
+		@QueryParam("version") final String version
 	) {
-		final BpkIdentifier id = new BpkIdentifier().withGroupId(groupId).withBpkId(bpkId).withVersion(version);
-		try {
-			return new BPKStreamingOutput(beenApi.downloadBpk(id));
-		} catch (BeenApiException e) {
-			log.error("Failed to fetch BPK", e);
-			return null;
-		}
+		return perform(new BeenApiOperation<BPKStreamingOutput>() {
+			@Override
+			public String name() {
+				return "downloadBpk";
+			}
+
+			@Override
+			public BPKStreamingOutput perform(BeenApi beenApi) throws BeenApiException {
+				final BpkIdentifier id = new BpkIdentifier().withGroupId(groupId).withBpkId(bpkId).withVersion(version);
+				return new BPKStreamingOutput(beenApi.downloadBpk(id));
+			}
+
+			@Override
+			public BPKStreamingOutput fallbackValue(Throwable error) {
+				return null;
+			}
+		});
 	}
 
 	@GET
+	@Path("/")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String listBpks() {
-		try {
-			return serializeModelObject(BpkList.fromIdCollection(beenApi.getBpks()));
-		} catch (BeenApiException e) {
-			log.error("Failed to fetch BPK list", e);
-			return serializeModelObject(new ErrorObject(e.getMessage()));
-		}
+		return performAndAnswer(new ProtocolObjectOperation() {
+			@Override
+			public String name() {
+				return "listBpks";
+			}
+
+			@Override
+			public ProtocolObject perform(BeenApi beenApi) throws BeenApiException {
+				return BpkList.fromIdCollection(beenApi.getBpks());
+			}
+		});
 	}
 
 	/**
@@ -75,17 +84,27 @@ public class BPKHandler extends Handler {
 	 * @return A JSON response object
 	 */
 	@PUT
+	@Path("/")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_OCTET_STREAM)
-	public String putBpk(InputStream bpk) {
-		try {
-			final BpkHolder holder = new BpkStreamHolder(bpk);
-			beenApi.uploadBpk(holder);
-			return serializeModelObject(new UploadStatus(true));
-		} catch (IOException | BeenApiException e) {
-			log.error("Failed to upload BPK", e);
-			return serializeModelObject(new UploadStatus(false));
-		}
+	public String putBpk(final InputStream bpk) {
+		return performAndAnswer(new ProtocolObjectOperation() {
+			@Override
+			public String name() {
+				return "uploadBpk";
+			}
+
+			@Override
+			public ProtocolObject perform(BeenApi beenApi) throws BeenApiException {
+				try {
+					beenApi.uploadBpk(new BpkStreamHolder(bpk));
+					return UploadStatus.ok();
+				} catch (IOException e) {
+					log.error("Failed to receive provided BPK stream", e);
+					return UploadStatus.fail();
+				}
+			}
+		});
 	}
 
 	/**
@@ -97,18 +116,23 @@ public class BPKHandler extends Handler {
 	 */
 	@GET
 	@Path("/td")
-	public String listRunConfigurationsForBpk(
+	public String listTdsForBpk(
 			@QueryParam("bpkId") String bpkId,
 			@QueryParam("groupId") String groupId,
 			@QueryParam("version") String version
 	) {
 		final BpkIdentifier bpkIdentifier = new BpkIdentifier().withGroupId(groupId).withBpkId(bpkId).withVersion(version);
-		try {
-			final Map<String,TaskDescriptor> tdmap = beenApi.getTaskDescriptors(bpkIdentifier);
-			return serializeModelObject(new TaskDescriptorList(tdmap.keySet()));
-		} catch (BeenApiException e) {
-			log.error("Failed to fetch task descriptors for BPK {}", bpkIdentifier, e);
-			return serializeModelObject(new ErrorObject(e.getMessage()));
-		}
+
+		return performAndAnswer(new ProtocolObjectOperation() {
+			@Override
+			public String name() {
+				return "listTaskDescriptorsForBpk";
+			}
+
+			@Override
+			public ProtocolObject perform(BeenApi beenApi) throws BeenApiException {
+				return new TaskDescriptorList(beenApi.getTaskDescriptors(bpkIdentifier).keySet());
+			}
+		});
 	}
 }
