@@ -24,7 +24,7 @@ public class InfoHandler extends Handler {
 	@Path("/config")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getConfig() {
-		return serializeModelObject(ClusterApiConnection.getInstance().getConfig());
+		return serializeProtocolObject(ClusterApiConnection.getInstance().getConfig());
 	}
 
 	@GET
@@ -32,9 +32,9 @@ public class InfoHandler extends Handler {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getStatus() {
 		try {
-			return serializeModelObject(ClusterApiConnection.getInstance().getStatus());
+			return serializeProtocolObject(ClusterApiConnection.getInstance().getStatus());
 		} catch (ClusterConnectionException e){
-			return serializeModelObject(new ErrorObject(e.getMessage()));
+			return serializeProtocolObject(new ErrorObject(e.getMessage()));
 		}
 	}
 }

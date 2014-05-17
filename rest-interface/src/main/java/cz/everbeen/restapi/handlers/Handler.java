@@ -79,7 +79,7 @@ abstract class Handler {
 	 * @param protocolObject The protocol object
 	 * @return The JSON representation of the protocol object
 	 */
-	private final String serializeProtocolObject(ProtocolObject protocolObject) {
+	protected final String serializeProtocolObject(ProtocolObject protocolObject) {
 		try {
 			return omap.writeValueAsString(protocolObject);
 		} catch (IOException e) {
