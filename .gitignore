@@ -24,5 +24,8 @@ target
 **/.HostRuntime
 **/.pydevproject
 
+# versioning
+**/*.versionsBackup
+
 # junk
 .DS_Store
