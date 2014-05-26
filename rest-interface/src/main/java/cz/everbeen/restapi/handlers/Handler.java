@@ -2,6 +2,8 @@ package cz.everbeen.restapi.handlers;
 
 import cz.cuni.mff.d3s.been.api.BeenApi;
 import cz.cuni.mff.d3s.been.api.BeenApiException;
+import cz.cuni.mff.d3s.been.util.JSONUtils;
+import cz.cuni.mff.d3s.been.util.JsonException;
 import cz.everbeen.restapi.BeenApiOperation;
 import cz.everbeen.restapi.ClusterApiConnection;
 import cz.everbeen.restapi.ClusterConnectionException;
@@ -20,6 +22,7 @@ import java.io.IOException;
  */
 abstract class Handler {
 	private final ObjectMapper omap = new ObjectMapper();
+	private final JSONUtils jsonUtils = JSONUtils.newInstance(omap);
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -85,5 +88,17 @@ abstract class Handler {
 		} catch (IOException e) {
 			return new ErrorObject(e.getMessage()).toString();
 		}
+	}
+
+	/**
+	 * Deserialize an everBeen model object (core-data)
+	 * @param modelObject The object's serialized representation
+	 * @param objectClass The desired class of the object
+	 * @param <T> The runtime type of deserialized object
+	 * @return The deserialized object
+	 * @throws JsonException When object type doesn't match its contents
+	 */
+	protected final <T> T deserializeModelObject(String modelObject, Class<T> objectClass) throws JsonException {
+		return jsonUtils.deserialize(modelObject, objectClass);
 	}
 }
