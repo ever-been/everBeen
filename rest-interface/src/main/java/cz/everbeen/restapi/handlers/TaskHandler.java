@@ -6,7 +6,6 @@ import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.util.JsonException;
-import cz.everbeen.restapi.BeenApiOperation;
 import cz.everbeen.restapi.ProtocolObjectOperation;
 import cz.everbeen.restapi.protocol.ErrorObject;
 import cz.everbeen.restapi.protocol.ProtocolObject;

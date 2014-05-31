@@ -1,5 +1,6 @@
 package cz.everbeen.restapi.protocol;
 
+import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
@@ -11,6 +12,7 @@ public class UploadStatus implements ProtocolObject {
 	@JsonProperty("uploaded")
 	private final boolean uploaded;
 
+	@JsonCreator
 	public UploadStatus(@JsonProperty("uploaded") boolean uploaded) {
 		this.uploaded = uploaded;
 	}

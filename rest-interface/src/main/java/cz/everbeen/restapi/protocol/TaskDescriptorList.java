@@ -1,6 +1,7 @@
 package cz.everbeen.restapi.protocol;
 
 import org.apache.http.annotation.Immutable;
+import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 import java.util.Collection;
@@ -16,6 +17,7 @@ public class TaskDescriptorList implements ProtocolObject {
 	@JsonProperty("ids")
 	private final Collection<String> taskDescriptorIds;
 
+	@JsonCreator
 	public TaskDescriptorList(
 		@JsonProperty("ids") Collection<String> taskDescriptorIds
 	) {

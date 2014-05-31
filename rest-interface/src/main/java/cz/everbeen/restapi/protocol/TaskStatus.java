@@ -1,6 +1,7 @@
 package cz.everbeen.restapi.protocol;
 
 import org.apache.http.annotation.Immutable;
+import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
@@ -19,6 +20,7 @@ public class TaskStatus implements ProtocolObject {
 	@JsonProperty("taskState")
 	private final String taskState;
 
+	@JsonCreator
 	public TaskStatus(
 		@JsonProperty("benchmarkId") String benchmarkId,
 		@JsonProperty("contextId") String contextId,

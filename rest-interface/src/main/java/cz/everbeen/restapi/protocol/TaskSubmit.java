@@ -1,5 +1,6 @@
 package cz.everbeen.restapi.protocol;
 
+import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
@@ -11,6 +12,7 @@ public class TaskSubmit implements ProtocolObject {
 	@JsonProperty("taskId")
 	private final String taskId;
 
+	@JsonCreator
 	public TaskSubmit(@JsonProperty("taskId") String taskId) {
 		this.taskId = taskId;
 	}

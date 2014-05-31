@@ -1,5 +1,6 @@
 package cz.everbeen.restapi.protocol;
 
+import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
@@ -10,6 +11,7 @@ public class ErrorObject implements ProtocolObject {
 	@JsonProperty("error")
 	private final String error;
 
+	@JsonCreator
 	public ErrorObject(@JsonProperty("error") String error) {
 		this.error = error;
 	}
