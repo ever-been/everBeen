@@ -35,9 +35,9 @@ public class BPKHandler extends Handler {
 	@Path("/{groupId}/{bpkId}/{version}")
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
 	public StreamingOutput getBpk(
-		@QueryParam("groupId") final String groupId,
-		@QueryParam("bpkId") final String bpkId,
-		@QueryParam("version") final String version
+		@PathParam("groupId") final String groupId,
+		@PathParam("bpkId") final String bpkId,
+		@PathParam("version") final String version
 	) {
 		return perform(new BeenApiOperation<SimpleStreamingOutput>() {
 			@Override
@@ -111,11 +111,11 @@ public class BPKHandler extends Handler {
 	 * @return A list of available task descriptors contained in the BPK
 	 */
 	@GET
-	@Path("/td")
+	@Path("/{groupId}/{bpkId}/{version}/td")
 	public String listTdsForBpk(
-			@QueryParam("bpkId") String bpkId,
-			@QueryParam("groupId") String groupId,
-			@QueryParam("version") String version
+			@PathParam("groupId") String groupId,
+			@PathParam("bpkId") String bpkId,
+			@PathParam("version") String version
 	) {
 		final BpkIdentifier bpkIdentifier = new BpkIdentifier().withGroupId(groupId).withBpkId(bpkId).withVersion(version);
 
@@ -127,7 +127,7 @@ public class BPKHandler extends Handler {
 
 			@Override
 			public ProtocolObject perform(BeenApi beenApi) throws BeenApiException {
-				return new TaskDescriptorList(beenApi.getTaskDescriptors(bpkIdentifier).keySet());
+				return new ProtocolObjectFactory().taskDescriptorList(beenApi.getTaskDescriptors(bpkIdentifier));
 			}
 		});
 	}

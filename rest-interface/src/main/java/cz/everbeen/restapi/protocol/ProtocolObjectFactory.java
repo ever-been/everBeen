@@ -1,9 +1,14 @@
 package cz.everbeen.restapi.protocol;
 
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
+import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
+import cz.cuni.mff.d3s.been.core.task.TaskEntry;
+import cz.cuni.mff.d3s.been.core.task.TaskState;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A factory for {@link cz.everbeen.restapi.protocol.ProtocolObject} instances
@@ -23,6 +28,55 @@ public final class ProtocolObjectFactory {
 		final Collection<String> tmpIds = new ArrayList<String>(bpkIds.size());
 		for (BpkIdentifier bpkId: bpkIds) tmpIds.add(bpkIdToString(bpkId));
 		return new BpkList(tmpIds);
+	}
+
+	/**
+	 * Create a list of REST-compatible task-descriptor identifiers from the BEEN-provided descriptor map
+	 * @param taskDescriptorMap Task descriptor map downloaded from BEEN cluster
+	 * @return A list of REST-compatible task descriptor IDs
+	 */
+	public static TaskDescriptorList taskDescriptorList(Map<String,TaskDescriptor> taskDescriptorMap) {
+		final List<String> tdlist = new ArrayList<String>(taskDescriptorMap.entrySet().size());
+		for (String tdid: taskDescriptorMap.keySet()) {
+			tdlist.add(tdid.replace('/', ':'));
+		}
+		return new TaskDescriptorList(tdlist);
+	}
+
+	/**
+	 * Create a BEEN-compatible task descriptor ID from a REST-compatible task descriptor ID
+	 * @param restCompatibleTaskDescriptorId The REST-compatible task descriptor ID
+	 * @return Reverted, BEEN-compatible task descriptor ID
+	 */
+	public static String revertTaskDescriptorId(String restCompatibleTaskDescriptorId) {
+		return restCompatibleTaskDescriptorId.replace(':', '/');
+	}
+
+	/**
+	 * Create a task status from a task state
+	 * @param task Task state in the cluster
+	 * @return Task status response
+	 */
+	public static TaskStatus taskStatus(TaskEntry task) {
+		return new TaskStatus(
+			task.getBenchmarkId(),
+			task.getTaskContextId(),
+			task.getId(),
+			task.getState().name()
+		);
+	}
+
+	/**
+	 * Convert multiple task entries from the BEEN cluster to a task list protocol object
+	 * @param taskEntries Task entries from the cluster
+	 * @return Task list protocol object
+	 */
+	public static TaskList taskList(Collection<TaskEntry> taskEntries) {
+		final List<TaskStatus> tasks = new ArrayList<TaskStatus>(taskEntries.size());
+		for (TaskEntry entry: taskEntries) {
+			tasks.add(taskStatus(entry));
+		}
+		return new TaskList(tasks);
 	}
 
 	private static String bpkIdToString(BpkIdentifier bpkId) {

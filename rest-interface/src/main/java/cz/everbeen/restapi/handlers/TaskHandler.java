@@ -5,12 +5,10 @@ import cz.cuni.mff.d3s.been.api.BeenApiException;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
+import cz.cuni.mff.d3s.been.core.task.TaskState;
 import cz.cuni.mff.d3s.been.util.JsonException;
 import cz.everbeen.restapi.ProtocolObjectOperation;
-import cz.everbeen.restapi.protocol.ErrorObject;
-import cz.everbeen.restapi.protocol.ProtocolObject;
-import cz.everbeen.restapi.protocol.TaskStatus;
-import cz.everbeen.restapi.protocol.TaskSubmit;
+import cz.everbeen.restapi.protocol.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,8 +26,9 @@ public class TaskHandler extends Handler {
 	private static final Logger log = LoggerFactory.getLogger(TaskHandler.class);
 
 	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public String getState(@QueryParam("taskId") final String taskId) {
+	@Path("/{taskId}")
+	@Produces(PROTOCOL_OBJECT_MEDIA)
+	public String getState(@PathParam("taskId") final String taskId) {
 		return performAndAnswer(new ProtocolObjectOperation() {
 			@Override
 			public String name() {
@@ -42,12 +41,23 @@ public class TaskHandler extends Handler {
 				if (taskEntry == null) {
 					return new ErrorObject("No such task");
 				}
-				return new TaskStatus(
-					taskEntry.getBenchmarkId(),
-					taskEntry.getTaskContextId(),
-					taskEntry.getId(),
-					taskEntry.getState().name()
-				);
+				return ProtocolObjectFactory.taskStatus(taskEntry);
+			}
+		});
+	}
+
+	@GET
+	@Produces(PROTOCOL_OBJECT_MEDIA)
+	public String getTasks() {
+		return performAndAnswer(new ProtocolObjectOperation() {
+			@Override
+			public String name() {
+				return "listTasks";
+			}
+
+			@Override
+			public ProtocolObject perform(BeenApi beenApi) throws BeenApiException {
+				return ProtocolObjectFactory.taskList(beenApi.getTasks());
 			}
 		});
 	}
@@ -80,12 +90,13 @@ public class TaskHandler extends Handler {
 	}
 
 	@PUT
+	@Path("/{groupId}/{bpkId}/{version}/{descriptorName}")
 	@Produces(PROTOCOL_OBJECT_MEDIA)
 	public String run(
-		@QueryParam("groupId") final String groupId,
-		@QueryParam("bpkId") final String bpkId,
-		@QueryParam("version") final String version,
-		@QueryParam("descriptorName") final String taskDescriptorName
+		@PathParam("groupId") final String groupId,
+		@PathParam("bpkId") final String bpkId,
+		@PathParam("version") final String version,
+		@PathParam("descriptorName") final String taskDescriptorName
 	) {
 		final BpkIdentifier bpkIdentifier = new BpkIdentifier().withGroupId(groupId).withBpkId(bpkId).withVersion(version);
 
@@ -97,7 +108,7 @@ public class TaskHandler extends Handler {
 
 			@Override
 			public ProtocolObject perform(BeenApi beenApi) throws BeenApiException {
-				return TaskSubmit.fromId(beenApi.submitTask(beenApi.getTaskDescriptor(bpkIdentifier, taskDescriptorName)));
+				return TaskSubmit.fromId(beenApi.submitTask(beenApi.getTaskDescriptor(bpkIdentifier, ProtocolObjectFactory.revertTaskDescriptorId(taskDescriptorName))));
 			}
 		});
 	}
