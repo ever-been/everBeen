@@ -1,7 +1,5 @@
 package cz.everbeen.restapi.model;
 
-import cz.cuni.mff.d3s.been.bpk.Bpk;
-import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.annotation.Immutable;
 
@@ -17,19 +15,18 @@ import java.io.OutputStream;
  *
  * @author darklight
  */
-@Immutable
-public class BPKStreamingOutput implements StreamingOutput {
+public class SimpleStreamingOutput implements StreamingOutput {
 
 	public static final MediaType MEDIA_TYPE = MediaType.APPLICATION_OCTET_STREAM_TYPE;
 
-	private final InputStream bpk;
+	private final InputStream data;
 
-	public BPKStreamingOutput(InputStream bpk) {
-		this.bpk = bpk;
+	public SimpleStreamingOutput(InputStream data) {
+		this.data = data;
 	}
 
 	@Override
 	public void write(OutputStream output) throws IOException, WebApplicationException {
-		IOUtils.copy(bpk, output);
+		IOUtils.copy(data, output);
 	}
 }

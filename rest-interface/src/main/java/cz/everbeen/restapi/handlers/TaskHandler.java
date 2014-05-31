@@ -53,7 +53,7 @@ public class TaskHandler extends Handler {
 	}
 
 	@PUT
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(PROTOCOL_OBJECT_MEDIA)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public String run(@QueryParam("taskDescriptor") String taskDescriptorString) {
 		final TaskDescriptor td;
@@ -80,7 +80,7 @@ public class TaskHandler extends Handler {
 	}
 
 	@PUT
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(PROTOCOL_OBJECT_MEDIA)
 	public String run(
 		@QueryParam("groupId") final String groupId,
 		@QueryParam("bpkId") final String bpkId,

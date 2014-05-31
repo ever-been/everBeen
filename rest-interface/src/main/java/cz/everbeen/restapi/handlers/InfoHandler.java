@@ -22,14 +22,14 @@ public class InfoHandler extends Handler {
 
 	@GET
 	@Path("/config")
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(PROTOCOL_OBJECT_MEDIA)
 	public String getConfig() {
 		return serializeProtocolObject(ClusterApiConnection.getInstance().getConfig());
 	}
 
 	@GET
 	@Path("/status")
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(PROTOCOL_OBJECT_MEDIA)
 	public String getStatus() {
 		try {
 			return serializeProtocolObject(ClusterApiConnection.getInstance().getStatus());

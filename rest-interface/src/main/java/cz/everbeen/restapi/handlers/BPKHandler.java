@@ -2,14 +2,11 @@ package cz.everbeen.restapi.handlers;
 
 import cz.cuni.mff.d3s.been.api.BeenApi;
 import cz.cuni.mff.d3s.been.api.BeenApiException;
-import cz.cuni.mff.d3s.been.api.BpkHolder;
 import cz.cuni.mff.d3s.been.api.BpkStreamHolder;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
-import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.everbeen.restapi.BeenApiOperation;
-import cz.everbeen.restapi.ClusterApiConnection;
 import cz.everbeen.restapi.ProtocolObjectOperation;
-import cz.everbeen.restapi.model.BPKStreamingOutput;
+import cz.everbeen.restapi.model.SimpleStreamingOutput;
 import cz.everbeen.restapi.protocol.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +16,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.StreamingOutput;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Map;
 
 /**
  * REST handler for BPKs
@@ -43,20 +39,20 @@ public class BPKHandler extends Handler {
 		@QueryParam("bpkId") final String bpkId,
 		@QueryParam("version") final String version
 	) {
-		return perform(new BeenApiOperation<BPKStreamingOutput>() {
+		return perform(new BeenApiOperation<SimpleStreamingOutput>() {
 			@Override
 			public String name() {
 				return "downloadBpk";
 			}
 
 			@Override
-			public BPKStreamingOutput perform(BeenApi beenApi) throws BeenApiException {
+			public SimpleStreamingOutput perform(BeenApi beenApi) throws BeenApiException {
 				final BpkIdentifier id = new BpkIdentifier().withGroupId(groupId).withBpkId(bpkId).withVersion(version);
-				return new BPKStreamingOutput(beenApi.downloadBpk(id));
+				return new SimpleStreamingOutput(beenApi.downloadBpk(id));
 			}
 
 			@Override
-			public BPKStreamingOutput fallbackValue(Throwable error) {
+			public SimpleStreamingOutput fallbackValue(Throwable error) {
 				return null;
 			}
 		});
@@ -64,7 +60,7 @@ public class BPKHandler extends Handler {
 
 	@GET
 	@Path("/")
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(PROTOCOL_OBJECT_MEDIA)
 	public String listBpks() {
 		return performAndAnswer(new ProtocolObjectOperation() {
 			@Override
@@ -85,7 +81,7 @@ public class BPKHandler extends Handler {
 	 */
 	@PUT
 	@Path("/")
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(PROTOCOL_OBJECT_MEDIA)
 	@Consumes(MediaType.APPLICATION_OCTET_STREAM)
 	public String putBpk(final InputStream bpk) {
 		return performAndAnswer(new ProtocolObjectOperation() {

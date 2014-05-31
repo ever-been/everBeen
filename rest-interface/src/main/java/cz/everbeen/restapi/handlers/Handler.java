@@ -14,6 +14,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 
 /**
@@ -22,6 +23,11 @@ import java.io.IOException;
  * @author darklight
  */
 abstract class Handler {
+	/** Media type used by for protocol object serialization **/
+	protected static final MediaType PROTOCOL_OBJECT_MEDIA_TYPE = MediaType.APPLICATION_JSON_TYPE;
+	/** Name of the media type used for protocol object serialization **/
+	protected static final String PROTOCOL_OBJECT_MEDIA = MediaType.APPLICATION_JSON;
+
 	private final ObjectMapper omap = new ObjectMapper();
 	private final ProtocolObjectSerializer protocolObjectSerializer = new ProtocolObjectSerializer();
 	protected final JSONUtils jsonUtils = JSONUtils.newInstance();
