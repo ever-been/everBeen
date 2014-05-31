@@ -1,6 +1,5 @@
 package cz.everbeen.restapi.protocol;
 
-import org.apache.http.annotation.Immutable;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
 
@@ -9,7 +8,6 @@ import org.codehaus.jackson.annotate.JsonProperty;
  *
  * @author darklight
  */
-@Immutable
 public class TaskStatus implements ProtocolObject {
 	@JsonProperty("benchmarkId")
 	private final String benchmarkId;

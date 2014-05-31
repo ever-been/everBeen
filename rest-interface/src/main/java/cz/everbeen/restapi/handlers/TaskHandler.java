@@ -58,14 +58,13 @@ public class TaskHandler extends Handler {
 	public String run(@QueryParam("taskDescriptor") String taskDescriptorString) {
 		final TaskDescriptor td;
 		try {
-			td = deserializeModelObject(taskDescriptorString, TaskDescriptor.class);
+			td = jsonUtils.deserialize(taskDescriptorString, TaskDescriptor.class);
 		} catch (JsonException e) {
-			return serializeProtocolObject(
-				new ErrorObject(String.format(
+				return new ErrorObject(String.format(
 						"Cannot deserialize a task descriptor from [%s]: %s",
 						taskDescriptorString,
 						e.getMessage()
-				)));
+				)).toString();
 		}
 		return performAndAnswer(new ProtocolObjectOperation() {
 			@Override

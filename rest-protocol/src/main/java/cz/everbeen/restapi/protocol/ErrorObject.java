@@ -18,6 +18,6 @@ public class ErrorObject implements ProtocolObject {
 
 	@Override
 	public String toString() {
-		return String.format("{error: '%s'}", error);
+		return String.format("{\"error\": \"%s\"}", error);
 	}
 }

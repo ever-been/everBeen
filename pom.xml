@@ -213,6 +213,7 @@
 		<module>util</module>
 		<module>web-interface</module>
 		<module>web-interface-standalone</module>
+		<module>rest-protocol</module>
 		<module>rest-interface</module>
 		<module>xsd-export</module>
 		<module>xsd-catalog-resolver</module>

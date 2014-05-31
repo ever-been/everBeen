@@ -1,6 +1,5 @@
 package cz.everbeen.restapi.protocol;
 
-import org.apache.http.annotation.Immutable;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
 
@@ -11,7 +10,6 @@ import java.util.Collections;
  * A list of task descriptor identifiers
  * @author darklight
  */
-@Immutable
 public class TaskDescriptorList implements ProtocolObject {
 
 	@JsonProperty("ids")

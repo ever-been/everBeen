@@ -74,7 +74,7 @@ public class BPKHandler extends Handler {
 
 			@Override
 			public ProtocolObject perform(BeenApi beenApi) throws BeenApiException {
-				return BpkList.fromIdCollection(beenApi.getBpks());
+				return ProtocolObjectFactory.bpkList(beenApi.getBpks());
 			}
 		});
 	}

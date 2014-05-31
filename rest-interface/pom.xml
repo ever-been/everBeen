@@ -40,7 +40,11 @@
 			<version>${project.parent.version}</version>
 		</dependency>
 
-
+		<dependency>
+			<groupId>cz.cuni.mff.d3s.been</groupId>
+			<artifactId>rest-protocol</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
 
 		<!-- EXTERNAL -->
 		<dependency>
@@ -54,12 +58,6 @@
 			<artifactId>logback-classic</artifactId>
 			<version>${logback.version}</version>
 			<scope>runtime</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-			<version>${spring.version}</version>
 		</dependency>
 
 		<dependency>

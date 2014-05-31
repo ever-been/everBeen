@@ -9,6 +9,7 @@ import cz.everbeen.restapi.ClusterApiConnection;
 import cz.everbeen.restapi.ClusterConnectionException;
 import cz.everbeen.restapi.protocol.ErrorObject;
 import cz.everbeen.restapi.protocol.ProtocolObject;
+import cz.everbeen.restapi.protocol.ProtocolObjectSerializer;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +23,8 @@ import java.io.IOException;
  */
 abstract class Handler {
 	private final ObjectMapper omap = new ObjectMapper();
-	private final JSONUtils jsonUtils = JSONUtils.newInstance(omap);
+	private final ProtocolObjectSerializer protocolObjectSerializer = new ProtocolObjectSerializer();
+	protected final JSONUtils jsonUtils = JSONUtils.newInstance();
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -78,27 +80,15 @@ abstract class Handler {
 	}
 
 	/**
-	 * Serialized a {@link cz.everbeen.restapi.protocol.ProtocolObject} into JSON
-	 * @param protocolObject The protocol object
-	 * @return The JSON representation of the protocol object
+	 * Serialize a protocol object. If impossible, serialize an error message stating why.
+	 * @param protocolObject The protocol object to serialize
+	 * @return The serialized protocol object, or a serialized error object
 	 */
 	protected final String serializeProtocolObject(ProtocolObject protocolObject) {
 		try {
-			return omap.writeValueAsString(protocolObject);
+			return protocolObjectSerializer.serialize(protocolObject);
 		} catch (IOException e) {
 			return new ErrorObject(e.getMessage()).toString();
 		}
-	}
-
-	/**
-	 * Deserialize an everBeen model object (core-data)
-	 * @param modelObject The object's serialized representation
-	 * @param objectClass The desired class of the object
-	 * @param <T> The runtime type of deserialized object
-	 * @return The deserialized object
-	 * @throws JsonException When object type doesn't match its contents
-	 */
-	protected final <T> T deserializeModelObject(String modelObject, Class<T> objectClass) throws JsonException {
-		return jsonUtils.deserialize(modelObject, objectClass);
 	}
 }
