@@ -1,9 +1,10 @@
 package cz.everbeen.restapi;
 
+import com.hazelcast.core.Member;
 import cz.cuni.mff.d3s.been.api.BeenApi;
+import cz.cuni.mff.d3s.been.api.BeenApiException;
 import cz.cuni.mff.d3s.been.api.BeenApiFactory;
-import cz.everbeen.restapi.protocol.ClusterConfig;
-import cz.everbeen.restapi.protocol.ClusterStatus;
+import cz.everbeen.restapi.protocol.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,7 +56,7 @@ public class ClusterApiConnection {
 				final ClusterConfig cconf = (ClusterConfig) appc.lookup(ClusterConfig.JNDI_NAME);
 				instance = new ClusterApiConnection(cconf);
 			} catch (NamingException e) {
-					throw new RestApiContextInitializationException("Failed to lookup the cluster api factory from the JNDI context.", e);
+				throw new RestApiContextInitializationException("Failed to lookup the cluster api factory from the JNDI context.", e);
 			}
 		}
 		return instance;

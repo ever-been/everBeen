@@ -1,8 +1,13 @@
 package cz.everbeen.restapi.handlers;
 
+import cz.cuni.mff.d3s.been.api.BeenApi;
+import cz.cuni.mff.d3s.been.api.BeenApiException;
 import cz.everbeen.restapi.ClusterApiConnection;
 import cz.everbeen.restapi.ClusterConnectionException;
+import cz.everbeen.restapi.ProtocolObjectOperation;
 import cz.everbeen.restapi.protocol.ErrorObject;
+import cz.everbeen.restapi.protocol.ProtocolObject;
+import cz.everbeen.restapi.protocol.ProtocolObjectFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,5 +41,22 @@ public class InfoHandler extends Handler {
 		} catch (ClusterConnectionException e){
 			return serializeProtocolObject(new ErrorObject(e.getMessage()));
 		}
+	}
+
+	@GET
+	@Path("/members")
+	@Produces(PROTOCOL_OBJECT_MEDIA)
+	public String getMembers() {
+		return performAndAnswer(new ProtocolObjectOperation() {
+			@Override
+			public String name() {
+				return "listClusterMembers";
+			}
+
+			@Override
+			public ProtocolObject perform(BeenApi beenApi) throws BeenApiException {
+				return ProtocolObjectFactory.clusterMembers(beenApi.getClusterMembers());
+			}
+		});
 	}
 }

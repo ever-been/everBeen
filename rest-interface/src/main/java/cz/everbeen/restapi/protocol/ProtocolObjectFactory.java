@@ -1,5 +1,6 @@
 package cz.everbeen.restapi.protocol;
 
+import com.hazelcast.core.Member;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
@@ -77,6 +78,28 @@ public final class ProtocolObjectFactory {
 			tasks.add(taskStatus(entry));
 		}
 		return new TaskList(tasks);
+	}
+
+	/**
+	 * Convert BEEN member list to a cluster members protocol object
+	 * @param members The members from the cluster
+	 * @return The cluster members protocol object
+	 */
+	public static ClusterMembers clusterMembers(Collection<Member> members) {
+		final List<ClusterMember> cmembers = new ArrayList<ClusterMember>(members.size());
+		for (Member m: members) {
+			cmembers.add(clusterMember(m));
+		}
+		return new ClusterMembers(cmembers);
+	}
+
+	/**
+	 * Convert a hazelcast member to a cluster member description
+	 * @param member The member to convert
+	 * @return A cluster member description
+	 */
+	private static ClusterMember clusterMember(Member member) {
+		return new ClusterMember(member.getUuid(), member.getInetSocketAddress().toString(), member.isLiteMember());
 	}
 
 	private static String bpkIdToString(BpkIdentifier bpkId) {
