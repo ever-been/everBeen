@@ -8,15 +8,15 @@ import static cz.cuni.mff.d3s.been.swrepository.Versions.SNAPSHOT_SUFFIX;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.net.UnknownHostException;
+import java.util.*;
 
 import javax.xml.bind.JAXBException;
 
+import cz.cuni.mff.d3s.been.util.SocketAddrUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -44,6 +44,9 @@ import cz.cuni.mff.d3s.been.datastore.*;
 import cz.cuni.mff.d3s.been.util.JSONUtils;
 import cz.cuni.mff.d3s.been.util.JsonException;
 
+/**
+ * An HTTP client to the Software Repository
+ */
 class HttpSwRepoClient implements SwRepoClient {
 
 	/**
@@ -52,14 +55,9 @@ class HttpSwRepoClient implements SwRepoClient {
 	private static final Logger log = LoggerFactory.getLogger(HttpSwRepoClient.class);
 
 	/**
-	 * Hostname where the software repository resides
+	 * Hostnames where the software repository resides
 	 */
-	private final String hostname;
-
-	/**
-	 * Port on which the software repository listens
-	 */
-	private final Integer port;
+	private final String hosts;
 
 	/**
 	 * Data store to use for caching
@@ -74,16 +72,13 @@ class HttpSwRepoClient implements SwRepoClient {
 	/**
 	 * Constructs new software repository client
 	 * 
-	 * @param hostname
-	 *          hostname on which the software repository is running
-	 * @param port
-	 *          port on which the software repository is running
+	 * @param hosts
+	 *          hostnames on which the software repository is running
 	 * @param softwareCache
 	 *          initialized software cache
 	 */
-	HttpSwRepoClient(String hostname, Integer port, SoftwareStore softwareCache) {
-		this.hostname = hostname;
-		this.port = port;
+	HttpSwRepoClient(String hosts, SoftwareStore softwareCache) {
+		this.hosts = hosts;
 		this.softwareCache = softwareCache;
 		this.jsonUtils = JSONUtils.newInstance();
 	}
@@ -231,13 +226,19 @@ class HttpSwRepoClient implements SwRepoClient {
 	 * @throws URISyntaxException
 	 *           When some of the internals are malformed
 	 */
-	private URI createRepoUri() throws URISyntaxException {
-		URIBuilder uriBuilder = new URIBuilder();
-		uriBuilder.setHost(hostname);
-		uriBuilder.setPort(port);
+	private URI createRepoUri() throws URISyntaxException, UnknownHostException {
+		final URIBuilder uriBuilder = new URIBuilder();
+		final InetSocketAddress sockAddr = getRepoAddr();
+		uriBuilder.setHost(sockAddr.getHostName());
+		uriBuilder.setPort(sockAddr.getPort());
 		uriBuilder.setScheme("http");
 		return uriBuilder.build();
 	}
+
+	private InetSocketAddress getRepoAddr() throws UnknownHostException {
+		return SocketAddrUtils.getFirstReachableAddress(hosts, 1000);
+	}
+
 
 	/**
 	 * Ask the repository for a Maven artifact by HTTP
@@ -348,6 +349,9 @@ class HttpSwRepoClient implements SwRepoClient {
 		} catch (URISyntaxException e) {
 			log.error("Failed to GET item from software repository - unable to synthesize GET request URI", e);
 			return null;
+		} catch (UnknownHostException e) {
+			log.error("Failed to GET item from software repository - unable to connect to any of the repository's declared interfaces");
+			return null;
 		}
 
 		HttpGet request = new HttpGet(uri);
@@ -427,6 +431,10 @@ class HttpSwRepoClient implements SwRepoClient {
 			uri = createRepoUri() + abstractUri;
 		} catch (URISyntaxException e) {
 			String msg = "Failed to PUT item to software repository - unable to synthesize PUT request URI";
+			log.error(msg, e);
+			throw new SwRepositoryClientException(msg, e);
+		} catch (UnknownHostException e) {
+			String msg = "Failed to PUT item to software repository - unable to connect to any of the repository's declared interfaces";
 			log.error(msg, e);
 			throw new SwRepositoryClientException(msg, e);
 		}

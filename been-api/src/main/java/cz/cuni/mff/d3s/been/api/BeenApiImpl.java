@@ -1397,9 +1397,8 @@ final class BeenApiImpl implements BeenApi {
 		try {
 			final SoftwareStore softwareCache = SoftwareStoreBuilderFactory.getSoftwareStoreBuilder().buildCache();
 			final SwRepoClientFactory swRepoClientFactory = new SwRepoClientFactory(softwareCache);
-			final String hostname = (String) swInfo.getParam(SWRepositoryServiceInfoConstants.PARAM_HOST_NAME);
-			final int port = (int) swInfo.getParam(SWRepositoryServiceInfoConstants.PARAM_PORT);
-			return swRepoClientFactory.getClient(hostname, port);
+			final String addresses = (String) swInfo.getParam(SWRepositoryServiceInfoConstants.ADDRESSES);
+			return swRepoClientFactory.getClient(addresses);
 		} catch (Exception e) {
 			throw createBeenApiException(errorMsg, e);
 		}

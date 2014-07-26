@@ -5,10 +5,7 @@ import static cz.cuni.mff.d3s.been.core.StatusCode.*;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.net.InetAddress;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
@@ -269,7 +266,12 @@ public class Runner implements Reapable {
 	}
 
 	private IClusterService startSWRepository() throws ServiceException {
-		SoftwareRepository softwareRepository = SoftwareRepositories.createSWRepository(clusterContext, beenId);
+		final SoftwareRepository softwareRepository;
+		try {
+			softwareRepository = SoftwareRepositories.createSWRepository(clusterContext, beenId);
+		} catch (UnknownHostException | SocketException e) {
+			throw new ServiceException("Failed to initialize Software Repository", e);
+		}
 		softwareRepository.init();
 		softwareRepository.start();
 		return softwareRepository;
@@ -360,6 +362,7 @@ public class Runner implements Reapable {
 	 */
 	private void printBeenConfiguration(final Properties properties) {
 
+		final String VALUE_PREFIX = "VALUE_"; // by convention
 		final String DEFAULT_VALUE_PREFIX = "DEFAULT_"; // by convention
 
 		final ServiceLoader<BeenServiceConfiguration> configs = ServiceLoader.load(BeenServiceConfiguration.class);
@@ -375,14 +378,13 @@ public class Runner implements Reapable {
 			for (Field field : klazz.getDeclaredFields()) {
 				final String name = field.getName();
 
-				try {
+				if (!name.startsWith(VALUE_PREFIX)) try {
 					if (name.startsWith(DEFAULT_VALUE_PREFIX)) {
 						String propertyName = name.substring(DEFAULT_VALUE_PREFIX.length());
 						defaultValues.put(propertyName, field.get(config));
 					} else {
 						propertyNames.put(name, field.get(config).toString());
 					}
-
 				} catch (IllegalAccessException e) {
 					String msg = String.format("Cannot get value for '%s'", name);
 					log.error(msg, e);

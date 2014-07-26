@@ -13,13 +13,9 @@ public class SWRepositoryServiceInfoConstants {
     public static final String SERVICE_NAME = "SOFTWARE REPOSITORY";
 
 	/**
-	 * Name of the software repository host name property
+	 * Name of the software repository host names property
 	 */
-    public static final String PARAM_HOST_NAME = "swrepository.hostname";
+    public static final String ADDRESSES = "swrepository.hostname";
 
-	/**
-	 * Name of the software repository port property
-	 */
-    public static final String PARAM_PORT = "swrepository.port";
 
 }

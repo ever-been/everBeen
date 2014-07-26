@@ -1,8 +1,14 @@
 package cz.cuni.mff.d3s.been.hostruntime;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.StringTokenizer;
 
+import cz.cuni.mff.d3s.been.util.SocketAddrUtils;
 import org.apache.maven.artifact.Artifact;
 
 import cz.cuni.mff.d3s.been.bpk.ArtifactIdentifier;
@@ -118,11 +124,9 @@ class SoftwareResolver {
 		if (swRepositoryInfo == null) {
 			throw new TaskException("No Software Repository found!");
 		}
-		String host = (String) swRepositoryInfo.getParam(SWRepositoryServiceInfoConstants.PARAM_HOST_NAME);
-		int port = (int) swRepositoryInfo.getParam(SWRepositoryServiceInfoConstants.PARAM_PORT);
-
-		SwRepoClient swRepoClient = clientFactory.getClient(host, port);
+		String hosts = (String) swRepositoryInfo.getParam(SWRepositoryServiceInfoConstants.ADDRESSES);
+		final SwRepoClient swRepoClient = clientFactory.getClient(hosts);
+		if (swRepoClient == null) throw new TaskException("No accessible network address found for Software Repository");
 		return swRepoClient;
 	}
-
 }

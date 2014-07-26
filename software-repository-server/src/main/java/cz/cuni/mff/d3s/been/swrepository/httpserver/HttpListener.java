@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.net.SocketTimeoutException;
 
 import org.apache.http.HttpException;
 import org.apache.http.impl.DefaultHttpServerConnection;
@@ -19,6 +20,8 @@ import org.slf4j.LoggerFactory;
  * .
  */
 class HttpListener extends Thread {
+
+	private static final int SOCKET_SO_TIMEOUT_MILLIS = 300;
 
 	private static final Logger log = LoggerFactory.getLogger(HttpListener.class);
 
@@ -57,6 +60,7 @@ class HttpListener extends Thread {
 	public void bind() throws HttpServerException {
 		try {
 			serverSocket = new ServerSocket();
+			serverSocket.setSoTimeout(SOCKET_SO_TIMEOUT_MILLIS);
 			serverSocket.bind(sockAddr);
 		} catch (IOException e) {
 			throw new HttpServerException(String.format("Failed to bind HTTP listener thread on %s.", sockAddr.toString()), e);
@@ -94,17 +98,21 @@ class HttpListener extends Thread {
 
 		try {
 			serverSocket.close();
-			log.info(String.format("Socket %s released, listener is down.", serverSocket.toString()));
+			log.info("Socket {} released.", serverSocket.toString());
 		} catch (IOException e) {
-			log.error(String.format("Failed to close listener socket - %s", e.getMessage()));
+			log.error("Failed to close listener socket - {}", e.getMessage());
+		} finally {
+			log.debug("Listener {} is down.", getName());
 		}
 	}
 
 	private Socket acceptSocket() {
 		try {
 			return serverSocket.accept();
+		} catch (SocketTimeoutException e) {
+			return null;
 		} catch (IOException e) {
-			log.error(String.format("Failed to accept incoming socket connection - %s", e.getMessage()));
+			log.error("Failed to accept incoming socket connection - {}", e.getMessage());
 		}
 		return null;
 	}
@@ -114,7 +122,7 @@ class HttpListener extends Thread {
 		try {
 			connection.bind(socket, params);
 		} catch (IOException e) {
-			log.error(String.format("Failed to bind incoming connection %s - %s", connection.toString(), e.getMessage()));
+			log.error("Failed to bind incoming connection {} - {}", connection.toString(), e.getMessage());
 			return null;
 		}
 		return connection;
@@ -124,9 +132,7 @@ class HttpListener extends Thread {
 		try {
 			connection.close();
 		} catch (IOException e) {
-			log.error(String.format(
-					"Leaked connection %s when attempting release after handling request",
-					connection.toString()));
+			log.error("Leaked connection {} when attempting release after handling request", connection.toString());
 		}
 	}
 
@@ -134,12 +140,9 @@ class HttpListener extends Thread {
 		try {
 			service.handleRequest(connection, context);
 		} catch (HttpException e) {
-			log.error("Could not process incoming connection %s - %s", connection.toString(), e.getMessage());
+			log.error("Could not process incoming connection {} - {}", connection.toString(), e.getMessage());
 		} catch (IOException e) {
-			log.error(String.format(
-					"I/O error when processing incoming connection %s - %s",
-					connection.toString(),
-					e.getMessage()));
+			log.error("I/O error when processing incoming connection {} - {}", connection.toString(), e.getMessage());
 		}
 	}
 }

@@ -1,8 +1,12 @@
 package cz.cuni.mff.d3s.been.swrepository.httpserver;
 
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Set;
 
+import cz.cuni.mff.d3s.been.util.SocketAddrUtils;
 import org.apache.http.impl.DefaultConnectionReuseStrategy;
 import org.apache.http.impl.DefaultHttpResponseFactory;
 import org.apache.http.params.BasicHttpParams;
@@ -24,40 +28,31 @@ public class HttpServer {
 
 	private static final Logger log = LoggerFactory.getLogger(HttpServer.class);
 
-	private final InetSocketAddress sockAddr;
+	private final Set<InetSocketAddress> sockAddrs;
 	private final HttpRequestHandlerRegistry handlerResolver;
 	private final HttpParams params;
 
-	private HttpListener listenerThread;
+	private Collection<HttpListener> listenerThreads;
 
 	/**
 	 * Create an HTTP server on a host/port
 	 * 
-	 * @param sockAddr
-	 *          Socket on which the server listens
+	 * @param sockAddrs
+	 *          Sockets on which the server listens
 	 */
-	public HttpServer(InetSocketAddress sockAddr) {
-		this.sockAddr = sockAddr;
+	public HttpServer(Set<InetSocketAddress> sockAddrs) {
+		this.sockAddrs = Collections.unmodifiableSet(sockAddrs);
 		this.handlerResolver = new HttpRequestHandlerRegistry();
 		this.params = new BasicHttpParams();
 	}
 
 	/**
-	 * Get the port registered by this server.
-	 * 
-	 * @return The port no
-	 */
-	public int getPort() {
-		return sockAddr.getPort();
-	}
-
-	/**
 	 * Get the host registered by this server.
 	 * 
-	 * @return The registered {@link InetAddress}
+	 * @return The set of registered {@link java.net.InetSocketAddress}es
 	 */
-	public InetAddress getHost() {
-		return sockAddr.getAddress();
+	public Set<InetSocketAddress> getHosts() {
+		return sockAddrs;
 	}
 
 	/**
@@ -70,20 +65,35 @@ public class HttpServer {
 
 		HttpService httpService = new HttpService(httpProc, new DefaultConnectionReuseStrategy(), new DefaultHttpResponseFactory(), handlerResolver, params);
 
-		log.debug(String.format(
-				"Running listener thread on socket %s with params %s",
-				sockAddr.toString(),
-				params.toString()));
-		listenerThread = new HttpListener(httpService, sockAddr, params);
-		listenerThread.bind();
-		listenerThread.start();
+		listenerThreads = new ArrayList<HttpListener>(sockAddrs.size());
+		for (InetSocketAddress sockAddr: sockAddrs) {
+			log.debug(String.format(
+					"Running listener thread on socket %s with params %s",
+					sockAddr.toString(),
+					params.toString()));
+			final HttpListener listenerThread = new HttpListener(httpService, sockAddr, params);
+			listenerThread.setName(String.format("SR_http_listener[%s]", SocketAddrUtils.sockAddrToString(sockAddr)));
+			listenerThreads.add(listenerThread);
+			listenerThread.bind();
+			listenerThread.start();
+		}
 	}
 
 	/**
 	 * Stop the server (stop listeners)..
 	 */
 	public void stop() {
-		listenerThread.interrupt();
+		for (HttpListener listenerThread: listenerThreads) {
+			log.debug("Stopping thread {}", listenerThread.getName());
+			listenerThread.interrupt();
+		}
+		for (HttpListener listenerThread: listenerThreads) {
+			try {
+				listenerThread.join();
+			} catch (InterruptedException e) {
+				log.error("Listener {} interrupted, exiting dirty", listenerThread.getName());
+			}
+		}
 	}
 
 	/**

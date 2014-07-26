@@ -21,12 +21,11 @@ public class SwRepoClientFactory {
 	/**
 	 * Create a client
 	 *
-	 * @param hostname Host name for the client to connect to
-	 * @param port Port for the client to connect to
+	 * @param hosts The hosts that the Software Repository is listening on
 	 *
 	 * @return The client
 	 */
-	public SwRepoClient getClient(String hostname, int port) {
-		return new HttpSwRepoClient(hostname, port, softwareCache);
+	public SwRepoClient getClient(String hosts) {
+		return new HttpSwRepoClient(hosts, softwareCache);
 	}
 }

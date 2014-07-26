@@ -2,8 +2,10 @@ package cz.cuni.mff.d3s.been.swrepository;
 
 import static cz.cuni.mff.d3s.been.swrepository.SWRepositoryServiceInfoConstants.*;
 
+import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
 
+import cz.cuni.mff.d3s.been.util.SocketAddrUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,11 +62,8 @@ public class SoftwareRepository implements IClusterService {
 		}
 
 		info = new ServiceInfo(SERVICE_NAME, beenId);
-		final String hostName = httpServer.getHost().getHostAddress();
-		final int port = httpServer.getPort();
-		info.setParam(PARAM_HOST_NAME, hostName);
-		info.setParam(PARAM_PORT, port);
-		info.setServiceInfo(hostName + ":" + port);
+		info.setParam(ADDRESSES, createInterfacesInfo());
+//		info.setServiceInfo("");
 		info.setServiceState(ServiceState.OK);
 		info.setHazelcastUuid(clusterCtx.getInstanceType() != NodeType.NATIVE
 				? clusterCtx.getCluster().getLocalMember().getUuid() : null);
@@ -79,6 +78,17 @@ public class SoftwareRepository implements IClusterService {
 		clusterCtx.schedule(serviceInfoUpdater, 0, period, TimeUnit.SECONDS);
 
 		log.info("Software Repository started.");
+	}
+
+	private String createInterfacesInfo() {
+		final StringBuilder interfacesInfo = new StringBuilder();
+		boolean first = true;
+		for (InetSocketAddress socketAddr: httpServer.getHosts()) {
+			if (!first) interfacesInfo.append(",");
+			interfacesInfo.append(SocketAddrUtils.sockAddrToString(socketAddr));
+			first = false;
+		}
+		return interfacesInfo.toString();
 	}
 
 	@Override

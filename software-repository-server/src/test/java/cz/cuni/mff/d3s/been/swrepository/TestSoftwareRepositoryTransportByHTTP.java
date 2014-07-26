@@ -9,6 +9,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.*;
 
+import cz.cuni.mff.d3s.been.util.SocketAddrUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.artifact.Artifact;
 import org.codehaus.plexus.util.FileUtils;
@@ -61,13 +62,14 @@ public class TestSoftwareRepositoryTransportByHTTP extends Assert {
 			final int port = probeSocket.getLocalPort();
 			final InetAddress addr = probeSocket.getInetAddress();
 			probeSocket.close();
-			server = new HttpServer(new InetSocketAddress(addr, port));
+			final Set<InetSocketAddress> serverSocketAddrs = new HashSet<InetSocketAddress>();
+			serverSocketAddrs.add(new InetSocketAddress(addr, port));
+			server = new HttpServer(serverSocketAddrs);
 			SoftwareStore dataStore = FSBasedStore.createServer(new Properties());
 			server.getResolver().register("/bpk*", new BpkRequestHandler(dataStore));
 			server.getResolver().register("/artifact*", new ArtifactRequestHandler(dataStore));
 			server.start();
-			rule.host = server.getHost().getHostName();
-			rule.port = server.getPort();
+			rule.hosts = SocketAddrUtils.sockAddrsToString(server.getHosts());
 		}
 
 		private void stopServer() {
@@ -78,22 +80,16 @@ public class TestSoftwareRepositoryTransportByHTTP extends Assert {
 
 	private class ServerAllocatorRule implements TestRule {
 
-		private String host;
-		private int port;
+		private String hosts;
 
-		public String getHost() {
-			return host;
-		}
-
-		public int getPort() {
-			return port;
+		public String getHosts() {
+			return hosts;
 		}
 
 		@Override
 		public Statement apply(Statement base, Description description) {
 			if (description.getMethodName() != null && description.getMethodName().endsWith("_serverDown")) {
-				host = "localhost";
-				port = 0; // markup for random free port allocation
+				hosts = "[localhost]:8000";
 				return base;
 			} else {
 				return new RunningServerStatement(base, this);
@@ -154,7 +150,7 @@ public class TestSoftwareRepositoryTransportByHTTP extends Assert {
 	@Before
 	public void setUpClient() throws UnknownHostException {
 		// assuming JUnit4 runner executes @Rules before @Before methods
-		client = clientFactory.getClient(serverAllocatorRule.getHost(), serverAllocatorRule.getPort());
+		client = clientFactory.getClient(serverAllocatorRule.getHosts());
 	}
 
 	/**
