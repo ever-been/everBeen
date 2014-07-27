@@ -2,6 +2,7 @@ package cz.everbeen.restapi.protocol;
 
 import com.hazelcast.core.Member;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
+import cz.cuni.mff.d3s.been.core.service.ServiceInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
@@ -100,6 +101,34 @@ public final class ProtocolObjectFactory {
 	 */
 	private static ClusterMember clusterMember(Member member) {
 		return new ClusterMember(member.getUuid(), member.getInetSocketAddress().toString(), member.isLiteMember());
+	}
+
+	/**
+	 * Convert cluster service info into REST API protocol objects
+	 * @param services The cluster's service info collection
+	 * @return The REST API protocol collection of service infos
+	 */
+	public static ClusterServices clusterServices(Collection<ServiceInfo> services) {
+		final List<ClusterService> clusterServices = new ArrayList<ClusterService>(services.size());
+		for (ServiceInfo serviceInfo: services) {
+			clusterServices.add(clusterService(serviceInfo));
+		}
+		return new ClusterServices(clusterServices);
+	}
+
+	/**
+	 * Convert cluster's service info into a protocol object
+	 * @param serviceInfo The cluster's service info
+	 * @return The service info protocol object
+	 */
+	private static ClusterService clusterService(ServiceInfo serviceInfo) {
+		return new ClusterService(
+			serviceInfo.getServiceName(),
+			serviceInfo.getServiceState().name(),
+			serviceInfo.getStateReason(),
+			serviceInfo.getServiceInfo(),
+			serviceInfo.getParams()
+		);
 	}
 
 	private static String bpkIdToString(BpkIdentifier bpkId) {

@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 
 /**
  * A dummy REST handler for testing purposes
@@ -56,6 +55,23 @@ public class InfoHandler extends Handler {
 			@Override
 			public ProtocolObject perform(BeenApi beenApi) throws BeenApiException {
 				return ProtocolObjectFactory.clusterMembers(beenApi.getClusterMembers());
+			}
+		});
+	}
+
+	@GET
+	@Path("/services")
+	@Produces(PROTOCOL_OBJECT_MEDIA)
+	public String getServices() {
+		return performAndAnswer(new ProtocolObjectOperation() {
+			@Override
+			public String name() {
+				return "listClusterServices";
+			}
+
+			@Override
+			public ProtocolObject perform(BeenApi beenApi) throws BeenApiException {
+				return ProtocolObjectFactory.clusterServices(beenApi.getClusterServices());
 			}
 		});
 	}

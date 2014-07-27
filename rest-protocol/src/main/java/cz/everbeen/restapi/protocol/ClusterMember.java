@@ -9,7 +9,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * @author darklight
  * @since 7/20/14.
  */
-public class ClusterMember {
+public class ClusterMember implements ProtocolObject {
 
 	@JsonProperty("uuid")
 	private final String uuid;
