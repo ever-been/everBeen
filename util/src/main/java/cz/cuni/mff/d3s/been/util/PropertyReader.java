@@ -54,7 +54,8 @@ public class PropertyReader {
 	 * @return String value of wanted property
 	 */
 	public String getString(String name, String defaultValue) {
-		return properties.getProperty(name, defaultValue);
+		final String propString = properties.getProperty(name, defaultValue);
+		return (propString == null || "".equals(propString)) ? defaultValue : propString;
 	}
 
 	/**
