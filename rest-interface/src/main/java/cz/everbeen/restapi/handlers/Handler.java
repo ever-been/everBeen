@@ -28,7 +28,6 @@ abstract class Handler {
 	/** Name of the media type used for protocol object serialization **/
 	protected static final String PROTOCOL_OBJECT_MEDIA = MediaType.APPLICATION_JSON;
 
-	private final ObjectMapper omap = new ObjectMapper();
 	private final ProtocolObjectSerializer protocolObjectSerializer = new ProtocolObjectSerializer();
 	protected final JSONUtils jsonUtils = JSONUtils.newInstance();
 
@@ -62,6 +61,7 @@ abstract class Handler {
 	 */
 	protected final <T> T perform(BeenApiOperation<T> operation) {
 		try {
+			log.info("Executing operation {}", operation.name());
 			return operation.perform(getBeenApi());
 		} catch (BeenApiException e) {
 			log.error("Failed to perform operation '{}'", operation.name(), e);
