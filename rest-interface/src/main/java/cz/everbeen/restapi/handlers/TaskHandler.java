@@ -6,6 +6,7 @@ import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
 import cz.cuni.mff.d3s.been.core.task.TaskState;
+import cz.cuni.mff.d3s.been.logging.TaskLogMessage;
 import cz.cuni.mff.d3s.been.util.JsonException;
 import cz.everbeen.restapi.ProtocolObjectOperation;
 import cz.everbeen.restapi.protocol.*;
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.Collection;
 
 /**
  * The REST handler for task operation
@@ -42,6 +44,24 @@ public class TaskHandler extends Handler {
 					return new ErrorObject("No such task");
 				}
 				return ProtocolObjectFactory.taskStatus(taskEntry);
+			}
+		});
+	}
+
+	@GET
+	@Path("/{taskId}/logs")
+	@Produces(PROTOCOL_OBJECT_MEDIA)
+	public String getLogs(@PathParam("taskId") final String taskId) {
+		return performAndAnswer(new ProtocolObjectOperation() {
+			@Override
+			public String name() {
+				return "getTaskLogs";
+			}
+
+			@Override
+			public ProtocolObject perform(BeenApi beenApi) throws BeenApiException {
+				final Collection<TaskLogMessage> taskLogs = beenApi.getLogsForTask(taskId);
+				return ProtocolObjectFactory.taskLogs(taskLogs);
 			}
 		});
 	}

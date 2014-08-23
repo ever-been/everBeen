@@ -5,12 +5,10 @@ import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.core.service.ServiceInfo;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
-import cz.cuni.mff.d3s.been.core.task.TaskState;
+import cz.cuni.mff.d3s.been.logging.TaskLogMessage;
+import sun.util.logging.resources.logging_es;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * A factory for {@link cz.everbeen.restapi.protocol.ProtocolObject} instances
@@ -66,6 +64,30 @@ public final class ProtocolObjectFactory {
 			task.getId(),
 			task.getState().name()
 		);
+	}
+
+	/**
+	 * Create a task logs protocol object from a task log message collection
+	 * @param taskLogs Task log message collections
+	 * @return The task logs protocol object
+	 */
+	public static Logs taskLogs(Collection<TaskLogMessage> taskLogs) {
+		final Collection<LogEntry> entries = new ArrayList<LogEntry>(taskLogs.size());
+		for (TaskLogMessage message: taskLogs) entries.add(logEntry(message));
+		return new Logs(entries);
+	}
+
+	/**
+	 * Create a single task log message protocol object from a cluster log message
+	 * @param message Task log message
+	 * @return A log message protocol object
+	 */
+	private static LogEntry logEntry(TaskLogMessage message) {
+		return new LogEntry(
+			message.getMessage().getThreadName(),
+			new Date(message.getCreated()),
+			message.getMessage().getMessage(),
+			message.getMessage().getErrorTrace());
 	}
 
 	/**
