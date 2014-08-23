@@ -59,7 +59,6 @@ public class BPKHandler extends Handler {
 	}
 
 	@GET
-	@Path("/")
 	@Produces(PROTOCOL_OBJECT_MEDIA)
 	public String listBpks() {
 		return performAndAnswer(new ProtocolObjectOperation() {
@@ -80,7 +79,6 @@ public class BPKHandler extends Handler {
 	 * @return A JSON response object
 	 */
 	@PUT
-	@Path("/")
 	@Produces(PROTOCOL_OBJECT_MEDIA)
 	@Consumes(MediaType.APPLICATION_OCTET_STREAM)
 	public String putBpk(final InputStream bpk) {
