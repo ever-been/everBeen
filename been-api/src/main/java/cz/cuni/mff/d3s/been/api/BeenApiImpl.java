@@ -616,7 +616,7 @@ final class BeenApiImpl implements BeenApi {
 		final String groupId = descriptor.getGroupId();
 		final String bpkId = descriptor.getBpkId();
 		final String version = descriptor.getVersion();
-		final String errorMsg = String.format("Failed to submit task descriptor '%s:%s:%s'", groupId, bpkId, version);
+		final String errorMsg = String.format("Failed to submit task descriptor '%s:%s:%s/%s'", groupId, bpkId, version, descriptor.getName());
 
 		checkIsActive(errorMsg);
 
@@ -624,8 +624,8 @@ final class BeenApiImpl implements BeenApi {
 			final String contextId = clusterContext.getTaskContexts().submitTaskInNewContext(descriptor);
 			final TaskContextEntry context = clusterContext.getTaskContexts().getTaskContext(contextId);
 			final List<String> taskIds = context.getContainedTask();
-			if (taskIds == null) throw createBeenApiException(errorMsg, "Submitted context contained no tasks, expected 1");
-			if (taskIds.size() != 1) throw createBeenApiException(errorMsg, String.format("Submitted context contained %d tasks, expected 1", taskIds.size()));
+			if (taskIds == null) throw new BeenApiException("Submitted context contained no tasks, expected 1");
+			if (taskIds.size() != 1) throw new BeenApiException(String.format("Submitted context contained %d tasks, expected 1", taskIds.size()));
 			return taskIds.get(0);
 		} catch (Exception e) {
 			throw createBeenApiException(errorMsg, e);
