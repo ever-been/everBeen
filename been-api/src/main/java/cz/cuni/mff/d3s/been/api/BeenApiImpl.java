@@ -624,8 +624,12 @@ final class BeenApiImpl implements BeenApi {
 			final String contextId = clusterContext.getTaskContexts().submitTaskInNewContext(descriptor);
 			final TaskContextEntry context = clusterContext.getTaskContexts().getTaskContext(contextId);
 			final List<String> taskIds = context.getContainedTask();
-			if (taskIds == null) throw new BeenApiException("Submitted context contained no tasks, expected 1");
-			if (taskIds.size() != 1) throw new BeenApiException(String.format("Submitted context contained %d tasks, expected 1", taskIds.size()));
+			if (taskIds == null || taskIds.size() != 1) throw new BeenApiException(
+				String.format(
+					"Submitted context contained %d tasks, expected 1. Context was: %s",
+					taskIds == null ? 0 : taskIds.size(),
+					context)
+			);
 			return taskIds.get(0);
 		} catch (Exception e) {
 			throw createBeenApiException(errorMsg, e);
