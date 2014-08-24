@@ -904,7 +904,9 @@ final class BeenApiImpl implements BeenApi {
 
 		// check if cluster is live is done in getTaskDescriptors method
 		try {
-			return getTaskDescriptors(bpkIdentifier).get(descriptorName);
+			final TaskDescriptor td = getTaskDescriptors(bpkIdentifier).get(descriptorName);
+			if (td == null) throw new BeenApiException(String.format("No task descriptor named '%s' found in BPK [%s]", descriptorName, bpkIdentifier));
+			return td;
 		} catch (BeenApiException e) {
 			throw createBeenApiException(errorMsg, e);
 		}
