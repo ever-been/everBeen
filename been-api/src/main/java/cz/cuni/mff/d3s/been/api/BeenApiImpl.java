@@ -622,15 +622,12 @@ final class BeenApiImpl implements BeenApi {
 
 		try {
 			final String contextId = clusterContext.getTaskContexts().submitTaskInNewContext(descriptor);
-			final TaskContextEntry context = clusterContext.getTaskContexts().getTaskContext(contextId);
-			final List<String> taskIds = context.getContainedTask();
-			if (taskIds == null || taskIds.size() != 1) throw new BeenApiException(
+			final Collection<TaskEntry> taskEntries = getTasksInTaskContext(contextId);
+			if (taskEntries == null || taskEntries.size() != 1) throw new BeenApiException(
 				String.format(
-					"Submitted context contained %d tasks, expected 1. Context was: %s",
-					taskIds == null ? 0 : taskIds.size(),
-					context)
-			);
-			return taskIds.get(0);
+					"Submitted context contained %d tasks, expected 1.",
+					taskEntries == null ? 0 : taskEntries.size()));
+			return taskEntries.iterator().next().getId();
 		} catch (Exception e) {
 			throw createBeenApiException(errorMsg, e);
 		}
