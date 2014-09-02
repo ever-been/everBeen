@@ -8,10 +8,7 @@ import static cz.cuni.mff.d3s.been.swrepository.Versions.SNAPSHOT_SUFFIX;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.InetSocketAddress;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.*;
 
 import javax.xml.bind.JAXBException;
@@ -227,16 +224,21 @@ class HttpSwRepoClient implements SwRepoClient {
 	 *           When some of the internals are malformed
 	 */
 	private URI createRepoUri() throws URISyntaxException, UnknownHostException {
-		final URIBuilder uriBuilder = new URIBuilder();
-		final InetSocketAddress sockAddr = getRepoAddr();
-		uriBuilder.setHost(sockAddr.getHostName());
-		uriBuilder.setPort(sockAddr.getPort());
-		uriBuilder.setScheme("http");
-		return uriBuilder.build();
+		return sockAddrToURIBuilder().build();
 	}
 
 	private InetSocketAddress getRepoAddr() throws UnknownHostException {
 		return SocketAddrUtils.getFirstReachableAddress(hosts, 1000);
+	}
+
+	private URIBuilder sockAddrToURIBuilder() throws UnknownHostException, URISyntaxException {
+		final InetSocketAddress socketAddress = getRepoAddr();
+		final URIBuilder uriBuilder = new URIBuilder();
+		final InetAddress hostAddr = socketAddress.getAddress();
+		uriBuilder.setHost(hostAddr.getCanonicalHostName());
+		uriBuilder.setPort(socketAddress.getPort());
+		uriBuilder.setScheme("http");
+		return uriBuilder;
 	}
 
 

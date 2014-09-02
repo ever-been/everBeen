@@ -15,6 +15,11 @@ import java.util.StringTokenizer;
  */
 public class SocketAddrUtils {
 
+	private static final char LEFT_DELIM = '(';
+	private static final char RIGHT_DELIM = ')';
+	private static final char PORT_SEPARATOR = ':';
+	private static final String LIST_SEPARATOR = ",";
+
 	/**
 	 * Create a string representation of a socket address
 	 *
@@ -23,10 +28,23 @@ public class SocketAddrUtils {
 	 * @return The string representation of that socket address
 	 */
 	public static String sockAddrToString(InetSocketAddress sockAddr) {
+		final String hostName = stripAddrScope(sockAddr.getHostName());
 		return new StringBuilder()
-				.append('[').append(sockAddr.getHostName()).append(']')
-				.append(':')
+				.append(LEFT_DELIM).append(hostName).append(RIGHT_DELIM)
+				.append(PORT_SEPARATOR)
 				.append(sockAddr.getPort()).toString();
+	}
+
+	/**
+	 * Strip the scope from a hostname (ipv6)
+	 *
+	 * @param addr Address whose scope should be stripped
+	 *
+	 * @return The address, scope stripped
+	 */
+	private static String stripAddrScope(String addr) {
+		int scopeSignPos = addr.indexOf('%');
+		return (scopeSignPos > 0) ? addr.substring(0, scopeSignPos) : addr;
 	}
 
 	/**
@@ -40,7 +58,7 @@ public class SocketAddrUtils {
 		final StringBuilder addrs = new StringBuilder();
 		boolean first = true;
 		for (InetSocketAddress sockAddr: sockAddrs) {
-			if (!first) addrs.append(',');
+			if (!first) addrs.append(LIST_SEPARATOR);
 			first = false;
 			addrs.append(sockAddrToString(sockAddr));
 		}
@@ -60,8 +78,9 @@ public class SocketAddrUtils {
 	 * @throws java.lang.NumberFormatException When the port is not an integer
 	 */
 	public static InetSocketAddress parseReachableSockAddr(String sockAddrString, int reachTimeout) throws UnknownHostException {
-		final int lbr = sockAddrString.indexOf('[');
-		final int rbr = sockAddrString.indexOf(']');
+		final int lbr = sockAddrString.indexOf(LEFT_DELIM);
+		final int rbr = sockAddrString.lastIndexOf(RIGHT_DELIM);
+		if (lbr < 0 || rbr < 0) throw new UnknownHostException(String.format("Unparseable socket addr string: '%s'", sockAddrString));
 		final String host = sockAddrString.substring(lbr + 1, rbr);
 		final InetAddress inetAddr = InetAddress.getByName(host);
 		try {
@@ -83,7 +102,7 @@ public class SocketAddrUtils {
 	 * @return The first reachable socket address from the list, or <code>null</code> if no address is provided/reachable
 	 */
 	public static InetSocketAddress getFirstReachableAddress(String sockAddrs, int reachTimeout) throws UnknownHostException {
-		StringTokenizer addrTok = new StringTokenizer(sockAddrs, ",");
+		StringTokenizer addrTok = new StringTokenizer(sockAddrs, LIST_SEPARATOR);
 		while(addrTok.hasMoreTokens()) {
 			final InetSocketAddress sockAddr = parseReachableSockAddr(addrTok.nextToken().trim(), reachTimeout);
 			if (sockAddr != null) return sockAddr;

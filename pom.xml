@@ -23,8 +23,8 @@
 		<com.github.stefanbirkner_system-rules.version>1.3.0</com.github.stefanbirkner_system-rules.version>
 		<de.flapdoodle.embed.mongo.version>1.31</de.flapdoodle.embed.mongo.version>
 		<hazelcast.version>2.5.1</hazelcast.version>
-		<httpclient.version>4.2.3</httpclient.version>
-		<httpcore.version>4.2.3</httpcore.version>
+		<httpclient.version>4.3.2</httpclient.version>
+		<httpcore.version>4.3.2</httpcore.version>
 		<jackson-mapper-asl.version>1.9.12</jackson-mapper-asl.version>
 		<jaxb2-basics-runtime.version>0.6.4</jaxb2-basics-runtime.version>
 		<jeromq.version>0.2.0</jeromq.version>
