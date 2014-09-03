@@ -43,7 +43,7 @@ class FetchQuery extends SkeletalQuery implements Serializable {
 	public String toString() {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("select ");
-		if (mappings != null) sb.append(mappings.toString());
+		sb.append(mappings == null ? "*" : mappings.toString());
 		sb.append(" from ");
 		sb.append(getEntityID().toString());
 		sb.append(" where ");
