@@ -161,11 +161,11 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 	}
 
 	@Override
-	public Collection<Map<String, Object>> query(Query fetchQuery, Map<String, Class<?>> typeMapping) throws DAOException {
+	public Collection<Map<String, Object>> query(Query fetchQuery, ResultMapping mapping) throws DAOException {
 		final QueryAnswer answer = performFetchQuery(fetchQuery);
 		final Collection<Map<String, Object>> answerObjects = new ArrayList<Map<String, Object>>(answer.getData().size());
 		try {
-			jsonUtils.deserialize(answer.getData(), typeMapping, false);
+			jsonUtils.deserialize(answer.getData(), mapping.getTypeMapping(), false);
 		} catch (JsonException e) {
 			throw new DAOException("Cannot deserialize query results", e);
 		}

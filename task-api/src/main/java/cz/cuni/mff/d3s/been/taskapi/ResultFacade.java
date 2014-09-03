@@ -67,13 +67,13 @@ public interface ResultFacade {
 	 * Retrieve an abstract result map based on the id of targeted entity and a selector (query).
 	 *
 	 * @param fetchQuery Selection criteria
-	 * @param typeMapping Type mapping of result fields
+	 * @param resultMapping Mapping definition of result fields
 	 *
 	 * @return A collection of typed <code>fieldName</code>-<code>fieldValue</code> maps (1 map per object)
 	 *
 	 * @throws DAOException When the query fails
 	 */
-	Collection<Map<String, Object>> query(Query fetchQuery, Map<String, Class<?>> typeMapping) throws DAOException;
+	Collection<Map<String, Object>> query(Query fetchQuery, ResultMapping resultMapping) throws DAOException;
 
 	/**
 	 * Delete some results. Actually, don't do this, it won't save you from the
