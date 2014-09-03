@@ -70,11 +70,6 @@
 
 	<xs:element name="java" type="td:Java"/>
 
-	<xs:attributeGroup name="taskPropertyAttrGroup">
-		<xs:attribute name="key" type="xs:string" use="required"/>
-		<xs:attribute name="value" type="xs:string" use="optional" default=""/>
-	</xs:attributeGroup>
-
 	<xs:complexType name="Property">
 		<xs:simpleContent>
 			<xs:extension base="xs:string">
