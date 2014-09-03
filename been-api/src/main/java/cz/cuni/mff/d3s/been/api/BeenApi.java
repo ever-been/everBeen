@@ -466,7 +466,7 @@ public interface BeenApi {
 	 * 
 	 * @param taskDescriptor
 	 *          the task descriptor of the task
-	 * @return ID of the newly submitted task
+	 * @return ID of the context the newly submitted task is lanuched in
 	 * @throws BeenApiException
 	 *           in case of an internal exception, see {@link BeenApi} for
 	 *           discussion

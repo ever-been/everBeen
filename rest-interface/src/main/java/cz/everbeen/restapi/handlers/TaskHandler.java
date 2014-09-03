@@ -104,7 +104,7 @@ public class TaskHandler extends Handler {
 
 			@Override
 			public ProtocolObject perform(BeenApi beenApi) throws BeenApiException {
-				return TaskSubmit.fromId(beenApi.submitTask(td));
+				return TaskSubmit.fromContextId(beenApi.submitTask(td));
 			}
 		});
 	}
@@ -130,7 +130,7 @@ public class TaskHandler extends Handler {
 			public ProtocolObject perform(BeenApi beenApi) throws BeenApiException {
 				final TaskDescriptor td = beenApi.getTaskDescriptor(bpkIdentifier, ProtocolObjectFactory.revertTaskDescriptorId(taskDescriptorName));
 				log.debug("Retrieved task descriptor [{}] for task [{}/{}]", td, bpkIdentifier, taskDescriptorName);
-				return TaskSubmit.fromId(beenApi.submitTask(td));
+				return TaskSubmit.fromContextId(beenApi.submitTask(td));
 			}
 		});
 	}
