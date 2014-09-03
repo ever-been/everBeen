@@ -4,7 +4,7 @@ import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
- * The protocol object resulting of the submission of a {@link cz.cuni.mff.d3s.been.core.task.TaskDescriptor}
+ * The protocol object resulting of the submission of a Task Descriptor.
  *
  * @author darklight
  */
