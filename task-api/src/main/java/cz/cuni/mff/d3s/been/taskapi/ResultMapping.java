@@ -5,9 +5,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.text.ParseException;
-import java.util.Collections;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Mapping of a result query result to a typed collection.
@@ -34,11 +32,41 @@ public class ResultMapping {
 		}
 	}
 
+	public static ResultMapping empty() {
+		return new ResultMapping();
+	}
+
+	private ResultMapping() {
+		this.typeMapping = new TreeMap<String, Class<?>>();
+		this.aliases = new TreeMap<String, String>();
+	}
+
+	/**
+	 * Get type mappings of result fields
+	 *
+	 * @return Type mapping
+	 */
 	public Map<String, Class<?>> getTypeMapping() {
 		return typeMapping;
 	}
 
+	/**
+	 * Get aliases for type mapping keys
+	 *
+	 * @return Alias map
+	 */
 	public Map<String, String> getAliases() {
 		return aliases;
+	}
+
+	/**
+	 * Get type mapping keys with no aliases
+	 *
+	 * @return The unaliased key set
+	 */
+	public Set<String> getNonAliasedKeys() {
+		final Set<String> nonAliasedKeys = new TreeSet<String>(typeMapping.keySet());
+		nonAliasedKeys.removeAll(aliases.values());
+		return nonAliasedKeys;
 	}
 }

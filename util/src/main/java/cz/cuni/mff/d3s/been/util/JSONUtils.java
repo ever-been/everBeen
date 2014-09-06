@@ -132,14 +132,16 @@ public class JSONUtils {
 	 *
 	 * @param serializedObjects JSON to deserialize
 	 * @param typeMap Types of the object's attributes
+	 * @param aliases Field naming aliases
 	 * @param ignoreBrokenItems Whether items that make the parsing crash should be omitted, rather than interrupting the entire deserialization
 	 *
 	 * @return A collection of maps resulting from the objects' deserialization
 	 *
 	 * @throws JsonException When one of given Strings is not valid JSON or when it doesn't contain correctly typed values
 	 */
-	public Collection<Map<String, Object>> deserialize(Collection<String> serializedObjects, Map<String, Class<?>> typeMap, boolean ignoreBrokenItems) throws JsonException {
-		final JsonToTypedMap jttm = new JsonToTypedMap(typeMap);
+	public Collection<Map<String, Object>> deserialize(Collection<String> serializedObjects, Map<String, Class<?>> typeMap, Map<String, String> aliases, boolean ignoreBrokenItems) throws JsonException {
+		if (aliases == null) aliases = new TreeMap<String, String>();
+		final JsonToTypedMap jttm = new JsonToTypedMap(typeMap, aliases);
 		final List<Map<String, Object>> res = new ArrayList<Map<String, Object>>(serializedObjects.size());
 		for (String so: serializedObjects) {
 			try {

@@ -6,8 +6,7 @@ import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * A utility class handling the conversion of JSON to a typed map of Objects.
@@ -16,6 +15,7 @@ import java.util.TreeMap;
  */
 public class JsonToTypedMap {
 	final Map<String, Class<?>> typeMap;
+	final Map<String, Collection<String>> reverseAliasMapping;
 	final JsonFactory jf;
 
 	/**
@@ -23,8 +23,9 @@ public class JsonToTypedMap {
 	 *
 	 * @param typeMap Class definition for recognized properties; only primitive types are supported
 	 */
-	public JsonToTypedMap(Map<String, Class<?>> typeMap) {
+	public JsonToTypedMap(Map<String, Class<?>> typeMap, Map<String, String> aliases) {
 		this.typeMap = typeMap;
+		this.reverseAliasMapping = CollectionUtils.reverseMapping(aliases);
 		this.jf = new JsonFactory();
 	}
 
@@ -38,21 +39,25 @@ public class JsonToTypedMap {
 	 * @throws JsonException When a desired property cannot be cast to the desired type, or when provided serialization is not valid JSON, or when provided JSON contains unsupported value types
 	 */
 	public Map<String, Object> convert(String serializedObject) throws JsonException {
+		final Deque<String> nq = new ArrayDeque<String>();
 		try {
 			final JsonParser jp = jf.createJsonParser(serializedObject);
 			final Map<String, Object> objectMap = new TreeMap<String, Object>();
-			boolean started = false;
-			boolean terminated = false;
+
+			String currentName = null;
 			Class<?> currentType = null;
+			int immersion = -1; // bracket immersion; -1 = outside root-level brackets; 0 = inside root-level brackets
 			for (JsonToken tok = jp.nextToken(); jp.hasCurrentToken(); tok = jp.nextToken()) {
 				switch(tok) {
 					case START_OBJECT:
-						if (started) throw new JsonException(String.format("Unsupported nested object in JSON (%s)", serializedObject));
-						started = true;
+						++immersion;
+						if (immersion > -1 && immersion != nq.size())
+							throw new JsonException(String.format("Unsupported nested object in JSON (%s)", serializedObject));
 						break;
 					case END_OBJECT:
-						if (terminated) throw new JsonException(String.format("Unsupported nested object in JSON (%s)", serializedObject));
-						terminated = true;
+						--immersion;
+						if (immersion > -1) nq.removeLast();
+						if (immersion > -1 && immersion != nq.size()) throw new JsonException(String.format("Unsupported nested object in JSON (%s): termination clause expected queue size to be %d, but was %d", serializedObject, immersion, nq.size()));
 						break;
 					case START_ARRAY:
 						throw new JsonException(String.format("Unsupported array value in JSON (%s)", serializedObject));
@@ -61,13 +66,22 @@ public class JsonToTypedMap {
 					case VALUE_EMBEDDED_OBJECT:
 						throw new JsonException(String.format("Unsupported nested object in JSON (%s)", serializedObject));
 					case FIELD_NAME:
-						currentType = typeMap.get(jp.getCurrentName());
+						nq.add(jp.getCurrentName());
+						currentName = nameQueueToName(nq);
+						currentType = typeMap.get(currentName);
 						break;
 					default:
 						// only value tokens left for this case
 						if (currentType != null) {
-							objectMap.put(jp.getCurrentName(), parseTypedValue(serializedObject, jp, currentType));
+							final Object value = parseTypedValue(serializedObject, jp, currentType);
+							final Collection<String> aliases = reverseAliasMapping.get(currentName);
+							if (aliases == null || aliases.isEmpty()) {
+								objectMap.put(currentName, value);
+							} else {
+								for (String alias: aliases) objectMap.put(alias, value);
+							}
 						}
+						nq.removeLast();
 						break;
 				}
 			}
@@ -77,6 +91,18 @@ public class JsonToTypedMap {
 		} catch (IOException e) {
 			throw new JsonException(String.format("Could not read entry %s", serializedObject), e);
 		}
+	}
+
+	private String nameQueueToName(Queue<String> nameQueue) {
+		final StringBuilder name = new StringBuilder();
+		boolean separ = false;
+		final Iterator<String> ni = nameQueue.iterator();
+		while(ni.hasNext()) {
+			if (separ) name.append('.');
+			name.append(ni.next());
+			separ = true;
+		}
+		return name.toString();
 	}
 
 	/**
