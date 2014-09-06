@@ -5,19 +5,18 @@ import cz.cuni.mff.d3s.been.api.BeenApiException;
 import cz.cuni.mff.d3s.been.bpk.BpkIdentifier;
 import cz.cuni.mff.d3s.been.core.task.TaskDescriptor;
 import cz.cuni.mff.d3s.been.core.task.TaskEntry;
-import cz.cuni.mff.d3s.been.core.task.TaskProperties;
-import cz.cuni.mff.d3s.been.core.task.TaskState;
 import cz.cuni.mff.d3s.been.logging.TaskLogMessage;
-import cz.cuni.mff.d3s.been.util.JsonException;
 import cz.everbeen.restapi.ProtocolObjectOperation;
-import cz.everbeen.restapi.protocol.*;
+import cz.everbeen.restapi.protocol.ErrorObject;
+import cz.everbeen.restapi.protocol.ProtocolObject;
+import cz.everbeen.restapi.protocol.ProtocolObjectFactory;
+import cz.everbeen.restapi.protocol.TaskSubmit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.Collection;
-import java.util.Properties;
 
 /**
  * The REST handler for task operation
