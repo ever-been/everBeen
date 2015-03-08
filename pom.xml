@@ -37,15 +37,14 @@
 		<tapestry-cometd.version>0.9.17</tapestry-cometd.version>
 		<tapestry-conversations.version>0.1.2</tapestry-conversations.version>
 		<tapestry5-jquery.version>3.3.1</tapestry5-jquery.version>
-		<tapestry5.version>5.3.6</tapestry5.version>
+		<tapestry5.version>5.3.8</tapestry5.version>
 		<servlet-api.version>2.5</servlet-api.version>
 
 		<!-- PLUGIN VERSION CONTROL -->
-		<jaxb2-maven-plugin.version>1.5</jaxb2-maven-plugin.version>
 		<jetty-maven-plugin.version>8.1.7.v20120910</jetty-maven-plugin.version>
 		<jvnetbasics.version>0.6.4</jvnetbasics.version>
 		<jvnetfluent.version>3.0</jvnetfluent.version>
-		<jvnetjaxb.version>0.8.3</jvnetjaxb.version>
+		<jvnetjaxb.version>0.9.0</jvnetjaxb.version>
 		<maven-assembly-plugin.version>2.4</maven-assembly-plugin.version>
 		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
 		<maven-dependency-plugin.version>2.7</maven-dependency-plugin.version>
@@ -53,7 +52,7 @@
 		<maven-plugin-annotations.version>3.2</maven-plugin-annotations.version>
 		<maven-plugin-plugin.version>3.2</maven-plugin-plugin.version>
 		<maven-site-plugin.version>3.2</maven-site-plugin.version>
-		<maven-javadoc-plugin.version>2.9.1</maven-javadoc-plugin.version>
+		<maven-javadoc-plugin.version>2.10.1</maven-javadoc-plugin.version>
 		<maven-source-plugin.version>2.2.1</maven-source-plugin.version>
 		<maven-project-info-reports-plugin.version>2.7</maven-project-info-reports-plugin.version>
 		<maven-resources-plugin.version>2.6</maven-resources-plugin.version>
@@ -61,8 +60,8 @@
 
 
 		<!-- SOURCE LEVEL CONTROL -->
-		<java-source.version>1.7</java-source.version>
-		<java-target.version>1.7</java-target.version>
+		<java-source.version>1.8</java-source.version>
+		<java-target.version>1.8</java-target.version>
 
 		<!-- LOGGING -->
 		<log4j.version>1.2.12</log4j.version>
@@ -131,6 +130,8 @@
 				<version>${maven-javadoc-plugin.version}</version>
 				<configuration>
 					<show>package</show>
+                    <!-- REMOVE ONCE DOCUMENTATION IS FIXED TO SUPPORT JAVA 8 -->
+                    <additionalparam>-Xdoclint:none</additionalparam>
 				</configuration>
 			</plugin>
 
@@ -141,6 +142,8 @@
 				<configuration>
 					<show>package</show>
 					<excludePackageNames>cz.cuni.mff.d3s.been.web:cz.cuni.mff.d3s.been.web.*</excludePackageNames>
+                    <!-- REMOVE ONCE DOCUMENTATION IS FIXED TO SUPPORT JAVA 8 -->
+                    <additionalparam>-Xdoclint:none</additionalparam>
 				</configuration>
 				<executions>
 					<execution>
