@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+import cz.cuni.mff.d3s.been.pluger.InjectService;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -42,6 +43,9 @@ import cz.cuni.mff.d3s.been.swrepository.SoftwareRepository;
  * @author Martin Sixta
  */
 public class Runner implements Reapable {
+
+    @InjectService
+    private String[] args;
 
 	// ------------------------------------------------------------------------
 	// LOGGING
@@ -93,20 +97,13 @@ public class Runner implements Reapable {
 
 	private ClusterContext clusterContext;
 
-	/**
-	 * Main method
-	 *
-	 * @param args Command-line arguments
-	 */
-	public static void main(String[] args) {
-		new Runner().doMain(args);
-	}
-
 	// ------------------------------------------------------------------------
 	// MAIN BEEN FUNCTION
 	// ------------------------------------------------------------------------
 
-	private void doMain(final String[] args) {
+	void doMain() {
+        if(true)
+            return;
 
 		parseCmdLineArguments(args);
 
