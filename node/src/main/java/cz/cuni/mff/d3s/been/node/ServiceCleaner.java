@@ -2,6 +2,7 @@ package cz.cuni.mff.d3s.been.node;
 
 import java.util.Collection;
 
+import com.hazelcast.core.MemberAttributeEvent;
 import com.hazelcast.core.MembershipEvent;
 import com.hazelcast.core.MembershipListener;
 import com.hazelcast.query.SqlPredicate;
@@ -34,5 +35,10 @@ final class ServiceCleaner implements MembershipListener {
 			clusterContext.removeServiceInfo(info);
 		}
 	}
+
+    @Override
+    public void memberAttributeChanged(MemberAttributeEvent memberAttributeEvent) {
+        // IGNORE
+    }
 
 }

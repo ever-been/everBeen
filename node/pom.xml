@@ -13,98 +13,84 @@
 
 	<properties>
 		<distDirName>dist</distDirName>
-	</properties>
+    </properties>
 
 	<dependencies>
 		<!-- BEEN DEPENDENCIES -->
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
 			<artifactId>core-data</artifactId>
-			<version>${project.parent.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
 			<artifactId>util</artifactId>
-			<version>${project.parent.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
 			<artifactId>core-cluster</artifactId>
-			<version>${project.parent.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
 			<artifactId>task-manager</artifactId>
-			<version>${project.parent.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
 			<artifactId>host-runtime</artifactId>
-			<version>${project.parent.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
 			<artifactId>software-repository-server</artifactId>
-			<version>${project.parent.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
 			<artifactId>service-logger-handler</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
 			<artifactId>object-repository</artifactId>
-			<version>${project.parent.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
 			<artifactId>mongo-storage</artifactId>
-			<version>${project.parent.version}</version>
 			<scope>runtime</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
 			<artifactId>mongodb-mapstore</artifactId>
-			<version>${project.parent.version}</version>
 		</dependency>
+
+        <dependency>
+            <groupId>cz.cuni.mff.d3s.been</groupId>
+            <artifactId>databus-api</artifactId>
+        </dependency>
 
 		<!-- BEEN LOGGING -->
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
 			<artifactId>logback-appender</artifactId>
-			<version>${project.version}</version>
 			<scope>runtime</scope>
 		</dependency>
 
 		<!-- EXTERNAL DEPENDENCIES -->
-		<dependency>
-			<groupId>com.hazelcast</groupId>
-			<artifactId>hazelcast</artifactId>
-			<version>${hazelcast.version}</version>
-		</dependency>
 
 		<dependency>
 			<groupId>args4j</groupId>
 			<artifactId>args4j</artifactId>
-			<version>${args4j.version}</version>
 		</dependency>
 
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<scope>runtime</scope>
-			<version>${logback.version}</version>
-		</dependency>
+        <dependency>
+            <groupId>cz.cuni.mff.d3s.been.pluger</groupId>
+            <artifactId>pluger-api</artifactId>
+        </dependency>
 
 	</dependencies>
 
@@ -114,7 +100,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
-				<version>${maven-resources-plugin.version}</version>
 				<executions>
 					<execution>
 						<id>copy-been-properties</id>
@@ -137,15 +122,22 @@
 				</executions>
 			</plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${maven-compiler-plugin.version}</version>
-				<configuration>
-					<source>${java-source.version}</source>
-					<target>${java-target.version}</target>
-				</configuration>
-			</plugin>
-		</plugins>
+            <plugin>
+                <groupId>cz.cuni.mff.d3s.been.pluger</groupId>
+                <artifactId>pluger-maven-plugin</artifactId>
+                <configuration>
+                    <activator>cz.cuni.mff.d3s.been.node.NodePluginActivator</activator>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>pluginate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
 	</build>
 </project>
