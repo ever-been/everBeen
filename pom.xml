@@ -190,16 +190,6 @@
 				<artifactId>versions-maven-plugin</artifactId>
 				<version>${versions-maven-plugin.version}</version>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>${maven-javadoc-plugin.version}</version>
-				<configuration>
-					<show>package</show>
-                    <!-- REMOVE ONCE DOCUMENTATION IS FIXED TO SUPPORT JAVA 8 -->
-                    <additionalparam>-Xdoclint:none</additionalparam>
-				</configuration>
-			</plugin>
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
