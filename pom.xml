@@ -236,9 +236,20 @@
             <url>https://raw.github.com/donarus/been-pluger/mvn-repo</url>
             <snapshots>
                 <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
+                <updatePolicy>daily</updatePolicy>
             </snapshots>
         </repository>
     </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>pluger-mvn-repo</id>
+            <url>https://raw.github.com/donarus/been-pluger/mvn-repo</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
     
 </project>
