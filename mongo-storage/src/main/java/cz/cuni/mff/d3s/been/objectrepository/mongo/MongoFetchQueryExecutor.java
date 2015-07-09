@@ -19,6 +19,8 @@ import cz.cuni.mff.d3s.been.storage.QueryExecutor;
  * @author darklight
  */
 class MongoFetchQueryExecutor implements QueryExecutor {
+	private static final String DB_ID = "_id";
+
 	private final DBCollection target;
 	private final DBObject filter;
 	private final DBObject mapping;
@@ -45,7 +47,7 @@ class MongoFetchQueryExecutor implements QueryExecutor {
 		final Collection<String> results = new ArrayList<String>(cursor.size());
 		final Iterator<DBObject> cursorIt = cursor.iterator();
 		while (cursorIt.hasNext()) {
-			results.add(cursorIt.next().toString());
+			results.add(cursorIt.next().removeField(DB_ID).toString());
 		}
 		return QueryAnswerFactory.fetched(results);
 	}
