@@ -12,6 +12,8 @@ import cz.cuni.mff.d3s.been.persistence.QueryAnswer;
 import cz.cuni.mff.d3s.been.persistence.QueryAnswerFactory;
 import cz.cuni.mff.d3s.been.persistence.QueryExecutionException;
 import cz.cuni.mff.d3s.been.storage.QueryExecutor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A fetch query executor for MongoDB
@@ -19,6 +21,9 @@ import cz.cuni.mff.d3s.been.storage.QueryExecutor;
  * @author darklight
  */
 class MongoFetchQueryExecutor implements QueryExecutor {
+
+	private static final Logger log = LoggerFactory.getLogger(MongoFetchQueryExecutor.class);
+
 	private static final String DB_ID = "_id";
 
 	private final DBCollection target;
@@ -51,6 +56,7 @@ class MongoFetchQueryExecutor implements QueryExecutor {
 			final String dbobString = dbob.toString();
 			results.add(dbobString);
 		}
+		log.debug("Fetch query execution complete, returning data: {}", results);
 		return QueryAnswerFactory.fetched(results);
 	}
 }
