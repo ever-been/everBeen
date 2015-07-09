@@ -1329,6 +1329,7 @@ final class BeenApiImpl implements BeenApi {
 					query.toString(),
 					answer.getStatus().getDescription()));
 		}
+		log.debug("Deserializing returned data: {}", answer.getData());
 		try {
 			return jsonUtils.deserialize(answer.getData(), entityClass);
 		} catch (JsonException e) {

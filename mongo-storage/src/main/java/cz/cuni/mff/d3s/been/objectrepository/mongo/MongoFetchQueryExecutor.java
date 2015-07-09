@@ -47,7 +47,9 @@ class MongoFetchQueryExecutor implements QueryExecutor {
 		final Collection<String> results = new ArrayList<String>(cursor.size());
 		final Iterator<DBObject> cursorIt = cursor.iterator();
 		while (cursorIt.hasNext()) {
-			results.add(cursorIt.next().removeField(DB_ID).toString());
+			final DBObject dbob = cursorIt.next();
+			final String dbobString = dbob.toString();
+			results.add(dbobString);
 		}
 		return QueryAnswerFactory.fetched(results);
 	}
