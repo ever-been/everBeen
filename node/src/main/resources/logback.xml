@@ -23,7 +23,7 @@
 	<logger name="cz.cuni.mff.d3s.been.hostruntime.tasklogs.TaskLogHandler" level="INFO"/>
 
 
-	<root level="INFO">
+	<root level="DEBUG">
 		<appender-ref ref="STDOUT"/>
 		<appender-ref ref="CLUSTER"/>
 	</root>
