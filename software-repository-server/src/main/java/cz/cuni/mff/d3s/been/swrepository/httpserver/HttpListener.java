@@ -77,12 +77,12 @@ class HttpListener extends Thread {
 		super.run();
 
 		while (!Thread.interrupted()) {
-			log.debug("Listener thread waiting for connection...");
-
 			Socket socket = acceptSocket();
 			if (socket == null) {
 				continue;
 			}
+
+			log.debug("Listener thread accepted connection...");
 
 			DefaultHttpServerConnection connection = createConnection(socket);
 			if (connection == null) {
