@@ -51,6 +51,23 @@ public class ResultMapping {
 	}
 
 	/**
+	 * Get class mapping for a field.
+	 * Works for aliases, too.
+	 *
+	 * @param name Name of the field
+	 *
+	 * @return The field's type mapping
+	 */
+	public Class<?> typeForName(String name) {
+		Class<?> type = typeMapping.get(name);
+		if (type == null) {
+			final String aliasedKey = aliases.get(name);
+			if (aliasedKey != null) type = typeMapping.get(aliasedKey);
+		}
+		return type;
+	}
+
+	/**
 	 * Get aliases for type mapping keys
 	 *
 	 * @return Alias map
