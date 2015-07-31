@@ -1,4 +1,4 @@
-package cz.cuni.mff.d3s.been.taskapi;
+package cz.cuni.mff.d3s.been.util;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;

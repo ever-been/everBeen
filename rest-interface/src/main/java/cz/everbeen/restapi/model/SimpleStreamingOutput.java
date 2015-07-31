@@ -17,16 +17,27 @@ import java.io.OutputStream;
  */
 public class SimpleStreamingOutput implements StreamingOutput {
 
-	public static final MediaType MEDIA_TYPE = MediaType.APPLICATION_OCTET_STREAM_TYPE;
+	public static final MediaType DFLT_MEDIA_TYPE = MediaType.APPLICATION_OCTET_STREAM_TYPE;
 
 	private final InputStream data;
+	private final MediaType mediaType;
 
 	public SimpleStreamingOutput(InputStream data) {
 		this.data = data;
+		this.mediaType = DFLT_MEDIA_TYPE;
+	}
+
+	public SimpleStreamingOutput(InputStream data, MediaType mediaType) {
+		this.data = data;
+		this.mediaType = mediaType;
 	}
 
 	@Override
 	public void write(OutputStream output) throws IOException, WebApplicationException {
 		IOUtils.copy(data, output);
+	}
+
+	public MediaType getMediaType() {
+		return mediaType;
 	}
 }

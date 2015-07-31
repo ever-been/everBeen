@@ -1,18 +1,16 @@
 package cz.cuni.mff.d3s.been.util;
 
-import java.io.IOException;
-import java.util.*;
-
-import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonToken;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectReader;
 import org.codehaus.jackson.map.SerializationConfig;
 import org.codehaus.jackson.map.introspect.VisibilityChecker;
+import org.codehaus.jackson.type.JavaType;
 import org.codehaus.jackson.type.TypeReference;
+
+import java.io.IOException;
+import java.util.*;
 
 /**
  * A utility class for JSON serialization and de-serialization
@@ -46,6 +44,25 @@ public class JSONUtils {
 	 */
 	public static JSONUtils newInstance(ObjectMapper om) {
 		return new JSONUtils(om);
+	}
+
+	public static JSONUtils newFieldMapperInstance() {
+		final ObjectMapper om = new ObjectMapper();
+		om.setSerializationConfig(om.getSerializationConfig().without(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS).withVisibilityChecker(
+				new FieldVisibilityChecker()));
+		om.setDeserializationConfig(om.getDeserializationConfig().withVisibilityChecker(new FieldVisibilityChecker()));
+		om.enableDefaultTyping(ObjectMapper.DefaultTyping.OBJECT_AND_NON_CONCRETE);
+
+		return JSONUtils.newInstance(om);
+	}
+
+	/**
+	 * Get the object mapper associated with this utils instance.
+	 *
+	 * @return The utils instance object mapper
+	 */
+	public ObjectMapper getOM() {
+		return om;
 	}
 
 	/**
@@ -154,6 +171,21 @@ public class JSONUtils {
 			}
 		}
 		return res;
+	}
+
+	public Collection<Map<String, Object>> deserialize(byte [] dataset, Map<String, Class<?>> typeMap, Map<String, String> aliases, boolean ignoreBrokenItems) throws JsonException {
+		final ObjectMapper om = new ObjectMapper();
+		final Collection<Map<String, Object>> coll;
+		try {
+			final JavaType recordType = om.getTypeFactory().constructMapType(Map.class, String.class, Object.class);
+			final JavaType collType = om.getTypeFactory().constructCollectionType(List.class, recordType);
+			coll = (Collection<Map<String, Object>>) om.readValue(dataset, collType);
+		} catch (JsonParseException e) {
+			throw new JsonException("Unmarshaling error reading dataset (invalid JSON)", e);
+		} catch (IOException e) {
+			throw new JsonException("I/O error reading dataset", e);
+		}
+		return coll;
 	}
 
 }

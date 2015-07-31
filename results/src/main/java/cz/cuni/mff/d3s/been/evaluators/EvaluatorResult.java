@@ -1,6 +1,9 @@
 package cz.cuni.mff.d3s.been.evaluators;
 
+import cz.cuni.mff.d3s.been.results.DataSetResult;
 import cz.cuni.mff.d3s.been.results.Result;
+import org.codehaus.jackson.annotate.JsonSubTypes;
+import org.codehaus.jackson.annotate.JsonTypeInfo;
 
 import java.util.UUID;
 
@@ -9,13 +12,17 @@ import java.util.UUID;
  *
  * @author Kuba Brecka
  */
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
+@JsonSubTypes({
+		@JsonSubTypes.Type(value = DataSetResult.class),
+})
 public class EvaluatorResult extends Result {
 	private String id;
 	private String benchmarkId;
 	private long timestamp;
 	private String filename;
 	private String mimeType;
-	private byte[] data;
+	protected byte[] data;
 
 	public static final String MIME_TYPE_IMAGE_PNG = "image/png";
 	public static final String MIME_TYPE_IMAGE_JPEG = "image/jpeg";
@@ -23,6 +30,10 @@ public class EvaluatorResult extends Result {
 	public static final String MIME_TYPE_HTML = "text/html";
 	public static final String MIME_TYPE_PLAIN = "text/plain";
 	public static final String MIME_TYPE_ZIP = "application/zip";
+
+	public static final String MIME_TYPE_XML = "application/xml";
+	public static final String MIME_TYPE_JSON = "application/json";
+	public static final String MIME_TYPE_CSV = "text/csv";
 
 	/**
 	 * Create an empty evaluator result

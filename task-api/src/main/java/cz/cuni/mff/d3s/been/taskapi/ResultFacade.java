@@ -5,7 +5,9 @@ import java.util.Map;
 
 import cz.cuni.mff.d3s.been.persistence.DAOException;
 import cz.cuni.mff.d3s.been.persistence.Query;
+import cz.cuni.mff.d3s.been.results.DataSetResult;
 import cz.cuni.mff.d3s.been.results.Result;
+import cz.cuni.mff.d3s.been.results.ResultMapping;
 
 /**
  * Facade for result storage and retrieval.
@@ -74,6 +76,17 @@ public interface ResultFacade {
 	 * @throws DAOException When the query fails
 	 */
 	Collection<Map<String, Object>> query(Query fetchQuery, ResultMapping resultMapping) throws DAOException;
+
+	/**
+	 * Retrieve a data set from a previously stored {@link cz.cuni.mff.d3s.been.results.DataSetResult}
+	 *
+	 * @param datasetId ID of the dataset
+	 *
+	 * @return The dataset
+	 *
+	 * @throws DAOException When query to persistence layer fails
+	 */
+	DataSet query(String datasetId) throws DAOException;
 
 	/**
 	 * Delete some results. Actually, don't do this, it won't save you from the

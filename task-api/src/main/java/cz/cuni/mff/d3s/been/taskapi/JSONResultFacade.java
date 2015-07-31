@@ -1,36 +1,34 @@
 package cz.cuni.mff.d3s.been.taskapi;
 
+import cz.cuni.mff.d3s.been.core.persistence.Entities;
+import cz.cuni.mff.d3s.been.core.persistence.EntityCarrier;
+import cz.cuni.mff.d3s.been.core.persistence.EntityID;
+import cz.cuni.mff.d3s.been.evaluators.EvaluatorResult;
+import cz.cuni.mff.d3s.been.mq.IMessageQueue;
+import cz.cuni.mff.d3s.been.mq.IMessageSender;
+import cz.cuni.mff.d3s.been.mq.MessagingException;
+import cz.cuni.mff.d3s.been.persistence.*;
+import cz.cuni.mff.d3s.been.results.*;
+import cz.cuni.mff.d3s.been.socketworks.NamedSockets;
+import cz.cuni.mff.d3s.been.socketworks.twoway.Requestor;
+import cz.cuni.mff.d3s.been.util.JSONUtils;
+import cz.cuni.mff.d3s.been.util.JsonException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 
-import cz.cuni.mff.d3s.been.util.JsonToTypedMap;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig.Feature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import cz.cuni.mff.d3s.been.core.persistence.EntityCarrier;
-import cz.cuni.mff.d3s.been.core.persistence.EntityID;
-import cz.cuni.mff.d3s.been.mq.IMessageQueue;
-import cz.cuni.mff.d3s.been.mq.IMessageSender;
-import cz.cuni.mff.d3s.been.mq.MessagingException;
-import cz.cuni.mff.d3s.been.persistence.*;
-import cz.cuni.mff.d3s.been.results.Result;
-import cz.cuni.mff.d3s.been.socketworks.NamedSockets;
-import cz.cuni.mff.d3s.been.socketworks.twoway.Requestor;
-import cz.cuni.mff.d3s.been.util.JSONUtils;
-import cz.cuni.mff.d3s.been.util.JsonException;
-
 final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 
 	private static final Logger log = LoggerFactory.getLogger(JSONResultFacade.class);
 
-	private final ObjectMapper om;
 	private final QuerySerializer querySerializer;
-	private final JSONUtils jsonUtils;
+	private final JSONUtils fieldMapperJsonUtils;
+	private final JSONUtils defaultJsonUtils;
 	private final IMessageQueue<String> queue;
 	private final Collection<Persister> allocatedPersisters;
 
@@ -40,16 +38,10 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 
 	private JSONResultFacade(IMessageQueue<String> queue) {
 		this.queue = queue;
-		this.om = new ObjectMapper();
 		this.querySerializer = new QuerySerializer();
 		this.allocatedPersisters = new HashSet<>();
-
-		om.setSerializationConfig(om.getSerializationConfig().without(Feature.FAIL_ON_EMPTY_BEANS).withVisibilityChecker(
-				new FieldVisibilityChecker()));
-		om.setDeserializationConfig(om.getDeserializationConfig().withVisibilityChecker(new FieldVisibilityChecker()));
-		om.enableDefaultTyping(ObjectMapper.DefaultTyping.OBJECT_AND_NON_CONCRETE);
-
-		jsonUtils = JSONUtils.newInstance(om);
+		fieldMapperJsonUtils = JSONUtils.newFieldMapperInstance();
+		defaultJsonUtils = JSONUtils.newInstance();
 	}
 
 	/** Create a new result serialization facade */
@@ -74,14 +66,14 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 	@Override
 	public synchronized void persistResult(Result result, String group) throws DAOException {
 		if (result == null) {
-			throw new DAOException("Cannot serialize a null object.");
+			throw new DAOException("Cannot preSerialize a null object.");
 		}
 		EntityCarrier ec = null;
 		String serializedResult = null;
 		try {
-			serializedResult = om.writeValueAsString(result);
+			serializedResult = fieldMapperJsonUtils.getOM().writeValueAsString(result);
 		} catch (IOException e) {
-			throw new DAOException(String.format("Unable to serialize Result %s to JSON.", result.toString()), e);
+			throw new DAOException(String.format("Unable to preSerialize Result %s to JSON.", result.toString()), e);
 		}
 		ec = new EntityCarrier();
 		ec.setEntityId(new EntityID().withKind("result").withGroup(group));
@@ -104,7 +96,7 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 		try {
 			queryString = querySerializer.serializeQuery(fetchQuery);
 		} catch (JsonException e) {
-			throw new DAOException("Failed to serialize query", e);
+			throw new DAOException("Failed to preSerialize query", e);
 		}
 
 		final Requestor requestor;
@@ -154,7 +146,7 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 
 		final QueryAnswer answer = performFetchQuery(fetchQuery);
 		try {
-			return jsonUtils.deserialize(answer.getData(), resultClass);
+			return fieldMapperJsonUtils.deserialize(answer.getData(), resultClass);
 		} catch (JsonException e) {
 			throw new DAOException(String.format("Failed to deserialize results matching query %s", fetchQuery.toString()), e);
 		}
@@ -164,10 +156,53 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 	public Collection<Map<String, Object>> query(Query fetchQuery, ResultMapping mapping) throws DAOException {
 		final QueryAnswer answer = performFetchQuery(fetchQuery);
 		try {
-			return jsonUtils.deserialize(answer.getData(), mapping.getTypeMapping(), mapping.getAliases(), false);
+			return fieldMapperJsonUtils.deserialize(
+					answer.getData(),
+					PrimitiveType.toClasses(PrimitiveType.toTypes(mapping.getTypeMapping())),
+					mapping.getAliases(),
+					false
+			);
 		} catch (JsonException e) {
 			throw new DAOException("Cannot deserialize query results", e);
+		} catch (PrimitiveTypeException e) {
+			throw new DAOException("Invalid type mapping", e);
 		}
+	}
+
+	@Override
+	public DataSet query(String datasetId) throws DAOException {
+		final Query fetchQuery = new QueryBuilder().on(Entities.RESULT_EVALUATOR.getId()).with("id", datasetId).fetch();
+		final QueryAnswer answer = performFetchQuery(fetchQuery);
+		final Collection<EvaluatorResult> dataSetResults;
+		try {
+			dataSetResults = defaultJsonUtils.deserialize(answer.getData(), EvaluatorResult.class);
+		} catch (JsonException e) {
+			throw new DAOException("Failed to deserialize Dataset result", e);
+		}
+		if (dataSetResults.isEmpty()) throw new DAOException(String.format("No dataset with [id=%s]", datasetId));
+		final EvaluatorResult presumedDataSetResult = dataSetResults.iterator().next();
+		if (! (presumedDataSetResult instanceof DataSetResult)) throw new DAOException(String.format(
+				"Evaluator result [id=%s] is not a Dataset result", datasetId
+		));
+		final DataSetResult dataSetResult = (DataSetResult) presumedDataSetResult;
+		final ResultMapping resultMapping = ResultMapping.deserialize(dataSetResult.getPreserializedResultMapping());
+		final DataSet dataSet;
+		try {
+			dataSet = new DataSet(
+					resultMapping,
+					defaultJsonUtils.deserialize(
+							dataSetResult.getData(),
+							PrimitiveType.toClasses(PrimitiveType.toTypes(resultMapping.getTypeMapping())),
+							resultMapping.getAliases(),
+							false
+					)
+			);
+		} catch(JsonException e) {
+			throw new DAOException("Failed to deserialize dataset");
+		} catch (PrimitiveTypeException e) {
+			throw new DAOException("Invalid type mapping", e);
+		}
+		return dataSet;
 	}
 
 	// @Override
@@ -183,7 +218,7 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 		try {
 			queryString = querySerializer.serializeQuery(deleteQuery);
 		} catch (JsonException e) {
-			throw new DAOException("Failed to serialize query", e);
+			throw new DAOException("Failed to preSerialize query", e);
 		}
 
 		try {
@@ -210,6 +245,35 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 		} catch (JsonException e) {
 			throw new DAOException("Failed to deserialize query answer", e);
 		}
+	}
+
+	/**
+	 * Utility method that throws an exception if a {@link cz.cuni.mff.d3s.been.persistence.QueryAnswer} is not carrying exactly one entry.
+	 *
+	 * @param answer Answer to inspect
+	 *
+	 * @throws DAOException When the answer carries no data at all, or when it is carrying multiple instances
+	 */
+	private void assertHasOneEntry(QueryAnswer answer) throws DAOException {
+		if (!answer.isCarryingData()) throw new DAOException("No data contained in answer, expected one entry");
+		final int actualSize = answer.getData().size();
+		if (actualSize != 1) throw new DAOException(String.format(
+				"Wrong number of entries received. Expected 1, but was %d", actualSize)
+		);
+	}
+
+	/**
+	 * Verify that query answer carries exactly one data entry, then return it
+	 *
+	 * @param answer Answer to get data from
+	 *
+	 * @return The unique entry carried by the answer
+	 *
+	 * @throws DAOException When there are no or multiple data entries in the query answer
+	 */
+	private String getUniqueEntry(QueryAnswer answer) throws DAOException {
+		assertHasOneEntry(answer);
+		return answer.getData().iterator().next();
 	}
 
 	@Override
@@ -254,7 +318,7 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 
 	private void sendRC(final EntityCarrier rc, final IMessageSender<String> sender) throws DAOException {
 		try {
-			final String serializedRC = om.writeValueAsString(rc);
+			final String serializedRC = fieldMapperJsonUtils.getOM().writeValueAsString(rc);
 			log.trace("About to request this serialized result carrier to Host Runtime: >>{}<<", serializedRC);
 			sender.send(serializedRC);
 
@@ -269,7 +333,7 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 				}
 			}
 		} catch (IOException e) {
-			throw new DAOException("Unable to serialize result carrier to JSON", e);
+			throw new DAOException("Unable to preSerialize result carrier to JSON", e);
 		} catch (MessagingException e) {
 			throw new DAOException("Unable to request serialized result carrier to Host Runtime");
 		}
@@ -306,9 +370,9 @@ final class JSONResultFacade implements ResultFacade, ResultPersisterCatalog {
 		public void persist(Result result) throws DAOException {
 			String serializedResult = null;
 			try {
-				serializedResult = om.writeValueAsString(result);
+				serializedResult = fieldMapperJsonUtils.getOM().writeValueAsString(result);
 			} catch (IOException e) {
-				throw new DAOException(String.format("Unable to serialize Result %s to json", result.toString()), e);
+				throw new DAOException(String.format("Unable to preSerialize Result %s to json", result.toString()), e);
 			}
 			log.trace("Persister serialized a result into >>{}<<", serializedResult);
 			final EntityCarrier rc = new EntityCarrier();

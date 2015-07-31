@@ -7,6 +7,7 @@ import cz.cuni.mff.d3s.been.util.JsonException;
 import cz.everbeen.restapi.BeenApiOperation;
 import cz.everbeen.restapi.ClusterApiConnection;
 import cz.everbeen.restapi.ClusterConnectionException;
+import cz.everbeen.restapi.RestApiContextInitializationException;
 import cz.everbeen.restapi.protocol.ErrorObject;
 import cz.everbeen.restapi.protocol.ProtocolObject;
 import cz.everbeen.restapi.protocol.ProtocolObjectSerializer;
@@ -43,7 +44,11 @@ abstract class Handler {
 	private BeenApi getBeenApi() throws ClusterConnectionException {
 		synchronized (apiLock) {
 			if (beenApi == null) {
-				beenApi = ClusterApiConnection.getInstance().getApi();
+				try {
+					beenApi = ClusterApiConnection.getInstance().getApi();
+				} catch (RestApiContextInitializationException e) {
+					throw new ClusterConnectionException("Failed to initialize connection factory", e);
+				}
 			}
 			if (!beenApi.isConnected()) {
 				beenApi = null;
@@ -86,8 +91,8 @@ abstract class Handler {
 	}
 
 	/**
-	 * Serialize a protocol object. If impossible, serialize an error message stating why.
-	 * @param protocolObject The protocol object to serialize
+	 * Serialize a protocol object. If impossible, preSerialize an error message stating why.
+	 * @param protocolObject The protocol object to preSerialize
 	 * @return The serialized protocol object, or a serialized error object
 	 */
 	protected final String serializeProtocolObject(ProtocolObject protocolObject) {

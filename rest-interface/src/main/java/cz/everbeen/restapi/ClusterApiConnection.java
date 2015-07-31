@@ -1,10 +1,9 @@
 package cz.everbeen.restapi;
 
-import com.hazelcast.core.Member;
 import cz.cuni.mff.d3s.been.api.BeenApi;
-import cz.cuni.mff.d3s.been.api.BeenApiException;
 import cz.cuni.mff.d3s.been.api.BeenApiFactory;
-import cz.everbeen.restapi.protocol.*;
+import cz.everbeen.restapi.protocol.ClusterConfig;
+import cz.everbeen.restapi.protocol.ClusterStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,8 +46,9 @@ public class ClusterApiConnection {
 	/**
 	 * Get the instance of this factory from the JNDI context
 	 * @return The factory instance
+	 * @throws cz.everbeen.restapi.RestApiContextInitializationException When context initialization fails
 	 */
-	public static synchronized ClusterApiConnection getInstance() {
+	public static synchronized ClusterApiConnection getInstance() throws RestApiContextInitializationException {
 		if (instance == null) {
 			try {
 				final Context ic = new InitialContext();

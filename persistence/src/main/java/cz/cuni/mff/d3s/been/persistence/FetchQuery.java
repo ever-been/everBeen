@@ -4,7 +4,6 @@ import cz.cuni.mff.d3s.been.core.persistence.EntityID;
 import org.codehaus.jackson.annotate.JsonTypeInfo;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
