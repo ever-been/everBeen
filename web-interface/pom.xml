@@ -3,11 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>cz.cuni.mff.d3s.been</groupId>
 	<artifactId>web-interface</artifactId>
-	<version>3.1.0</version>
+	<version>3.1.0-DPROC</version>
 	<parent>
 		<groupId>cz.cuni.mff.d3s.been</groupId>
 		<artifactId>been</artifactId>
-		<version>3.1.0</version>
+		<version>3.1.0-DPROC</version>
 	</parent>
 
 
@@ -75,7 +75,7 @@
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
 			<artifactId>been-api</artifactId>
-			<version>3.1.0</version>
+			<version>3.1.0-DPROC</version>
 		</dependency>
 
 		<dependency>
@@ -148,7 +148,7 @@
 		<dependency>
 			<groupId>cz.cuni.mff.d3s.been</groupId>
 			<artifactId>web-interface-standalone</artifactId>
-			<version>3.1.0</version>
+			<version>3.1.0-DPROC</version>
 		</dependency>
 
 

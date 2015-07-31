@@ -5,12 +5,12 @@
 	<parent>
 		<artifactId>been</artifactId>
 		<groupId>cz.cuni.mff.d3s.been</groupId>
-		<version>3.1.0</version>
+		<version>3.1.0-DPROC</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>mongodb-mapstore</artifactId>
-	<version>3.1.0</version>
+	<version>3.1.0-DPROC</version>
 
 	<dependencies>
 		<dependency>
